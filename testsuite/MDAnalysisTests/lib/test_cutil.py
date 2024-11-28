@@ -60,7 +60,10 @@ def test_unique_int_1d(values):
             [[0, 1, 2, 3, 4]],
         ),  # unused edge (4, 10)
         ([[0, 1], [1, 2], [2, 3]], [[0, 1, 2, 3], [4]]),  # lone atom
-        ([[0, 1], [1, 2], [2, 0], [3, 4], [4, 3]], [[0, 1, 2], [3, 4]]),  # circular
+        (
+            [[0, 1], [1, 2], [2, 0], [3, 4], [4, 3]],
+            [[0, 1, 2], [3, 4]],
+        ),  # circular
     ],
 )
 def test_find_fragments(edges, ref):
@@ -96,5 +99,7 @@ def test_in2d():
     ],
 )
 def test_in2d_VE(arr1, arr2):
-    with pytest.raises(ValueError, match=r"Both arrays must be \(n, 2\) arrays"):
+    with pytest.raises(
+        ValueError, match=r"Both arrays must be \(n, 2\) arrays"
+    ):
         _in2d(arr1, arr2)

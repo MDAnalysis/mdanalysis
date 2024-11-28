@@ -83,7 +83,10 @@ def test_pbc_box(box):
 
 @pytest.mark.parametrize(
     "cutoff, match",
-    ((-4, "Cutoff must be positive"), (100000, "Cutoff 100000 too large for box")),
+    (
+        (-4, "Cutoff must be positive"),
+        (100000, "Cutoff 100000 too large for box"),
+    ),
 )
 def test_nsgrid_badcutoff(universe, cutoff, match):
     with pytest.raises(ValueError, match=match):
@@ -107,7 +110,23 @@ def test_nsgrid_PBC_rect():
     ref_id = 191
     # Atomid are from gmx select so there start from 1 and not 0. hence -1!
     results = (
-        np.array([191, 192, 672, 682, 683, 684, 995, 996, 2060, 2808, 3300, 3791, 3792])
+        np.array(
+            [
+                191,
+                192,
+                672,
+                682,
+                683,
+                684,
+                995,
+                996,
+                2060,
+                2808,
+                3300,
+                3791,
+                3792,
+            ]
+        )
         - 1
     )
 
@@ -115,7 +134,9 @@ def test_nsgrid_PBC_rect():
     cutoff = 7
 
     # FastNS is called differently to max coverage
-    searcher = nsgrid.FastNS(cutoff, universe.atoms.positions, box=universe.dimensions)
+    searcher = nsgrid.FastNS(
+        cutoff, universe.atoms.positions, box=universe.dimensions
+    )
 
     results_grid = searcher.search(
         universe.atoms.positions[ref_id][None, :]
@@ -187,7 +208,9 @@ def test_nsgrid_pairs(universe):
 
     results_grid = run_grid_search(universe, ref_id).get_pairs()
 
-    assert_equal(np.sort(neighbors, axis=0), np.sort(results_grid[:, 1], axis=0))
+    assert_equal(
+        np.sort(neighbors, axis=0), np.sort(results_grid[:, 1], axis=0)
+    )
 
 
 def test_nsgrid_pair_distances(universe):
@@ -253,14 +276,17 @@ def test_nsgrid_distances(universe):
     (
         (None, [3, 13, 24]),
         (np.array([10.0, 10.0, 10.0, 90.0, 90.0, 90.0]), [3, 13, 24, 39, 67]),
-        (np.array([10.0, 10.0, 10.0, 60.0, 75.0, 90.0]), [3, 13, 24, 39, 60, 79]),
+        (
+            np.array([10.0, 10.0, 10.0, 60.0, 75.0, 90.0]),
+            [3, 13, 24, 39, 60, 79],
+        ),
     ),
 )
 def test_nsgrid_search(box, results):
     np.random.seed(90003)
-    points = (np.random.uniform(low=0, high=1.0, size=(100, 3)) * (10.0)).astype(
-        np.float32
-    )
+    points = (
+        np.random.uniform(low=0, high=1.0, size=(100, 3)) * (10.0)
+    ).astype(np.float32)
     cutoff = 2.0
     query = np.array([1.0, 1.0, 1.0], dtype=np.float32).reshape((1, 3))
 
@@ -294,9 +320,9 @@ def test_nsgrid_search(box, results):
 )
 def test_nsgrid_selfsearch(box, result):
     np.random.seed(90003)
-    points = (np.random.uniform(low=0, high=1.0, size=(100, 3)) * (10.0)).astype(
-        np.float32
-    )
+    points = (
+        np.random.uniform(low=0, high=1.0, size=(100, 3)) * (10.0)
+    ).astype(np.float32)
     cutoff = 1.0
     if box is None or np.allclose(box[:3], 0):
         # create a pseudobox
@@ -324,7 +350,9 @@ def test_nsgrid_probe_close_to_box_boundary():
     # coordinate prior to PR #2136, so we ensure that this remains fixed.
     # See Issue #2132 for further information.
     ref = np.array([[55.783722, 44.190044, -54.16671]], dtype=np.float32)
-    box = np.array([53.785854, 43.951054, 57.17597, 90.0, 90.0, 90.0], dtype=np.float32)
+    box = np.array(
+        [53.785854, 43.951054, 57.17597, 90.0, 90.0, 90.0], dtype=np.float32
+    )
     cutoff = 3.0
     # search within a configuration where we know the expected outcome:
     conf = np.ones((1, 3), dtype=np.float32)
@@ -404,7 +432,9 @@ def test_issue_2229_part2():
     u.atoms[0].position = [0, 0, 29.29]
     u.atoms[1].position = [0, 0, 28.23]
 
-    g = mda.lib.nsgrid.FastNS(3.0, u.atoms[[0]].positions, box=u.dimensions, pbc=False)
+    g = mda.lib.nsgrid.FastNS(
+        3.0, u.atoms[[0]].positions, box=u.dimensions, pbc=False
+    )
     assert len(g.search(u.atoms[[1]].positions).get_pairs()) == 1
 
     g = mda.lib.nsgrid.FastNS(3.0, u.atoms[[1]].positions, box=u.dimensions)
@@ -496,9 +526,9 @@ reason = (
 @pytest.mark.skipif(not high_mem_tests_enabled(), reason=reason)
 def test_issue_3183():
     np.random.seed(90003)
-    points = (np.random.uniform(low=0, high=1.0, size=(100, 3)) * (10.0)).astype(
-        np.float32
-    )
+    points = (
+        np.random.uniform(low=0, high=1.0, size=(100, 3)) * (10.0)
+    ).astype(np.float32)
     cutoff = 2.0
     query = np.array([1.0, 1.0, 1.0], dtype=np.float32).reshape((1, 3))
     box = np.array([10000.0, 10000.0, 10000.0, 90.0, 90.0, 90.0])

@@ -46,7 +46,11 @@ f_dataset = np.array(
 @pytest.mark.parametrize(
     "b, cut, result",
     (
-        (None, 1.0, "Donot provide cutoff distance" " for non PBC aware calculations"),
+        (
+            None,
+            1.0,
+            "Donot provide cutoff distance" " for non PBC aware calculations",
+        ),
         (
             [10, 10, 10, 90, 90, 90],
             None,
@@ -111,7 +115,11 @@ def test_nopbc():
     (
         ([10, 10, 10, 90, 90, 90], 2.0, [[0, 2], [0, 4], [2, 4]]),
         ([10, 10, 10, 45, 60, 90], 2.0, [[0, 4], [2, 4]]),
-        ([10, 10, 10, 45, 60, 90], 4.5, "Set cutoff greater or equal to the radius."),
+        (
+            [10, 10, 10, 45, 60, 90],
+            4.5,
+            "Set cutoff greater or equal to the radius.",
+        ),
         ([10, 10, 10, 45, 60, 90], 0.1, []),
     ),
 )
