@@ -575,11 +575,7 @@ class TestMakeWhole(object):
         # not applicable since #2213
         ts.positions = np.array(
             [
-                [
-                    1,
-                    1,
-                    1
-                ],
+                [1, 1, 1],
                 [9, 9, 9],
             ],
             dtype=np.float32,
@@ -590,11 +586,7 @@ class TestMakeWhole(object):
             u.atoms.positions,
             np.array(
                 [
-                    [
-                        1,
-                        1,
-                        1
-                    ],
+                    [1, 1, 1],
                     [-1, -1, -1],
                 ],
                 dtype=np.float32,

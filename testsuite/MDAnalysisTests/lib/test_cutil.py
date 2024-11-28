@@ -35,40 +35,11 @@ from MDAnalysis.lib._cutil import (
     "values",
     (
         [],  # empty array
-        [
-            1,
-            1,
-            1,
-            1
-        ],  # all identical
-        [
-            2,
-            3,
-            5,
-            7
-        ],  # all different, monotonic
-        [
-            5,
-            2,
-            7,
-            3
-        ],  # all different, non-monotonic
-        [
-            1,
-            2,
-            2,
-            4,
-            4,
-            6
-        ],  # duplicates, monotonic
-        [
-            1,
-            2,
-            2,
-            6,
-            4,
-            4
-        ],  # duplicates, non-monotonic
+        [1, 1, 1, 1],  # all identical
+        [2, 3, 5, 7],  # all different, monotonic
+        [5, 2, 7, 3],  # all different, non-monotonic
+        [1, 2, 2, 4, 4, 6],  # duplicates, monotonic
+        [1, 2, 2, 6, 4, 4],  # duplicates, non-monotonic
     ),
 )
 def test_unique_int_1d(values):

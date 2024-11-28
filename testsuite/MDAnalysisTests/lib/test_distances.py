@@ -1153,10 +1153,7 @@ class TestCythonFunctions(object):
         badbox2 = np.array(
             [
                 [10.0, 10.0],
-                [
-                    10.0,
-                    10.0
-                ],
+                [10.0, 10.0],
             ],
             dtype=np.float32,
         )
