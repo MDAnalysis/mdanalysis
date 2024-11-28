@@ -21,13 +21,13 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
+import MDAnalysis as mda
 import numpy as np
 import pytest
+from MDAnalysis.lib.transformations import rotation_matrix
+from MDAnalysis.transformations import rotateby
 from numpy.testing import assert_array_almost_equal
 
-import MDAnalysis as mda
-from MDAnalysis.transformations import rotateby
-from MDAnalysis.lib.transformations import rotation_matrix
 from MDAnalysisTests import make_Universe
 
 
@@ -77,9 +77,7 @@ def test_rotateby_custom_point(rotate_universes, point):
     trans = trans_u.trajectory.ts
     ref = ref_u.trajectory.ts
     vector = [1, 0, 0]
-    pos = point.reshape(
-        3,
-    )
+    pos = point.reshape(3)
     angle = 90
     matrix = rotation_matrix(np.deg2rad(angle), vector, pos)
     ref_u.atoms.transform(matrix)
@@ -98,9 +96,7 @@ def test_rotateby_vector(rotate_universes, vector):
     ref = ref_u.trajectory.ts
     point = [0, 0, 0]
     angle = 90
-    vec = vector.reshape(
-        3,
-    )
+    vec = vector.reshape(3)
     matrix = rotation_matrix(np.deg2rad(angle), vec, point)
     ref_u.atoms.transform(matrix)
     transformed = rotateby(angle, vector, point=point)(trans)
