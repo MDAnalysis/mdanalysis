@@ -157,7 +157,9 @@ filterwarnings = [
 target-version = ['py310', 'py311', 'py312', 'py313']
 include = '''
 (
-lib/.*\.py
+setup\.py
+| MDAnalysisTests/auxiliary/.*\.py
+| MDAnalysisTests/lib/.*\.py
 )
 '''
 extend-exclude = '__pycache__'
