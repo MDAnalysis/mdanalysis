@@ -162,15 +162,17 @@ Functions
    MDAnalysis.lib.transformations
 """
 
-import sys
-import os
-import warnings
 import math
+import os
+import sys
+import warnings
+
 import numpy as np
 from numpy.linalg import norm
 
-from .mdamath import angle as vecangle
 from MDAnalysis.lib.util import no_copy_shim
+
+from .mdamath import angle as vecangle
 
 
 def identity_matrix():
@@ -314,7 +316,11 @@ def rotation_matrix(angle, direction, point=None):
     direction = unit_vector(direction[:3])
     # rotation matrix around unit vector
     R = np.array(
-        ((cosa, 0.0, 0.0), (0.0, cosa, 0.0), (0.0, 0.0, cosa)),
+        (
+            (cosa, 0.0, 0.0),
+            (0.0, cosa, 0.0),
+            (0.0, 0.0, cosa),
+        ),
         dtype=np.float64,
     )
     R += np.outer(direction, direction) * (1.0 - cosa)
@@ -1757,32 +1763,18 @@ _EPS = np.finfo(float).eps * 4.0
 _NEXT_AXIS = [1, 2, 0, 1]
 
 # map axes strings to/from tuples of inner axis, parity, repetition, frame
+# fmt: off
 _AXES2TUPLE = {
-    "sxyz": (0, 0, 0, 0),
-    "sxyx": (0, 0, 1, 0),
-    "sxzy": (0, 1, 0, 0),
-    "sxzx": (0, 1, 1, 0),
-    "syzx": (1, 0, 0, 0),
-    "syzy": (1, 0, 1, 0),
-    "syxz": (1, 1, 0, 0),
-    "syxy": (1, 1, 1, 0),
-    "szxy": (2, 0, 0, 0),
-    "szxz": (2, 0, 1, 0),
-    "szyx": (2, 1, 0, 0),
-    "szyz": (2, 1, 1, 0),
-    "rzyx": (0, 0, 0, 1),
-    "rxyx": (0, 0, 1, 1),
-    "ryzx": (0, 1, 0, 1),
-    "rxzx": (0, 1, 1, 1),
-    "rxzy": (1, 0, 0, 1),
-    "ryzy": (1, 0, 1, 1),
-    "rzxy": (1, 1, 0, 1),
-    "ryxy": (1, 1, 1, 1),
-    "ryxz": (2, 0, 0, 1),
-    "rzxz": (2, 0, 1, 1),
-    "rxyz": (2, 1, 0, 1),
-    "rzyz": (2, 1, 1, 1),
+    "sxyz": (0, 0, 0, 0), "sxyx": (0, 0, 1, 0), "sxzy": (0, 1, 0, 0),
+    "sxzx": (0, 1, 1, 0), "syzx": (1, 0, 0, 0), "syzy": (1, 0, 1, 0),
+    "syxz": (1, 1, 0, 0), "syxy": (1, 1, 1, 0), "szxy": (2, 0, 0, 0),
+    "szxz": (2, 0, 1, 0), "szyx": (2, 1, 0, 0), "szyz": (2, 1, 1, 0),
+    "rzyx": (0, 0, 0, 1), "rxyx": (0, 0, 1, 1), "ryzx": (0, 1, 0, 1),
+    "rxzx": (0, 1, 1, 1), "rxzy": (1, 0, 0, 1), "ryzy": (1, 0, 1, 1),
+    "rzxy": (1, 1, 0, 1), "ryxy": (1, 1, 1, 1), "ryxz": (2, 0, 0, 1),
+    "rzxz": (2, 0, 1, 1), "rxyz": (2, 1, 0, 1), "rzyz": (2, 1, 1, 1),
 }
+# fmt: on
 
 _TUPLE2AXES = dict((v, k) for k, v in _AXES2TUPLE.items())
 
