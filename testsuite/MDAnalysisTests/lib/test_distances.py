@@ -20,19 +20,18 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-import sys
-from unittest.mock import Mock, patch
-import pytest
-import numpy as np
-from numpy.testing import assert_equal, assert_almost_equal, assert_allclose
 import itertools
+import sys
 from itertools import combinations_with_replacement as comb
+from unittest.mock import Mock, patch
 
 import MDAnalysis
-from MDAnalysis.lib import distances
+import numpy as np
+import pytest
+from MDAnalysis.lib import distances, mdamath
 from MDAnalysis.lib.distances import HAS_DISTOPIA
-from MDAnalysis.lib import mdamath
-from MDAnalysis.tests.datafiles import PSF, DCD, TRIC
+from MDAnalysis.tests.datafiles import DCD, PSF, TRIC
+from numpy.testing import assert_allclose, assert_almost_equal, assert_equal
 
 
 class TestCheckResultArray(object):
@@ -1051,11 +1050,7 @@ class TestCythonFunctions(object):
         box_vecs = np.array(
             [
                 [10.0, 0.0, 0.0],
-                [
-                    1.0,
-                    10.0,
-                    0.0,
-                ],
+                [1.0, 10.0, 0.0],
                 [1.0, 0.0, 10.0],
             ],
             dtype=np.float32,
