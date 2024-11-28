@@ -197,7 +197,7 @@ def test_nsgrid_pairs(universe):
                 23519,
                 23521,
                 23734,
-                47451,
+                47451
             ]
         )
         - 1
