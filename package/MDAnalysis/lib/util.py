@@ -198,31 +198,29 @@ import sys
 __docformat__ = "restructuredtext en"
 
 
+import bz2
+import errno
+import functools
+import gzip
+import importlib
+import inspect
+import io
+import itertools
 import os
 import os.path
-import errno
-from contextlib import contextmanager
-import bz2
-import gzip
 import re
-import io
-import warnings
-import functools
-from functools import wraps
 import textwrap
+import warnings
 import weakref
-import importlib
-import itertools
+from contextlib import contextmanager
+from functools import wraps
 
 import mmtf
 import numpy as np
-
 from numpy.testing import assert_equal
-import inspect
 
-from .picklable_file_io import pickle_open, bz2_pickle_open, gzip_pickle_open
-
-from ..exceptions import StreamWarning, DuplicateWarning
+from ..exceptions import DuplicateWarning, StreamWarning
+from .picklable_file_io import bz2_pickle_open, gzip_pickle_open, pickle_open
 
 try:
     from ._cutil import unique_int_1d
@@ -1487,26 +1485,17 @@ amino_acid_codes = {
 }
 #: non-default charge state amino acids or special charge state descriptions
 #: (Not fully synchronized with :class:`MDAnalysis.core.selection.ProteinSelection`.)
+# fmt: off
 alternative_inverse_aa_codes = {
-    "HISA": "H",
-    "HISB": "H",
-    "HSE": "H",
-    "HSD": "H",
-    "HID": "H",
-    "HIE": "H",
-    "HIS1": "H",
-    "HIS2": "H",
-    "ASPH": "D",
-    "ASH": "D",
-    "GLUH": "E",
-    "GLH": "E",
-    "LYSH": "K",
-    "LYN": "K",
+    "HISA": "H", "HISB": "H", "HSE": "H", "HSD": "H", "HID": "H", "HIE": "H",
+    "HIS1": "H", "HIS2": "H",
+    "ASPH": "D", "ASH": "D",
+    "GLUH": "E", "GLH": "E",
+    "LYSH": "K", "LYN": "K",
     "ARGN": "R",
-    "CYSH": "C",
-    "CYS1": "C",
-    "CYS2": "C",
+    "CYSH": "C", "CYS1": "C", "CYS2": "C",
 }
+# fmt: off
 #: lookup table from 3/4 letter resnames to 1-letter codes. Note that non-standard residue names
 #: for tautomers or different protonation states such as HSE are converted to canonical 1-letter codes ("H").
 #: The table is used for :func:`convert_aa_code`.
