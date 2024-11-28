@@ -129,7 +129,7 @@ class TestStringFunctions(object):
                 "HIS1",
                 "HIS2",
                 "HIE",
-                "HID"
+                "HID",
             ),
         ),
         ("K", ("LYS", "LYSH", "LYN")),

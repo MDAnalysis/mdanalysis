@@ -124,7 +124,7 @@ def test_nsgrid_PBC_rect():
                 2808,
                 3300,
                 3791,
-                3792
+                3792,
             ]
         )
         - 1
@@ -165,7 +165,7 @@ def test_nsgrid_PBC(universe):
                 23519,
                 23521,
                 23734,
-                47451
+                47451,
             ]
         )
         - 1
@@ -197,7 +197,7 @@ def test_nsgrid_pairs(universe):
                 23519,
                 23521,
                 23734,
-                47451
+                47451,
             ]
         )
         - 1
@@ -231,7 +231,7 @@ def test_nsgrid_pair_distances(universe):
                 0.179,
                 0.259,
                 0.290,
-                0.270
+                0.270,
             ]
         )
         * 10
@@ -260,7 +260,7 @@ def test_nsgrid_distances(universe):
                 0.179,
                 0.259,
                 0.290,
-                0.270
+                0.270,
             ]
         )
         * 10

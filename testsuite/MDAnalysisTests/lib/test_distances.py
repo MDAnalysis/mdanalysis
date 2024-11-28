@@ -338,15 +338,15 @@ class TestCappedDistances(object):
 @pytest.fixture()
 def ref_system():
     box = np.array([1.0, 1.0, 2.0, 90.0, 90.0, 90], dtype=np.float32)
+    # fmt: off
     points = np.array(
         [
-            [0, 0, 0],
-            [1, 1, 2],
-            [1, 0, 2],  # identical under PBC
+            [0, 0, 0], [1, 1, 2], [1, 0, 2],  # identical under PBC
             [0.5, 0.5, 1.5],
         ],
         dtype=np.float32,
     )
+    # fmt: on
     ref = points[0:1]
     conf = points[1:]
 
