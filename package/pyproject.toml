@@ -132,7 +132,7 @@ tables\.py
 | due\.py
 | setup\.py
 | visualization/.*\.py
-| lib/.*\.py
+| lib/.*\.py^
 )
 '''
 extend-exclude = '__pycache__'
