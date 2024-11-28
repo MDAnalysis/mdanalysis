@@ -260,7 +260,7 @@ def test_nsgrid_distances(universe):
                 0.179,
                 0.259,
                 0.290,
-                0.270,
+                0.270
             ]
         )
         * 10
