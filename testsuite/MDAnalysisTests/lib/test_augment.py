@@ -21,12 +21,12 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 
 import os
-import pytest
-import numpy as np
-from numpy.testing import assert_almost_equal, assert_equal
 
+import numpy as np
+import pytest
 from MDAnalysis.lib._augment import augment_coordinates, undo_augment
 from MDAnalysis.lib.distances import apply_PBC, transform_StoR
+from numpy.testing import assert_almost_equal, assert_equal
 
 # Find images for several query points,
 # here in fractional coordinates
@@ -37,11 +37,19 @@ qres = (
     ([0.5, -0.1, 0.5], [[0.5, -0.1, 0.5]]),  # box face
     (
         [0.1, 0.1, 0.5],
-        [[1.1, 0.1, 0.5], [0.1, 1.1, 0.5], [1.1, 1.1, 0.5]],
+        [
+            [1.1, 0.1, 0.5],
+            [0.1, 1.1, 0.5],
+            [1.1, 1.1, 0.5],
+        ],
     ),  # box edge
     (
         [0.5, -0.1, 1.1],
-        [[0.5, -0.1, 0.1], [0.5, 0.9, 1.1], [0.5, -0.1, 1.1]],
+        [
+            [0.5, -0.1, 0.1],
+            [0.5, 0.9, 1.1],
+            [0.5, -0.1, 1.1],
+        ],
     ),  # box edge
     (
         [0.1, 0.1, 0.1],
@@ -80,8 +88,14 @@ qres = (
         ],
     ),  # box vertex
     (
-        [[0.1, 0.5, 0.5], [0.5, -0.1, 0.5]],
-        [[1.1, 0.5, 0.5], [0.5, -0.1, 0.5]],
+        [
+            [0.1, 0.5, 0.5],
+            [0.5, -0.1, 0.5],
+        ],
+        [
+            [1.1, 0.5, 0.5],
+            [0.5, -0.1, 0.5],
+        ],
     ),  # multiple queries
 )
 
