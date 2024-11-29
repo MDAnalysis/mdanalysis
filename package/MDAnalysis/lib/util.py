@@ -1495,7 +1495,7 @@ alternative_inverse_aa_codes = {
     "ARGN": "R",
     "CYSH": "C", "CYS1": "C", "CYS2": "C",
 }
-# fmt: off
+# fmt: on
 #: lookup table from 3/4 letter resnames to 1-letter codes. Note that non-standard residue names
 #: for tautomers or different protonation states such as HSE are converted to canonical 1-letter codes ("H").
 #: The table is used for :func:`convert_aa_code`.
