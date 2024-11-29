@@ -48,7 +48,14 @@ def test_rotation_matrix():
     angle = 180
     vector = [0, 0, 1]
     pos = [0, 0, 0]
-    ref_matrix = np.asarray([[-1, 0, 0], [0, -1, 0], [0, 0, 1]], np.float64)
+    ref_matrix = np.asarray(
+        [
+            [-1, 0, 0],
+            [0, -1, 0],
+            [0, 0, 1],
+        ],
+        np.float64,
+    )
     matrix = rotation_matrix(np.deg2rad(angle), vector, pos)[:3, :3]
     assert_array_almost_equal(matrix, ref_matrix, decimal=6)
     # another angle in a custom axis
