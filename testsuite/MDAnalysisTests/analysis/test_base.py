@@ -122,6 +122,19 @@ def test_incompatible_n_workers(u):
         FrameAnalysis(u).run(backend=backend, n_workers=3)
 
 
+def test_frame_values_incompatability(u):
+    start, stop, step = 0, 4, 1
+    frames = [1, 2, 3, 4]
+
+    with pytest.raises(ValueError,
+                       match="start/stop/step cannot be combined with frames"):
+        FrameAnalysis(u.trajectory).run(
+            frames=frames,
+            start=start,
+            stop=stop,
+            step=step
+        )
+
 def test_n_workers_conflict_raises_value_error(u):
     backend_instance = ManyWorkersBackend(n_workers=4)
 
