@@ -178,7 +178,6 @@ import scipy.stats
 
 import MDAnalysis as mda
 
-from . import dimensionality_reduction
 from ...coordinates.memory import MemoryReader
 from .confdistmatrix import get_distance_matrix
 from .bootstrap import (get_distance_matrix_bootstrap_samples,
@@ -186,7 +185,7 @@ from .bootstrap import (get_distance_matrix_bootstrap_samples,
 from .clustering.cluster import cluster
 from .clustering.ClusteringMethod import AffinityPropagationNative
 from .dimensionality_reduction.DimensionalityReductionMethod import (
-    StochasticProximityEmbeddingNative, DimensionalityReductionMethod)
+    StochasticProximityEmbeddingNative)
 from .dimensionality_reduction.reduce_dimensionality import (
     reduce_dimensionality)
 from .covariance import (
