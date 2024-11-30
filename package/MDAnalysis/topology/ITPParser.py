@@ -429,8 +429,10 @@ class Molecule:
 
         return atom_order, new_params, molnums, self.moltypes, residx
 
-    def add_param(self, line, container, n_funct=2, funct_values=[]):
+    def add_param(self, line, container, n_funct=2, funct_values=None):
         """Add defined GROMACS directive lines, only if the funct is in ``funct_values``"""
+        if funct_values is None:
+            funct_values = []
         values = line.split()
         funct = int(values[n_funct])
         if funct in funct_values:

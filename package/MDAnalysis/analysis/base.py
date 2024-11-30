@@ -479,7 +479,7 @@ class AnalysisBase(object):
 
     def _compute(self, indexed_frames: np.ndarray,
                  verbose: bool = None,
-                 *, progressbar_kwargs={}) -> "AnalysisBase":
+                 *, progressbar_kwargs=None) -> "AnalysisBase":
         """Perform the calculation on a balanced slice of frames
         that have been setup prior to that using _setup_computation_groups()
 
@@ -500,6 +500,8 @@ class AnalysisBase(object):
 
         .. versionadded:: 2.8.0
         """
+        if progressbar_kwargs is None:
+            progressbar_kwargs = {}
         logger.info("Choosing frames to analyze")
         # if verbose unchanged, use class default
         verbose = getattr(self, "_verbose", False) if verbose is None else verbose

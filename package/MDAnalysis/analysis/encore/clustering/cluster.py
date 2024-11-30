@@ -45,7 +45,7 @@ from . import ClusteringMethod
 
 
 def cluster(ensembles,
-            method = ClusteringMethod.AffinityPropagationNative(),
+            method = None,
             select="name CA",
             distance_matrix=None,
             allow_collapsed_result=True,
@@ -154,7 +154,8 @@ def cluster(ensembles,
         [array([1, 1, 1, 1, 2]), array([1, 1, 1, 1, 1])]
 
     """
-
+    if method is None:
+        method = ClusteringMethod.AffinityPropagationNative()
     # Internally, ensembles are always transformed to a list of lists
     if ensembles is not None:
         if not hasattr(ensembles, '__iter__'):

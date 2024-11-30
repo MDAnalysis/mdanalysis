@@ -178,6 +178,7 @@ import scipy.stats
 
 import MDAnalysis as mda
 
+from . import dimensionality_reduction
 from ...coordinates.memory import MemoryReader
 from .confdistmatrix import get_distance_matrix
 from .bootstrap import (get_distance_matrix_bootstrap_samples,
@@ -185,7 +186,7 @@ from .bootstrap import (get_distance_matrix_bootstrap_samples,
 from .clustering.cluster import cluster
 from .clustering.ClusteringMethod import AffinityPropagationNative
 from .dimensionality_reduction.DimensionalityReductionMethod import (
-    StochasticProximityEmbeddingNative)
+    StochasticProximityEmbeddingNative, DimensionalityReductionMethod)
 from .dimensionality_reduction.reduce_dimensionality import (
     reduce_dimensionality)
 from .covariance import (
@@ -954,12 +955,7 @@ def hes(ensembles,
 
 def ces(ensembles,
         select="name CA",
-        clustering_method=AffinityPropagationNative(
-            preference=-1.0,
-            max_iter=500,
-            convergence_iter=50,
-            damping=0.9,
-            add_noise=True),
+        clustering_method=None,
         distance_matrix=None,
             estimate_error=False,
         bootstrapping_samples=10,
@@ -1084,7 +1080,13 @@ def ces(ensembles,
          [0.25331629 0.        ]]
 
     """
-
+    if clustering_method is None:
+        clustering_method = AffinityPropagationNative(
+            preference=-1.0,
+            max_iter=500,
+            convergence_iter=50,
+            damping=0.9,
+            add_noise=True)
     for ensemble in ensembles:
         ensemble.transfer_to_memory()
 
@@ -1220,13 +1222,7 @@ def ces(ensembles,
 
 def dres(ensembles,
          select="name CA",
-         dimensionality_reduction_method = StochasticProximityEmbeddingNative(
-             dimension=3,
-             distance_cutoff = 1.5,
-             min_lam=0.1,
-             max_lam=2.0,
-             ncycle=100,
-             nstep=10000),
+         dimensionality_reduction_method=None,
          distance_matrix=None,
          nsamples=1000,
          estimate_error=False,
@@ -1354,7 +1350,14 @@ def dres(ensembles,
     :mod:`MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality``
 
     """
-
+    if dimensionality_reduction_method is None:
+        dimensionality_reduction_method = StochasticProximityEmbeddingNative(
+             dimension=3,
+             distance_cutoff = 1.5,
+             min_lam=0.1,
+             max_lam=2.0,
+             ncycle=100,
+             nstep=10000)
     for ensemble in ensembles:
         ensemble.transfer_to_memory()
 
@@ -1487,12 +1490,7 @@ def dres(ensembles,
 def ces_convergence(original_ensemble,
                     window_size,
                     select="name CA",
-                    clustering_method=AffinityPropagationNative(
-                        preference=-1.0,
-                        max_iter=500,
-                        convergence_iter=50,
-                        damping=0.9,
-                        add_noise=True),
+                    clustering_method=None,
                     ncores=1):
     """
     Use the CES to evaluate the convergence of the ensemble/trajectory.
@@ -1559,7 +1557,13 @@ def ces_convergence(original_ensemble,
          [0.        ]]
 
     """
-
+    if clustering_method is None:
+        clustering_method = AffinityPropagationNative(
+                        preference=-1.0,
+                        max_iter=500,
+                        convergence_iter=50,
+                        damping=0.9,
+                        add_noise=True)
     ensembles = prepare_ensembles_for_convergence_increasing_window(
         original_ensemble, window_size, select=select)
 
@@ -1587,15 +1591,7 @@ def ces_convergence(original_ensemble,
 def dres_convergence(original_ensemble,
                      window_size,
                      select="name CA",
-                     dimensionality_reduction_method = \
-                            StochasticProximityEmbeddingNative(
-                                dimension=3,
-                                distance_cutoff=1.5,
-                                min_lam=0.1,
-                                max_lam=2.0,
-                                ncycle=100,
-                                nstep=10000
-                            ),
+                     dimensionality_reduction_method=None,
                      nsamples=1000,
                      ncores=1):
     """
@@ -1660,7 +1656,15 @@ def dres_convergence(original_ensemble,
     much the trajectory keeps on resampling the same ares of the conformational
     space, and therefore of convergence.
     """
-
+    if dimensionality_reduction_method is None:
+        dimensionality_reduction_method = StochasticProximityEmbeddingNative(
+                                dimension=3,
+                                distance_cutoff=1.5,
+                                min_lam=0.1,
+                                max_lam=2.0,
+                                ncycle=100,
+                                nstep=10000
+                            )
     ensembles = prepare_ensembles_for_convergence_increasing_window(
         original_ensemble, window_size, select=select)
 
