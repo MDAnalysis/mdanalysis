@@ -45,7 +45,7 @@ from . import ClusteringMethod
 
 
 def cluster(ensembles,
-            method = None,
+            method=None,
             select="name CA",
             distance_matrix=None,
             allow_collapsed_result=True,

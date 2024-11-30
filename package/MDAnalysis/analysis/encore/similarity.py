@@ -1353,7 +1353,7 @@ def dres(ensembles,
     if dimensionality_reduction_method is None:
         dimensionality_reduction_method = StochasticProximityEmbeddingNative(
              dimension=3,
-             distance_cutoff = 1.5,
+             distance_cutoff=1.5,
              min_lam=0.1,
              max_lam=2.0,
              ncycle=100,

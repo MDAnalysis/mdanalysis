@@ -14,11 +14,17 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay
+11/30/24 IAlibay, tanishy7777
 
  * 2.9.0
 
 Fixes
+ * Addressed linting issues by resolving instances of mutable default
+   arguments (B006) and function calls as default arguments (B008).
+   Replaced mutable defaults with None and initialized them within
+   the function to prevent shared state. Moved function calls from
+   argument defaults into the function body to ensure proper execution
+   context and avoid unintended behavior.
 
 Enhancements
 
