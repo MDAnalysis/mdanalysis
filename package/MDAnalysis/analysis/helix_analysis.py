@@ -245,7 +245,7 @@ def helix_analysis(positions, ref_axis=None):
     # origin: origins
     # local_axes: perpendicular to plane of screen. Orthogonal to "bisectors"
     if ref_axis is None:
-        ref_axis = [0, 0, 1]
+        ref_axis = (0, 0, 1)
     vectors = positions[1:] - positions[:-1]  # (n_res-1, 3)
     bisectors = vectors[:-1] - vectors[1:]  # (n_res-2, 3)
     bimags = mdamath.pnorm(bisectors)  # (n_res-2,)
@@ -394,7 +394,7 @@ class HELANAL(AnalysisBase):
         super(HELANAL, self).__init__(universe.universe.trajectory,
                                       verbose=verbose)
         if ref_axis is None:
-            ref_axis = [0, 0, 1]
+            ref_axis = (0, 0, 1)
         selections = util.asiterable(select)
         atomgroups = [universe.select_atoms(s) for s in selections]
         consecutive = []
