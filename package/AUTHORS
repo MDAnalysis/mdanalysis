@@ -249,7 +249,7 @@ Chronological list of authors
 External code
 -------------
 
-External code (under a GPL-compatible licence) was obtained from
+External code (under a LGPL-compatible licence) was obtained from
 various sources. The authors (as far as we know them) are listed here.
 
 xdrfile
@@ -261,9 +261,9 @@ xdrfile
   The Gromacs libxdrfile (LGPL-licensed) was used before MDAnalysis
    version 0.8.0.
   Between MDAnalysis versions 0.8.0 and 0.13.0 libxdrfile was replaced by
-   libxdrfile2, our GPLv2 enhanced derivative of libxdrfile.
+   libxdrfile2, our LGPLv2.1+ enhanced derivative of libxdrfile.
   Since version 0.14.0 xdr enhanecments were rebased onto Gromacs'
-   xdrfile 1.1.4 code (now BSD-licensed). Our contributions remain GPLv2
+   xdrfile 1.1.4 code (now BSD-licensed). Our contributions remain LGPLv2.1+
    and were split into files xtc_seek.c, trr_seek.c, xtc_seek.h, and
    trr_seek.h, for clarity (xdrfile 1.1.4 code is distributed with minor
    modifications). Also for clarity we now name the resulting enhanced

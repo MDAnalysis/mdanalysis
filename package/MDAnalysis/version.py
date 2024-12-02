@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -67,4 +67,4 @@ Data
 # e.g. with lib.log
 
 #: Release of MDAnalysis as a string, using `semantic versioning`_.
-__version__ = "2.8.0-dev0"  # NOTE: keep in sync with RELEASE in setup.py
+__version__ = "2.9.0-dev0"  # NOTE: keep in sync with RELEASE in setup.py

@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -20,6 +20,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from importlib import reload
 import pytest
 from numpy.testing import assert_equal
 import numpy as np
@@ -53,7 +54,7 @@ class TestGuessMasses(object):
         assert_equal(out, np.array([12.011, 12.011, 1.008]))
 
     def test_guess_masses_warn(self):
-        with pytest.warns(UserWarning):
+        with pytest.warns(UserWarning, match='Failed to guess the mass'):
             guessers.guess_masses(['X'])
 
     def test_guess_masses_miss(self):
@@ -203,3 +204,59 @@ def test_guess_gasteiger_charges(smi):
     u = mda.Universe(mol)
     values = guessers.guess_gasteiger_charges(u.atoms)
     assert_equal(values, expected)
+
+
+class TestDeprecationWarning:
+    wmsg = (
+    "MDAnalysis.topology.guessers is deprecated in favour of "
+    "the new Guessers API. "
+    "See MDAnalysis.guesser.default_guesser for more details."
+    )
+
+    @pytest.mark.parametrize('func, arg', [
+        [guessers.guess_masses, ['C']],
+        [guessers.validate_atom_types, ['C']],
+        [guessers.guess_types, ['CA']],
+        [guessers.guess_atom_type, 'CA'],
+        [guessers.guess_atom_element, 'CA'],
+        [guessers.get_atom_mass, 'C'],
+        [guessers.guess_atom_mass, 'CA'],
+        [guessers.guess_atom_charge, 'CA'],
+    ])
+    def test_mass_type_elements_deprecations(self, func, arg):
+        with pytest.warns(DeprecationWarning, match=self.wmsg):
+            func(arg)
+
+    def test_bonds_deprecations(self):
+        u = mda.Universe(datafiles.two_water_gro)
+
+        with pytest.warns(DeprecationWarning, match=self.wmsg):
+            guessers.guess_bonds(u.atoms, u.atoms.positions)
+
+    def test_angles_dihedral_deprecations(self):
+        u = make_starshape()
+        ag = u.atoms[:5]
+
+        with pytest.warns(DeprecationWarning, match=self.wmsg):
+            angles = guessers.guess_angles(ag.bonds)
+
+        # add angles back to the Universe
+        u.add_TopologyAttr(Angles(angles))
+
+        with pytest.warns(DeprecationWarning, match=self.wmsg):
+            guessers.guess_dihedrals(ag.angles)
+
+        with pytest.warns(DeprecationWarning, match=self.wmsg):
+            guessers.guess_improper_dihedrals(ag.angles)
+
+    @requires_rdkit
+    def test_rdkit_guessers_deprecations(self):
+        mol = Chem.MolFromSmiles('c1ccccc1')
+        mol = Chem.AddHs(mol)
+        u = mda.Universe(mol)
+
+        with pytest.warns(DeprecationWarning, match=self.wmsg):
+            guessers.guess_aromaticities(u.atoms)
+
+        with pytest.warns(DeprecationWarning, match=self.wmsg):
+            guessers.guess_gasteiger_charges(u.atoms)

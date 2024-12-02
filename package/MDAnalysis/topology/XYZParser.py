@@ -1,11 +1,11 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -40,15 +40,12 @@ Classes
 """
 import numpy as np
 
-from . import guessers
 from ..lib.util import openany
 from .base import TopologyReaderBase
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomnames,
     Atomids,
-    Atomtypes,
-    Masses,
     Resids,
     Resnums,
     Segids,
@@ -62,14 +59,21 @@ class XYZParser(TopologyReaderBase):
     Creates the following attributes:
      - Atomnames
 
-    Guesses the following attributes:
-     - Atomtypes
-     - Masses
+    .. note::
+
+        By default, atomtypes and masses will be guessed on Universe creation.
+        This may change in release 3.0.
+        See :ref:`Guessers` for more information.
+
 
     .. versionadded:: 0.9.1
 
     .. versionchanged: 1.0.0
        Store elements attribute, based on XYZ atom names
+     .. versionchanged:: 2.8.0
+        Removed type and mass guessing (attributes guessing takes place now
+        through universe.guess_TopologyAttrs() API).
+
     """
     format = 'XYZ'
 
@@ -91,14 +95,9 @@ class XYZParser(TopologyReaderBase):
                 name = inf.readline().split()[0]
                 names[i] = name
 
-        # Guessing time
-        atomtypes = guessers.guess_types(names)
-        masses = guessers.guess_masses(names)
 
         attrs = [Atomnames(names),
                  Atomids(np.arange(natoms) + 1),
-                 Atomtypes(atomtypes, guessed=True),
-                 Masses(masses, guessed=True),
                  Resids(np.array([1])),
                  Resnums(np.array([1])),
                  Segids(np.array(['SYSTEM'], dtype=object)),

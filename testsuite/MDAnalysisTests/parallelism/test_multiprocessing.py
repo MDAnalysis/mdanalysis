@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -90,7 +90,7 @@ from MDAnalysisTests.datafiles import (
 def u(request):
     if len(request.param) == 1:
         f = request.param[0]
-        return mda.Universe(f)
+        return mda.Universe(f, to_guess=())
     else:
         top, trj = request.param
         return mda.Universe(top, trj)

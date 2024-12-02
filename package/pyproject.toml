@@ -53,7 +53,7 @@ classifiers = [
     'Development Status :: 6 - Mature',
     'Environment :: Console',
     'Intended Audience :: Science/Research',
-    'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
+    'License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)',
     'Operating System :: POSIX',
     'Operating System :: MacOS :: MacOS X',
     'Operating System :: Microsoft :: Windows',
@@ -61,6 +61,7 @@ classifiers = [
     'Programming Language :: Python :: 3.10',
     'Programming Language :: Python :: 3.11',
     'Programming Language :: Python :: 3.12',
+    'Programming Language :: Python :: 3.13',
     'Programming Language :: C',
     'Topic :: Scientific/Engineering',
     'Topic :: Scientific/Engineering :: Bio-Informatics',
@@ -122,3 +123,20 @@ find = {}
 MDAnalysis = [
     'analysis/data/*.npy',
 ]
+
+[tool.black]
+line-length = 79
+target-version = ['py310', 'py311', 'py312', 'py313']
+include = '''
+(
+tables\.py
+| due\.py
+| setup\.py
+| MDAnalysis/auxiliary/.*\.py
+| MDAnalysis/visualization/.*\.py
+| MDAnalysis/lib/.*\.py^
+| MDAnalysis/transformations/.*\.py
+)
+'''
+extend-exclude = '__pycache__'
+required-version = '24'

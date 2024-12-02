@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -25,7 +25,7 @@ r"""Bond-Angle-Torsion coordinates analysis --- :mod:`MDAnalysis.analysis.bat`
 
 :Author: Soohaeng Yoo Willow and David Minh
 :Year: 2020
-:Copyright: GNU Public License, v2 or any higher version
+:Copyright: Lesser GNU Public License, v2.1 or any higher version
 
 .. versionadded:: 2.0.0
 
@@ -175,7 +175,7 @@ logger = logging.getLogger(__name__)
 
 
 def _sort_atoms_by_mass(atoms, reverse=False):
-    r"""Sorts a list of atoms by name and then by index
+    r"""Sorts a list of atoms by mass and then by index
 
     The atom index is used as a tiebreaker so that the ordering is reproducible.
 
