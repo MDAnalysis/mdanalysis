@@ -338,6 +338,28 @@ def contact_matrix(d, radius, out=None):
     return out
 
 
+def get_box(ts, pbc):
+    """Retrieve the dimensions of the simulation box based on periodic boundary conditions (PBC).
+
+    Parameters
+    ----------
+    ts : Timestep
+        The current timestep of the simulation, which contains the 
+        box dimensions.
+    pbc : bool
+        A flag indicating whether periodic boundary conditions (PBC) 
+        are enabled. If `True`, the box dimensions are returned,
+        else returns `None`.
+
+    Returns
+    -------
+    box_dimensions : ndarray or None
+        The dimensions of the simulation box as a NumPy array if PBC 
+        is True, else returns `None`.
+    """
+    return ts.dimensions if pbc else None
+
+
 class Contacts(AnalysisBase):
     """Calculate contacts based observables.
 
@@ -377,6 +399,12 @@ class Contacts(AnalysisBase):
     .. versionchanged:: 2.2.0
        :class:`Contacts` accepts both AtomGroup and string for `select`
     """
+
+    _analysis_algorithm_is_parallelizable = True
+
+    @classmethod
+    def get_supported_backends(cls):
+        return ('serial', 'multiprocessing', 'dask')
 
     def __init__(self, u, select, refgroup, method="hard_cut", radius=4.5,
                  pbc=True, kwargs=None, **basekwargs):
@@ -445,10 +473,8 @@ class Contacts(AnalysisBase):
         self.initial_contacts = []
 
         #get dimension of box if pbc set to True
-        if self.pbc:
-            self._get_box = lambda ts: ts.dimensions
-        else:
-            self._get_box = lambda ts: None
+        self.pbc = pbc
+        self._get_box = functools.partial(get_box, pbc=self.pbc)
 
         if isinstance(refgroup[0], AtomGroup):
             refA, refB = refgroup
@@ -506,6 +532,8 @@ class Contacts(AnalysisBase):
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.timeseries
 
+    def _get_aggregator(self):
+        return ResultsGroup(lookup={'timeseries': ResultsGroup.ndarray_vstack})
 
 def _new_selections(u_orig, selections, frame):
     """create stand alone AGs from selections at frame"""
