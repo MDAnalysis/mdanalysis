@@ -223,7 +223,7 @@ import MDAnalysis.lib.distances
 from MDAnalysis.lib.util import openany
 from MDAnalysis.analysis.distances import distance_array
 from MDAnalysis.core.groups import AtomGroup, UpdatingAtomGroup
-from .base import AnalysisBase
+from .base import AnalysisBase, ResultsGroup
 
 logger = logging.getLogger("MDAnalysis.analysis.contacts")
 
