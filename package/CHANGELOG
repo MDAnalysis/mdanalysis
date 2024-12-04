@@ -14,13 +14,14 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay
+??/??/?? IAlibay, talagayev
 
  * 2.9.0
 
 Fixes
 
 Enhancements
+ * Enables parallelization for analysis.contacts.Contacts (Issue #4660)
 
 Changes
 
