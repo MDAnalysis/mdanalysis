@@ -397,6 +397,9 @@ class Contacts(AnalysisBase):
        :class:`MDAnalysis.analysis.base.Results` instance.
     .. versionchanged:: 2.2.0
        :class:`Contacts` accepts both AtomGroup and string for `select`
+    .. versionchanged:: 2.9.0
+       Introduced :meth:`get_supported_backends` allowing for parallel execution on
+       :mod:`multiprocessing` and :mod:`dask` backends.
     """
 
     _analysis_algorithm_is_parallelizable = True
