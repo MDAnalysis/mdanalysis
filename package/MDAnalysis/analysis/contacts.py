@@ -337,23 +337,24 @@ def contact_matrix(d, radius, out=None):
         out = d <= radius
     return out
 
+
 def get_box(ts, pbc):
-    """Retrieve the dimensions of the simulation box based on periodic boundary conditions (PBC).
+    """Retrieve the dimensions of the simulation box based on PBC.
 
     Parameters
     ----------
     ts : Timestep
-        The current timestep of the simulation, which contains the 
+        The current timestep of the simulation, which contains the
         box dimensions.
     pbc : bool
-        A flag indicating whether periodic boundary conditions (PBC) 
+        A flag indicating whether periodic boundary conditions (PBC)
         are enabled. If `True`, the box dimensions are returned,
         else returns `None`.
 
     Returns
     -------
     box_dimensions : ndarray or None
-        The dimensions of the simulation box as a NumPy array if PBC 
+        The dimensions of the simulation box as a NumPy array if PBC
         is True, else returns `None`.
     """
     return ts.dimensions if pbc else None
@@ -398,8 +399,9 @@ class Contacts(AnalysisBase):
     .. versionchanged:: 2.2.0
        :class:`Contacts` accepts both AtomGroup and string for `select`
     .. versionchanged:: 2.9.0
-       Introduced :meth:`get_supported_backends` allowing for parallel execution on
-       :mod:`multiprocessing` and :mod:`dask` backends.
+       Introduced :meth:`get_supported_backends` allowing
+       for parallel execution on :mod:`multiprocessing`
+       and :mod:`dask` backends.
     """
 
     _analysis_algorithm_is_parallelizable = True
