@@ -171,7 +171,8 @@ class TestContacts(object):
         return mda.Universe(PSF, DCD)
 
     def _run_Contacts(
-        self, universe, client_Contacts, start=None, stop=None, step=None, **kwargs
+        self, universe, client_Contacts, start=None,
+        stop=None, step=None, **kwargs
     ):
         acidic = universe.select_atoms(self.sel_acidic)
         basic = universe.select_atoms(self.sel_basic)
@@ -238,13 +239,16 @@ class TestContacts(object):
 
     def test_end_zero(self, universe, client_Contacts):
         """test_end_zero: TestContactAnalysis1: stop frame 0 is not ignored"""
-        CA1 = self._run_Contacts(universe, client_Contacts=client_Contacts, stop=0)
+        CA1 = self._run_Contacts(
+            universe, client_Contacts=client_Contacts, stop=0
+        )
         assert len(CA1.results.timeseries) == 0
 
     def test_slicing(self, universe, client_Contacts):
         start, stop, step = 10, 30, 5
         CA1 = self._run_Contacts(
-            universe, client_Contacts=client_Contacts, start=start, stop=stop, step=step
+            universe, client_Contacts=client_Contacts,
+            start=start, stop=stop, step=step
         )
         frames = np.arange(universe.trajectory.n_frames)[start:stop:step]
         assert len(CA1.results.timeseries) == len(frames)
@@ -329,7 +333,8 @@ class TestContacts(object):
 
     def test_own_method(self, universe, client_Contacts):
         ca = self._run_Contacts(
-            universe, client_Contacts=client_Contacts, method=self._is_any_closer
+            universe, client_Contacts=client_Contacts,
+            method=self._is_any_closer
         )
 
         bound_expected = [1., 1., 0., 1., 1., 0., 0., 1., 0., 1., 1., 0., 0.,
@@ -382,7 +387,9 @@ class TestContacts(object):
     def test_warn_deprecated_attr(self, universe, client_Contacts):
         """Test for warning message emitted on using deprecated `timeseries`
         attribute"""
-        CA1 = self._run_Contacts(universe, client_Contacts=client_Contacts, stop=1)
+        CA1 = self._run_Contacts(
+            universe, client_Contacts=client_Contacts, stop=1
+        )
         wmsg = "The `timeseries` attribute was deprecated in MDAnalysis"
         with pytest.warns(DeprecationWarning, match=wmsg):
             assert_equal(CA1.timeseries, CA1.results.timeseries)
@@ -397,6 +404,7 @@ class TestContacts(object):
 
         r = contacts.Contacts(u, select=select, refgroup=refgroup)
         assert_equal(r.n_initial_contacts, expected)
+
 
 def test_q1q2(client_Contacts):
     u = mda.Universe(PSF, DCD)
