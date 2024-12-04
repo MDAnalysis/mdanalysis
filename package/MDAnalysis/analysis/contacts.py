@@ -337,7 +337,6 @@ def contact_matrix(d, radius, out=None):
         out = d <= radius
     return out
 
-
 def get_box(ts, pbc):
     """Retrieve the dimensions of the simulation box based on periodic boundary conditions (PBC).
 
@@ -404,7 +403,11 @@ class Contacts(AnalysisBase):
 
     @classmethod
     def get_supported_backends(cls):
-        return ('serial', 'multiprocessing', 'dask')
+        return (
+            "serial",
+            "multiprocessing",
+            "dask",
+        )
 
     def __init__(self, u, select, refgroup, method="hard_cut", radius=4.5,
                  pbc=True, kwargs=None, **basekwargs):
