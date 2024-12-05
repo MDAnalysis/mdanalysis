@@ -118,9 +118,9 @@ class TestAtomicDistances(object):
                               expected_dist):
         '''Ensure that pairwise distances between atoms are
         correctly calculated without PBCs.'''
-        pairwise_no_pbc = (ad.AtomicDistances(ad_ag1, ad_ag2,
-                                              pbc=False).run())
-        actual = pairwise_no_pbc.results
+        pairwise_no_pbc = ad.AtomicDistances(ad_ag1, ad_ag2,
+                                              pbc=False).run()
+        actual = pairwise_no_pbc.results.distances
 
         # compare with expected values from dist()
         assert_allclose(actual, expected_dist)
@@ -129,8 +129,8 @@ class TestAtomicDistances(object):
                                   expected_pbc_dist):
         '''Ensure that pairwise distances between atoms are
         correctly calculated with PBCs.'''
-        pairwise_pbc = (ad.AtomicDistances(ad_ag1, ad_ag2).run())
-        actual = pairwise_pbc.results
+        pairwise_pbc = ad.AtomicDistances(ad_ag1, ad_ag2).run()
+        actual = pairwise_pbc.results.distances
 
         # compare with expected values from dist()
         assert_allclose(actual, expected_pbc_dist)
