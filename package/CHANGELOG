@@ -21,7 +21,7 @@ The rules for this file:
 Fixes
 
 Enhancements
-* Incorporation of`Results` into `analysis.atomicdistances.AtomicDistances`
+* Incorporation of `Results` into `analysis.atomicdistances.AtomicDistances`
   (Issue #4819)
 
 Changes
