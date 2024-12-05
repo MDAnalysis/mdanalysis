@@ -146,6 +146,10 @@ class AtomicDistances(AnalysisBase):
 
 
     .. versionadded:: 2.5.0
+
+    .. versionchanged:: 2.9.0
+        Implementation of `Results` into the class
+        for application in parallelization.
     """
 
     def __init__(self, ag1, ag2, pbc=True, **kwargs):
@@ -176,3 +180,7 @@ class AtomicDistances(AnalysisBase):
         self.results.distances[self._frame_index] = calc_bonds(self._ag1.positions,
                                                      self._ag2.positions,
                                                      box)
+
+    def _conclude(self):
+        # adjust self.results to self.results.distances
+        self.results = self.results.distances
