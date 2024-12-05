@@ -176,7 +176,3 @@ class AtomicDistances(AnalysisBase):
         self.results.distances[self._frame_index] = calc_bonds(self._ag1.positions,
                                                      self._ag2.positions,
                                                      box)
-
-    def _conclude(self):
-        self.results.n_frames = self.n_frames
-        self.results.n_atoms = self._ag1.atoms.n_atoms
