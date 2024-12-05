@@ -114,6 +114,7 @@ from MDAnalysis.lib.distances import calc_bonds
 
 import logging
 from .base import AnalysisBase
+from .results import Results
 
 logger = logging.getLogger("MDAnalysis.analysis.atomicdistances")
 
@@ -163,14 +164,19 @@ class AtomicDistances(AnalysisBase):
         self._ag1 = ag1
         self._ag2 = ag2
         self._pbc = pbc
+        self.results = Results()
 
     def _prepare(self):
         # initialize NumPy array of frames x distances for results
-        self.results = np.zeros((self.n_frames, self._ag1.atoms.n_atoms))
+        self.results.distances = np.zeros((self.n_frames, self._ag1.atoms.n_atoms))
 
     def _single_frame(self):
         # if PBCs considered, get box size
         box = self._ag1.dimensions if self._pbc else None
-        self.results[self._frame_index] = calc_bonds(self._ag1.positions,
+        self.results.distances[self._frame_index] = calc_bonds(self._ag1.positions,
                                                      self._ag2.positions,
                                                      box)
+
+    def _conclude(self):
+        self.results.n_frames = self.n_frames
+        self.results.n_atoms = self._ag1.atoms.n_atoms
