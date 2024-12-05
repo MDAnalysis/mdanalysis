@@ -172,14 +172,16 @@ class AtomicDistances(AnalysisBase):
 
     def _prepare(self):
         # initialize NumPy array of frames x distances for results
-        self.results.distances = np.zeros((self.n_frames, self._ag1.atoms.n_atoms))
+        self.results.distances = np.zeros((
+            self.n_frames, self._ag1.atoms.n_atoms
+        ))
 
     def _single_frame(self):
         # if PBCs considered, get box size
         box = self._ag1.dimensions if self._pbc else None
-        self.results.distances[self._frame_index] = calc_bonds(self._ag1.positions,
-                                                     self._ag2.positions,
-                                                     box)
+        self.results.distances[self._frame_index] = calc_bonds(
+            self._ag1.positions, self._ag2.positions, box
+        )
 
     def _conclude(self):
         # adjust self.results to self.results.distances
