@@ -14,13 +14,15 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay
+??/??/?? IAlibay, talagayev
 
  * 2.9.0
 
 Fixes
 
 Enhancements
+* Incorporation of`Results` into `analysis.atomicdistances.AtomicDistances`
+  (Issue #4819)
 
 Changes
 
