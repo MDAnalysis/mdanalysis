@@ -135,12 +135,18 @@ def autocorrelation(list_of_sets, tau_max, window_step=1):
     """
 
     # check types
-    if (type(list_of_sets) != list and len(list_of_sets) != 0) or type(list_of_sets[0]) != set:
-        raise TypeError("list_of_sets must be a one-dimensional list of sets")  # pragma: no cover
+    if (type(list_of_sets) != list and len(list_of_sets) != 0) or type(
+        list_of_sets[0]
+    ) != set:
+        raise TypeError(
+            "list_of_sets must be a one-dimensional list of sets"
+        )  # pragma: no cover
 
     # Check dimensions of parameters
     if len(list_of_sets) < tau_max:
-        raise ValueError("tau_max cannot be greater than the length of list_of_sets") # pragma: no cover
+        raise ValueError(
+            "tau_max cannot be greater than the length of list_of_sets"
+        )  # pragma: no cover
 
     tau_timeseries = list(range(1, tau_max + 1))
     timeseries_data = [[] for _ in range(tau_max)]
@@ -157,7 +163,7 @@ def autocorrelation(list_of_sets, tau_max, window_step=1):
                 break
 
             # continuous: IDs that survive from t to t + tau and at every frame in between
-            Ntau = len(set.intersection(*list_of_sets[t:t + tau + 1]))
+            Ntau = len(set.intersection(*list_of_sets[t : t + tau + 1]))
             timeseries_data[tau - 1].append(Ntau / float(Nt))
 
     timeseries = [np.mean(x) for x in timeseries_data]
@@ -257,4 +263,3 @@ def correct_intermittency(list_of_sets, intermittency):
 
                 seen_frames_ago[element] = 0
     return list_of_sets
-

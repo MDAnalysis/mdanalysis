@@ -14,7 +14,7 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, tanishy7777
+??/??/?? IAlibay, ChiahsinChu, tanishy7777
 
  * 2.9.0
 
@@ -23,6 +23,7 @@ Fixes
    the function to prevent shared state.
 
 Enhancements
+  * Added `precision` for XYZWriter (Issue #4775, PR #4771)
 
 Changes
 

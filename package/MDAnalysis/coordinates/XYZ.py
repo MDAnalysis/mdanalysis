@@ -140,8 +140,15 @@ class XYZWriter(base.WriterBase):
     # these are assumed!
     units = {'time': 'ps', 'length': 'Angstrom'}
 
-    def __init__(self, filename, n_atoms=None, convert_units=True,
-                 remark=None, **kwargs):
+    def __init__(
+        self,
+        filename,
+        n_atoms=None,
+        convert_units=True,
+        remark=None,
+        precision=5,
+        **kwargs,
+    ):
         """Initialize the XYZ trajectory writer
 
         Parameters
@@ -161,6 +168,10 @@ class XYZWriter(base.WriterBase):
         remark: str (optional)
             single line of text ("molecule name"). By default writes MDAnalysis
             version and frame
+        precision: int (optional)
+            set precision of saved trjactory to this number of decimal places.
+
+            .. versionadded:: 2.9.0
 
 
         .. versionchanged:: 1.0.0
@@ -175,6 +186,7 @@ class XYZWriter(base.WriterBase):
         self.remark = remark
         self.n_atoms = n_atoms
         self.convert_units = convert_units
+        self.precision = precision
 
         # can also be gz, bz2
         self._xyz = util.anyopen(self.filename, 'wt')
@@ -296,8 +308,10 @@ class XYZWriter(base.WriterBase):
 
         # Write content
         for atom, (x, y, z) in zip(self.atomnames, coordinates):
-            self._xyz.write("{0!s:>8}  {1:10.5f} {2:10.5f} {3:10.5f}\n"
-                            "".format(atom, x, y, z))
+            self._xyz.write(
+                "{0!s:>8}  {1:10.{p}f} {2:10.{p}f} {3:10.{p}f}\n"
+                "".format(atom, x, y, z, p=self.precision)
+            )
 
 
 class XYZReader(base.ReaderBase):

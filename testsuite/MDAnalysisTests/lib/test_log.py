@@ -32,22 +32,22 @@ class TestProgressBar(object):
         for i in ProgressBar(list(range(10))):
             pass
         out, err = capsys.readouterr()
-        expected = u'100%|██████████'
-        actual = err.strip().split('\r')[-1]
+        expected = "100%|██████████"
+        actual = err.strip().split("\r")[-1]
         assert actual[:15] == expected
 
     def test_disable(self, capsys):
         for i in ProgressBar(list(range(10)), disable=True):
             pass
         out, err = capsys.readouterr()
-        expected = ''
-        actual = err.strip().split('\r')[-1]
+        expected = ""
+        actual = err.strip().split("\r")[-1]
         assert actual == expected
 
     def test_verbose_disable(self, capsys):
         for i in ProgressBar(list(range(10)), verbose=False):
             pass
         out, err = capsys.readouterr()
-        expected = ''
-        actual = err.strip().split('\r')[-1]
+        expected = ""
+        actual = err.strip().split("\r")[-1]
         assert actual == expected

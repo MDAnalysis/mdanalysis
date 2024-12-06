@@ -160,6 +160,8 @@ include = '''
 (
 setup\.py
 | MDAnalysisTests/auxiliary/.*\.py
+| MDAnalysisTests/lib/.*\.py
+| MDAnalysisTests/transformations/.*\.py
 )
 '''
 extend-exclude = '__pycache__'
