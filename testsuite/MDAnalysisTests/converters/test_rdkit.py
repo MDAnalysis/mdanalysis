@@ -44,6 +44,7 @@ try:
                                              _standardize_patterns)
     from rdkit import Chem
     from rdkit.Chem import AllChem
+    from rdkit.Chem import rdDistGeom
 except ImportError:
     pass
 
@@ -682,6 +683,7 @@ class TestRDKitFunctions(object):
     def test_reorder_atoms(self, smi):
         mol = Chem.MolFromSmiles(smi)
         mol = Chem.AddHs(mol)
+        rdDistGeom.EmbedMolecule(mol)
         # remove bond order and charges info
         pdb = Chem.MolToPDBBlock(mol)
         u = mda.Universe(StringIO(pdb), format="PDB")
