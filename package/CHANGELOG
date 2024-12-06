@@ -14,13 +14,14 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay
+??/??/?? IAlibay, RMeli
 
  * 2.9.0
 
 Fixes
 
 Enhancements
+* Add check and warning for empty (all zero) coordinates in RDKit converter (PR #4824)
 
 Changes
 
