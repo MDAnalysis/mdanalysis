@@ -45,6 +45,21 @@ jobs:
         src: "./testsuite"
         version: "~= 24.0"
 
+  ruff:
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - uses: astral-sh/ruff-action@v2
+      with:
+        args: check --select B006,B008
+        src: "package"
+    - uses: astral-sh/ruff-action@v2
+      with:
+        args: check --select B006,B008
+        src: "testsuite"
 
   pylint_check:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
