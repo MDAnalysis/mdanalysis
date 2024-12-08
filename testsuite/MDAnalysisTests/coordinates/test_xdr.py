@@ -893,7 +893,7 @@ class _GromacsReader_offsets(object):
     @pytest.mark.skipif(get_userid() == 0, reason="cannot readonly as root")
     def test_persistent_offsets_readonly(self, tmpdir):
         test_file = Path(self.filename)
-        tmp_path = Path(tmpdir)
+        tmp_path = str(tmpdir)
         shutil.copy(test_file, tmp_path)
 
         if os.name == 'nt':
