@@ -896,7 +896,7 @@ class _GromacsReader_offsets(object):
       reason="Windows Azure CI environment does not support
       directory locking or permission modification"
       )
-  
+
     def test_persistent_offsets_readonly(self, tmpdir):
         shutil.copy(self.filename, str(tmpdir))
 
