@@ -893,9 +893,9 @@ class _GromacsReader_offsets(object):
     @pytest.mark.skipif(get_userid() == 0, reason="cannot readonly as root")
     @pytest.mark.skipif(
       os.name == 'nt' and "AGENT_NAME" in os.environ,
-      reason="Windows Azure CI environment does not support 
+      reason="Windows Azure CI environment does not support
       directory locking or permission modification"
-  )
+      )
   
     def test_persistent_offsets_readonly(self, tmpdir):
         shutil.copy(self.filename, str(tmpdir))
