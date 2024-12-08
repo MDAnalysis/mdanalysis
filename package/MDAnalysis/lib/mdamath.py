@@ -61,8 +61,12 @@ import numpy as np
 
 from ..exceptions import NoDataError
 from . import util
-from ._cutil import (make_whole, find_fragments, _sarrus_det_single,
-                     _sarrus_det_multiple)
+from ._cutil import (
+    make_whole,
+    find_fragments,
+    _sarrus_det_single,
+    _sarrus_det_multiple,
+)
 import numpy.typing as npt
 from typing import Union
 
@@ -127,7 +131,7 @@ def pdot(a: npt.NDArray, b: npt.NDArray) -> npt.NDArray:
     -------
     :class:`numpy.ndarray` of shape (N,)
     """
-    return np.einsum('ij,ij->i', a, b)
+    return np.einsum("ij,ij->i", a, b)
 
 
 def pnorm(a: npt.NDArray) -> npt.NDArray:
@@ -141,7 +145,7 @@ def pnorm(a: npt.NDArray) -> npt.NDArray:
     -------
     :class:`numpy.ndarray` of shape (N,)
     """
-    return pdot(a, a)**0.5
+    return pdot(a, a) ** 0.5
 
 
 def angle(a: npt.ArrayLike, b: npt.ArrayLike) -> float:
@@ -159,7 +163,9 @@ def angle(a: npt.ArrayLike, b: npt.ArrayLike) -> float:
     return np.arccos(x)
 
 
-def stp(vec1: npt.ArrayLike, vec2: npt.ArrayLike, vec3: npt.ArrayLike) -> float:
+def stp(
+    vec1: npt.ArrayLike, vec2: npt.ArrayLike, vec3: npt.ArrayLike
+) -> float:
     r"""Takes the scalar triple product of three vectors.
 
     Returns the volume *V* of the parallel epiped spanned by the three
@@ -195,7 +201,7 @@ def dihedral(ab: npt.ArrayLike, bc: npt.ArrayLike, cd: npt.ArrayLike) -> float:
        Moved into lib.mdamath
     """
     x = angle(normal(ab, bc), normal(bc, cd))
-    return (x if stp(ab, bc, cd) <= 0.0 else -x)
+    return x if stp(ab, bc, cd) <= 0.0 else -x
 
 
 def sarrus_det(matrix: npt.NDArray) -> Union[float, npt.NDArray]:
@@ -236,14 +242,18 @@ def sarrus_det(matrix: npt.NDArray) -> Union[float, npt.NDArray]:
     shape = m.shape
     ndim = m.ndim
     if ndim < 2 or shape[-2:] != (3, 3):
-        raise ValueError("Invalid matrix shape: must be (3, 3) or (..., 3, 3), "
-                         "got {}.".format(shape))
+        raise ValueError(
+            "Invalid matrix shape: must be (3, 3) or (..., 3, 3), "
+            "got {}.".format(shape)
+        )
     if ndim == 2:
         return _sarrus_det_single(m)
     return _sarrus_det_multiple(m.reshape((-1, 3, 3))).reshape(shape[:-2])
 
 
-def triclinic_box(x: npt.ArrayLike, y: npt.ArrayLike, z: npt.ArrayLike) -> npt.NDArray:
+def triclinic_box(
+    x: npt.ArrayLike, y: npt.ArrayLike, z: npt.ArrayLike
+) -> npt.NDArray:
     """Convert the three triclinic box vectors to
     ``[lx, ly, lz, alpha, beta, gamma]``.
 
@@ -306,8 +316,9 @@ def triclinic_box(x: npt.ArrayLike, y: npt.ArrayLike, z: npt.ArrayLike) -> npt.N
     return np.zeros(6, dtype=np.float32)
 
 
-def triclinic_vectors(dimensions: npt.ArrayLike,
-                      dtype: npt.DTypeLike = np.float32) -> npt.NDArray:
+def triclinic_vectors(
+    dimensions: npt.ArrayLike, dtype: npt.DTypeLike = np.float32
+) -> npt.NDArray:
     """Convert ``[lx, ly, lz, alpha, beta, gamma]`` to a triclinic matrix
     representation.
 
@@ -357,8 +368,9 @@ def triclinic_vectors(dimensions: npt.ArrayLike,
     dim = np.asarray(dimensions, dtype=np.float64)
     lx, ly, lz, alpha, beta, gamma = dim
     # Only positive edge lengths and angles in (0, 180) are allowed:
-    if not (np.all(dim > 0.0) and
-            alpha < 180.0 and beta < 180.0 and gamma < 180.0):
+    if not (
+        np.all(dim > 0.0) and alpha < 180.0 and beta < 180.0 and gamma < 180.0
+    ):
         # invalid box, return zero vectors:
         box_matrix = np.zeros((3, 3), dtype=dtype)
     # detect orthogonal boxes:
@@ -389,8 +401,9 @@ def triclinic_vectors(dimensions: npt.ArrayLike,
         box_matrix[1, 1] = ly * sin_gamma
         box_matrix[2, 0] = lz * cos_beta
         box_matrix[2, 1] = lz * (cos_alpha - cos_beta * cos_gamma) / sin_gamma
-        box_matrix[2, 2] = np.sqrt(lz * lz - box_matrix[2, 0] ** 2 -
-                                   box_matrix[2, 1] ** 2)
+        box_matrix[2, 2] = np.sqrt(
+            lz * lz - box_matrix[2, 0] ** 2 - box_matrix[2, 1] ** 2
+        )
         # The discriminant of the above square root is only negative or zero for
         # triplets of box angles that lead to an invalid box (i.e., the sum of
         # any two angles is less than or equal to the third).

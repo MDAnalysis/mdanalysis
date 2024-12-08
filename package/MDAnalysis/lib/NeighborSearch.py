@@ -44,8 +44,9 @@ class AtomNeighborSearch(object):
     :class:`~MDAnalysis.lib.distances.capped_distance`.
     """
 
-    def __init__(self, atom_group: AtomGroup,
-                 box: Optional[npt.ArrayLike] = None) -> None:
+    def __init__(
+        self, atom_group: AtomGroup, box: Optional[npt.ArrayLike] = None
+    ) -> None:
         """
 
         Parameters
@@ -62,10 +63,9 @@ class AtomNeighborSearch(object):
         self._u = atom_group.universe
         self._box = box
 
-    def search(self, atoms: AtomGroup,
-               radius: float,
-               level: str = 'A'
-               ) -> Optional[Union[AtomGroup, ResidueGroup, SegmentGroup]]:
+    def search(
+        self, atoms: AtomGroup, radius: float, level: str = "A"
+    ) -> Optional[Union[AtomGroup, ResidueGroup, SegmentGroup]]:
         """
         Return all atoms/residues/segments that are within *radius* of the
         atoms in *atoms*.
@@ -102,17 +102,21 @@ class AtomNeighborSearch(object):
         except AttributeError:
             # For atom, take the position attribute
             position = atoms.position
-        pairs = capped_distance(position, self.atom_group.positions,
-                                radius, box=self._box, return_distances=False)
+        pairs = capped_distance(
+            position,
+            self.atom_group.positions,
+            radius,
+            box=self._box,
+            return_distances=False,
+        )
 
         if pairs.size > 0:
             unique_idx = unique_int_1d(np.asarray(pairs[:, 1], dtype=np.intp))
         return self._index2level(unique_idx, level)
 
-    def _index2level(self,
-                     indices: List[int],
-                     level: str
-                     ) -> Union[AtomGroup, ResidueGroup, SegmentGroup]:
+    def _index2level(
+        self, indices: List[int], level: str
+    ) -> Union[AtomGroup, ResidueGroup, SegmentGroup]:
         """Convert list of atom_indices in a AtomGroup to either the
         Atoms or segments/residues containing these atoms.
 
@@ -125,11 +129,13 @@ class AtomNeighborSearch(object):
           *radius* of *atoms*.
         """
         atomgroup = self.atom_group[indices]
-        if level == 'A':
+        if level == "A":
             return atomgroup
-        elif level == 'R':
+        elif level == "R":
             return atomgroup.residues
-        elif level == 'S':
+        elif level == "S":
             return atomgroup.segments
         else:
-            raise NotImplementedError('{0}: level not implemented'.format(level))
+            raise NotImplementedError(
+                "{0}: level not implemented".format(level)
+            )

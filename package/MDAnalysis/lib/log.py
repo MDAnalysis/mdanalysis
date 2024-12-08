@@ -101,7 +101,8 @@ def start_logging(logfile="MDAnalysis.log", version=version.__version__):
     """
     create("MDAnalysis", logfile=logfile)
     logging.getLogger("MDAnalysis").info(
-        "MDAnalysis %s STARTED logging to %r", version, logfile)
+        "MDAnalysis %s STARTED logging to %r", version, logfile
+    )
 
 
 def stop_logging():
@@ -136,7 +137,8 @@ def create(logger_name="MDAnalysis", logfile="MDAnalysis.log"):
     # handler that writes to logfile
     logfile_handler = logging.FileHandler(logfile)
     logfile_formatter = logging.Formatter(
-        '%(asctime)s %(name)-12s %(levelname)-8s %(message)s')
+        "%(asctime)s %(name)-12s %(levelname)-8s %(message)s"
+    )
     logfile_handler.setFormatter(logfile_formatter)
     logger.addHandler(logfile_handler)
 
@@ -144,7 +146,7 @@ def create(logger_name="MDAnalysis", logfile="MDAnalysis.log"):
     console_handler = logging.StreamHandler()
     console_handler.setLevel(logging.INFO)
     # set a format which is simpler for console use
-    formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+    formatter = logging.Formatter("%(name)-12s: %(levelname)-8s %(message)s")
     console_handler.setFormatter(formatter)
     logger.addHandler(console_handler)
 
@@ -334,11 +336,11 @@ class ProgressBar(tqdm):
         """"""
         # ^^^^ keep the empty doc string to avoid Sphinx doc errors with the
         # original doc string from tqdm.auto.tqdm
-        verbose = kwargs.pop('verbose', True)
+        verbose = kwargs.pop("verbose", True)
         # disable: Whether to disable the entire progressbar wrapper [default: False].
         # If set to None, disable on non-TTY.
         # disable should be the opposite of verbose unless it's None
         disable = verbose if verbose is None else not verbose
         # disable should take precedence over verbose if both are set
-        kwargs['disable'] = kwargs.pop('disable', disable)
+        kwargs["disable"] = kwargs.pop("disable", disable)
         super(ProgressBar, self).__init__(*args, **kwargs)
