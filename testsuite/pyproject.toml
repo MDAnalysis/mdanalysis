@@ -214,16 +214,11 @@ __pycache__
 | MDAnalysisTests/datafiles.py
 | MDAnalysisTests/formats/test_libdcd.py
 | MDAnalysisTests/import/fork_called.py
-| MDAnalysisTests/lib/test_distances.py
-| MDAnalysisTests/lib/test_log.py
-| MDAnalysisTests/lib/test_util.py
 | MDAnalysisTests/parallelism/test_multiprocessing.py
 | MDAnalysisTests/topology/test_gsd.py
 | MDAnalysisTests/topology/test_mmcif.py
 | MDAnalysisTests/topology/test_pqr.py
 | MDAnalysisTests/topology/test_top.py
-| MDAnalysisTests/transformations/test_base.py
-| MDAnalysisTests/transformations/test_rotate.py
 | MDAnalysisTests/util.py
 | MDAnalysisTests/utils/test_authors.py
 | MDAnalysisTests/utils/test_modelling.py

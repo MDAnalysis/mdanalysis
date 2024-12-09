@@ -163,7 +163,6 @@ __pycache__
 | MDAnalysis/analysis/rms\.py
 | MDAnalysis/analysis/sasa\.py
 | MDAnalysis/analysis/waterdynamics\.py
-| MDAnalysis/auxiliary/base\.py
 | MDAnalysis/converters/ParmEd\.py
 | MDAnalysis/converters/RDKit\.py
 | MDAnalysis/coordinates/DCD\.py
@@ -199,13 +198,6 @@ __pycache__
 | MDAnalysis/core/topologyobjects\.py
 | MDAnalysis/core/universe\.py
 | MDAnalysis/due\.py
-| MDAnalysis/lib/_distopia\.py
-| MDAnalysis/lib/distances\.py
-| MDAnalysis/lib/log\.py
-| MDAnalysis/lib/mdamath\.py
-| MDAnalysis/lib/pkdtree\.py
-| MDAnalysis/lib/transformations\.py
-| MDAnalysis/lib/util\.py
 | MDAnalysis/selections/base\.py
 | MDAnalysis/topology/CMSParser\.py
 | MDAnalysis/topology/GSDParser\.py
@@ -221,8 +213,6 @@ __pycache__
 | MDAnalysis/topology/base\.py
 | MDAnalysis/topology/core\.py
 | MDAnalysis/topology/tpr/utils\.py
-| MDAnalysis/visualization/streamlines\.py
-| MDAnalysis/visualization/streamlines_3D\.py
 )
 '''
 required-version = '24'
