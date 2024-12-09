@@ -148,7 +148,7 @@ from typing import Union
 import numpy as np
 from MDAnalysis import Universe, AtomGroup
 
-from ..base import AnalysisBase
+from ..base import AnalysisBase, ResultsGroup
 from ...due import due, Doi
 
 due.cite(
@@ -196,7 +196,7 @@ class DSSP(AnalysisBase):
     .. Warning::
        For DSSP to work properly, your atoms must represent a protein. The
        hydrogen atom bound to the backbone nitrogen atom is matched by name
-       as given by the keyword argument `hydrogen_atom`. There may only be 
+       as given by the keyword argument `hydrogen_atom`. There may only be
        a single backbone nitrogen hydrogen atom per residue; the one exception
        is proline, for which there should not exist any such hydrogens.
        The default value of `hydrogen_atom` should handle the common naming
@@ -229,8 +229,8 @@ class DSSP(AnalysisBase):
         (except proline), namely the one bound to the backbone nitrogen.
 
         .. Note::
-           To work with different hydrogen-naming conventions by default, the 
-           default selection is broad but if hydrogens are incorrectly selected 
+           To work with different hydrogen-naming conventions by default, the
+           default selection is broad but if hydrogens are incorrectly selected
            (e.g., a :exc:`ValueError` is raised) you must customize `hydrogen_name`
            for your specific case.
 
@@ -263,7 +263,7 @@ class DSSP(AnalysisBase):
     The :attr:`results.dssp_ndarray` attribute holds a
     ``(n_frames, n_residues, 3)`` shape ndarray with a *one-hot encoding*
     of *loop* '-' (index 0), *helix* 'H' (index 1), and *sheet* 'E'
-    (index 2), respectively for each frame of the trajectory. It can be 
+    (index 2), respectively for each frame of the trajectory. It can be
     used to compute, for instance, the **average secondary structure**:
 
     >>> from MDAnalysis.analysis.dssp import translate, DSSP
@@ -276,7 +276,22 @@ class DSSP(AnalysisBase):
 
 
     .. versionadded:: 2.8.0
+
+       Enabled **parallel execution** with the ``multiprocessing`` and ``dask``
+       backends; use the new method :meth:`get_supported_backends` to see all
+       supported backends.
     """
+
+    _analysis_algorithm_is_parallelizable = True
+
+    @classmethod
+    def get_supported_backends(cls):
+        return (
+            "serial",
+            "multiprocessing",
+            "dask",
+        )
+
 
     def __init__(
         self,
@@ -382,6 +397,10 @@ class DSSP(AnalysisBase):
         self.results.dssp_ndarray = np.array(self.results.dssp_ndarray)
         self.results.resids = self._heavy_atoms["CA"].resids
 
+    def _get_aggregator(self):
+        return ResultsGroup(
+            lookup={"dssp_ndarray": ResultsGroup.flatten_sequence},
+        )
 
 def translate(onehot: np.ndarray) -> np.ndarray:
     """Translate a one-hot encoding summary into char-based secondary structure

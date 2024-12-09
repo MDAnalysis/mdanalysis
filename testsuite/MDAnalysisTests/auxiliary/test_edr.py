@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -32,14 +32,18 @@ import MDAnalysis as mda
 from MDAnalysis import units
 from MDAnalysis.auxiliary.EDR import HAS_PYEDR
 
-from MDAnalysisTests.datafiles import (AUX_EDR,
-                                       AUX_EDR_TPR,
-                                       AUX_EDR_XTC,
-                                       AUX_EDR_RAW,
-                                       AUX_EDR_SINGLE_FRAME)
-from MDAnalysisTests.auxiliary.base import (BaseAuxReaderTest,
-                                            BaseAuxReference,
-                                            assert_auxstep_equal)
+from MDAnalysisTests.datafiles import (
+    AUX_EDR,
+    AUX_EDR_TPR,
+    AUX_EDR_XTC,
+    AUX_EDR_RAW,
+    AUX_EDR_SINGLE_FRAME,
+)
+from MDAnalysisTests.auxiliary.base import (
+    BaseAuxReaderTest,
+    BaseAuxReference,
+    assert_auxstep_equal,
+)
 
 
 def read_raw_data_file(step):
@@ -48,7 +52,7 @@ def read_raw_data_file(step):
     with open(AUX_EDR_RAW) as f:
         rawdata = f.readlines()
     n_entries = 52  # number of aux terms per step
-    stepdata = rawdata[step * n_entries: (step + 1) * n_entries]
+    stepdata = rawdata[step * n_entries : (step + 1) * n_entries]
     aux_dict = {}
     edr_units = {}
     for line in stepdata:
@@ -87,17 +91,23 @@ class EDRReference(BaseAuxReference):
         self.reader = mda.auxiliary.EDR.EDRReader
         self.n_steps = 4
         self.dt = 0.02
-        self.description = {'dt': self.dt, 'represent_ts_as': 'closest',
-                            'initial_time': self.initial_time,
-                            'time_selector': "Time", 'data_selector': None,
-                            'constant_dt': True, 'cutoff': None,
-                            'auxname': self.name}
+        self.description = {
+            "dt": self.dt,
+            "represent_ts_as": "closest",
+            "initial_time": self.initial_time,
+            "time_selector": "Time",
+            "data_selector": None,
+            "constant_dt": True,
+            "cutoff": None,
+            "auxname": self.name,
+        }
 
         def reference_auxstep(i):
             # create a reference AuxStep for step i
             t_init = self.initial_time
-            auxstep = mda.auxiliary.EDR.EDRStep(dt=self.dt,
-                                                initial_time=t_init)
+            auxstep = mda.auxiliary.EDR.EDRStep(
+                dt=self.dt, initial_time=t_init
+            )
             auxstep.step = i
             auxstep._data = get_auxstep_data(i)
             return auxstep
@@ -105,13 +115,14 @@ class EDRReference(BaseAuxReference):
         self.auxsteps = [reference_auxstep(i) for i in range(self.n_steps)]
 
         # add the auxdata and format for .edr to the reference description
-        self.description['auxdata'] = Path(self.testdata).resolve()
-        self.description['format'] = self.reader.format
+        self.description["auxdata"] = Path(self.testdata).resolve()
+        self.description["format"] = self.reader.format
 
         # for testing the selection of data/time
         self.time_selector = "Time"
-        self.select_time_ref = [step._data[self.time_selector]
-                                for step in self.auxsteps]
+        self.select_time_ref = [
+            step._data[self.time_selector] for step in self.auxsteps
+        ]
         self.data_selector = "Bond"  # selects all data
         self.select_data_ref = [step._data["Bond"] for step in self.auxsteps]
 
@@ -125,8 +136,7 @@ class EDRReference(BaseAuxReference):
         def reference_timestep(dt=0.02, offset=0):
             # return a trajectory timestep with specified dt, offset + move to
             # frame 1; for use in auxiliary reading of different timesteps
-            ts = mda.coordinates.base.Timestep(0, dt=dt,
-                                               time_offset=offset)
+            ts = mda.coordinates.base.Timestep(0, dt=dt, time_offset=offset)
             ts.frame = 1
             return ts
 
@@ -167,16 +177,18 @@ class EDRReference(BaseAuxReference):
         self.offset_cutoff_closest_rep = np.array(np.nan)
 
         # for testing EDRReader.get_data()
-        self.times = np.array([0., 0.02, 0.04, 0.06])
-        self.bonds = np.array([1374.82324219, 1426.22521973,
-                               1482.0098877, 1470.33752441])
-        self.angles = np.array([3764.52734375, 3752.83032227,
-                                3731.59179688, 3683.40942383])
+        self.times = np.array([0.0, 0.02, 0.04, 0.06])
+        self.bonds = np.array(
+            [1374.82324219, 1426.22521973, 1482.0098877, 1470.33752441]
+        )
+        self.angles = np.array(
+            [3764.52734375, 3752.83032227, 3731.59179688, 3683.40942383]
+        )
 
 
 @pytest.mark.skipif(not HAS_PYEDR, reason="pyedr not installed")
 class TestEDRReader(BaseAuxReaderTest):
-    """ Class to conduct tests for the auxiliary EDRReader
+    """Class to conduct tests for the auxiliary EDRReader
 
     Normally, it would be desirable to use the tests from
     :class:`BaseAuxReaderTest`, but this is not possible for some of the tests
@@ -195,7 +207,7 @@ class TestEDRReader(BaseAuxReaderTest):
     @pytest.fixture
     def ref_universe(ref):
         u = mda.Universe(AUX_EDR_TPR, AUX_EDR_XTC)
-# TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
+        # TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
         u.trajectory.add_auxiliary({"test": "Bond"}, ref.testdata)
         return u
 
@@ -205,9 +217,10 @@ class TestEDRReader(BaseAuxReaderTest):
         reader = ref.reader(
             ref.testdata,
             initial_time=ref.initial_time,
-            dt=ref.dt, auxname=ref.name,
+            dt=ref.dt,
+            auxname=ref.name,
             time_selector="Time",
-            data_selector=None
+            data_selector=None,
         )
         ref_units = get_edr_unit_dict(0)
         if reader.unit_dict != ref_units:
@@ -215,9 +228,9 @@ class TestEDRReader(BaseAuxReaderTest):
                 data = reader.data_dict[term]
                 reader_unit = reader.unit_dict[term]
                 try:
-                    reader.data_dict[term] = units.convert(data,
-                                                           reader_unit,
-                                                           ref_unit)
+                    reader.data_dict[term] = units.convert(
+                        data, reader_unit, ref_unit
+                    )
                 except ValueError:
                     continue  # some units not supported yet
         reader.rewind()
@@ -226,9 +239,12 @@ class TestEDRReader(BaseAuxReaderTest):
     def test_time_non_constant_dt(self, reader):
         reader.constant_dt = False
         reader.time_selector = None
-        with pytest.raises(ValueError, match="If dt is not constant, "
-                                             "must have a valid time "
-                                             "selector"):
+        with pytest.raises(
+            ValueError,
+            match="If dt is not constant, "
+            "must have a valid time "
+            "selector",
+        ):
             reader.time
 
     def test_iterate_through_trajectory(self, ref, ref_universe):
@@ -243,7 +259,7 @@ class TestEDRReader(BaseAuxReaderTest):
         # trajectory here has same dt, offset, so there's a direct
         # correspondence between frames and steps, and iter_as_aux will run
         # through all frames
-        for i, ts in enumerate(ref_universe.trajectory.iter_as_aux('test')):
+        for i, ts in enumerate(ref_universe.trajectory.iter_as_aux("test")):
             assert_allclose(ts.aux.test, ref.auxsteps[i].data["Bond"])
 
     def test_step_to_frame_time_diff(self, reader, ref):
@@ -253,8 +269,9 @@ class TestEDRReader(BaseAuxReaderTest):
         # Test all 4 frames
         for idx in range(4):
 
-            frame, time_diff = reader.step_to_frame(idx, ts,
-                                                    return_time_diff=True)
+            frame, time_diff = reader.step_to_frame(
+                idx, ts, return_time_diff=True
+            )
 
             assert frame == idx
             assert_allclose(time_diff, idx * 0.002)
@@ -264,38 +281,47 @@ class TestEDRReader(BaseAuxReaderTest):
         ts = ref.lower_freq_ts
         reader.update_ts(ts)
         # check the value set in ts is as we expect
-        assert_allclose(ts.aux.test["Bond"], ref.lowf_closest_rep,
-                        err_msg="Representative value in ts.aux "
-                                "does not match")
+        assert_allclose(
+            ts.aux.test["Bond"],
+            ref.lowf_closest_rep,
+            err_msg="Representative value in ts.aux " "does not match",
+        )
 
     def test_read_higher_freq_timestep(self, ref, reader):
         # try reading a timestep with higher frequency
         ts = ref.higher_freq_ts
         reader.update_ts(ts)
-        assert_allclose(ts.aux.test, ref.highf_rep,
-                        err_msg="Representative value in ts.aux "
-                                "does not match")
+        assert_allclose(
+            ts.aux.test,
+            ref.highf_rep,
+            err_msg="Representative value in ts.aux " "does not match",
+        )
 
     def test_read_offset_timestep(self, ref, reader):
         # try reading a timestep offset from auxiliary
         ts = ref.offset_ts
         reader.update_ts(ts)
-        assert_allclose(ts.aux.test["Bond"], ref.offset_closest_rep,
-                        err_msg="Representative value in ts.aux "
-                                "does not match")
+        assert_allclose(
+            ts.aux.test["Bond"],
+            ref.offset_closest_rep,
+            err_msg="Representative value in ts.aux " "does not match",
+        )
 
     def test_represent_as_average(self, ref, reader):
         # test the 'average' option for 'represent_ts_as'
         # reset the represent method to 'average'...
-        reader.represent_ts_as = 'average'
+        reader.represent_ts_as = "average"
         # read timestep; use the low freq timestep
         ts = ref.lower_freq_ts
         reader.update_ts(ts)
         # check the representative value set in ts is as expected
         test_value = [ts.aux.test["Time"], ts.aux.test["Bond"]]
-        assert_allclose(test_value, ref.lowf_average_rep,
-                        err_msg="Representative value does not match when "
-                                "using with option 'average'")
+        assert_allclose(
+            test_value,
+            ref.lowf_average_rep,
+            err_msg="Representative value does not match when "
+            "using with option 'average'",
+        )
 
     def test_represent_as_average_with_cutoff(self, ref, reader):
         # test the 'represent_ts_as' 'average' option when we have a cutoff set
@@ -305,11 +331,14 @@ class TestEDRReader(BaseAuxReaderTest):
         ts = ref.lower_freq_ts
         reader.update_ts(ts)
         # check representative value set in ts is as expected
-        assert_allclose(ts.aux.test["Bond"], ref.lowf_cutoff_average_rep,
-                        err_msg="Representative value does not match when "
-                                "applying cutoff")
+        assert_allclose(
+            ts.aux.test["Bond"],
+            ref.lowf_cutoff_average_rep,
+            err_msg="Representative value does not match when "
+            "applying cutoff",
+        )
 
-# TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
+    # TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
     def test_add_all_terms_from_file(self, ref, ref_universe):
         ref_universe.trajectory.add_auxiliary(auxdata=ref.testdata)
         # adding "test" manually to match above addition of test term
@@ -317,57 +346,61 @@ class TestEDRReader(BaseAuxReaderTest):
         terms = [key for key in ref_universe.trajectory._auxs]
         assert ref_terms == terms
 
-# TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
+    # TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
     def test_add_all_terms_from_reader(self, ref_universe, reader):
         ref_universe.trajectory.add_auxiliary(auxdata=reader)
         ref_terms = ["test"] + [key for key in get_auxstep_data(0).keys()]
         terms = [key for key in ref_universe.trajectory._auxs]
         assert ref_terms == terms
 
-# TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
+    # TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
     def test_add_term_list_custom_names_from_file(self, ref, ref_universe):
-        ref_universe.trajectory.add_auxiliary({"bond": "Bond",
-                                               "temp": "Temperature"},
-                                              ref.testdata)
+        ref_universe.trajectory.add_auxiliary(
+            {"bond": "Bond", "temp": "Temperature"}, ref.testdata
+        )
         ref_dict = get_auxstep_data(0)
         assert ref_universe.trajectory.ts.aux.bond == ref_dict["Bond"]
         assert ref_universe.trajectory.ts.aux.temp == ref_dict["Temperature"]
 
-# TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
-    def test_add_term_list_custom_names_from_reader(self, ref_universe,
-                                                    reader):
-        ref_universe.trajectory.add_auxiliary({"bond": "Bond",
-                                               "temp": "Temperature"},
-                                              reader)
+    # TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
+    def test_add_term_list_custom_names_from_reader(
+        self, ref_universe, reader
+    ):
+        ref_universe.trajectory.add_auxiliary(
+            {"bond": "Bond", "temp": "Temperature"}, reader
+        )
         ref_dict = get_auxstep_data(0)
         assert ref_universe.trajectory.ts.aux.bond == ref_dict["Bond"]
         assert ref_universe.trajectory.ts.aux.temp == ref_dict["Temperature"]
 
-# TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
-    def test_raise_error_if_auxname_already_assigned(self, ref_universe,
-                                                     reader):
+    # TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
+    def test_raise_error_if_auxname_already_assigned(
+        self, ref_universe, reader
+    ):
         with pytest.raises(ValueError, match="Auxiliary data with name"):
             ref_universe.trajectory.add_auxiliary("test", reader, "Bond")
 
-# TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
+    # TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
     def test_add_single_term_custom_name_from_file(self, ref, ref_universe):
-        ref_universe.trajectory.add_auxiliary({"temp": "Temperature"},
-                                              ref.testdata)
+        ref_universe.trajectory.add_auxiliary(
+            {"temp": "Temperature"}, ref.testdata
+        )
         ref_dict = get_auxstep_data(0)
         assert ref_universe.trajectory.ts.aux.temp == ref_dict["Temperature"]
 
-# TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
-    def test_add_single_term_custom_name_from_reader(self, ref_universe,
-                                                     reader):
+    # TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
+    def test_add_single_term_custom_name_from_reader(
+        self, ref_universe, reader
+    ):
         ref_universe.trajectory.add_auxiliary({"temp": "Temperature"}, reader)
         ref_dict = get_auxstep_data(0)
         assert ref_universe.trajectory.ts.aux.temp == ref_dict["Temperature"]
 
-# TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
+    # TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
     def test_terms_update_on_iter(self, ref_universe, reader):
-        ref_universe.trajectory.add_auxiliary({"bond": "Bond",
-                                               "temp": "Temperature"},
-                                              reader)
+        ref_universe.trajectory.add_auxiliary(
+            {"bond": "Bond", "temp": "Temperature"}, reader
+        )
         ref_dict = get_auxstep_data(0)
         assert ref_universe.trajectory.ts.aux.bond == ref_dict["Bond"]
         assert ref_universe.trajectory.ts.aux.temp == ref_dict["Temperature"]
@@ -376,14 +409,15 @@ class TestEDRReader(BaseAuxReaderTest):
         assert ref_universe.trajectory.ts.aux.bond == ref_dict["Bond"]
         assert ref_universe.trajectory.ts.aux.temp == ref_dict["Temperature"]
 
-# TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
+    # TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
     def test_invalid_data_selector(self, ref, ref_universe):
         with pytest.raises(KeyError, match="'Nonsense' is not a key"):
-            ref_universe.trajectory.add_auxiliary({"something": "Nonsense"},
-                                                  AUX_EDR)
+            ref_universe.trajectory.add_auxiliary(
+                {"something": "Nonsense"}, AUX_EDR
+            )
 
     def test_read_all_times(self, reader):
-        all_times_expected = np.array([0., 0.02, 0.04, 0.06])
+        all_times_expected = np.array([0.0, 0.02, 0.04, 0.06])
         assert_allclose(all_times_expected, reader.read_all_times())
 
     def test_get_data_from_string(self, ref, reader):
@@ -407,27 +441,32 @@ class TestEDRReader(BaseAuxReaderTest):
         assert ref_terms == reader.terms
         assert_allclose(ref.bonds, returned["Bond"])
 
-    @pytest.mark.parametrize("get_data_input", (42,
-                                                "Not a valid term",
-                                                ["Bond", "Not a valid term"]))
+    @pytest.mark.parametrize(
+        "get_data_input",
+        (42, "Not a valid term", ["Bond", "Not a valid term"]),
+    )
     def test_get_data_invalid_selections(self, reader, get_data_input):
         with pytest.raises(KeyError, match="data selector"):
             reader.get_data(get_data_input)
 
-# TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
+    # TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
     def test_warning_when_space_in_aux_spec(self, ref_universe, reader):
         with pytest.warns(UserWarning, match="Auxiliary name"):
-            ref_universe.trajectory.add_auxiliary({"Pres. DC": "Pres. DC"},
-                                                  reader)
+            ref_universe.trajectory.add_auxiliary(
+                {"Pres. DC": "Pres. DC"}, reader
+            )
 
-# TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
+    # TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
     def test_warn_too_much_memory_usage(self, ref_universe, reader):
-        with pytest.warns(UserWarning, match="AuxReader: memory usage "
-                          "warning! Auxiliary data takes up 3[0-9.]*e-06 GB of"
-                          r" memory \(Warning limit: 1e-08 GB\)"):
-            ref_universe.trajectory.add_auxiliary({"temp": "Temperature"},
-                                                  reader,
-                                                  memory_limit=10)
+        with pytest.warns(
+            UserWarning,
+            match="AuxReader: memory usage "
+            "warning! Auxiliary data takes up 3[0-9.]*e-06 GB of"
+            r" memory \(Warning limit: 1e-08 GB\)",
+        ):
+            ref_universe.trajectory.add_auxiliary(
+                {"temp": "Temperature"}, reader, memory_limit=10
+            )
 
     def test_auxreader_picklable(self, reader):
         new_reader = pickle.loads(pickle.dumps(reader))
@@ -441,20 +480,22 @@ class TestEDRReader(BaseAuxReaderTest):
         for term in ["Box-X", "Box-Vel-XX"]:
             assert original_units[term] != reader_units[term]
 
-# TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
+    # TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
     def test_warning_when_unknown_unit(self, ref_universe, reader):
         with pytest.warns(UserWarning, match="Could not find"):
-            ref_universe.trajectory.add_auxiliary({"temp": "Temperature"},
-                                                  reader)
+            ref_universe.trajectory.add_auxiliary(
+                {"temp": "Temperature"}, reader
+            )
 
     def test_unit_conversion_is_optional(self, ref):
         reader = ref.reader(
             ref.testdata,
             initial_time=ref.initial_time,
-            dt=ref.dt, auxname=ref.name,
+            dt=ref.dt,
+            auxname=ref.name,
             time_selector="Time",
             data_selector=None,
-            convert_units=False
+            convert_units=False,
         )
         ref_units = get_edr_unit_dict(0)
         # The units from AUX_EDR match the ones from the reference
@@ -466,9 +507,10 @@ class TestEDRReader(BaseAuxReaderTest):
 @pytest.mark.skipif(not HAS_PYEDR, reason="pyedr not installed")
 def test_single_frame_input_file():
     """Previously, EDRReader could not handle EDR input files with only one
-       frame. See Issue #3999."""
-    reader = mda.auxiliary.EDR.EDRReader(AUX_EDR_SINGLE_FRAME,
-                                         convert_units=False)
+    frame. See Issue #3999."""
+    reader = mda.auxiliary.EDR.EDRReader(
+        AUX_EDR_SINGLE_FRAME, convert_units=False
+    )
     ref_dict = get_auxstep_data(0)
     reader_data_dict = reader.auxstep.data
     assert ref_dict == reader_data_dict

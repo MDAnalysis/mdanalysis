@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -33,6 +33,14 @@ from .confdistmatrix import get_distance_matrix
 from .utils import merge_universes
 
 __all__ = ['covariance', 'similarity', 'confdistmatrix', 'clustering']
+
+import warnings
+
+wmsg = ("Deprecation in version 2.8.0\n"
+        "MDAnalysis.analysis.encore is deprecated in favour of the "
+        "MDAKit mdaencore (https://www.mdanalysis.org/mdaencore/) "
+        "and will be removed in MDAnalysis version 3.0.0.")
+warnings.warn(wmsg, category=DeprecationWarning)
 
 from ...due import due, Doi
 

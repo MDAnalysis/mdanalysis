@@ -66,6 +66,15 @@ runs:
         micromamba info
         micromamba list
 
+    - name: mda_deps
+      shell: bash -l {0}
+      run: |
+        # Install mdakit deps that depend on MDA
+        python -m pip install --no-deps \
+            waterdynamics   \
+            pathsimanalysis \
+            mdahole2
+
     - name: build_mda_main
       shell: bash -l {0}
       run: |
@@ -83,6 +92,12 @@ runs:
           BUILD_FLAGS="--no-build-isolation"
         fi
         python -m pip install ${BUILD_FLAGS} -v -e ./testsuite
+
+    - name: post_build_env_check
+      shell: bash -l {0}
+      run: |
+        pip list
+        micromamba list
 
     - name: build_docs
       if: ${{ inputs.build-docs == 'true' }}

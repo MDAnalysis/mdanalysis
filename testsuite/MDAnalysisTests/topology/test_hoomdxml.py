@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -21,7 +21,6 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from numpy.testing import assert_almost_equal
-
 import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
@@ -34,6 +33,7 @@ class TestHoomdXMLParser(ParserBase):
     expected_attrs = [
         'types', 'masses', 'charges', 'radii', 'bonds', 'angles', 'dihedrals', 'impropers'
     ]
+
     expected_n_atoms = 769
     expected_n_residues = 1
     expected_n_segments = 1

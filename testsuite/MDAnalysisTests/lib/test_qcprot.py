@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -30,7 +30,7 @@ from MDAnalysis.lib import qcprot
 from MDAnalysisTests.datafiles import PSF, DCD
 
 
-@pytest.mark.parametrize('dtype', [np.float64, np.float32])
+@pytest.mark.parametrize("dtype", [np.float64, np.float32])
 class TestQCProt:
     def test_dummy(self, dtype):
         a = np.array([[1.0, 1.0, 2.0]], dtype=dtype)
@@ -47,7 +47,7 @@ class TestQCProt:
 
     def test_regression(self, dtype):
         u = mda.Universe(PSF, DCD)
-        prot = u.select_atoms('protein')
+        prot = u.select_atoms("protein")
         weights = prot.masses.astype(dtype)
         weights /= np.mean(weights)
         p1 = prot.positions.astype(dtype)
@@ -57,10 +57,20 @@ class TestQCProt:
 
         r = qcprot.CalcRMSDRotationalMatrix(p1, p2, len(prot), rot, weights)
 
-        rot_ref = np.array([0.999998, 0.001696, 0.001004,
-                            -0.001698,  0.999998,  0.001373,
-                            -0.001002, -0.001375,  0.999999],
-                           dtype=dtype)
+        rot_ref = np.array(
+            [
+                0.999998,
+                0.001696,
+                0.001004,
+                -0.001698,
+                0.999998,
+                0.001373,
+                -0.001002,
+                -0.001375,
+                0.999999,
+            ],
+            dtype=dtype,
+        )
 
         err = 0.001 if dtype is np.float32 else 0.000001
         assert r == pytest.approx(0.6057544485785074, abs=err)

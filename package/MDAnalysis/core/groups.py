@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -570,7 +570,10 @@ class GroupBase(_MutableBase):
             raise TypeError(errmsg) from None
 
         # indices for the objects I hold
-        self._ix = np.asarray(ix, dtype=np.intp)
+        ix = np.asarray(ix, dtype=np.intp)
+        if ix.ndim > 1:
+            raise IndexError('Group index must be 1d')
+        self._ix = ix
         self._u = u
         self._cache = dict()
 
@@ -597,11 +600,6 @@ class GroupBase(_MutableBase):
                 # hack to make lists into numpy arrays
                 # important for boolean slicing
                 item = np.array(item)
-
-            if isinstance(item, np.ndarray) and item.ndim > 1:
-                # disallow high dimensional indexing.
-                # this doesnt stop the underlying issue
-                raise IndexError('Group index must be 1d')
 
             # We specify _derived_class instead of self.__class__ to allow
             # subclasses, such as UpdatingAtomGroup, to control the class
@@ -3455,7 +3453,6 @@ class AtomGroup(GroupBase):
         ----------
         vdwradii : dict, optional
             Dict relating atom types: vdw radii
-
         fudge_factor : float, optional
             The factor by which atoms must overlap each other to be considered
             a bond.  Larger values will increase the number of bonds found. [0.55]
@@ -3479,8 +3476,8 @@ class AtomGroup(GroupBase):
            Corrected misleading docs, and now allows passing of `fudge_factor`
            and `lower_bound` arguments.
         """
-        from ..topology.core import guess_bonds, guess_angles, guess_dihedrals
         from .topologyattrs import Bonds, Angles, Dihedrals
+        from ..guesser.default_guesser import DefaultGuesser
 
         def get_TopAttr(u, name, cls):
             """either get *name* or create one from *cls*"""
@@ -3492,22 +3489,20 @@ class AtomGroup(GroupBase):
                 return attr
 
         # indices of bonds
-        b = guess_bonds(
-            self.atoms,
-            self.atoms.positions,
-            vdwradii=vdwradii,
-            box=self.dimensions,
-            fudge_factor=fudge_factor,
-            lower_bound=lower_bound,
-        )
-        bondattr = get_TopAttr(self.universe, "bonds", Bonds)
+        guesser = DefaultGuesser(None, fudge_factor=fudge_factor,
+                                 lower_bound=lower_bound,
+                                 box=self.dimensions,
+                                 vdwradii=vdwradii)
+        b = guesser.guess_bonds(self.atoms, self.atoms.positions)
+
+        bondattr = get_TopAttr(self.universe, 'bonds', Bonds)
         bondattr._add_bonds(b, guessed=True)
 
-        a = guess_angles(self.bonds)
+        a = guesser.guess_angles(self.bonds)
         angleattr = get_TopAttr(self.universe, 'angles', Angles)
         angleattr._add_bonds(a, guessed=True)
 
-        d = guess_dihedrals(self.angles)
+        d = guesser.guess_dihedrals(self.angles)
         diheattr = get_TopAttr(self.universe, 'dihedrals', Dihedrals)
         diheattr._add_bonds(d)
 
@@ -4252,6 +4247,9 @@ class ComponentBase(_MutableBase):
 
     def __init__(self, ix, u):
         # index of component
+        if not isinstance(ix, numbers.Integral):
+            raise IndexError('Component can only be indexed by a single integer')
+
         self._ix = ix
         self._u = u
 

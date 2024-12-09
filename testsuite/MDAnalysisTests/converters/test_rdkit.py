@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -26,9 +26,10 @@ import warnings
 from io import StringIO
 
 import MDAnalysis as mda
+from MDAnalysis.guesser.default_guesser import DefaultGuesser
+
 import numpy as np
 import pytest
-from MDAnalysis.topology.guessers import guess_atom_element
 from MDAnalysisTests.datafiles import GRO, PDB_full, PDB_helix, mol2_molecule
 from MDAnalysisTests.util import import_not_available
 from numpy.testing import assert_allclose, assert_equal
@@ -146,7 +147,8 @@ class TestRDKitConverter(object):
     def mol2(self):
         u = mda.Universe(mol2_molecule)
         # add elements
-        elements = np.array([guess_atom_element(x) for x in u.atoms.types],
+        guesser = DefaultGuesser(None)
+        elements = np.array([guesser.guess_atom_element(x) for x in u.atoms.types],
                             dtype=object)
         u.add_TopologyAttr('elements', elements)
         return u
@@ -154,7 +156,7 @@ class TestRDKitConverter(object):
     @pytest.fixture
     def peptide(self):
         u = mda.Universe(GRO)
-        elements = mda.topology.guessers.guess_types(u.atoms.names)
+        elements = mda.guesser.DefaultGuesser(None).guess_types(u.atoms.names)
         u.add_TopologyAttr('elements', elements)
         return u.select_atoms("resid 2-12")
 
@@ -329,7 +331,7 @@ class TestRDKitConverter(object):
         xyz = u.atoms.positions
         xyz[0][2] = np.nan
         u.atoms.positions = xyz
-        with pytest.warns(UserWarning, match="NaN detected"):
+        with pytest.warns(UserWarning, match="NaN .* detected"):
             mol = u.atoms.convert_to("RDKIT")
         with pytest.raises(ValueError, match="Bad Conformer Id"):
             mol.GetConformer()
@@ -689,6 +691,18 @@ class TestRDKitFunctions(object):
         values = [a.GetSymbol() for a in mu.GetAtoms()]
         expected = [a.GetSymbol() for a in mol.GetAtoms()]
         assert values == expected
+
+    @pytest.mark.parametrize("smi", [
+        "O=S(C)(C)=NC",
+    ])
+    def test_warn_empty_coords(self, smi):
+        mol = Chem.MolFromSmiles(smi)
+        mol = Chem.AddHs(mol)
+        # remove bond order and charges info
+        pdb = Chem.MolToPDBBlock(mol)
+        u = mda.Universe(StringIO(pdb), format="PDB")
+        with pytest.warns(match="NaN or empty coordinates detected"):
+            u.atoms.convert_to.rdkit()
 
     def test_pdb_names(self):
         u = mda.Universe(PDB_helix)

@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -59,7 +59,7 @@ def get_auxreader_for(auxdata=None, format=None):
 
     """
     if not auxdata and not format:
-        raise ValueError('Must provide either auxdata or format')
+        raise ValueError("Must provide either auxdata or format")
 
     if format is None:
         if isinstance(auxdata, str):
@@ -81,10 +81,11 @@ def get_auxreader_for(auxdata=None, format=None):
             errmsg = f"Unknown auxiliary data format {format}"
             raise ValueError(errmsg) from None
 
-def auxreader(auxdata, format=None, **kwargs):
-    """ Return an auxiliary reader instance for *auxdata*.
 
-    An appropriate reader class is first obtained using 
+def auxreader(auxdata, format=None, **kwargs):
+    """Return an auxiliary reader instance for *auxdata*.
+
+    An appropriate reader class is first obtained using
     :func:`get_auxreader_for`, and an auxiliary reader instance for *auxdata*
     then created and returned.
 

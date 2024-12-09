@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -231,11 +231,15 @@ class EDRStep(base.AuxStep):
     :class:`MDAnalysis.auxiliary.base.AuxStep`
     """
 
-    def __init__(self, time_selector: str = "Time",
-                 data_selector: Optional[str] = None, **kwargs):
-        super(EDRStep, self).__init__(time_selector=time_selector,
-                                      data_selector=data_selector,
-                                      **kwargs)
+    def __init__(
+        self,
+        time_selector: str = "Time",
+        data_selector: Optional[str] = None,
+        **kwargs,
+    ):
+        super(EDRStep, self).__init__(
+            time_selector=time_selector, data_selector=data_selector, **kwargs
+        )
 
     def _select_time(self, key: str) -> np.float64:
         """'Time' is one of the entries in the dict returned by pyedr.
@@ -249,12 +253,14 @@ class EDRStep(base.AuxStep):
         try:
             return self._data[key]
         except KeyError:
-            raise KeyError(f"'{key}' is not a key in the data_dict dictionary."
-                           " Check the EDRReader.terms attribute")
+            raise KeyError(
+                f"'{key}' is not a key in the data_dict dictionary."
+                " Check the EDRReader.terms attribute"
+            )
 
 
 class EDRReader(base.AuxReader):
-    """ Auxiliary reader to read data from an .edr file.
+    """Auxiliary reader to read data from an .edr file.
 
     `EDR files`_
     are created by GROMACS during a simulation. They are binary files which
@@ -310,8 +316,9 @@ class EDRReader(base.AuxReader):
 
     def __init__(self, filename: str, convert_units: bool = True, **kwargs):
         if not HAS_PYEDR:
-            raise ImportError("EDRReader: To read EDR files please install "
-                              "pyedr.")
+            raise ImportError(
+                "EDRReader: To read EDR files please install " "pyedr."
+            )
         self._auxdata = Path(filename).resolve()
         self.data_dict = pyedr.edr_to_dict(filename)
         self.unit_dict = pyedr.get_unit_dictionary(filename)
@@ -340,8 +347,10 @@ class EDRReader(base.AuxReader):
             self.data_dict[term] = units.convert(data, unit, target_unit)
             self.unit_dict[term] = units.MDANALYSIS_BASE_UNITS[unit_type]
         if unknown_units:
-            warnings.warn("Could not find unit type for the following "
-                          f"units: {unknown_units}")
+            warnings.warn(
+                "Could not find unit type for the following "
+                f"units: {unknown_units}"
+            )
 
     def _memory_usage(self):
         size = 0
@@ -365,8 +374,10 @@ class EDRReader(base.AuxReader):
         auxstep = self.auxstep
         new_step = self.step + 1
         if new_step < self.n_steps:
-            auxstep._data = {term: self.data_dict[term][self.step + 1]
-                             for term in self.terms}
+            auxstep._data = {
+                term: self.data_dict[term][self.step + 1]
+                for term in self.terms
+            }
             auxstep.step = new_step
             return auxstep
         else:
@@ -375,7 +386,7 @@ class EDRReader(base.AuxReader):
                 raise StopIteration
 
     def _go_to_step(self, i: int) -> EDRStep:
-        """ Move to and read i-th auxiliary step.
+        """Move to and read i-th auxiliary step.
 
         Parameters
         ----------
@@ -392,14 +403,16 @@ class EDRReader(base.AuxReader):
             If step index not in valid range.
         """
         if i >= self.n_steps or i < 0:
-            raise ValueError("Step index {0} is not valid for auxiliary "
-                             "(num. steps {1})".format(i, self.n_steps))
+            raise ValueError(
+                "Step index {0} is not valid for auxiliary "
+                "(num. steps {1})".format(i, self.n_steps)
+            )
         self.auxstep.step = i - 1
         self.next()
         return self.auxstep
 
     def read_all_times(self) -> np.ndarray:
-        """ Get list of time at each step.
+        """Get list of time at each step.
 
         Returns
         -------
@@ -408,9 +421,10 @@ class EDRReader(base.AuxReader):
         """
         return self.data_dict[self.time_selector]
 
-    def get_data(self, data_selector: Union[str, List[str], None] = None
-                 ) -> Dict[str, np.ndarray]:
-        """ Returns the auxiliary data contained in the :class:`EDRReader`.
+    def get_data(
+        self, data_selector: Union[str, List[str], None] = None
+    ) -> Dict[str, np.ndarray]:
+        """Returns the auxiliary data contained in the :class:`EDRReader`.
         Returns either all data or data specified as `data_selector` in form
         of a str or a list of any of :attr:`EDRReader.terms`. `Time` is
         always returned to allow easy plotting.
@@ -438,8 +452,10 @@ class EDRReader(base.AuxReader):
             try:
                 return datadict[term]
             except KeyError:
-                raise KeyError(f"data selector {term} is invalid. Check the "
-                               "EDRReader's `terms` attribute.")
+                raise KeyError(
+                    f"data selector {term} is invalid. Check the "
+                    "EDRReader's `terms` attribute."
+                )
 
         data_dict = {"Time": self.data_dict["Time"]}
 

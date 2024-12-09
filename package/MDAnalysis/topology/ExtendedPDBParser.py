@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -78,8 +78,12 @@ class ExtendedPDBParser(PDBParser.PDBParser):
      - bonds
      - formalcharges
 
-    Guesses the following Attributes:
-     - masses
+   .. note::
+
+      By default, atomtypes and masses will be guessed on Universe creation.
+      This may change in release 3.0.
+      See :ref:`Guessers` for more information.
+
 
     See Also
     --------

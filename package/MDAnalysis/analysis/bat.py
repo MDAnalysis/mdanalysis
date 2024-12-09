@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -25,7 +25,7 @@ r"""Bond-Angle-Torsion coordinates analysis --- :mod:`MDAnalysis.analysis.bat`
 
 :Author: Soohaeng Yoo Willow and David Minh
 :Year: 2020
-:Copyright: GNU Public License, v2 or any higher version
+:Copyright: Lesser GNU Public License, v2.1 or any higher version
 
 .. versionadded:: 2.0.0
 
@@ -164,7 +164,7 @@ import numpy as np
 import copy
 
 import MDAnalysis as mda
-from .base import AnalysisBase
+from .base import AnalysisBase, ResultsGroup
 
 from MDAnalysis.lib.distances import calc_bonds, calc_angles, calc_dihedrals
 from MDAnalysis.lib.mdamath import make_whole
@@ -175,7 +175,7 @@ logger = logging.getLogger(__name__)
 
 
 def _sort_atoms_by_mass(atoms, reverse=False):
-    r"""Sorts a list of atoms by name and then by index
+    r"""Sorts a list of atoms by mass and then by index
 
     The atom index is used as a tiebreaker so that the ordering is reproducible.
 
@@ -253,10 +253,28 @@ class BAT(AnalysisBase):
     Bond-Angle-Torsions (BAT) internal coordinates will be computed for
     the group of atoms and all frame in the trajectory belonging to `ag`.
 
+    .. versionchanged:: 2.8.0
+       Enabled **parallel execution** with the ``multiprocessing`` and ``dask`` 
+       backends; use the new method :meth:`get_supported_backends` to see all 
+       supported backends.
+
     """
-    @due.dcite(Doi("10.1002/jcc.26036"),
-               description="Bond-Angle-Torsions Coordinate Transformation",
-               path="MDAnalysis.analysis.bat.BAT")
+    _analysis_algorithm_is_parallelizable = True
+      
+    @classmethod
+    def get_supported_backends(cls):
+        return (
+            "serial",
+            "multiprocessing",
+            "dask",
+        )
+
+    @due.dcite(
+       Doi("10.1002/jcc.26036"),
+       description="Bond-Angle-Torsions Coordinate Transformation",
+       path="MDAnalysis.analysis.bat.BAT",
+    )
+   
     def __init__(self, ag, initial_atom=None, filename=None, **kwargs):
         r"""Parameters
         ----------
@@ -558,3 +576,6 @@ class BAT(AnalysisBase):
     def atoms(self):
         """The atomgroup for which BAT are computed (read-only property)"""
         return self._ag
+
+    def _get_aggregator(self):
+        return ResultsGroup(lookup={'bat': ResultsGroup.ndarray_vstack})

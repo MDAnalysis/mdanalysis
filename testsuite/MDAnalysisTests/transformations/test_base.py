@@ -1,4 +1,3 @@
-
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
@@ -6,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -32,6 +31,7 @@ from MDAnalysis.transformations.base import TransformationBase
 
 class DefaultTransformation(TransformationBase):
     """Default values for max_threads and parallelizable"""
+
     def __init__(self):
         super().__init__()
 
@@ -43,15 +43,18 @@ class DefaultTransformation(TransformationBase):
 
 class NoTransform_Transformation(TransformationBase):
     """Default values for max_threads and parallelizable"""
+
     def __init__(self):
         super().__init__()
 
 
 class CustomTransformation(TransformationBase):
     """Custom value for max_threads and parallelizable"""
+
     def __init__(self, max_threads=1, parallelizable=False):
-        super().__init__(max_threads=max_threads,
-                         parallelizable=parallelizable)
+        super().__init__(
+            max_threads=max_threads, parallelizable=parallelizable
+        )
 
     def _transform(self, ts):
         self.runtime_info = threadpool_info()
@@ -59,7 +62,7 @@ class CustomTransformation(TransformationBase):
         return ts
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def u():
     return mda.Universe(PSF, DCD)
 
@@ -89,16 +92,18 @@ def test_setting_thread_limit_value():
 
 def test_thread_limit_apply(u):
     default_thread_info = threadpool_info()
-    default_num_thread_limit_list = [thread_info['num_threads']
-                                     for thread_info in default_thread_info]
+    default_num_thread_limit_list = [
+        thread_info["num_threads"] for thread_info in default_thread_info
+    ]
 
     new_trans = CustomTransformation(max_threads=2)
     _ = new_trans(u.trajectory.ts)
     for thread_info in new_trans.runtime_info:
-        assert thread_info['num_threads'] == 2
+        assert thread_info["num_threads"] == 2
 
     #  test the thread limit is only applied locally.
     new_thread_info = threadpool_info()
-    new_num_thread_limit_list = [thread_info['num_threads']
-                                 for thread_info in new_thread_info]
+    new_num_thread_limit_list = [
+        thread_info["num_threads"] for thread_info in new_thread_info
+    ]
     assert_equal(default_num_thread_limit_list, new_num_thread_limit_list)
