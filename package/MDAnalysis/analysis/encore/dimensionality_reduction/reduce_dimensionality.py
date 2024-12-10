@@ -45,7 +45,7 @@ from ..dimensionality_reduction.DimensionalityReductionMethod import (
 
 
 def reduce_dimensionality(ensembles,
-                          method=StochasticProximityEmbeddingNative(),
+                          method=None,
                           select="name CA",
                           distance_matrix=None,
                           allow_collapsed_result=True,
@@ -152,7 +152,8 @@ def reduce_dimensionality(ensembles,
                              encore.StochasticProximityEmbeddingNative(dimension=2)])
 
     """
-
+    if method is None:
+        method = StochasticProximityEmbeddingNative()
     if ensembles is not None:
         if not hasattr(ensembles, '__iter__'):
             ensembles = [ensembles]
