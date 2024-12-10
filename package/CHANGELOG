@@ -14,7 +14,7 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, ChiahsinChu, tanishy7777
+??/??/?? IAlibay, ChiahsinChu, RMeli, tanishy7777
 
  * 2.9.0
 
@@ -23,7 +23,8 @@ Fixes
    the function to prevent shared state.
 
 Enhancements
-  * Added `precision` for XYZWriter (Issue #4775, PR #4771)
+ * Add check and warning for empty (all zero) coordinates in RDKit converter (PR #4824)
+ * Added `precision` for XYZWriter (Issue #4775, PR #4771)
 
 Changes
 
