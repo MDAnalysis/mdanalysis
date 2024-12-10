@@ -61,7 +61,7 @@ import numpy as np
 
 
 def calc_bond_distance_ortho(
-    coords1, coords2: np.ndarray, box: np.ndarray, results: np.ndarray
+    coords1: np.ndarray, coords2: np.ndarray, box: np.ndarray, results: np.ndarray
 ) -> None:
     distopia.calc_bonds_ortho(
         coords1, coords2, box[:3], results=results
