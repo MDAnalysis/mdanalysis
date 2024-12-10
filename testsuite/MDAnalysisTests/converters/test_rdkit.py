@@ -331,7 +331,7 @@ class TestRDKitConverter(object):
         xyz = u.atoms.positions
         xyz[0][2] = np.nan
         u.atoms.positions = xyz
-        with pytest.warns(UserWarning, match="NaN detected"):
+        with pytest.warns(UserWarning, match="NaN .* detected"):
             mol = u.atoms.convert_to("RDKIT")
         with pytest.raises(ValueError, match="Bad Conformer Id"):
             mol.GetConformer()
@@ -691,6 +691,18 @@ class TestRDKitFunctions(object):
         values = [a.GetSymbol() for a in mu.GetAtoms()]
         expected = [a.GetSymbol() for a in mol.GetAtoms()]
         assert values == expected
+
+    @pytest.mark.parametrize("smi", [
+        "O=S(C)(C)=NC",
+    ])
+    def test_warn_empty_coords(self, smi):
+        mol = Chem.MolFromSmiles(smi)
+        mol = Chem.AddHs(mol)
+        # remove bond order and charges info
+        pdb = Chem.MolToPDBBlock(mol)
+        u = mda.Universe(StringIO(pdb), format="PDB")
+        with pytest.warns(match="NaN or empty coordinates detected"):
+            u.atoms.convert_to.rdkit()
 
     def test_pdb_names(self):
         u = mda.Universe(PDB_helix)

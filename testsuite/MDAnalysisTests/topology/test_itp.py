@@ -26,6 +26,7 @@ import MDAnalysis as mda
 import numpy as np
 from numpy.testing import assert_allclose, assert_equal
 
+from MDAnalysisTests.util import no_deprecated_call
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
     ITP,  # GROMACS itp
@@ -490,6 +491,8 @@ def test_missing_elements_no_attribute():
         u = mda.Universe(ITP_atomtypes)
     with pytest.raises(AttributeError):
         _ = u.atoms.elements
+    with no_deprecated_call():
+        mda.Universe(ITP_atomtypes)
 
 
 def test_elements_deprecation_warning():

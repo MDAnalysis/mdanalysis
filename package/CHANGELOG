@@ -14,14 +14,16 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, talagayev
+??/??/?? IAlibay, ChiahsinChu, RMeli, talagayev
 
  * 2.9.0
 
 Fixes
 
 Enhancements
- * Enables parallelization for analysis.contacts.Contacts (Issue #4660)
+ * Add check and warning for empty (all zero) coordinates in RDKit converter (PR #4824)
+ * Added `precision` for XYZWriter (Issue #4775, PR #4771)
+  * Enables parallelization for analysis.contacts.Contacts (Issue #4660)
 
 Changes
 
