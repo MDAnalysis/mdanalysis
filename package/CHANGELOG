@@ -14,14 +14,18 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, talagayev
+
+??/??/?? IAlibay, ChiahsinChu, RMeli, talagayev
+
 
  * 2.9.0
 
 Fixes
 
 Enhancements
-* Incorporation of `Results` into `analysis.atomicdistances.AtomicDistances`
+ * Add check and warning for empty (all zero) coordinates in RDKit converter (PR #4824)
+ * Added `precision` for XYZWriter (Issue #4775, PR #4771)
+ * Incorporation of `Results` into `analysis.atomicdistances.AtomicDistances`
   (Issue #4819)
 
 Changes

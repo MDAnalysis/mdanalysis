@@ -122,6 +122,17 @@ class TestXYZWriter(BaseWriterTest):
 
                 assert lines[1].strip() == remarkin
 
+    def test_precision(self, universe, tmpdir):
+        outfile = "write-precision.xyz"
+        precision = 10
+
+        with tmpdir.as_cwd():
+            universe.atoms.write(outfile, precision=precision)
+            with open(outfile, "r") as xyzout:
+                lines = xyzout.readlines()
+                # check that the precision is set correctly
+                assert len(lines[2].split()[1].split(".")[1]) == precision
+
 
 class XYZ_BZ_Reference(XYZReference):
     def __init__(self):
