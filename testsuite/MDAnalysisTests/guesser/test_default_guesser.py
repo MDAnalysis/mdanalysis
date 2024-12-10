@@ -26,7 +26,8 @@ import MDAnalysis as mda
 
 from numpy.testing import assert_equal, assert_allclose
 import numpy as np
-from MDAnalysis.core.topologyattrs import Angles, Atomtypes, Atomnames, Masses
+from MDAnalysis.core.topologyattrs import Angles, Atomtypes, Atomnames
+from MDAnalysis.exceptions import NoDataError
 from MDAnalysis.guesser.default_guesser import DefaultGuesser
 from MDAnalysis.core.topology import Topology
 from MDAnalysisTests import make_Universe
@@ -82,7 +83,7 @@ class TestGuessMasses(object):
 
     def test_guess_masses_with_no_reference_elements(self):
         u = mda.Universe.empty(3)
-        with pytest.raises(ValueError,
+        with pytest.raises(NoDataError,
                            match=('there is no reference attributes ')):
             u.guess_TopologyAttrs('default', ['masses'])
 
@@ -117,9 +118,11 @@ class TestGuessTypes(object):
 
     def test_guess_elements_from_no_data(self):
         top = Topology(5)
-        msg = "there is no reference attributes in this universe"
-        "to guess types from"
-        with pytest.raises(ValueError, match=(msg)):
+        msg = (
+            "there is no reference attributes in this "
+            "universe to guess types from"
+        )
+        with pytest.warns(UserWarning, match=msg):
             mda.Universe(top, to_guess=['types'])
 
     @pytest.mark.parametrize('name, element', (
@@ -148,7 +151,7 @@ def test_guess_charge(default_guesser):
 def test_guess_bonds_Error():
     u = make_Universe(trajectory=True)
     msg = "This Universe does not contain name information"
-    with pytest.raises(ValueError, match=msg):
+    with pytest.raises(NoDataError, match=msg):
         u.guess_TopologyAttrs(to_guess=['bonds'])
 
 
@@ -234,6 +237,19 @@ def test_guess_bonds_water():
                          (0, 2),
                          (3, 4),
                          (3, 5)))
+
+
+@pytest.mark.parametrize(
+    "fudge_factor, n_bonds",
+    [(0, 0), (0.55, 4), (200, 6)]
+)
+def test_guess_bonds_water_fudge_factor_passed(fudge_factor, n_bonds):
+    u = mda.Universe(
+            datafiles.two_water_gro,
+            fudge_factor=fudge_factor,
+            to_guess=("types", "bonds")
+        )
+    assert len(u.atoms.bonds) == n_bonds
 
 
 def test_guess_bonds_adk():

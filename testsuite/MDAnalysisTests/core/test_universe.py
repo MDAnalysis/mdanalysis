@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -48,6 +48,7 @@ from MDAnalysisTests.datafiles import (
     two_water_gro, two_water_gro_nonames,
     TRZ, TRZ_psf,
     PDB, MMTF, CONECT,
+    PDB_conect
 )
 
 import MDAnalysis as mda
@@ -1246,6 +1247,16 @@ class TestDeleteTopologyObjects(object):
         n_fragments = len(universe.atoms.fragments)
         universe.delete_bonds([universe.atoms[[2, 3]]])
         assert len(universe.atoms.fragments) == n_fragments + 1
+
+    @pytest.mark.parametrize("filename, n_bonds", [
+        (CONECT, 72),
+        (PDB_conect, 8)
+    ])
+    def test_delete_all_bonds(self, filename, n_bonds):
+        u = mda.Universe(filename)
+        assert len(u.bonds) == n_bonds
+        u.delete_bonds(u.bonds)
+        assert len(u.bonds) == 0
 
     @pytest.mark.parametrize(
         'attr,values', existing_atom_indices
