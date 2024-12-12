@@ -14,7 +14,7 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, ChiahsinChu, RMeli
+??/??/?? IAlibay, ChiahsinChu, RMeli, talagayev
 
  * 2.9.0
 
@@ -25,6 +25,7 @@ Enhancements
  * Added `precision` for XYZWriter (Issue #4775, PR #4771)
 
 Changes
+ * Changed `fasteners` dependency to  `filelock` (Issue #4797, PR #4800)
 
 Deprecations
 
