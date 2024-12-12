@@ -148,8 +148,8 @@ class AtomicDistances(AnalysisBase):
     .. versionadded:: 2.5.0
 
     .. versionchanged:: 2.9.0
-        Implementation of `Results` into the class
-        for application in parallelization.
+        Enables parallelization through
+        the use of `self.results.distances`.
     """
 
     def __init__(self, ag1, ag2, pbc=True, **kwargs):
