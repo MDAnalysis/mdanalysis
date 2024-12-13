@@ -1757,9 +1757,12 @@
         <span class="n">rsize_mismatches</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">rsize1</span> <span class="o">-</span> <span class="n">rsize2</span><span class="p">)</span>
         <span class="n">mismatch_mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">rsize_mismatches</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mismatch_mask</span><span class="p">):</span>
-            <span class="k">def</span> <span class="nf">get_atoms_byres</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">match_mask</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">mismatch_mask</span><span class="p">)):</span>
+
+            <span class="k">def</span> <span class="nf">get_atoms_byres</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">match_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
                 <span class="c1"># not pretty... but need to do things on a per-atom basis in</span>
                 <span class="c1"># order to preserve original selection</span>
+                <span class="k">if</span> <span class="n">match_mask</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">match_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">mismatch_mask</span><span class="p">)</span>
                 <span class="n">ag</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">atoms</span>
                 <span class="n">good</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">resids</span><span class="p">[</span><span class="n">match_mask</span><span class="p">]</span>  <span class="c1"># resid for each residue</span>
                 <span class="n">resids</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">resids</span>                     <span class="c1"># resid for each atom</span>

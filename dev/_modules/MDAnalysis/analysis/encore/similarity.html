@@ -1129,20 +1129,17 @@
 
 <div class="viewcode-block" id="ces">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.ces">[docs]</a>
-<span class="k">def</span> <span class="nf">ces</span><span class="p">(</span><span class="n">ensembles</span><span class="p">,</span>
-        <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
-        <span class="n">clustering_method</span><span class="o">=</span><span class="n">AffinityPropagationNative</span><span class="p">(</span>
-            <span class="n">preference</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span>
-            <span class="n">max_iter</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
-            <span class="n">convergence_iter</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
-            <span class="n">damping</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
-            <span class="n">add_noise</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-        <span class="n">distance_matrix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="n">estimate_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">bootstrapping_samples</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-        <span class="n">ncores</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-        <span class="n">calc_diagonal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">allow_collapsed_result</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">ces</span><span class="p">(</span>
+    <span class="n">ensembles</span><span class="p">,</span>
+    <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
+    <span class="n">clustering_method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">distance_matrix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">estimate_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">bootstrapping_samples</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">ncores</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">calc_diagonal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">allow_collapsed_result</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    Calculates the Clustering Ensemble Similarity (CES) between ensembles</span>
@@ -1261,6 +1258,14 @@
 <span class="sd">         [0.25331629 0.        ]]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">clustering_method</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">clustering_method</span> <span class="o">=</span> <span class="n">AffinityPropagationNative</span><span class="p">(</span>
+            <span class="n">preference</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span>
+            <span class="n">max_iter</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+            <span class="n">convergence_iter</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+            <span class="n">damping</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
+            <span class="n">add_noise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
 
     <span class="k">for</span> <span class="n">ensemble</span> <span class="ow">in</span> <span class="n">ensembles</span><span class="p">:</span>
         <span class="n">ensemble</span><span class="o">.</span><span class="n">transfer_to_memory</span><span class="p">()</span>
@@ -1398,22 +1403,18 @@
 
 <div class="viewcode-block" id="dres">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.dres">[docs]</a>
-<span class="k">def</span> <span class="nf">dres</span><span class="p">(</span><span class="n">ensembles</span><span class="p">,</span>
-         <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
-         <span class="n">dimensionality_reduction_method</span> <span class="o">=</span> <span class="n">StochasticProximityEmbeddingNative</span><span class="p">(</span>
-             <span class="n">dimension</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-             <span class="n">distance_cutoff</span> <span class="o">=</span> <span class="mf">1.5</span><span class="p">,</span>
-             <span class="n">min_lam</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
-             <span class="n">max_lam</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
-             <span class="n">ncycle</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-             <span class="n">nstep</span><span class="o">=</span><span class="mi">10000</span><span class="p">),</span>
-         <span class="n">distance_matrix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-         <span class="n">nsamples</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
-         <span class="n">estimate_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-         <span class="n">bootstrapping_samples</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-         <span class="n">ncores</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-         <span class="n">calc_diagonal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-         <span class="n">allow_collapsed_result</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">dres</span><span class="p">(</span>
+    <span class="n">ensembles</span><span class="p">,</span>
+    <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
+    <span class="n">dimensionality_reduction_method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">distance_matrix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">nsamples</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+    <span class="n">estimate_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">bootstrapping_samples</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">ncores</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">calc_diagonal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">allow_collapsed_result</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    Calculates the Dimensional Reduction Ensemble Similarity (DRES) between</span>
@@ -1534,6 +1535,15 @@
 <span class="sd">    :mod:`MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality``</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">dimensionality_reduction_method</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">dimensionality_reduction_method</span> <span class="o">=</span> <span class="n">StochasticProximityEmbeddingNative</span><span class="p">(</span>
+            <span class="n">dimension</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+            <span class="n">distance_cutoff</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
+            <span class="n">min_lam</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+            <span class="n">max_lam</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+            <span class="n">ncycle</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+            <span class="n">nstep</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span>
+        <span class="p">)</span>
 
     <span class="k">for</span> <span class="n">ensemble</span> <span class="ow">in</span> <span class="n">ensembles</span><span class="p">:</span>
         <span class="n">ensemble</span><span class="o">.</span><span class="n">transfer_to_memory</span><span class="p">()</span>
@@ -1667,16 +1677,13 @@
 
 <div class="viewcode-block" id="ces_convergence">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.ces_convergence">[docs]</a>
-<span class="k">def</span> <span class="nf">ces_convergence</span><span class="p">(</span><span class="n">original_ensemble</span><span class="p">,</span>
-                    <span class="n">window_size</span><span class="p">,</span>
-                    <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
-                    <span class="n">clustering_method</span><span class="o">=</span><span class="n">AffinityPropagationNative</span><span class="p">(</span>
-                        <span class="n">preference</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span>
-                        <span class="n">max_iter</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
-                        <span class="n">convergence_iter</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
-                        <span class="n">damping</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
-                        <span class="n">add_noise</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-                    <span class="n">ncores</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">ces_convergence</span><span class="p">(</span>
+    <span class="n">original_ensemble</span><span class="p">,</span>
+    <span class="n">window_size</span><span class="p">,</span>
+    <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
+    <span class="n">clustering_method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">ncores</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Use the CES to evaluate the convergence of the ensemble/trajectory.</span>
 <span class="sd">    CES will be calculated between the whole trajectory contained in an</span>
@@ -1742,6 +1749,14 @@
 <span class="sd">         [0.        ]]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">clustering_method</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">clustering_method</span> <span class="o">=</span> <span class="n">AffinityPropagationNative</span><span class="p">(</span>
+            <span class="n">preference</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span>
+            <span class="n">max_iter</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+            <span class="n">convergence_iter</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+            <span class="n">damping</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
+            <span class="n">add_noise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
 
     <span class="n">ensembles</span> <span class="o">=</span> <span class="n">prepare_ensembles_for_convergence_increasing_window</span><span class="p">(</span>
         <span class="n">original_ensemble</span><span class="p">,</span> <span class="n">window_size</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">)</span>
@@ -1770,20 +1785,14 @@
 
 <div class="viewcode-block" id="dres_convergence">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.dres_convergence">[docs]</a>
-<span class="k">def</span> <span class="nf">dres_convergence</span><span class="p">(</span><span class="n">original_ensemble</span><span class="p">,</span>
-                     <span class="n">window_size</span><span class="p">,</span>
-                     <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
-                     <span class="n">dimensionality_reduction_method</span> <span class="o">=</span> \
-                            <span class="n">StochasticProximityEmbeddingNative</span><span class="p">(</span>
-                                <span class="n">dimension</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-                                <span class="n">distance_cutoff</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
-                                <span class="n">min_lam</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
-                                <span class="n">max_lam</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
-                                <span class="n">ncycle</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-                                <span class="n">nstep</span><span class="o">=</span><span class="mi">10000</span>
-                            <span class="p">),</span>
-                     <span class="n">nsamples</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
-                     <span class="n">ncores</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">dres_convergence</span><span class="p">(</span>
+    <span class="n">original_ensemble</span><span class="p">,</span>
+    <span class="n">window_size</span><span class="p">,</span>
+    <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
+    <span class="n">dimensionality_reduction_method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">nsamples</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+    <span class="n">ncores</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Use the DRES to evaluate the convergence of the ensemble/trajectory.</span>
 <span class="sd">    DRES will be calculated between the whole trajectory contained in an</span>
@@ -1846,6 +1855,15 @@
 <span class="sd">    much the trajectory keeps on resampling the same ares of the conformational</span>
 <span class="sd">    space, and therefore of convergence.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">dimensionality_reduction_method</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">dimensionality_reduction_method</span> <span class="o">=</span> <span class="n">StochasticProximityEmbeddingNative</span><span class="p">(</span>
+            <span class="n">dimension</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+            <span class="n">distance_cutoff</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
+            <span class="n">min_lam</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+            <span class="n">max_lam</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+            <span class="n">ncycle</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+            <span class="n">nstep</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span>
+        <span class="p">)</span>
 
     <span class="n">ensembles</span> <span class="o">=</span> <span class="n">prepare_ensembles_for_convergence_increasing_window</span><span class="p">(</span>
         <span class="n">original_ensemble</span><span class="p">,</span> <span class="n">window_size</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">)</span>
