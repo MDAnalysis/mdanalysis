@@ -44,13 +44,15 @@ from ..confdistmatrix import get_distance_matrix
 from . import ClusteringMethod
 
 
-def cluster(ensembles,
-            method = ClusteringMethod.AffinityPropagationNative(),
-            select="name CA",
-            distance_matrix=None,
-            allow_collapsed_result=True,
-            ncores=1,
-            **kwargs):
+def cluster(
+    ensembles,
+    method=None,
+    select="name CA",
+    distance_matrix=None,
+    allow_collapsed_result=True,
+    ncores=1,
+    **kwargs,
+):
     """Cluster frames from one or more ensembles, using one or more
     clustering methods. The function optionally takes pre-calculated distances
     matrices as an argument. Note that not all clustering procedure can work
@@ -154,7 +156,8 @@ def cluster(ensembles,
         [array([1, 1, 1, 1, 2]), array([1, 1, 1, 1, 1])]
 
     """
-
+    if method is None:
+        method = ClusteringMethod.AffinityPropagationNative()
     # Internally, ensembles are always transformed to a list of lists
     if ensembles is not None:
         if not hasattr(ensembles, '__iter__'):

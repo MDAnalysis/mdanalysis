@@ -186,7 +186,7 @@ def local_screw_angles(global_axis, ref_axis, helix_directions):
     return np.rad2deg(to_ortho)
 
 
-def helix_analysis(positions, ref_axis=[0, 0, 1]):
+def helix_analysis(positions, ref_axis=(0, 0, 1)):
     r"""
     Calculate helix properties from atomic coordinates.
 
@@ -387,11 +387,18 @@ class HELANAL(AnalysisBase):
         'local_screw_angles': (-2,),
     }
 
-    def __init__(self, universe, select='name CA', ref_axis=[0, 0, 1],
-                 verbose=False, flatten_single_helix=True,
-                 split_residue_sequences=True):
-        super(HELANAL, self).__init__(universe.universe.trajectory,
-                                      verbose=verbose)
+    def __init__(
+        self,
+        universe,
+        select="name CA",
+        ref_axis=(0, 0, 1),
+        verbose=False,
+        flatten_single_helix=True,
+        split_residue_sequences=True,
+    ):
+        super(HELANAL, self).__init__(
+            universe.universe.trajectory, verbose=verbose
+        )
         selections = util.asiterable(select)
         atomgroups = [universe.select_atoms(s) for s in selections]
         consecutive = []

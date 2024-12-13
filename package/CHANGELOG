@@ -14,16 +14,21 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, ChiahsinChu, RMeli, talagayev
+??/??/?? IAlibay, ChiahsinChu, RMeli, tanishy7777
+         talagayev
 
  * 2.9.0
 
 Fixes
+ * Fixes deprecation warning Array to scalar convertion. Replaced atan2() with np.arctan2() (Issue #4339)
+ * Replaced mutable defaults with None and initialized them within
+   the function to prevent shared state. (Issue #4655)
 
 Enhancements
+ * Enables parallelization for analysis.contacts.Contacts (Issue #4660)
  * Add check and warning for empty (all zero) coordinates in RDKit converter (PR #4824)
  * Added `precision` for XYZWriter (Issue #4775, PR #4771)
- * Enables parallelization for analysis.contacts.Contacts (Issue #4660)
+
 
 Changes
 

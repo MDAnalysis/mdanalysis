@@ -952,20 +952,17 @@ def hes(ensembles,
     return values, details
 
 
-def ces(ensembles,
-        select="name CA",
-        clustering_method=AffinityPropagationNative(
-            preference=-1.0,
-            max_iter=500,
-            convergence_iter=50,
-            damping=0.9,
-            add_noise=True),
-        distance_matrix=None,
-            estimate_error=False,
-        bootstrapping_samples=10,
-        ncores=1,
-        calc_diagonal=False,
-        allow_collapsed_result=True):
+def ces(
+    ensembles,
+    select="name CA",
+    clustering_method=None,
+    distance_matrix=None,
+    estimate_error=False,
+    bootstrapping_samples=10,
+    ncores=1,
+    calc_diagonal=False,
+    allow_collapsed_result=True,
+):
     """
 
     Calculates the Clustering Ensemble Similarity (CES) between ensembles
@@ -1084,6 +1081,14 @@ def ces(ensembles,
          [0.25331629 0.        ]]
 
     """
+    if clustering_method is None:
+        clustering_method = AffinityPropagationNative(
+            preference=-1.0,
+            max_iter=500,
+            convergence_iter=50,
+            damping=0.9,
+            add_noise=True,
+        )
 
     for ensemble in ensembles:
         ensemble.transfer_to_memory()
@@ -1218,22 +1223,18 @@ def ces(ensembles,
     return values, details
 
 
-def dres(ensembles,
-         select="name CA",
-         dimensionality_reduction_method = StochasticProximityEmbeddingNative(
-             dimension=3,
-             distance_cutoff = 1.5,
-             min_lam=0.1,
-             max_lam=2.0,
-             ncycle=100,
-             nstep=10000),
-         distance_matrix=None,
-         nsamples=1000,
-         estimate_error=False,
-         bootstrapping_samples=100,
-         ncores=1,
-         calc_diagonal=False,
-         allow_collapsed_result=True):
+def dres(
+    ensembles,
+    select="name CA",
+    dimensionality_reduction_method=None,
+    distance_matrix=None,
+    nsamples=1000,
+    estimate_error=False,
+    bootstrapping_samples=100,
+    ncores=1,
+    calc_diagonal=False,
+    allow_collapsed_result=True,
+):
     """
 
     Calculates the Dimensional Reduction Ensemble Similarity (DRES) between
@@ -1354,6 +1355,15 @@ def dres(ensembles,
     :mod:`MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality``
 
     """
+    if dimensionality_reduction_method is None:
+        dimensionality_reduction_method = StochasticProximityEmbeddingNative(
+            dimension=3,
+            distance_cutoff=1.5,
+            min_lam=0.1,
+            max_lam=2.0,
+            ncycle=100,
+            nstep=10000,
+        )
 
     for ensemble in ensembles:
         ensemble.transfer_to_memory()
@@ -1484,16 +1494,13 @@ def dres(ensembles,
     return values, details
 
 
-def ces_convergence(original_ensemble,
-                    window_size,
-                    select="name CA",
-                    clustering_method=AffinityPropagationNative(
-                        preference=-1.0,
-                        max_iter=500,
-                        convergence_iter=50,
-                        damping=0.9,
-                        add_noise=True),
-                    ncores=1):
+def ces_convergence(
+    original_ensemble,
+    window_size,
+    select="name CA",
+    clustering_method=None,
+    ncores=1,
+):
     """
     Use the CES to evaluate the convergence of the ensemble/trajectory.
     CES will be calculated between the whole trajectory contained in an
@@ -1559,6 +1566,14 @@ def ces_convergence(original_ensemble,
          [0.        ]]
 
     """
+    if clustering_method is None:
+        clustering_method = AffinityPropagationNative(
+            preference=-1.0,
+            max_iter=500,
+            convergence_iter=50,
+            damping=0.9,
+            add_noise=True,
+        )
 
     ensembles = prepare_ensembles_for_convergence_increasing_window(
         original_ensemble, window_size, select=select)
@@ -1584,20 +1599,14 @@ def ces_convergence(original_ensemble,
     return out
 
 
-def dres_convergence(original_ensemble,
-                     window_size,
-                     select="name CA",
-                     dimensionality_reduction_method = \
-                            StochasticProximityEmbeddingNative(
-                                dimension=3,
-                                distance_cutoff=1.5,
-                                min_lam=0.1,
-                                max_lam=2.0,
-                                ncycle=100,
-                                nstep=10000
-                            ),
-                     nsamples=1000,
-                     ncores=1):
+def dres_convergence(
+    original_ensemble,
+    window_size,
+    select="name CA",
+    dimensionality_reduction_method=None,
+    nsamples=1000,
+    ncores=1,
+):
     """
     Use the DRES to evaluate the convergence of the ensemble/trajectory.
     DRES will be calculated between the whole trajectory contained in an
@@ -1660,6 +1669,15 @@ def dres_convergence(original_ensemble,
     much the trajectory keeps on resampling the same ares of the conformational
     space, and therefore of convergence.
     """
+    if dimensionality_reduction_method is None:
+        dimensionality_reduction_method = StochasticProximityEmbeddingNative(
+            dimension=3,
+            distance_cutoff=1.5,
+            min_lam=0.1,
+            max_lam=2.0,
+            ncycle=100,
+            nstep=10000,
+        )
 
     ensembles = prepare_ensembles_for_convergence_increasing_window(
         original_ensemble, window_size, select=select)
