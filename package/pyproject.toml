@@ -131,7 +131,10 @@ include = '''
 tables\.py
 | due\.py
 | setup\.py
-| visualization/.*\.py
+| MDAnalysis/auxiliary/.*\.py
+| MDAnalysis/visualization/.*\.py
+| MDAnalysis/lib/.*\.py^
+| MDAnalysis/transformations/.*\.py
 )
 '''
 extend-exclude = '__pycache__'
