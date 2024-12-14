@@ -338,28 +338,6 @@ def contact_matrix(d, radius, out=None):
     return out
 
 
-def get_box(ts, pbc):
-    """Retrieve the dimensions of the simulation box based on PBC.
-
-    Parameters
-    ----------
-    ts : Timestep
-        The current timestep of the simulation, which contains the
-        box dimensions.
-    pbc : bool
-        A flag indicating whether periodic boundary conditions (PBC)
-        are enabled. If `True`, the box dimensions are returned,
-        else returns `None`.
-
-    Returns
-    -------
-    box_dimensions : ndarray or None
-        The dimensions of the simulation box as a NumPy array if PBC
-        is True, else returns `None`.
-    """
-    return ts.dimensions if pbc else None
-
-
 class Contacts(AnalysisBase):
     """Calculate contacts based observables.
 
@@ -480,9 +458,8 @@ class Contacts(AnalysisBase):
         self.r0 = []
         self.initial_contacts = []
 
-        #get dimension of box if pbc set to True
-        self.pbc = pbc
-        self._get_box = functools.partial(get_box, pbc=self.pbc)
+        # get dimensions through partial to make it compatible with parallelization
+        self._get_box = functools.partial(self._get_box_func, pbc=self.pbc)
 
         if isinstance(refgroup[0], AtomGroup):
             refA, refB = refgroup
@@ -497,7 +474,6 @@ class Contacts(AnalysisBase):
                 self.initial_contacts.append(contact_matrix(self.r0[-1], radius))
 
         self.n_initial_contacts = self.initial_contacts[0].sum()
-
 
     @staticmethod
     def _get_atomgroup(u, sel):
@@ -514,6 +490,27 @@ class Contacts(AnalysisBase):
         else:
             raise TypeError(select_error_message)
 
+   def _get_box_func(ts, pbc):
+       """Retrieve the dimensions of the simulation box based on PBC.
+   
+       Parameters
+       ----------
+       ts : Timestep
+           The current timestep of the simulation, which contains the
+           box dimensions.
+       pbc : bool
+           A flag indicating whether periodic boundary conditions (PBC)
+           are enabled. If `True`, the box dimensions are returned,
+           else returns `None`.
+   
+       Returns
+       -------
+       box_dimensions : ndarray or None
+           The dimensions of the simulation box as a NumPy array if PBC
+           is True, else returns `None`.
+       """
+       return ts.dimensions if pbc else None
+   
     def _prepare(self):
         self.results.timeseries = np.empty((self.n_frames, len(self.r0)+1))
 
