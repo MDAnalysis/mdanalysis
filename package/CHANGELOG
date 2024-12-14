@@ -14,18 +14,19 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, ChiahsinChu, RMeli, tanishy7777
-         talagayev
+??/??/?? IAlibay, ChiahsinChu, RMeli, tanishy7777, talagayev
 
  * 2.9.0
 
 Fixes
+ * Fixes invalid default unit from Angstrom to Angstrom^{-3} for convert_density() function. (Issue #4829)
  * Fixes deprecation warning Array to scalar convertion. Replaced atan2() with np.arctan2() (Issue #4339)
  * Replaced mutable defaults with None and initialized them within
    the function to prevent shared state. (Issue #4655)
 
 Enhancements
  * Enables parallelization for analysis.contacts.Contacts (Issue #4660)
+ * Enable parallelization for analysis.nucleicacids.NucPairDist (Issue #4670)
  * Add check and warning for empty (all zero) coordinates in RDKit converter (PR #4824)
  * Added `precision` for XYZWriter (Issue #4775, PR #4771)
 
@@ -100,11 +101,11 @@ Enhancements
  * Introduce parallelization API to `AnalysisBase` and to `analysis.rms.RMSD` class
    (Issue #4158, PR #4304)
  * Enables parallelization for analysis.gnm.GNMAnalysis (Issue #4672)
- * explicitly mark `analysis.pca.PCA` as not parallelizable (Issue #4680)
- * enables parallelization for analysis.bat.BAT (Issue #4663)
- * enable parallelization for analysis.dihedrals.{Dihedral,Ramachandran,Janin}
+ * Explicitly mark `analysis.pca.PCA` as not parallelizable (Issue #4680)
+ * Enables parallelization for analysis.bat.BAT (Issue #4663)
+ * Enable parallelization for analysis.dihedrals.{Dihedral,Ramachandran,Janin}
    (Issue #4673) 
- * enables parallelization for analysis.dssp.dssp.DSSP (Issue #4674)
+ * Enables parallelization for analysis.dssp.dssp.DSSP (Issue #4674)
  * Enables parallelization for analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis (Issue #4664)
  * Improve error message for `AtomGroup.unwrap()` when bonds are not present.(Issue #4436, PR #4642)
  * Add `analysis.DSSP` module for protein secondary structure assignment, based on [pydssp](https://github.com/ShintaroMinami/PyDSSP)
