@@ -490,27 +490,27 @@ class Contacts(AnalysisBase):
         else:
             raise TypeError(select_error_message)
 
-   def _get_box_func(ts, pbc):
-       """Retrieve the dimensions of the simulation box based on PBC.
+    def _get_box_func(ts, pbc):
+        """Retrieve the dimensions of the simulation box based on PBC.
    
-       Parameters
-       ----------
-       ts : Timestep
-           The current timestep of the simulation, which contains the
-           box dimensions.
-       pbc : bool
-           A flag indicating whether periodic boundary conditions (PBC)
-           are enabled. If `True`, the box dimensions are returned,
-           else returns `None`.
+        Parameters
+        ----------
+        ts : Timestep
+            The current timestep of the simulation, which contains the
+            box dimensions.
+        pbc : bool
+            A flag indicating whether periodic boundary conditions (PBC)
+            are enabled. If `True`, the box dimensions are returned,
+            else returns `None`.
    
-       Returns
-       -------
-       box_dimensions : ndarray or None
-           The dimensions of the simulation box as a NumPy array if PBC
-           is True, else returns `None`.
-       """
-       return ts.dimensions if pbc else None
-   
+        Returns
+        -------
+        box_dimensions : ndarray or None
+            The dimensions of the simulation box as a NumPy array if PBC
+            is True, else returns `None`.
+        """
+        return ts.dimensions if pbc else None
+
     def _prepare(self):
         self.results.timeseries = np.empty((self.n_frames, len(self.r0)+1))
 
