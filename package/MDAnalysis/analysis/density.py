@@ -826,7 +826,7 @@ class Density(Grid):
         self.units['length'] = unit
         self._update()  # needed to recalculate midpoints and origin
 
-    def convert_density(self, unit='Angstrom'):
+    def convert_density(self, unit='Angstrom^{-3}'):
         """Convert the density to the physical units given by `unit`.
 
         Parameters

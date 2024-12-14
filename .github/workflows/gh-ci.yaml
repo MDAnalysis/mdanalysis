@@ -38,7 +38,7 @@ jobs:
               full-deps: false
               codecov: true
             - name: macOS_monterey_py311
-              os: macOS-12
+              os: macos-13
               python-version: "3.12"
               full-deps: true
               codecov: true

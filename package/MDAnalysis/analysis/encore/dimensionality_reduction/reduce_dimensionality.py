@@ -44,13 +44,15 @@ from ..dimensionality_reduction.DimensionalityReductionMethod import (
     StochasticProximityEmbeddingNative)
 
 
-def reduce_dimensionality(ensembles,
-                          method=StochasticProximityEmbeddingNative(),
-                          select="name CA",
-                          distance_matrix=None,
-                          allow_collapsed_result=True,
-                          ncores=1,
-                          **kwargs):
+def reduce_dimensionality(
+    ensembles,
+    method=None,
+    select="name CA",
+    distance_matrix=None,
+    allow_collapsed_result=True,
+    ncores=1,
+    **kwargs,
+):
     """
     Reduce dimensions in frames from one or more ensembles, using one or more
     dimensionality reduction methods. The function optionally takes
@@ -152,7 +154,8 @@ def reduce_dimensionality(ensembles,
                              encore.StochasticProximityEmbeddingNative(dimension=2)])
 
     """
-
+    if method is None:
+        method = StochasticProximityEmbeddingNative()
     if ensembles is not None:
         if not hasattr(ensembles, '__iter__'):
             ensembles = [ensembles]

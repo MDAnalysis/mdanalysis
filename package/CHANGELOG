@@ -19,7 +19,10 @@ The rules for this file:
  * 2.9.0
 
 Fixes
+ * Fixes invalid default unit from Angstrom to Angstrom^{-3} for convert_density() function. (Issue #4829)
  * Fixes deprecation warning Array to scalar convertion. Replaced atan2() with np.arctan2() (Issue #4339)
+ * Replaced mutable defaults with None and initialized them within
+   the function to prevent shared state. (Issue #4655)
 
 Enhancements
  * Enable parallelization for analysis.nucleicacids.NucPairDist (Issue #4670)
