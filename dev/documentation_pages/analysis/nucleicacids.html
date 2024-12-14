@@ -235,7 +235,7 @@ version 3.0.0, use <code class="xref py py-attr docutils literal notranslate"><s
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -253,7 +253,7 @@ Residue pair.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -264,7 +264,7 @@ Residue pair.</p>
 <dd><p>Simulation times for analysis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -294,9 +294,14 @@ Please use the class attribute <a class="reference internal" href="#MDAnalysis.a
 <p><span class="versionmodified changed">Changed in version 2.7.0: </span>Added static method <a class="reference internal" href="#MDAnalysis.analysis.nucleicacids.NucPairDist.select_strand_atoms" title="MDAnalysis.analysis.nucleicacids.NucPairDist.select_strand_atoms"><code class="xref py py-attr docutils literal notranslate"><span class="pre">select_strand_atoms</span></code></a> as a
 helper for selecting atom pairs for distance analysis.</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.9.0: </span>Enabled <strong>parallel execution</strong> with the <code class="docutils literal notranslate"><span class="pre">multiprocessing</span></code> and <code class="docutils literal notranslate"><span class="pre">dask</span></code>
+backends; use the new method <a class="reference internal" href="#MDAnalysis.analysis.nucleicacids.NucPairDist.get_supported_backends" title="MDAnalysis.analysis.nucleicacids.NucPairDist.get_supported_backends"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_supported_backends()</span></code></a> to see all
+supported backends.</p>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.nucleicacids.NucPairDist.get_supported_backends">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_supported_backends</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.NucPairDist.get_supported_backends" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_supported_backends</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/nucleicacids.html#NucPairDist.get_supported_backends"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.NucPairDist.get_supported_backends" title="Link to this definition"></a></dt>
 <dd><p>Tuple with backends supported by the core library for a given class.
 User can pass either one of these values as <code class="docutils literal notranslate"><span class="pre">backend=...</span></code> to
 <a class="reference internal" href="#MDAnalysis.analysis.nucleicacids.NucPairDist.run" title="MDAnalysis.analysis.nucleicacids.NucPairDist.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code></a> method, or a custom object that has <code class="docutils literal notranslate"><span class="pre">apply</span></code> method
@@ -526,7 +531,7 @@ Residue pair.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -547,7 +552,7 @@ use <code class="xref py py-attr docutils literal notranslate"><span class="pre"
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -558,7 +563,7 @@ use <code class="xref py py-attr docutils literal notranslate"><span class="pre"
 <dd><p>Simulation times for analysis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -767,7 +772,7 @@ by default assigned to “C”;</p></li>
 the Residue pair, and the second index selecting the frame number</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -778,7 +783,7 @@ the Residue pair, and the second index selecting the frame number</p>
 <dd><p>Simulation times for analysis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -969,7 +974,7 @@ indexing the trajectory frame and axis 1 (second index) selecting the
 Residue pair.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -980,7 +985,7 @@ Residue pair.</p>
 <dd><p>Simulation times for analysis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.1)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>

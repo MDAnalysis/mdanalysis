@@ -212,7 +212,7 @@
 
 <span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
 <span class="kn">from</span> <span class="nn">.distances</span> <span class="kn">import</span> <span class="n">calc_bonds</span>
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">AnalysisBase</span><span class="p">,</span> <span class="n">Results</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">AnalysisBase</span><span class="p">,</span> <span class="n">ResultsGroup</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.core.groups</span> <span class="kn">import</span> <span class="n">Residue</span><span class="p">,</span> <span class="n">ResidueGroup</span>
 
 
@@ -303,13 +303,26 @@
 <span class="sd">    .. versionchanged:: 2.7.0</span>
 <span class="sd">        Added static method :attr:`select_strand_atoms` as a</span>
 <span class="sd">        helper for selecting atom pairs for distance analysis.</span>
+
+<span class="sd">    .. versionchanged:: 2.9.0</span>
+<span class="sd">       Enabled **parallel execution** with the ``multiprocessing`` and ``dask``</span>
+<span class="sd">       backends; use the new method :meth:`get_supported_backends` to see all</span>
+<span class="sd">       supported backends.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_analysis_algorithm_is_parallelizable</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="NucPairDist.get_supported_backends">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/nucleicacids.html#MDAnalysis.analysis.nucleicacids.NucPairDist.get_supported_backends">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_supported_backends</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;serial&#39;</span><span class="p">,</span> <span class="s1">&#39;multiprocessing&#39;</span><span class="p">,</span> <span class="s1">&#39;dask&#39;</span><span class="p">)</span></div>
+
 
     <span class="n">_s1</span><span class="p">:</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span>
     <span class="n">_s2</span><span class="p">:</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span>
     <span class="n">_n_sel</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="n">_res_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span>
-
+    
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection1</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">],</span>
                  <span class="n">selection2</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">],</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -423,7 +436,7 @@
 
 
     <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_res_array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">distances</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
             <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_sel</span><span class="p">]</span>
         <span class="p">)</span>
 
@@ -432,13 +445,17 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_s1</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="o">.</span><span class="n">positions</span>
         <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_res_array</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">dist</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">distances</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">dist</span>
 
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;distances&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_res_array</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;pair_distances&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;distances&#39;</span><span class="p">]</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;pair_distances&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;distances&#39;</span><span class="p">]</span>
         <span class="c1"># TODO: remove pair_distances in 3.0.0</span>
+
+    <span class="k">def</span> <span class="nf">_get_aggregator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span><span class="n">lookup</span><span class="o">=</span><span class="p">{</span>
+            <span class="s1">&#39;distances&#39;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_vstack</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="WatsonCrickDist">
