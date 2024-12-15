@@ -458,7 +458,7 @@ class Contacts(AnalysisBase):
         self.r0 = []
         self.initial_contacts = []
 
-        # get dimensions through partial to make it compatible with parallelization
+        # get dimensions via partial for parallelization compatibility
         self._get_box = functools.partial(self._get_box_func, pbc=self.pbc)
 
         if isinstance(refgroup[0], AtomGroup):
