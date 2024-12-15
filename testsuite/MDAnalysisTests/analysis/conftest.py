@@ -152,7 +152,6 @@ def client_NucPairDist(request):
     return request.param
 
 
-
 # MDAnalysis.analysis.contacts
 
 @pytest.fixture(scope="module", params=params_for_cls(Contacts))
