@@ -490,6 +490,7 @@ class Contacts(AnalysisBase):
         else:
             raise TypeError(select_error_message)
 
+    @staticmethod
     def _get_box_func(ts, pbc):
         """Retrieve the dimensions of the simulation box based on PBC.
    
