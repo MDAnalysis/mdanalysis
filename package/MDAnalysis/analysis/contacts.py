@@ -493,7 +493,7 @@ class Contacts(AnalysisBase):
     @staticmethod
     def _get_box_func(ts, pbc):
         """Retrieve the dimensions of the simulation box based on PBC.
-   
+
         Parameters
         ----------
         ts : Timestep
@@ -503,7 +503,7 @@ class Contacts(AnalysisBase):
             A flag indicating whether periodic boundary conditions (PBC)
             are enabled. If `True`, the box dimensions are returned,
             else returns `None`.
-   
+
         Returns
         -------
         box_dimensions : ndarray or None
