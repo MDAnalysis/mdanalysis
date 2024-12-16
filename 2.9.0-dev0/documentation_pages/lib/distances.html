@@ -345,30 +345,24 @@ the function is called repeatedly.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><p><strong>d</strong> – Array containing the distances <code class="docutils literal notranslate"><span class="pre">dist[i,j]</span></code> between reference
+<dd class="field-even"><p><ul>
+<li><p><strong>d</strong> (numpy.ndarray (<code class="docutils literal notranslate"><span class="pre">dtype=numpy.float64</span></code>, <code class="docutils literal notranslate"><span class="pre">shape=(n*(n-1)/2,)</span></code>)) – Array containing the distances <code class="docutils literal notranslate"><span class="pre">dist[i,j]</span></code> between reference
 coordinates <code class="docutils literal notranslate"><span class="pre">i</span></code> and <code class="docutils literal notranslate"><span class="pre">j</span></code> at position <code class="docutils literal notranslate"><span class="pre">d[k]</span></code>. Loop through <code class="docutils literal notranslate"><span class="pre">d</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="n">dist</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">dist</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
         <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="n">dist</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
 </pre></div>
 </div>
+</li>
+<li><p><em>.. versionchanged:: 0.13.0</em> – Added <em>backend</em> keyword.</p></li>
+<li><p><em>.. versionchanged:: 0.19.0</em> – Internal dtype conversion of input coordinates to <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code>.</p></li>
+<li><p><em>.. versionchanged:: 2.3.0</em> – Can now accept an <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> as an
+argument in any position and checks inputs using type hinting.</p></li>
+</ul>
 </p>
 </dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>numpy.ndarray (<code class="docutils literal notranslate"><span class="pre">dtype=numpy.float64</span></code>, <code class="docutils literal notranslate"><span class="pre">shape=(n*(n-1)/2,)</span></code>)</p>
-</dd>
 </dl>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.13.0: </span>Added <em>backend</em> keyword.</p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.19.0: </span>Internal dtype conversion of input coordinates to <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code>.</p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 2.3.0: </span>Can now accept an <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> as an
-argument in any position and checks inputs using type hinting.</p>
-</div>
 </dd></dl>
 
 <dl class="py function">
