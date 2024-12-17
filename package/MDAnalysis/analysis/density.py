@@ -395,15 +395,17 @@ class DensityAnalysis(AnalysisBase):
        :func:`_set_user_grid` is now a method of :class:`DensityAnalysis`.
        :class:`Density` results are now stored in a
        :class:`MDAnalysis.analysis.base.Results` instance.
-
+    .. versionchanged:: 2.9.0
+       Introduced :meth:`get_supported_backends` allowing
+       for parallel execution on :mod:`multiprocessing`
+       and :mod:`dask` backends.
     """
-
     _analysis_algorithm_is_parallelizable = True
-    
+
     @classmethod
     def get_supported_backends(cls):
         return ('serial', 'multiprocessing', 'dask')
-   
+
     def __init__(self, atomgroup, delta=1.0,
                  metadata=None, padding=2.0,
                  gridcenter=None,
@@ -493,8 +495,8 @@ class DensityAnalysis(AnalysisBase):
     def _get_aggregator(self):
         return ResultsGroup(lookup={
         '_grid': ResultsGroup.ndarray_sum,}
-        )
-   
+                           )
+
     @property
     def density(self):
         wmsg = ("The `density` attribute was deprecated in MDAnalysis 2.0.0 "
