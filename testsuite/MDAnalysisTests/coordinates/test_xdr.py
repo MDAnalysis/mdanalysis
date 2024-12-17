@@ -908,7 +908,7 @@ class _GromacsReader_offsets(object):
 
         filename = str(tmpdir.join(os.path.basename(self.filename)))
         # try to write a offsets file
-        with (pytest.warns(UserWarning, match="Couldn't save offsets") or
+        with (pytest.warns(UserWarning, match="Couldn't save offsets") and
               pytest.warns(UserWarning, match="Cannot write")):
             self._reader(filename)
         assert_equal(os.path.exists(XDR.offsets_filename(filename)), False)
