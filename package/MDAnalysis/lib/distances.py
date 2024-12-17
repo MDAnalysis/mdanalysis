@@ -401,10 +401,9 @@ def self_distance_array(
 
             for i in range(n):
                 for j in range(i + 1, n):
+                    dist[i, j] = dist[j, i] = d[k]
                     k += 1
-                    dist[i, j] = d[k]
-
-
+                    
     .. versionchanged:: 0.13.0
        Added *backend* keyword.
     .. versionchanged:: 0.19.0
