@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -31,6 +31,11 @@ algorithms, wrapping them to allow them to be used interchangably.
 
 .. versionadded:: 0.16.0
 
+.. deprecated:: 2.8.0
+   This module is deprecated in favour of the 
+   MDAKit `mdaencore <https://mdanalysis.org/mdaencore/>`_ and will be removed
+   in MDAnalysis 3.0.0.
+
 """
 import numpy as np
 from ..utils import ParallelCalculation, merge_universes
@@ -39,13 +44,15 @@ from ..confdistmatrix import get_distance_matrix
 from . import ClusteringMethod
 
 
-def cluster(ensembles,
-            method = ClusteringMethod.AffinityPropagationNative(),
-            select="name CA",
-            distance_matrix=None,
-            allow_collapsed_result=True,
-            ncores=1,
-            **kwargs):
+def cluster(
+    ensembles,
+    method=None,
+    select="name CA",
+    distance_matrix=None,
+    allow_collapsed_result=True,
+    ncores=1,
+    **kwargs,
+):
     """Cluster frames from one or more ensembles, using one or more
     clustering methods. The function optionally takes pre-calculated distances
     matrices as an argument. Note that not all clustering procedure can work
@@ -149,7 +156,8 @@ def cluster(ensembles,
         [array([1, 1, 1, 1, 2]), array([1, 1, 1, 1, 1])]
 
     """
-
+    if method is None:
+        method = ClusteringMethod.AffinityPropagationNative()
     # Internally, ensembles are always transformed to a list of lists
     if ensembles is not None:
         if not hasattr(ensembles, '__iter__'):

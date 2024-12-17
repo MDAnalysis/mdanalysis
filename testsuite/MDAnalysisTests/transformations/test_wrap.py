@@ -1,11 +1,11 @@
-#-*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -39,7 +39,7 @@ def wrap_universes():
     transformed = mda.Universe(fullerene)
     transformed.dimensions = np.asarray([10, 10, 10, 90, 90, 90], np.float32)
     transformed.atoms.wrap()
-    
+
     return reference, transformed
 
 
@@ -52,30 +52,33 @@ def compound_wrap_universes():
     reference = mda.Universe(TPR, GRO)
     # wrap the atoms back into the unit cell
     # in this coordinate file only the protein
-    # is broken across PBC however the system 
+    # is broken across PBC however the system
     # shape is not the same as the unit cell
     make_whole(reference.select_atoms("protein"))
     make_whole(transformed.select_atoms("protein"))
-    
+
     return transformed, reference
 
 
-@pytest.mark.parametrize('ag', (
-    [0, 1],
-    [0, 1, 2, 3, 4],
-    np.array([0, 1]),
-    np.array([0, 1, 2, 3, 4]),
-    np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]]),
-    np.array([[0], [1], [2]]),
-    'thisisnotanag',
-    1)
+@pytest.mark.parametrize(
+    "ag",
+    (
+        [0, 1],
+        [0, 1, 2, 3, 4],
+        np.array([0, 1]),
+        np.array([0, 1, 2, 3, 4]),
+        np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]]),
+        np.array([[0], [1], [2]]),
+        "thisisnotanag",
+        1,
+    ),
 )
 def test_wrap_bad_ag(wrap_universes, ag):
     # this universe has a box size zero
     ts = wrap_universes[0].trajectory.ts
     # what happens if something other than an AtomGroup is given?
     bad_ag = ag
-    with pytest.raises(AttributeError): 
+    with pytest.raises(AttributeError):
         wrap(bad_ag)(ts)
 
 
@@ -85,45 +88,53 @@ def test_wrap_no_options(wrap_universes):
     trans, ref = wrap_universes
     trans.dimensions = ref.dimensions
     wrap(trans.atoms)(trans.trajectory.ts)
-    assert_array_almost_equal(trans.trajectory.ts.positions, ref.trajectory.ts.positions, decimal=6)
+    assert_array_almost_equal(
+        trans.trajectory.ts.positions, ref.trajectory.ts.positions, decimal=6
+    )
 
 
-@pytest.mark.parametrize('compound', (
-    "group",
-    "residues",
-    "segments",
-    "fragments")
+@pytest.mark.parametrize(
+    "compound", ("group", "residues", "segments", "fragments")
 )
 def test_wrap_with_compounds(compound_wrap_universes, compound):
-    trans, ref= compound_wrap_universes
+    trans, ref = compound_wrap_universes
     ref.select_atoms("not resname SOL").wrap(compound=compound)
-    wrap(trans.select_atoms("not resname SOL"), compound=compound)(trans.trajectory.ts)
-    assert_array_almost_equal(trans.trajectory.ts.positions, ref.trajectory.ts.positions, decimal=6)
+    wrap(trans.select_atoms("not resname SOL"), compound=compound)(
+        trans.trajectory.ts
+    )
+    assert_array_almost_equal(
+        trans.trajectory.ts.positions, ref.trajectory.ts.positions, decimal=6
+    )
 
 
 def test_wrap_api(wrap_universes):
     trans, ref = wrap_universes
     trans.dimensions = ref.dimensions
     trans.trajectory.add_transformations(wrap(trans.atoms))
-    assert_array_almost_equal(trans.trajectory.ts.positions, ref.trajectory.ts.positions, decimal=6)
+    assert_array_almost_equal(
+        trans.trajectory.ts.positions, ref.trajectory.ts.positions, decimal=6
+    )
 
 
-@pytest.mark.parametrize('ag', (
-    [0, 1],
-    [0, 1, 2, 3, 4],
-    np.array([0, 1]),
-    np.array([0, 1, 2, 3, 4]),
-    np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]]),
-    np.array([[0], [1], [2]]),
-    'thisisnotanag',
-    1)
+@pytest.mark.parametrize(
+    "ag",
+    (
+        [0, 1],
+        [0, 1, 2, 3, 4],
+        np.array([0, 1]),
+        np.array([0, 1, 2, 3, 4]),
+        np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]]),
+        np.array([[0], [1], [2]]),
+        "thisisnotanag",
+        1,
+    ),
 )
 def test_unwrap_bad_ag(wrap_universes, ag):
     # this universe has a box size zero
     ts = wrap_universes[0].trajectory.ts
     # what happens if something other than an AtomGroup is given?
     bad_ag = ag
-    with pytest.raises(AttributeError): 
+    with pytest.raises(AttributeError):
         unwrap(bad_ag)(ts)
 
 
@@ -131,11 +142,15 @@ def test_unwrap(wrap_universes):
     ref, trans = wrap_universes
     # after rebuild the trans molecule it should match the reference
     unwrap(trans.atoms)(trans.trajectory.ts)
-    assert_array_almost_equal(trans.trajectory.ts.positions, ref.trajectory.ts.positions, decimal=6)
+    assert_array_almost_equal(
+        trans.trajectory.ts.positions, ref.trajectory.ts.positions, decimal=6
+    )
 
 
 def test_unwrap_api(wrap_universes):
     ref, trans = wrap_universes
     # after rebuild the trans molecule it should match the reference
     trans.trajectory.add_transformations(unwrap(trans.atoms))
-    assert_array_almost_equal(trans.trajectory.ts.positions, ref.trajectory.ts.positions, decimal=6)
+    assert_array_almost_equal(
+        trans.trajectory.ts.positions, ref.trajectory.ts.positions, decimal=6
+    )

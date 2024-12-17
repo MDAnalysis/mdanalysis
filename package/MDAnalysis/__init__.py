@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -181,7 +181,7 @@ _CONVERTERS: Dict = {}
 _TOPOLOGY_ATTRS: Dict = {}   # {attrname: cls}
 _TOPOLOGY_TRANSPLANTS: Dict = {}   # {name: [attrname, method, transplant class]}
 _TOPOLOGY_ATTRNAMES: Dict = {}   # {lower case name w/o _ : name}
-
+_GUESSERS: Dict = {}
 
 # custom exceptions and warnings
 from .exceptions import (

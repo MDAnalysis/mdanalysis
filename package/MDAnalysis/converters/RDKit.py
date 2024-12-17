@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -87,7 +87,6 @@ from functools import lru_cache
 from io import StringIO
 
 import numpy as np
-from numpy.lib import NumpyVersion
 
 from . import base
 from ..coordinates import memory
@@ -96,13 +95,8 @@ from ..core.topologyattrs import _TOPOLOGY_ATTRS
 from ..exceptions import NoDataError
 
 try:
-    # TODO: remove this guard when RDKit has a release
-    # that supports NumPy 2
-    if NumpyVersion(np.__version__) < "2.0.0":
-        from rdkit import Chem
-        from rdkit.Chem import AllChem
-    else:
-        raise ImportError
+    from rdkit import Chem
+    from rdkit.Chem import AllChem
 except ImportError:
     pass
 else:
@@ -261,9 +255,7 @@ class RDKitConverter(base.ConverterBase):
         from MDAnalysisTests.datafiles import PSF, DCD
         from rdkit.Chem.Descriptors3D import Asphericity
 
-        u = mda.Universe(PSF, DCD)
-        elements = mda.topology.guessers.guess_types(u.atoms.names)
-        u.add_TopologyAttr('elements', elements)
+        u = mda.Universe(PSF, DCD, to_guess=['elements'])
         ag = u.select_atoms("resid 1-10")
 
         for ts in u.trajectory:
@@ -371,9 +363,12 @@ class RDKitConverter(base.ConverterBase):
 
         # add a conformer for the current Timestep
         if hasattr(ag, "positions"):
-            if np.isnan(ag.positions).any():
-                warnings.warn("NaN detected in coordinates, the output "
-                              "molecule will not have 3D coordinates assigned")
+            if np.isnan(ag.positions).any() or np.allclose(
+                ag.positions, 0.0, rtol=0.0, atol=1e-12
+            ):
+                warnings.warn("NaN or empty coordinates detected in coordinates, "
+                              "the output molecule will not have 3D coordinates "
+                              "assigned")
             else:
                 # assign coordinates
                 conf = Chem.Conformer(mol.GetNumAtoms())

@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -384,6 +384,12 @@ class TestDensityAnalysis(DensityParameters):
         with pytest.warns(DeprecationWarning, match=wmsg):
             assert_equal(D.density.grid, D.results.density.grid)
 
+    def test_density_analysis_conversion_default_unit(self):
+        u = mda.Universe(TPR, XTC)
+        ow = u.select_atoms("name OW")
+        D = mda.analysis.density.DensityAnalysis(ow, delta=1.0)
+        D.run()
+        D.results.density.convert_density()
 
 class TestGridImport(object):
 

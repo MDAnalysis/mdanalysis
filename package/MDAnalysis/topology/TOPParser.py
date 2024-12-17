@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -75,7 +75,7 @@ TODO:
    As of version 2.0.0, elements are no longer guessed if ATOMIC_NUMBER records
    are missing. In those scenarios, if elements are necessary, users will have
    to invoke the element guessers after parsing the topology file. Please see
-   :mod:`MDAnalysis.topology.guessers` for more details.
+   :mod:`MDAnalysis.guessers` for more details.
 
 .. _`PARM parameter/topology file specification`:
    https://ambermd.org/FileFormats.php#topo.cntrl
@@ -91,7 +91,7 @@ Classes
 import numpy as np
 import itertools
 
-from .tables import Z2SYMB
+from ..guesser.tables import Z2SYMB
 from ..lib.util import openany, FORTRANReader
 from .base import TopologyReaderBase, change_squash
 from ..core.topology import Topology
@@ -294,14 +294,15 @@ class TOPParser(TopologyReaderBase):
         if 'elements' not in attrs:
             msg = ("ATOMIC_NUMBER record not found, elements attribute will "
                    "not be populated. If needed these can be guessed using "
-                   "MDAnalysis.topology.guessers.")
+                   "universe.guess_TopologyAttrs(to_guess=['elements']).")
             logger.warning(msg)
             warnings.warn(msg)
         elif np.any(attrs['elements'].values == ""):
             # only send out one warning that some elements are unknown
             msg = ("Unknown ATOMIC_NUMBER value found for some atoms, these "
                    "have been given an empty element record. If needed these "
-                   "can be guessed using MDAnalysis.topology.guessers.")
+                   "can be guessed using "
+                   "universe.guess_TopologyAttrs(to_guess=['elements']).")
             logger.warning(msg)
             warnings.warn(msg)
 

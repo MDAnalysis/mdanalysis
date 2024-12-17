@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -55,12 +55,12 @@ def test_empty_ag_error(strand):
 
 
 @pytest.fixture(scope='module')
-def wc_rna(strand):
+def wc_rna(strand, client_NucPairDist):
     strand1 = ResidueGroup([strand.residues[0], strand.residues[21]])
     strand2 = ResidueGroup([strand.residues[1], strand.residues[22]])
 
     WC = WatsonCrickDist(strand1, strand2)
-    WC.run()
+    WC.run(**client_NucPairDist)
     return WC
 
 
@@ -114,23 +114,23 @@ def test_wc_dis_results_keyerrs(wc_rna, key):
         wc_rna.results[key]
 
 
-def test_minor_dist(strand):
+def test_minor_dist(strand, client_NucPairDist):
     strand1 = ResidueGroup([strand.residues[2], strand.residues[19]])
     strand2 = ResidueGroup([strand.residues[16], strand.residues[4]])
 
     MI = MinorPairDist(strand1, strand2)
-    MI.run()
+    MI.run(**client_NucPairDist)
 
     assert MI.results.distances[0, 0] == approx(15.06506, rel=1e-3)
     assert MI.results.distances[0, 1] == approx(3.219116, rel=1e-3)
 
 
-def test_major_dist(strand):
+def test_major_dist(strand, client_NucPairDist):
     strand1 = ResidueGroup([strand.residues[1], strand.residues[4]])
     strand2 = ResidueGroup([strand.residues[11], strand.residues[8]])
 
     MA = MajorPairDist(strand1, strand2)
-    MA.run()
+    MA.run(**client_NucPairDist)
 
     assert MA.results.distances[0, 0] == approx(26.884272, rel=1e-3)
     assert MA.results.distances[0, 1] == approx(13.578535, rel=1e-3)

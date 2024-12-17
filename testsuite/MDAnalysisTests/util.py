@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -117,7 +117,7 @@ def import_not_available(module_name):
     # TODO: remove once these packages have a release
     # with NumPy 2 support
     if NumpyVersion(np.__version__) >= "2.0.0":
-        if module_name in {"rdkit", "parmed"}:
+        if module_name == "parmed":
             return True
     try:
         test = importlib.import_module(module_name)
@@ -233,6 +233,11 @@ class _NoDeprecatedCallContext(object):
         if isinstance(message, Warning):
             self._captured_categories.append(message.__class__)
         else:
+            # as follows Python documentation at
+            # https://docs.python.org/3/library/warnings.html#warnings.warn
+            # if category is None, the default UserWarning is used
+            if category is None:
+                category = UserWarning
             self._captured_categories.append(category)
 
     def __exit__(self, exc_type, exc_val, exc_tb):

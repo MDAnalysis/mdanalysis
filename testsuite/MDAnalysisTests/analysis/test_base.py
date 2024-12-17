@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -121,6 +121,30 @@ def test_incompatible_n_workers(u):
     with pytest.raises(ValueError):
         FrameAnalysis(u).run(backend=backend, n_workers=3)
 
+
+def test_frame_values_incompatability(u):
+    start, stop, step = 0, 4, 1
+    frames = [1, 2, 3, 4]
+
+    with pytest.raises(ValueError,
+                       match="start/stop/step cannot be combined with frames"):
+        FrameAnalysis(u.trajectory).run(
+            frames=frames,
+            start=start,
+            stop=stop,
+            step=step
+        )
+
+def test_n_workers_conflict_raises_value_error(u):
+    backend_instance = ManyWorkersBackend(n_workers=4)
+
+    with pytest.raises(ValueError, match="n_workers specified twice"):
+        FrameAnalysis(u.trajectory).run(
+            backend=backend_instance,
+            n_workers=1,
+            unsupported_backend=True
+        )
+
 @pytest.mark.parametrize('run_class,backend,n_workers', [
     (Parallelizable, 'not-existing-backend', 2),
     (Parallelizable, 'not-existing-backend', None),
@@ -198,6 +222,20 @@ def test_start_stop_step_parallel(u, run_kwargs, frames, client_FrameAnalysis):
     assert_almost_equal(an.times, frames+1, decimal=4, err_msg=TIMES_ERR)
 
 
+def test_reset_n_parts_to_n_frames(u):
+    """
+    Issue #4685
+    https://github.com/MDAnalysis/mdanalysis/issues/4685
+    """
+    a = FrameAnalysis(u.trajectory)
+    with pytest.warns(UserWarning, match='Set `n_parts` to'):
+        a.run(backend='multiprocessing',
+              start=0,
+              stop=1,
+              n_workers=2,
+              n_parts=2)
+
+
 @pytest.mark.parametrize('run_kwargs,frames', [
     ({}, np.arange(98)),
     ({'start': 20}, np.arange(20, 98)),
@@ -262,7 +300,7 @@ def test_parallelizable_transformations():
     # pick any transformation that would allow 
     # for parallelizable attribute
     from MDAnalysis.transformations import NoJump 
-    u = mda.Universe(XTC)
+    u = mda.Universe(XTC, to_guess=())
     u.trajectory.add_transformations(NoJump())
 
     # test that serial works
@@ -271,6 +309,19 @@ def test_parallelizable_transformations():
     # test that parallel fails
     with pytest.raises(ValueError):
         FrameAnalysis(u.trajectory).run(backend='multiprocessing')
+
+
+def test_instance_serial_backend(u):
+    # test that isinstance is checked and the correct ValueError raise appears
+    msg = 'Can not display progressbar with non-serial backend'
+    with pytest.raises(ValueError, match=msg):
+        FrameAnalysis(u.trajectory).run(
+            backend=backends.BackendMultiprocessing(n_workers=2),
+            verbose=True,
+            progressbar_kwargs={"leave": True},
+            unsupported_backend=True
+        )
+
 
 def test_frame_bool_fail(client_FrameAnalysis):
     u = mda.Universe(TPR, XTC)  # dt = 100
@@ -331,17 +382,17 @@ def test_verbose_progressbar(u, capsys):
 def test_verbose_progressbar_run(u, capsys):
     FrameAnalysis(u.trajectory).run(verbose=True)
     _, err = capsys.readouterr()
-    expected = u'100%|██████████| 98/98 [00:00<00:00, 8799.49it/s]'
+    expected = u'100%|██████████'
     actual = err.strip().split('\r')[-1]
-    assert actual[:24] == expected[:24]
+    assert actual[:15] == expected
 
 def test_verbose_progressbar_run_with_kwargs(u, capsys):
     FrameAnalysis(u.trajectory).run(
         verbose=True, progressbar_kwargs={'desc': 'custom'})
     _, err = capsys.readouterr()
-    expected = u'custom: 100%|██████████| 98/98 [00:00<00:00, 8799.49it/s]'
+    expected = u'custom: 100%|██████████'
     actual = err.strip().split('\r')[-1]
-    assert actual[:30] == expected[:30]
+    assert actual[:23] == expected
 
 
 def test_progressbar_multiprocessing(u):

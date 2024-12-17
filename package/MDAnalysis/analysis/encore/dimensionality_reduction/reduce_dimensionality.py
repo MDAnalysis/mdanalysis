@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -31,6 +31,11 @@ reduction algorithms, wrapping them to allow them to be used interchangably.
 
 .. versionadded:: 0.16.0
 
+.. deprecated:: 2.8.0
+   This module is deprecated in favour of the 
+   MDAKit `mdaencore <https://mdanalysis.org/mdaencore/>`_ and will be removed
+   in MDAnalysis 3.0.0.
+
 """
 import numpy as np
 from ..confdistmatrix import get_distance_matrix
@@ -39,13 +44,15 @@ from ..dimensionality_reduction.DimensionalityReductionMethod import (
     StochasticProximityEmbeddingNative)
 
 
-def reduce_dimensionality(ensembles,
-                          method=StochasticProximityEmbeddingNative(),
-                          select="name CA",
-                          distance_matrix=None,
-                          allow_collapsed_result=True,
-                          ncores=1,
-                          **kwargs):
+def reduce_dimensionality(
+    ensembles,
+    method=None,
+    select="name CA",
+    distance_matrix=None,
+    allow_collapsed_result=True,
+    ncores=1,
+    **kwargs,
+):
     """
     Reduce dimensions in frames from one or more ensembles, using one or more
     dimensionality reduction methods. The function optionally takes
@@ -147,7 +154,8 @@ def reduce_dimensionality(ensembles,
                              encore.StochasticProximityEmbeddingNative(dimension=2)])
 
     """
-
+    if method is None:
+        method = StochasticProximityEmbeddingNative()
     if ensembles is not None:
         if not hasattr(ensembles, '__iter__'):
             ensembles = [ensembles]

@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -25,8 +25,7 @@ import pytest
 import MDAnalysis as mda
 from MDAnalysis.core.topology import Topology
 
-mandatory_attrs = ['ids', 'masses', 'types', 
-                   'resids', 'resnums', 'segids']
+mandatory_attrs = ['ids', 'resids', 'resnums', 'segids']
 
 
 class ParserBase(object):
@@ -62,24 +61,15 @@ class ParserBase(object):
 
     def test_expected_attributes(self, top):
         # Extra attributes as declared in specific implementations
-        for attr in self.expected_attrs+self.guessed_attrs:
+        for attr in self.expected_attrs:
             assert hasattr(top, attr), 'Missing expected attribute: {}'.format(attr)
-    
+
     def test_no_unexpected_attributes(self, top):
         attrs = set(self.expected_attrs
-                    + self.guessed_attrs
                     + mandatory_attrs
-                    + ['indices', 'resindices', 'segindices'])
+                    + ['indices', 'resindices', 'segindices'] + self.guessed_attrs)
         for attr in top.attrs:
             assert attr.attrname in attrs, 'Unexpected attribute: {}'.format(attr.attrname)
-
-    def test_guessed_attributes(self, top):
-        # guessed attributes must be declared as guessed
-        for attr in top.attrs:
-            val = attr.is_guessed
-            if not val in (True, False):  # only for simple yes/no cases
-                continue
-            assert val == (attr.attrname in self.guessed_attrs), 'Attr "{}" guessed= {}'.format(attr, val)
 
     def test_size(self, top):
         """Check that the Topology is correctly sized"""
@@ -108,3 +98,13 @@ class ParserBase(object):
         u_str = mda.Universe(filename)
         u_path = mda.Universe(path)
         assert u_str.atoms.n_atoms == u_path.atoms.n_atoms
+
+    def test_guessed_attributes(self, filename):
+        """check that the universe created with certain parser have the same
+        guessed attributes as  when it was guessed inside the parser"""
+        u = mda.Universe(filename)
+        u_guessed_attrs = [attr.attrname for attr
+                           in u._topology.guessed_attributes]
+        for attr in self.guessed_attrs:
+            assert hasattr(u.atoms, attr)
+            assert attr in u_guessed_attrs

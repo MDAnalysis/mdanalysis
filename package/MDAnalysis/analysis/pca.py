@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -26,7 +26,7 @@ r"""Principal Component Analysis (PCA) --- :mod:`MDAnalysis.analysis.pca`
 
 :Authors: John Detlefs
 :Year: 2016
-:Copyright: GNU Public License v3
+:Copyright: Lesser GNU Public License v2.1+
 
 .. versionadded:: 0.16.0
 
@@ -143,7 +143,7 @@ class PCA(AnalysisBase):
     generates the principal components of the backbone of the atomgroup and
     then transforms those atomgroup coordinates by the direction of those
     variances. Please refer to the :ref:`PCA-tutorial` for more detailed
-    instructions. When using mean selections, the first frame of the selected 
+    instructions. When using mean selections, the first frame of the selected
     trajectory slice is used as a reference.
 
     Parameters
@@ -239,6 +239,7 @@ class PCA(AnalysisBase):
        incorrectly handle cases where the ``frame`` argument
        was passed.
     """
+    _analysis_algorithm_is_parallelizable = False
 
     def __init__(self, universe, select='all', align=False, mean=None,
                  n_components=None, **kwargs):

@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -33,6 +33,11 @@ class to compute an RMSD matrix in such a way is also available.
 :Author: Matteo Tiberti, Wouter Boomsma, Tone Bengtsen
 
 .. versionadded:: 0.16.0
+
+.. deprecated:: 2.8.0
+   This module is deprecated in favour of the 
+   MDAKit `mdaencore <https://mdanalysis.org/mdaencore/>`_ and will be removed
+   in MDAnalysis 3.0.0.
 
 """
 from joblib import Parallel, delayed

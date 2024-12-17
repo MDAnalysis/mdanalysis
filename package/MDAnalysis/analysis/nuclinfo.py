@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -27,7 +27,7 @@ Nucleic acid analysis --- :mod:`MDAnalysis.analysis.nuclinfo`
 
 :Author: Elizabeth Denning
 :Year: 2011
-:Copyright: GNU Public License v3
+:Copyright: Lesser GNU Public License v2.1+
 
 The module provides functions to analyze nucleic acid structures, in
 particular
@@ -93,7 +93,7 @@ Dihedral angles
 
 """
 import numpy as np
-from math import pi, sin, cos, atan2, sqrt, pow
+from math import pi, sin, cos, sqrt, pow
 
 from MDAnalysis.lib import mdamath
 
@@ -299,7 +299,7 @@ def phase_cp(universe, seg, i):
          + (r3_d * cos(4 * pi * 2.0 / 5.0)) + (r4_d * cos(4 * pi * 3.0 / 5.0))
          + (r5_d * cos(4 * pi * 4.0 / 5.0))) * sqrt(2.0 / 5.0)
 
-    phase_ang = (atan2(D, C) + (pi / 2.)) * 180. / pi
+    phase_ang = (np.arctan2(D, C) + (pi / 2.)) * 180. / pi
     return phase_ang % 360
 
 
@@ -368,7 +368,7 @@ def phase_as(universe, seg, i):
          + (data4 * cos(2 * 2 * pi * (4 - 1.) / 5.))
          + (data5 * cos(2 * 2 * pi * (5 - 1.) / 5.))) * 2. / 5.
 
-    phase_ang = atan2(B, A) * 180. / pi
+    phase_ang = np.arctan2(B, A) * 180. / pi
     return phase_ang % 360
 
 
