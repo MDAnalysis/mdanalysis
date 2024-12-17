@@ -381,7 +381,7 @@ class TestDensityAnalysis(DensityParameters):
                 zdim=10.0,
             ).run(step=5, **client_DensityAnalysis)
 
-    def test_ValueError_userdefn_xdim_type(self, universe, 
+    def test_ValueError_userdefn_xdim_type(self, universe,
                                            client_DensityAnalysis):
         # Test xdim != int or float
         with pytest.raises(ValueError, match="xdim, ydim, and zdim must be numbers"):
@@ -394,7 +394,7 @@ class TestDensityAnalysis(DensityParameters):
                 gridcenter=self.gridcenters["static_defined"],
             ).run(step=5, **client_DensityAnalysis)
 
-    def test_ValueError_userdefn_xdim_nanvalue(self, universe, 
+    def test_ValueError_userdefn_xdim_nanvalue(self, universe,
                                                client_DensityAnalysis):
         # Test  xdim set to NaN value
         regex = ("Gridcenter or grid dimensions have NaN element")
