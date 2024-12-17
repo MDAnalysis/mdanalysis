@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -29,9 +29,12 @@ Read DL Poly_ format topology files
 DLPoly files have the following Attributes:
  - Atomnames
  - Atomids
-Guesses the following attributes:
- - Atomtypes
- - Masses
+
+.. note::
+
+        By default, atomtypes and masses will be guessed on Universe creation.
+        This may change in release 3.0.
+        See :ref:`Guessers` for more information.
 
 .. _Poly: http://www.stfc.ac.uk/SCD/research/app/ccg/software/DL_POLY/44516.aspx
 
@@ -46,14 +49,11 @@ Classes
 """
 import numpy as np
 
-from . import guessers
 from .base import TopologyReaderBase
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomids,
     Atomnames,
-    Atomtypes,
-    Masses,
     Resids,
     Resnums,
     Segids,
@@ -65,6 +65,9 @@ class ConfigParser(TopologyReaderBase):
     """DL_Poly CONFIG file parser
 
     .. versionadded:: 0.10.1
+    .. versionchanged:: 2.8.0
+       Removed type and mass guessing (attributes guessing takes place now
+       through universe.guess_TopologyAttrs() API).
     """
     format = 'CONFIG'
 
@@ -109,14 +112,9 @@ class ConfigParser(TopologyReaderBase):
         else:
             ids = np.arange(n_atoms)
 
-        atomtypes = guessers.guess_types(names)
-        masses = guessers.guess_masses(atomtypes)
-
         attrs = [
             Atomnames(names),
             Atomids(ids),
-            Atomtypes(atomtypes, guessed=True),
-            Masses(masses, guessed=True),
             Resids(np.array([1])),
             Resnums(np.array([1])),
             Segids(np.array(['SYSTEM'], dtype=object)),
@@ -176,14 +174,9 @@ class HistoryParser(TopologyReaderBase):
         else:
             ids = np.arange(n_atoms)
 
-        atomtypes = guessers.guess_types(names)
-        masses = guessers.guess_masses(atomtypes)
-
         attrs = [
             Atomnames(names),
             Atomids(ids),
-            Atomtypes(atomtypes, guessed=True),
-            Masses(masses, guessed=True),
             Resids(np.array([1])),
             Resnums(np.array([1])),
             Segids(np.array(['SYSTEM'], dtype=object)),

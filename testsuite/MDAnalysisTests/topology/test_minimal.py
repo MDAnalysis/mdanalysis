@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -60,7 +60,7 @@ def test_minimal_parser(filename, expected_n_atoms):
 
 @working_readers
 def test_universe_with_minimal(filename, expected_n_atoms):
-    u = mda.Universe(filename)
+    u = mda.Universe(filename, to_guess=())
 
     assert len(u.atoms) == expected_n_atoms
 
@@ -81,7 +81,7 @@ def test_minimal_parser_fail(filename,n_atoms):
 @nonworking_readers
 def test_minimal_n_atoms_kwarg(filename, n_atoms):
     # test that these can load when we supply the number of atoms
-    u = mda.Universe(filename, n_atoms=n_atoms)
+    u = mda.Universe(filename, n_atoms=n_atoms, to_guess=())
 
     assert len(u.atoms) == n_atoms
 
@@ -107,6 +107,6 @@ def test_memory_minimal_parser(array, order):
 
 @memory_reader
 def test_memory_universe(array, order):
-    u = mda.Universe(array, order=order)
+    u = mda.Universe(array, order=order, to_guess=())
 
     assert len(u.atoms) == 10

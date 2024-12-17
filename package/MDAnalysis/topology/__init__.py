@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -33,9 +33,8 @@ data is made accessible through AtomGroup properties.
 As a minimum, all topology parsers will provide atom ids, atom types, masses,
 resids, resnums and segids as well as assigning all atoms to residues and all
 residues to segments.  For systems without residues and segments, this results
-in there being a single residue and segment to which all atoms belong. Often
-when data is not provided by a file, it will be guessed based on other data in
-the file.  In the event that this happens, a UserWarning will always be issued.
+in there being a single residue and segment to which all atoms belong.
+In the event that this happens, a UserWarning will always be issued.
 
 The following table lists the currently supported topology formats along with
 the attributes they provide.
@@ -134,7 +133,7 @@ the attributes they provide.
                                                   :mod:`MDAnalysis.topology.XYZParser`
 
    TXYZ [#a]_        txyz,      names, atomids,   Tinker_ XYZ File Parser. Reads atom labels, numbers
-                     arc        masses, types,    and connectivity; masses are guessed from atoms names.
+                     arc        masses, types,    and connectivity.
                                 bonds             :mod:`MDAnalysis.topology.TXYZParser`
 
    GAMESS [#a]_      gms,       names,            GAMESS_ output parser. Read only atoms of assembly

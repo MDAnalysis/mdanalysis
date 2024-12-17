@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -148,7 +148,7 @@ class TestPSFParserNoTop(PSFBase):
 
     def test_dihedrals_total_counts(self, top):
         assert len(top.dihedrals.values) == 0
-    
+
     def test_impropers_total_counts(self, top):
         assert len(top.impropers.values) == 0
 

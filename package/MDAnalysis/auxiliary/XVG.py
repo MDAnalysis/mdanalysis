@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -74,7 +74,7 @@ from ..lib.util import anyopen
 
 
 def uncomment(lines):
-    """ Remove comments from lines in an .xvg file
+    """Remove comments from lines in an .xvg file
 
     Parameters
     ----------
@@ -92,10 +92,10 @@ def uncomment(lines):
         if not stripped_line:
             continue
         # '@' must be at the beginning of a line to be a grace instruction
-        if stripped_line[0] == '@':
+        if stripped_line[0] == "@":
             continue
         # '#' can be anywhere in the line, everything after is a comment
-        comment_position = stripped_line.find('#')
+        comment_position = stripped_line.find("#")
         if comment_position > 0 and stripped_line[:comment_position]:
             yield stripped_line[:comment_position]
         elif comment_position < 0 and stripped_line:
@@ -104,7 +104,7 @@ def uncomment(lines):
 
 
 class XVGStep(base.AuxStep):
-    """ AuxStep class for .xvg file format.
+    """AuxStep class for .xvg file format.
 
     Extends the base AuxStep class to allow selection of time and
     data-of-interest fields (by column index) from the full set of data read
@@ -127,9 +127,9 @@ class XVGStep(base.AuxStep):
     """
 
     def __init__(self, time_selector=0, data_selector=None, **kwargs):
-        super(XVGStep, self).__init__(time_selector=time_selector,
-                                      data_selector=data_selector,
-                                      **kwargs)
+        super(XVGStep, self).__init__(
+            time_selector=time_selector, data_selector=data_selector, **kwargs
+        )
 
     def _select_time(self, key):
         if key is None:
@@ -138,7 +138,7 @@ class XVGStep(base.AuxStep):
         if isinstance(key, numbers.Integral):
             return self._select_data(key)
         else:
-            raise ValueError('Time selector must be single index')
+            raise ValueError("Time selector must be single index")
 
     def _select_data(self, key):
         if key is None:
@@ -148,15 +148,17 @@ class XVGStep(base.AuxStep):
             try:
                 return self._data[key]
             except IndexError:
-                errmsg = (f'{key} not a valid index for data with '
-                          f'{len(self._data)} columns')
+                errmsg = (
+                    f"{key} not a valid index for data with "
+                    f"{len(self._data)} columns"
+                )
                 raise ValueError(errmsg) from None
         else:
             return np.array([self._select_data(i) for i in key])
 
 
 class XVGReader(base.AuxReader):
-    """ Auxiliary reader to read data from an .xvg file.
+    """Auxiliary reader to read data from an .xvg file.
 
     Default reader for .xvg files. All data from the file will be read and
     stored on initialisation.
@@ -188,24 +190,25 @@ class XVGReader(base.AuxReader):
         auxdata_values = []
         # remove comments before storing
         for i, line in enumerate(uncomment(lines)):
-            if line.lstrip()[0] == '&':
+            if line.lstrip()[0] == "&":
                 # multiple data sets not supported; stop at end of first set
                 break
             auxdata_values.append([float(val) for val in line.split()])
             # check the number of columns is consistent
             if len(auxdata_values[i]) != len(auxdata_values[0]):
-                raise ValueError('Step {0} has {1} columns instead of '
-                                 '{2}'.format(i, auxdata_values[i],
-                                              auxdata_values[0]))
+                raise ValueError(
+                    "Step {0} has {1} columns instead of "
+                    "{2}".format(i, auxdata_values[i], auxdata_values[0])
+                )
         self._auxdata_values = np.array(auxdata_values)
         self._n_steps = len(self._auxdata_values)
         super(XVGReader, self).__init__(**kwargs)
 
     def _memory_usage(self):
-        return(self._auxdata_values.nbytes)
+        return self._auxdata_values.nbytes
 
     def _read_next_step(self):
-        """ Read next auxiliary step and update ``auxstep``.
+        """Read next auxiliary step and update ``auxstep``.
 
         Returns
         -------
@@ -228,7 +231,7 @@ class XVGReader(base.AuxReader):
             raise StopIteration
 
     def _go_to_step(self, i):
-        """ Move to and read i-th auxiliary step.
+        """Move to and read i-th auxiliary step.
 
         Parameters
         ----------
@@ -245,14 +248,16 @@ class XVGReader(base.AuxReader):
             If step index not in valid range.
         """
         if i >= self.n_steps or i < 0:
-            raise ValueError("Step index {0} is not valid for auxiliary "
-                             "(num. steps {1})".format(i, self.n_steps))
-        self.auxstep.step = i-1
+            raise ValueError(
+                "Step index {0} is not valid for auxiliary "
+                "(num. steps {1})".format(i, self.n_steps)
+            )
+        self.auxstep.step = i - 1
         self.next()
         return self.auxstep
 
     def read_all_times(self):
-        """ Get NumPy array of time at each step.
+        """Get NumPy array of time at each step.
 
         Returns
         -------
@@ -263,7 +268,7 @@ class XVGReader(base.AuxReader):
 
 
 class XVGFileReader(base.AuxFileReader):
-    """ Auxiliary reader to read (one step at a time) from an .xvg file.
+    """Auxiliary reader to read (one step at a time) from an .xvg file.
 
     An alternative XVG reader which reads each step from the .xvg file as
     needed (rather than reading and storing all from the start), for a lower
@@ -286,14 +291,14 @@ class XVGFileReader(base.AuxFileReader):
     The default reader for .xvg files is :class:`XVGReader`.
     """
 
-    format = 'XVG-F'
+    format = "XVG-F"
     _Auxstep = XVGStep
 
     def __init__(self, filename, **kwargs):
         super(XVGFileReader, self).__init__(filename, **kwargs)
 
     def _read_next_step(self):
-        """ Read next recorded step in xvg file and update ``auxstep``.
+        """Read next recorded step in xvg file and update ``auxstep``.
 
         Returns
         -------
@@ -307,7 +312,7 @@ class XVGFileReader(base.AuxFileReader):
         """
         line = next(self.auxfile)
         while True:
-            if not line or (line.strip() and line.strip()[0] == '&'):
+            if not line or (line.strip() and line.strip()[0] == "&"):
                 # at end of file or end of first set of data (multiple sets
                 # currently not supported)
                 self.rewind()
@@ -325,15 +330,17 @@ class XVGFileReader(base.AuxFileReader):
                     # haven't set n_cols yet; set now
                     auxstep._n_cols = len(auxstep._data)
                 if len(auxstep._data) != auxstep._n_cols:
-                    raise ValueError(f'Step {self.step} has '
-                                     f'{len(auxstep._data)} columns instead '
-                                     f'of {auxstep._n_cols}')
+                    raise ValueError(
+                        f"Step {self.step} has "
+                        f"{len(auxstep._data)} columns instead "
+                        f"of {auxstep._n_cols}"
+                    )
                 return auxstep
             # line is comment only - move to next
             line = next(self.auxfile)
 
     def _count_n_steps(self):
-        """ Iterate through all steps to count total number.
+        """Iterate through all steps to count total number.
 
         Returns
         -------
@@ -358,7 +365,7 @@ class XVGFileReader(base.AuxFileReader):
             return count
 
     def read_all_times(self):
-        """ Iterate through all steps to build times list.
+        """Iterate through all steps to build times list.
 
         Returns
         -------

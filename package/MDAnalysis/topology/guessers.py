@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -23,6 +23,11 @@
 """
 Guessing unknown Topology information --- :mod:`MDAnalysis.topology.guessers`
 =============================================================================
+
+.. deprecated:: 2.8.0
+   The :mod:`MDAnalysis.topology.guessers` module will be removed in release 3.0.0.
+   It is deprecated in favor of the new Guessers API. See 
+   :mod:`MDAnalysis.guesser.default_guesser` for more details.
 
 In general `guess_atom_X` returns the guessed value for a single value,
 while `guess_Xs` will work on an array of many atoms.
@@ -101,9 +106,18 @@ import warnings
 import re
 
 from ..lib import distances
-from . import tables
+from MDAnalysis.guesser import tables
+from MDAnalysis.lib.util import deprecate
 
 
+deprecation_msg = (
+    "MDAnalysis.topology.guessers is deprecated in favour of "
+    "the new Guessers API. "
+    "See MDAnalysis.guesser.default_guesser for more details."
+)
+
+
+@deprecate(release="2.8.0", remove="3.0.0", message=deprecation_msg)
 def guess_masses(atom_types):
     """Guess the mass of many atoms based upon their type
 
@@ -121,6 +135,7 @@ def guess_masses(atom_types):
     return masses
 
 
+@deprecate(release="2.8.0", remove="3.0.0", message=deprecation_msg)
 def validate_atom_types(atom_types):
     """Vaildates the atom types based on whether they are available in our tables
 
@@ -146,6 +161,7 @@ def validate_atom_types(atom_types):
                 warnings.warn("Failed to guess the mass for the following atom types: {}".format(atom_type))
 
 
+@deprecate(release="2.8.0", remove="3.0.0", message=deprecation_msg)
 def guess_types(atom_names):
     """Guess the atom type of many atoms based on atom name
 
@@ -161,6 +177,7 @@ def guess_types(atom_names):
     return np.array([guess_atom_element(name) for name in atom_names], dtype=object)
 
 
+@deprecate(release="2.8.0", remove="3.0.0", message=deprecation_msg)
 def guess_atom_type(atomname):
     """Guess atom type from the name.
 
@@ -181,6 +198,8 @@ def guess_atom_type(atomname):
 NUMBERS = re.compile(r'[0-9]') # match numbers
 SYMBOLS = re.compile(r'[*+-]')  # match *, +, -
 
+
+@deprecate(release="2.8.0", remove="3.0.0", message=deprecation_msg)
 def guess_atom_element(atomname):
     """Guess the element of the atom from the name.
 
@@ -230,6 +249,7 @@ def guess_atom_element(atomname):
         return no_symbols
 
 
+@deprecate(release="2.8.0", remove="3.0.0", message=deprecation_msg)
 def guess_bonds(atoms, coords, box=None, **kwargs):
     r"""Guess if bonds exist between two atoms based on their distance.
 
@@ -338,6 +358,7 @@ def guess_bonds(atoms, coords, box=None, **kwargs):
     return tuple(bonds)
 
 
+@deprecate(release="2.8.0", remove="3.0.0", message=deprecation_msg)
 def guess_angles(bonds):
     """Given a list of Bonds, find all angles that exist between atoms.
 
@@ -374,6 +395,7 @@ def guess_angles(bonds):
     return tuple(angles_found)
 
 
+@deprecate(release="2.8.0", remove="3.0.0", message=deprecation_msg)
 def guess_dihedrals(angles):
     """Given a list of Angles, find all dihedrals that exist between atoms.
 
@@ -407,6 +429,7 @@ def guess_dihedrals(angles):
     return tuple(dihedrals_found)
 
 
+@deprecate(release="2.8.0", remove="3.0.0", message=deprecation_msg)
 def guess_improper_dihedrals(angles):
     """Given a list of Angles, find all improper dihedrals that exist between
     atoms.
@@ -443,6 +466,7 @@ def guess_improper_dihedrals(angles):
     return tuple(dihedrals_found)
 
 
+@deprecate(release="2.8.0", remove="3.0.0", message=deprecation_msg)
 def get_atom_mass(element):
     """Return the atomic mass in u for *element*.
 
@@ -462,6 +486,7 @@ def get_atom_mass(element):
             return 0.0
 
 
+@deprecate(release="2.8.0", remove="3.0.0", message=deprecation_msg)
 def guess_atom_mass(atomname):
     """Guess a mass based on the atom name.
 
@@ -473,6 +498,7 @@ def guess_atom_mass(atomname):
     return get_atom_mass(guess_atom_element(atomname))
 
 
+@deprecate(release="2.8.0", remove="3.0.0", message=deprecation_msg)
 def guess_atom_charge(atomname):
     """Guess atom charge from the name.
 
@@ -482,6 +508,7 @@ def guess_atom_charge(atomname):
     return 0.0
 
 
+@deprecate(release="2.8.0", remove="3.0.0", message=deprecation_msg)
 def guess_aromaticities(atomgroup):
     """Guess aromaticity of atoms using RDKit
 
@@ -502,6 +529,7 @@ def guess_aromaticities(atomgroup):
     return np.array([atom.GetIsAromatic() for atom in mol.GetAtoms()])
 
 
+@deprecate(release="2.8.0", remove="3.0.0", message=deprecation_msg)
 def guess_gasteiger_charges(atomgroup):
     """Guess Gasteiger partial charges using RDKit
 

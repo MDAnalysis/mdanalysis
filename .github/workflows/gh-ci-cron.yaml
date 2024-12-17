@@ -41,8 +41,6 @@ jobs:
         os-type: "ubuntu"
 
     - uses: actions/setup-python@v5
-      with:
-        python-version: ${{ matrix.python-version }}
 
     # minimally install nightly wheels & core deps
     - name: nightly_wheels
@@ -106,7 +104,7 @@ jobs:
         os-type: "ubuntu"
 
     - name: setup_micromamba
-      uses: mamba-org/setup-micromamba@v1
+      uses: mamba-org/setup-micromamba@v2
       with:
         environment-name: mda
         create-args: >-
@@ -148,7 +146,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, macos-12]
+        os: [ubuntu-20.04, macos-13]
 
     steps:
     - uses: actions/checkout@v4
@@ -159,7 +157,7 @@ jobs:
         os-type: ${{ matrix.os }}
 
     - name: setup_micromamba
-      uses: mamba-org/setup-micromamba@v1
+      uses: mamba-org/setup-micromamba@v2
       with:
         environment-name: mda
         create-args: >-
@@ -197,7 +195,7 @@ jobs:
     strategy:
         fail-fast: false
         matrix:
-          python-version: ["3.10", "3.11", "3.12"]
+          python-version: ["3.10", "3.11", "3.12", "3.13"]
     steps:
     - uses: actions/checkout@v4
 
@@ -251,7 +249,7 @@ jobs:
         os-type: ${{ matrix.os }}
 
     - name: setup_micromamba
-      uses: mamba-org/setup-micromamba@v1
+      uses: mamba-org/setup-micromamba@v2
       with:
         environment-name: mda
         create-args: >-
