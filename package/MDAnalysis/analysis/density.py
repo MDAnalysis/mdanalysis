@@ -494,7 +494,7 @@ class DensityAnalysis(AnalysisBase):
 
     def _get_aggregator(self):
         return ResultsGroup(lookup={
-        '_grid': ResultsGroup.ndarray_sum,}
+           '_grid': ResultsGroup.ndarray_sum}
                            )
 
     @property
