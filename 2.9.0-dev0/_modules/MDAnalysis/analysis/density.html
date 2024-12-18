@@ -311,7 +311,7 @@
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">distances</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.log</span> <span class="kn">import</span> <span class="n">ProgressBar</span>
 
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">AnalysisBase</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">AnalysisBase</span><span class="p">,</span> <span class="n">ResultsGroup</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
 
@@ -539,8 +539,19 @@
 <span class="sd">       :func:`_set_user_grid` is now a method of :class:`DensityAnalysis`.</span>
 <span class="sd">       :class:`Density` results are now stored in a</span>
 <span class="sd">       :class:`MDAnalysis.analysis.base.Results` instance.</span>
-
+<span class="sd">    .. versionchanged:: 2.9.0</span>
+<span class="sd">       Introduced :meth:`get_supported_backends` allowing</span>
+<span class="sd">       for parallel execution on :mod:`multiprocessing`</span>
+<span class="sd">       and :mod:`dask` backends.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_analysis_algorithm_is_parallelizable</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="DensityAnalysis.get_supported_backends">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.DensityAnalysis.get_supported_backends">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_supported_backends</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;serial&#39;</span><span class="p">,</span> <span class="s1">&#39;multiprocessing&#39;</span><span class="p">,</span> <span class="s1">&#39;dask&#39;</span><span class="p">)</span></div>
+
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroup</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
                  <span class="n">metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
@@ -556,7 +567,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_ydim</span> <span class="o">=</span> <span class="n">ydim</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_zdim</span> <span class="o">=</span> <span class="n">zdim</span>
 
-    <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># The grid with its dimensions has to be set up in __init__</span>
+        <span class="c1"># so that parallel analysis works correctly: each process</span>
+        <span class="c1"># needs to have a results._grid of the same size and the</span>
+        <span class="c1"># same self._bins and self._arange (so this cannot happen </span>
+        <span class="c1"># in _prepare(), which is executed in parallel on different </span>
+        <span class="c1"># parts of the trajectory).                    </span>
         <span class="n">coord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atomgroup</span><span class="o">.</span><span class="n">positions</span>
         <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_gridcenter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span>
                 <span class="nb">any</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_xdim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ydim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_zdim</span><span class="p">])):</span>
@@ -609,7 +625,7 @@
         <span class="n">grid</span><span class="p">,</span> <span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogramdd</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span>
                                      <span class="nb">range</span><span class="o">=</span><span class="n">arange</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">grid</span> <span class="o">*=</span> <span class="mf">0.0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span> <span class="o">=</span> <span class="n">grid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">_grid</span> <span class="o">=</span> <span class="n">grid</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_edges</span> <span class="o">=</span> <span class="n">edges</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_arange</span> <span class="o">=</span> <span class="n">arange</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_bins</span> <span class="o">=</span> <span class="n">bins</span>
@@ -618,20 +634,21 @@
         <span class="n">h</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogramdd</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_atomgroup</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
                               <span class="n">bins</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_bins</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_arange</span><span class="p">,</span>
                               <span class="n">density</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="c1"># reduce (proposed change #2542 to match the parallel version in pmda.density)</span>
-        <span class="c1"># return self._reduce(self._grid, h)</span>
-        <span class="c1">#</span>
-        <span class="c1"># serial code can simply do</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span> <span class="o">+=</span> <span class="n">h</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">_grid</span> <span class="o">+=</span> <span class="n">h</span>
 
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># average:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span> <span class="o">/=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">)</span>
-        <span class="n">density</span> <span class="o">=</span> <span class="n">Density</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_edges</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">_grid</span> <span class="o">/=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">)</span>
+        <span class="n">density</span> <span class="o">=</span> <span class="n">Density</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">_grid</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_edges</span><span class="p">,</span>
                           <span class="n">units</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="s2">&quot;Angstrom&quot;</span><span class="p">},</span>
                           <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;isDensity&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
         <span class="n">density</span><span class="o">.</span><span class="n">make_density</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">density</span> <span class="o">=</span> <span class="n">density</span>
+
+    <span class="k">def</span> <span class="nf">_get_aggregator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span><span class="n">lookup</span><span class="o">=</span><span class="p">{</span>
+           <span class="s1">&#39;_grid&#39;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_sum</span><span class="p">}</span>
+                           <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">density</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
