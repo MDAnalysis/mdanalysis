@@ -1,0 +1,82 @@
+# 4841 add `relprop` for atom selection and corresponding UT
+package/MDAnalysis/core/selection.py
+# ---------------------
+# 4822 Enabling of parallelization of `analysis.atomicdistances.AtomicDistances`
+package/MDAnalysis/analysis/atomicdistances.py
+# ---------------------
+# 4816 Implementation of `CMSParser`
+package/MDAnalysis/topology/CMSParser.py
+package/MDAnalysis/topology/__init__.py
+# ---------------------
+# 4815 add active PRs to black ignore
+# ---------------------
+# 4812 Bump the github-actions group with 4 updates
+# ---------------------
+# 4800 Transfer of `fasteners` dependency to `filelock`
+package/MDAnalysis/coordinates/XDR.py
+# ---------------------
+# 4790 Implementation of SugarSelection
+package/MDAnalysis/core/selection.py
+# ---------------------
+# 4745 'MDAnalysis.analysis.diffusionmap' parallelization
+package/MDAnalysis/analysis/diffusionmap.py
+# ---------------------
+# 4738 'MDAnalysis.analysis.align' parallelization 
+package/MDAnalysis/analysis/align.py
+# ---------------------
+# 4734 distopia 0.3.0 compatibility changes
+package/MDAnalysis/lib/_distopia.py
+package/MDAnalysis/lib/distances.py
+# ---------------------
+# 4714 Dask timeseries prototype
+package/MDAnalysis/analysis/dasktimeseries.py
+package/MDAnalysis/coordinates/H5MD.py
+# ---------------------
+# 4712 Implementing `gemmi`-based mmcif reader (with easy extension to PDB/PDBx and mmJSON)
+package/MDAnalysis/coordinates/MMCIF.py
+package/MDAnalysis/coordinates/__init__.py
+package/MDAnalysis/topology/MMCIFParser.py
+package/MDAnalysis/topology/PDBParser.py
+package/MDAnalysis/topology/__init__.py
+package/MDAnalysis/topology/tpr/utils.py
+# ---------------------
+# 4681 [WIP] Cif reader
+package/MDAnalysis/coordinates/CIF.py
+package/MDAnalysis/coordinates/PDBx.py
+package/MDAnalysis/coordinates/__init__.py
+package/MDAnalysis/topology/PDBxParser.py
+package/MDAnalysis/topology/__init__.py
+# ---------------------
+# 4584 Limit threads usage in numpy during test to avoid time-out
+# ---------------------
+# 4535 Pathlib object handling for Universe,  SingleFrameReaderBase and Toplogy parsers (Issue #3937)
+package/MDAnalysis/coordinates/base.py
+package/MDAnalysis/core/universe.py
+package/MDAnalysis/topology/base.py
+# ---------------------
+# 4533 Fix: modernise HBA to use AG as objects internally instead of selection strings - code only PR (Issue #3933)
+package/MDAnalysis/analysis/hydrogenbonds/hbond_analysis.py
+# ---------------------
+# 4417 Accessible Surface Area calculations
+package/MDAnalysis/analysis/sasa.py
+# ---------------------
+# 4334 Deprecate `ts` argument to _read_next_timestep
+package/MDAnalysis/coordinates/DCD.py
+package/MDAnalysis/coordinates/DLPoly.py
+package/MDAnalysis/coordinates/GMS.py
+package/MDAnalysis/coordinates/MOL2.py
+package/MDAnalysis/coordinates/PDB.py
+package/MDAnalysis/coordinates/TRJ.py
+package/MDAnalysis/coordinates/TRR.py
+package/MDAnalysis/coordinates/TRZ.py
+package/MDAnalysis/coordinates/TXYZ.py
+package/MDAnalysis/coordinates/XTC.py
+package/MDAnalysis/coordinates/XYZ.py
+package/MDAnalysis/coordinates/base.py
+package/MDAnalysis/coordinates/chain.py
+package/MDAnalysis/coordinates/chemfiles.py
+package/MDAnalysis/coordinates/memory.py
+# ---------------------
+# 4046  Added an info method to Universe Class
+package/MDAnalysis/core/universe.py
+# ---------------------

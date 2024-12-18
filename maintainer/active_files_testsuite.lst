@@ -1,0 +1,59 @@
+# 4841 add `relprop` for atom selection and corresponding UT
+testsuite/MDAnalysisTests/core/test_atomselections.py
+# ---------------------
+# 4822 Enabling of parallelization of `analysis.atomicdistances.AtomicDistances`
+testsuite/MDAnalysisTests/analysis/test_atomicdistances.py
+# ---------------------
+# 4816 Implementation of `CMSParser`
+# ---------------------
+# 4815 add active PRs to black ignore
+# ---------------------
+# 4812 Bump the github-actions group with 4 updates
+# ---------------------
+# 4800 Transfer of `fasteners` dependency to `filelock`
+testsuite/MDAnalysisTests/coordinates/test_xdr.py
+# ---------------------
+# 4790 Implementation of SugarSelection
+testsuite/MDAnalysisTests/core/test_atomselections.py
+testsuite/MDAnalysisTests/datafiles.py
+# ---------------------
+# 4745 'MDAnalysis.analysis.diffusionmap' parallelization
+testsuite/MDAnalysisTests/analysis/conftest.py
+testsuite/MDAnalysisTests/analysis/test_diffusionmap.py
+# ---------------------
+# 4738 'MDAnalysis.analysis.align' parallelization 
+testsuite/MDAnalysisTests/analysis/conftest.py
+testsuite/MDAnalysisTests/analysis/test_align.py
+# ---------------------
+# 4734 distopia 0.3.0 compatibility changes
+testsuite/MDAnalysisTests/lib/test_distances.py
+# ---------------------
+# 4714 Dask timeseries prototype
+# ---------------------
+# 4712 Implementing `gemmi`-based mmcif reader (with easy extension to PDB/PDBx and mmJSON)
+testsuite/MDAnalysisTests/coordinates/test_mmcif.py
+testsuite/MDAnalysisTests/datafiles.py
+testsuite/MDAnalysisTests/topology/test_mmcif.py
+# ---------------------
+# 4681 [WIP] Cif reader
+testsuite/MDAnalysisTests/coordinates/test_cif.py
+# ---------------------
+# 4584 Limit threads usage in numpy during test to avoid time-out
+testsuite/MDAnalysisTests/analysis/test_encore.py
+testsuite/MDAnalysisTests/parallelism/test_multiprocessing.py
+# ---------------------
+# 4535 Pathlib object handling for Universe,  SingleFrameReaderBase and Toplogy parsers (Issue #3937)
+testsuite/MDAnalysisTests/coordinates/base.py
+testsuite/MDAnalysisTests/coordinates/test_gro.py
+testsuite/MDAnalysisTests/topology/base.py
+# ---------------------
+# 4533 Fix: modernise HBA to use AG as objects internally instead of selection strings - code only PR (Issue #3933)
+testsuite/MDAnalysisTests/analysis/test_hydrogenbonds_analysis.py
+# ---------------------
+# 4417 Accessible Surface Area calculations
+testsuite/MDAnalysisTests/analysis/test_sasa.py
+# ---------------------
+# 4334 Deprecate `ts` argument to _read_next_timestep
+# ---------------------
+# 4046  Added an info method to Universe Class
+# ---------------------
