@@ -907,7 +907,7 @@ class _GromacsReader_offsets(object):
             os.chmod(str(tmpdir), 0o555)
 
         filename = str(tmpdir.join(os.path.basename(self.filename)))
-        # try to write a offsets file
+        # try to write a offsets file, obtain Cannot write due to FileLock
         with pytest.warns(UserWarning, match="Cannot write"):
             self._reader(filename)
         assert_equal(os.path.exists(XDR.offsets_filename(filename)), False)
