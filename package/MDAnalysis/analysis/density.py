@@ -420,6 +420,12 @@ class DensityAnalysis(AnalysisBase):
         self._ydim = ydim
         self._zdim = zdim
 
+        # The grid with its dimensions has to be set up in __init__
+        # so that parallel analysis works correctly: each process
+        # needs to have a results._grid of the same size and the
+        # same self._bins and self._arange (so this cannot happen 
+        # in _prepare(), which is executed in parallel on different 
+        # parts of the trajectory).                    
         coord = self._atomgroup.positions
         if (self._gridcenter is not None or
                 any([self._xdim, self._ydim, self._zdim])):
