@@ -891,6 +891,7 @@ class _GromacsReader_offsets(object):
         reader[idx_frame]
 
     @pytest.mark.skipif(get_userid() == 0, reason="cannot readonly as root")
+    # skip test in Windows Azure, due to different permission in Azure
     @pytest.mark.skipif(
       os.name == 'nt' and "AGENT_NAME" in os.environ,
       reason="Windows Azure does not support locking/permission modification"
@@ -924,6 +925,7 @@ class _GromacsReader_offsets(object):
         shutil.rmtree(tmpdir)
 
     def test_offset_lock_created(self):
+        # File is created, but without .lock ending
         assert os.path.exists(XDR.offsets_filename(self.filename))
 
 
