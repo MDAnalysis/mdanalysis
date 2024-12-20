@@ -921,6 +921,11 @@ class _GromacsReader_offsets(object):
                 err_msg="error loading frame offsets"
             )
 
+        assert_equal(os.path.exists(XDR.offsets_filename(filename)), False)
+        # check the lock file is not created as well.
+        assert_equal(os.path.exists(XDR.offsets_filename(filename,
+                                                    ending='.lock')), False)
+      
         # pre-teardown permission fix - leaving permission blocked dir
         # is problematic on py3.9 + Windows it seems. See issue
         # [4123](https://github.com/MDAnalysis/mdanalysis/issues/4123)
