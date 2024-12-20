@@ -87,7 +87,8 @@ class TXYZParser(TopologyReaderBase):
        through universe.guess_TopologyAttrs() API).
 
     """
-    format = ['TXYZ', 'ARC']
+
+    format = ["TXYZ", "ARC"]
 
     def parse(self, **kwargs):
         """Read the file and return the structure.
@@ -97,7 +98,7 @@ class TXYZParser(TopologyReaderBase):
         MDAnalysis Topology object
         """
         with openany(self.filename) as inf:
-            #header
+            # header
             natoms = int(inf.readline().split()[0])
 
             atomids = np.zeros(natoms, dtype=int)
@@ -121,7 +122,7 @@ class TXYZParser(TopologyReaderBase):
             # Can't infinitely read as XYZ files can be multiframe
             for i, line in zip(range(natoms), itertools.chain([fline], inf)):
                 line = line.split()
-                atomids[i]= line[0]
+                atomids[i] = line[0]
                 names[i] = line[1]
                 types[i] = line[5]
                 bonded_atoms = line[6:]
@@ -130,24 +131,26 @@ class TXYZParser(TopologyReaderBase):
                     if i < other_atom:
                         bonds.append((i, other_atom))
 
-        attrs = [Atomnames(names),
-                 Atomids(atomids),
-                 Atomtypes(types),
-                 Bonds(tuple(bonds)),
-                 Resids(np.array([1])),
-                 Resnums(np.array([1])),
-                 Segids(np.array(['SYSTEM'], dtype=object)),
-                 ]
+        attrs = [
+            Atomnames(names),
+            Atomids(atomids),
+            Atomtypes(types),
+            Bonds(tuple(bonds)),
+            Resids(np.array([1])),
+            Resnums(np.array([1])),
+            Segids(np.array(["SYSTEM"], dtype=object)),
+        ]
         if all(n.capitalize() in SYMB2Z for n in names):
             attrs.append(Elements(np.array(names, dtype=object)))
 
         else:
-            warnings.warn("Element information is missing, elements attribute "
-                          "will not be populated. If needed these can be "
-                          "guessed using universe.guess_TopologyAttrs("
-                          "to_guess=['elements']).")
+            warnings.warn(
+                "Element information is missing, elements attribute "
+                "will not be populated. If needed these can be "
+                "guessed using universe.guess_TopologyAttrs("
+                "to_guess=['elements'])."
+            )
 
-        top = Topology(natoms, 1, 1,
-                       attrs=attrs)
+        top = Topology(natoms, 1, 1, attrs=attrs)
 
         return top

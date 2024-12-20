@@ -34,7 +34,7 @@ from MDAnalysisTests.datafiles import (
     DLP_HISTORY_order,
     DLP_HISTORY_minimal,
     DLP_HISTORY_minimal_cell,
-    DLP_HISTORY_classic
+    DLP_HISTORY_classic,
 )
 
 
@@ -50,8 +50,8 @@ class DLPUniverse(ParserBase):
 
 
 class DLPBase2(DLPUniverse):
-    expected_attrs = ['ids', 'names']
-    guessed_attrs = ['masses', 'types']
+    expected_attrs = ["ids", "names"]
+    guessed_attrs = ["masses", "types"]
 
     expected_n_atoms = 216
     expected_n_residues = 1
@@ -64,73 +64,72 @@ class DLPBase2(DLPUniverse):
 
     def test_guessed_types(self, filename):
         u = mda.Universe(filename, topology_format=self.format)
-        assert u.atoms.types[0] == 'K'
-        assert u.atoms.types[4] == 'CL'
+        assert u.atoms.types[0] == "K"
+        assert u.atoms.types[4] == "CL"
 
     def test_names(self, top):
-        assert top.names.values[0] == 'K+'
-        assert top.names.values[4] == 'Cl-'
+        assert top.names.values[0] == "K+"
+        assert top.names.values[4] == "Cl-"
 
 
 class TestDLPHistoryParser(DLPBase2):
     parser = mda.topology.DLPolyParser.HistoryParser
     ref_filename = DLP_HISTORY
-    format = 'HISTORY'
+    format = "HISTORY"
 
 
 class TestDLPConfigParser(DLPBase2):
     parser = mda.topology.DLPolyParser.ConfigParser
     ref_filename = DLP_CONFIG
-    format = 'CONFIG'
+    format = "CONFIG"
 
 
 class DLPBase(DLPUniverse):
-    expected_attrs = ['ids', 'names']
+    expected_attrs = ["ids", "names"]
     expected_n_atoms = 3
     expected_n_residues = 1
     expected_n_segments = 1
 
     def test_dlp_names(self, top):
-        assert_equal(top.names.values,
-                     ['C', 'B', 'A'])
+        assert_equal(top.names.values, ["C", "B", "A"])
 
 
 class TestDLPConfigMinimal(DLPBase):
     parser = mda.topology.DLPolyParser.ConfigParser
     ref_filename = DLP_CONFIG_minimal
-    format = 'CONFIG'
+    format = "CONFIG"
 
 
 class TestDLPConfigOrder(DLPBase):
     parser = mda.topology.DLPolyParser.ConfigParser
     ref_filename = DLP_CONFIG_order
-    format = 'CONFIG'
+    format = "CONFIG"
 
 
 class TestDLPHistoryMinimal(DLPBase):
     parser = mda.topology.DLPolyParser.HistoryParser
     ref_filename = DLP_HISTORY_minimal
-    format = 'HISTORY'
+    format = "HISTORY"
 
 
 class TestDLPHistoryMinimal(DLPBase):
     parser = mda.topology.DLPolyParser.HistoryParser
     ref_filename = DLP_HISTORY_minimal_cell
-    format = 'HISTORY'
+    format = "HISTORY"
 
 
 class TestDLPHistoryOrder(DLPBase):
     parser = mda.topology.DLPolyParser.HistoryParser
     ref_filename = DLP_HISTORY_order
-    format = 'HISTORY'
+    format = "HISTORY"
 
 
 class TestDLPHistoryClassic(DLPBase):
     parser = mda.topology.DLPolyParser.HistoryParser
     ref_filename = DLP_HISTORY_classic
-    format = 'HISTORY'
+    format = "HISTORY"
 
 
 def test_HISTORY_EOFError():
     with pytest.raises(EOFError):
-        mda.Universe(DLP_CONFIG, topology_format='HISTORY')
+        mda.Universe(DLP_CONFIG, topology_format="HISTORY")

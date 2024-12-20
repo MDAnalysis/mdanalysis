@@ -81,7 +81,8 @@ class HoomdXMLParser(TopologyReaderBase):
      - Masses
 
     """
-    format = 'XML'
+
+    format = "XML"
 
     def parse(self, **kwargs):
         """Parse Hoomd XML file
@@ -102,21 +103,21 @@ class HoomdXMLParser(TopologyReaderBase):
         with openany(self.filename) as stream:
             tree = ET.parse(stream)
         root = tree.getroot()
-        configuration = root.find('configuration')
-        natoms = int(configuration.get('natoms'))
+        configuration = root.find("configuration")
+        natoms = int(configuration.get("natoms"))
 
         attrs = {}
 
-        atype = configuration.find('type')
-        atypes = atype.text.strip().split('\n')
+        atype = configuration.find("type")
+        atypes = atype.text.strip().split("\n")
         if len(atypes) != natoms:
             raise IOError("Number of types does not equal natoms.")
-        attrs['types'] = Atomtypes(np.array(atypes, dtype=object))
+        attrs["types"] = Atomtypes(np.array(atypes, dtype=object))
 
         for attrname, attr, mapper, dtype in (
-                ('diameter', Radii, lambda x: float(x) / 2., np.float32),
-                ('mass', Masses, float, np.float64),
-                ('charge', Charges, float, np.float32),
+            ("diameter", Radii, lambda x: float(x) / 2.0, np.float32),
+            ("mass", Masses, float, np.float64),
+            ("charge", Charges, float, np.float32),
         ):
             try:
                 val = configuration.find(attrname)
@@ -125,34 +126,38 @@ class HoomdXMLParser(TopologyReaderBase):
                 pass
             else:
                 attrs[attrname] = attr(np.array(vals, dtype=dtype))
-        for attrname, attr, in (
-                ('bond', Bonds),
-                ('angle', Angles),
-                ('dihedral', Dihedrals),
-                ('improper', Impropers),
+        for (
+            attrname,
+            attr,
+        ) in (
+            ("bond", Bonds),
+            ("angle", Angles),
+            ("dihedral", Dihedrals),
+            ("improper", Impropers),
         ):
             try:
                 val = configuration.find(attrname)
-                vals = [tuple(int(el) for el in line.split()[1:])
-                        for line in val.text.strip().split('\n')
-                        if line.strip()]
+                vals = [
+                    tuple(int(el) for el in line.split()[1:])
+                    for line in val.text.strip().split("\n")
+                    if line.strip()
+                ]
             except:
                 vals = []
             attrs[attrname] = attr(vals)
 
-        if 'mass' not in attrs:
-            attrs['mass'] = Masses(np.zeros(natoms))
-        if 'charge' not in attrs:
-            attrs['charge'] = Charges(np.zeros(natoms, dtype=np.float32))
+        if "mass" not in attrs:
+            attrs["mass"] = Masses(np.zeros(natoms))
+        if "charge" not in attrs:
+            attrs["charge"] = Charges(np.zeros(natoms, dtype=np.float32))
 
         attrs = list(attrs.values())
 
         attrs.append(Atomids(np.arange(natoms) + 1))
         attrs.append(Resids(np.array([1])))
         attrs.append(Resnums(np.array([1])))
-        attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
+        attrs.append(Segids(np.array(["SYSTEM"], dtype=object)))
 
-        top = Topology(natoms, 1, 1,
-                       attrs=attrs)
+        top = Topology(natoms, 1, 1, attrs=attrs)
 
         return top

@@ -25,7 +25,7 @@ import pytest
 import MDAnalysis as mda
 from MDAnalysis.core.topology import Topology
 
-mandatory_attrs = ['ids', 'resids', 'resnums', 'segids']
+mandatory_attrs = ["ids", "resids", "resnums", "segids"]
 
 
 class ParserBase(object):
@@ -57,34 +57,56 @@ class ParserBase(object):
         # attributes required as part of the API
         # ALL parsers must provide these
         for attr in mandatory_attrs:
-            assert hasattr(top, attr), 'Missing required attribute: {}'.format(attr)
+            assert hasattr(top, attr), "Missing required attribute: {}".format(
+                attr
+            )
 
     def test_expected_attributes(self, top):
         # Extra attributes as declared in specific implementations
         for attr in self.expected_attrs:
-            assert hasattr(top, attr), 'Missing expected attribute: {}'.format(attr)
+            assert hasattr(top, attr), "Missing expected attribute: {}".format(
+                attr
+            )
 
     def test_no_unexpected_attributes(self, top):
-        attrs = set(self.expected_attrs
-                    + mandatory_attrs
-                    + ['indices', 'resindices', 'segindices'] + self.guessed_attrs)
+        attrs = set(
+            self.expected_attrs
+            + mandatory_attrs
+            + ["indices", "resindices", "segindices"]
+            + self.guessed_attrs
+        )
         for attr in top.attrs:
-            assert attr.attrname in attrs, 'Unexpected attribute: {}'.format(attr.attrname)
+            assert attr.attrname in attrs, "Unexpected attribute: {}".format(
+                attr.attrname
+            )
 
     def test_size(self, top):
         """Check that the Topology is correctly sized"""
-        assert top.n_atoms == self.expected_n_atoms, '{} atoms read, {} expected in {}'.format(
-            top.n_atoms, self.expected_n_atoms, self.__class__.__name__)
+        assert (
+            top.n_atoms == self.expected_n_atoms
+        ), "{} atoms read, {} expected in {}".format(
+            top.n_atoms, self.expected_n_atoms, self.__class__.__name__
+        )
 
-        assert top.n_residues == self.expected_n_residues, '{} residues read, {} expected in {}'.format(
-            top.n_residues, self.expected_n_residues, self.__class__.__name__)
+        assert (
+            top.n_residues == self.expected_n_residues
+        ), "{} residues read, {} expected in {}".format(
+            top.n_residues, self.expected_n_residues, self.__class__.__name__
+        )
 
-        assert top.n_segments == self.expected_n_segments, '{} segment read, {} expected in {}'.format(
-            top.n_segments, self.expected_n_segments, self.__class__.__name__)
+        assert (
+            top.n_segments == self.expected_n_segments
+        ), "{} segment read, {} expected in {}".format(
+            top.n_segments, self.expected_n_segments, self.__class__.__name__
+        )
 
     def test_tt_size(self, top):
         """Check that the transtable is appropriately sized"""
-        assert top.tt.size == (self.expected_n_atoms, self.expected_n_residues, self.expected_n_segments)
+        assert top.tt.size == (
+            self.expected_n_atoms,
+            self.expected_n_residues,
+            self.expected_n_segments,
+        )
 
     def test_creates_universe(self, filename):
         """Check that Universe works with this Parser"""
@@ -95,8 +117,9 @@ class ParserBase(object):
         """check that the universe created with certain parser have the same
         guessed attributes as  when it was guessed inside the parser"""
         u = mda.Universe(filename)
-        u_guessed_attrs = [attr.attrname for attr
-                           in u._topology.guessed_attributes]
+        u_guessed_attrs = [
+            attr.attrname for attr in u._topology.guessed_attributes
+        ]
         for attr in self.guessed_attrs:
             assert hasattr(u.atoms, attr)
             assert attr in u_guessed_attrs

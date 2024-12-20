@@ -106,15 +106,15 @@ from ..due import due, Doi
 
 
 def _parse_mmtf(fn):
-    if fn.endswith('gz'):
+    if fn.endswith("gz"):
         return mmtf.parse_gzip(fn)
     else:
         return mmtf.parse(fn)
 
 
 class Models(SegmentAttr):
-    attrname = 'models'
-    singular = 'model'
+    attrname = "models"
+    singular = "model"
     transplants = defaultdict(list)
 
     def models(self):
@@ -130,16 +130,16 @@ class Models(SegmentAttr):
         """
         model_ids = np.unique(self.segments.models)
 
-        return [self.select_atoms('model {}'.format(i))
-                for i in model_ids]
+        return [self.select_atoms("model {}".format(i)) for i in model_ids]
 
-    transplants['Universe'].append(
-        ('models', property(models, None, None, models.__doc__)))
+    transplants["Universe"].append(
+        ("models", property(models, None, None, models.__doc__))
+    )
 
 
 class ModelSelection(RangeSelection):
-    token = 'model'
-    field = 'models'
+    token = "model"
+    field = "models"
 
     def apply(self, group):
         mask = np.zeros(len(group), dtype=bool)
@@ -157,7 +157,7 @@ class ModelSelection(RangeSelection):
 
 
 class MMTFParser(base.TopologyReaderBase):
-    format = 'MMTF'
+    format = "MMTF"
 
     @staticmethod
     def _format_hint(thing):
@@ -168,9 +168,9 @@ class MMTFParser(base.TopologyReaderBase):
         return isinstance(thing, mmtf.MMTFDecoder)
 
     @due.dcite(
-        Doi('10.1371/journal.pcbi.1005575'),
+        Doi("10.1371/journal.pcbi.1005575"),
         description="MMTF Parser",
-        path='MDAnalysis.topology.MMTFParser',
+        path="MDAnalysis.topology.MMTFParser",
     )
     def parse(self, **kwargs):
         if isinstance(self.filename, mmtf.MMTFDecoder):
@@ -191,45 +191,58 @@ class MMTFParser(base.TopologyReaderBase):
         attrs = []
 
         # required
-        charges = Charges(list(iter_atoms('formalChargeList')))
-        names = Atomnames(list(iter_atoms('atomNameList')))
-        types = Atomtypes(list(iter_atoms('elementList')))
+        charges = Charges(list(iter_atoms("formalChargeList")))
+        names = Atomnames(list(iter_atoms("atomNameList")))
+        types = Atomtypes(list(iter_atoms("elementList")))
         attrs.extend([charges, names, types])
 
-        #optional are empty list if empty, sometimes arrays
+        # optional are empty list if empty, sometimes arrays
         if len(mtop.atom_id_list):
             attrs.append(Atomids(mtop.atom_id_list))
         else:
             # must have this attribute for MDA
             attrs.append(Atomids(np.arange(natoms), guessed=True))
         if mtop.alt_loc_list:
-            attrs.append(AltLocs([val.replace('\x00', '').strip()
-                                  for val in mtop.alt_loc_list]))
+            attrs.append(
+                AltLocs(
+                    [
+                        val.replace("\x00", "").strip()
+                        for val in mtop.alt_loc_list
+                    ]
+                )
+            )
         else:
-            attrs.append(AltLocs(['']*natoms))
+            attrs.append(AltLocs([""] * natoms))
         if len(mtop.b_factor_list):
             attrs.append(Tempfactors(mtop.b_factor_list))
         else:
-            attrs.append(Tempfactors([0]*natoms))
+            attrs.append(Tempfactors([0] * natoms))
         if len(mtop.occupancy_list):
             attrs.append(Occupancies(mtop.occupancy_list))
         else:
-            attrs.append(Occupancies([1]*natoms))
+            attrs.append(Occupancies([1] * natoms))
 
         # Residue things
         # required
         resids = Resids(mtop.group_id_list)
         resnums = Resnums(resids.values.copy())
-        resnames = Resnames([mtop.group_list[i]['groupName']
-                             for i in mtop.group_type_list])
+        resnames = Resnames(
+            [mtop.group_list[i]["groupName"] for i in mtop.group_type_list]
+        )
         attrs.extend([resids, resnums, resnames])
         # optional
         # mmtf empty icode is '\x00' rather than ''
         if mtop.ins_code_list:
-            attrs.append(ICodes([val.replace('\x00', '').strip()
-                                 for val in mtop.ins_code_list]))
+            attrs.append(
+                ICodes(
+                    [
+                        val.replace("\x00", "").strip()
+                        for val in mtop.ins_code_list
+                    ]
+                )
+            )
         else:
-            attrs.append(ICodes(['']*nresidues))
+            attrs.append(ICodes([""] * nresidues))
 
         # Segment things
         # optional
@@ -237,18 +250,21 @@ class MMTFParser(base.TopologyReaderBase):
             attrs.append(Segids(mtop.chain_name_list))
         else:
             # required for MDAnalysis
-            attrs.append(Segids(['SYSTEM'] * nsegments, guessed=True))
+            attrs.append(Segids(["SYSTEM"] * nsegments, guessed=True))
 
         mods = np.repeat(np.arange(mtop.num_models), mtop.chains_per_model)
         attrs.append(Models(mods))
-        #attrs.append(chainids)
+        # attrs.append(chainids)
 
         # number of atoms in a given group id
-        groupID_2_natoms = {i:len(g['atomNameList'])
-                            for i, g in enumerate(mtop.group_list)}
+        groupID_2_natoms = {
+            i: len(g["atomNameList"]) for i, g in enumerate(mtop.group_list)
+        }
         # mapping of atoms to residues
-        resindex = np.repeat(np.arange(nresidues),
-                             [groupID_2_natoms[i] for i in mtop.group_type_list])
+        resindex = np.repeat(
+            np.arange(nresidues),
+            [groupID_2_natoms[i] for i in mtop.group_type_list],
+        )
 
         # mapping of residues to segments
         segindex = np.repeat(np.arange(nsegments), mtop.groups_per_chain)
@@ -260,7 +276,7 @@ class MMTFParser(base.TopologyReaderBase):
         bonds = []
         for gtype in mtop.group_type_list:
             g = mtop.group_list[gtype]
-            bondlist = g['bondAtomList']
+            bondlist = g["bondAtomList"]
 
             for x, y in zip(bondlist[1::2], bondlist[::2]):
                 if x > y:
@@ -270,16 +286,21 @@ class MMTFParser(base.TopologyReaderBase):
             offset += groupID_2_natoms[gtype]
         # add inter group bonds
         if not mtop.bond_atom_list is None:  # optional field
-            for x, y in zip(mtop.bond_atom_list[1::2],
-                            mtop.bond_atom_list[::2]):
+            for x, y in zip(
+                mtop.bond_atom_list[1::2], mtop.bond_atom_list[::2]
+            ):
                 if x > y:
                     x, y = y, x
                 bonds.append((x, y))
         attrs.append(Bonds(bonds))
 
-        top = Topology(natoms, nresidues, nsegments,
-                       atom_resindex=resindex,
-                       residue_segindex=segindex,
-                       attrs=attrs)
+        top = Topology(
+            natoms,
+            nresidues,
+            nsegments,
+            atom_resindex=resindex,
+            residue_segindex=segindex,
+            attrs=attrs,
+        )
 
         return top

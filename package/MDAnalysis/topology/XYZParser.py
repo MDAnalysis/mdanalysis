@@ -75,7 +75,8 @@ class XYZParser(TopologyReaderBase):
         through universe.guess_TopologyAttrs() API).
 
     """
-    format = 'XYZ'
+
+    format = "XYZ"
 
     def parse(self, **kwargs):
         """Read the file and return the structure.
@@ -95,15 +96,15 @@ class XYZParser(TopologyReaderBase):
                 name = inf.readline().split()[0]
                 names[i] = name
 
+        attrs = [
+            Atomnames(names),
+            Atomids(np.arange(natoms) + 1),
+            Resids(np.array([1])),
+            Resnums(np.array([1])),
+            Segids(np.array(["SYSTEM"], dtype=object)),
+            Elements(names),
+        ]
 
-        attrs = [Atomnames(names),
-                 Atomids(np.arange(natoms) + 1),
-                 Resids(np.array([1])),
-                 Resnums(np.array([1])),
-                 Segids(np.array(['SYSTEM'], dtype=object)),
-                 Elements(names)]
-
-        top = Topology(natoms, 1, 1,
-                       attrs=attrs)
+        top = Topology(natoms, 1, 1, attrs=attrs)
 
         return top

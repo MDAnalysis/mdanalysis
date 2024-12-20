@@ -110,34 +110,36 @@ logger = logging.getLogger("MDAnalysis.topology.LAMMPS")
 
 # Sections will all start with one of these words
 # and run until the next section title
-SECTIONS = set([
-    'Atoms',  # Molecular topology sections
-    'Velocities',
-    'Masses',
-    'Ellipsoids',
-    'Lines',
-    'Triangles',
-    'Bodies',
-    'Bonds',  # Forcefield sections
-    'Angles',
-    'Dihedrals',
-    'Impropers',
-    'Pair',
-    'Pair LJCoeffs',
-    'PairIJ Coeffs',
-    'Bond Coeffs',
-    'Angle Coeffs',
-    'Dihedral Coeffs',
-    'Improper Coeffs',
-    'BondBond Coeffs',  # Class 2 FF sections
-    'BondAngle Coeffs',
-    'MiddleBondTorsion Coeffs',
-    'EndBondTorsion Coeffs',
-    'AngleTorsion Coeffs',
-    'AngleAngleTorsion Coeffs',
-    'BondBond13 Coeffs',
-    'AngleAngle Coeffs',
-])
+SECTIONS = set(
+    [
+        "Atoms",  # Molecular topology sections
+        "Velocities",
+        "Masses",
+        "Ellipsoids",
+        "Lines",
+        "Triangles",
+        "Bodies",
+        "Bonds",  # Forcefield sections
+        "Angles",
+        "Dihedrals",
+        "Impropers",
+        "Pair",
+        "Pair LJCoeffs",
+        "PairIJ Coeffs",
+        "Bond Coeffs",
+        "Angle Coeffs",
+        "Dihedral Coeffs",
+        "Improper Coeffs",
+        "BondBond Coeffs",  # Class 2 FF sections
+        "BondAngle Coeffs",
+        "MiddleBondTorsion Coeffs",
+        "EndBondTorsion Coeffs",
+        "AngleTorsion Coeffs",
+        "AngleAngleTorsion Coeffs",
+        "BondBond13 Coeffs",
+        "AngleAngle Coeffs",
+    ]
+)
 # We usually check by splitting around whitespace, so check
 # if any SECTION keywords will trip up on this
 # and add them
@@ -146,31 +148,33 @@ for val in list(SECTIONS):
         SECTIONS.add(val.split()[0])
 
 
-HEADERS = set([
-    'atoms',
-    'bonds',
-    'angles',
-    'dihedrals',
-    'impropers',
-    'atom types',
-    'bond types',
-    'angle types',
-    'dihedral types',
-    'improper types',
-    'extra bond per atom',
-    'extra angle per atom',
-    'extra dihedral per atom',
-    'extra improper per atom',
-    'extra special per atom',
-    'ellipsoids',
-    'lines',
-    'triangles',
-    'bodies',
-    'xlo xhi',
-    'ylo yhi',
-    'zlo zhi',
-    'xy xz yz',
-])
+HEADERS = set(
+    [
+        "atoms",
+        "bonds",
+        "angles",
+        "dihedrals",
+        "impropers",
+        "atom types",
+        "bond types",
+        "angle types",
+        "dihedral types",
+        "improper types",
+        "extra bond per atom",
+        "extra angle per atom",
+        "extra dihedral per atom",
+        "extra improper per atom",
+        "extra special per atom",
+        "ellipsoids",
+        "lines",
+        "triangles",
+        "bodies",
+        "xlo xhi",
+        "ylo yhi",
+        "zlo zhi",
+        "xy xz yz",
+    ]
+)
 
 
 class DATAParser(TopologyReaderBase):
@@ -192,12 +196,13 @@ class DATAParser(TopologyReaderBase):
         through universe.guess_TopologyAttrs() API).
 
     """
-    format = 'DATA'
+
+    format = "DATA"
 
     def iterdata(self):
         with openany(self.filename) as f:
             for line in f:
-                line = line.partition('#')[0].strip()
+                line = line.partition("#")[0].strip()
                 if line:
                     yield line
 
@@ -211,19 +216,19 @@ class DATAParser(TopologyReaderBase):
         """
         f = list(self.iterdata())
 
-        starts = [i for i, line in enumerate(f)
-                  if line.split()[0] in SECTIONS]
+        starts = [i for i, line in enumerate(f) if line.split()[0] in SECTIONS]
         starts += [None]
 
         header = {}
-        for line in f[:starts[0]]:
+        for line in f[: starts[0]]:
             for token in HEADERS:
                 if line.endswith(token):
                     header[token] = line.split(token)[0]
                     continue
 
-        sects = {f[l]:f[l+1:starts[i+1]]
-                 for i, l in enumerate(starts[:-1])}
+        sects = {
+            f[l]: f[l + 1 : starts[i + 1]] for i, l in enumerate(starts[:-1])
+        }
 
         return header, sects
 
@@ -248,7 +253,7 @@ class DATAParser(TopologyReaderBase):
 
         atom_style = atom_style.split()
 
-        for attr in ['id', 'type', 'resid', 'charge', 'x', 'y', 'z']:
+        for attr in ["id", "type", "resid", "charge", "x", "y", "z"]:
             try:
                 location = atom_style.index(attr)
             except ValueError:
@@ -256,11 +261,13 @@ class DATAParser(TopologyReaderBase):
             else:
                 style_dict[attr] = location
 
-        reqd_attrs = ['id', 'type', 'x', 'y', 'z']
+        reqd_attrs = ["id", "type", "x", "y", "z"]
         missing_attrs = [attr for attr in reqd_attrs if attr not in style_dict]
         if missing_attrs:
-            raise ValueError("atom_style string missing required field(s): {}"
-                             "".format(', '.join(missing_attrs)))
+            raise ValueError(
+                "atom_style string missing required field(s): {}"
+                "".format(", ".join(missing_attrs))
+            )
 
         return style_dict
 
@@ -273,40 +280,43 @@ class DATAParser(TopologyReaderBase):
         """
         # Can pass atom_style to help parsing
         try:
-            self.style_dict = self._interpret_atom_style(kwargs['atom_style'])
+            self.style_dict = self._interpret_atom_style(kwargs["atom_style"])
         except KeyError:
             self.style_dict = None
 
         head, sects = self.grab_datafile()
 
         try:
-            masses = self._parse_masses(sects['Masses'])
+            masses = self._parse_masses(sects["Masses"])
         except KeyError:
             masses = None
 
-        if 'Atoms' not in sects:
+        if "Atoms" not in sects:
             raise ValueError("Data file was missing Atoms section")
 
         try:
-            top = self._parse_atoms(sects['Atoms'], masses)
+            top = self._parse_atoms(sects["Atoms"], masses)
         except Exception:
             errmsg = (
                 "Failed to parse atoms section.  You can supply a description "
                 "of the atom_style as a keyword argument, "
-                "eg mda.Universe(..., atom_style='id resid x y z')")
+                "eg mda.Universe(..., atom_style='id resid x y z')"
+            )
             raise ValueError(errmsg) from None
 
         # create mapping of id to index (ie atom id 10 might be the 0th atom)
         mapping = {atom_id: i for i, atom_id in enumerate(top.ids.values)}
 
         for attr, L, nentries in [
-                (Bonds, 'Bonds', 2),
-                (Angles, 'Angles', 3),
-                (Dihedrals, 'Dihedrals', 4),
-                (Impropers, 'Impropers', 4)
+            (Bonds, "Bonds", 2),
+            (Angles, "Angles", 3),
+            (Dihedrals, "Dihedrals", 4),
+            (Impropers, "Impropers", 4),
         ]:
             try:
-                type, sect = self._parse_bond_section(sects[L], nentries, mapping)
+                type, sect = self._parse_bond_section(
+                    sects[L], nentries, mapping
+                )
             except KeyError:
                 type, sect = [], []
 
@@ -314,8 +324,9 @@ class DATAParser(TopologyReaderBase):
 
         return top
 
-    def read_DATA_timestep(self, n_atoms, TS_class, TS_kwargs,
-                           atom_style=None):
+    def read_DATA_timestep(
+        self, n_atoms, TS_class, TS_kwargs, atom_style=None
+    ):
         """Read a DATA file and try and extract x, v, box.
 
         - positions
@@ -338,19 +349,19 @@ class DATAParser(TopologyReaderBase):
         unitcell = self._parse_box(header)
 
         try:
-            positions, ordering = self._parse_pos(sects['Atoms'])
+            positions, ordering = self._parse_pos(sects["Atoms"])
         except KeyError as err:
             errmsg = f"Position information not found: {err}"
             raise IOError(errmsg) from None
 
-        if 'Velocities' in sects:
-            velocities = self._parse_vel(sects['Velocities'], ordering)
+        if "Velocities" in sects:
+            velocities = self._parse_vel(sects["Velocities"], ordering)
         else:
             velocities = None
 
-        ts = TS_class.from_coordinates(positions,
-                                       velocities=velocities,
-                                       **TS_kwargs)
+        ts = TS_class.from_coordinates(
+            positions, velocities=velocities, **TS_kwargs
+        )
         ts.dimensions = unitcell
 
         return ts
@@ -365,20 +376,22 @@ class DATAParser(TopologyReaderBase):
 
         if self.style_dict is None:
             if len(datalines[0].split()) in (7, 10):
-                style_dict = {'id': 0, 'x': 4, 'y': 5, 'z': 6}
+                style_dict = {"id": 0, "x": 4, "y": 5, "z": 6}
             else:
-                style_dict = {'id': 0, 'x': 3, 'y': 4, 'z': 5}
+                style_dict = {"id": 0, "x": 3, "y": 4, "z": 5}
         else:
             style_dict = self.style_dict
 
         for i, line in enumerate(datalines):
             line = line.split()
 
-            ids[i] = line[style_dict['id']]
+            ids[i] = line[style_dict["id"]]
 
-            pos[i, :] = [line[style_dict['x']],
-                         line[style_dict['y']],
-                         line[style_dict['z']]]
+            pos[i, :] = [
+                line[style_dict["x"]],
+                line[style_dict["y"]],
+                line[style_dict["z"]],
+            ]
 
         order = np.argsort(ids)
         pos = pos[order]
@@ -435,7 +448,9 @@ class DATAParser(TopologyReaderBase):
         for line in datalines:
             line = line.split()
             # map to 0 based int
-            section.append(tuple([mapping[int(x)] for x in line[2:2 + nentries]]))
+            section.append(
+                tuple([mapping[int(x)] for x in line[2 : 2 + nentries]])
+            )
             type.append(line[1])
         return tuple(type), tuple(section)
 
@@ -471,18 +486,16 @@ class DATAParser(TopologyReaderBase):
         n_atoms = len(datalines)
 
         if self.style_dict is None:
-            sd = {'id': 0,
-                  'resid': 1,
-                  'type': 2}
+            sd = {"id": 0, "resid": 1, "type": 2}
             # Fields per line
             n = len(datalines[0].split())
             if n in (7, 10):
-                sd['charge'] = 3
+                sd["charge"] = 3
         else:
             sd = self.style_dict
 
-        has_charge = 'charge' in sd
-        has_resid = 'resid' in sd
+        has_charge = "charge" in sd
+        has_resid = "resid" in sd
 
         # atom ids aren't necessarily sequential
         atom_ids = np.zeros(n_atoms, dtype=np.int32)
@@ -500,12 +513,12 @@ class DATAParser(TopologyReaderBase):
             # these numpy array are already typed correctly,
             # so just pass the raw strings
             # and let numpy handle the conversion
-            atom_ids[i] = line[sd['id']]
+            atom_ids[i] = line[sd["id"]]
             if has_resid:
-                resids[i] = line[sd['resid']]
-            types[i] = line[sd['type']]
+                resids[i] = line[sd["resid"]]
+            types[i] = line[sd["type"]]
             if has_charge:
-                charges[i] = line[sd['charge']]
+                charges[i] = line[sd["charge"]]
 
         # at this point, we've read the atoms section,
         # but it's still (potentially) unordered
@@ -536,11 +549,11 @@ class DATAParser(TopologyReaderBase):
         attrs.append(Atomids(atom_ids))
         attrs.append(Resids(resids))
         attrs.append(Resnums(resids.copy()))
-        attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
+        attrs.append(Segids(np.array(["SYSTEM"], dtype=object)))
 
-        top = Topology(n_atoms, n_residues, 1,
-                       attrs=attrs,
-                       atom_resindex=residx)
+        top = Topology(
+            n_atoms, n_residues, 1, attrs=attrs, atom_resindex=residx
+        )
 
         return top
 
@@ -559,18 +572,18 @@ class DATAParser(TopologyReaderBase):
         return masses
 
     def _parse_box(self, header):
-        x1, x2 = np.float32(header['xlo xhi'].split())
+        x1, x2 = np.float32(header["xlo xhi"].split())
         x = x2 - x1
-        y1, y2 = np.float32(header['ylo yhi'].split())
+        y1, y2 = np.float32(header["ylo yhi"].split())
         y = y2 - y1
-        z1, z2 = np.float32(header['zlo zhi'].split())
+        z1, z2 = np.float32(header["zlo zhi"].split())
         z = z2 - z1
 
-        if 'xy xz yz' in header:
+        if "xy xz yz" in header:
             # Triclinic
             unitcell = np.zeros((3, 3), dtype=np.float32)
 
-            xy, xz, yz = np.float32(header['xy xz yz'].split())
+            xy, xz, yz = np.float32(header["xy xz yz"].split())
 
             unitcell[0][0] = x
             unitcell[1][0] = xy
@@ -584,7 +597,7 @@ class DATAParser(TopologyReaderBase):
             # Orthogonal
             unitcell = np.zeros(6, dtype=np.float32)
             unitcell[:3] = x, y, z
-            unitcell[3:] = 90., 90., 90.
+            unitcell[3:] = 90.0, 90.0, 90.0
 
         return unitcell
 
@@ -598,7 +611,8 @@ class LammpsDumpParser(TopologyReaderBase):
     .. versionchanged:: 2.0.0
     .. versionadded:: 0.19.0
     """
-    format = 'LAMMPSDUMP'
+
+    format = "LAMMPSDUMP"
 
     def parse(self, **kwargs):
         with openany(self.filename) as fin:
@@ -634,17 +648,25 @@ class LammpsDumpParser(TopologyReaderBase):
         attrs.append(Atomids(indices))
         attrs.append(Atomtypes(types))
         attrs.append(Masses(np.ones(natoms, dtype=np.float64), guessed=True))
-        warnings.warn('Guessed all Masses to 1.0')
+        warnings.warn("Guessed all Masses to 1.0")
         attrs.append(Resids(np.array([1], dtype=int)))
         attrs.append(Resnums(np.array([1], dtype=int)))
-        attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
+        attrs.append(Segids(np.array(["SYSTEM"], dtype=object)))
 
         return Topology(natoms, 1, 1, attrs=attrs)
 
 
 @functools.total_ordering
 class LAMMPSAtom(object):  # pragma: no cover
-    __slots__ = ("index", "name", "type", "chainid", "charge", "mass", "_positions")
+    __slots__ = (
+        "index",
+        "name",
+        "type",
+        "chainid",
+        "charge",
+        "mass",
+        "_positions",
+    )
 
     def __init__(self, index, name, type, chain_id, charge=0, mass=1):
         self.index = index
@@ -655,8 +677,15 @@ class LAMMPSAtom(object):  # pragma: no cover
         self.mass = mass
 
     def __repr__(self):
-        return "<LAMMPSAtom " + repr(self.index + 1) + ": name " + repr(self.type) + " of chain " + repr(
-            self.chainid) + ">"
+        return (
+            "<LAMMPSAtom "
+            + repr(self.index + 1)
+            + ": name "
+            + repr(self.type)
+            + " of chain "
+            + repr(self.chainid)
+            + ">"
+        )
 
     def __lt__(self, other):
         return self.index < other.index
@@ -668,12 +697,22 @@ class LAMMPSAtom(object):  # pragma: no cover
         return hash(self.index)
 
     def __getattr__(self, attr):
-        if attr == 'pos':
+        if attr == "pos":
             return self._positions[self.index]
         else:
             super(LAMMPSAtom, self).__getattribute__(attr)
 
     def __iter__(self):
         pos = self.pos
-        return iter((self.index + 1, self.chainid, self.type, self.charge,
-                     self.mass, pos[0], pos[1], pos[2]))
+        return iter(
+            (
+                self.index + 1,
+                self.chainid,
+                self.type,
+                self.charge,
+                self.mass,
+                pos[0],
+                pos[1],
+                pos[2],
+            )
+        )
