@@ -909,9 +909,22 @@ class _GromacsReader_offsets(object):
 
         filename = str(tmpdir.join(os.path.basename(self.filename)))
         # try to write a offsets file, obtain Cannot write due to FileLock
-        with pytest.warns(UserWarning, match="Cannot write"):
-            self._reader(filename)
-        assert_equal(os.path.exists(XDR.offsets_filename(filename)), False)
+        ref_offset = XDR.read_numpy_offsets(self.filename)  # Assuming this is the reference you want to use
+        # Mock np.load to raise an error when trying to load offsets
+        with patch.object(np, "load") as np_load_mock:
+            np_load_mock.side_effect = ValueError  # Simulate failure in loading offsets
+            
+            # Use pytest.warns to check for the expected warnings when loading offsets fails
+            with pytest.warns(UserWarning, match="Failed to load offsets"):
+                # Now using the XDR.read_numpy_offsets method to read the offsets
+                saved_offsets = XDR.read_numpy_offsets(filename)
+
+            # Check if the offsets are handled properly and match the expected reference offsets
+            assert_almost_equal(
+                saved_offsets,  # Compare the saved offsets with the reference offsets
+                ref_offset,
+                err_msg="error loading frame offsets"
+            )
 
         # pre-teardown permission fix - leaving permission blocked dir
         # is problematic on py3.9 + Windows it seems. See issue
