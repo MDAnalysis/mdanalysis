@@ -135,6 +135,7 @@ tables\.py
 | MDAnalysis/visualization/.*\.py
 | MDAnalysis/lib/.*\.py^
 | MDAnalysis/transformations/.*\.py
+| MDAnalysis/guesser/.*\.py
 )
 '''
 extend-exclude = '''
