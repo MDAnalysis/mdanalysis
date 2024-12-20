@@ -20,17 +20,16 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-import pytest
-import numpy as np
 import MDAnalysis as mda
-from MDAnalysis.guesser.base import GuesserBase, get_guesser
-from MDAnalysis.core.topology import Topology
-from MDAnalysis.core.topologyattrs import Masses, Atomnames, Atomtypes
 import MDAnalysis.tests.datafiles as datafiles
+import numpy as np
+import pytest
+from MDAnalysis import _GUESSERS, _TOPOLOGY_ATTRS
+from MDAnalysis.core.topology import Topology
+from MDAnalysis.core.topologyattrs import Atomnames, Atomtypes, Masses
 from MDAnalysis.exceptions import NoDataError
+from MDAnalysis.guesser.base import GuesserBase, get_guesser
 from numpy.testing import assert_allclose, assert_equal
-
-from MDAnalysis import _TOPOLOGY_ATTRS, _GUESSERS
 
 
 class TestBaseGuesser:
@@ -69,15 +68,7 @@ class TestBaseGuesser:
         masses = Masses(
             np.array([np.nan, np.nan, np.nan, np.nan], dtype=np.float64)
         )
-        top = Topology(
-            4,
-            1,
-            1,
-            attrs=[
-                names,
-                masses,
-            ],
-        )
+        top = Topology(4, 1, 1, attrs=[names, masses])
         u = mda.Universe(top, to_guess=["masses"])
         assert_allclose(
             u.atoms.masses,
@@ -88,30 +79,14 @@ class TestBaseGuesser:
     def test_force_guessing(self):
         names = Atomnames(np.array(["C", "H", "H", "O"], dtype=object))
         types = Atomtypes(np.array(["1", "2", "3", "4"], dtype=object))
-        top = Topology(
-            4,
-            1,
-            1,
-            attrs=[
-                names,
-                types,
-            ],
-        )
+        top = Topology(4, 1, 1, attrs=[names, types])
         u = mda.Universe(top, force_guess=["types"])
         assert_equal(u.atoms.types, ["C", "H", "H", "O"])
 
     def test_partial_guessing(self):
         types = Atomtypes(np.array(["C", "H", "H", "O"], dtype=object))
         masses = Masses(np.array([0, np.nan, np.nan, 0], dtype=np.float64))
-        top = Topology(
-            4,
-            1,
-            1,
-            attrs=[
-                types,
-                masses,
-            ],
-        )
+        top = Topology(4, 1, 1, attrs=[types, masses])
         u = mda.Universe(top, to_guess=["masses"])
         assert_allclose(
             u.atoms.masses, np.array([0, 1.00800, 1.00800, 0]), atol=0
@@ -121,15 +96,7 @@ class TestBaseGuesser:
         "check that passing the attribute to force_guess have higher power"
         types = Atomtypes(np.array(["C", "H", "H", "O"], dtype=object))
         masses = Masses(np.array([0, np.nan, np.nan, 0], dtype=np.float64))
-        top = Topology(
-            4,
-            1,
-            1,
-            attrs=[
-                types,
-                masses,
-            ],
-        )
+        top = Topology(4, 1, 1, attrs=[types, masses])
         u = mda.Universe(top, to_guess=["masses"], force_guess=["masses"])
         assert_allclose(
             u.atoms.masses,
@@ -142,15 +109,7 @@ class TestBaseGuesser:
         "no_value_label should gives no effect"
         names = Atomnames(np.array(["C", "H", "H", "O"], dtype=object))
         types = Atomtypes(np.array(["", "", "", ""], dtype=object))
-        top = Topology(
-            4,
-            1,
-            1,
-            attrs=[
-                names,
-                types,
-            ],
-        )
+        top = Topology(4, 1, 1, attrs=[names, types])
         u = mda.Universe(top, to_guess=["types"])
         assert_equal(u.atoms.types, ["", "", "", ""])
 
