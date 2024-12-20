@@ -246,16 +246,20 @@ from .base import AnalysisBase
 from ..core import groups
 from tqdm import tqdm
 
-logger = logging.getLogger('MDAnalysis.analysis.msd')
+logger = logging.getLogger("MDAnalysis.analysis.msd")
 
-due.cite(Doi("10.21105/joss.00877"),
-         description="Mean Squared Displacements with tidynamics",
-         path="MDAnalysis.analysis.msd",
-         cite_module=True)
-due.cite(Doi("10.1051/sfn/201112010"),
-         description="FCA fast correlation algorithm",
-         path="MDAnalysis.analysis.msd",
-         cite_module=True)
+due.cite(
+    Doi("10.21105/joss.00877"),
+    description="Mean Squared Displacements with tidynamics",
+    path="MDAnalysis.analysis.msd",
+    cite_module=True,
+)
+due.cite(
+    Doi("10.1051/sfn/201112010"),
+    description="FCA fast correlation algorithm",
+    path="MDAnalysis.analysis.msd",
+    cite_module=True,
+)
 del Doi
 
 
@@ -297,7 +301,7 @@ class EinsteinMSD(AnalysisBase):
     .. versionadded:: 2.0.0
     """
 
-    def __init__(self, u, select='all', msd_type='xyz', fft=True, **kwargs):
+    def __init__(self, u, select="all", msd_type="xyz", fft=True, **kwargs):
         r"""
         Parameters
         ----------
@@ -314,8 +318,9 @@ class EinsteinMSD(AnalysisBase):
             The tidynamics package is required for `fft=True`.
         """
         if isinstance(u, groups.UpdatingAtomGroup):
-            raise TypeError("UpdatingAtomGroups are not valid for MSD "
-                            "computation")
+            raise TypeError(
+                "UpdatingAtomGroups are not valid for MSD " "computation"
+            )
 
         super(EinsteinMSD, self).__init__(u.universe.trajectory, **kwargs)
 
@@ -337,18 +342,25 @@ class EinsteinMSD(AnalysisBase):
     def _prepare(self):
         # self.n_frames only available here
         # these need to be zeroed prior to each run() call
-        self.results.msds_by_particle = np.zeros((self.n_frames,
-                                                  self.n_particles))
+        self.results.msds_by_particle = np.zeros(
+            (self.n_frames, self.n_particles)
+        )
         self._position_array = np.zeros(
-            (self.n_frames, self.n_particles, self.dim_fac))
+            (self.n_frames, self.n_particles, self.dim_fac)
+        )
         # self.results.timeseries not set here
 
     def _parse_msd_type(self):
-        r""" Sets up the desired dimensionality of the MSD.
-
-        """
-        keys = {'x': [0], 'y': [1], 'z': [2], 'xy': [0, 1],
-                'xz': [0, 2], 'yz': [1, 2], 'xyz': [0, 1, 2]}
+        r"""Sets up the desired dimensionality of the MSD."""
+        keys = {
+            "x": [0],
+            "y": [1],
+            "z": [2],
+            "xy": [0, 1],
+            "xz": [0, 2],
+            "yz": [1, 2],
+            "xyz": [0, 1, 2],
+        }
 
         self.msd_type = self.msd_type.lower()
 
@@ -356,19 +368,19 @@ class EinsteinMSD(AnalysisBase):
             self._dim = keys[self.msd_type]
         except KeyError:
             raise ValueError(
-                'invalid msd_type: {} specified, please specify one of xyz, '
-                'xy, xz, yz, x, y, z'.format(self.msd_type))
+                "invalid msd_type: {} specified, please specify one of xyz, "
+                "xy, xz, yz, x, y, z".format(self.msd_type)
+            )
 
         self.dim_fac = len(self._dim)
 
     def _single_frame(self):
-        r""" Constructs array of positions for MSD calculation.
-
-        """
+        r"""Constructs array of positions for MSD calculation."""
         # shape of position array set here, use span in last dimension
         # from this point on
-        self._position_array[self._frame_index] = (
-            self.ag.positions[:, self._dim])
+        self._position_array[self._frame_index] = self.ag.positions[
+            :, self._dim
+        ]
 
     def _conclude(self):
         if self.fft:
@@ -377,9 +389,7 @@ class EinsteinMSD(AnalysisBase):
             self._conclude_simple()
 
     def _conclude_simple(self):
-        r""" Calculates the MSD via the simple "windowed" algorithm.
-
-        """
+        r"""Calculates the MSD via the simple "windowed" algorithm."""
         lagtimes = np.arange(1, self.n_frames)
         positions = self._position_array.astype(np.float64)
         for lag in tqdm(lagtimes):
@@ -389,13 +399,12 @@ class EinsteinMSD(AnalysisBase):
         self.results.timeseries = self.results.msds_by_particle.mean(axis=1)
 
     def _conclude_fft(self):  # with FFT, np.float64 bit prescision required.
-        r""" Calculates the MSD via the FCA fast correlation algorithm.
-
-        """
+        r"""Calculates the MSD via the FCA fast correlation algorithm."""
         try:
             import tidynamics
         except ImportError:
-            raise ImportError("""ERROR --- tidynamics was not found!
+            raise ImportError(
+                """ERROR --- tidynamics was not found!
 
                 tidynamics is required to compute an FFT based MSD (default)
 
@@ -403,10 +412,12 @@ class EinsteinMSD(AnalysisBase):
 
                     pip install tidynamics
 
-                or set fft=False""")
+                or set fft=False"""
+            )
 
         positions = self._position_array.astype(np.float64)
         for n in tqdm(range(self.n_particles)):
             self.results.msds_by_particle[:, n] = tidynamics.msd(
-                positions[:, n, :])
+                positions[:, n, :]
+            )
         self.results.timeseries = self.results.msds_by_particle.mean(axis=1)

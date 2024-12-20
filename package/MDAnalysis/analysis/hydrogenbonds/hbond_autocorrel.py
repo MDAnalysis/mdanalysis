@@ -214,14 +214,16 @@ from MDAnalysis.lib.distances import capped_distance, calc_angles, calc_bonds
 from MDAnalysis.core.groups import requires
 
 from MDAnalysis.due import due, Doi
-due.cite(Doi("10.1063/1.4922445"),
-         description="Hydrogen bonding autocorrelation time",
-         path='MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel',
+
+due.cite(
+    Doi("10.1063/1.4922445"),
+    description="Hydrogen bonding autocorrelation time",
+    path="MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel",
 )
 del Doi
 
 
-@requires('bonds')
+@requires("bonds")
 def find_hydrogen_donors(hydrogens):
     """Returns the donor atom for each hydrogen
 
@@ -287,18 +289,24 @@ class HydrogenBondAutoCorrel(object):
       :attr:`HydrogenBondAutoCorrel.solution['results']` instead.
     """
 
-    def __init__(self, universe,
-                 hydrogens=None, acceptors=None, donors=None,
-                 bond_type=None,
-                 exclusions=None,
-                 angle_crit=130.0, dist_crit=3.0,  # geometric criteria
-                 sample_time=100,  # expected length of the decay in ps
-                 time_cut=None,  # cutoff time for intermittent hbonds
-                 nruns=1,  # number of times to iterate through the trajectory
-                 nsamples=50,  # number of different points to sample in a run
-                 pbc=True):
+    def __init__(
+        self,
+        universe,
+        hydrogens=None,
+        acceptors=None,
+        donors=None,
+        bond_type=None,
+        exclusions=None,
+        angle_crit=130.0,
+        dist_crit=3.0,  # geometric criteria
+        sample_time=100,  # expected length of the decay in ps
+        time_cut=None,  # cutoff time for intermittent hbonds
+        nruns=1,  # number of times to iterate through the trajectory
+        nsamples=50,  # number of different points to sample in a run
+        pbc=True,
+    ):
 
-        #warnings.warn("This class is deprecated, use analysis.hbonds.HydrogenBondAnalysis "
+        # warnings.warn("This class is deprecated, use analysis.hbonds.HydrogenBondAnalysis "
         #              "which has .autocorrelation function",
         #              category=DeprecationWarning)
 
@@ -313,23 +321,27 @@ class HydrogenBondAutoCorrel(object):
         self.a = acceptors
         self.d = donors
         if not len(self.h) == len(self.d):
-            raise ValueError("Donors and Hydrogen groups must be identical "
-                             "length.  Try using `find_hydrogen_donors`.")
+            raise ValueError(
+                "Donors and Hydrogen groups must be identical "
+                "length.  Try using `find_hydrogen_donors`."
+            )
 
         if exclusions is not None:
             if len(exclusions[0]) != len(exclusions[1]):
                 raise ValueError(
-                        "'exclusion' must be two arrays of identical length")
-            self.exclusions = np.column_stack((
-                exclusions[0], exclusions[1]
-            )).astype(np.intp)
+                    "'exclusion' must be two arrays of identical length"
+                )
+            self.exclusions = np.column_stack(
+                (exclusions[0], exclusions[1])
+            ).astype(np.intp)
         else:
             self.exclusions = None
 
         self.bond_type = bond_type
-        if self.bond_type not in ['continuous', 'intermittent']:
+        if self.bond_type not in ["continuous", "intermittent"]:
             raise ValueError(
-                "bond_type must be either 'continuous' or 'intermittent'")
+                "bond_type must be either 'continuous' or 'intermittent'"
+            )
 
         self.a_crit = np.deg2rad(angle_crit)
         self.d_crit = dist_crit
@@ -341,11 +353,11 @@ class HydrogenBondAutoCorrel(object):
         self.time_cut = time_cut
 
         self.solution = {
-            'results': None,  # Raw results
-            'time': None,  # Time axis of raw results
-            'fit': None,  # coefficients for fit
-            'tau': None,  # integral of exponential fit
-            'estimate': None  # y values of fit against time
+            "results": None,  # Raw results
+            "time": None,  # Time axis of raw results
+            "fit": None,  # coefficients for fit
+            "tau": None,  # integral of exponential fit
+            "estimate": None,  # y values of fit against time
         }
 
     def _slice_traj(self, sample_time):
@@ -357,16 +369,22 @@ class HydrogenBondAutoCorrel(object):
 
         n_frames = len(self.u.trajectory)
         if req_frames > n_frames:
-            warnings.warn("Number of required frames ({}) greater than the"
-                          " number of frames in trajectory ({})"
-                          .format(req_frames, n_frames), RuntimeWarning)
+            warnings.warn(
+                "Number of required frames ({}) greater than the"
+                " number of frames in trajectory ({})".format(
+                    req_frames, n_frames
+                ),
+                RuntimeWarning,
+            )
 
         numruns = self.nruns
         if numruns > n_frames:
             numruns = n_frames
-            warnings.warn("Number of runs ({}) greater than the number of"
-                          " frames in trajectory ({})"
-                          .format(self.nruns, n_frames), RuntimeWarning)
+            warnings.warn(
+                "Number of runs ({}) greater than the number of"
+                " frames in trajectory ({})".format(self.nruns, n_frames),
+                RuntimeWarning,
+            )
 
         self._starts = np.arange(0, n_frames, n_frames / numruns, dtype=int)
         # limit stop points using clip
@@ -374,8 +392,12 @@ class HydrogenBondAutoCorrel(object):
 
         self._skip = req_frames // self.nsamples
         if self._skip == 0:  # If nsamples > req_frames
-            warnings.warn("Desired number of sample points too high, using {0}"
-                          .format(req_frames), RuntimeWarning)
+            warnings.warn(
+                "Desired number of sample points too high, using {0}".format(
+                    req_frames
+                ),
+                RuntimeWarning,
+            )
             self._skip = 1
 
     def run(self, force=False):
@@ -387,19 +409,21 @@ class HydrogenBondAutoCorrel(object):
             Will overwrite previous results if they exist
         """
         # if results exist, don't waste any time
-        if self.solution['results'] is not None and not force:
+        if self.solution["results"] is not None and not force:
             return
 
-        main_results = np.zeros_like(np.arange(self._starts[0],
-                                                       self._stops[0],
-                                                       self._skip),
-                                          dtype=np.float32)
+        main_results = np.zeros_like(
+            np.arange(self._starts[0], self._stops[0], self._skip),
+            dtype=np.float32,
+        )
         # for normalising later
         counter = np.zeros_like(main_results, dtype=np.float32)
 
-        for i, (start, stop) in ProgressBar(enumerate(zip(self._starts,
-                                            self._stops)), total=self.nruns,
-                                            desc="Performing run"):
+        for i, (start, stop) in ProgressBar(
+            enumerate(zip(self._starts, self._stops)),
+            total=self.nruns,
+            desc="Performing run",
+        ):
 
             # needed else trj seek thinks a np.int64 isn't an int?
             results = self._single_run(int(start), int(stop))
@@ -414,10 +438,12 @@ class HydrogenBondAutoCorrel(object):
 
         main_results /= counter
 
-        self.solution['time'] = np.arange(
-            len(main_results),
-            dtype=np.float32) * self.u.trajectory.dt * self._skip
-        self.solution['results'] = main_results
+        self.solution["time"] = (
+            np.arange(len(main_results), dtype=np.float32)
+            * self.u.trajectory.dt
+            * self._skip
+        )
+        self.solution["results"] = main_results
 
     def _single_run(self, start, stop):
         """Perform a single pass of the trajectory"""
@@ -427,49 +453,62 @@ class HydrogenBondAutoCorrel(object):
         box = self.u.dimensions if self.pbc else None
 
         # 2d array of all distances
-        pair = capped_distance(self.h.positions, self.a.positions,
-                               max_cutoff=self.d_crit, box=box,
-                               return_distances=False)
+        pair = capped_distance(
+            self.h.positions,
+            self.a.positions,
+            max_cutoff=self.d_crit,
+            box=box,
+            return_distances=False,
+        )
         if self.exclusions is not None:
-            pair = pair[~ _in2d(pair, self.exclusions)]
+            pair = pair[~_in2d(pair, self.exclusions)]
 
         hidx, aidx = np.transpose(pair)
 
-
-        a = calc_angles(self.d.positions[hidx], self.h.positions[hidx],
-                        self.a.positions[aidx], box=box)
+        a = calc_angles(
+            self.d.positions[hidx],
+            self.h.positions[hidx],
+            self.a.positions[aidx],
+            box=box,
+        )
         # from amongst those, who also satisfiess angle crit
         idx2 = np.where(a > self.a_crit)
         hidx = hidx[idx2]
         aidx = aidx[idx2]
 
         nbonds = len(hidx)  # number of hbonds at t=0
-        results = np.zeros_like(np.arange(start, stop, self._skip),
-                                   dtype=np.float32)
+        results = np.zeros_like(
+            np.arange(start, stop, self._skip), dtype=np.float32
+        )
 
         if self.time_cut:
             # counter for time criteria
             count = np.zeros(nbonds, dtype=np.float64)
 
-        for i, ts in enumerate(self.u.trajectory[start:stop:self._skip]):
+        for i, ts in enumerate(self.u.trajectory[start : stop : self._skip]):
             box = self.u.dimensions if self.pbc else None
 
-            d = calc_bonds(self.h.positions[hidx], self.a.positions[aidx],
-                           box=box)
-            a = calc_angles(self.d.positions[hidx], self.h.positions[hidx],
-                            self.a.positions[aidx], box=box)
+            d = calc_bonds(
+                self.h.positions[hidx], self.a.positions[aidx], box=box
+            )
+            a = calc_angles(
+                self.d.positions[hidx],
+                self.h.positions[hidx],
+                self.a.positions[aidx],
+                box=box,
+            )
 
             winners = (d < self.d_crit) & (a > self.a_crit)
             results[i] = winners.sum()
 
-            if self.bond_type == 'continuous':
+            if self.bond_type == "continuous":
                 # Remove losers for continuous definition
                 hidx = hidx[np.where(winners)]
                 aidx = aidx[np.where(winners)]
-            elif self.bond_type == 'intermittent':
+            elif self.bond_type == "intermittent":
                 if self.time_cut:
                     # Add to counter of where losers are
-                    count[~ winners] += self._skip * self.u.trajectory.dt
+                    count[~winners] += self._skip * self.u.trajectory.dt
                     count[winners] = 0  # Reset timer for winners
 
                     # Remove if you've lost too many times
@@ -521,14 +560,15 @@ class HydrogenBondAutoCorrel(object):
 
         """
 
-        if self.solution['results'] is None:
+        if self.solution["results"] is None:
             raise ValueError(
-                "Results have not been generated use, the run method first")
+                "Results have not been generated use, the run method first"
+            )
 
         # Prevents an odd bug with leastsq where it expects
         # double precision data sometimes...
-        time = self.solution['time'].astype(np.float64)
-        results = self.solution['results'].astype(np.float64)
+        time = self.solution["time"].astype(np.float64)
+        results = self.solution["results"].astype(np.float64)
 
         def within_bounds(p):
             """Returns True/False if boundary conditions are met or not.
@@ -542,13 +582,19 @@ class HydrogenBondAutoCorrel(object):
             """
             if len(p) == 3:
                 A1, tau1, tau2 = p
-                return (A1 > 0.0) & (A1 < 1.0) & \
-                       (tau1 > 0.0) & (tau2 > 0.0)
+                return (A1 > 0.0) & (A1 < 1.0) & (tau1 > 0.0) & (tau2 > 0.0)
             elif len(p) == 5:
                 A1, A2, tau1, tau2, tau3 = p
-                return (A1 > 0.0) & (A1 < 1.0) & (A2 > 0.0) & \
-                       (A2 < 1.0) & ((A1 + A2) < 1.0) & \
-                       (tau1 > 0.0) & (tau2 > 0.0) & (tau3 > 0.0)
+                return (
+                    (A1 > 0.0)
+                    & (A1 < 1.0)
+                    & (A2 > 0.0)
+                    & (A2 < 1.0)
+                    & ((A1 + A2) < 1.0)
+                    & (tau1 > 0.0)
+                    & (tau2 > 0.0)
+                    & (tau3 > 0.0)
+                )
 
         def err(p, x, y):
             """Custom residual function, returns real residual if all
@@ -561,52 +607,66 @@ class HydrogenBondAutoCorrel(object):
                 return np.full_like(y, 100000)
 
         def double(x, A1, tau1, tau2):
-            """ Sum of two exponential functions """
+            """Sum of two exponential functions"""
             A2 = 1 - A1
             return A1 * np.exp(-x / tau1) + A2 * np.exp(-x / tau2)
 
         def triple(x, A1, A2, tau1, tau2, tau3):
-            """ Sum of three exponential functions """
+            """Sum of three exponential functions"""
             A3 = 1 - (A1 + A2)
-            return A1 * np.exp(-x / tau1) + A2 * np.exp(-x / tau2) + A3 * np.exp(-x / tau3)
+            return (
+                A1 * np.exp(-x / tau1)
+                + A2 * np.exp(-x / tau2)
+                + A3 * np.exp(-x / tau3)
+            )
 
-        if self.bond_type == 'continuous':
+        if self.bond_type == "continuous":
             self._my_solve = double
 
             if p_guess is None:
                 p_guess = (0.5, 10 * self.sample_time, self.sample_time)
 
                 p, cov, infodict, mesg, ier = scipy.optimize.leastsq(
-                err, p_guess, args=(time, results), full_output=True)
-            self.solution['fit'] = p
+                    err, p_guess, args=(time, results), full_output=True
+                )
+            self.solution["fit"] = p
             A1, tau1, tau2 = p
             A2 = 1 - A1
-            self.solution['tau'] = A1 * tau1 + A2 * tau2
+            self.solution["tau"] = A1 * tau1 + A2 * tau2
         else:
             self._my_solve = triple
 
             if p_guess is None:
-                p_guess = (0.33, 0.33, 10 * self.sample_time,
-                           self.sample_time, 0.1 * self.sample_time)
+                p_guess = (
+                    0.33,
+                    0.33,
+                    10 * self.sample_time,
+                    self.sample_time,
+                    0.1 * self.sample_time,
+                )
 
             p, cov, infodict, mesg, ier = scipy.optimize.leastsq(
-                err, p_guess, args=(time, results), full_output=True)
-            self.solution['fit'] = p
+                err, p_guess, args=(time, results), full_output=True
+            )
+            self.solution["fit"] = p
             A1, A2, tau1, tau2, tau3 = p
             A3 = 1 - A1 - A2
-            self.solution['tau'] = A1 * tau1 + A2 * tau2 + A3 * tau3
+            self.solution["tau"] = A1 * tau1 + A2 * tau2 + A3 * tau3
 
-        self.solution['infodict'] = infodict
-        self.solution['mesg'] = mesg
-        self.solution['ier'] = ier
+        self.solution["infodict"] = infodict
+        self.solution["mesg"] = mesg
+        self.solution["ier"] = ier
 
         if ier in [1, 2, 3, 4]:  # solution found if ier is one of these values
-            self.solution['estimate'] = self._my_solve(
-                self.solution['time'], *p)
+            self.solution["estimate"] = self._my_solve(
+                self.solution["time"], *p
+            )
         else:
             warnings.warn("Solution to results not found", RuntimeWarning)
 
     def __repr__(self):
-        return ("<MDAnalysis HydrogenBondAutoCorrel analysis measuring the "
-                "{btype} lifetime of {n} different hydrogens>"
-                "".format(btype=self.bond_type, n=len(self.h)))
+        return (
+            "<MDAnalysis HydrogenBondAutoCorrel analysis measuring the "
+            "{btype} lifetime of {n} different hydrogens>"
+            "".format(btype=self.bond_type, n=len(self.h))
+        )

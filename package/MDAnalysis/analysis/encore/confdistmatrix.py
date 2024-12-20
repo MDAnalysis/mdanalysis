@@ -57,11 +57,18 @@ from .cutils import PureRMSD
 from .utils import TriangularMatrix, trm_indices
 
 
-def conformational_distance_matrix(ensemble,
-                                   conf_dist_function, select="",
-                                   superimposition_select="", n_jobs=1, pairwise_align=True, weights='mass',
-                                   metadata=True, verbose=False,
-                                   max_nbytes=None):
+def conformational_distance_matrix(
+    ensemble,
+    conf_dist_function,
+    select="",
+    superimposition_select="",
+    n_jobs=1,
+    pairwise_align=True,
+    weights="mass",
+    metadata=True,
+    verbose=False,
+    max_nbytes=None,
+):
     """
     Run the conformational distance matrix calculation.
     args and kwargs are passed to conf_dist_function.
@@ -104,33 +111,44 @@ def conformational_distance_matrix(ensemble,
     """
 
     # framesn: number of frames
-    framesn = len(ensemble.trajectory.timeseries(
-        ensemble.select_atoms(select), order='fac'))
+    framesn = len(
+        ensemble.trajectory.timeseries(
+            ensemble.select_atoms(select), order="fac"
+        )
+    )
 
     # Prepare metadata recarray
     if metadata:
-        metadata = np.array([(gethostname(),
-                           getuser(),
-                           str(datetime.now()),
-                           ensemble.filename,
-                           framesn,
-                           pairwise_align,
-                           select,
-                           weights=='mass')],
-                         dtype=[('host', object),
-                                ('user', object),
-                                ('date', object),
-                                ('topology file', object),
-                                ('number of frames', int),
-                                ('pairwise superimposition', bool),
-                                ('superimposition subset', object),
-                                ('mass-weighted', bool)])
+        metadata = np.array(
+            [
+                (
+                    gethostname(),
+                    getuser(),
+                    str(datetime.now()),
+                    ensemble.filename,
+                    framesn,
+                    pairwise_align,
+                    select,
+                    weights == "mass",
+                )
+            ],
+            dtype=[
+                ("host", object),
+                ("user", object),
+                ("date", object),
+                ("topology file", object),
+                ("number of frames", int),
+                ("pairwise superimposition", bool),
+                ("superimposition subset", object),
+                ("mass-weighted", bool),
+            ],
+        )
 
     # Prepare alignment subset coordinates as necessary
 
     rmsd_coordinates = ensemble.trajectory.timeseries(
-            ensemble.select_atoms(select),
-            order='fac')
+        ensemble.select_atoms(select), order="fac"
+    )
 
     if pairwise_align:
         if superimposition_select:
@@ -139,31 +157,45 @@ def conformational_distance_matrix(ensemble,
             subset_select = select
 
         fitting_coordinates = ensemble.trajectory.timeseries(
-            ensemble.select_atoms(subset_select),
-            order='fac')
+            ensemble.select_atoms(subset_select), order="fac"
+        )
     else:
         fitting_coordinates = None
 
-    if not isinstance(weights, (list, tuple, np.ndarray)) and weights == 'mass':
+    if (
+        not isinstance(weights, (list, tuple, np.ndarray))
+        and weights == "mass"
+    ):
         weights = ensemble.select_atoms(select).masses.astype(np.float64)
         if pairwise_align:
-            subset_weights = ensemble.select_atoms(subset_select).masses.astype(np.float64)
+            subset_weights = ensemble.select_atoms(
+                subset_select
+            ).masses.astype(np.float64)
         else:
             subset_weights = None
     elif weights is None:
-        weights = np.ones((ensemble.trajectory.timeseries(
-            ensemble.select_atoms(select))[0].shape[0])).astype(np.float64)
+        weights = np.ones(
+            (
+                ensemble.trajectory.timeseries(ensemble.select_atoms(select))[
+                    0
+                ].shape[0]
+            )
+        ).astype(np.float64)
         if pairwise_align:
-            subset_weights = np.ones((fit_coords[0].shape[0])).astype(np.float64)
+            subset_weights = np.ones((fit_coords[0].shape[0])).astype(
+                np.float64
+            )
         else:
             subset_weights = None
     else:
         if pairwise_align:
             if len(weights) != 2:
-                raise RuntimeError("used pairwise alignment with custom "
-                                   "weights. Please provide 2 tuple with "
-                                   "weights for 'select' and "
-                                   "'superimposition_select'")
+                raise RuntimeError(
+                    "used pairwise alignment with custom "
+                    "weights. Please provide 2 tuple with "
+                    "weights for 'select' and "
+                    "'superimposition_select'"
+                )
             subset_weights = weights[1]
             weights = weights[0]
         else:
@@ -176,24 +208,38 @@ def conformational_distance_matrix(ensemble,
     # Initialize workers. Simple worker doesn't perform fitting,
     # fitter worker does.
     indices = trm_indices((0, 0), (framesn - 1, framesn - 1))
-    Parallel(n_jobs=n_jobs, verbose=verbose, require='sharedmem',
-            max_nbytes=max_nbytes)(delayed(conf_dist_function)(
-        np.int64(element),
-        rmsd_coordinates,
-        distmat,
-        weights,
-        fitting_coordinates,
-        subset_weights) for element in indices)
-
+    Parallel(
+        n_jobs=n_jobs,
+        verbose=verbose,
+        require="sharedmem",
+        max_nbytes=max_nbytes,
+    )(
+        delayed(conf_dist_function)(
+            np.int64(element),
+            rmsd_coordinates,
+            distmat,
+            weights,
+            fitting_coordinates,
+            subset_weights,
+        )
+        for element in indices
+    )
 
     # When the workers have finished, return a TriangularMatrix object
     return TriangularMatrix(distmat, metadata=metadata)
 
 
-def set_rmsd_matrix_elements(tasks, coords, rmsdmat, weights, fit_coords=None,
-                             fit_weights=None, *args, **kwargs):
-
-    '''
+def set_rmsd_matrix_elements(
+    tasks,
+    coords,
+    rmsdmat,
+    weights,
+    fit_coords=None,
+    fit_weights=None,
+    *args,
+    **kwargs,
+):
+    """
     RMSD Matrix calculator
 
     Parameters
@@ -223,51 +269,60 @@ def set_rmsd_matrix_elements(tasks, coords, rmsdmat, weights, fit_coords=None,
     fit_weights : numpy.array. optional
         Array of atomic weights, having the same order as the
         fit_coords array
-        '''
+    """
     i, j = tasks
 
     if fit_coords is None and fit_weights is None:
         sumweights = np.sum(weights)
-        rmsdmat[(i + 1) * i // 2 + j] = PureRMSD(coords[i].astype(np.float64),
-                                                coords[j].astype(np.float64),
-                                                coords[j].shape[0],
-                                                weights,
-                                                sumweights)
+        rmsdmat[(i + 1) * i // 2 + j] = PureRMSD(
+            coords[i].astype(np.float64),
+            coords[j].astype(np.float64),
+            coords[j].shape[0],
+            weights,
+            sumweights,
+        )
 
     elif fit_coords is not None and fit_weights is not None:
         sumweights = np.sum(weights)
         subset_weights = np.asarray(fit_weights) / np.mean(fit_weights)
-        com_i = np.average(fit_coords[i], axis=0,
-                           weights=fit_weights)
+        com_i = np.average(fit_coords[i], axis=0, weights=fit_weights)
         translated_i = coords[i] - com_i
         subset1_coords = fit_coords[i] - com_i
-        com_j = np.average(fit_coords[j], axis=0,
-                           weights=fit_weights)
+        com_j = np.average(fit_coords[j], axis=0, weights=fit_weights)
         translated_j = coords[j] - com_j
         subset2_coords = fit_coords[j] - com_j
-        rotamat = rotation_matrix(subset1_coords, subset2_coords,
-                                  subset_weights)[0]
+        rotamat = rotation_matrix(
+            subset1_coords, subset2_coords, subset_weights
+        )[0]
         rotated_i = np.transpose(np.dot(rotamat, np.transpose(translated_i)))
         rmsdmat[(i + 1) * i // 2 + j] = PureRMSD(
-            rotated_i.astype(np.float64), translated_j.astype(np.float64),
-            coords[j].shape[0], weights, sumweights)
+            rotated_i.astype(np.float64),
+            translated_j.astype(np.float64),
+            coords[j].shape[0],
+            weights,
+            sumweights,
+        )
     else:
-        raise TypeError("Both fit_coords and fit_weights must be specified "
-                        "if one of them is given")
+        raise TypeError(
+            "Both fit_coords and fit_weights must be specified "
+            "if one of them is given"
+        )
 
 
-def get_distance_matrix(ensemble,
-                        select="name CA",
-                        load_matrix=None,
-                        save_matrix=None,
-                        superimpose=True,
-                        superimposition_subset="name CA",
-                        weights='mass',
-                        n_jobs=1,
-                        max_nbytes=None,
-                        verbose=False,
-                        *conf_dist_args,
-                        **conf_dist_kwargs):
+def get_distance_matrix(
+    ensemble,
+    select="name CA",
+    load_matrix=None,
+    save_matrix=None,
+    superimpose=True,
+    superimposition_subset="name CA",
+    weights="mass",
+    n_jobs=1,
+    max_nbytes=None,
+    verbose=False,
+    *conf_dist_args,
+    **conf_dist_kwargs,
+):
     """
     Retrieves or calculates the conformational distance (RMSD)
     matrix. The distance matrix is calculated between all the frames of all
@@ -321,28 +376,34 @@ def get_distance_matrix(ensemble,
     # Load the matrix if required
     if load_matrix:
         logging.info(
-            "        Loading similarity matrix from: {0}".format(load_matrix))
-        confdistmatrix = \
-            TriangularMatrix(
-                size=ensemble.trajectory.timeseries(
-                    ensemble.select_atoms(select),
-                    order='fac').shape[0],
-                loadfile=load_matrix)
+            "        Loading similarity matrix from: {0}".format(load_matrix)
+        )
+        confdistmatrix = TriangularMatrix(
+            size=ensemble.trajectory.timeseries(
+                ensemble.select_atoms(select), order="fac"
+            ).shape[0],
+            loadfile=load_matrix,
+        )
         logging.info("        Done!")
         for key in confdistmatrix.metadata.dtype.names:
-            logging.info("        {0} : {1}".format(
-                key, str(confdistmatrix.metadata[key][0])))
+            logging.info(
+                "        {0} : {1}".format(
+                    key, str(confdistmatrix.metadata[key][0])
+                )
+            )
 
         # Check matrix size for consistency
-        if not confdistmatrix.size == \
-                ensemble.trajectory.timeseries(
-                    ensemble.select_atoms(select),
-                    order='fac').shape[0]:
+        if (
+            not confdistmatrix.size
+            == ensemble.trajectory.timeseries(
+                ensemble.select_atoms(select), order="fac"
+            ).shape[0]
+        ):
             logging.error(
                 "ERROR: The size of the loaded matrix and of the ensemble"
-                " do not match")
+                " do not match"
+            )
             return None
-
 
     # Calculate the matrix
     else:
@@ -350,31 +411,41 @@ def get_distance_matrix(ensemble,
         # Transfer universe to memory to ensure timeseries() support
         ensemble.transfer_to_memory()
 
-        if not isinstance(weights, (list, tuple, np.ndarray)) and weights == 'mass':
-            weight_type = 'Mass'
+        if (
+            not isinstance(weights, (list, tuple, np.ndarray))
+            and weights == "mass"
+        ):
+            weight_type = "Mass"
         elif weights is None:
-            weight_type = 'None'
+            weight_type = "None"
         else:
-            weight_type = 'Custom'
+            weight_type = "Custom"
         logging.info(
-            "        Perform pairwise alignment: {0}".format(str(superimpose)))
-        logging.info("        weighted alignment and RMSD: {0}".format(weight_type))
+            "        Perform pairwise alignment: {0}".format(str(superimpose))
+        )
+        logging.info(
+            "        weighted alignment and RMSD: {0}".format(weight_type)
+        )
         if superimpose:
             logging.info(
-                "        Atoms subset for alignment: {0}"
-                    .format(superimposition_subset))
+                "        Atoms subset for alignment: {0}".format(
+                    superimposition_subset
+                )
+            )
         logging.info("    Calculating similarity matrix . . .")
 
         # Use superimposition subset, if necessary. If the pairwise alignment
         # is not required, it will not be performed anyway.
-        confdistmatrix = conformational_distance_matrix(ensemble,
-                                                        conf_dist_function=set_rmsd_matrix_elements,
-                                                        select=select,
-                                                        pairwise_align=superimpose,
-                                                        weights=weights,
-                                                        n_jobs=n_jobs,
-                                                        max_nbytes=max_nbytes,
-                                                        verbose=verbose)
+        confdistmatrix = conformational_distance_matrix(
+            ensemble,
+            conf_dist_function=set_rmsd_matrix_elements,
+            select=select,
+            pairwise_align=superimpose,
+            weights=weights,
+            n_jobs=n_jobs,
+            max_nbytes=max_nbytes,
+            verbose=verbose,
+        )
 
         logging.info("    Done!")
 
