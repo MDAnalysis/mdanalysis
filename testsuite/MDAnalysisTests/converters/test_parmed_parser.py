@@ -159,7 +159,7 @@ class TestParmedParserPSF(BaseTestParmedParser):
     expected_n_cmaps = 212
     elems_ranges = ((100, 120),)
     # No atomic numbers set by parmed == no elements
-    expected_elems = (np.array(list("NHCHCHHCHCHHHCHHHCON")),)
+    expected_elems = (np.array(list("NHCHCHHCHCHHHCHHHCON"), dtype=object),)
 
     def test_bonds_atom_counts(self, universe):
         assert len(universe.atoms[[0]].bonds) == 4
