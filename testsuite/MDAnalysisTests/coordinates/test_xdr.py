@@ -892,11 +892,6 @@ class _GromacsReader_offsets(object):
 
     @pytest.mark.skipif(get_userid() == 0, reason="cannot readonly as root")
     # skip test in Windows Azure, due to different permission in Azure
-    @pytest.mark.skipif(
-      os.name == 'nt' and "AGENT_NAME" in os.environ,
-      reason="Windows Azure does not support locking/permission modification"
-      )
-
     def test_persistent_offsets_readonly(self, tmpdir):
         shutil.copy(self.filename, str(tmpdir))
 
