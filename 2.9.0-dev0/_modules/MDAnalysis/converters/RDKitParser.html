@@ -304,7 +304,8 @@
 <span class="sd">       the type attribute get the same values as the element attribute.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;RDKIT&#39;</span>
+
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;RDKIT&quot;</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_format_hint</span><span class="p">(</span><span class="n">thing</span><span class="p">):</span>
@@ -349,19 +350,24 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">atom</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">GetAtomWithIdx</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
-            <span class="n">top</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span><span class="n">n_atoms</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_res</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_seg</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                           <span class="n">attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                           <span class="n">atom_resindex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                           <span class="n">residue_segindex</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+            <span class="n">top</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span>
+                <span class="n">n_atoms</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                <span class="n">n_res</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                <span class="n">n_seg</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                <span class="n">attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">atom_resindex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">residue_segindex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="p">)</span>
             <span class="k">return</span> <span class="n">top</span>
 
         <span class="c1"># check if multiple charges present</span>
-        <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">HasProp</span><span class="p">(</span><span class="s1">&#39;_GasteigerCharge&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
-        <span class="n">atom</span><span class="o">.</span><span class="n">HasProp</span><span class="p">(</span><span class="s1">&#39;_TriposPartialCharge&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">HasProp</span><span class="p">(</span><span class="s2">&quot;_GasteigerCharge&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
+            <span class="n">atom</span><span class="o">.</span><span class="n">HasProp</span><span class="p">(</span><span class="s2">&quot;_TriposPartialCharge&quot;</span><span class="p">)</span>
         <span class="p">):</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s1">&#39;Both _GasteigerCharge and _TriposPartialCharge properties &#39;</span>
-                <span class="s1">&#39;are present. Using Gasteiger charges by default.&#39;</span><span class="p">)</span>
+                <span class="s2">&quot;Both _GasteigerCharge and _TriposPartialCharge properties &quot;</span>
+                <span class="s2">&quot;are present. Using Gasteiger charges by default.&quot;</span>
+            <span class="p">)</span>
 
         <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">mol</span><span class="o">.</span><span class="n">GetAtoms</span><span class="p">():</span>
             <span class="n">ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">GetIdx</span><span class="p">())</span>
@@ -370,7 +376,7 @@
             <span class="n">aromatics</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">GetIsAromatic</span><span class="p">())</span>
             <span class="n">chiralities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_rdkit_atom_to_RS</span><span class="p">(</span><span class="n">atom</span><span class="p">))</span>
             <span class="n">mi</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">GetMonomerInfo</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">mi</span><span class="p">:</span> <span class="c1"># atom name and residue info are present</span>
+            <span class="k">if</span> <span class="n">mi</span><span class="p">:</span>  <span class="c1"># atom name and residue info are present</span>
                 <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mi</span><span class="o">.</span><span class="n">GetName</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
                 <span class="n">resnums</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mi</span><span class="o">.</span><span class="n">GetResidueNumber</span><span class="p">())</span>
                 <span class="n">resnames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mi</span><span class="o">.</span><span class="n">GetResidueName</span><span class="p">())</span>
@@ -383,23 +389,25 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># atom name (MOL2 only)</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">GetProp</span><span class="p">(</span><span class="s1">&#39;_TriposAtomName&#39;</span><span class="p">))</span>
+                    <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">GetProp</span><span class="p">(</span><span class="s2">&quot;_TriposAtomName&quot;</span><span class="p">))</span>
                 <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                     <span class="k">pass</span>
                 <span class="c1"># atom type (MOL2 only)</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">atomtypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">GetProp</span><span class="p">(</span><span class="s1">&#39;_TriposAtomType&#39;</span><span class="p">))</span>
+                    <span class="n">atomtypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">GetProp</span><span class="p">(</span><span class="s2">&quot;_TriposAtomType&quot;</span><span class="p">))</span>
                 <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                     <span class="k">pass</span>
                 <span class="c1"># gasteiger charge (computed):</span>
                 <span class="c1"># if the user took the time to compute them, make it a priority</span>
                 <span class="c1"># over charges read from a MOL2 file</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">charges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">GetDoubleProp</span><span class="p">(</span><span class="s1">&#39;_GasteigerCharge&#39;</span><span class="p">))</span>
+                    <span class="n">charges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">GetDoubleProp</span><span class="p">(</span><span class="s2">&quot;_GasteigerCharge&quot;</span><span class="p">))</span>
                 <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                     <span class="c1"># partial charge (MOL2 only)</span>
                     <span class="k">try</span><span class="p">:</span>
-                        <span class="n">charges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">GetDoubleProp</span><span class="p">(</span><span class="s1">&#39;_TriposPartialCharge&#39;</span><span class="p">))</span>
+                        <span class="n">charges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                            <span class="n">atom</span><span class="o">.</span><span class="n">GetDoubleProp</span><span class="p">(</span><span class="s2">&quot;_TriposPartialCharge&quot;</span><span class="p">)</span>
+                        <span class="p">)</span>
                     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                         <span class="k">pass</span>
 
@@ -423,7 +431,7 @@
             <span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">Elements</span><span class="p">,</span> <span class="nb">object</span><span class="p">),</span>
             <span class="p">(</span><span class="n">masses</span><span class="p">,</span> <span class="n">Masses</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span>
             <span class="p">(</span><span class="n">aromatics</span><span class="p">,</span> <span class="n">Aromaticities</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span>
-            <span class="p">(</span><span class="n">chiralities</span><span class="p">,</span> <span class="n">RSChirality</span><span class="p">,</span> <span class="s1">&#39;U1&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">chiralities</span><span class="p">,</span> <span class="n">RSChirality</span><span class="p">,</span> <span class="s2">&quot;U1&quot;</span><span class="p">),</span>
         <span class="p">):</span>
             <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Attr</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)))</span>
 
@@ -458,7 +466,7 @@
         <span class="k">if</span> <span class="n">charges</span><span class="p">:</span>
             <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Charges</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">charges</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">pass</span> <span class="c1"># no guesser yet</span>
+            <span class="k">pass</span>  <span class="c1"># no guesser yet</span>
 
         <span class="c1"># PDB only</span>
         <span class="k">for</span> <span class="n">vals</span><span class="p">,</span> <span class="n">Attr</span><span class="p">,</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="p">(</span>
@@ -478,7 +486,8 @@
             <span class="n">icodes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">icodes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
             <span class="n">residx</span><span class="p">,</span> <span class="p">(</span><span class="n">resnums</span><span class="p">,</span> <span class="n">resnames</span><span class="p">,</span> <span class="n">icodes</span><span class="p">,</span> <span class="n">segids</span><span class="p">)</span> <span class="o">=</span> <span class="n">change_squash</span><span class="p">(</span>
                 <span class="p">(</span><span class="n">resnums</span><span class="p">,</span> <span class="n">resnames</span><span class="p">,</span> <span class="n">icodes</span><span class="p">,</span> <span class="n">segids</span><span class="p">),</span>
-                <span class="p">(</span><span class="n">resnums</span><span class="p">,</span> <span class="n">resnames</span><span class="p">,</span> <span class="n">icodes</span><span class="p">,</span> <span class="n">segids</span><span class="p">))</span>
+                <span class="p">(</span><span class="n">resnums</span><span class="p">,</span> <span class="n">resnames</span><span class="p">,</span> <span class="n">icodes</span><span class="p">,</span> <span class="n">segids</span><span class="p">),</span>
+            <span class="p">)</span>
             <span class="n">n_residues</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">resnums</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">vals</span><span class="p">,</span> <span class="n">Attr</span><span class="p">,</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="p">(</span>
                 <span class="p">(</span><span class="n">resnums</span><span class="p">,</span> <span class="n">Resids</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span>
@@ -500,14 +509,18 @@
             <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Segids</span><span class="p">(</span><span class="n">segids</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">n_segments</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Segids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;SYSTEM&#39;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)))</span>
+            <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Segids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">&quot;SYSTEM&quot;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)))</span>
             <span class="n">segidx</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="c1"># create topology</span>
-        <span class="n">top</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">n_residues</span><span class="p">,</span> <span class="n">n_segments</span><span class="p">,</span>
-                       <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">,</span>
-                       <span class="n">atom_resindex</span><span class="o">=</span><span class="n">residx</span><span class="p">,</span>
-                       <span class="n">residue_segindex</span><span class="o">=</span><span class="n">segidx</span><span class="p">)</span>
+        <span class="n">top</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span>
+            <span class="n">n_atoms</span><span class="p">,</span>
+            <span class="n">n_residues</span><span class="p">,</span>
+            <span class="n">n_segments</span><span class="p">,</span>
+            <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">,</span>
+            <span class="n">atom_resindex</span><span class="o">=</span><span class="n">residx</span><span class="p">,</span>
+            <span class="n">residue_segindex</span><span class="o">=</span><span class="n">segidx</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">top</span></div>
 </div>
