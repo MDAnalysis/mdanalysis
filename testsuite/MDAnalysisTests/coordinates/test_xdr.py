@@ -27,6 +27,7 @@ import re
 import os
 import shutil
 import subprocess
+import time
 from pathlib import Path
 
 import numpy as np
@@ -938,8 +939,35 @@ class _GromacsReader_offsets(object):
         shutil.rmtree(tmpdir)
 
     def test_offset_lock_created(self):
-        # File is created, but without .lock ending
-        assert os.path.exists(XDR.offsets_filename(self.filename))
+        lock_file_path = XDR.offsets_filename(self.filename, ending='lock')
+        lock = FileLock(lock_file_path)
+
+        # Start a count to release lock after 5 seconds
+        def release_lock_after_delay():
+            time.sleep(5) 
+            lock.release()
+
+        # Acquire the lock
+        lock.acquire()
+        try:
+            # Start count
+            release_lock_after_delay()
+
+            # Start timing to ensure the reader waits for the lock
+            start_time = time.time()
+
+            with pytest.warns(UserWarning, match="Waiting for lock file"):
+                self._reader(self.filename)
+
+            elapsed_time = time.time() - start_time
+
+            # Ensure the function waited for the lock
+            assert elapsed_time >= 5, "read_offsets did not wait for the lock to be released."
+
+        finally:
+            # Ensure the lock is released to avoid hanging
+            if lock.is_locked:
+                lock.release()
 
 
 class TestXTCReader_offsets(_GromacsReader_offsets):
