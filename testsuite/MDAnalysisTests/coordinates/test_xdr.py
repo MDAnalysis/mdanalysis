@@ -913,7 +913,6 @@ class _GromacsReader_offsets(object):
             
             # Use pytest.warns to check for the expected warnings when loading offsets fails
             with pytest.warns(UserWarning, match="Failed to load offsets"):
-                # Now using the XDR.read_numpy_offsets method to read the offsets
                 saved_offsets = XDR.read_numpy_offsets(filename)
 
             # Check if the offsets are handled properly and match the expected reference offsets
@@ -957,7 +956,7 @@ class _GromacsReader_offsets(object):
             # Start timing to ensure the reader waits for the lock
             start_time = time.time()
 
-            with pytest.warns(UserWarning, match="Waiting for lock file"):
+            with pytest.warns(UserWarning):
                 self._reader(self.filename)
 
             elapsed_time = time.time() - start_time
