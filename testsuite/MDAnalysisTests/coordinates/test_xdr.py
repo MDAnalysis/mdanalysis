@@ -47,6 +47,7 @@ import MDAnalysis as mda
 from MDAnalysis.coordinates.base import Timestep
 from MDAnalysis.coordinates import XDR
 from MDAnalysisTests.util import get_userid
+from filelock import FileLock
 
 
 @pytest.mark.parametrize("filename,kwargs,reference", [
