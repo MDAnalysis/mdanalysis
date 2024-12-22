@@ -706,15 +706,17 @@ Classes
          Will be removed in MDAnalysis 3.0.0. Please use
          :attr:`results.timeseries` instead.
 """
-from collections import defaultdict
 import logging
 import warnings
+from collections import defaultdict
+
 import numpy as np
 
-from ..base import AnalysisBase
+from MDAnalysis import MissingDataWarning, NoDataError, SelectionError
+from MDAnalysis.lib.distances import calc_angles, capped_distance
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
-from MDAnalysis.lib.distances import capped_distance, calc_angles
-from MDAnalysis import NoDataError, MissingDataWarning, SelectionError
+
+from ..base import AnalysisBase
 
 logger = logging.getLogger("MDAnalysis.analysis.WaterBridgeAnalysis")
 
