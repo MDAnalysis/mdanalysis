@@ -1,15 +1,12 @@
-Fixes #
+Fixes #<!-- Insert issue number that this PR fixes just after #-->  
 
 Changes made in this Pull Request:
- - 
+ - <!-- Describe the changes that this PR makes. --> 
 
 
 PR Checklist
 ------------
- - [ ] Tests?
- - [ ] Docs?
+ - [ ] Tests added?
+ - [ ] Documentation updated?
  - [ ] CHANGELOG updated?
  - [ ] Issue raised/referenced?
-
-## Developers certificate of origin
-- [ ] I certify that this contribution is covered by the LGPLv2.1+ license as defined in our [LICENSE](https://github.com/MDAnalysis/mdanalysis/blob/develop/LICENSE) and adheres to the [**Developer Certificate of Origin**](https://developercertificate.org/).
