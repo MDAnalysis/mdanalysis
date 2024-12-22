@@ -20,16 +20,13 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-import numpy as np
 from collections import OrderedDict
-from MDAnalysis.coordinates.base import (
-    Timestep,
-    SingleFrameReaderBase,
-    ReaderBase,
-)
-from numpy.testing import assert_equal, assert_allclose
 
+import numpy as np
 import pytest
+from MDAnalysis.coordinates.base import (ReaderBase, SingleFrameReaderBase,
+                                         Timestep)
+from numpy.testing import assert_allclose, assert_equal
 
 """
 Isolate the API definitions of Readers independent of implementations
@@ -255,19 +252,9 @@ class TestMultiFrameReader(_Multi):
             [1, 3, 4, 2, 9],  # disordered list of indices without duplicates
             [0, 1, 1, 2, 2, 2],  # ordered list with duplicates
             [-1, -2, 3, -1, 0],  # disordered list with duplicates
-            [
-                True,
-            ]
-            * 10,
-            [
-                False,
-            ]
-            * 10,
-            [
-                True,
-                False,
-            ]
-            * 5,
+            [True] * 10,
+            [False] * 10,
+            [True, False] * 5,
             slice(None, None, None),
             slice(0, 10, 1),
             slice(None, None, -1),
@@ -297,11 +284,7 @@ class TestMultiFrameReader(_Multi):
         [
             [0, 1, 2, 3, 4],
             [1, 1, 1, 1, 1],
-            [
-                True,
-                False,
-            ]
-            * 5,
+            [True, False] * 5,
             slice(None, None, 2),
             slice(None, None, -2),
         ],
@@ -339,11 +322,7 @@ class TestMultiFrameReader(_Multi):
         [
             [0, 1, 2, 3, 4],
             [1, 1, 1, 1, 1],
-            [
-                True,
-                False,
-            ]
-            * 5,
+            [True, False] * 5,
             slice(None, None, 2),
             slice(None, None, -2),
             slice(None, None, None),
@@ -378,11 +357,7 @@ class TestMultiFrameReader(_Multi):
         [
             [0, 1, 2, 3, 4],
             [1, 1, 1, 1, 1],
-            [
-                True,
-                False,
-            ]
-            * 5,
+            [True, False] * 5,
             slice(None, None, 2),
             slice(None, None, -2),
         ],

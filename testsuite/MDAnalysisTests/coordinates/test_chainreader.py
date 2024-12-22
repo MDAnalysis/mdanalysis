@@ -20,32 +20,21 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-import sys
-import platform
-import warnings
-import numpy as np
 import os
-
-import pytest
-
-from numpy.testing import assert_equal, assert_almost_equal
+import platform
+import sys
+import warnings
 
 import MDAnalysis as mda
+import numpy as np
+import pytest
 from MDAnalysis.transformations import translate
-from MDAnalysisTests.datafiles import (
-    PDB,
-    PSF,
-    CRD,
-    DCD,
-    GRO,
-    XTC,
-    TRR,
-    PDB_small,
-    PDB_closed,
-    LAMMPS_chain,
-    LAMMPSDUMP_chain1,
-    LAMMPSDUMP_chain2,
-)
+from numpy.testing import assert_almost_equal, assert_equal
+
+from MDAnalysisTests.datafiles import (CRD, DCD, GRO, PDB, PSF, TRR, XTC,
+                                       LAMMPS_chain, LAMMPSDUMP_chain1,
+                                       LAMMPSDUMP_chain2, PDB_closed,
+                                       PDB_small)
 from MDAnalysisTests.util import no_warning
 
 
@@ -364,12 +353,7 @@ class TestChainReaderContinuous(object):
             SequenceInfo(seq=([0, 1, 2],) * 3, n_frames=3, order=[2, 2, 2]),
             SequenceInfo(
                 seq=(
-                    [
-                        0,
-                        1,
-                        2,
-                        3,
-                    ],
+                    [0, 1, 2, 3],
                     [3, 4],
                     [4, 5, 6, 7],
                 ),
