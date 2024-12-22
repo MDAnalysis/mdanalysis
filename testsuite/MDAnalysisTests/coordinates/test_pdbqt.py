@@ -51,22 +51,25 @@ class TestPDBQT(object):
         assert_equal(sel.n_atoms, 896, "failed to chainID segment B")
 
     def test_protein(self, universe):
-        sel = universe.select_atoms('protein')
+        sel = universe.select_atoms("protein")
         assert_equal(sel.n_atoms, 1805, "failed to select protein")
-        assert_equal(sel.atoms.ix, universe.atoms.ix,
-                     "selected protein is not the same as auto-generated protein segment A+B")
+        assert_equal(
+            sel.atoms.ix,
+            universe.atoms.ix,
+            "selected protein is not the same as auto-generated protein segment A+B",
+        )
 
     def test_backbone(self, universe):
-        sel = universe.select_atoms('backbone')
+        sel = universe.select_atoms("backbone")
         assert_equal(sel.n_atoms, 796)
 
     def test_neighborhood(self, universe):
-        '''test KDTree-based distance search around query atoms
+        """test KDTree-based distance search around query atoms
 
         Creates a KDTree of the protein and uses the coordinates of
         the atoms in the query pdb to create a list of protein
         residues within 4.0A of the query atoms.
-        '''
+        """
         query_universe = mda.Universe(PDBQT_querypdb)  # PDB file
 
         protein = universe.select_atoms("protein")
@@ -76,27 +79,38 @@ class TestPDBQT(object):
         assert_equal(len(residue_neighbors), 80)
 
     def test_n_frames(self, universe):
-        assert_equal(universe.trajectory.n_frames, 1,
-                     "wrong number of frames in pdb")
+        assert_equal(
+            universe.trajectory.n_frames, 1, "wrong number of frames in pdb"
+        )
 
     def test_time(self, universe):
         assert_equal(universe.trajectory.time, 0.0, "wrong time of the frame")
 
     def test_frame(self, universe):
-        assert_equal(universe.trajectory.frame, 0,
-                     "wrong frame number (0-based, should be 0 for single frame readers)")
+        assert_equal(
+            universe.trajectory.frame,
+            0,
+            "wrong frame number (0-based, should be 0 for single frame readers)",
+        )
 
 
 class TestPDBQTWriter(object):
-    reqd_attributes = ['names', 'types', 'resids', 'resnames', 'radii',
-                       'charges']
+    reqd_attributes = [
+        "names",
+        "types",
+        "resids",
+        "resnames",
+        "radii",
+        "charges",
+    ]
 
     @pytest.fixture()
     def outfile(self, tmpdir):
-        return str(tmpdir) + 'out.pdbqt'
+        return str(tmpdir) + "out.pdbqt"
 
-    @pytest.mark.parametrize('filename',
-        ['test.pdbqt', 'test.pdbqt.bz2', 'test.pdbqt.gz'])
+    @pytest.mark.parametrize(
+        "filename", ["test.pdbqt", "test.pdbqt.bz2", "test.pdbqt.gz"]
+    )
     def test_roundtrip_writing_coords(self, filename, tmpdir):
 
         with tmpdir.as_cwd():
@@ -104,17 +118,20 @@ class TestPDBQTWriter(object):
             u.atoms.write(filename)
             u2 = mda.Universe(filename)
 
-            assert_equal(u2.atoms.positions, u.atoms.positions,
-                         "Round trip does not preserve coordinates")
+            assert_equal(
+                u2.atoms.positions,
+                u.atoms.positions,
+                "Round trip does not preserve coordinates",
+            )
 
     def test_roundtrip_formatting(self, outfile):
         # Compare formatting of first line
         u = mda.Universe(PDBQT_input)
         u.atoms.write(outfile)
 
-        with open(PDBQT_input, 'r') as inf:
+        with open(PDBQT_input, "r") as inf:
             l_ref = inf.readline().strip()
-        with open(outfile, 'r') as inf:
+        with open(outfile, "r") as inf:
             inf.readline()  # header
             inf.readline()  # cryst
             l_new = inf.readline().strip()
@@ -127,7 +144,7 @@ class TestPDBQTWriter(object):
 
     def test_write_no_charges(self, outfile):
         attrs = self.reqd_attributes
-        attrs.remove('charges')
+        attrs.remove("charges")
         u = make_Universe(attrs, trajectory=True)
 
         self.assert_writing_warns(u, outfile)
@@ -138,15 +155,15 @@ class TestPDBQTWriter(object):
 
     def test_write_no_chainids_with_segids(self, outfile):
         attrs = self.reqd_attributes
-        attrs.append('segids')
+        attrs.append("segids")
         u = make_Universe(attrs, trajectory=True)
 
         u.atoms.write(outfile)
         u2 = mda.Universe(outfile)
 
         # Should have used last letter of segid as chainid
-        assert all(u2.atoms[:25].segids == 'A')
-        assert all(u2.atoms[25:50].segids == 'B')
+        assert all(u2.atoms[:25].segids == "A")
+        assert all(u2.atoms[25:50].segids == "B")
 
     def test_get_writer(self, outfile):
         u = mda.Universe(PDBQT_input)

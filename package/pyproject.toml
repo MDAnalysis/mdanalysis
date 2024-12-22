@@ -136,6 +136,7 @@ tables\.py
 | MDAnalysis/lib/.*\.py^
 | MDAnalysis/transformations/.*\.py
 | MDAnalysis/converters/.*\.py
+| MDAnalysis/coordinates/.*\.py
 )
 '''
 extend-exclude = '''
@@ -183,6 +184,7 @@ __pycache__
 | MDAnalysis/coordinates/chemfiles\.py
 | MDAnalysis/coordinates/memory\.py
 | MDAnalysis/core/universe\.py
+| .*\.pyx
 )
 '''
 required-version = '24'

@@ -73,15 +73,14 @@ def reader(filename, format=None, **kwargs):
 
     """
     if isinstance(filename, tuple):
-        Reader = get_reader_for(filename[0],
-                                format=filename[1])
+        Reader = get_reader_for(filename[0], format=filename[1])
         filename = filename[0]
     else:
         Reader = get_reader_for(filename, format=format)
     try:
         return Reader(filename, **kwargs)
     except ValueError:
-        errmsg = f'Unable to read {filename} with {Reader}.'
+        errmsg = f"Unable to read {filename} with {Reader}."
         raise TypeError(errmsg) from None
 
 
@@ -121,6 +120,9 @@ def writer(filename, n_atoms=None, **kwargs):
        Added `multiframe` keyword. See also :func:`get_writer_for`.
 
     """
-    Writer = get_writer_for(filename, format=kwargs.pop('format', None),
-                            multiframe=kwargs.pop('multiframe', None))
+    Writer = get_writer_for(
+        filename,
+        format=kwargs.pop("format", None),
+        multiframe=kwargs.pop("multiframe", None),
+    )
     return Writer(filename, n_atoms=n_atoms, **kwargs)
