@@ -128,8 +128,18 @@ else:
 # anion charges are directly handled by the code using the typical valence
 # of the atom
 MONATOMIC_CATION_CHARGES = {
-    3: 1, 11: 1, 19: 1, 37: 1, 47: 1, 55: 1,
-    12: 2, 20: 2, 29: 2, 30: 2, 38: 2, 56: 2,
+    3: 1,
+    11: 1,
+    19: 1,
+    37: 1,
+    47: 1,
+    55: 1,
+    12: 2,
+    20: 2,
+    29: 2,
+    30: 2,
+    38: 2,
+    56: 2,
     26: 2,  # Fe could also be +3
     13: 3,
 }
@@ -153,10 +163,11 @@ class RDKitReader(memory.MemoryReader):
 
     .. versionadded:: 2.0.0
     """
-    format = 'RDKIT'
+
+    format = "RDKIT"
 
     # Structure.coordinates always in Angstrom
-    units = {'time': None, 'length': 'Angstrom'}
+    units = {"time": None, "length": "Angstrom"}
 
     @staticmethod
     def _format_hint(thing):
@@ -180,14 +191,15 @@ class RDKitReader(memory.MemoryReader):
             RDKit molecule
         """
         n_atoms = filename.GetNumAtoms()
-        coordinates = np.array([
-            conf.GetPositions() for conf in filename.GetConformers()],
-            dtype=np.float32)
+        coordinates = np.array(
+            [conf.GetPositions() for conf in filename.GetConformers()],
+            dtype=np.float32,
+        )
         if coordinates.size == 0:
             warnings.warn("No coordinates found in the RDKit molecule")
             coordinates = np.empty((1, n_atoms, 3), dtype=np.float32)
             coordinates[:] = np.nan
-        super(RDKitReader, self).__init__(coordinates, order='fac', **kwargs)
+        super(RDKitReader, self).__init__(coordinates, order="fac", **kwargs)
 
 
 class RDKitConverter(base.ConverterBase):
@@ -313,11 +325,12 @@ class RDKitConverter(base.ConverterBase):
 
     """
 
-    lib = 'RDKIT'
-    units = {'time': None, 'length': 'Angstrom'}
+    lib = "RDKIT"
+    units = {"time": None, "length": "Angstrom"}
 
-    def convert(self, obj, cache=True, NoImplicit=True, max_iter=200,
-                force=False):
+    def convert(
+        self, obj, cache=True, NoImplicit=True, max_iter=200, force=False
+    ):
         """Write selection at current trajectory frame to
         :class:`~rdkit.Chem.rdchem.Mol`.
 
@@ -342,16 +355,19 @@ class RDKitConverter(base.ConverterBase):
         try:
             from rdkit import Chem
         except ImportError:
-            raise ImportError("RDKit is required for the RDKitConverter but "
-                              "it's not installed. Try installing it with \n"
-                              "conda install -c conda-forge rdkit")
+            raise ImportError(
+                "RDKit is required for the RDKitConverter but "
+                "it's not installed. Try installing it with \n"
+                "conda install -c conda-forge rdkit"
+            )
         try:
             # make sure to use atoms (Issue 46)
             ag = obj.atoms
         except AttributeError:
-            raise TypeError("No `atoms` attribute in object of type {}, "
-                            "please use a valid AtomGroup or Universe".format(
-                                type(obj))) from None
+            raise TypeError(
+                "No `atoms` attribute in object of type {}, "
+                "please use a valid AtomGroup or Universe".format(type(obj))
+            ) from None
 
         # parameters passed to atomgroup_to_mol
         kwargs = dict(NoImplicit=NoImplicit, max_iter=max_iter, force=force)
@@ -366,9 +382,11 @@ class RDKitConverter(base.ConverterBase):
             if np.isnan(ag.positions).any() or np.allclose(
                 ag.positions, 0.0, rtol=0.0, atol=1e-12
             ):
-                warnings.warn("NaN or empty coordinates detected in coordinates, "
-                              "the output molecule will not have 3D coordinates "
-                              "assigned")
+                warnings.warn(
+                    "NaN or empty coordinates detected in coordinates, "
+                    "the output molecule will not have 3D coordinates "
+                    "assigned"
+                )
             else:
                 # assign coordinates
                 conf = Chem.Conformer(mol.GetNumAtoms())
@@ -409,7 +427,8 @@ def atomgroup_to_mol(ag, NoImplicit=True, max_iter=200, force=False):
             "The `elements` attribute is required for the RDKitConverter "
             "but is not present in this AtomGroup. Please refer to the "
             "documentation to guess elements from other attributes or "
-            "type `help(MDAnalysis.topology.guessers)`") from None
+            "type `help(MDAnalysis.topology.guessers)`"
+        ) from None
 
     if "H" not in ag.elements:
         if force:
@@ -424,7 +443,8 @@ def atomgroup_to_mol(ag, NoImplicit=True, max_iter=200, force=False):
                 "the parameter ``NoImplicit=False`` when using the converter "
                 "to allow implicit hydrogens and disable inferring bond "
                 "orders and charges. You can also use ``force=True`` to "
-                "ignore this error.")
+                "ignore this error."
+            )
 
     # attributes accepted in PDBResidueInfo object
     pdb_attrs = {}
@@ -433,9 +453,12 @@ def atomgroup_to_mol(ag, NoImplicit=True, max_iter=200, force=False):
             pdb_attrs[attr] = getattr(ag, attr)
     resnames = pdb_attrs.get("resnames", None)
     if resnames is None:
+
         def get_resname(idx):
             return ""
+
     else:
+
         def get_resname(idx):
             return resnames[idx]
 
@@ -473,7 +496,8 @@ def atomgroup_to_mol(ag, NoImplicit=True, max_iter=200, force=False):
     except NoDataError:
         warnings.warn(
             "No `bonds` attribute in this AtomGroup. Guessing bonds based "
-            "on atoms coordinates")
+            "on atoms coordinates"
+        )
         ag.guess_bonds()
 
     for bond in ag.bonds:
@@ -492,15 +516,17 @@ def atomgroup_to_mol(ag, NoImplicit=True, max_iter=200, force=False):
         mol = _standardize_patterns(mol, max_iter)
         # reorder atoms to match MDAnalysis, since the reactions from
         # _standardize_patterns will mess up the original order
-        order = np.argsort([atom.GetIntProp("_MDAnalysis_index")
-                            for atom in mol.GetAtoms()])
+        order = np.argsort(
+            [atom.GetIntProp("_MDAnalysis_index") for atom in mol.GetAtoms()]
+        )
         mol = Chem.RenumberAtoms(mol, order.astype(int).tolist())
 
     # sanitize if possible
     err = Chem.SanitizeMol(mol, catchErrors=True)
     if err:
-        warnings.warn("Could not sanitize molecule: "
-                      f"failed during step {err!r}")
+        warnings.warn(
+            "Could not sanitize molecule: " f"failed during step {err!r}"
+        )
 
     return mol
 
@@ -515,7 +541,7 @@ def set_converter_cache_size(maxsize):
         conversions in memory. Using ``maxsize=None`` will remove all limits
         to the cache size, i.e. everything is cached.
     """
-    global atomgroup_to_mol   # pylint: disable=global-statement
+    global atomgroup_to_mol  # pylint: disable=global-statement
     atomgroup_to_mol = lru_cache(maxsize=maxsize)(atomgroup_to_mol.__wrapped__)
 
 
@@ -597,9 +623,12 @@ def _atom_sorter(atom):
     order and charge infering code to get the correct state on the first
     try. Currently sorts by number of unpaired electrons, then by number of
     heavy atom neighbors (i.e. atoms at the edge first)."""
-    num_heavy_neighbors = len([
-        neighbor for neighbor in atom.GetNeighbors()
-        if neighbor.GetAtomicNum() > 1]
+    num_heavy_neighbors = len(
+        [
+            neighbor
+            for neighbor in atom.GetNeighbors()
+            if neighbor.GetAtomicNum() > 1
+        ]
     )
     return (-_get_nb_unpaired_electrons(atom)[0], num_heavy_neighbors)
 
@@ -630,16 +659,19 @@ def _infer_bo_and_charges(mol):
     """
     # heavy atoms sorted by number of heavy atom neighbors (lower first) then
     # NUE (higher first)
-    atoms = sorted([atom for atom in mol.GetAtoms()
-                    if atom.GetAtomicNum() > 1],
-                   key=_atom_sorter)
+    atoms = sorted(
+        [atom for atom in mol.GetAtoms() if atom.GetAtomicNum() > 1],
+        key=_atom_sorter,
+    )
 
     for atom in atoms:
         # monatomic ions
         if atom.GetDegree() == 0:
-            atom.SetFormalCharge(MONATOMIC_CATION_CHARGES.get(
-                                 atom.GetAtomicNum(),
-                                 -_get_nb_unpaired_electrons(atom)[0]))
+            atom.SetFormalCharge(
+                MONATOMIC_CATION_CHARGES.get(
+                    atom.GetAtomicNum(), -_get_nb_unpaired_electrons(atom)[0]
+                )
+            )
             mol.UpdatePropertyCache(strict=False)
             continue
         # get NUE for each possible valence
@@ -654,8 +686,11 @@ def _infer_bo_and_charges(mol):
         if (len(nue) == 1) and (nue[0] <= 0):
             continue
         else:
-            neighbors = sorted(atom.GetNeighbors(), reverse=True,
-                               key=lambda a: _get_nb_unpaired_electrons(a)[0])
+            neighbors = sorted(
+                atom.GetNeighbors(),
+                reverse=True,
+                key=lambda a: _get_nb_unpaired_electrons(a)[0],
+            )
             # check if one of the neighbors has a common NUE
             for na in neighbors:
                 # get NUE for the neighbor
@@ -663,13 +698,12 @@ def _infer_bo_and_charges(mol):
                 # smallest common NUE
                 common_nue = min(
                     min([i for i in nue if i >= 0], default=0),
-                    min([i for i in na_nue if i >= 0], default=0)
+                    min([i for i in na_nue if i >= 0], default=0),
                 )
                 # a common NUE of 0 means we don't need to do anything
                 if common_nue != 0:
                     # increase bond order
-                    bond = mol.GetBondBetweenAtoms(
-                        atom.GetIdx(), na.GetIdx())
+                    bond = mol.GetBondBetweenAtoms(atom.GetIdx(), na.GetIdx())
                     order = common_nue + 1
                     bond.SetBondType(RDBONDORDER[order])
                     mol.UpdatePropertyCache(strict=False)
@@ -843,14 +877,17 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
     pattern = Chem.MolFromSmarts("[*-{1-2}]-,=[*+0]=,#[*+0]")
     # pattern used to finish fixing a series of conjugated bonds
     base_end_pattern = Chem.MolFromSmarts(
-        "[*-{1-2}]-,=[*+0]=,#[*+0]-,=[*-{1-2}]")
+        "[*-{1-2}]-,=[*+0]=,#[*+0]-,=[*-{1-2}]"
+    )
     # used when there's an odd number of matches for `pattern`
     odd_end_pattern = Chem.MolFromSmarts(
         "[*-]-[*+0]=[*+0]-[*-,$([#7;X3;v3]),$([#6+0,#7+1]=O),"
-        "$([S;D4;v4]-[O-])]")
+        "$([S;D4;v4]-[O-])]"
+    )
     # number of unique matches with the pattern
-    n_matches = len(set([match[0]
-                         for match in mol.GetSubstructMatches(pattern)]))
+    n_matches = len(
+        set([match[0] for match in mol.GetSubstructMatches(pattern)])
+    )
     # nothing to standardize
     if n_matches == 0:
         return
@@ -886,21 +923,27 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
             ):
                 for neighbor in term_atom.GetNeighbors():
                     bond = mol.GetBondBetweenAtoms(anion2, neighbor.GetIdx())
-                    if (neighbor.GetAtomicNum() == 8 and
-                            bond.GetBondTypeAsDouble() == 2):
+                    if (
+                        neighbor.GetAtomicNum() == 8
+                        and bond.GetBondTypeAsDouble() == 2
+                    ):
                         bond.SetBondType(Chem.BondType.SINGLE)
                         neighbor.SetFormalCharge(-1)
                         break
             # edge-case 2: S=O
             # [*-]-*=*-[Sv4]-[O-] --> *=*-*=[Sv6]=O
             # transform -[O-] to =O
-            elif (term_atom.GetAtomicNum() == 16 and
-                  term_atom.GetFormalCharge() == 0):
+            elif (
+                term_atom.GetAtomicNum() == 16
+                and term_atom.GetFormalCharge() == 0
+            ):
                 for neighbor in term_atom.GetNeighbors():
                     bond = mol.GetBondBetweenAtoms(anion2, neighbor.GetIdx())
-                    if (neighbor.GetAtomicNum() == 8 and
-                        neighbor.GetFormalCharge() == -1 and
-                            bond.GetBondTypeAsDouble() == 1):
+                    if (
+                        neighbor.GetAtomicNum() == 8
+                        and neighbor.GetFormalCharge() == -1
+                        and bond.GetBondTypeAsDouble() == 1
+                    ):
                         bond.SetBondType(Chem.BondType.DOUBLE)
                         neighbor.SetFormalCharge(0)
                         break
@@ -976,5 +1019,7 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
         return
 
     # reached max_iter
-    warnings.warn("The standardization could not be completed within a "
-                  "reasonable number of iterations")
+    warnings.warn(
+        "The standardization could not be completed within a "
+        "reasonable number of iterations"
+    )
