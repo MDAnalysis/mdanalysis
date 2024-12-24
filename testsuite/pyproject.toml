@@ -162,8 +162,13 @@ setup\.py
 | MDAnalysisTests/auxiliary/.*\.py
 | MDAnalysisTests/lib/.*\.py
 | MDAnalysisTests/transformations/.*\.py
+| MDAnalysisTests/guesser/.*\.py
 | MDAnalysisTests/converters/.*\.py
 | MDAnalysisTests/coordinates/.*\.py
+| MDAnalysisTests/data/.*\.py
+| MDAnalysisTests/formats/.*\.py
+| MDAnalysisTests/parallelism/.*\.py
+| MDAnalysisTests/scripts/.*\.py
 )
 '''
 extend-exclude = '''

@@ -135,8 +135,10 @@ tables\.py
 | MDAnalysis/visualization/.*\.py
 | MDAnalysis/lib/.*\.py^
 | MDAnalysis/transformations/.*\.py
+| MDAnalysis/guesser/.*\.py
 | MDAnalysis/converters/.*\.py
 | MDAnalysis/coordinates/.*\.py
+| MDAnalysis/tests/.*\.py
 | MDAnalysis/selections/.*\.py
 )
 '''
