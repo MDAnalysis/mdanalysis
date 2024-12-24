@@ -217,15 +217,14 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
-        <span class="n">Reader</span> <span class="o">=</span> <span class="n">get_reader_for</span><span class="p">(</span><span class="n">filename</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                                <span class="nb">format</span><span class="o">=</span><span class="n">filename</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">Reader</span> <span class="o">=</span> <span class="n">get_reader_for</span><span class="p">(</span><span class="n">filename</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">format</span><span class="o">=</span><span class="n">filename</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">Reader</span> <span class="o">=</span> <span class="n">get_reader_for</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">Reader</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-        <span class="n">errmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Unable to read </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s1"> with </span><span class="si">{</span><span class="n">Reader</span><span class="si">}</span><span class="s1">.&#39;</span>
+        <span class="n">errmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Unable to read </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2"> with </span><span class="si">{</span><span class="n">Reader</span><span class="si">}</span><span class="s2">.&quot;</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span></div>
 
 
@@ -268,8 +267,11 @@
 <span class="sd">       Added `multiframe` keyword. See also :func:`get_writer_for`.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">Writer</span> <span class="o">=</span> <span class="n">get_writer_for</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;format&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
-                            <span class="n">multiframe</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;multiframe&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+    <span class="n">Writer</span> <span class="o">=</span> <span class="n">get_writer_for</span><span class="p">(</span>
+        <span class="n">filename</span><span class="p">,</span>
+        <span class="nb">format</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;format&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="n">multiframe</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;multiframe&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+    <span class="p">)</span>
     <span class="k">return</span> <span class="n">Writer</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 </pre></div>

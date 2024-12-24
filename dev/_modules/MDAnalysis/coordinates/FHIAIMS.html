@@ -263,31 +263,35 @@
 <span class="k">class</span> <span class="nc">FHIAIMSReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">SingleFrameReaderBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Reader for the FHIAIMS geometry format.</span>
 
-<span class="sd">       Single frame reader for the `FHI-AIMS`_ input file format.  Reads</span>
-<span class="sd">       geometry (3D and molecules only), positions (absolut or fractional),</span>
-<span class="sd">       velocities if given, all according to the `FHI-AIMS format`_</span>
-<span class="sd">       specifications</span>
+<span class="sd">    Single frame reader for the `FHI-AIMS`_ input file format.  Reads</span>
+<span class="sd">    geometry (3D and molecules only), positions (absolut or fractional),</span>
+<span class="sd">    velocities if given, all according to the `FHI-AIMS format`_</span>
+<span class="sd">    specifications</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;IN&#39;</span><span class="p">,</span> <span class="s1">&#39;FHIAIMS&#39;</span><span class="p">]</span>
-    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="s1">&#39;ps&#39;</span><span class="p">,</span> <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom&#39;</span><span class="p">,</span> <span class="s1">&#39;velocity&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom/ps&#39;</span><span class="p">}</span>
+
+    <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;IN&quot;</span><span class="p">,</span> <span class="s2">&quot;FHIAIMS&quot;</span><span class="p">]</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="s2">&quot;ps&quot;</span><span class="p">,</span> <span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="s2">&quot;Angstrom&quot;</span><span class="p">,</span> <span class="s2">&quot;velocity&quot;</span><span class="p">:</span> <span class="s2">&quot;Angstrom/ps&quot;</span><span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">_read_first_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;rt&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fhiaimsfile</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;rt&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fhiaimsfile</span><span class="p">:</span>
             <span class="n">relative</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">velocities</span><span class="p">,</span> <span class="n">lattice_vectors</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
             <span class="n">skip_tags</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;#&quot;</span><span class="p">,</span> <span class="s2">&quot;initial_moment&quot;</span><span class="p">]</span>
-            <span class="n">oldline</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="n">oldline</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
             <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fhiaimsfile</span><span class="p">:</span>
                 <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;atom&quot;</span><span class="p">):</span>
                     <span class="n">positions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-                    <span class="n">relative</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;atom_frac&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">)</span>
+                    <span class="n">relative</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;atom_frac&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">)</span>
                     <span class="n">oldline</span> <span class="o">=</span> <span class="n">line</span>
                     <span class="k">continue</span>
                 <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;velocity&quot;</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;atom&#39;</span> <span class="ow">in</span> <span class="n">oldline</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="s2">&quot;atom&quot;</span> <span class="ow">in</span> <span class="n">oldline</span><span class="p">:</span>
                         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                            <span class="s1">&#39;Non-conforming line (velocity must follow atom): (</span><span class="si">{0}</span><span class="s1">)in FHI-AIMS input file </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
+                            <span class="s2">&quot;Non-conforming line (velocity must follow atom): (</span><span class="si">{0}</span><span class="s2">)in FHI-AIMS input file </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                <span class="n">line</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
                     <span class="n">velocities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">:])</span>
                     <span class="n">oldline</span> <span class="o">=</span> <span class="n">line</span>
                     <span class="k">continue</span>
@@ -299,7 +303,10 @@
                     <span class="n">oldline</span> <span class="o">=</span> <span class="n">line</span>
                     <span class="k">continue</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s1">&#39;Non-conforming line: (</span><span class="si">{0}</span><span class="s1">)in FHI-AIMS input file </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
+                    <span class="s2">&quot;Non-conforming line: (</span><span class="si">{0}</span><span class="s2">)in FHI-AIMS input file </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">line</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
 
         <span class="c1"># positions and velocities are lists of lists of strings; they will be</span>
         <span class="c1"># cast to np.arrays(..., dtype=float32) during assignment to ts.positions/ts.velocities</span>
@@ -307,14 +314,18 @@
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">velocities</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">positions</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s1">&#39;Found incorrect number of velocity tags (</span><span class="si">{0}</span><span class="s1">) in the FHI-AIMS file, should be </span><span class="si">{1}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="nb">len</span><span class="p">(</span><span class="n">velocities</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">positions</span><span class="p">)))</span>
+                <span class="s2">&quot;Found incorrect number of velocity tags (</span><span class="si">{0}</span><span class="s2">) in the FHI-AIMS file, should be </span><span class="si">{1}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="nb">len</span><span class="p">(</span><span class="n">velocities</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">positions</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lattice_vectors</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s1">&#39;Found partial periodicity in FHI-AIMS file. This cannot be handled by MDAnalysis.&#39;</span><span class="p">)</span>
+                <span class="s2">&quot;Found partial periodicity in FHI-AIMS file. This cannot be handled by MDAnalysis.&quot;</span>
+            <span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lattice_vectors</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">relative</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s1">&#39;Found relative coordinates in FHI-AIMS file without lattice info.&#39;</span><span class="p">)</span>
+                <span class="s2">&quot;Found relative coordinates in FHI-AIMS file without lattice info.&quot;</span>
+            <span class="p">)</span>
 
         <span class="c1"># create Timestep</span>
 
@@ -324,7 +335,9 @@
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lattice_vectors</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">triclinic_box</span><span class="p">(</span><span class="o">*</span><span class="n">lattice_vectors</span><span class="p">)</span>
-            <span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">relative</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">relative</span><span class="p">],</span> <span class="n">lattice_vectors</span><span class="p">)</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">relative</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span>
+                <span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">relative</span><span class="p">],</span> <span class="n">lattice_vectors</span>
+            <span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">velocities</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">ts</span><span class="o">.</span><span class="n">velocities</span> <span class="o">=</span> <span class="n">velocities</span>
@@ -358,24 +371,24 @@
 <span class="k">class</span> <span class="nc">FHIAIMSWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">WriterBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;FHI-AIMS Writer.</span>
 
-<span class="sd">       Single frame writer for the `FHI-AIMS`_ format.  Writes geometry (3D and</span>
-<span class="sd">       molecules only), positions (absolut only), velocities if given, all</span>
-<span class="sd">       according to the `FHI-AIMS format`_ specifications.</span>
+<span class="sd">    Single frame writer for the `FHI-AIMS`_ format.  Writes geometry (3D and</span>
+<span class="sd">    molecules only), positions (absolut only), velocities if given, all</span>
+<span class="sd">    according to the `FHI-AIMS format`_ specifications.</span>
 
-<span class="sd">       If no atom names are given, it will set each atom name to &quot;X&quot;.</span>
+<span class="sd">    If no atom names are given, it will set each atom name to &quot;X&quot;.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;IN&#39;</span><span class="p">,</span> <span class="s1">&#39;FHIAIMS&#39;</span><span class="p">]</span>
-    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom&#39;</span><span class="p">,</span> <span class="s1">&#39;velocity&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom/ps&#39;</span><span class="p">}</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;IN&quot;</span><span class="p">,</span> <span class="s2">&quot;FHIAIMS&quot;</span><span class="p">]</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="s2">&quot;Angstrom&quot;</span><span class="p">,</span> <span class="s2">&quot;velocity&quot;</span><span class="p">:</span> <span class="s2">&quot;Angstrom/ps&quot;</span><span class="p">}</span>
 
     <span class="c1">#: format strings for the FHI-AIMS file (all include newline)</span>
     <span class="n">fmt</span> <span class="o">=</span> <span class="p">{</span>
         <span class="c1"># coordinates output format, see  https://doi.org/10.6084/m9.figshare.12413477.v1</span>
-        <span class="s1">&#39;xyz&#39;</span><span class="p">:</span> <span class="s2">&quot;atom </span><span class="si">{pos[0]:12.8f}</span><span class="s2"> </span><span class="si">{pos[1]:12.8f}</span><span class="s2"> </span><span class="si">{pos[2]:12.8f}</span><span class="s2"> </span><span class="si">{name:&lt;3s}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
-        <span class="s1">&#39;vel&#39;</span><span class="p">:</span> <span class="s2">&quot;velocity </span><span class="si">{vel[0]:12.8f}</span><span class="s2"> </span><span class="si">{vel[1]:12.8f}</span><span class="s2"> </span><span class="si">{vel[2]:12.8f}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;xyz&quot;</span><span class="p">:</span> <span class="s2">&quot;atom </span><span class="si">{pos[0]:12.8f}</span><span class="s2"> </span><span class="si">{pos[1]:12.8f}</span><span class="s2"> </span><span class="si">{pos[2]:12.8f}</span><span class="s2"> </span><span class="si">{name:&lt;3s}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;vel&quot;</span><span class="p">:</span> <span class="s2">&quot;velocity </span><span class="si">{vel[0]:12.8f}</span><span class="s2"> </span><span class="si">{vel[1]:12.8f}</span><span class="s2"> </span><span class="si">{vel[2]:12.8f}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="c1"># unitcell</span>
-        <span class="s1">&#39;box_triclinic&#39;</span><span class="p">:</span> <span class="s2">&quot;lattice_vector </span><span class="si">{box[0]:12.8f}</span><span class="s2"> </span><span class="si">{box[1]:12.8f}</span><span class="s2"> </span><span class="si">{box[2]:12.8f}</span><span class="se">\n</span><span class="s2">lattice_vector </span><span class="si">{box[3]:12.8f}</span><span class="s2"> </span><span class="si">{box[4]:12.8f}</span><span class="s2"> </span><span class="si">{box[5]:12.8f}</span><span class="se">\n</span><span class="s2">lattice_vector </span><span class="si">{box[6]:12.8f}</span><span class="s2"> </span><span class="si">{box[7]:12.8f}</span><span class="s2"> </span><span class="si">{box[8]:12.8f}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="s2">&quot;box_triclinic&quot;</span><span class="p">:</span> <span class="s2">&quot;lattice_vector </span><span class="si">{box[0]:12.8f}</span><span class="s2"> </span><span class="si">{box[1]:12.8f}</span><span class="s2"> </span><span class="si">{box[2]:12.8f}</span><span class="se">\n</span><span class="s2">lattice_vector </span><span class="si">{box[3]:12.8f}</span><span class="s2"> </span><span class="si">{box[4]:12.8f}</span><span class="s2"> </span><span class="si">{box[5]:12.8f}</span><span class="se">\n</span><span class="s2">lattice_vector </span><span class="si">{box[6]:12.8f}</span><span class="s2"> </span><span class="si">{box[7]:12.8f}</span><span class="s2"> </span><span class="si">{box[8]:12.8f}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -389,7 +402,7 @@
 <span class="sd">            number of atoms</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">filename</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="s1">&#39;.in&#39;</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">filename</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="s2">&quot;.in&quot;</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="n">n_atoms</span>
 
     <span class="k">def</span> <span class="nf">_write_next_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
@@ -418,20 +431,21 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">names</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">names</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="n">NoDataError</span><span class="p">):</span>
-            <span class="n">names</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">((</span><span class="s1">&#39;X&#39;</span><span class="p">,))</span>
-            <span class="n">missing_topology</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;names&#39;</span><span class="p">)</span>
+            <span class="n">names</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">((</span><span class="s2">&quot;X&quot;</span><span class="p">,))</span>
+            <span class="n">missing_topology</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;names&quot;</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">atom_indices</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">ids</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="n">NoDataError</span><span class="p">):</span>
-            <span class="n">atom_indices</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">ag</span><span class="o">.</span><span class="n">n_atoms</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-            <span class="n">missing_topology</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;ids&#39;</span><span class="p">)</span>
+            <span class="n">atom_indices</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">ag</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">missing_topology</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;ids&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">missing_topology</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
                 <span class="s2">&quot;Supplied AtomGroup was missing the following attributes: &quot;</span>
                 <span class="s2">&quot;</span><span class="si">{miss}</span><span class="s2">. These will be written with default values. &quot;</span>
-                <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">miss</span><span class="o">=</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">missing_topology</span><span class="p">)))</span>
+                <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">miss</span><span class="o">=</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">missing_topology</span><span class="p">))</span>
+            <span class="p">)</span>
 
         <span class="n">positions</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">positions</span>
         <span class="k">try</span><span class="p">:</span>
@@ -440,7 +454,7 @@
         <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="n">NoDataError</span><span class="p">):</span>
             <span class="n">has_velocities</span> <span class="o">=</span> <span class="kc">False</span>
 
-        <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;wt&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">output_fhiaims</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;wt&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">output_fhiaims</span><span class="p">:</span>
             <span class="c1"># Lattice</span>
             <span class="k">try</span><span class="p">:</span>  <span class="c1"># for AtomGroup/Universe</span>
                 <span class="n">tri_dims</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">triclinic_dimensions</span>
@@ -449,19 +463,22 @@
             <span class="c1"># full output</span>
             <span class="k">if</span> <span class="n">tri_dims</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">output_fhiaims</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;box_triclinic&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="n">tri_dims</span><span class="o">.</span><span class="n">flatten</span><span class="p">()))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s2">&quot;box_triclinic&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="n">tri_dims</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
+                <span class="p">)</span>
 
             <span class="c1"># Atom descriptions and coords</span>
             <span class="c1"># Dont use enumerate here,</span>
             <span class="c1"># all attributes could be infinite cycles!</span>
-            <span class="k">for</span> <span class="n">atom_index</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
-                    <span class="nb">range</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">),</span> <span class="n">names</span><span class="p">):</span>
-                <span class="n">output_fhiaims</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;xyz&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="n">pos</span><span class="o">=</span><span class="n">positions</span><span class="p">[</span><span class="n">atom_index</span><span class="p">],</span>
-                    <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">atom_index</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">),</span> <span class="n">names</span><span class="p">):</span>
+                <span class="n">output_fhiaims</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s2">&quot;xyz&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">pos</span><span class="o">=</span><span class="n">positions</span><span class="p">[</span><span class="n">atom_index</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
                 <span class="k">if</span> <span class="n">has_velocities</span><span class="p">:</span>
-                    <span class="n">output_fhiaims</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;vel&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="n">vel</span><span class="o">=</span><span class="n">velocities</span><span class="p">[</span><span class="n">atom_index</span><span class="p">]))</span></div>
+                    <span class="n">output_fhiaims</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s2">&quot;vel&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">vel</span><span class="o">=</span><span class="n">velocities</span><span class="p">[</span><span class="n">atom_index</span><span class="p">])</span>
+                    <span class="p">)</span></div>
 
 </pre></div>
 

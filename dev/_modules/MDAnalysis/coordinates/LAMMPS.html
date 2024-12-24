@@ -290,8 +290,13 @@
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
-<span class="n">btype_sections</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bond&#39;</span><span class="p">:</span><span class="s1">&#39;Bonds&#39;</span><span class="p">,</span> <span class="s1">&#39;angle&#39;</span><span class="p">:</span><span class="s1">&#39;Angles&#39;</span><span class="p">,</span>
-                  <span class="s1">&#39;dihedral&#39;</span><span class="p">:</span><span class="s1">&#39;Dihedrals&#39;</span><span class="p">,</span> <span class="s1">&#39;improper&#39;</span><span class="p">:</span><span class="s1">&#39;Impropers&#39;</span><span class="p">}</span>
+<span class="n">btype_sections</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;bond&quot;</span><span class="p">:</span> <span class="s2">&quot;Bonds&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;angle&quot;</span><span class="p">:</span> <span class="s2">&quot;Angles&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;dihedral&quot;</span><span class="p">:</span> <span class="s2">&quot;Dihedrals&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;improper&quot;</span><span class="p">:</span> <span class="s2">&quot;Impropers&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
 
 <div class="viewcode-block" id="DCDWriter">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/LAMMPS.html#MDAnalysis.coordinates.LAMMPS.DCDWriter">[docs]</a>
@@ -303,18 +308,26 @@
 <span class="sd">    &quot;Angstrom&quot;. See :mod:`MDAnalysis.units` for other recognized</span>
 <span class="sd">    values.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;LAMMPS&#39;</span>
+
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;LAMMPS&quot;</span>
     <span class="n">multiframe</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">flavor</span> <span class="o">=</span> <span class="s1">&#39;LAMMPS&#39;</span>
+    <span class="n">flavor</span> <span class="o">=</span> <span class="s2">&quot;LAMMPS&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="s1">&#39;fs&#39;</span><span class="p">,</span> <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom&#39;</span><span class="p">}</span>  <span class="c1"># must be instance level</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;timeunit&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;lengthunit&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="s2">&quot;fs&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="s2">&quot;Angstrom&quot;</span><span class="p">,</span>
+        <span class="p">}</span>  <span class="c1"># must be instance level</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;timeunit&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;length&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;lengthunit&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;length&quot;</span><span class="p">])</span>
         <span class="k">for</span> <span class="n">unit_type</span><span class="p">,</span> <span class="n">unit</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">units</span><span class="o">.</span><span class="n">unit_types</span><span class="p">[</span><span class="n">unit</span><span class="p">]</span> <span class="o">!=</span> <span class="n">unit_type</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;LAMMPS DCDWriter: wrong unit </span><span class="si">{0!r}</span><span class="s2"> for unit type </span><span class="si">{1!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">unit</span><span class="p">,</span> <span class="n">unit_type</span><span class="p">))</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                        <span class="s2">&quot;LAMMPS DCDWriter: wrong unit </span><span class="si">{0!r}</span><span class="s2"> for unit type </span><span class="si">{1!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">unit</span><span class="p">,</span> <span class="n">unit_type</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="n">errmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;LAMMPS DCDWriter: unknown unit </span><span class="si">{</span><span class="n">unit</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
@@ -334,20 +347,30 @@
 
 <span class="sd">    .. _units style: http://lammps.sandia.gov/doc/units.html</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;LAMMPS&#39;</span>
-    <span class="n">flavor</span> <span class="o">=</span> <span class="s1">&#39;LAMMPS&#39;</span>
+
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;LAMMPS&quot;</span>
+    <span class="n">flavor</span> <span class="o">=</span> <span class="s2">&quot;LAMMPS&quot;</span>
 
     <span class="nd">@store_init_arguments</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dcdfilename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="s1">&#39;fs&#39;</span><span class="p">,</span> <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom&#39;</span><span class="p">}</span>  <span class="c1"># must be instance level</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;timeunit&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;lengthunit&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="s2">&quot;fs&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="s2">&quot;Angstrom&quot;</span><span class="p">,</span>
+        <span class="p">}</span>  <span class="c1"># must be instance level</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;timeunit&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;length&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;lengthunit&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;length&quot;</span><span class="p">])</span>
         <span class="k">for</span> <span class="n">unit_type</span><span class="p">,</span> <span class="n">unit</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">units</span><span class="o">.</span><span class="n">unit_types</span><span class="p">[</span><span class="n">unit</span><span class="p">]</span> <span class="o">!=</span> <span class="n">unit_type</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;LAMMPS DCDReader: wrong unit </span><span class="si">{0!r}</span><span class="s2"> for unit type </span><span class="si">{1!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">unit</span><span class="p">,</span> <span class="n">unit_type</span><span class="p">))</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                        <span class="s2">&quot;LAMMPS DCDReader: wrong unit </span><span class="si">{0!r}</span><span class="s2"> for unit type </span><span class="si">{1!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">unit</span><span class="p">,</span> <span class="n">unit_type</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;LAMMPS DCDReader: unknown unit </span><span class="si">{0!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">unit</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;LAMMPS DCDReader: unknown unit </span><span class="si">{0!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
+                <span class="p">)</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">DCDReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dcdfilename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
@@ -361,29 +384,34 @@
 <span class="sd">    .. versionchanged:: 0.11.0</span>
 <span class="sd">       Frames now 0-based instead of 1-based</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;DATA&#39;</span>
-    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom&#39;</span><span class="p">,</span> <span class="s1">&#39;velocity&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom/fs&#39;</span><span class="p">}</span>
+
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;DATA&quot;</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="s2">&quot;Angstrom&quot;</span><span class="p">,</span> <span class="s2">&quot;velocity&quot;</span><span class="p">:</span> <span class="s2">&quot;Angstrom/fs&quot;</span><span class="p">}</span>
 
     <span class="nd">@store_init_arguments</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;n_atoms&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;n_atoms&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># this should be done by parsing DATA first</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;DATAReader requires n_atoms keyword&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">atom_style</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;atom_style&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atom_style</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;atom_style&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">DATAReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_read_first_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">with</span> <span class="n">DATAParser</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">read_DATA_timestep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="p">,</span>
-                                           <span class="bp">self</span><span class="o">.</span><span class="n">_ts_kwargs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom_style</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">read_DATA_timestep</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts_kwargs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom_style</span>
+            <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">)</span>  <span class="c1"># in-place !</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">convert_velocities_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_velocities</span><span class="p">)</span>  <span class="c1"># in-place !</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">convert_velocities_from_native</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_velocities</span>
+                <span class="p">)</span>  <span class="c1"># in-place !</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                 <span class="k">pass</span></div>
+
 
 
 <div class="viewcode-block" id="DATAWriter">
@@ -416,7 +444,8 @@
 <span class="sd">    an integer &gt;= 1.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;DATA&#39;</span>
+
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;DATA&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up a DATAWriter</span>
@@ -428,20 +457,21 @@
 <span class="sd">        convert_units : bool, optional</span>
 <span class="sd">            units are converted to the MDAnalysis base format; [``True``]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">filename</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">filename</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span> <span class="o">=</span> <span class="n">convert_units</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="s1">&#39;fs&#39;</span><span class="p">,</span> <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom&#39;</span><span class="p">}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;lengthunit&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;timeunit&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;velocityunit&#39;</span><span class="p">,</span>
-                                 <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;/&#39;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="s2">&quot;fs&quot;</span><span class="p">,</span> <span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="s2">&quot;Angstrom&quot;</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;length&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;lengthunit&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;length&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;timeunit&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;velocity&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span>
+            <span class="s2">&quot;velocityunit&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;length&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_write_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Atoms</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Atoms</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">charges</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">charges</span>
@@ -456,63 +486,84 @@
         <span class="n">moltags</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;molecule_tag&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
-            <span class="n">coordinates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_to_native</span><span class="p">(</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">coordinates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_to_native</span><span class="p">(</span>
+                <span class="n">atoms</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">has_charges</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">moltag</span><span class="p">,</span> <span class="n">atype</span><span class="p">,</span> <span class="n">charge</span><span class="p">,</span> <span class="n">coords</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">moltags</span><span class="p">,</span>
-                    <span class="n">types</span><span class="p">,</span> <span class="n">charges</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">moltag</span><span class="p">,</span> <span class="n">atype</span><span class="p">,</span> <span class="n">charge</span><span class="p">,</span> <span class="n">coords</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+                <span class="n">indices</span><span class="p">,</span> <span class="n">moltags</span><span class="p">,</span> <span class="n">types</span><span class="p">,</span> <span class="n">charges</span><span class="p">,</span> <span class="n">coordinates</span>
+            <span class="p">):</span>
                 <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">coords</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">index</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">moltag</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">atype</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">charge</span><span class="si">:</span><span class="s2">f</span><span class="si">}</span><span class="s2">&quot;</span>
-                             <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">x</span><span class="si">:</span><span class="s2">f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">y</span><span class="si">:</span><span class="s2">f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">z</span><span class="si">:</span><span class="s2">f</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">index</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">moltag</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">atype</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">charge</span><span class="si">:</span><span class="s2">f</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">x</span><span class="si">:</span><span class="s2">f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">y</span><span class="si">:</span><span class="s2">f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">z</span><span class="si">:</span><span class="s2">f</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">moltag</span><span class="p">,</span> <span class="n">atype</span><span class="p">,</span> <span class="n">coords</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">moltags</span><span class="p">,</span> <span class="n">types</span><span class="p">,</span>
-                    <span class="n">coordinates</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">moltag</span><span class="p">,</span> <span class="n">atype</span><span class="p">,</span> <span class="n">coords</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+                <span class="n">indices</span><span class="p">,</span> <span class="n">moltags</span><span class="p">,</span> <span class="n">types</span><span class="p">,</span> <span class="n">coordinates</span>
+            <span class="p">):</span>
                 <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">coords</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">index</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">moltag</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">atype</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2">&quot;</span>
-                             <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">x</span><span class="si">:</span><span class="s2">f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">y</span><span class="si">:</span><span class="s2">f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">z</span><span class="si">:</span><span class="s2">f</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">index</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">moltag</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">atype</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2">&quot;</span> <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">x</span><span class="si">:</span><span class="s2">f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">y</span><span class="si">:</span><span class="s2">f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">z</span><span class="si">:</span><span class="s2">f</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_write_velocities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Velocities</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Velocities</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">indices</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">indices</span> <span class="o">+</span> <span class="mi">1</span>
-        <span class="n">velocities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_velocities_to_native</span><span class="p">(</span><span class="n">atoms</span><span class="o">.</span><span class="n">velocities</span><span class="p">,</span>
-                                                       <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">velocities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_velocities_to_native</span><span class="p">(</span>
+            <span class="n">atoms</span><span class="o">.</span><span class="n">velocities</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
         <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">vel</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">velocities</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{i:d}</span><span class="s1"> </span><span class="si">{x:f}</span><span class="s1"> </span><span class="si">{y:f}</span><span class="s1"> </span><span class="si">{z:f}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">vel</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                <span class="n">y</span><span class="o">=</span><span class="n">vel</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">z</span><span class="o">=</span><span class="n">vel</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="si">{i:d}</span><span class="s2"> </span><span class="si">{x:f}</span><span class="s2"> </span><span class="si">{y:f}</span><span class="s2"> </span><span class="si">{z:f}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">i</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">vel</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="n">vel</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">z</span><span class="o">=</span><span class="n">vel</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_write_masses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Masses</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Masses</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">mass_dict</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">max_type</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">atoms</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">atype</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_type</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">atype</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_type</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
             <span class="c1"># search entire universe for mass info, not just writing selection</span>
-            <span class="n">masses</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">atoms</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span>
-                <span class="s1">&#39;type </span><span class="si">{:d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">atype</span><span class="p">))</span><span class="o">.</span><span class="n">masses</span><span class="p">)</span>
+            <span class="n">masses</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span>
+                <span class="n">atoms</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span>
+                    <span class="s2">&quot;type </span><span class="si">{:d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">atype</span><span class="p">)</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">masses</span>
+            <span class="p">)</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">masses</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">mass_dict</span><span class="p">[</span><span class="n">atype</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">mass_dict</span><span class="p">[</span><span class="n">atype</span><span class="p">]</span> <span class="o">=</span> <span class="n">masses</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">masses</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;LAMMPS DATAWriter: to write data file, &#39;</span><span class="o">+</span>
-                        <span class="s1">&#39;atoms with same type must have same mass&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;LAMMPS DATAWriter: to write data file, &quot;</span>
+                    <span class="o">+</span> <span class="s2">&quot;atoms with same type must have same mass&quot;</span>
+                <span class="p">)</span>
         <span class="k">for</span> <span class="n">atype</span><span class="p">,</span> <span class="n">mass</span> <span class="ow">in</span> <span class="n">mass_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:d}</span><span class="s1"> </span><span class="si">{:f}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">atype</span><span class="p">,</span> <span class="n">mass</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{:d}</span><span class="s2"> </span><span class="si">{:f}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">atype</span><span class="p">,</span> <span class="n">mass</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_write_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bonds</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">btype_sections</span><span class="p">[</span><span class="n">bonds</span><span class="o">.</span><span class="n">btype</span><span class="p">]))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">bond</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bonds</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">bonds</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">btype_sections</span><span class="p">[</span><span class="n">bonds</span><span class="o">.</span><span class="n">btype</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">bond</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bonds</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">bonds</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)):</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:d}</span><span class="s1"> </span><span class="si">{:d}</span><span class="s1"> &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">bond</span><span class="o">.</span><span class="n">type</span><span class="p">))</span><span class="o">+</span>\
-                        <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">bond</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">indices</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                    <span class="s2">&quot;</span><span class="si">{:d}</span><span class="s2"> </span><span class="si">{:d}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">bond</span><span class="o">.</span><span class="n">type</span><span class="p">))</span>
+                    <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">bond</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">indices</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">))</span>
+                    <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
             <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-                <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;LAMMPS DATAWriter: Trying to write bond, but bond &quot;</span>
-                          <span class="sa">f</span><span class="s2">&quot;type </span><span class="si">{</span><span class="n">bond</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2"> is not numerical.&quot;</span><span class="p">)</span>
+                <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;LAMMPS DATAWriter: Trying to write bond, but bond &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;type </span><span class="si">{</span><span class="n">bond</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2"> is not numerical.&quot;</span>
+                <span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">_write_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimensions</span><span class="p">):</span>
@@ -520,20 +571,24 @@
 <span class="sd">        units and then write the dimensions section</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
-            <span class="n">triv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_to_native</span><span class="p">(</span><span class="n">mdamath</span><span class="o">.</span><span class="n">triclinic_vectors</span><span class="p">(</span>
-                                              <span class="n">dimensions</span><span class="p">),</span><span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:f}</span><span class="s1"> </span><span class="si">{:f}</span><span class="s1"> xlo xhi</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">triv</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:f}</span><span class="s1"> </span><span class="si">{:f}</span><span class="s1"> ylo yhi</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">triv</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:f}</span><span class="s1"> </span><span class="si">{:f}</span><span class="s1"> zlo zhi</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">triv</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">2</span><span class="p">]))</span>
+            <span class="n">triv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_to_native</span><span class="p">(</span>
+                <span class="n">mdamath</span><span class="o">.</span><span class="n">triclinic_vectors</span><span class="p">(</span><span class="n">dimensions</span><span class="p">),</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{:f}</span><span class="s2"> </span><span class="si">{:f}</span><span class="s2"> xlo xhi</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">triv</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{:f}</span><span class="s2"> </span><span class="si">{:f}</span><span class="s2"> ylo yhi</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">triv</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{:f}</span><span class="s2"> </span><span class="si">{:f}</span><span class="s2"> zlo zhi</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">triv</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">2</span><span class="p">]))</span>
         <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">triv</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">triv</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">triv</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">]]):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{xy:f}</span><span class="s1"> </span><span class="si">{xz:f}</span><span class="s1"> </span><span class="si">{yz:f}</span><span class="s1"> xy xz yz</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">xy</span><span class="o">=</span><span class="n">triv</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">xz</span><span class="o">=</span><span class="n">triv</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">yz</span><span class="o">=</span><span class="n">triv</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">]))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="si">{xy:f}</span><span class="s2"> </span><span class="si">{xz:f}</span><span class="s2"> </span><span class="si">{yz:f}</span><span class="s2"> xy xz yz</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">xy</span><span class="o">=</span><span class="n">triv</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">xz</span><span class="o">=</span><span class="n">triv</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">yz</span><span class="o">=</span><span class="n">triv</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DATAWriter.write">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/LAMMPS.html#MDAnalysis.coordinates.LAMMPS.DATAWriter.write">[docs]</a>
-    <span class="nd">@requires</span><span class="p">(</span><span class="s1">&#39;types&#39;</span><span class="p">,</span> <span class="s1">&#39;masses&#39;</span><span class="p">)</span>
+    <span class="nd">@requires</span><span class="p">(</span><span class="s2">&quot;types&quot;</span><span class="p">,</span> <span class="s2">&quot;masses&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Write selection at current trajectory frame to file.</span>
 
@@ -574,8 +629,10 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">atoms</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;LAMMPS.DATAWriter: atom types must be convertible to &quot;</span>
-                      <span class="s2">&quot;integers&quot;</span><span class="p">)</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s2">&quot;LAMMPS.DATAWriter: atom types must be convertible to &quot;</span>
+                <span class="s2">&quot;integers&quot;</span>
+            <span class="p">)</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
 
         <span class="k">try</span><span class="p">:</span>
@@ -586,27 +643,38 @@
             <span class="n">has_velocities</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="n">features</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;wt&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;LAMMPS data file via MDAnalysis</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:&gt;12d}</span><span class="s1">  atoms</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">)))</span>
+        <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;wt&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;LAMMPS data file via MDAnalysis</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{:&gt;12d}</span><span class="s2">  atoms</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">)))</span>
 
-            <span class="n">attrs</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;bond&#39;</span><span class="p">,</span> <span class="s1">&#39;bonds&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;angle&#39;</span><span class="p">,</span> <span class="s1">&#39;angles&#39;</span><span class="p">),</span>
-                <span class="p">(</span><span class="s1">&#39;dihedral&#39;</span><span class="p">,</span> <span class="s1">&#39;dihedrals&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;improper&#39;</span><span class="p">,</span> <span class="s1">&#39;impropers&#39;</span><span class="p">)]</span>
+            <span class="n">attrs</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="p">(</span><span class="s2">&quot;bond&quot;</span><span class="p">,</span> <span class="s2">&quot;bonds&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;angle&quot;</span><span class="p">,</span> <span class="s2">&quot;angles&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;dihedral&quot;</span><span class="p">,</span> <span class="s2">&quot;dihedrals&quot;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s2">&quot;improper&quot;</span><span class="p">,</span> <span class="s2">&quot;impropers&quot;</span><span class="p">),</span>
+            <span class="p">]</span>
 
             <span class="k">for</span> <span class="n">btype</span><span class="p">,</span> <span class="n">attr_name</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
                 <span class="n">features</span><span class="p">[</span><span class="n">btype</span><span class="p">]</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">attr_name</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:&gt;12d}</span><span class="s1">  </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">features</span><span class="p">[</span><span class="n">btype</span><span class="p">]),</span>
-                                                    <span class="n">attr_name</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                    <span class="s2">&quot;</span><span class="si">{:&gt;12d}</span><span class="s2">  </span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">features</span><span class="p">[</span><span class="n">btype</span><span class="p">]),</span> <span class="n">attr_name</span><span class="p">)</span>
+                <span class="p">)</span>
                 <span class="n">features</span><span class="p">[</span><span class="n">btype</span><span class="p">]</span> <span class="o">=</span> <span class="n">features</span><span class="p">[</span><span class="n">btype</span><span class="p">]</span><span class="o">.</span><span class="n">atomgroup_intersection</span><span class="p">(</span>
-                                    <span class="n">atoms</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="n">atoms</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span>
+                <span class="p">)</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:&gt;12d}</span><span class="s1">  atom types</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">atoms</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">))))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="si">{:&gt;12d}</span><span class="s2">  atom types</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="nb">max</span><span class="p">(</span><span class="n">atoms</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">))</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
 
             <span class="k">for</span> <span class="n">btype</span><span class="p">,</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">features</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:&gt;12d}</span><span class="s1">  </span><span class="si">{}</span><span class="s1"> types</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">types</span><span class="p">()),</span>
-                                                          <span class="n">btype</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                    <span class="s2">&quot;</span><span class="si">{:&gt;12d}</span><span class="s2">  </span><span class="si">{}</span><span class="s2"> types</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">types</span><span class="p">()),</span> <span class="n">btype</span><span class="p">)</span>
+                <span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_write_dimensions</span><span class="p">(</span><span class="n">atoms</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
 
@@ -626,7 +694,7 @@
 <div class="viewcode-block" id="DumpReader">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/LAMMPS.html#MDAnalysis.coordinates.LAMMPS.DumpReader">[docs]</a>
 <span class="k">class</span> <span class="nc">DumpReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ReaderBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reads the default `LAMMPS dump format </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reads the default `LAMMPS dump format</span>
 <span class="sd">    &lt;https://docs.lammps.org/dump.html&gt;`__</span>
 
 <span class="sd">    Supports coordinates in the LAMMPS &quot;unscaled&quot; (x,y,z), &quot;scaled&quot; (xs,ys,zs),</span>
@@ -682,10 +750,10 @@
 <span class="sd">        Convention used in coordinates, can be one of the following according</span>
 <span class="sd">        to the `LAMMPS documentation &lt;https://docs.lammps.org/dump.html&gt;`__:</span>
 
-<span class="sd">         - &quot;auto&quot; - Detect coordinate type from file column header. If auto </span>
+<span class="sd">         - &quot;auto&quot; - Detect coordinate type from file column header. If auto</span>
 <span class="sd">           detection is used, the guessing checks whether the coordinates</span>
-<span class="sd">           fit each convention in the order &quot;unscaled&quot;, &quot;scaled&quot;, &quot;unwrapped&quot;, </span>
-<span class="sd">           &quot;scaled_unwrapped&quot; and whichever set of coordinates is detected </span>
+<span class="sd">           fit each convention in the order &quot;unscaled&quot;, &quot;scaled&quot;, &quot;unwrapped&quot;,</span>
+<span class="sd">           &quot;scaled_unwrapped&quot; and whichever set of coordinates is detected</span>
 <span class="sd">           first will be used.</span>
 <span class="sd">         - &quot;scaled&quot; - Coordinates wrapped in box and scaled by box length (see</span>
 <span class="sd">            note below), i.e., xs, ys, zs</span>
@@ -695,13 +763,13 @@
 <span class="sd">         - &quot;unwrapped&quot; - Coordinates unwrapped, i.e., xu, yu, zu</span>
 
 <span class="sd">        If coordinates are given in the scaled coordinate convention (xs,ys,zs)</span>
-<span class="sd">        or scaled unwrapped coordinate convention (xsu,ysu,zsu) they will </span>
+<span class="sd">        or scaled unwrapped coordinate convention (xsu,ysu,zsu) they will</span>
 <span class="sd">        automatically be converted from their scaled/fractional representation</span>
 <span class="sd">        to their real values.</span>
 <span class="sd">    unwrap_images : bool (optional) default=False</span>
-<span class="sd">        If `True` and the dump file contains image flags, the coordinates </span>
-<span class="sd">        will be unwrapped. See `read_data </span>
-<span class="sd">        &lt;https://docs.lammps.org/read_data.html&gt;`__  in the lammps </span>
+<span class="sd">        If `True` and the dump file contains image flags, the coordinates</span>
+<span class="sd">        will be unwrapped. See `read_data</span>
+<span class="sd">        &lt;https://docs.lammps.org/read_data.html&gt;`__  in the lammps</span>
 <span class="sd">        documentation for more information.</span>
 <span class="sd">    **kwargs</span>
 <span class="sd">       Other keyword arguments used in :class:`~MDAnalysis.coordinates.base.ReaderBase`</span>
@@ -720,15 +788,21 @@
 <span class="sd">       Now parses coordinates in multiple lammps conventions (x,xs,xu,xsu)</span>
 <span class="sd">    .. versionadded:: 0.19.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;LAMMPSDUMP&#39;</span>
-    <span class="n">_conventions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="s2">&quot;unscaled&quot;</span><span class="p">,</span> <span class="s2">&quot;scaled&quot;</span><span class="p">,</span> <span class="s2">&quot;unwrapped&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;scaled_unwrapped&quot;</span><span class="p">]</span>
+
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;LAMMPSDUMP&quot;</span>
+    <span class="n">_conventions</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;unscaled&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;scaled&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;unwrapped&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;scaled_unwrapped&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
 
     <span class="n">_coordtype_column_names</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;unscaled&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">],</span>
         <span class="s2">&quot;scaled&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;xs&quot;</span><span class="p">,</span> <span class="s2">&quot;ys&quot;</span><span class="p">,</span> <span class="s2">&quot;zs&quot;</span><span class="p">],</span>
         <span class="s2">&quot;unwrapped&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;xu&quot;</span><span class="p">,</span> <span class="s2">&quot;yu&quot;</span><span class="p">,</span> <span class="s2">&quot;zu&quot;</span><span class="p">],</span>
-        <span class="s2">&quot;scaled_unwrapped&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;xsu&quot;</span><span class="p">,</span> <span class="s2">&quot;ysu&quot;</span><span class="p">,</span> <span class="s2">&quot;zsu&quot;</span><span class="p">]</span>
+        <span class="s2">&quot;scaled_unwrapped&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;xsu&quot;</span><span class="p">,</span> <span class="s2">&quot;ysu&quot;</span><span class="p">,</span> <span class="s2">&quot;zsu&quot;</span><span class="p">],</span>
     <span class="p">}</span>
 
     <span class="n">_parsable_columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;vx&quot;</span><span class="p">,</span> <span class="s2">&quot;vy&quot;</span><span class="p">,</span> <span class="s2">&quot;vz&quot;</span><span class="p">,</span> <span class="s2">&quot;fx&quot;</span><span class="p">,</span> <span class="s2">&quot;fy&quot;</span><span class="p">,</span> <span class="s2">&quot;fz&quot;</span><span class="p">]</span>
@@ -736,10 +810,14 @@
         <span class="n">_parsable_columns</span> <span class="o">+=</span> <span class="n">_coordtype_column_names</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 
     <span class="nd">@store_init_arguments</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span>
-                 <span class="n">lammps_coordinate_convention</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
-                 <span class="n">unwrap_images</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                 <span class="n">additional_columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">filename</span><span class="p">,</span>
+        <span class="n">lammps_coordinate_convention</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+        <span class="n">unwrap_images</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">additional_columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">DumpReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="n">root</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
@@ -747,22 +825,28 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">lammps_coordinate_convention</span> <span class="o">=</span> <span class="n">lammps_coordinate_convention</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">option_string</span> <span class="o">=</span> <span class="s2">&quot;&#39;&quot;</span> <span class="o">+</span> <span class="s2">&quot;&#39;, &#39;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_conventions</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&#39;&quot;</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;lammps_coordinate_convention=&quot;</span>
-                             <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">lammps_coordinate_convention</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
-                             <span class="s2">&quot; is not a valid option. &quot;</span>
-                             <span class="sa">f</span><span class="s2">&quot;Please choose one of </span><span class="si">{</span><span class="n">option_string</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;lammps_coordinate_convention=&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">lammps_coordinate_convention</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+                <span class="s2">&quot; is not a valid option. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Please choose one of </span><span class="si">{</span><span class="n">option_string</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_unwrap</span> <span class="o">=</span> <span class="n">unwrap_images</span>
 
-        <span class="k">if</span> <span class="p">(</span><span class="n">util</span><span class="o">.</span><span class="n">iterable</span><span class="p">(</span><span class="n">additional_columns</span><span class="p">)</span>
-                <span class="ow">or</span> <span class="n">additional_columns</span> <span class="ow">is</span> <span class="kc">None</span>
-                <span class="ow">or</span> <span class="n">additional_columns</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">util</span><span class="o">.</span><span class="n">iterable</span><span class="p">(</span><span class="n">additional_columns</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="n">additional_columns</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="ow">or</span> <span class="n">additional_columns</span> <span class="ow">is</span> <span class="kc">True</span>
+        <span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_additional_columns</span> <span class="o">=</span> <span class="n">additional_columns</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;additional_columns=</span><span class="si">{</span><span class="n">additional_columns</span><span class="si">}</span><span class="s2"> &quot;</span>
-                             <span class="s2">&quot;is not a valid option. Please provide an &quot;</span>
-                             <span class="s2">&quot;iterable containing the additional&quot;</span>
-                             <span class="s2">&quot;column headers.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;additional_columns=</span><span class="si">{</span><span class="n">additional_columns</span><span class="si">}</span><span class="s2"> &quot;</span>
+                <span class="s2">&quot;is not a valid option. Please provide an &quot;</span>
+                <span class="s2">&quot;iterable containing the additional&quot;</span>
+                <span class="s2">&quot;column headers.&quot;</span>
+            <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="p">{}</span>
 
@@ -777,7 +861,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
 
     <span class="nd">@property</span>
-    <span class="nd">@cached</span><span class="p">(</span><span class="s1">&#39;n_atoms&#39;</span><span class="p">)</span>
+    <span class="nd">@cached</span><span class="p">(</span><span class="s2">&quot;n_atoms&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">n_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
@@ -787,7 +871,7 @@
         <span class="k">return</span> <span class="n">n_atoms</span>
 
     <span class="nd">@property</span>
-    <span class="nd">@cached</span><span class="p">(</span><span class="s1">&#39;n_frames&#39;</span><span class="p">)</span>
+    <span class="nd">@cached</span><span class="p">(</span><span class="s2">&quot;n_frames&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">n_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># 2(timestep) + 2(natoms info) + 4(box info) + 1(atom header) + n_atoms</span>
         <span class="n">lines_per_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">+</span> <span class="mi">9</span>
@@ -806,7 +890,7 @@
 <div class="viewcode-block" id="DumpReader.close">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/LAMMPS.html#MDAnalysis.coordinates.LAMMPS.DumpReader.close">[docs]</a>
     <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_file&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_file&quot;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
@@ -825,14 +909,16 @@
 
         <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># ITEM TIMESTEP</span>
         <span class="n">step_num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
-        <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;step&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">step_num</span>
-        <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">step_num</span> <span class="o">*</span> <span class="n">ts</span><span class="o">.</span><span class="n">dt</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">step_num</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">step_num</span> <span class="o">*</span> <span class="n">ts</span><span class="o">.</span><span class="n">dt</span>
 
         <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># ITEM NUMBER OF ATOMS</span>
         <span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
         <span class="k">if</span> <span class="n">n_atoms</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Number of atoms in trajectory changed &quot;</span>
-                             <span class="s2">&quot;this is not supported in MDAnalysis&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Number of atoms in trajectory changed &quot;</span>
+                <span class="s2">&quot;this is not supported in MDAnalysis&quot;</span>
+            <span class="p">)</span>
 
         <span class="n">triclinic</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="o">==</span> <span class="mi">9</span>  <span class="c1"># ITEM BOX BOUNDS</span>
         <span class="k">if</span> <span class="n">triclinic</span><span class="p">:</span>
@@ -860,7 +946,7 @@
             <span class="n">xlen</span> <span class="o">=</span> <span class="n">xhi</span> <span class="o">-</span> <span class="n">xlo</span>
             <span class="n">ylen</span> <span class="o">=</span> <span class="n">yhi</span> <span class="o">-</span> <span class="n">ylo</span>
             <span class="n">zlen</span> <span class="o">=</span> <span class="n">zhi</span> <span class="o">-</span> <span class="n">zlo</span>
-            <span class="n">alpha</span> <span class="o">=</span> <span class="n">beta</span> <span class="o">=</span> <span class="n">gamma</span> <span class="o">=</span> <span class="mf">90.</span>
+            <span class="n">alpha</span> <span class="o">=</span> <span class="n">beta</span> <span class="o">=</span> <span class="n">gamma</span> <span class="o">=</span> <span class="mf">90.0</span>
         <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">xlen</span><span class="p">,</span> <span class="n">ylen</span><span class="p">,</span> <span class="n">zlen</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span>
 
         <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
@@ -871,8 +957,9 @@
         <span class="n">convention_to_col_ix</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">cv_name</span><span class="p">,</span> <span class="n">cv_col_names</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coordtype_column_names</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">convention_to_col_ix</span><span class="p">[</span><span class="n">cv_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">attr_to_col_ix</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> 
-                    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">cv_col_names</span><span class="p">]</span>
+                <span class="n">convention_to_col_ix</span><span class="p">[</span><span class="n">cv_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">attr_to_col_ix</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">cv_col_names</span>
+                <span class="p">]</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="k">pass</span>
 
@@ -880,8 +967,9 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">image_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">attr_to_col_ix</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;ix&quot;</span><span class="p">,</span> <span class="s2">&quot;iy&quot;</span><span class="p">,</span> <span class="s2">&quot;iz&quot;</span><span class="p">]]</span>
             <span class="k">except</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Trajectory must have image flag in order &quot;</span>
-                                 <span class="s2">&quot;to unwrap.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Trajectory must have image flag in order &quot;</span> <span class="s2">&quot;to unwrap.&quot;</span>
+                <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_has_vels</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span><span class="n">x</span> <span class="ow">in</span> <span class="n">attr_to_col_ix</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;vx&quot;</span><span class="p">,</span> <span class="s2">&quot;vy&quot;</span><span class="p">,</span> <span class="s2">&quot;vz&quot;</span><span class="p">])</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_vels</span><span class="p">:</span>
@@ -899,13 +987,17 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="c1"># this will automatically select in order of priority</span>
                 <span class="c1"># unscaled, scaled, unwrapped, scaled_unwrapped</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">lammps_coordinate_convention</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">convention_to_col_ix</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">lammps_coordinate_convention</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">convention_to_col_ix</span><span class="p">)[</span>
+                    <span class="mi">0</span>
+                <span class="p">]</span>
             <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No coordinate information detected&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">lammps_coordinate_convention</span> <span class="ow">in</span> <span class="n">convention_to_col_ix</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No coordinates following convention &quot;</span>
-                             <span class="s2">&quot;</span><span class="si">{self.lammps_coordinate_convention}</span><span class="s2"> found in &quot;</span>
-                             <span class="s2">&quot;timestep&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;No coordinates following convention &quot;</span>
+                <span class="s2">&quot;</span><span class="si">{self.lammps_coordinate_convention}</span><span class="s2"> found in &quot;</span>
+                <span class="s2">&quot;timestep&quot;</span>
+            <span class="p">)</span>
 
         <span class="n">coord_cols</span> <span class="o">=</span> <span class="n">convention_to_col_ix</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">lammps_coordinate_convention</span><span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unwrap</span><span class="p">:</span>
@@ -921,10 +1013,13 @@
             <span class="n">additional_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">attrs</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parsable_columns</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_additional_columns</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="n">key</span> <span class="ow">in</span> <span class="n">attrs</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_additional_columns</span><span class="p">]):</span>
-                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Some of the additional columns are not present &quot;</span>
-                              <span class="s2">&quot;in the file, they will be ignored&quot;</span><span class="p">)</span>
-            <span class="n">additional_keys</span> <span class="o">=</span> \
-                <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_additional_columns</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">]</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;Some of the additional columns are not present &quot;</span>
+                    <span class="s2">&quot;in the file, they will be ignored&quot;</span>
+                <span class="p">)</span>
+            <span class="n">additional_keys</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_additional_columns</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">attrs</span>
+            <span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">additional_keys</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">additional_keys</span><span class="p">:</span>
@@ -935,8 +1030,9 @@
             <span class="n">fields</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">ids</span><span class="p">:</span>
                 <span class="n">indices</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="n">attr_to_col_ix</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]]</span>
-            <span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">fields</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span> <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="n">coord_cols</span><span class="p">],</span> 
-                              <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">fields</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span> <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="n">coord_cols</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span>
+            <span class="p">)</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unwrap</span><span class="p">:</span>
                 <span class="n">images</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span>
@@ -953,8 +1049,9 @@
 
             <span class="c1"># Collect additional cols</span>
             <span class="k">for</span> <span class="n">attribute_key</span> <span class="ow">in</span> <span class="n">additional_keys</span><span class="p">:</span>
-                <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">attribute_key</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> \
-                    <span class="n">fields</span><span class="p">[</span><span class="n">attr_to_col_ix</span><span class="p">[</span><span class="n">attribute_key</span><span class="p">]]</span>
+                <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">attribute_key</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span>
+                    <span class="n">attr_to_col_ix</span><span class="p">[</span><span class="n">attribute_key</span><span class="p">]</span>
+                <span class="p">]</span>
 
         <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
         <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
@@ -967,12 +1064,13 @@
         <span class="k">for</span> <span class="n">attribute_key</span> <span class="ow">in</span> <span class="n">additional_keys</span><span class="p">:</span>
             <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">attribute_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">attribute_key</span><span class="p">][</span><span class="n">order</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lammps_coordinate_convention</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;scaled&quot;</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lammps_coordinate_convention</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;scaled&quot;</span><span class="p">):</span>
             <span class="c1"># if coordinates are given in scaled format, undo that</span>
-            <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">transform_StoR</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
-                                                    <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">transform_StoR</span><span class="p">(</span>
+                <span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span>
+            <span class="p">)</span>
         <span class="c1"># Transform to origin after transformation of scaled variables</span>
-        <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">xlo</span><span class="p">,</span> <span class="n">ylo</span><span class="p">,</span> <span class="n">zlo</span><span class="p">])[</span><span class="kc">None</span><span class="p">,:]</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">xlo</span><span class="p">,</span> <span class="n">ylo</span><span class="p">,</span> <span class="n">zlo</span><span class="p">])[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
 
         <span class="k">return</span> <span class="n">ts</span></div>
 

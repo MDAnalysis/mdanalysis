@@ -193,6 +193,7 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">gsd</span>
     <span class="kn">import</span> <span class="nn">gsd.fl</span>
@@ -216,11 +217,10 @@
 <div class="viewcode-block" id="GSDReader">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/GSD.html#MDAnalysis.coordinates.GSD.GSDReader">[docs]</a>
 <span class="k">class</span> <span class="nc">GSDReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ReaderBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reader for the GSD format.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reader for the GSD format.&quot;&quot;&quot;</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;GSD&#39;</span>
-    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;GSD&quot;</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
 
     <span class="nd">@store_init_arguments</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -257,7 +257,7 @@
     <span class="k">def</span> <span class="nf">open_trajectory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;opens the trajectory file using gsd.hoomd module&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_file</span> <span class="o">=</span> <span class="n">gsd_pickle_open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file</span> <span class="o">=</span> <span class="n">gsd_pickle_open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="GSDReader.close">
@@ -288,7 +288,7 @@
 
         <span class="c1"># sets the Timestep object</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">frame</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;step&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">myframe</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">step</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">myframe</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">step</span>
 
         <span class="c1"># set frame box dimensions</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">myframe</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">box</span>
@@ -298,9 +298,11 @@
         <span class="n">frame_positions</span> <span class="o">=</span> <span class="n">myframe</span><span class="o">.</span><span class="n">particles</span><span class="o">.</span><span class="n">position</span>
         <span class="n">n_atoms_now</span> <span class="o">=</span> <span class="n">frame_positions</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">n_atoms_now</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Frame </span><span class="si">%d</span><span class="s2"> has </span><span class="si">%d</span><span class="s2"> atoms but the initial frame has </span><span class="si">%d</span><span class="s2">&quot;</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Frame </span><span class="si">%d</span><span class="s2"> has </span><span class="si">%d</span><span class="s2"> atoms but the initial frame has </span><span class="si">%d</span><span class="s2">&quot;</span>
                 <span class="s2">&quot; atoms. MDAnalysis in unable to deal with variable&quot;</span>
-                <span class="s2">&quot; topology!&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">n_atoms_now</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">))</span>
+                <span class="s2">&quot; topology!&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">n_atoms_now</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="n">frame_positions</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
@@ -359,24 +361,27 @@
 
 <span class="sd">    .. versionadded:: 2.0.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">mode</span>
 
     <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="n">gsd_version</span> <span class="o">=</span> <span class="n">gsd</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">version</span>
         <span class="n">schema_version</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
-        <span class="n">gsdfileobj</span> <span class="o">=</span> <span class="n">gsd</span><span class="o">.</span><span class="n">fl</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                                 <span class="n">mode</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                                 <span class="n">application</span><span class="o">=</span><span class="s1">&#39;gsd.hoomd &#39;</span> <span class="o">+</span> <span class="n">gsd_version</span><span class="p">,</span>
-                                 <span class="n">schema</span><span class="o">=</span><span class="s1">&#39;hoomd&#39;</span><span class="p">,</span>
-                                 <span class="n">schema_version</span><span class="o">=</span><span class="n">schema_version</span><span class="p">)</span>
+        <span class="n">gsdfileobj</span> <span class="o">=</span> <span class="n">gsd</span><span class="o">.</span><span class="n">fl</span><span class="o">.</span><span class="n">open</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">mode</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">application</span><span class="o">=</span><span class="s2">&quot;gsd.hoomd &quot;</span> <span class="o">+</span> <span class="n">gsd_version</span><span class="p">,</span>
+            <span class="n">schema</span><span class="o">=</span><span class="s2">&quot;hoomd&quot;</span><span class="p">,</span>
+            <span class="n">schema_version</span><span class="o">=</span><span class="n">schema_version</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">gsdfileobj</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="gsd_pickle_open">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/GSD.html#MDAnalysis.coordinates.GSD.gsd_pickle_open">[docs]</a>
-<span class="k">def</span> <span class="nf">gsd_pickle_open</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">gsd_pickle_open</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;r&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Open hoomd schema GSD file with pickle function implemented.</span>
 
 <span class="sd">    This function returns a GSDPicklable object. It can be used as a</span>
@@ -434,14 +439,15 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">gsd_version</span> <span class="o">=</span> <span class="n">gsd</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">version</span>
     <span class="n">schema_version</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">mode</span> <span class="o">!=</span> <span class="s1">&#39;r&#39;</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only read mode &#39;r&#39; &quot;</span>
-                         <span class="s2">&quot;files can be pickled.&quot;</span><span class="p">)</span>
-    <span class="n">gsdfileobj</span> <span class="o">=</span> <span class="n">gsd</span><span class="o">.</span><span class="n">fl</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
-                             <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span>
-                             <span class="n">application</span><span class="o">=</span><span class="s1">&#39;gsd.hoomd &#39;</span> <span class="o">+</span> <span class="n">gsd_version</span><span class="p">,</span>
-                             <span class="n">schema</span><span class="o">=</span><span class="s1">&#39;hoomd&#39;</span><span class="p">,</span>
-                             <span class="n">schema_version</span><span class="o">=</span><span class="n">schema_version</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">mode</span> <span class="o">!=</span> <span class="s2">&quot;r&quot;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only read mode &#39;r&#39; &quot;</span> <span class="s2">&quot;files can be pickled.&quot;</span><span class="p">)</span>
+    <span class="n">gsdfileobj</span> <span class="o">=</span> <span class="n">gsd</span><span class="o">.</span><span class="n">fl</span><span class="o">.</span><span class="n">open</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+        <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span>
+        <span class="n">application</span><span class="o">=</span><span class="s2">&quot;gsd.hoomd &quot;</span> <span class="o">+</span> <span class="n">gsd_version</span><span class="p">,</span>
+        <span class="n">schema</span><span class="o">=</span><span class="s2">&quot;hoomd&quot;</span><span class="p">,</span>
+        <span class="n">schema_version</span><span class="o">=</span><span class="n">schema_version</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="k">return</span> <span class="n">GSDPicklable</span><span class="p">(</span><span class="n">gsdfileobj</span><span class="p">)</span></div>
 
 </pre></div>

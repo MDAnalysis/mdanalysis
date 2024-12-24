@@ -403,7 +403,9 @@
         <span class="n">traj_properties</span><span class="p">[</span><span class="s2">&quot;l_blockstart_offset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">l_blockstart_offset</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">l_timestep_timevalues</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="n">traj_properties</span><span class="p">[</span><span class="s2">&quot;dt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">l_timestep_timevalues</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">l_timestep_timevalues</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">traj_properties</span><span class="p">[</span><span class="s2">&quot;dt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">l_timestep_timevalues</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">l_timestep_timevalues</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">traj_properties</span><span class="p">[</span><span class="s2">&quot;dt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
@@ -440,7 +442,9 @@
                         <span class="n">tmp_buf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">coords_str</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
 
                 <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">tmp_buf</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
-                    <span class="n">frameDat</span><span class="p">[</span><span class="s2">&quot;positions&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">tmp_buf</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+                    <span class="n">frameDat</span><span class="p">[</span><span class="s2">&quot;positions&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
+                        <span class="n">tmp_buf</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span>
+                    <span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                         <span class="s2">&quot;The trajectory contains the wrong number of atoms!&quot;</span>
@@ -466,13 +470,19 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="kc">True</span>
 
                     <span class="n">gb_line3</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">gb_line3</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)))</span> <span class="o">&gt;</span> <span class="mf">1e-10</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="p">(</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">gb_line3</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)))</span>
+                        <span class="o">&gt;</span> <span class="mf">1e-10</span>
+                    <span class="p">):</span>
                         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                             <span class="s2">&quot;This reader doesnt&#39;t support a shifted origin!&quot;</span>
                         <span class="p">)</span>
 
                     <span class="n">gb_line4</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">gb_line4</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)))</span> <span class="o">&gt;</span> <span class="mf">1e-10</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="p">(</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">gb_line4</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)))</span>
+                        <span class="o">&gt;</span> <span class="mf">1e-10</span>
+                    <span class="p">):</span>
                         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                             <span class="s2">&quot;This reader &quot;</span>
                             <span class="s2">&quot;doesnt&#39;t support &quot;</span>
@@ -489,12 +499,14 @@
                 <span class="k">break</span>
 
             <span class="k">elif</span> <span class="nb">any</span><span class="p">(</span>
-                <span class="n">non_supp_bn</span> <span class="ow">in</span> <span class="n">line</span> <span class="k">for</span> <span class="n">non_supp_bn</span> <span class="ow">in</span> <span class="n">TRCReader</span><span class="o">.</span><span class="n">NOT_SUPPORTED_BLOCKS</span>
+                <span class="n">non_supp_bn</span> <span class="ow">in</span> <span class="n">line</span>
+                <span class="k">for</span> <span class="n">non_supp_bn</span> <span class="ow">in</span> <span class="n">TRCReader</span><span class="o">.</span><span class="n">NOT_SUPPORTED_BLOCKS</span>
             <span class="p">):</span>
                 <span class="k">for</span> <span class="n">non_supp_bn</span> <span class="ow">in</span> <span class="n">TRCReader</span><span class="o">.</span><span class="n">NOT_SUPPORTED_BLOCKS</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">non_supp_bn</span> <span class="o">==</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
                         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                            <span class="n">non_supp_bn</span> <span class="o">+</span> <span class="s2">&quot; block is not supported!&quot;</span><span class="p">,</span> <span class="ne">UserWarning</span>
+                            <span class="n">non_supp_bn</span> <span class="o">+</span> <span class="s2">&quot; block is not supported!&quot;</span><span class="p">,</span>
+                            <span class="ne">UserWarning</span><span class="p">,</span>
                         <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">frameDat</span>
@@ -504,7 +516,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span>
 
         <span class="c1"># Move position in file just (-2 byte) before the start of the block</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">trcfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traj_properties</span><span class="p">[</span><span class="s2">&quot;l_blockstart_offset&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trcfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">traj_properties</span><span class="p">[</span><span class="s2">&quot;l_blockstart_offset&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
 
@@ -525,7 +539,9 @@
 
     <span class="k">def</span> <span class="nf">open_trajectory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trcfile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">errno</span><span class="o">.</span><span class="n">EALREADY</span><span class="p">,</span> <span class="s2">&quot;TRC file already opened&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span>
+                <span class="n">errno</span><span class="o">.</span><span class="n">EALREADY</span><span class="p">,</span> <span class="s2">&quot;TRC file already opened&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span>
+            <span class="p">)</span>
 
         <span class="c1"># Reload trajectory file</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trcfile</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>

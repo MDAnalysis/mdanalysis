@@ -192,7 +192,7 @@
 
 
 <span class="k">def</span> <span class="nf">_parse_mmtf</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">fn</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;gz&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">fn</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;gz&quot;</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">mmtf</span><span class="o">.</span><span class="n">parse_gzip</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">mmtf</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
@@ -209,17 +209,19 @@
 <span class="sd">       Protein Data Bank. The Reader will be removed in version 3.0.</span>
 <span class="sd">       Users are encouraged to instead use alternative PDB formats.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;MMTF&#39;</span>
+
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;MMTF&quot;</span>
 
     <span class="nd">@store_init_arguments</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The MMTF Reader is deprecated and will be removed in &quot;</span>
-                <span class="s2">&quot;MDAnalysis version 3.0.0&quot;</span><span class="p">)</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;The MMTF Reader is deprecated and will be removed in &quot;</span>
+            <span class="s2">&quot;MDAnalysis version 3.0.0&quot;</span>
+        <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
 
         <span class="nb">super</span><span class="p">(</span><span class="n">MMTFReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="n">filename</span><span class="p">,</span> <span class="n">convert_units</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span>
-            <span class="o">**</span><span class="n">kwargs</span>
+            <span class="n">filename</span><span class="p">,</span> <span class="n">convert_units</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
         <span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
@@ -231,9 +233,9 @@
         <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">thing</span><span class="p">,</span> <span class="n">mmtf</span><span class="o">.</span><span class="n">MMTFDecoder</span><span class="p">)</span>
 
     <span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
-        <span class="n">Doi</span><span class="p">(</span><span class="s1">&#39;10.1371/journal.pcbi.1005575&#39;</span><span class="p">),</span>
+        <span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1371/journal.pcbi.1005575&quot;</span><span class="p">),</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;MMTF Reader&quot;</span><span class="p">,</span>
-        <span class="n">path</span><span class="o">=</span><span class="s1">&#39;MDAnalysis.coordinates.MMTF&#39;</span><span class="p">,</span>
+        <span class="n">path</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.coordinates.MMTF&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">def</span> <span class="nf">_read_first_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># TOOD: Check units?</span>
@@ -243,8 +245,7 @@
             <span class="n">top</span> <span class="o">=</span> <span class="n">_parse_mmtf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="n">top</span><span class="o">.</span><span class="n">num_atoms</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span>
-                                      <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts_kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts_kwargs</span><span class="p">)</span>
         <span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">top</span><span class="o">.</span><span class="n">x_coord_list</span>
         <span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">top</span><span class="o">.</span><span class="n">y_coord_list</span>
         <span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">top</span><span class="o">.</span><span class="n">z_coord_list</span>

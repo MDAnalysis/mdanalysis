@@ -292,7 +292,9 @@
         <span class="n">_forces_blockname</span><span class="p">,</span>
     <span class="p">]</span>
 
-    <span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span><span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1002/jcc.23495&quot;</span><span class="p">),</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The TNG paper&quot;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="vm">__name__</span><span class="p">)</span>
+    <span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
+        <span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1002/jcc.23495&quot;</span><span class="p">),</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The TNG paper&quot;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="vm">__name__</span>
+    <span class="p">)</span>
     <span class="nd">@store_init_arguments</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">convert_units</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a TNG trajectory</span>
@@ -306,7 +308,9 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">HAS_PYTNG</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;TNGReader: To read TNG files please install pytng&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+                <span class="s2">&quot;TNGReader: To read TNG files please install pytng&quot;</span>
+            <span class="p">)</span>
 
         <span class="nb">super</span><span class="p">(</span><span class="n">TNGReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -337,27 +341,35 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_has_positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions_blockname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_block_names</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_positions</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_special_block_present</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_positions_blockname</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_iterator</span><span class="o">.</span><span class="n">make_ndarray_for_block_from_name</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_positions_blockname</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_file_iterator</span><span class="o">.</span><span class="n">make_ndarray_for_block_from_name</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_positions_blockname</span>
+                <span class="p">)</span>
             <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_has_velocities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_velocities_blockname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_block_names</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_velocities</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_special_block_present</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_velocities_blockname</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">velocities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_iterator</span><span class="o">.</span><span class="n">make_ndarray_for_block_from_name</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_velocities_blockname</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">velocities</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_file_iterator</span><span class="o">.</span><span class="n">make_ndarray_for_block_from_name</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_velocities_blockname</span>
+                <span class="p">)</span>
             <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_has_forces</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_forces_blockname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_block_names</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_forces</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_special_block_present</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_forces_blockname</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">forces</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_iterator</span><span class="o">.</span><span class="n">make_ndarray_for_block_from_name</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_forces_blockname</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">forces</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_file_iterator</span><span class="o">.</span><span class="n">make_ndarray_for_block_from_name</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_forces_blockname</span>
+                <span class="p">)</span>
             <span class="p">)</span>
 
         <span class="c1"># check for any additional blocks that will be read into ts.data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_additional_blocks</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">block</span> <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_block_names</span> <span class="k">if</span> <span class="n">block</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_special_blocks</span>
+            <span class="n">block</span>
+            <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_block_names</span>
+            <span class="k">if</span> <span class="n">block</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_special_blocks</span>
         <span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_strides_and_frames</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">=</span> <span class="mi">0</span>
@@ -409,7 +421,9 @@
                         <span class="s2">&quot; It will not be read&quot;</span>
                     <span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_additional_blocks_to_read</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">block</span><span class="p">)</span>  <span class="c1"># pragma: no cover</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_additional_blocks_to_read</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="n">block</span>
+                    <span class="p">)</span>  <span class="c1"># pragma: no cover</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_additional_blocks_to_read</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">block</span><span class="p">)</span>
 
@@ -438,7 +452,9 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">HAS_PYTNG</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;TNGReader: To read TNG files please install pytng&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+                <span class="s2">&quot;TNGReader: To read TNG files please install pytng&quot;</span>
+            <span class="p">)</span>
         <span class="k">with</span> <span class="n">pytng</span><span class="o">.</span><span class="n">TNGFileIterator</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tng</span><span class="p">:</span>
             <span class="n">n_atoms</span> <span class="o">=</span> <span class="n">tng</span><span class="o">.</span><span class="n">n_atoms</span>
         <span class="k">return</span> <span class="n">n_atoms</span></div>
@@ -621,7 +637,9 @@
             <span class="n">add_block_stride</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_block_strides</span><span class="p">[</span><span class="n">block</span><span class="p">]</span>
             <span class="c1"># check we are on stride for our block</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">add_block_stride</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_global_stride</span><span class="p">):</span>
-                <span class="n">block_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_iterator</span><span class="o">.</span><span class="n">make_ndarray_for_block_from_name</span><span class="p">(</span><span class="n">block</span><span class="p">)</span>
+                <span class="n">block_data</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_file_iterator</span><span class="o">.</span><span class="n">make_ndarray_for_block_from_name</span><span class="p">(</span><span class="n">block</span><span class="p">)</span>
+                <span class="p">)</span>
                 <span class="c1"># additional blocks read into ts.data dictionary</span>
                 <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">block</span><span class="p">]</span> <span class="o">=</span> <span class="n">curr_step</span><span class="o">.</span><span class="n">get_blockid</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_block_dictionary</span><span class="p">[</span><span class="n">block</span><span class="p">],</span> <span class="n">block_data</span>
