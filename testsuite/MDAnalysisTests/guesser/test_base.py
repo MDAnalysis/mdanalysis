@@ -20,89 +20,98 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-import pytest
-import numpy as np
 import MDAnalysis as mda
-from MDAnalysis.guesser.base import GuesserBase, get_guesser
-from MDAnalysis.core.topology import Topology
-from MDAnalysis.core.topologyattrs import Masses, Atomnames, Atomtypes
 import MDAnalysis.tests.datafiles as datafiles
+import numpy as np
+import pytest
+from MDAnalysis import _GUESSERS, _TOPOLOGY_ATTRS
+from MDAnalysis.core.topology import Topology
+from MDAnalysis.core.topologyattrs import Atomnames, Atomtypes, Masses
 from MDAnalysis.exceptions import NoDataError
+from MDAnalysis.guesser.base import GuesserBase, get_guesser
 from numpy.testing import assert_allclose, assert_equal
 
-from MDAnalysis import _TOPOLOGY_ATTRS, _GUESSERS
 
-
-class TestBaseGuesser():
+class TestBaseGuesser:
 
     def test_get_guesser(self):
         class TestGuesser1(GuesserBase):
-            context = 'test1'
+            context = "test1"
 
         class TestGuesser2(GuesserBase):
-            context = 'test2'
+            context = "test2"
 
-        assert get_guesser(TestGuesser1).context == 'test1'
-        assert get_guesser('test1').context == 'test1'
-        assert get_guesser(TestGuesser2()).context == 'test2'
+        assert get_guesser(TestGuesser1).context == "test1"
+        assert get_guesser("test1").context == "test1"
+        assert get_guesser(TestGuesser2()).context == "test2"
 
     def test_get_guesser_with_universe(self):
         class TestGuesser1(GuesserBase):
-            context = 'test1'
+            context = "test1"
 
         u = mda.Universe.empty(n_atoms=5)
         guesser = get_guesser(TestGuesser1(), u, foo=1)
 
         assert len(guesser._universe.atoms) == 5
-        assert 'foo' in guesser._kwargs
+        assert "foo" in guesser._kwargs
 
     def test_guess_invalid_attribute(self):
-        with pytest.raises(ValueError,
-                           match='default guesser can not guess '
-                                 'the following attribute: foo'):
-            mda.Universe(datafiles.PDB, to_guess=['foo'])
+        with pytest.raises(
+            ValueError,
+            match="default guesser can not guess "
+            "the following attribute: foo",
+        ):
+            mda.Universe(datafiles.PDB, to_guess=["foo"])
 
     def test_guess_attribute_with_missing_parent_attr(self):
-        names = Atomnames(np.array(['C', 'HB', 'HA', 'O'], dtype=object))
+        names = Atomnames(np.array(["C", "HB", "HA", "O"], dtype=object))
         masses = Masses(
-            np.array([np.nan, np.nan, np.nan, np.nan], dtype=np.float64))
-        top = Topology(4, 1, 1, attrs=[names, masses, ])
-        u = mda.Universe(top, to_guess=['masses'])
-        assert_allclose(u.atoms.masses, np.array(
-            [12.01100, 1.00800, 1.00800, 15.99900]), atol=0)
+            np.array([np.nan, np.nan, np.nan, np.nan], dtype=np.float64)
+        )
+        top = Topology(4, 1, 1, attrs=[names, masses])
+        u = mda.Universe(top, to_guess=["masses"])
+        assert_allclose(
+            u.atoms.masses,
+            np.array([12.01100, 1.00800, 1.00800, 15.99900]),
+            atol=0,
+        )
 
     def test_force_guessing(self):
-        names = Atomnames(np.array(['C', 'H', 'H', 'O'], dtype=object))
-        types = Atomtypes(np.array(['1', '2', '3', '4'], dtype=object))
-        top = Topology(4, 1, 1, attrs=[names, types, ])
-        u = mda.Universe(top, force_guess=['types'])
-        assert_equal(u.atoms.types, ['C', 'H', 'H', 'O'])
+        names = Atomnames(np.array(["C", "H", "H", "O"], dtype=object))
+        types = Atomtypes(np.array(["1", "2", "3", "4"], dtype=object))
+        top = Topology(4, 1, 1, attrs=[names, types])
+        u = mda.Universe(top, force_guess=["types"])
+        assert_equal(u.atoms.types, ["C", "H", "H", "O"])
 
     def test_partial_guessing(self):
-        types = Atomtypes(np.array(['C', 'H', 'H', 'O'], dtype=object))
+        types = Atomtypes(np.array(["C", "H", "H", "O"], dtype=object))
         masses = Masses(np.array([0, np.nan, np.nan, 0], dtype=np.float64))
-        top = Topology(4, 1, 1, attrs=[types, masses, ])
-        u = mda.Universe(top, to_guess=['masses'])
-        assert_allclose(u.atoms.masses, np.array(
-            [0, 1.00800, 1.00800, 0]), atol=0)
+        top = Topology(4, 1, 1, attrs=[types, masses])
+        u = mda.Universe(top, to_guess=["masses"])
+        assert_allclose(
+            u.atoms.masses, np.array([0, 1.00800, 1.00800, 0]), atol=0
+        )
 
     def test_force_guess_priority(self):
         "check that passing the attribute to force_guess have higher power"
-        types = Atomtypes(np.array(['C', 'H', 'H', 'O'], dtype=object))
+        types = Atomtypes(np.array(["C", "H", "H", "O"], dtype=object))
         masses = Masses(np.array([0, np.nan, np.nan, 0], dtype=np.float64))
-        top = Topology(4, 1, 1, attrs=[types, masses, ])
-        u = mda.Universe(top, to_guess=['masses'], force_guess=['masses'])
-        assert_allclose(u.atoms.masses, np.array(
-            [12.01100, 1.00800, 1.00800, 15.99900]), atol=0)
+        top = Topology(4, 1, 1, attrs=[types, masses])
+        u = mda.Universe(top, to_guess=["masses"], force_guess=["masses"])
+        assert_allclose(
+            u.atoms.masses,
+            np.array([12.01100, 1.00800, 1.00800, 15.99900]),
+            atol=0,
+        )
 
     def test_partial_guess_attr_with_unknown_no_value_label(self):
         "trying to partially guess attribute tha doesn't have declared"
         "no_value_label should gives no effect"
-        names = Atomnames(np.array(['C', 'H', 'H', 'O'], dtype=object))
-        types = Atomtypes(np.array(['', '', '', ''], dtype=object))
-        top = Topology(4, 1, 1, attrs=[names, types, ])
-        u = mda.Universe(top, to_guess=['types'])
-        assert_equal(u.atoms.types, ['', '', '', ''])
+        names = Atomnames(np.array(["C", "H", "H", "O"], dtype=object))
+        types = Atomtypes(np.array(["", "", "", ""], dtype=object))
+        top = Topology(4, 1, 1, attrs=[names, types])
+        u = mda.Universe(top, to_guess=["types"])
+        assert_equal(u.atoms.types, ["", "", "", ""])
 
     def test_guess_topology_objects_existing_read(self):
         u = mda.Universe(datafiles.CONECT)
@@ -166,7 +175,7 @@ class TestBaseGuesser():
         u = mda.Universe(
             datafiles.PDB_small,
             to_guess=["dihedrals", "angles", "bonds"],
-            guess_bonds=False
+            guess_bonds=False,
         )
         assert len(u.atoms.angles) == 6123
         assert len(u.atoms.dihedrals) == 8921
@@ -177,8 +186,7 @@ class TestBaseGuesser():
             u.atoms.angles
 
         u.guess_TopologyAttrs(
-            "default",
-            to_guess=["dihedrals", "angles", "bonds"]
+            "default", to_guess=["dihedrals", "angles", "bonds"]
         )
         assert len(u.atoms.angles) == 6123
         assert len(u.atoms.dihedrals) == 8921
@@ -223,43 +231,50 @@ class TestBaseGuesser():
         default_guesser = get_guesser("default")
         err = "not a recognized MDAnalysis topology attribute"
         with pytest.raises(KeyError, match=err):
-            default_guesser.guess_attr('not_an_attribute')
+            default_guesser.guess_attr("not_an_attribute")
 
     def test_guess_unsupported_attribute(self):
         default_guesser = get_guesser("default")
         err = "cannot guess this attribute"
         with pytest.raises(ValueError, match=err):
-            default_guesser.guess_attr('tempfactors')
-    
+            default_guesser.guess_attr("tempfactors")
+
     def test_guess_singular(self):
         default_guesser = get_guesser("default")
         u = mda.Universe(datafiles.PDB, to_guess=[])
         assert not hasattr(u.atoms, "masses")
 
         default_guesser._universe = u
-        masses = default_guesser.guess_attr('mass')
+        masses = default_guesser.guess_attr("mass")
 
 
 def test_Universe_guess_bonds_deprecated():
     with pytest.warns(
-        DeprecationWarning,
-        match='`guess_bonds` keyword is deprecated'
+        DeprecationWarning, match="`guess_bonds` keyword is deprecated"
     ):
         u = mda.Universe(datafiles.PDB_full, guess_bonds=True)
 
 
 @pytest.mark.parametrize(
     "universe_input",
-    [datafiles.DCD, datafiles.XTC, np.random.rand(3, 3), datafiles.PDB]
+    [datafiles.DCD, datafiles.XTC, np.random.rand(3, 3), datafiles.PDB],
 )
 def test_universe_creation_from_coordinates(universe_input):
     mda.Universe(universe_input)
 
 
 def test_universe_creation_from_specific_array():
-    a = np.array([
-        [0., 0., 150.], [0., 0., 150.], [200., 0., 150.],
-        [0., 0., 150.], [100., 100., 150.], [200., 100., 150.],
-        [0., 200., 150.], [100., 200., 150.], [200., 200., 150.]
-    ])
+    a = np.array(
+        [
+            [0.0, 0.0, 150.0],
+            [0.0, 0.0, 150.0],
+            [200.0, 0.0, 150.0],
+            [0.0, 0.0, 150.0],
+            [100.0, 100.0, 150.0],
+            [200.0, 100.0, 150.0],
+            [0.0, 200.0, 150.0],
+            [100.0, 200.0, 150.0],
+            [200.0, 200.0, 150.0],
+        ]
+    )
     mda.Universe(a, n_atoms=9)
