@@ -305,7 +305,8 @@
 <span class="sd">    .. versionadded:: 2.8.0</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">context</span> <span class="o">=</span> <span class="s1">&#39;default&#39;</span>
+
+    <span class="n">context</span> <span class="o">=</span> <span class="s2">&quot;default&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -314,7 +315,7 @@
         <span class="n">vdwradii</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">fudge_factor</span><span class="o">=</span><span class="mf">0.55</span><span class="p">,</span>
         <span class="n">lower_bound</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">universe</span><span class="p">,</span>
@@ -322,17 +323,17 @@
             <span class="n">vdwradii</span><span class="o">=</span><span class="n">vdwradii</span><span class="p">,</span>
             <span class="n">fudge_factor</span><span class="o">=</span><span class="n">fudge_factor</span><span class="p">,</span>
             <span class="n">lower_bound</span><span class="o">=</span><span class="n">lower_bound</span><span class="p">,</span>
-            <span class="o">**</span><span class="n">kwargs</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_guesser_methods</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;masses&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_masses</span><span class="p">,</span>
-            <span class="s1">&#39;types&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_types</span><span class="p">,</span>
-            <span class="s1">&#39;elements&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_types</span><span class="p">,</span>
-            <span class="s1">&#39;bonds&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_bonds</span><span class="p">,</span>
-            <span class="s1">&#39;angles&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_angles</span><span class="p">,</span>
-            <span class="s1">&#39;dihedrals&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_dihedrals</span><span class="p">,</span>
-            <span class="s1">&#39;impropers&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_improper_dihedrals</span><span class="p">,</span>
-            <span class="s1">&#39;aromaticities&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_aromaticities</span><span class="p">,</span>
+            <span class="s2">&quot;masses&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_masses</span><span class="p">,</span>
+            <span class="s2">&quot;types&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_types</span><span class="p">,</span>
+            <span class="s2">&quot;elements&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_types</span><span class="p">,</span>
+            <span class="s2">&quot;bonds&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_bonds</span><span class="p">,</span>
+            <span class="s2">&quot;angles&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_angles</span><span class="p">,</span>
+            <span class="s2">&quot;dihedrals&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_dihedrals</span><span class="p">,</span>
+            <span class="s2">&quot;impropers&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_improper_dihedrals</span><span class="p">,</span>
+            <span class="s2">&quot;aromaticities&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_aromaticities</span><span class="p">,</span>
         <span class="p">}</span>
 
 <div class="viewcode-block" id="DefaultGuesser.guess_masses">
@@ -371,18 +372,21 @@
                 <span class="k">except</span> <span class="n">NoDataError</span><span class="p">:</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="n">atom_types</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_types</span><span class="p">(</span>
-                            <span class="n">atom_types</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
+                            <span class="n">atom_types</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span>
+                        <span class="p">)</span>
                     <span class="k">except</span> <span class="n">NoDataError</span><span class="p">:</span>
                         <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span>
                             <span class="s2">&quot;there is no reference attributes&quot;</span>
                             <span class="s2">&quot; (elements, types, or names)&quot;</span>
-                            <span class="s2">&quot; in this universe to guess mass from&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
+                            <span class="s2">&quot; in this universe to guess mass from&quot;</span>
+                        <span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
 
         <span class="k">if</span> <span class="n">indices_to_guess</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">atom_types</span> <span class="o">=</span> <span class="n">atom_types</span><span class="p">[</span><span class="n">indices_to_guess</span><span class="p">]</span>
 
-        <span class="n">masses</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">get_atom_mass</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span>
-                           <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">atom_types</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">masses</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_atom_mass</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">atom_types</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span>
+        <span class="p">)</span>
         <span class="k">return</span> <span class="n">masses</span></div>
 
 
@@ -405,7 +409,8 @@
                     <span class="s2">&quot;Unknown masses are set to 0.0 for current version, &quot;</span>
                     <span class="s2">&quot;this will be deprecated in version 3.0.0 and replaced by&quot;</span>
                     <span class="s2">&quot; Masse&#39;s no_value_label (np.nan)&quot;</span><span class="p">,</span>
-                    <span class="ne">PendingDeprecationWarning</span><span class="p">)</span>
+                    <span class="ne">PendingDeprecationWarning</span><span class="p">,</span>
+                <span class="p">)</span>
                 <span class="k">return</span> <span class="mf">0.0</span></div>
 
 
@@ -450,13 +455,16 @@
             <span class="k">except</span> <span class="n">NoDataError</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span>
                     <span class="s2">&quot;there is no reference attributes in this universe &quot;</span>
-                    <span class="s2">&quot;to guess types from&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
+                    <span class="s2">&quot;to guess types from&quot;</span>
+                <span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
 
         <span class="k">if</span> <span class="n">indices_to_guess</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">atom_types</span> <span class="o">=</span> <span class="n">atom_types</span><span class="p">[</span><span class="n">indices_to_guess</span><span class="p">]</span>
 
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">guess_atom_element</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span>
-                        <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">atom_types</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">guess_atom_element</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">atom_types</span><span class="p">],</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="DefaultGuesser.guess_atom_element">
@@ -473,7 +481,7 @@
 <span class="sd">        still not found, we iteratively continue to remove the last character</span>
 <span class="sd">        or first character until we find a match. If ultimately no match</span>
 <span class="sd">        is found, the first character of the stripped name is returned.</span>
-<span class="sd">        </span>
+
 <span class="sd">        If the input name is an empty string, an empty string is returned.</span>
 
 <span class="sd">        The table comes from CHARMM and AMBER atom</span>
@@ -489,16 +497,16 @@
 <span class="sd">        :func:`guess_atom_type`</span>
 <span class="sd">        :mod:`MDAnalysis.guesser.tables`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">NUMBERS</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[0-9]&#39;</span><span class="p">)</span>  <span class="c1"># match numbers</span>
-        <span class="n">SYMBOLS</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[*+-]&#39;</span><span class="p">)</span>  <span class="c1"># match *, +, -</span>
-        <span class="k">if</span> <span class="n">atomname</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">NUMBERS</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[0-9]&quot;</span><span class="p">)</span>  <span class="c1"># match numbers</span>
+        <span class="n">SYMBOLS</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[*+-]&quot;</span><span class="p">)</span>  <span class="c1"># match *, +, -</span>
+        <span class="k">if</span> <span class="n">atomname</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">tables</span><span class="o">.</span><span class="n">atomelements</span><span class="p">[</span><span class="n">atomname</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="c1"># strip symbols and numbers</span>
-            <span class="n">no_symbols</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">SYMBOLS</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">atomname</span><span class="p">)</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">NUMBERS</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">no_symbols</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+            <span class="n">no_symbols</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">SYMBOLS</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">atomname</span><span class="p">)</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">NUMBERS</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">no_symbols</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
 
             <span class="c1"># just in case</span>
             <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">tables</span><span class="o">.</span><span class="n">atomelements</span><span class="p">:</span>
@@ -554,7 +562,7 @@
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
-<span class="sd">        :exc:`ValueError` </span>
+<span class="sd">        :exc:`ValueError`</span>
 <span class="sd">           If inputs are malformed or `vdwradii` data is missing.</span>
 
 
@@ -571,32 +579,37 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;atoms&#39; and &#39;coord&#39; must be the same length&quot;</span><span class="p">)</span>
 
-        <span class="n">fudge_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fudge_factor&#39;</span><span class="p">,</span> <span class="mf">0.55</span><span class="p">)</span>
+        <span class="n">fudge_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fudge_factor&quot;</span><span class="p">,</span> <span class="mf">0.55</span><span class="p">)</span>
 
         <span class="c1"># so I don&#39;t permanently change it</span>
         <span class="n">vdwradii</span> <span class="o">=</span> <span class="n">tables</span><span class="o">.</span><span class="n">vdwradii</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">user_vdwradii</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;vdwradii&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">user_vdwradii</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;vdwradii&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="c1"># this should make algo use their values over defaults</span>
         <span class="k">if</span> <span class="n">user_vdwradii</span><span class="p">:</span>
             <span class="n">vdwradii</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">user_vdwradii</span><span class="p">)</span>
 
         <span class="c1"># Try using types, then elements</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="s1">&#39;types&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="s2">&quot;types&quot;</span><span class="p">):</span>
             <span class="n">atomtypes</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">types</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">atomtypes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_types</span><span class="p">(</span><span class="n">atom_types</span><span class="o">=</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
 
         <span class="c1"># check that all types have a defined vdw</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">val</span> <span class="ow">in</span> <span class="n">vdwradii</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">atomtypes</span><span class="p">)):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;vdw radii for types: &quot;</span> <span class="o">+</span>
-                              <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">atomtypes</span><span class="p">)</span> <span class="k">if</span>
-                                         <span class="n">t</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">vdwradii</span><span class="p">])</span> <span class="o">+</span>
-                              <span class="s2">&quot;. These can be defined manually using the&quot;</span> <span class="o">+</span>
-                              <span class="sa">f</span><span class="s2">&quot; keyword &#39;vdwradii&#39;&quot;</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="p">(</span>
+                    <span class="s2">&quot;vdw radii for types: &quot;</span>
+                    <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                        <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">atomtypes</span><span class="p">)</span> <span class="k">if</span> <span class="n">t</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">vdwradii</span><span class="p">]</span>
+                    <span class="p">)</span>
+                    <span class="o">+</span> <span class="s2">&quot;. These can be defined manually using the&quot;</span>
+                    <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot; keyword &#39;vdwradii&#39;&quot;</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
 
-        <span class="n">lower_bound</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lower_bound&#39;</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">lower_bound</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;lower_bound&quot;</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
 
-        <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;box&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;box&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">box</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
@@ -608,14 +621,14 @@
 
         <span class="n">bonds</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="n">pairs</span><span class="p">,</span> <span class="n">dist</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">self_capped_distance</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span>
-                                                     <span class="n">max_cutoff</span><span class="o">=</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">max_vdw</span><span class="p">,</span>
-                                                     <span class="n">min_cutoff</span><span class="o">=</span><span class="n">lower_bound</span><span class="p">,</span>
-                                                     <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
+        <span class="n">pairs</span><span class="p">,</span> <span class="n">dist</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">self_capped_distance</span><span class="p">(</span>
+            <span class="n">coords</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="o">=</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">max_vdw</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="n">lower_bound</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span>
+        <span class="p">)</span>
         <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pairs</span><span class="p">):</span>
-            <span class="n">d</span> <span class="o">=</span> <span class="p">(</span><span class="n">vdwradii</span><span class="p">[</span><span class="n">atomtypes</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">+</span>
-                 <span class="n">vdwradii</span><span class="p">[</span><span class="n">atomtypes</span><span class="p">[</span><span class="n">j</span><span class="p">]])</span> <span class="o">*</span> <span class="n">fudge_factor</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">d</span><span class="p">):</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">vdwradii</span><span class="p">[</span><span class="n">atomtypes</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">+</span> <span class="n">vdwradii</span><span class="p">[</span><span class="n">atomtypes</span><span class="p">[</span><span class="n">j</span><span class="p">]]</span>
+            <span class="p">)</span> <span class="o">*</span> <span class="n">fudge_factor</span>
+            <span class="k">if</span> <span class="n">dist</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">d</span><span class="p">:</span>
                 <span class="n">bonds</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">atoms</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">atoms</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">))</span>
         <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">bonds</span><span class="p">)</span></div>
 
@@ -644,18 +657,21 @@
 <span class="sd">        --------</span>
 <span class="sd">        :meth:`guess_bonds`</span>
 
-<span class="sd">      &quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">..core.universe</span> <span class="kn">import</span> <span class="n">Universe</span>
 
         <span class="n">angles_found</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-   
+
         <span class="k">if</span> <span class="n">bonds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="s1">&#39;bonds&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="s2">&quot;bonds&quot;</span><span class="p">):</span>
                 <span class="n">bonds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">bonds</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">temp_u</span> <span class="o">=</span> <span class="n">Universe</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">n_atoms</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">))</span>
-                <span class="n">temp_u</span><span class="o">.</span><span class="n">add_bonds</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">guess_bonds</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span><span class="p">))</span>
+                <span class="n">temp_u</span><span class="o">.</span><span class="n">add_bonds</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">guess_bonds</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
                 <span class="n">bonds</span> <span class="o">=</span> <span class="n">temp_u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">bonds</span>
 
         <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">bonds</span><span class="p">:</span>
@@ -665,7 +681,8 @@
                     <span class="k">if</span> <span class="n">other_b</span> <span class="o">!=</span> <span class="n">b</span><span class="p">:</span>  <span class="c1"># if not the same bond I start as</span>
                         <span class="n">third_a</span> <span class="o">=</span> <span class="n">other_b</span><span class="o">.</span><span class="n">partner</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span>
                         <span class="n">desc</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
-                            <span class="p">[</span><span class="n">other_a</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">third_a</span><span class="o">.</span><span class="n">index</span><span class="p">])</span>
+                            <span class="p">[</span><span class="n">other_a</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">third_a</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+                        <span class="p">)</span>
                         <span class="c1"># first index always less than last</span>
                         <span class="k">if</span> <span class="n">desc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">desc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
                             <span class="n">desc</span> <span class="o">=</span> <span class="n">desc</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -697,15 +714,18 @@
         <span class="kn">from</span> <span class="nn">..core.universe</span> <span class="kn">import</span> <span class="n">Universe</span>
 
         <span class="k">if</span> <span class="n">angles</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="s1">&#39;angles&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="s2">&quot;angles&quot;</span><span class="p">):</span>
                 <span class="n">angles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">angles</span>
 
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">temp_u</span> <span class="o">=</span> <span class="n">Universe</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">n_atoms</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">))</span>
 
-                <span class="n">temp_u</span><span class="o">.</span><span class="n">add_bonds</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">guess_bonds</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span><span class="p">))</span>
-     
+                <span class="n">temp_u</span><span class="o">.</span><span class="n">add_bonds</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">guess_bonds</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+
                 <span class="n">temp_u</span><span class="o">.</span><span class="n">add_angles</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">guess_angles</span><span class="p">(</span><span class="n">temp_u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">bonds</span><span class="p">))</span>
 
                 <span class="n">angles</span> <span class="o">=</span> <span class="n">temp_u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">angles</span>
@@ -716,8 +736,9 @@
             <span class="n">a_tup</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">index</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">b</span><span class="p">])</span>  <span class="c1"># angle as tuple of numbers</span>
             <span class="c1"># if searching with b[0], want tuple of (b[2], b[1], b[0], +new)</span>
             <span class="c1"># search the first and last atom of each angle</span>
-            <span class="k">for</span> <span class="n">atom</span><span class="p">,</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="n">b</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">b</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span>
-                                    <span class="p">[</span><span class="n">a_tup</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">a_tup</span><span class="p">]):</span>
+            <span class="k">for</span> <span class="n">atom</span><span class="p">,</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">b</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">b</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span> <span class="p">[</span><span class="n">a_tup</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">a_tup</span><span class="p">]</span>
+            <span class="p">):</span>
                 <span class="k">for</span> <span class="n">other_b</span> <span class="ow">in</span> <span class="n">atom</span><span class="o">.</span><span class="n">bonds</span><span class="p">:</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="n">other_b</span><span class="o">.</span><span class="n">partner</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span> <span class="ow">in</span> <span class="n">b</span><span class="p">:</span>
                         <span class="n">third_a</span> <span class="o">=</span> <span class="n">other_b</span><span class="o">.</span><span class="n">partner</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span>
@@ -750,14 +771,17 @@
         <span class="kn">from</span> <span class="nn">..core.universe</span> <span class="kn">import</span> <span class="n">Universe</span>
 
         <span class="k">if</span> <span class="n">angles</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="s1">&#39;angles&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="s2">&quot;angles&quot;</span><span class="p">):</span>
                 <span class="n">angles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">angles</span>
 
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">temp_u</span> <span class="o">=</span> <span class="n">Universe</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">n_atoms</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">))</span>
 
-                <span class="n">temp_u</span><span class="o">.</span><span class="n">add_bonds</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">guess_bonds</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span><span class="p">))</span>
+                <span class="n">temp_u</span><span class="o">.</span><span class="n">add_bonds</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">guess_bonds</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
 
                 <span class="n">temp_u</span><span class="o">.</span><span class="n">add_angles</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">guess_angles</span><span class="p">(</span><span class="n">temp_u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">bonds</span><span class="p">))</span>
 
@@ -831,10 +855,15 @@
 
         <span class="n">mol</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">convert_to</span><span class="p">(</span><span class="s2">&quot;RDKIT&quot;</span><span class="p">)</span>
         <span class="kn">from</span> <span class="nn">rdkit.Chem.rdPartialCharges</span> <span class="kn">import</span> <span class="n">ComputeGasteigerCharges</span>
+
         <span class="n">ComputeGasteigerCharges</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">throwOnParamFailure</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atom</span><span class="o">.</span><span class="n">GetDoubleProp</span><span class="p">(</span><span class="s2">&quot;_GasteigerCharge&quot;</span><span class="p">)</span>
-                         <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">mol</span><span class="o">.</span><span class="n">GetAtoms</span><span class="p">()],</span>
-                        <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">atom</span><span class="o">.</span><span class="n">GetDoubleProp</span><span class="p">(</span><span class="s2">&quot;_GasteigerCharge&quot;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">mol</span><span class="o">.</span><span class="n">GetAtoms</span><span class="p">()</span>
+            <span class="p">],</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+        <span class="p">)</span></div>
 </div>
 
 </pre></div>

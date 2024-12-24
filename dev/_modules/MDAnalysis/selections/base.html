@@ -206,7 +206,7 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">):</span>
         <span class="nb">type</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">fmt</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">asiterable</span><span class="p">(</span><span class="n">classdict</span><span class="p">[</span><span class="s1">&#39;format&#39;</span><span class="p">])</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">asiterable</span><span class="p">(</span><span class="n">classdict</span><span class="p">[</span><span class="s2">&quot;format&quot;</span><span class="p">])</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
@@ -245,19 +245,22 @@
 <span class="sd">       and closed with the :meth:`close` method or when exiting the `with`</span>
 <span class="sd">       statement.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="c1">#: Name of the format.</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="c1">#: Extension of output files.</span>
     <span class="n">ext</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="c1">#: Special character to continue a line across a newline.</span>
-    <span class="n">continuation</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">continuation</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="c1">#: Comment format string; should contain &#39;%s&#39; or ``None`` for no comments.</span>
     <span class="n">commentfmt</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">default_numterms</span> <span class="o">=</span> <span class="mi">8</span>
 
 <div class="viewcode-block" id="SelectionWriterBase.__init__">
 <a class="viewcode-back" href="../../../documentation_pages/selections/base.html#MDAnalysis.selections.base.SelectionWriterBase.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">numterms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">preamble</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">numterms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">preamble</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up for writing to *filename*.</span>
 
 <span class="sd">        Parameters</span>
@@ -276,8 +279,10 @@
 <span class="sd">            use as defaults for :meth:`write`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">filename</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ext</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">mode</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;mode must be one of &#39;w&#39;, &#39;a&#39;, not </span><span class="si">{0!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mode</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">mode</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;mode must be one of &#39;w&#39;, &#39;a&#39;, not </span><span class="si">{0!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
+            <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_current_mode</span> <span class="o">=</span> <span class="n">mode</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">numterms</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">numterms</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -307,8 +312,8 @@
 <span class="sd">        A newline is appended to non-empty strings.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">commentfmt</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s1">&#39;&#39;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">commentfmt</span> <span class="o">%</span> <span class="n">s</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span></div>
+            <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">commentfmt</span> <span class="o">%</span> <span class="n">s</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span></div>
 
 
     <span class="k">def</span> <span class="nf">write_preamble</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -344,7 +349,7 @@
                 <span class="n">frame</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                 <span class="n">frame</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># should catch cases when we are analyzing a single PDB (?)</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">otherargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">otherargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">number</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">number</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -359,13 +364,15 @@
         <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_outfile</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_write_head</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">iatom</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">selection</span><span class="o">.</span><span class="n">atoms</span><span class="p">),</span> <span class="n">step</span><span class="p">):</span>
-            <span class="n">line</span> <span class="o">=</span> <span class="n">selection_terms</span><span class="p">[</span><span class="n">iatom</span><span class="p">:</span><span class="n">iatom</span> <span class="o">+</span> <span class="n">step</span><span class="p">]</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">selection_terms</span><span class="p">[</span><span class="n">iatom</span> <span class="p">:</span> <span class="n">iatom</span> <span class="o">+</span> <span class="n">step</span><span class="p">]</span>
             <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">line</span><span class="p">))</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">==</span> <span class="n">step</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">iatom</span> <span class="o">+</span> <span class="n">step</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">selection</span><span class="o">.</span><span class="n">atoms</span><span class="p">):</span>
-                <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">continuation</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>  <span class="c1"># safe so that we don&#39;t have to put a space at the start of tail</span>
+                <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">continuation</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+            <span class="s2">&quot; &quot;</span>
+        <span class="p">)</span>  <span class="c1"># safe so that we don&#39;t have to put a space at the start of tail</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_write_tail</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
-        <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>  <span class="c1"># always terminate with newline</span></div>
+        <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># always terminate with newline</span></div>
 
 
     <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -396,14 +403,14 @@
 <a class="viewcode-back" href="../../../documentation_pages/selections/base.html#MDAnalysis.selections.base.SelectionWriterBase._write_head">[docs]</a>
     <span class="k">def</span> <span class="nf">_write_head</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initial output to open file object *out*.&quot;&quot;&quot;</span>
-        <span class="k">pass</span> <span class="c1"># pylint: disable=unnecessary-pass</span></div>
+        <span class="k">pass</span>  <span class="c1"># pylint: disable=unnecessary-pass</span></div>
 
 
 <div class="viewcode-block" id="SelectionWriterBase._write_tail">
 <a class="viewcode-back" href="../../../documentation_pages/selections/base.html#MDAnalysis.selections.base.SelectionWriterBase._write_tail">[docs]</a>
     <span class="k">def</span> <span class="nf">_write_tail</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Last output to open file object *out*.&quot;&quot;&quot;</span>
-        <span class="k">pass</span> <span class="c1"># pylint: disable=unnecessary-pass</span></div>
+        <span class="k">pass</span>  <span class="c1"># pylint: disable=unnecessary-pass</span></div>
 
 
     <span class="c1"># Context manager support to match Coordinate writers</span>

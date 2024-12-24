@@ -142,7 +142,7 @@
              
   <h1>Source code for MDAnalysis.selections.jmol</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
-<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 </span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
 <span class="c1">#</span>
 <span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
 <span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
@@ -191,14 +191,14 @@
     <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Jmol&quot;</span><span class="p">,</span> <span class="s2">&quot;spt&quot;</span><span class="p">]</span>
     <span class="n">ext</span> <span class="o">=</span> <span class="s2">&quot;spt&quot;</span>
     <span class="n">default_numterms</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">commentfmt</span> <span class="o">=</span> <span class="s1">&#39;#&#39;</span>
+    <span class="n">commentfmt</span> <span class="o">=</span> <span class="s2">&quot;#&quot;</span>
 
     <span class="k">def</span> <span class="nf">_translate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># Jmol indexing is 0 based when using atom bitsets</span>
         <span class="k">def</span> <span class="nf">_index</span><span class="p">(</span><span class="n">atom</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">_index</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">base</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">_index</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_write_head</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;@~</span><span class="si">{name!s}</span><span class="s2"> ({{&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>

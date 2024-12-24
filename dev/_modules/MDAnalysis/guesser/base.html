@@ -205,10 +205,11 @@
 
 <span class="sd">    .. versionadded:: 2.8.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">):</span>
         <span class="nb">type</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">)</span>
 
-        <span class="n">_GUESSERS</span><span class="p">[</span><span class="n">classdict</span><span class="p">[</span><span class="s1">&#39;context&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span> <span class="o">=</span> <span class="bp">cls</span>
+        <span class="n">_GUESSERS</span><span class="p">[</span><span class="n">classdict</span><span class="p">[</span><span class="s2">&quot;context&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span> <span class="o">=</span> <span class="bp">cls</span>
 
 
 <div class="viewcode-block" id="GuesserBase">
@@ -231,7 +232,8 @@
 <span class="sd">    .. versionadded:: 2.8.0</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">context</span> <span class="o">=</span> <span class="s1">&#39;base&#39;</span>
+
+    <span class="n">context</span> <span class="o">=</span> <span class="s2">&quot;base&quot;</span>
     <span class="n">_guesser_methods</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -301,8 +303,10 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">guesser_method</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_guesser_methods</span><span class="p">[</span><span class="n">attr_to_guess</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1"> cannot guess this &#39;</span>
-                             <span class="sa">f</span><span class="s1">&#39;attribute: </span><span class="si">{</span><span class="n">attr_to_guess</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> cannot guess this &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;attribute: </span><span class="si">{</span><span class="n">attr_to_guess</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
 
         <span class="c1"># Connection attributes should be just returned as they are always</span>
         <span class="c1"># appended to the Universe. ``force_guess`` handling should happen</span>
@@ -313,7 +317,8 @@
         <span class="c1"># check if the topology already has the attribute to partially guess it</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">attr_to_guess</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">force_guess</span><span class="p">:</span>
             <span class="n">attr_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-                <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">attr_to_guess</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+                <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">attr_to_guess</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="p">)</span>
 
             <span class="n">empty_values</span> <span class="o">=</span> <span class="n">top_attr</span><span class="o">.</span><span class="n">are_values_missing</span><span class="p">(</span><span class="n">attr_values</span><span class="p">)</span>
 
@@ -327,8 +332,9 @@
 
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s1">&#39;There is no empty </span><span class="si">{</span><span class="n">attr_to_guess</span><span class="si">}</span><span class="s1"> values. Guesser did &#39;</span>
-                    <span class="sa">f</span><span class="s1">&#39;not guess any new values for </span><span class="si">{</span><span class="n">attr_to_guess</span><span class="si">}</span><span class="s1"> attribute&#39;</span><span class="p">)</span>
+                    <span class="sa">f</span><span class="s2">&quot;There is no empty </span><span class="si">{</span><span class="n">attr_to_guess</span><span class="si">}</span><span class="s2"> values. Guesser did &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;not guess any new values for </span><span class="si">{</span><span class="n">attr_to_guess</span><span class="si">}</span><span class="s2"> attribute&quot;</span>
+                <span class="p">)</span>
                 <span class="k">return</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">guesser_method</span><span class="p">())</span></div>
