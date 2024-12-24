@@ -31,10 +31,20 @@ import pytest
 from MDAnalysis.transformations import translate
 from numpy.testing import assert_almost_equal, assert_equal
 
-from MDAnalysisTests.datafiles import (CRD, DCD, GRO, PDB, PSF, TRR, XTC,
-                                       LAMMPS_chain, LAMMPSDUMP_chain1,
-                                       LAMMPSDUMP_chain2, PDB_closed,
-                                       PDB_small)
+from MDAnalysisTests.datafiles import (
+    CRD,
+    DCD,
+    GRO,
+    PDB,
+    PSF,
+    TRR,
+    XTC,
+    LAMMPS_chain,
+    LAMMPSDUMP_chain1,
+    LAMMPSDUMP_chain2,
+    PDB_closed,
+    PDB_small,
+)
 from MDAnalysisTests.util import no_warning
 
 

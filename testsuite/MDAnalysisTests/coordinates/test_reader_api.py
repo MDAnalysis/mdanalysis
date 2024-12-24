@@ -24,8 +24,11 @@ from collections import OrderedDict
 
 import numpy as np
 import pytest
-from MDAnalysis.coordinates.base import (ReaderBase, SingleFrameReaderBase,
-                                         Timestep)
+from MDAnalysis.coordinates.base import (
+    ReaderBase,
+    SingleFrameReaderBase,
+    Timestep,
+)
 from numpy.testing import assert_allclose, assert_equal
 
 """
