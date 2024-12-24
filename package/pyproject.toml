@@ -137,6 +137,7 @@ tables\.py
 | MDAnalysis/transformations/.*\.py
 | MDAnalysis/converters/.*\.py
 | MDAnalysis/coordinates/.*\.py
+| MDAnalysis/selections/.*\.py
 )
 '''
 extend-exclude = '''

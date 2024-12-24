@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
@@ -46,14 +46,14 @@ class SelectionWriter(base.SelectionWriterBase):
     format = ["Jmol", "spt"]
     ext = "spt"
     default_numterms = None
-    commentfmt = '#'
+    commentfmt = "#"
 
     def _translate(self, atoms, **kwargs):
         # Jmol indexing is 0 based when using atom bitsets
         def _index(atom):
             return str(atom.index)
 
-        return base.join(atoms, ' ', _index)
+        return base.join(atoms, " ", _index)
 
     def _write_head(self, out, **kwargs):
         out.write("@~{name!s} ({{".format(**kwargs))
