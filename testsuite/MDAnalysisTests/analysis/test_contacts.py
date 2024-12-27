@@ -29,9 +29,15 @@ from MDAnalysis.analysis import contacts
 from MDAnalysis.analysis.distances import distance_array
 from numpy.testing import assert_allclose, assert_array_equal, assert_equal
 
-from MDAnalysisTests.datafiles import (DCD, PSF, TPR, XTC, contacts_file,
-                                       contacts_villin_folded,
-                                       contacts_villin_unfolded)
+from MDAnalysisTests.datafiles import (
+    DCD,
+    PSF,
+    TPR,
+    XTC,
+    contacts_file,
+    contacts_villin_folded,
+    contacts_villin_unfolded,
+)
 
 
 def test_soft_cut_q():
