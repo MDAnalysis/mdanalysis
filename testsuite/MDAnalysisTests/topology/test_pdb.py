@@ -22,28 +22,20 @@
 #
 from io import StringIO
 
-import pytest
-import numpy as np
-from numpy.testing import assert_equal, assert_allclose
 import MDAnalysis as mda
-
-from MDAnalysisTests.topology.base import ParserBase
-from MDAnalysisTests.datafiles import (
-    PDB,
-    PDB_HOLE,
-    PDB_small,
-    PDB_conect,
-    PDB_conect2TER,
-    PDB_singleconect,
-    PDB_chainidnewres,
-    PDB_sameresid_diffresname,
-    PDB_helix,
-    PDB_elements,
-    PDB_charges,
-)
-from MDAnalysis.topology.PDBParser import PDBParser
+import numpy as np
+import pytest
 from MDAnalysis import NoDataError
 from MDAnalysis.guesser import tables
+from MDAnalysis.topology.PDBParser import PDBParser
+from numpy.testing import assert_allclose, assert_equal
+
+from MDAnalysisTests.datafiles import (PDB, PDB_HOLE, PDB_chainidnewres,
+                                       PDB_charges, PDB_conect, PDB_conect2TER,
+                                       PDB_elements, PDB_helix,
+                                       PDB_sameresid_diffresname,
+                                       PDB_singleconect, PDB_small)
+from MDAnalysisTests.topology.base import ParserBase
 
 _PDBPARSER = mda.topology.PDBParser.PDBParser
 
@@ -394,7 +386,7 @@ def test_PDB_charges():
     properly given a PDB file with a valid formal charges record.
     """
     u = mda.Universe(PDB_charges)
-    # fmt: on
+    # fmt: off
     formal_charges = np.array(
         [
             0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -402,7 +394,7 @@ def test_PDB_charges():
         ],
         dtype=int
     )
-    # fmt: off
+    # fmt: on
     assert_equal(u.atoms.formalcharges, formal_charges)
 
 
