@@ -43,7 +43,7 @@ except ImportError:
         pytest.skip(allow_module_level=True)
 
 
-class TestOpenMMBasicSimulationReader():
+class TestOpenMMBasicSimulationReader:
     @pytest.fixture
     def omm_sim_uni(self):
         system = mm.System()
@@ -57,7 +57,8 @@ class TestOpenMMBasicSimulationReader():
         positions = np.ones((5, 3)) * unit.angstrom
         integrator = mm.LangevinIntegrator(
             273 * unit.kelvin,
-            1.0 / unit.picoseconds, 2.0 * unit.femtoseconds,
+            1.0 / unit.picoseconds,
+            2.0 * unit.femtoseconds,
         )
         simulation = app.Simulation(topology, system, integrator)
         simulation.context.setPositions(positions)
@@ -67,11 +68,13 @@ class TestOpenMMBasicSimulationReader():
     def test_dimensions(self, omm_sim_uni):
         assert_allclose(
             omm_sim_uni.trajectory.ts.dimensions,
-            np.array([20., 20., 20., 90., 90., 90.]),
+            np.array([20.0, 20.0, 20.0, 90.0, 90.0, 90.0]),
             rtol=0,
             atol=1e-3,
-            err_msg=("OpenMMBasicSimulationReader failed to get unitcell "
-                     "dimensions from OpenMM Simulation Object"),
+            err_msg=(
+                "OpenMMBasicSimulationReader failed to get unitcell "
+                "dimensions from OpenMM Simulation Object"
+            ),
         )
 
     def test_coordinates(self, omm_sim_uni):
@@ -84,7 +87,7 @@ class TestOpenMMBasicSimulationReader():
         assert omm_sim_uni.residues.n_residues == 1
         assert omm_sim_uni.residues.resnames[0] == "RES"
         assert omm_sim_uni.segments.n_segments == 1
-        assert omm_sim_uni.segments.segids[0] == '0'
+        assert omm_sim_uni.segments.segids[0] == "0"
         assert len(omm_sim_uni.bonds.indices) == 0
 
     def test_data(self, omm_sim_uni):
@@ -107,8 +110,10 @@ class TestOpenMMPDBFileReader(_SingleFrameReader):
             self.ref.trajectory.ts.dimensions,
             rtol=0,
             atol=1e-3,
-            err_msg=("OpenMMPDBFileReader failed to get unitcell dimensions "
-                     "from OpenMMPDBFile"),
+            err_msg=(
+                "OpenMMPDBFileReader failed to get unitcell dimensions "
+                "from OpenMMPDBFile"
+            ),
         )
 
     def test_coordinates(self):
@@ -133,8 +138,10 @@ class TestOpenMMModellerReader(_SingleFrameReader):
             self.ref.trajectory.ts.dimensions,
             rtol=0,
             atol=1e-3,
-            err_msg=("OpenMMModellerReader failed to get unitcell dimensions "
-                     "from OpenMMModeller"),
+            err_msg=(
+                "OpenMMModellerReader failed to get unitcell dimensions "
+                "from OpenMMModeller"
+            ),
         )
 
     def test_coordinates(self):
@@ -167,8 +174,10 @@ class TestOpenMMSimulationReader(_SingleFrameReader):
             self.ref.trajectory.ts.dimensions,
             rtol=0,
             atol=1e-3,
-            err_msg=("OpenMMSimulationReader failed to get unitcell "
-                     "dimensions from OpenMMSimulation"),
+            err_msg=(
+                "OpenMMSimulationReader failed to get unitcell "
+                "dimensions from OpenMMSimulation"
+            ),
         )
 
     def test_coordinates(self):
@@ -176,7 +185,7 @@ class TestOpenMMSimulationReader(_SingleFrameReader):
         rp = self.ref.atoms.positions
         assert_allclose(up, rp, rtol=0, atol=1e-3)
 
-    @pytest.mark.xfail(reason='OpenMM pickling not supported yet')
+    @pytest.mark.xfail(reason="OpenMM pickling not supported yet")
     def test_pickle_singleframe_reader(self):
         """
         See `OpenMM SwigPyObject serialisation discussion <https://github.com/MDAnalysis/mdanalysis/issues/2887>`_

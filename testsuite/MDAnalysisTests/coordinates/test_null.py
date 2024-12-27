@@ -23,7 +23,7 @@
 import MDAnalysis as mda
 import pytest
 
-from MDAnalysisTests.datafiles import (TPR, XTC)
+from MDAnalysisTests.datafiles import TPR, XTC
 
 
 @pytest.fixture()

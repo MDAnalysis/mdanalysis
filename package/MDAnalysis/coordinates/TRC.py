@@ -259,7 +259,9 @@ class TRCReader(base.ReaderBase):
         traj_properties["l_blockstart_offset"] = l_blockstart_offset
 
         if len(l_timestep_timevalues) >= 2:
-            traj_properties["dt"] = l_timestep_timevalues[1] - l_timestep_timevalues[0]
+            traj_properties["dt"] = (
+                l_timestep_timevalues[1] - l_timestep_timevalues[0]
+            )
         else:
             traj_properties["dt"] = 0
             warnings.warn(
@@ -296,7 +298,9 @@ class TRCReader(base.ReaderBase):
                         tmp_buf.append(coords_str.split())
 
                 if np.array(tmp_buf).shape[0] == self.n_atoms:
-                    frameDat["positions"] = np.asarray(tmp_buf, dtype=np.float64)
+                    frameDat["positions"] = np.asarray(
+                        tmp_buf, dtype=np.float64
+                    )
                 else:
                     raise ValueError(
                         "The trajectory contains the wrong number of atoms!"
@@ -322,13 +326,19 @@ class TRCReader(base.ReaderBase):
                     self.periodic = True
 
                     gb_line3 = f.readline().split()
-                    if np.sum(np.abs(np.array(gb_line3).astype(np.float64))) > 1e-10:
+                    if (
+                        np.sum(np.abs(np.array(gb_line3).astype(np.float64)))
+                        > 1e-10
+                    ):
                         raise ValueError(
                             "This reader doesnt't support a shifted origin!"
                         )
 
                     gb_line4 = f.readline().split()
-                    if np.sum(np.abs(np.array(gb_line4).astype(np.float64))) > 1e-10:
+                    if (
+                        np.sum(np.abs(np.array(gb_line4).astype(np.float64)))
+                        > 1e-10
+                    ):
                         raise ValueError(
                             "This reader "
                             "doesnt't support "
@@ -345,12 +355,14 @@ class TRCReader(base.ReaderBase):
                 break
 
             elif any(
-                non_supp_bn in line for non_supp_bn in TRCReader.NOT_SUPPORTED_BLOCKS
+                non_supp_bn in line
+                for non_supp_bn in TRCReader.NOT_SUPPORTED_BLOCKS
             ):
                 for non_supp_bn in TRCReader.NOT_SUPPORTED_BLOCKS:
                     if non_supp_bn == line.strip():
                         warnings.warn(
-                            non_supp_bn + " block is not supported!", UserWarning
+                            non_supp_bn + " block is not supported!",
+                            UserWarning,
                         )
 
         return frameDat
@@ -360,7 +372,9 @@ class TRCReader(base.ReaderBase):
         self._frame = i - 1
 
         # Move position in file just (-2 byte) before the start of the block
-        self.trcfile.seek(self.traj_properties["l_blockstart_offset"][i] - 2, 0)
+        self.trcfile.seek(
+            self.traj_properties["l_blockstart_offset"][i] - 2, 0
+        )
 
         return self._read_next_timestep()
 
@@ -381,7 +395,9 @@ class TRCReader(base.ReaderBase):
 
     def open_trajectory(self):
         if self.trcfile is not None:
-            raise IOError(errno.EALREADY, "TRC file already opened", self.filename)
+            raise IOError(
+                errno.EALREADY, "TRC file already opened", self.filename
+            )
 
         # Reload trajectory file
         self.trcfile = util.anyopen(self.filename)

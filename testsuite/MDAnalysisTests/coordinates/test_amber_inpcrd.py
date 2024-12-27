@@ -22,10 +22,10 @@
 #
 import numpy as np
 
-from numpy.testing import (assert_allclose, assert_equal)
+from numpy.testing import assert_allclose, assert_equal
 
 import MDAnalysis as mda
-from MDAnalysisTests.datafiles import (INPCRD, XYZ_five)
+from MDAnalysisTests.datafiles import INPCRD, XYZ_five
 
 
 class TestINPCRDReader(object):
@@ -34,16 +34,21 @@ class TestINPCRDReader(object):
     @staticmethod
     def _check_ts(ts):
         # Check a ts has the right values in
-        ref_pos = np.array([[6.6528795, 6.6711416, -8.5963255],
-                            [7.3133773, 5.8359736, -8.8294175],
-                            [8.3254058, 6.2227613, -8.7098593],
-                            [7.0833200, 5.5038197, -9.8417650],
-                            [7.1129439, 4.6170351, -7.9729560]])
+        ref_pos = np.array(
+            [
+                [6.6528795, 6.6711416, -8.5963255],
+                [7.3133773, 5.8359736, -8.8294175],
+                [8.3254058, 6.2227613, -8.7098593],
+                [7.0833200, 5.5038197, -9.8417650],
+                [7.1129439, 4.6170351, -7.9729560],
+            ]
+        )
         for ref, val in zip(ref_pos, ts._pos):
             assert_allclose(ref, val)
 
     def test_reader(self):
         from MDAnalysis.coordinates.INPCRD import INPReader
+
         r = INPReader(INPCRD)
         assert_equal(r.n_atoms, 5)
         self._check_ts(r.ts)
@@ -53,5 +58,5 @@ class TestINPCRDReader(object):
         self._check_ts(u.trajectory.ts)
 
     def test_universe_restrt(self):
-        u = mda.Universe(XYZ_five, INPCRD, format='RESTRT')
+        u = mda.Universe(XYZ_five, INPCRD, format="RESTRT")
         self._check_ts(u.trajectory.ts)
