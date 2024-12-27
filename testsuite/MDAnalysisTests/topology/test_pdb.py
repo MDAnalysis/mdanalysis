@@ -283,39 +283,16 @@ def test_PDB_elements():
     properly given a PDB file with valid elements record.
     """
     u = mda.Universe(PDB_elements, format="PDB")
+    # fmt: off
     element_list = np.array(
         [
-            "N",
-            "C",
-            "C",
-            "O",
-            "C",
-            "C",
-            "O",
-            "N",
-            "H",
-            "H",
-            "H",
-            "H",
-            "H",
-            "H",
-            "H",
-            "H",
-            "Cu",
-            "Fe",
-            "Mg",
-            "Ca",
-            "S",
-            "O",
-            "C",
-            "C",
-            "S",
-            "O",
-            "C",
-            "C",
+            'N', 'C', 'C', 'O', 'C', 'C', 'O', 'N', 'H', 'H', 'H', 'H', 'H',
+            'H', 'H', 'H', 'Cu', 'Fe', 'Mg', 'Ca', 'S', 'O', 'C', 'C', 'S',
+            'O', 'C', 'C'
         ],
-        dtype=object,
+        dtype=object
     )
+    # fmt: on
     assert_equal(u.atoms.elements, element_list)
 
 
@@ -417,47 +394,15 @@ def test_PDB_charges():
     properly given a PDB file with a valid formal charges record.
     """
     u = mda.Universe(PDB_charges)
+    # fmt: on
     formal_charges = np.array(
         [
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            -1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
+            0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         ],
-        dtype=int,
+        dtype=int
     )
+    # fmt: off
     assert_equal(u.atoms.formalcharges, formal_charges)
 
 
