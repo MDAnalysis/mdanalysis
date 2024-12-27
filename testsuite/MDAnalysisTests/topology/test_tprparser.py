@@ -20,71 +20,36 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-import pytest
-from numpy.testing import assert_equal
 import functools
 
-import numpy as np
-
-from MDAnalysis.tests.datafiles import (
-    TPR,
-    TPR400,
-    TPR402,
-    TPR403,
-    TPR404,
-    TPR405,
-    TPR406,
-    TPR407,
-    TPR450,
-    TPR451,
-    TPR452,
-    TPR453,
-    TPR454,
-    TPR455,
-    TPR455Double,
-    TPR460,
-    TPR461,
-    TPR502,
-    TPR504,
-    TPR505,
-    TPR510,
-    TPR510_bonded,
-    TPR2016,
-    TPR2018,
-    TPR2019B3,
-    TPR2020B2,
-    TPR2020,
-    TPR2020Double,
-    TPR2021,
-    TPR2021Double,
-    TPR2022RC1,
-    TPR2023,
-    TPR2024,
-    TPR2016_bonded,
-    TPR2018_bonded,
-    TPR2019B3_bonded,
-    TPR2020B2_bonded,
-    TPR2020_bonded,
-    TPR2020_double_bonded,
-    TPR2021_bonded,
-    TPR2021_double_bonded,
-    TPR334_bonded,
-    TPR2022RC1_bonded,
-    TPR2023_bonded,
-    TPR2024_bonded,
-    TPR_EXTRA_2021,
-    TPR_EXTRA_2020,
-    TPR_EXTRA_2018,
-    TPR_EXTRA_2016,
-    TPR_EXTRA_407,
-    TPR_EXTRA_2022RC1,
-    TPR_EXTRA_2023,
-    TPR_EXTRA_2024,
-    XTC,
-)
-from MDAnalysisTests.topology.base import ParserBase
-import MDAnalysis.topology.TPRParser
 import MDAnalysis as mda
+import MDAnalysis.topology.TPRParser
+import numpy as np
+import pytest
+# fmt: off
+from MDAnalysis.tests.datafiles import (TPR, TPR400, TPR402, TPR403, TPR404,
+                                        TPR405, TPR406, TPR407, TPR450, TPR451,
+                                        TPR452, TPR453, TPR454, TPR455, TPR460,
+                                        TPR461, TPR502, TPR504, TPR505, TPR510,
+                                        TPR2016, TPR2018, TPR2019B3, TPR2020,
+                                        TPR2020B2, TPR2021, TPR2022RC1,
+                                        TPR2023, TPR2024, TPR_EXTRA_407,
+                                        TPR_EXTRA_2016, TPR_EXTRA_2018,
+                                        TPR_EXTRA_2020, TPR_EXTRA_2021,
+                                        TPR_EXTRA_2022RC1, TPR_EXTRA_2023,
+                                        TPR_EXTRA_2024, XTC, TPR334_bonded,
+                                        TPR455Double, TPR510_bonded,
+                                        TPR2016_bonded, TPR2018_bonded,
+                                        TPR2019B3_bonded, TPR2020_bonded,
+                                        TPR2020_double_bonded,
+                                        TPR2020B2_bonded, TPR2020Double,
+                                        TPR2021_bonded, TPR2021_double_bonded,
+                                        TPR2021Double, TPR2022RC1_bonded,
+                                        TPR2023_bonded, TPR2024_bonded)
+from numpy.testing import assert_equal
+
+# fmt: on
+from MDAnalysisTests.topology.base import ParserBase
 
 BONDED_TPRS = (
     TPR510_bonded,
@@ -174,37 +139,17 @@ class TestTPRGromacsVersions(TPRAttrs):
     ref_molnums = np.array([0] * 129 + list(range(1, 1 + 101)))
     ref_chainIDs = ["Protein_A", "SOL"]
 
+    # fmt: off
     @pytest.fixture(
         params=[
-            TPR400,
-            TPR402,
-            TPR403,
-            TPR404,
-            TPR405,
-            TPR406,
-            TPR407,
-            TPR450,
-            TPR451,
-            TPR452,
-            TPR453,
-            TPR454,
-            TPR455,
-            TPR502,
-            TPR504,
-            TPR505,
-            TPR510,
-            TPR2016,
-            TPR2018,
-            TPR2019B3,
-            TPR2020,
-            TPR2020Double,
-            TPR2021,
-            TPR2021Double,
-            TPR2022RC1,
-            TPR2023,
-            TPR2024,
+                TPR400, TPR402, TPR403, TPR404, TPR405, TPR406, TPR407,
+                TPR450, TPR451, TPR452, TPR453, TPR454, TPR455, TPR502,
+                TPR504, TPR505, TPR510, TPR2016, TPR2018, TPR2019B3,
+                TPR2020, TPR2020Double, TPR2021, TPR2021Double, TPR2022RC1,
+                TPR2023, TPR2024
         ]
     )
+    # fmt: on
     def filename(self, request):
         return request.param
 
@@ -364,30 +309,15 @@ def test_all_impropers(topology, impr):
     impr_type_in_topology(impr_type, elements, topology)
 
 
+# fmt: off
 @pytest.fixture(
     params=(
-        TPR400,
-        TPR402,
-        TPR403,
-        TPR404,
-        TPR405,
-        TPR406,
-        TPR407,
-        TPR450,
-        TPR451,
-        TPR452,
-        TPR453,
-        TPR454,
-        TPR502,
-        TPR504,
-        TPR505,
-        TPR510,
-        TPR2016,
-        TPR2018,
-        TPR2023,
-        TPR2024,
+        TPR400, TPR402, TPR403, TPR404, TPR405, TPR406, TPR407, TPR450,
+        TPR451, TPR452, TPR453, TPR454, TPR502, TPR504, TPR505, TPR510,
+        TPR2016, TPR2018, TPR2023, TPR2024,
     )
 )
+# fmt: on
 def bonds_water(request):
     parser = MDAnalysis.topology.TPRParser.TPRParser(request.param).parse()
     # The index of the first water atom is 1960
@@ -448,31 +378,15 @@ def test_elements():
         dtype=object,
     )
     assert_equal(topology.elements.values[3300:3400], reference)
+    # fmt: off
     reference = np.array(
         [
-            "O",
-            "H",
-            "H",
-            "",
-            "O",
-            "H",
-            "H",
-            "",
-            "O",
-            "H",
-            "H",
-            "",
-            "O",
-            "H",
-            "H",
-            "",
-            "Na",
-            "Na",
-            "Na",
-            "Na",
+            "O", "H", "H", "", "O", "H", "H", "", "O", "H", "H", "", "O", "H",
+            "H", "", "Na", "Na", "Na", "Na",
         ],
         dtype=object,
     )
+    # fmt: on
     assert_equal(topology.elements.values[-20:], reference)
 
 
