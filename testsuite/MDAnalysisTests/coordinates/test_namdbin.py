@@ -24,19 +24,20 @@ import numpy as np
 import os
 
 import pytest
-from numpy.testing import (assert_allclose,
-                           assert_equal,
-                           assert_almost_equal)
+from numpy.testing import assert_allclose, assert_equal, assert_almost_equal
 
 import MDAnalysis as mda
 from MDAnalysisTests.datafiles import NAMDBIN, PDB_small
-from MDAnalysisTests.coordinates.base import (_SingleFrameReader,
-                                              BaseReference,
-                                              BaseWriterTest)
+from MDAnalysisTests.coordinates.base import (
+    _SingleFrameReader,
+    BaseReference,
+    BaseWriterTest,
+)
 
 
 class TestNAMDBINReader(_SingleFrameReader):
     """Test reading namd binary coordinate file"""
+
     __test__ = True
 
     def setUp(self):
@@ -52,9 +53,8 @@ class TestNAMDBINReader(_SingleFrameReader):
 
     def test_get_writer_from_reader(self):
         universe = mda.Universe(PDB_small, NAMDBIN)
-        writer = universe.trajectory.Writer('NAMDBIN-test')
-        assert isinstance(writer,
-                          mda.coordinates.NAMDBIN.NAMDBINWriter)
+        writer = universe.trajectory.Writer("NAMDBIN-test")
+        assert isinstance(writer, mda.coordinates.NAMDBIN.NAMDBINWriter)
 
 
 class NAMDBINReference(BaseReference):
@@ -64,7 +64,7 @@ class NAMDBINReference(BaseReference):
         self.topology = PDB_small
         self.reader = mda.coordinates.NAMDBIN.NAMDBINReader
         self.writer = mda.coordinates.NAMDBIN.NAMDBINWriter
-        self.ext = 'coor'
+        self.ext = "coor"
         self.volume = 0
         self.dimensions = np.zeros(6)
         self.container_format = True
@@ -72,6 +72,7 @@ class NAMDBINReference(BaseReference):
 
 class NAMDBINWriter(BaseWriterTest):
     __test__ = True
+
     @staticmethod
     @pytest.fixture()
     def ref():

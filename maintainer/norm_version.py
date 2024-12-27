@@ -23,7 +23,7 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--file', type=str, help="file with version to parse")
+    parser.add_argument("--file", type=str, help="file with version to parse")
     args = parser.parse_args()
 
     with open(args.file) as filed:

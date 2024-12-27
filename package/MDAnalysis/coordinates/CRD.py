@@ -45,8 +45,9 @@ class CRDReader(base.SingleFrameReaderBase):
        Now returns a ValueError instead of FormatError.
        Frames now 0-based instead of 1-based.
     """
-    format = 'CRD'
-    units = {'time': None, 'length': 'Angstrom'}
+
+    format = "CRD"
+    units = {"time": None, "length": "Angstrom"}
 
     def _read_first_frame(self):
         # EXT:
@@ -62,37 +63,47 @@ class CRDReader(base.SingleFrameReaderBase):
             extended = False
             natoms = 0
             for linenum, line in enumerate(crdfile):
-                if line.strip().startswith('*') or line.strip() == "":
+                if line.strip().startswith("*") or line.strip() == "":
                     continue  # ignore TITLE and empty lines
                 fields = line.split()
                 if len(fields) <= 2:
                     # should be the natoms line
                     natoms = int(fields[0])
-                    extended = (fields[-1] == 'EXT')
+                    extended = fields[-1] == "EXT"
                     continue
                 # process coordinates
                 try:
                     if extended:
-                        coords_list.append(np.array(line[45:100].split()[0:3], dtype=float))
+                        coords_list.append(
+                            np.array(line[45:100].split()[0:3], dtype=float)
+                        )
                     else:
-                        coords_list.append(np.array(line[20:50].split()[0:3], dtype=float))
+                        coords_list.append(
+                            np.array(line[20:50].split()[0:3], dtype=float)
+                        )
                 except Exception:
-                    errmsg = (f"Check CRD format at line {linenum}: "
-                              f"{line.rstrip()}")
+                    errmsg = (
+                        f"Check CRD format at line {linenum}: "
+                        f"{line.rstrip()}"
+                    )
                     raise ValueError(errmsg) from None
 
         self.n_atoms = len(coords_list)
 
-        self.ts = self._Timestep.from_coordinates(np.array(coords_list),
-                                                  **self._ts_kwargs)
+        self.ts = self._Timestep.from_coordinates(
+            np.array(coords_list), **self._ts_kwargs
+        )
         self.ts.frame = 0  # 0-based frame number
         # if self.convert_units:
         #    self.convert_pos_from_native(self.ts._pos)             # in-place !
 
         # sanity check
         if self.n_atoms != natoms:
-            raise ValueError("Found %d coordinates in %r but the header claims that there "
-                              "should be %d coordinates." % (self.n_atoms, self.filename, natoms))
+            raise ValueError(
+                "Found %d coordinates in %r but the header claims that there "
+                "should be %d coordinates."
+                % (self.n_atoms, self.filename, natoms)
+            )
 
     def Writer(self, filename, **kwargs):
         """Returns a CRDWriter for *filename*.
@@ -132,21 +143,26 @@ class CRDWriter(base.WriterBase):
        Files are now written in `wt` mode, and keep extensions, allowing
        for files to be written under compressed formats
     """
-    format = 'CRD'
-    units = {'time': None, 'length': 'Angstrom'}
+
+    format = "CRD"
+    units = {"time": None, "length": "Angstrom"}
 
     fmt = {
-        #crdtype = 'extended'
-        #fortran_format = '(2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10)'
-        "ATOM_EXT": ("{serial:10d}{totRes:10d}  {resname:<8.8s}  {name:<8.8s}"
-                     "{pos[0]:20.10f}{pos[1]:20.10f}{pos[2]:20.10f}  "
-                     "{chainID:<8.8s}  {resSeq:<8d}{tempfactor:20.10f}\n"),
+        # crdtype = 'extended'
+        # fortran_format = '(2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10)'
+        "ATOM_EXT": (
+            "{serial:10d}{totRes:10d}  {resname:<8.8s}  {name:<8.8s}"
+            "{pos[0]:20.10f}{pos[1]:20.10f}{pos[2]:20.10f}  "
+            "{chainID:<8.8s}  {resSeq:<8d}{tempfactor:20.10f}\n"
+        ),
         "NUMATOMS_EXT": "{0:10d} EXT\n",
-        #crdtype = 'standard'
-        #fortran_format = '(2I5,1X,A4,1X,A4,3F10.5,1X,A4,1X,A4,F10.5)'
-        "ATOM": ("{serial:5d}{totRes:5d} {resname:<4.4s} {name:<4.4s}"
-                 "{pos[0]:10.5f}{pos[1]:10.5f}{pos[2]:10.5f} "
-                 "{chainID:<4.4s} {resSeq:<4d}{tempfactor:10.5f}\n"),
+        # crdtype = 'standard'
+        # fortran_format = '(2I5,1X,A4,1X,A4,3F10.5,1X,A4,1X,A4,F10.5)'
+        "ATOM": (
+            "{serial:5d}{totRes:5d} {resname:<4.4s} {name:<4.4s}"
+            "{pos[0]:10.5f}{pos[1]:10.5f}{pos[2]:10.5f} "
+            "{chainID:<4.4s} {resSeq:<4d}{tempfactor:10.5f}\n"
+        ),
         "TITLE": "* FRAME {frame} FROM {where}\n",
         "NUMATOMS": "{0:5d}\n",
     }
@@ -168,7 +184,7 @@ class CRDWriter(base.WriterBase):
              .. versionadded:: 2.2.0
         """
 
-        self.filename = util.filename(filename, ext='crd', keep=True)
+        self.filename = util.filename(filename, ext="crd", keep=True)
         self.crd = None
 
         # account for explicit crd format, if requested
@@ -200,21 +216,22 @@ class CRDWriter(base.WriterBase):
             except AttributeError:
                 frame = 0  # should catch cases when we are analyzing a single PDB (?)
 
-
         atoms = selection.atoms  # make sure to use atoms (Issue 46)
-        coor = atoms.positions  # can write from selection == Universe (Issue 49)
+        coor = (
+            atoms.positions
+        )  # can write from selection == Universe (Issue 49)
 
         n_atoms = len(atoms)
         # Detect which format string we're using to output (EXT or not)
         # *len refers to how to truncate various things,
         # depending on output format!
         if self.extended or n_atoms > 99999:
-            at_fmt = self.fmt['ATOM_EXT']
+            at_fmt = self.fmt["ATOM_EXT"]
             serial_len = 10
             resid_len = 8
             totres_len = 10
         else:
-            at_fmt = self.fmt['ATOM']
+            at_fmt = self.fmt["ATOM"]
             serial_len = 5
             resid_len = 4
             totres_len = 5
@@ -223,11 +240,11 @@ class CRDWriter(base.WriterBase):
         attrs = {}
         missing_topology = []
         for attr, default in (
-                ('resnames', itertools.cycle(('UNK',))),
-                # Resids *must* be an array because we index it later
-                ('resids', np.ones(n_atoms, dtype=int)),
-                ('names', itertools.cycle(('X',))),
-                ('tempfactors', itertools.cycle((0.0,))),
+            ("resnames", itertools.cycle(("UNK",))),
+            # Resids *must* be an array because we index it later
+            ("resids", np.ones(n_atoms, dtype=int)),
+            ("names", itertools.cycle(("X",))),
+            ("tempfactors", itertools.cycle((0.0,))),
         ):
             try:
                 attrs[attr] = getattr(atoms, attr)
@@ -236,40 +253,50 @@ class CRDWriter(base.WriterBase):
                 missing_topology.append(attr)
         # ChainIDs - Try ChainIDs first, fall back to Segids
         try:
-            attrs['chainIDs'] = atoms.chainIDs
+            attrs["chainIDs"] = atoms.chainIDs
         except (NoDataError, AttributeError):
             # try looking for segids instead
             try:
-                attrs['chainIDs'] = atoms.segids
+                attrs["chainIDs"] = atoms.segids
             except (NoDataError, AttributeError):
-                attrs['chainIDs'] = itertools.cycle(('',))
+                attrs["chainIDs"] = itertools.cycle(("",))
                 missing_topology.append(attr)
         if missing_topology:
             warnings.warn(
                 "Supplied AtomGroup was missing the following attributes: "
                 "{miss}. These will be written with default values. "
-                "".format(miss=', '.join(missing_topology)))
+                "".format(miss=", ".join(missing_topology))
+            )
 
-        with util.openany(self.filename, 'wt') as crd:
+        with util.openany(self.filename, "wt") as crd:
             # Write Title
-            crd.write(self.fmt['TITLE'].format(
-                frame=frame, where=u.trajectory.filename))
+            crd.write(
+                self.fmt["TITLE"].format(
+                    frame=frame, where=u.trajectory.filename
+                )
+            )
             crd.write("*\n")
 
             # Write NUMATOMS
             if self.extended or n_atoms > 99999:
-                crd.write(self.fmt['NUMATOMS_EXT'].format(n_atoms))
+                crd.write(self.fmt["NUMATOMS_EXT"].format(n_atoms))
             else:
-                crd.write(self.fmt['NUMATOMS'].format(n_atoms))
+                crd.write(self.fmt["NUMATOMS"].format(n_atoms))
 
             # Write all atoms
 
             current_resid = 1
-            resids = attrs['resids']
+            resids = attrs["resids"]
             for i, pos, resname, name, chainID, resid, tempfactor in zip(
-                    range(n_atoms), coor, attrs['resnames'], attrs['names'],
-                    attrs['chainIDs'], attrs['resids'], attrs['tempfactors']):
-                if not i == 0 and resids[i] != resids[i-1]:
+                range(n_atoms),
+                coor,
+                attrs["resnames"],
+                attrs["names"],
+                attrs["chainIDs"],
+                attrs["resids"],
+                attrs["tempfactors"],
+            ):
+                if not i == 0 and resids[i] != resids[i - 1]:
                     current_resid += 1
 
                 # Truncate numbers
@@ -277,7 +304,15 @@ class CRDWriter(base.WriterBase):
                 resid = util.ltruncate_int(resid, resid_len)
                 current_resid = util.ltruncate_int(current_resid, totres_len)
 
-                crd.write(at_fmt.format(
-                    serial=serial, totRes=current_resid, resname=resname,
-                    name=name, pos=pos, chainID=chainID,
-                    resSeq=resid, tempfactor=tempfactor))
+                crd.write(
+                    at_fmt.format(
+                        serial=serial,
+                        totRes=current_resid,
+                        resname=resname,
+                        name=name,
+                        pos=pos,
+                        chainID=chainID,
+                        resSeq=resid,
+                        tempfactor=tempfactor,
+                    )
+                )

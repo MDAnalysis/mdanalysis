@@ -1,0 +1,40 @@
+scanner:
+    diff_only: True
+    linter: pycodestyle
+
+pycodestyle:  # Valid if scanner.linter is pycodestyle
+    max-line-length: 79
+    ignore: ["E203", "E701"]
+    exclude: []
+    count: False
+    first: False
+    show-pep8: False
+    show-source: False
+    statistics: False
+    hang-closing: False
+    filename: []
+    select: []
+
+flake8:  # Valid if scanner.linter is flake8
+    max-line-length: 79
+    ignore: ["E203", "E501", "E701"]
+    exclude: []
+    count: False
+    show-source: False
+    statistics: False
+    hang-closing: False
+    filename: []
+    select: []
+
+no_blank_comment: True
+descending_issues_order: False
+only_mention_files_with_errors: True
+
+message:
+    opened:
+        header: ""
+        footer: ""
+    updated:
+        header: ""
+        footer: ""
+    no_errors: "There are currently no PEP 8 issues detected in this Pull Request. Cheers! :beers: "
