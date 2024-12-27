@@ -84,6 +84,8 @@ def get_writer(filename: str, defaultformat: str) -> base.SelectionWriterBase:
     try:
         return _SELECTION_WRITERS[format]
     except KeyError:
-        errmsg = (f"Writing as {format} is not implemented; only "
-                  f"{ _SELECTION_WRITERS.keys()} will work.")
+        errmsg = (
+            f"Writing as {format} is not implemented; only "
+            f"{ _SELECTION_WRITERS.keys()} will work."
+        )
         raise NotImplementedError(errmsg) from None

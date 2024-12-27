@@ -40,15 +40,16 @@ Classes
 
 from . import base
 
+
 class INPReader(base.SingleFrameReaderBase):
     """Reader for Amber restart files."""
 
-    format = ['INPCRD', 'RESTRT']
-    units = {'length': 'Angstrom'}
+    format = ["INPCRD", "RESTRT"]
+    units = {"length": "Angstrom"}
 
     def _read_first_frame(self):
         # Read header
-        with open(self.filename, 'r') as inf:
+        with open(self.filename, "r") as inf:
             self.title = inf.readline().strip()
             line = inf.readline().split()
             self.n_atoms = int(line[0])
@@ -65,18 +66,26 @@ class INPReader(base.SingleFrameReaderBase):
             for p in range(self.n_atoms // 2):
                 line = inf.readline()
                 # each float is f12.7, 6 floats a line
-                for i, dest in enumerate([(2*p, 0), (2*p, 1), (2*p, 2),
-                                          (2*p + 1, 0), (2*p + 1, 1), (2*p + 1, 2)]):
-                    self.ts._pos[dest] = float(line[i*12:(i+1)*12])
+                for i, dest in enumerate(
+                    [
+                        (2 * p, 0),
+                        (2 * p, 1),
+                        (2 * p, 2),
+                        (2 * p + 1, 0),
+                        (2 * p + 1, 1),
+                        (2 * p + 1, 2),
+                    ]
+                ):
+                    self.ts._pos[dest] = float(line[i * 12 : (i + 1) * 12])
             # Read last coordinate if necessary
             if self.n_atoms % 2:
                 line = inf.readline()
                 for i in range(3):
-                    self.ts._pos[-1, i] = float(line[i*12:(i+1)*12])
+                    self.ts._pos[-1, i] = float(line[i * 12 : (i + 1) * 12])
 
     @staticmethod
     def parse_n_atoms(filename, **kwargs):
-        with open(filename, 'r') as f:
+        with open(filename, "r") as f:
             f.readline()
             n_atoms = int(f.readline().split()[0])
         return n_atoms

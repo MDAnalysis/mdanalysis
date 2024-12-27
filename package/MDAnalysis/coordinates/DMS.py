@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
@@ -46,29 +46,30 @@ class DMSReader(base.SingleFrameReaderBase):
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
     """
-    format = 'DMS'
-    units = {'time': None, 'length': 'A', 'velocity': 'A/ps'}
+
+    format = "DMS"
+    units = {"time": None, "length": "A", "velocity": "A/ps"}
 
     def get_coordinates(self, cur):
-        cur.execute('SELECT * FROM particle')
+        cur.execute("SELECT * FROM particle")
         particles = cur.fetchall()
-        return [(p['x'], p['y'], p['z']) for p in particles]
+        return [(p["x"], p["y"], p["z"]) for p in particles]
 
     def get_particle_by_columns(self, cur, columns=None):
         if columns is None:
-            columns = ['x', 'y', 'z']
-        cur.execute('SELECT * FROM particle')
+            columns = ["x", "y", "z"]
+        cur.execute("SELECT * FROM particle")
         particles = cur.fetchall()
         return [tuple([p[c] for c in columns]) for p in particles]
 
     def get_global_cell(self, cur):
-        cur.execute('SELECT * FROM global_cell')
+        cur.execute("SELECT * FROM global_cell")
         rows = cur.fetchall()
         assert len(rows) == 3
         x = [row["x"] for row in rows]
         y = [row["y"] for row in rows]
         z = [row["z"] for row in rows]
-        return {'x': x, 'y': y, 'z': z}
+        return {"x": x, "y": y, "z": z}
 
     def _read_first_frame(self):
         coords_list = None
@@ -85,7 +86,9 @@ class DMSReader(base.SingleFrameReaderBase):
             con.row_factory = dict_factory
             cur = con.cursor()
             coords_list = self.get_coordinates(cur)
-            velocities_list = self.get_particle_by_columns(cur, columns=['vx', 'vy', 'vz'])
+            velocities_list = self.get_particle_by_columns(
+                cur, columns=["vx", "vy", "vz"]
+            )
             unitcell = self.get_global_cell(cur)
 
         if not coords_list:
@@ -99,15 +102,20 @@ class DMSReader(base.SingleFrameReaderBase):
         self.ts = self._Timestep.from_coordinates(
             np.array(coords_list, dtype=np.float32),
             velocities=velocities,
-            **self._ts_kwargs)
+            **self._ts_kwargs,
+        )
         self.ts.frame = 0  # 0-based frame number
 
-        self.ts.dimensions = triclinic_box(unitcell['x'], unitcell['y'], unitcell['z'])
+        self.ts.dimensions = triclinic_box(
+            unitcell["x"], unitcell["y"], unitcell["z"]
+        )
 
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)  # in-place !
             if self.ts.dimensions is not None:
-                self.convert_pos_from_native(self.ts.dimensions[:3])  # in-place !
+                self.convert_pos_from_native(
+                    self.ts.dimensions[:3]
+                )  # in-place !
             if self.ts.has_velocities:
                 # converts nm/ps to A/ps units
                 self.convert_velocities_from_native(self.ts._velocities)

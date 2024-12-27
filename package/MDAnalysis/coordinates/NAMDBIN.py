@@ -49,29 +49,30 @@ from ..lib import util
 
 class NAMDBINReader(base.SingleFrameReaderBase):
     """Reader for NAMD binary coordinate files.
-    
-    
-    .. versionadded:: 1.0.0   
+
+
+    .. versionadded:: 1.0.0
     """
 
-    format = ['COOR', 'NAMDBIN']
-    units = {'length': 'Angstrom'}
+    format = ["COOR", "NAMDBIN"]
+    units = {"length": "Angstrom"}
 
     def _read_first_frame(self):
         # Read header
-        with open(self.filename, 'rb') as namdbin:
+        with open(self.filename, "rb") as namdbin:
             self.n_atoms = np.fromfile(namdbin, dtype=np.int32, count=1)[0]
             self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
             self.ts.frame = 0
-            coord_double = np.fromfile(namdbin,
-                                       dtype=np.float64,
-                                       count=self.n_atoms * 3)
-            self.ts._pos[:] = np.array(
-                coord_double, float).reshape(self.n_atoms, 3)
+            coord_double = np.fromfile(
+                namdbin, dtype=np.float64, count=self.n_atoms * 3
+            )
+            self.ts._pos[:] = np.array(coord_double, float).reshape(
+                self.n_atoms, 3
+            )
 
     @staticmethod
     def parse_n_atoms(filename, **kwargs):
-        with open(filename, 'rb') as namdbin:
+        with open(filename, "rb") as namdbin:
             n_atoms = np.fromfile(namdbin, dtype=np.int32, count=1)[0]
         return n_atoms
 
@@ -93,7 +94,7 @@ class NAMDBINReader(base.SingleFrameReaderBase):
 
 class NAMDBINWriter(base.WriterBase):
     """Writer for NAMD binary coordinate files.
-    
+
 
     Note
     ----
@@ -102,8 +103,9 @@ class NAMDBINWriter(base.WriterBase):
 
     .. versionadded:: 1.0.0
     """
-    format = ['COOR', 'NAMDBIN']
-    units = {'time': None, 'length': 'Angstrom'}
+
+    format = ["COOR", "NAMDBIN"]
+    units = {"time": None, "length": "Angstrom"}
 
     def __init__(self, filename, n_atoms=None, **kwargs):
         """
@@ -134,16 +136,16 @@ class NAMDBINWriter(base.WriterBase):
            Deprecated support for Timestep argument has now been removed.
            Use AtomGroup or Universe as an input instead.
         """
-        if hasattr(obj, 'atoms'):  # AtomGroup or Universe
+        if hasattr(obj, "atoms"):  # AtomGroup or Universe
             atoms = obj.atoms
             n_atoms = len(atoms)
-            coor = atoms.positions.reshape(n_atoms*3)
+            coor = atoms.positions.reshape(n_atoms * 3)
         else:
             errmsg = "Input obj is neither an AtomGroup or Universe"
             raise TypeError(errmsg) from None
 
-        with util.openany(self.filename, 'wb') as namdbin:
+        with util.openany(self.filename, "wb") as namdbin:
             # Write NUMATOMS
-            namdbin.write(pack('i', n_atoms))
+            namdbin.write(pack("i", n_atoms))
             # Write Coordinate
-            namdbin.write(pack('{:d}d'.format(len(coor)), *coor))
+            namdbin.write(pack("{:d}d".format(len(coor)), *coor))

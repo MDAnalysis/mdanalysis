@@ -32,15 +32,24 @@ from MDAnalysisTests.datafiles import mol2_molecule, PDB_helix, SDF_molecule
 
 # TODO: remove these shims when RDKit
 # has a release supporting NumPy 2
-Chem = pytest.importorskip('rdkit.Chem')
-AllChem = pytest.importorskip('rdkit.Chem.AllChem')
+Chem = pytest.importorskip("rdkit.Chem")
+AllChem = pytest.importorskip("rdkit.Chem.AllChem")
 
 
 class RDKitParserBase(ParserBase):
     parser = mda.converters.RDKitParser.RDKitParser
-    expected_attrs = ['ids', 'names', 'elements', 'masses', 'aromaticities',
-                      'resids', 'resnums', 'chiralities', 'segids', 'bonds',
-                      ]
+    expected_attrs = [
+        "ids",
+        "names",
+        "elements",
+        "masses",
+        "aromaticities",
+        "resids",
+        "resnums",
+        "chiralities",
+        "segids",
+        "bonds",
+    ]
 
     expected_n_atoms = 0
     expected_n_residues = 1
@@ -53,14 +62,14 @@ class RDKitParserBase(ParserBase):
             yield p.parse()
 
     def test_creates_universe(self, filename):
-        u = mda.Universe(filename, format='RDKIT')
+        u = mda.Universe(filename, format="RDKIT")
         assert isinstance(u, mda.Universe)
 
     def test_bonds_total_counts(self, top):
         assert len(top.bonds.values) == self.expected_n_bonds
 
     def test_guessed_attributes(self, filename):
-        u = mda.Universe(filename, format='RDKIT')
+        u = mda.Universe(filename, format="RDKIT")
         u_guessed_attrs = [a.attrname for a in u._topology.guessed_attributes]
         for attr in self.guessed_attrs:
             assert hasattr(u.atoms, attr)
@@ -70,7 +79,7 @@ class RDKitParserBase(ParserBase):
 class TestRDKitParserMOL2(RDKitParserBase):
     ref_filename = mol2_molecule
 
-    expected_attrs = RDKitParserBase.expected_attrs + ['charges', 'types']
+    expected_attrs = RDKitParserBase.expected_attrs + ["charges", "types"]
 
     expected_n_atoms = 49
     expected_n_residues = 1
@@ -89,7 +98,7 @@ class TestRDKitParserMOL2(RDKitParserBase):
     def _remove_tripos_charges(self, mol):
         for atom in mol.GetAtoms():
             atom.ClearProp("_TriposPartialCharge")
-    
+
     @pytest.fixture
     def top_gas_tripos(self):
         mol = self._create_mol_gasteiger_charges()
@@ -106,17 +115,21 @@ class TestRDKitParserMOL2(RDKitParserBase):
         mol = self._create_mol_gasteiger_charges()
         self._remove_tripos_charges(mol)
         return self.parser(mol).parse()
-    
 
     def test_bond_orders(self, top, filename):
         expected = [bond.GetBondTypeAsDouble() for bond in filename.GetBonds()]
         assert top.bonds.order == expected
-    
-    def test_multiple_charge_priority(self, 
-        top_gas_tripos, filename_gasteiger):
-        expected = np.array([
-            a.GetDoubleProp('_GasteigerCharge') for a in 
-            filename_gasteiger.GetAtoms()], dtype=np.float32)
+
+    def test_multiple_charge_priority(
+        self, top_gas_tripos, filename_gasteiger
+    ):
+        expected = np.array(
+            [
+                a.GetDoubleProp("_GasteigerCharge")
+                for a in filename_gasteiger.GetAtoms()
+            ],
+            dtype=np.float32,
+        )
         assert_equal(expected, top_gas_tripos.charges.values)
 
     def test_multiple_charge_props_warning(self):
@@ -129,37 +142,55 @@ class TestRDKitParserMOL2(RDKitParserBase):
             # Verify the warning
             assert len(w) == 1
             assert "_GasteigerCharge and _TriposPartialCharge" in str(
-                w[-1].message)
+                w[-1].message
+            )
 
     def test_gasteiger_charges(self, top_gasteiger, filename_gasteiger):
-        expected = np.array([
-            a.GetDoubleProp('_GasteigerCharge') for a in 
-            filename_gasteiger.GetAtoms()], dtype=np.float32)
+        expected = np.array(
+            [
+                a.GetDoubleProp("_GasteigerCharge")
+                for a in filename_gasteiger.GetAtoms()
+            ],
+            dtype=np.float32,
+        )
         assert_equal(expected, top_gasteiger.charges.values)
 
     def test_tripos_charges(self, top, filename):
-        expected = np.array([
-            a.GetDoubleProp('_TriposPartialCharge') for a in filename.GetAtoms()
-            ], dtype=np.float32)
+        expected = np.array(
+            [
+                a.GetDoubleProp("_TriposPartialCharge")
+                for a in filename.GetAtoms()
+            ],
+            dtype=np.float32,
+        )
         assert_equal(expected, top.charges.values)
 
     def test_aromaticity(self, top, filename):
-        expected = np.array([
-            atom.GetIsAromatic() for atom in filename.GetAtoms()])
+        expected = np.array(
+            [atom.GetIsAromatic() for atom in filename.GetAtoms()]
+        )
         assert_equal(expected, top.aromaticities.values)
 
     def test_guessed_types(self, filename):
-        u = mda.Universe(filename, format='RDKIT')
-        assert_equal(u.atoms.types[:7], ['N.am', 'S.o2',
-                     'N.am', 'N.am', 'O.2', 'O.2', 'C.3'])
+        u = mda.Universe(filename, format="RDKIT")
+        assert_equal(
+            u.atoms.types[:7],
+            ["N.am", "S.o2", "N.am", "N.am", "O.2", "O.2", "C.3"],
+        )
+
 
 class TestRDKitParserPDB(RDKitParserBase):
     ref_filename = PDB_helix
 
     expected_attrs = RDKitParserBase.expected_attrs + [
-        'resnames', 'altLocs', 'chainIDs', 'occupancies', 'icodes',
-        'tempfactors']
-    
+        "resnames",
+        "altLocs",
+        "chainIDs",
+        "occupancies",
+        "icodes",
+        "tempfactors",
+    ]
+
     expected_n_atoms = 137
     expected_n_residues = 13
     expected_n_segments = 1
@@ -172,15 +203,16 @@ class TestRDKitParserPDB(RDKitParserBase):
     def test_partial_residueinfo_raise_error(self, filename):
         mol = Chem.RemoveHs(filename)
         mh = Chem.AddHs(mol)
-        with pytest.raises(ValueError,
-                           match="ResidueInfo is only partially available"):
+        with pytest.raises(
+            ValueError, match="ResidueInfo is only partially available"
+        ):
             mda.Universe(mh)
         mh = Chem.AddHs(mol, addResidueInfo=True)
         mda.Universe(mh)
-    
+
     def test_guessed_types(self, filename):
-        u = mda.Universe(filename, format='RDKIT')
-        assert_equal(u.atoms.types[:7], ['N', 'H', 'C', 'H', 'C', 'H', 'H'])
+        u = mda.Universe(filename, format="RDKIT")
+        assert_equal(u.atoms.types[:7], ["N", "H", "C", "H", "C", "H", "H"])
 
 
 class TestRDKitParserSMILES(RDKitParserBase):
@@ -215,5 +247,5 @@ class TestRDKitParserSDF(RDKitParserBase):
         assert top.bonds.order == expected
 
     def test_guessed_types(self, filename):
-        u = mda.Universe(filename, format='RDKIT')
-        assert_equal(u.atoms.types[:7], ['CA', 'C', 'C', 'C', 'C', 'C', 'O'])
+        u = mda.Universe(filename, format="RDKIT")
+        assert_equal(u.atoms.types[:7], ["CA", "C", "C", "C", "C", "C", "O"])

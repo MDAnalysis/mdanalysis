@@ -24,32 +24,20 @@ class DistancesBench(object):
 
     def setup(self, num_atoms):
         np.random.seed(17809)
-        self.coords_1 = np.random.random_sample((num_atoms, 3)).astype(
-            np.float32
-        )
+        self.coords_1 = np.random.random_sample((num_atoms, 3)).astype(np.float32)
         np.random.seed(9008716)
-        self.coords_2 = np.random.random_sample((num_atoms, 3)).astype(
-            np.float32
-        )
+        self.coords_2 = np.random.random_sample((num_atoms, 3)).astype(np.float32)
         np.random.seed(15809)
-        self.coords_3 = np.random.random_sample((num_atoms, 3)).astype(
-            np.float32
-        )
+        self.coords_3 = np.random.random_sample((num_atoms, 3)).astype(np.float32)
         np.random.seed(871600)
-        self.coords_4 = np.random.random_sample((num_atoms, 3)).astype(
-            np.float32
-        )
+        self.coords_4 = np.random.random_sample((num_atoms, 3)).astype(np.float32)
 
-        self.allocated_array_2D = np.empty(
-            (num_atoms, num_atoms), dtype=np.float64
-        )
+        self.allocated_array_2D = np.empty((num_atoms, num_atoms), dtype=np.float64)
         self.array_shape_1D = int(num_atoms * (num_atoms - 1) / 2.0)
-        self.allocated_array_1D = np.empty(
-            self.array_shape_1D, dtype=np.float64
-        )
+        self.allocated_array_1D = np.empty(self.array_shape_1D, dtype=np.float64)
         self.u = mda.Universe(GRO)
         self.ag1 = self.u.atoms[:num_atoms]
-        self.ag2 = self.u.atoms[num_atoms: 2 * num_atoms]
+        self.ag2 = self.u.atoms[num_atoms : 2 * num_atoms]
         self.ag3 = self.u.atoms[-num_atoms:]
 
     def time_distance_array(self, num_atoms):
@@ -139,9 +127,7 @@ class DistancesBench(object):
         of atomgroup that is within a specific
         distance of two other atomgroups.
         """
-        distances.between(
-            group=self.ag3, A=self.ag1, B=self.ag2, distance=15.0
-        )
+        distances.between(group=self.ag3, A=self.ag1, B=self.ag2, distance=15.0)
 
     def time_calc_bonds(self, num_atoms):
         """Benchmark calculation of bonds between
@@ -153,9 +139,7 @@ class DistancesBench(object):
         """Benchmark calculation of angles between
         atoms in three atomgroups.
         """
-        mda.lib.distances.calc_angles(
-            self.coords_1, self.coords_2, self.coords_3
-        )
+        mda.lib.distances.calc_angles(self.coords_1, self.coords_2, self.coords_3)
 
     def time_calc_dihedrals(self, num_atoms):
         """Benchmark calculation of dihedrals between

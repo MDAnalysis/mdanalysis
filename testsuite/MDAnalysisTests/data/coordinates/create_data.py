@@ -12,7 +12,7 @@ def create_test_trj(uni, fname):
     print(uni.trajectory.ts.__class__)
     with mda.Writer(fname, n_atoms) as w:
         for i in range(5):
-            uni.atoms.positions = 2 ** i * pos
+            uni.atoms.positions = 2**i * pos
             uni.trajectory.ts.time = i
             uni.trajectory.ts.velocities = uni.atoms.positions / 10
             uni.trajectory.ts.forces = uni.atoms.positions / 100
@@ -24,14 +24,15 @@ def create_test_trj(uni, fname):
 
 
 def main():
-    pdb = 'test_topology.pdb'
+    pdb = "test_topology.pdb"
     u = mda.Universe(pdb)
 
-    create_test_trj(u, 'test.xyz')
-    create_test_trj(u, 'test.xtc')
-    create_test_trj(u, 'test.trr')
-    create_test_trj(u, 'test.gro')
-    create_test_trj(u, 'test.dcd')
+    create_test_trj(u, "test.xyz")
+    create_test_trj(u, "test.xtc")
+    create_test_trj(u, "test.trr")
+    create_test_trj(u, "test.gro")
+    create_test_trj(u, "test.dcd")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

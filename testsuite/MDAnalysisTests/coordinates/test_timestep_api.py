@@ -28,18 +28,45 @@ _TestTimestepInterface tests the Readers are correctly using Timesteps
 """
 import itertools
 import numpy as np
-from numpy.testing import assert_equal, assert_allclose, assert_array_almost_equal
+from numpy.testing import (
+    assert_equal,
+    assert_allclose,
+    assert_array_almost_equal,
+)
 
 from MDAnalysis.lib.mdamath import triclinic_vectors
 import MDAnalysis as mda
-from MDAnalysisTests.datafiles import (PSF, XYZ_five, INPCRD, DCD, DLP_CONFIG,
-                                       DLP_HISTORY, DMS, GMS_ASYMOPT, GRO, XTC,
-                                       TRR, LAMMPSdata, LAMMPSdata2,
-                                       LAMMPSdcd2, mol2_molecules, PDB_small,
-                                       PDBQT_input, PQR, PRM, TRJ, PRMncdf,
-                                       NCDF, TRZ_psf, TRZ)
+from MDAnalysisTests.datafiles import (
+    PSF,
+    XYZ_five,
+    INPCRD,
+    DCD,
+    DLP_CONFIG,
+    DLP_HISTORY,
+    DMS,
+    GMS_ASYMOPT,
+    GRO,
+    XTC,
+    TRR,
+    LAMMPSdata,
+    LAMMPSdata2,
+    LAMMPSdcd2,
+    mol2_molecules,
+    PDB_small,
+    PDBQT_input,
+    PQR,
+    PRM,
+    TRJ,
+    PRMncdf,
+    NCDF,
+    TRZ_psf,
+    TRZ,
+)
 
-from MDAnalysisTests.coordinates.base import assert_timestep_equal, assert_timestep_almost_equal
+from MDAnalysisTests.coordinates.base import (
+    assert_timestep_equal,
+    assert_timestep_almost_equal,
+)
 from MDAnalysis.coordinates.timestep import Timestep
 import pytest
 
@@ -52,6 +79,7 @@ class TestTimestep(object):
     These test the Timestep independent of the Reader which it
     comes into contact with.  Failures here are the Timesteps fault.
     """
+
     # define the class made in test
     Timestep = Timestep
     name = "base"  # for error messages only
@@ -63,9 +91,9 @@ class TestTimestep(object):
 
     # If you can set box, what the underlying unitcell should be
     # if dimensions are:
-    newbox = np.array([10., 11., 12., 90., 90., 90.])
-    unitcell = np.array([10., 11., 12., 90., 90., 90.])
-    ref_volume = 1320.  # what the volume is after setting newbox
+    newbox = np.array([10.0, 11.0, 12.0, 90.0, 90.0, 90.0])
+    unitcell = np.array([10.0, 11.0, 12.0, 90.0, 90.0, 90.0])
+    ref_volume = 1320.0  # what the volume is after setting newbox
     uni_args = None
 
     @pytest.fixture()
@@ -87,7 +115,6 @@ class TestTimestep(object):
         with pytest.raises(IndexError):
             ts.__getitem__(-(self.size + 1))
 
-
     def test_getitem_pos_IE(self, ts):
         with pytest.raises(IndexError):
             ts.__getitem__((self.size + 1))
@@ -107,7 +134,7 @@ class TestTimestep(object):
 
     def test_getitem_TE(self, ts):
         with pytest.raises(TypeError):
-            ts.__getitem__('string')
+            ts.__getitem__("string")
 
     def test_len(self, ts):
         assert_equal(len(ts), self.size)
@@ -121,15 +148,14 @@ class TestTimestep(object):
         assert_equal(type(repr(ts)), str)
 
     def test_repr_with_box(self, ts):
-        assert("with unit cell dimensions" in repr(ts))
+        assert "with unit cell dimensions" in repr(ts)
 
     def test_repr_no_box(self, ts):
         ts.dimensions = None
-        assert("with unit cell dimensions" not in repr(ts))
+        assert "with unit cell dimensions" not in repr(ts)
 
     def test_default_dtype_npf32(self, ts):
         assert_equal(ts.dtype, np.float32)
-
 
     # Dimensions has 2 possible cases
     # Timestep doesn't do dimensions,
@@ -138,7 +164,7 @@ class TestTimestep(object):
     def test_dimensions(self, ts):
         assert_allclose(ts.dimensions, self.newbox)
 
-    @pytest.mark.parametrize('dtype', (int, np.float32, np.float64))
+    @pytest.mark.parametrize("dtype", (int, np.float32, np.float64))
     def test_dimensions_set_box(self, ts, dtype):
         ts.dimensions = self.newbox.astype(dtype)
         assert ts.dimensions.dtype == np.float32
@@ -149,21 +175,22 @@ class TestTimestep(object):
         assert_equal(ts.volume, self.ref_volume)
 
     def test_triclinic_vectors(self, ts):
-        assert_allclose(ts.triclinic_dimensions,
-                        triclinic_vectors(ts.dimensions))
+        assert_allclose(
+            ts.triclinic_dimensions, triclinic_vectors(ts.dimensions)
+        )
 
     def test_set_triclinic_vectors(self, ts):
         ref_vec = triclinic_vectors(self.newbox)
         ts.triclinic_dimensions = ref_vec
         assert_equal(ts.dimensions, self.newbox)
 
-    def test_set_dimensions_None(self,ts):
+    def test_set_dimensions_None(self, ts):
         ts.dimensions = None
-        assert(not ts._unitcell.any())
+        assert not ts._unitcell.any()
 
-    def test_set_triclinic_dimensions_None(self,ts):
+    def test_set_triclinic_dimensions_None(self, ts):
         ts.triclinic_dimensions = None
-        assert(not ts._unitcell.any())
+        assert not ts._unitcell.any()
 
     def test_coordinate_getter_shortcuts(self, ts):
         """testing that reading _x, _y, and _z works as expected
@@ -174,7 +201,7 @@ class TestTimestep(object):
 
     def test_coordinate_setter_shortcuts(self, ts):
         # Check that _x _y and _z are read only
-        for coordinate in ('_x', '_y', '_z'):
+        for coordinate in ("_x", "_y", "_z"):
             random_positions = np.arange(self.size).astype(np.float32)
             with pytest.raises(AttributeError):
                 setattr(ts, coordinate, random_positions)
@@ -186,22 +213,22 @@ class TestTimestep(object):
 
     def test_n_atoms_readonly(self, ts):
         with pytest.raises(AttributeError):
-            ts.__setattr__('n_atoms', 20)
+            ts.__setattr__("n_atoms", 20)
 
     def test_n_atoms_presence(self, ts):
-        assert_equal(hasattr(ts, 'n_atoms'), True)
+        assert_equal(hasattr(ts, "n_atoms"), True)
 
     def test_unitcell_presence(self, ts):
-        assert_equal(hasattr(ts, 'dimensions'), True)
+        assert_equal(hasattr(ts, "dimensions"), True)
 
     def test_data_presence(self, ts):
-        assert_equal(hasattr(ts, 'data'), True)
+        assert_equal(hasattr(ts, "data"), True)
         assert_equal(isinstance(ts.data, dict), True)
 
     def test_allocate_velocities(self, ts):
         assert_equal(ts.has_velocities, False)
         with pytest.raises(mda.NoDataError):
-            getattr(ts, 'velocities')
+            getattr(ts, "velocities")
 
         ts.has_velocities = True
         assert_equal(ts.has_velocities, True)
@@ -210,7 +237,7 @@ class TestTimestep(object):
     def test_allocate_forces(self, ts):
         assert_equal(ts.has_forces, False)
         with pytest.raises(mda.NoDataError):
-            getattr(ts, 'forces')
+            getattr(ts, "forces")
 
         ts.has_forces = True
         assert_equal(ts.has_forces, True)
@@ -224,7 +251,7 @@ class TestTimestep(object):
         ts.has_velocities = False
         assert_equal(ts.has_velocities, False)
         with pytest.raises(mda.NoDataError):
-            getattr(ts, 'velocities')
+            getattr(ts, "velocities")
 
     def test_forces_remove(self):
         ts = self.Timestep(10, forces=True)
@@ -234,7 +261,7 @@ class TestTimestep(object):
         ts.has_forces = False
         assert_equal(ts.has_forces, False)
         with pytest.raises(mda.NoDataError):
-            getattr(ts, 'forces')
+            getattr(ts, "forces")
 
     def test_check_ts(self):
         with pytest.raises(ValueError):
@@ -249,9 +276,9 @@ class TestTimestep(object):
 
         return ts
 
-    @pytest.mark.parametrize('p, v, f', filter(any,
-                                               itertools.product([True, False],
-                                                                 repeat=3)))
+    @pytest.mark.parametrize(
+        "p, v, f", filter(any, itertools.product([True, False], repeat=3))
+    )
     def test_from_coordinates(self, p, v, f):
         ts = self._from_coords(p, v, f)
 
@@ -259,17 +286,17 @@ class TestTimestep(object):
             assert_array_almost_equal(ts.positions, self.refpos)
         else:
             with pytest.raises(mda.NoDataError):
-                getattr(ts, 'positions')
+                getattr(ts, "positions")
         if v:
             assert_array_almost_equal(ts.velocities, self.refvel)
         else:
             with pytest.raises(mda.NoDataError):
-                getattr(ts, 'velocities')
+                getattr(ts, "velocities")
         if f:
             assert_array_almost_equal(ts.forces, self.reffor)
         else:
             with pytest.raises(mda.NoDataError):
-                getattr(ts, 'forces')
+                getattr(ts, "forces")
 
     def test_from_coordinates_mismatch(self):
         velo = self.refvel[:2]
@@ -286,29 +313,29 @@ class TestTimestep(object):
         # Check that this gets stored in data properly
         ts = self.Timestep(20, dt=0.04)
 
-        assert_equal(ts.data['dt'], 0.04)
+        assert_equal(ts.data["dt"], 0.04)
         assert_equal(ts.dt, 0.04)
 
     def test_redefine_dt(self):
         ts = self.Timestep(20, dt=0.04)
-        assert_equal(ts.data['dt'], 0.04)
+        assert_equal(ts.data["dt"], 0.04)
         assert_equal(ts.dt, 0.04)
         ts.dt = refdt = 0.46
-        assert_equal(ts.data['dt'], refdt)
+        assert_equal(ts.data["dt"], refdt)
         assert_equal(ts.dt, refdt)
 
     def test_delete_dt(self):
         ts = self.Timestep(20, dt=0.04)
-        assert_equal(ts.data['dt'], 0.04)
+        assert_equal(ts.data["dt"], 0.04)
         assert_equal(ts.dt, 0.04)
         del ts.dt
-        assert_equal('dt' in ts.data, False)
+        assert_equal("dt" in ts.data, False)
         assert_equal(ts.dt, 1.0)  # default value
 
     def test_supply_time_offset(self):
         ts = self.Timestep(20, time_offset=100.0)
 
-        assert_equal(ts.data['time_offset'], 100.0)
+        assert_equal(ts.data["time_offset"], 100.0)
 
     def test_time(self):
         ts = self.Timestep(20)
@@ -379,8 +406,9 @@ class TestTimestep(object):
         """Check basic copy"""
         ts2 = ref_ts.copy()
 
-        err_msg = ("Timestep copy failed for format {form}"
-                   " on attribute {att}")
+        err_msg = (
+            "Timestep copy failed for format {form}" " on attribute {att}"
+        )
 
         # eq method checks:
         # - frame
@@ -389,8 +417,9 @@ class TestTimestep(object):
         assert ref_ts == ts2
 
         if not ref_ts.dimensions is None:
-            assert_array_almost_equal(ref_ts.dimensions, ts2.dimensions,
-                                      decimal=4)
+            assert_array_almost_equal(
+                ref_ts.dimensions, ts2.dimensions, decimal=4
+            )
         else:
             assert ref_ts.dimensions == ts2.dimensions
 
@@ -398,8 +427,7 @@ class TestTimestep(object):
         for d in ref_ts.data:
             assert d in ts2.data
             if isinstance(ref_ts.data[d], np.ndarray):
-                assert_array_almost_equal(
-                    ref_ts.data[d], ts2.data[d])
+                assert_array_almost_equal(ref_ts.data[d], ts2.data[d])
             else:
                 assert ref_ts.data[d] == ts2.data[d]
 
@@ -433,10 +461,27 @@ class TestTimestep(object):
         self._check_slice(ts, ts2, sl)
 
     def _check_npint_slice(self, name, ts):
-        for integers in [np.byte, np.short, np.intc, np.int_, np.longlong,
-                         np.intp, np.int8, np.int16, np.int32, np.int64,
-                         np.ubyte, np.ushort, np.uintc, np.ulonglong,
-                         np.uintp, np.uint8, np.uint16, np.uint32, np.uint64]:
+        for integers in [
+            np.byte,
+            np.short,
+            np.intc,
+            np.int_,
+            np.longlong,
+            np.intp,
+            np.int8,
+            np.int16,
+            np.int32,
+            np.int64,
+            np.ubyte,
+            np.ushort,
+            np.uintc,
+            np.ulonglong,
+            np.uintp,
+            np.uint8,
+            np.uint16,
+            np.uint32,
+            np.uint64,
+        ]:
             sl = slice(1, 2, 1)
             ts2 = ts.copy_slice(slice(integers(1), integers(2), integers(1)))
             self._check_slice(ts, ts2, sl)
@@ -449,13 +494,16 @@ class TestTimestep(object):
         if ts1.has_forces:
             assert_array_almost_equal(ts1.forces[sl], ts2.forces)
 
-    @pytest.mark.parametrize('func', [
-        _check_copy,
-        _check_independent,
-        _check_copy_slice_indices,
-        _check_copy_slice_slice,
-        _check_npint_slice
-    ])
+    @pytest.mark.parametrize(
+        "func",
+        [
+            _check_copy,
+            _check_independent,
+            _check_copy_slice_indices,
+            _check_copy_slice_slice,
+            _check_npint_slice,
+        ],
+    )
     def test_copy(self, func, ts):
         if self.uni_args is None:
             return
@@ -463,24 +511,28 @@ class TestTimestep(object):
         ts = u.trajectory.ts
         func(self, self.name, ts)
 
-    @pytest.fixture(params=filter(any,
-                                  itertools.product([True, False], repeat=3)))
+    @pytest.fixture(
+        params=filter(any, itertools.product([True, False], repeat=3))
+    )
     def some_ts(self, request):
         p, v, f = request.param
         return self._from_coords(p, v, f)
 
-    @pytest.mark.parametrize('func', [
-        _check_copy,
-        _check_independent,
-        _check_copy_slice_indices,
-        _check_copy_slice_slice,
-        _check_npint_slice
-    ])
+    @pytest.mark.parametrize(
+        "func",
+        [
+            _check_copy,
+            _check_independent,
+            _check_copy_slice_indices,
+            _check_copy_slice_slice,
+            _check_npint_slice,
+        ],
+    )
     def test_copy_slice(self, func, some_ts):
         func(self, self.name, some_ts)
 
     def test_bad_slice(self, some_ts):
-        sl = ['this', 'is', 'silly']
+        sl = ["this", "is", "silly"]
         with pytest.raises(TypeError):
             some_ts.copy_slice(sl)
 
@@ -494,18 +546,12 @@ class TestTimestep(object):
         # Get generic reference positions
         return np.arange(30).reshape(10, 3) * 1.234
 
-    @pytest.mark.parametrize('p, v, f', filter(any,
-                                               itertools.product([True, False],
-                                                                 repeat=3)))
+    @pytest.mark.parametrize(
+        "p, v, f", filter(any, itertools.product([True, False], repeat=3))
+    )
     def test_check_equal(self, p, v, f):
-        ts1 = self.Timestep(self.size,
-                            positions=p,
-                            velocities=v,
-                            forces=f)
-        ts2 = self.Timestep(self.size,
-                            positions=p,
-                            velocities=v,
-                            forces=f)
+        ts1 = self.Timestep(self.size, positions=p, velocities=v, forces=f)
+        ts2 = self.Timestep(self.size, positions=p, velocities=v, forces=f)
         if p:
             ts1.positions = self.refpos.copy()
             ts2.positions = self.refpos.copy()
@@ -622,12 +668,12 @@ class TestTimestep(object):
         assert ts1 != ts2
         assert ts2 != ts1
 
-    @pytest.mark.parametrize('dim1', [None, [2., 2., 2., 90., 90., 90.]])
+    @pytest.mark.parametrize("dim1", [None, [2.0, 2.0, 2.0, 90.0, 90.0, 90.0]])
     def test_dims_mismatch_inequality(self, dim1):
         ts1 = self.Timestep(self.size)
         ts1.dimensions = dim1
         ts2 = self.Timestep(self.size)
-        ts2.dimensions = [1., 1., 1., 90., 90., 90.]
+        ts2.dimensions = [1.0, 1.0, 1.0, 90.0, 90.0, 90.0]
 
         assert ts1 != ts2
         assert ts2 != ts1
@@ -636,6 +682,7 @@ class TestTimestep(object):
 # TODO: Merge this into generic Reader tests
 # These tests are all included in BaseReaderTest
 # Once Readers use that TestClass, delete this one
+
 
 class TestBaseTimestepInterface(object):
     """Test the Timesteps created by Readers
@@ -647,32 +694,41 @@ class TestBaseTimestepInterface(object):
 
     See Issue #250 for discussion
     """
-    @pytest.fixture(params=(
-        (XYZ_five, INPCRD, None, None),
-        (PSF, DCD, None, None),
-        (DLP_CONFIG, None, 'CONFIG', None),
-        (DLP_HISTORY, None, 'HISTORY', None),
-        (DMS, None, None, None),
-        (GRO, None, None, None),
-        (XYZ_five, INPCRD, None, None),
-        (LAMMPSdata, None, None, None),
-        (mol2_molecules, None, None, None),
-        (PDB_small, None, None, None),
-        (PQR, None, None, None),
-        (PDBQT_input, None, None, None),
-        (PRM, TRJ, None, None),
-        (GRO, XTC, None, None),
-        (TRZ_psf, TRZ, None, None),
-        (GRO, TRR, None, None),
-        (GMS_ASYMOPT, GMS_ASYMOPT, 'GMS', 'GMS'),
-        (LAMMPSdata2, LAMMPSdcd2, 'LAMMPS', 'DATA'),
-        (PRMncdf, NCDF, None, None),
-    ))
+
+    @pytest.fixture(
+        params=(
+            (XYZ_five, INPCRD, None, None),
+            (PSF, DCD, None, None),
+            (DLP_CONFIG, None, "CONFIG", None),
+            (DLP_HISTORY, None, "HISTORY", None),
+            (DMS, None, None, None),
+            (GRO, None, None, None),
+            (XYZ_five, INPCRD, None, None),
+            (LAMMPSdata, None, None, None),
+            (mol2_molecules, None, None, None),
+            (PDB_small, None, None, None),
+            (PQR, None, None, None),
+            (PDBQT_input, None, None, None),
+            (PRM, TRJ, None, None),
+            (GRO, XTC, None, None),
+            (TRZ_psf, TRZ, None, None),
+            (GRO, TRR, None, None),
+            (GMS_ASYMOPT, GMS_ASYMOPT, "GMS", "GMS"),
+            (LAMMPSdata2, LAMMPSdcd2, "LAMMPS", "DATA"),
+            (PRMncdf, NCDF, None, None),
+        )
+    )
     def universe(self, request):
-        topology, trajectory, trajectory_format, topology_format = request.param
+        topology, trajectory, trajectory_format, topology_format = (
+            request.param
+        )
         if trajectory_format is not None and topology_format is not None:
-            return mda.Universe(topology, trajectory, format=trajectory_format,
-                                topology_format=topology_format)
+            return mda.Universe(
+                topology,
+                trajectory,
+                format=trajectory_format,
+                topology_format=topology_format,
+            )
 
         if trajectory is not None:
             return mda.Universe(topology, trajectory)
@@ -686,15 +742,18 @@ class TestBaseTimestepInterface(object):
         assert_equal(universe.trajectory.dt, universe.trajectory.ts.dt)
 
 
-@pytest.mark.parametrize('uni', [
-    [(PSF, DCD), {}],  # base Timestep
-    [(DLP_CONFIG,), {'format': 'CONFIG'}],  # DLPoly
-    [(DMS,), {}],  # DMS
-    [(GRO,), {}],  # GRO
-    [(np.zeros((1, 30, 3)),), {}],  # memory
-    [(PRM, TRJ), {}],  # TRJ
-    [(TRZ_psf, TRZ), {}],  # TRZ
-])
+@pytest.mark.parametrize(
+    "uni",
+    [
+        [(PSF, DCD), {}],  # base Timestep
+        [(DLP_CONFIG,), {"format": "CONFIG"}],  # DLPoly
+        [(DMS,), {}],  # DMS
+        [(GRO,), {}],  # GRO
+        [(np.zeros((1, 30, 3)),), {}],  # memory
+        [(PRM, TRJ), {}],  # TRJ
+        [(TRZ_psf, TRZ), {}],  # TRZ
+    ],
+)
 def test_atomgroup_dims_access(uni):
     uni_args, uni_kwargs = uni
     # check that AtomGroup.dimensions always returns a copy

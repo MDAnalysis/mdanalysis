@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
@@ -46,7 +46,7 @@ from . import base
 class SelectionWriter(base.SelectionWriterBase):
     format = ["PyMol", "pml"]
     ext = "pml"
-    continuation = '\\'  # quoted backslash!
+    continuation = "\\"  # quoted backslash!
     commentfmt = "# %s"
     default_numterms = 6
 
@@ -55,8 +55,10 @@ class SelectionWriter(base.SelectionWriterBase):
         def _index(atom):
             return "index {0:d}".format((atom.index + 1))
 
-        return base.join(atoms, ' |', _index)
+        return base.join(atoms, " |", _index)
 
     def _write_head(self, out, **kwargs):
         out.write(self.comment("MDAnalysis PyMol selection"))
-        out.write("select {name!s}, ".format(**kwargs) + self.continuation + '\n')
+        out.write(
+            "select {name!s}, ".format(**kwargs) + self.continuation + "\n"
+        )
