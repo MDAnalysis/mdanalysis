@@ -20,30 +20,23 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-import sys
 import platform
+import sys
 import warnings
+
 import MDAnalysis as mda
-import pytest
 import numpy as np
+import pytest
 from numpy.testing import assert_equal
+
+from MDAnalysisTests.datafiles import PRM  # ache.prmtop
+from MDAnalysisTests.datafiles import PRM7  # tz2.truncoct.parm7.bz2
+from MDAnalysisTests.datafiles import PRM12  # anti.top
+from MDAnalysisTests.datafiles import PRM_chainid_bz2  # multi_anche.prmtop.bz2
+from MDAnalysisTests.datafiles import (PRM19SBOPC, PRMNCRST, PRMNEGATIVE,
+                                       PRM_UreyBradley, PRMErr1, PRMErr2,
+                                       PRMErr3, PRMErr4, PRMErr5, PRMpbc)
 from MDAnalysisTests.topology.base import ParserBase
-from MDAnalysisTests.datafiles import (
-    PRM,  # ache.prmtop
-    PRM_chainid_bz2,  # multi_anche.prmtop.bz2
-    PRM12,  # anti.top
-    PRM7,  # tz2.truncoct.parm7.bz2
-    PRMpbc,
-    PRMNCRST,
-    PRMNEGATIVE,
-    PRMErr1,
-    PRMErr2,
-    PRMErr3,
-    PRMErr4,
-    PRMErr5,
-    PRM_UreyBradley,
-    PRM19SBOPC,
-)
 
 
 class TOPBase(ParserBase):
@@ -371,76 +364,25 @@ class TestPRMChainidParser(TOPBase):
 
     expected_elems = [
         np.array(
-            [
-                "N",
-                "H",
-                "H",
-                "H",
-                "C",
-                "H",
-                "C",
-                "H",
-                "H",
-            ],
+            ["N", "H", "H", "H", "C", "H", "C", "H", "H"],
             dtype=object,
         ),
         np.array(
-            [
-                "O",
-                "O",
-                "N",
-                "H",
-                "H",
-                "H",
-                "C",
-            ],
+            ["O", "O", "N", "H", "H", "H", "C"],
             dtype=object,
         ),
         np.array(["H", "C", "O", "O", "N", "H", "H", "H"], dtype=object),
     ]
 
+    # fmt: off
     expected_chainIDs = np.array(
         [
-            "A",
-            "A",
-            "A",
-            "A",
-            "A",
-            "A",
-            "A",
-            "A",
-            "A",
-            "A",
-            "A",
-            "A",
-            "A",
-            "A",
-            "B",
-            "B",
-            "B",
-            "B",
-            "B",
-            "B",
-            "B",
-            "B",
-            "B",
-            "B",
-            "B",
-            "B",
-            "B",
-            "B",
-            "C",
-            "C",
-            "C",
-            "C",
-            "C",
-            "C",
-            "C",
-            "C",
-            "C",
-            "C",
+            "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A",
+            "B", "B", "B", "B", "B", "B", "B", "B", "B", "B", "B", "B", "B", "B",
+            "C", "C", "C", "C", "C", "C", "C", "C", "C", "C",
         ]
     )
+    # fmt: on
 
     def test_chainIDs(self, filename):
         """Tests chainIDs attribute.
