@@ -30,11 +30,19 @@ from MDAnalysis.guesser import tables
 from MDAnalysis.topology.PDBParser import PDBParser
 from numpy.testing import assert_allclose, assert_equal
 
-from MDAnalysisTests.datafiles import (PDB, PDB_HOLE, PDB_chainidnewres,
-                                       PDB_charges, PDB_conect, PDB_conect2TER,
-                                       PDB_elements, PDB_helix,
-                                       PDB_sameresid_diffresname,
-                                       PDB_singleconect, PDB_small)
+from MDAnalysisTests.datafiles import (
+    PDB,
+    PDB_HOLE,
+    PDB_chainidnewres,
+    PDB_charges,
+    PDB_conect,
+    PDB_conect2TER,
+    PDB_elements,
+    PDB_helix,
+    PDB_sameresid_diffresname,
+    PDB_singleconect,
+    PDB_small,
+)
 from MDAnalysisTests.topology.base import ParserBase
 
 _PDBPARSER = mda.topology.PDBParser.PDBParser

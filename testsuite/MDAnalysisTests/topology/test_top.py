@@ -33,9 +33,18 @@ from MDAnalysisTests.datafiles import PRM  # ache.prmtop
 from MDAnalysisTests.datafiles import PRM7  # tz2.truncoct.parm7.bz2
 from MDAnalysisTests.datafiles import PRM12  # anti.top
 from MDAnalysisTests.datafiles import PRM_chainid_bz2  # multi_anche.prmtop.bz2
-from MDAnalysisTests.datafiles import (PRM19SBOPC, PRMNCRST, PRMNEGATIVE,
-                                       PRM_UreyBradley, PRMErr1, PRMErr2,
-                                       PRMErr3, PRMErr4, PRMErr5, PRMpbc)
+from MDAnalysisTests.datafiles import (
+    PRM19SBOPC,
+    PRMNCRST,
+    PRMNEGATIVE,
+    PRM_UreyBradley,
+    PRMErr1,
+    PRMErr2,
+    PRMErr3,
+    PRMErr4,
+    PRMErr5,
+    PRMpbc,
+)
 from MDAnalysisTests.topology.base import ParserBase
 
 
