@@ -703,6 +703,10 @@
         <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_RESTRANGLES</span><span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># harmonic.rA</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># harmonic.krA</span>
+            <span class="k">if</span> <span class="n">fver</span> <span class="o">&gt;=</span> <span class="mi">134</span><span class="p">:</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># harmonic.rB</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># harmonic.krB</span>
+
         <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_LINEAR_ANGLES</span><span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># linangle.klinA</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># linangle.aA</span>
@@ -820,6 +824,9 @@
         <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_RESTRDIHS</span><span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># pdihs.phiA</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># pdihs.cpA</span>
+            <span class="k">if</span> <span class="n">fver</span> <span class="o">&gt;=</span> <span class="mi">134</span><span class="p">:</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># pdihs.phiB</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># pdihs.cpB</span>
         <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_DISRES</span><span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># disres.label</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># disres.type</span>
@@ -862,6 +869,8 @@
 
         <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_CBTDIHS</span><span class="p">]:</span>
             <span class="n">ndo_real</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">setting</span><span class="o">.</span><span class="n">NR_CBTDIHS</span><span class="p">)</span>  <span class="c1"># cbtdihs.cbtcA</span>
+            <span class="k">if</span> <span class="n">fver</span> <span class="o">&gt;=</span> <span class="mi">134</span><span class="p">:</span>
+                <span class="n">ndo_real</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">setting</span><span class="o">.</span><span class="n">NR_CBTDIHS</span><span class="p">)</span>  <span class="c1"># cbtdihs.cbtcB</span>
 
         <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_RBDIHS</span><span class="p">]:</span>
             <span class="n">ndo_real</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">setting</span><span class="o">.</span><span class="n">NR_RBDIHS</span><span class="p">)</span>  <span class="c1"># iparams_rbdihs_rbcA</span>
