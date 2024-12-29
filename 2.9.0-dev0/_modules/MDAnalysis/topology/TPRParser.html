@@ -316,6 +316,7 @@
 <span class="kn">from</span> <span class="nn">..core.topologyattrs</span> <span class="kn">import</span> <span class="n">Resnums</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
+
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.topology.TPRparser&quot;</span><span class="p">)</span>
 
 
@@ -327,7 +328,8 @@
 <span class="sd">    .. _Gromacs: http://www.gromacs.org</span>
 <span class="sd">    .. _TPR file: http://manual.gromacs.org/current/online/tpr.html</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;TPR&#39;</span>
+
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;TPR&quot;</span>
 
 <div class="viewcode-block" id="TPRParser.parse">
 <a class="viewcode-back" href="../../../documentation_pages/topology/TPRParser.html#MDAnalysis.topology.TPRParser.TPRParser.parse">[docs]</a>
@@ -352,11 +354,11 @@
 <span class="sd">        .. versionchanged:: 2.0.0</span>
 <span class="sd">            Changed to ``tpr_resid_from_one=True`` by default.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">with</span> <span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">infile</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">infile</span><span class="p">:</span>
             <span class="n">tprf</span> <span class="o">=</span> <span class="n">infile</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">tpr_utils</span><span class="o">.</span><span class="n">TPXUnpacker</span><span class="p">(</span><span class="n">tprf</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">th</span> <span class="o">=</span> <span class="n">tpr_utils</span><span class="o">.</span><span class="n">read_tpxheader</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>                    <span class="c1"># tpxheader</span>
+            <span class="n">th</span> <span class="o">=</span> <span class="n">tpr_utils</span><span class="o">.</span><span class="n">read_tpxheader</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>  <span class="c1"># tpxheader</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">EOFError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2">: Invalid tpr file or cannot be recognized&quot;</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
@@ -378,18 +380,21 @@
                 <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">tpr_utils</span><span class="o">.</span><span class="n">TPXUnpacker2020</span><span class="o">.</span><span class="n">from_unpacker</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
-        <span class="n">state_ngtc</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">ngtc</span>         <span class="c1"># done init_state() in src/gmxlib/tpxio.c</span>
+        <span class="n">state_ngtc</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">ngtc</span>  <span class="c1"># done init_state() in src/gmxlib/tpxio.c</span>
         <span class="k">if</span> <span class="n">th</span><span class="o">.</span><span class="n">bBox</span><span class="p">:</span>
             <span class="n">tpr_utils</span><span class="o">.</span><span class="n">extract_box_info</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">th</span><span class="o">.</span><span class="n">fver</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">state_ngtc</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">th</span><span class="o">.</span><span class="n">fver</span> <span class="o">&lt;</span> <span class="mi">69</span><span class="p">:</span>                      <span class="c1"># redundancy due to  different versions</span>
+            <span class="k">if</span> <span class="n">th</span><span class="o">.</span><span class="n">fver</span> <span class="o">&lt;</span> <span class="mi">69</span><span class="p">:</span>  <span class="c1"># redundancy due to  different versions</span>
                 <span class="n">tpr_utils</span><span class="o">.</span><span class="n">ndo_real</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">state_ngtc</span><span class="p">)</span>
-            <span class="n">tpr_utils</span><span class="o">.</span><span class="n">ndo_real</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">state_ngtc</span><span class="p">)</span>        <span class="c1"># relevant to Berendsen tcoupl_lambda</span>
+            <span class="n">tpr_utils</span><span class="o">.</span><span class="n">ndo_real</span><span class="p">(</span>
+                <span class="n">data</span><span class="p">,</span> <span class="n">state_ngtc</span>
+            <span class="p">)</span>  <span class="c1"># relevant to Berendsen tcoupl_lambda</span>
 
         <span class="k">if</span> <span class="n">th</span><span class="o">.</span><span class="n">bTop</span><span class="p">:</span>
-            <span class="n">tpr_top</span> <span class="o">=</span> <span class="n">tpr_utils</span><span class="o">.</span><span class="n">do_mtop</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">th</span><span class="o">.</span><span class="n">fver</span><span class="p">,</span>
-                                        <span class="n">tpr_resid_from_one</span><span class="o">=</span><span class="n">tpr_resid_from_one</span><span class="p">)</span>
+            <span class="n">tpr_top</span> <span class="o">=</span> <span class="n">tpr_utils</span><span class="o">.</span><span class="n">do_mtop</span><span class="p">(</span>
+                <span class="n">data</span><span class="p">,</span> <span class="n">th</span><span class="o">.</span><span class="n">fver</span><span class="p">,</span> <span class="n">tpr_resid_from_one</span><span class="o">=</span><span class="n">tpr_resid_from_one</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2">: No topology found in tpr file&quot;</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
@@ -398,7 +403,6 @@
         <span class="n">tpr_top</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="n">Resnums</span><span class="p">(</span><span class="n">tpr_top</span><span class="o">.</span><span class="n">resids</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">copy</span><span class="p">()))</span>
 
         <span class="k">return</span> <span class="n">tpr_top</span></div>
-
 
 
     <span class="k">def</span> <span class="nf">_log_header</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">th</span><span class="p">):</span>

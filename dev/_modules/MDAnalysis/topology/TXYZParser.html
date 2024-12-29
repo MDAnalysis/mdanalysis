@@ -231,7 +231,8 @@
 <span class="sd">       through universe.guess_TopologyAttrs() API).</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TXYZ&#39;</span><span class="p">,</span> <span class="s1">&#39;ARC&#39;</span><span class="p">]</span>
+
+    <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;TXYZ&quot;</span><span class="p">,</span> <span class="s2">&quot;ARC&quot;</span><span class="p">]</span>
 
 <div class="viewcode-block" id="TXYZParser.parse">
 <a class="viewcode-back" href="../../../documentation_pages/topology/TXYZParser.html#MDAnalysis.topology.TXYZParser.TXYZParser.parse">[docs]</a>
@@ -243,7 +244,7 @@
 <span class="sd">        MDAnalysis Topology object</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">inf</span><span class="p">:</span>
-            <span class="c1">#header</span>
+            <span class="c1"># header</span>
             <span class="n">natoms</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">inf</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
 
             <span class="n">atomids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">natoms</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
@@ -267,7 +268,7 @@
             <span class="c1"># Can&#39;t infinitely read as XYZ files can be multiframe</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">natoms</span><span class="p">),</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">([</span><span class="n">fline</span><span class="p">],</span> <span class="n">inf</span><span class="p">)):</span>
                 <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-                <span class="n">atomids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">atomids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
                 <span class="n">types</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
                 <span class="n">bonded_atoms</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">6</span><span class="p">:]</span>
@@ -276,25 +277,27 @@
                     <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">other_atom</span><span class="p">:</span>
                         <span class="n">bonds</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">other_atom</span><span class="p">))</span>
 
-        <span class="n">attrs</span> <span class="o">=</span> <span class="p">[</span><span class="n">Atomnames</span><span class="p">(</span><span class="n">names</span><span class="p">),</span>
-                 <span class="n">Atomids</span><span class="p">(</span><span class="n">atomids</span><span class="p">),</span>
-                 <span class="n">Atomtypes</span><span class="p">(</span><span class="n">types</span><span class="p">),</span>
-                 <span class="n">Bonds</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">bonds</span><span class="p">)),</span>
-                 <span class="n">Resids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">])),</span>
-                 <span class="n">Resnums</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">])),</span>
-                 <span class="n">Segids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;SYSTEM&#39;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)),</span>
-                 <span class="p">]</span>
+        <span class="n">attrs</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">Atomnames</span><span class="p">(</span><span class="n">names</span><span class="p">),</span>
+            <span class="n">Atomids</span><span class="p">(</span><span class="n">atomids</span><span class="p">),</span>
+            <span class="n">Atomtypes</span><span class="p">(</span><span class="n">types</span><span class="p">),</span>
+            <span class="n">Bonds</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">bonds</span><span class="p">)),</span>
+            <span class="n">Resids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">])),</span>
+            <span class="n">Resnums</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">])),</span>
+            <span class="n">Segids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">&quot;SYSTEM&quot;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)),</span>
+        <span class="p">]</span>
         <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span> <span class="ow">in</span> <span class="n">SYMB2Z</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">names</span><span class="p">):</span>
             <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Elements</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)))</span>
 
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Element information is missing, elements attribute &quot;</span>
-                          <span class="s2">&quot;will not be populated. If needed these can be &quot;</span>
-                          <span class="s2">&quot;guessed using universe.guess_TopologyAttrs(&quot;</span>
-                          <span class="s2">&quot;to_guess=[&#39;elements&#39;]).&quot;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;Element information is missing, elements attribute &quot;</span>
+                <span class="s2">&quot;will not be populated. If needed these can be &quot;</span>
+                <span class="s2">&quot;guessed using universe.guess_TopologyAttrs(&quot;</span>
+                <span class="s2">&quot;to_guess=[&#39;elements&#39;]).&quot;</span>
+            <span class="p">)</span>
 
-        <span class="n">top</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span><span class="n">natoms</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
-                       <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">)</span>
+        <span class="n">top</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span><span class="n">natoms</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">top</span></div>
 </div>

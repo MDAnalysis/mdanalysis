@@ -204,38 +204,39 @@
 <span class="k">class</span> <span class="nc">ExtendedPDBParser</span><span class="p">(</span><span class="n">PDBParser</span><span class="o">.</span><span class="n">PDBParser</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Parser that handles non-standard &quot;extended&quot; PDB file.</span>
 
-<span class="sd">    Extended PDB files (MDAnalysis format specifier *XPDB*) may contain residue</span>
-<span class="sd">    sequence numbers up to 99,999 by utilizing the insertion character field of</span>
-<span class="sd">    the PDB standard.</span>
+<span class="sd">     Extended PDB files (MDAnalysis format specifier *XPDB*) may contain residue</span>
+<span class="sd">     sequence numbers up to 99,999 by utilizing the insertion character field of</span>
+<span class="sd">     the PDB standard.</span>
 
-<span class="sd">    Creates a Topology with the following Attributes (if present):</span>
-<span class="sd">     - serials</span>
-<span class="sd">     - names</span>
-<span class="sd">     - altLocs</span>
-<span class="sd">     - chainids</span>
-<span class="sd">     - tempfactors</span>
-<span class="sd">     - occupancies</span>
-<span class="sd">     - resids</span>
-<span class="sd">     - resnames</span>
-<span class="sd">     - segids</span>
-<span class="sd">     - elements</span>
-<span class="sd">     - bonds</span>
-<span class="sd">     - formalcharges</span>
+<span class="sd">     Creates a Topology with the following Attributes (if present):</span>
+<span class="sd">      - serials</span>
+<span class="sd">      - names</span>
+<span class="sd">      - altLocs</span>
+<span class="sd">      - chainids</span>
+<span class="sd">      - tempfactors</span>
+<span class="sd">      - occupancies</span>
+<span class="sd">      - resids</span>
+<span class="sd">      - resnames</span>
+<span class="sd">      - segids</span>
+<span class="sd">      - elements</span>
+<span class="sd">      - bonds</span>
+<span class="sd">      - formalcharges</span>
 
-<span class="sd">   .. note::</span>
+<span class="sd">    .. note::</span>
 
-<span class="sd">      By default, atomtypes and masses will be guessed on Universe creation.</span>
-<span class="sd">      This may change in release 3.0.</span>
-<span class="sd">      See :ref:`Guessers` for more information.</span>
+<span class="sd">       By default, atomtypes and masses will be guessed on Universe creation.</span>
+<span class="sd">       This may change in release 3.0.</span>
+<span class="sd">       See :ref:`Guessers` for more information.</span>
 
 
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    :class:`MDAnalysis.coordinates.PDB.ExtendedPDBReader`</span>
+<span class="sd">     See Also</span>
+<span class="sd">     --------</span>
+<span class="sd">     :class:`MDAnalysis.coordinates.PDB.ExtendedPDBReader`</span>
 
-<span class="sd">    .. versionadded:: 0.8</span>
+<span class="sd">     .. versionadded:: 0.8</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;XPDB&#39;</span></div>
+
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;XPDB&quot;</span></div>
 
 </pre></div>
 

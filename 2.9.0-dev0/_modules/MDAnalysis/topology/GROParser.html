@@ -222,7 +222,8 @@
 <span class="sd">        through universe.guess_TopologyAttrs() API).</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;GRO&#39;</span>
+
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;GRO&quot;</span>
 
 <div class="viewcode-block" id="GROParser.parse">
 <a class="viewcode-back" href="../../../documentation_pages/topology/GROParser.html#MDAnalysis.topology.GROParser.GROParser.parse">[docs]</a>
@@ -250,14 +251,16 @@
                     <span class="n">indices</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">15</span><span class="p">:</span><span class="mi">20</span><span class="p">])</span>
                 <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
                     <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Couldn&#39;t read the following line of the .gro file:</span><span class="se">\n</span><span class="s2">&quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="sa">f</span><span class="s2">&quot;Couldn&#39;t read the following line of the .gro file:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
                     <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
         <span class="c1"># Check all lines had names</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">names</span><span class="p">):</span>
-            <span class="n">missing</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">names</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Missing atom name on line: </span><span class="si">{0}</span><span class="s2">&quot;</span>
-                          <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">missing</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">3</span><span class="p">))</span>  <span class="c1"># 2 header, 1 based</span>
+            <span class="n">missing</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">names</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span>
+                <span class="s2">&quot;Missing atom name on line: </span><span class="si">{0}</span><span class="s2">&quot;</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">missing</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="p">)</span>  <span class="c1"># 2 header, 1 based</span>
 
         <span class="c1"># Fix wrapping of resids (if we ever saw a wrap)</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">resids</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
@@ -278,9 +281,9 @@
             <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">starts</span><span class="p">:</span>
                 <span class="n">resids</span><span class="p">[</span><span class="n">s</span><span class="p">:]</span> <span class="o">+=</span> <span class="mi">100000</span>
 
-
         <span class="n">residx</span><span class="p">,</span> <span class="p">(</span><span class="n">new_resids</span><span class="p">,</span> <span class="n">new_resnames</span><span class="p">)</span> <span class="o">=</span> <span class="n">change_squash</span><span class="p">(</span>
-                                <span class="p">(</span><span class="n">resids</span><span class="p">,</span> <span class="n">resnames</span><span class="p">),</span> <span class="p">(</span><span class="n">resids</span><span class="p">,</span> <span class="n">resnames</span><span class="p">))</span>
+            <span class="p">(</span><span class="n">resids</span><span class="p">,</span> <span class="n">resnames</span><span class="p">),</span> <span class="p">(</span><span class="n">resids</span><span class="p">,</span> <span class="n">resnames</span><span class="p">)</span>
+        <span class="p">)</span>
 
         <span class="c1"># new_resids is len(residues)</span>
         <span class="c1"># so resindex 0 has resid new_resids[0]</span>
@@ -290,13 +293,17 @@
             <span class="n">Resids</span><span class="p">(</span><span class="n">new_resids</span><span class="p">),</span>
             <span class="n">Resnums</span><span class="p">(</span><span class="n">new_resids</span><span class="o">.</span><span class="n">copy</span><span class="p">()),</span>
             <span class="n">Resnames</span><span class="p">(</span><span class="n">new_resnames</span><span class="p">),</span>
-            <span class="n">Segids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;SYSTEM&#39;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">))</span>
+            <span class="n">Segids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">&quot;SYSTEM&quot;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)),</span>
         <span class="p">]</span>
 
-        <span class="n">top</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span><span class="n">n_atoms</span><span class="o">=</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">n_res</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">new_resids</span><span class="p">),</span> <span class="n">n_seg</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                       <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">,</span>
-                       <span class="n">atom_resindex</span><span class="o">=</span><span class="n">residx</span><span class="p">,</span>
-                       <span class="n">residue_segindex</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">top</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span>
+            <span class="n">n_atoms</span><span class="o">=</span><span class="n">n_atoms</span><span class="p">,</span>
+            <span class="n">n_res</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">new_resids</span><span class="p">),</span>
+            <span class="n">n_seg</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">,</span>
+            <span class="n">atom_resindex</span><span class="o">=</span><span class="n">residx</span><span class="p">,</span>
+            <span class="n">residue_segindex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">top</span></div>
 </div>

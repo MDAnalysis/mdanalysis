@@ -200,14 +200,15 @@
 
 <span class="sd">    This requires that the coordinate format has</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;MINIMAL&#39;</span>
+
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;MINIMAL&quot;</span>
 
 <div class="viewcode-block" id="MinimalParser.parse">
 <a class="viewcode-back" href="../../../documentation_pages/topology/MinimalParser.html#MDAnalysis.topology.MinimalParser.MinimalParser.parse">[docs]</a>
     <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the minimal *Topology* object&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">n_atoms</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;n_atoms&#39;</span><span class="p">]</span>
+            <span class="n">n_atoms</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;n_atoms&quot;</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="n">reader</span> <span class="o">=</span> <span class="n">get_reader_for</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
             <span class="n">n_atoms</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">parse_n_atoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
