@@ -14,11 +14,13 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, ChiahsinChu, RMeli, tanishy7777, talagayev
+??/??/?? IAlibay, ChiahsinChu, RMeli, tanishy7777, talagayev,
+         tylerjereddy
 
  * 2.9.0
 
 Fixes
+ * Add support for TPR files produced by GROMACS 2024.4
  * Fixes invalid default unit from Angstrom to Angstrom^{-3} for convert_density() function. (Issue #4829)
  * Fixes deprecation warning Array to scalar convertion. Replaced atan2() with np.arctan2() (Issue #4339)
  * Replaced mutable defaults with None and initialized them within

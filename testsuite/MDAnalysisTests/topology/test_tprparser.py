@@ -33,11 +33,12 @@ from MDAnalysis.tests.datafiles import (TPR, TPR400, TPR402, TPR403, TPR404,
                                         TPR461, TPR502, TPR504, TPR505, TPR510,
                                         TPR2016, TPR2018, TPR2019B3, TPR2020,
                                         TPR2020B2, TPR2021, TPR2022RC1,
-                                        TPR2023, TPR2024, TPR_EXTRA_407,
-                                        TPR_EXTRA_2016, TPR_EXTRA_2018,
-                                        TPR_EXTRA_2020, TPR_EXTRA_2021,
-                                        TPR_EXTRA_2022RC1, TPR_EXTRA_2023,
-                                        TPR_EXTRA_2024, XTC, TPR334_bonded,
+                                        TPR2023, TPR2024, TPR2024_4,
+                                        TPR_EXTRA_407, TPR_EXTRA_2016,
+                                        TPR_EXTRA_2018, TPR_EXTRA_2020,
+                                        TPR_EXTRA_2021, TPR_EXTRA_2022RC1,
+                                        TPR_EXTRA_2023, TPR_EXTRA_2024,
+                                        TPR_EXTRA_2024_4, XTC, TPR334_bonded,
                                         TPR455Double, TPR510_bonded,
                                         TPR2016_bonded, TPR2018_bonded,
                                         TPR2019B3_bonded, TPR2020_bonded,
@@ -45,7 +46,8 @@ from MDAnalysis.tests.datafiles import (TPR, TPR400, TPR402, TPR403, TPR404,
                                         TPR2020B2_bonded, TPR2020Double,
                                         TPR2021_bonded, TPR2021_double_bonded,
                                         TPR2021Double, TPR2022RC1_bonded,
-                                        TPR2023_bonded, TPR2024_bonded)
+                                        TPR2023_bonded, TPR2024_4_bonded,
+                                        TPR2024_bonded)
 from numpy.testing import assert_equal
 
 # fmt: on
@@ -63,6 +65,8 @@ BONDED_TPRS = (
     TPR2022RC1_bonded,
     TPR2023_bonded,
     TPR2024_bonded,
+    TPR2024_4_bonded,
+    TPR_EXTRA_2024_4,
     TPR_EXTRA_2024,
     TPR_EXTRA_2023,
     TPR_EXTRA_2022RC1,
@@ -140,13 +144,11 @@ class TestTPRGromacsVersions(TPRAttrs):
     ref_chainIDs = ["Protein_A", "SOL"]
 
     # fmt: off
-    @pytest.fixture(
-        params=[
-                TPR400, TPR402, TPR403, TPR404, TPR405, TPR406, TPR407,
-                TPR450, TPR451, TPR452, TPR453, TPR454, TPR455, TPR502,
-                TPR504, TPR505, TPR510, TPR2016, TPR2018, TPR2019B3,
-                TPR2020, TPR2020Double, TPR2021, TPR2021Double, TPR2022RC1,
-                TPR2023, TPR2024
+    @pytest.fixture(params=[
+            TPR400, TPR402, TPR403, TPR404, TPR405, TPR406, TPR407, TPR450,
+            TPR451, TPR452, TPR453, TPR454, TPR455, TPR502, TPR504, TPR505,
+            TPR510, TPR2016, TPR2018, TPR2019B3, TPR2020, TPR2020Double,
+            TPR2021, TPR2021Double, TPR2022RC1, TPR2023, TPR2024, TPR2024_4
         ]
     )
     # fmt: on
@@ -310,11 +312,10 @@ def test_all_impropers(topology, impr):
 
 
 # fmt: off
-@pytest.fixture(
-    params=(
+@pytest.fixture(params=(
         TPR400, TPR402, TPR403, TPR404, TPR405, TPR406, TPR407, TPR450,
         TPR451, TPR452, TPR453, TPR454, TPR502, TPR504, TPR505, TPR510,
-        TPR2016, TPR2018, TPR2023, TPR2024,
+        TPR2016, TPR2018, TPR2023, TPR2024, TPR2024_4,
     )
 )
 # fmt: on
