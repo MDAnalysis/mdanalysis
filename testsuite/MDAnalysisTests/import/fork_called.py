@@ -26,6 +26,7 @@ from unittest import mock
 """Tests whether os.fork() is called as a side effect when importing MDAnalysis.
 See PR #1794 for details."""
 
-with mock.patch('os.fork') as os_dot_fork:
+with mock.patch("os.fork") as os_dot_fork:
     import MDAnalysis
+
     assert not os_dot_fork.called
