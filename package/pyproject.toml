@@ -136,6 +136,7 @@ tables\.py
 | MDAnalysis/lib/.*\.py^
 | MDAnalysis/transformations/.*\.py
 | MDAnalysis/topology/.*\.py
+| MDAnalysis/analysis/.*\.py
 | MDAnalysis/guesser/.*\.py
 | MDAnalysis/converters/.*\.py
 | MDAnalysis/coordinates/.*\.py

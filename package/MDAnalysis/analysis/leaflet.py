@@ -87,10 +87,12 @@ else:
     HAS_NX = True
 
 
-due.cite(Doi("10.1002/jcc.21787"),
-         description="LeafletFinder algorithm",
-         path="MDAnalysis.analysis.leaflet",
-         cite_module=True)
+due.cite(
+    Doi("10.1002/jcc.21787"),
+    description="LeafletFinder algorithm",
+    path="MDAnalysis.analysis.leaflet",
+    cite_module=True,
+)
 del Doi
 
 
@@ -157,9 +159,11 @@ class LeafletFinder(object):
     def __init__(self, universe, select, cutoff=15.0, pbc=False, sparse=None):
         # Raise an error if networkx is not installed
         if not HAS_NX:
-            errmsg = ("The LeafletFinder class requires an installation of "
-                      "networkx. Please install networkx "
-                      "https://networkx.org/documentation/stable/install.html")
+            errmsg = (
+                "The LeafletFinder class requires an installation of "
+                "networkx. Please install networkx "
+                "https://networkx.org/documentation/stable/install.html"
+            )
             raise ImportError(errmsg)
 
         self.universe = universe
@@ -194,31 +198,47 @@ class LeafletFinder(object):
         if self.sparse is False:
             # only try distance array
             try:
-                adj = distances.contact_matrix(coord, cutoff=self.cutoff, returntype="numpy", box=box)
-            except ValueError:      # pragma: no cover
-                warnings.warn('N x N matrix too big, use sparse=True or sparse=None', category=UserWarning,
-                              stacklevel=2)
+                adj = distances.contact_matrix(
+                    coord, cutoff=self.cutoff, returntype="numpy", box=box
+                )
+            except ValueError:  # pragma: no cover
+                warnings.warn(
+                    "N x N matrix too big, use sparse=True or sparse=None",
+                    category=UserWarning,
+                    stacklevel=2,
+                )
                 raise
         elif self.sparse is True:
             # only try sparse
-            adj = distances.contact_matrix(coord, cutoff=self.cutoff, returntype="sparse", box=box)
+            adj = distances.contact_matrix(
+                coord, cutoff=self.cutoff, returntype="sparse", box=box
+            )
         else:
             # use distance_array and fall back to sparse matrix
             try:
                 # this works for small-ish systems and depends on system memory
-                adj = distances.contact_matrix(coord, cutoff=self.cutoff, returntype="numpy", box=box)
-            except ValueError:       # pragma: no cover
+                adj = distances.contact_matrix(
+                    coord, cutoff=self.cutoff, returntype="numpy", box=box
+                )
+            except ValueError:  # pragma: no cover
                 # but use a sparse matrix method for larger systems for memory reasons
                 warnings.warn(
-                    'N x N matrix too big - switching to sparse matrix method (works fine, but is currently rather '
-                    'slow)',
-                    category=UserWarning, stacklevel=2)
-                adj = distances.contact_matrix(coord, cutoff=self.cutoff, returntype="sparse", box=box)
+                    "N x N matrix too big - switching to sparse matrix method (works fine, but is currently rather "
+                    "slow)",
+                    category=UserWarning,
+                    stacklevel=2,
+                )
+                adj = distances.contact_matrix(
+                    coord, cutoff=self.cutoff, returntype="sparse", box=box
+                )
         return NX.Graph(adj)
 
     def _get_components(self):
         """Return connected components (as sorted numpy arrays), sorted by size."""
-        return [np.sort(list(component)) for component in NX.connected_components(self.graph)]
+        return [
+            np.sort(list(component))
+            for component in NX.connected_components(self.graph)
+        ]
 
     def update(self, cutoff=None):
         """Update components, possibly with a different *cutoff*"""
@@ -228,7 +248,12 @@ class LeafletFinder(object):
 
     def sizes(self):
         """Dict of component index with size of component."""
-        return dict(((idx, len(component)) for idx, component in enumerate(self.components)))
+        return dict(
+            (
+                (idx, len(component))
+                for idx, component in enumerate(self.components)
+            )
+        )
 
     def groups(self, component_index=None):
         """Return a :class:`MDAnalysis.core.groups.AtomGroup` for *component_index*.
@@ -265,23 +290,37 @@ class LeafletFinder(object):
         See :class:`MDAnalysis.selections.base.SelectionWriter` for all
         options.
         """
-        sw = selections.get_writer(filename, kwargs.pop('format', None))
-        with sw(filename, mode=kwargs.pop('mode', 'w'),
-                preamble="leaflets based on select={selectionstring!r} cutoff={cutoff:f}\n".format(
-                    **vars(self)),
-                **kwargs) as writer:
+        sw = selections.get_writer(filename, kwargs.pop("format", None))
+        with sw(
+            filename,
+            mode=kwargs.pop("mode", "w"),
+            preamble="leaflets based on select={selectionstring!r} cutoff={cutoff:f}\n".format(
+                **vars(self)
+            ),
+            **kwargs,
+        ) as writer:
             for i, ag in enumerate(self.groups_iter()):
                 name = "leaflet_{0:d}".format((i + 1))
                 writer.write(ag, name=name)
 
     def __repr__(self):
         return "<LeafletFinder({0!r}, cutoff={1:.1f} A) with {2:d} atoms in {3:d} groups>".format(
-            self.selectionstring, self.cutoff, self.selection.n_atoms,
-            len(self.components))
+            self.selectionstring,
+            self.cutoff,
+            self.selection.n_atoms,
+            len(self.components),
+        )
 
 
-def optimize_cutoff(universe, select, dmin=10.0, dmax=20.0, step=0.5,
-                    max_imbalance=0.2, **kwargs):
+def optimize_cutoff(
+    universe,
+    select,
+    dmin=10.0,
+    dmax=20.0,
+    step=0.5,
+    max_imbalance=0.2,
+    **kwargs,
+):
     r"""Find cutoff that minimizes number of disconnected groups.
 
     Applies heuristics to find best groups:
@@ -325,7 +364,7 @@ def optimize_cutoff(universe, select, dmin=10.0, dmax=20.0, step=0.5,
     .. versionchanged:: 1.0.0
        Changed `selection` keyword to `select`
     """
-    kwargs.pop('cutoff', None)  # not used, so we filter it
+    kwargs.pop("cutoff", None)  # not used, so we filter it
     _sizes = []
     for cutoff in np.arange(dmin, dmax, step):
         LF = LeafletFinder(universe, select, cutoff=cutoff, **kwargs)

@@ -126,7 +126,7 @@ def vector_of_best_fit(coordinates):
 
     # does vector face first local helix origin?
     angle = mdamath.angle(centered[0], vector)
-    if angle > np.pi/2:
+    if angle > np.pi / 2:
         vector *= -1
     return vector
 
@@ -168,7 +168,7 @@ def local_screw_angles(global_axis, ref_axis, helix_directions):
 
     # project helix_directions onto global to remove contribution
     norm_global_sq = np.dot(global_axis, global_axis)
-    mag_g = np.matmul(global_axis, helix_directions.T)/norm_global_sq
+    mag_g = np.matmul(global_axis, helix_directions.T) / norm_global_sq
     # projection onto global_axis
     proj_g = mag_g.reshape(-1, 1) @ global_axis.reshape(1, -1)
     # projection onto plane w/o global_axis contribution
@@ -176,9 +176,10 @@ def local_screw_angles(global_axis, ref_axis, helix_directions):
 
     # angles from projection to perp
     refs = np.array([perp, ortho])  # (2, 3)
-    norms = _, ortho_norm = np.outer(mdamath.pnorm(refs),
-                                     mdamath.pnorm(proj_plane))
-    cos = cos_perp, cos_ortho = np.matmul(refs, proj_plane.T)/norms
+    norms = _, ortho_norm = np.outer(
+        mdamath.pnorm(refs), mdamath.pnorm(proj_plane)
+    )
+    cos = cos_perp, cos_ortho = np.matmul(refs, proj_plane.T) / norms
     to_perp, to_ortho = np.arccos(np.clip(cos, -1, 1))  # (2, n_vec)
     to_ortho[ortho_norm == 0] = 0  # ?
     to_ortho[cos_perp < 0] *= -1
@@ -251,11 +252,11 @@ def helix_analysis(positions, ref_axis=(0, 0, 1)):
     adjacent_mag = bimags[:-1] * bimags[1:]  # (n_res-3,)
 
     # find angle between bisectors for twist and n_residue/turn
-    cos_theta = mdamath.pdot(bisectors[:-1], bisectors[1:])/adjacent_mag
+    cos_theta = mdamath.pdot(bisectors[:-1], bisectors[1:]) / adjacent_mag
     cos_theta = np.clip(cos_theta, -1, 1)
     twists = np.arccos(cos_theta)  # (n_res-3,)
     local_twists = np.rad2deg(twists)
-    local_nres_per_turn = 2*np.pi / twists
+    local_nres_per_turn = 2 * np.pi / twists
 
     # find normal to bisectors for local axes
     cross_bi = np.cross(bisectors[:-1], bisectors[1:])  # (n_res-3, 3)
@@ -266,42 +267,46 @@ def helix_analysis(positions, ref_axis=(0, 0, 1)):
     # find angles between axes for bends
     bend_theta = np.matmul(local_axes, local_axes.T)  # (n_res-3, n_res-3)
     # set angles to 0 between zero-vectors
-    bend_theta = np.where(zero_vectors+zero_vectors.T,  # (n_res-3, n_res-3)
-                          bend_theta, 1)
+    bend_theta = np.where(
+        zero_vectors + zero_vectors.T, bend_theta, 1  # (n_res-3, n_res-3)
+    )
     bend_matrix = np.rad2deg(np.arccos(np.clip(bend_theta, -1, 1)))
     # local bends are between axes 3 windows apart
     local_bends = np.diagonal(bend_matrix, offset=3)  # (n_res-6,)
 
     # radius of local cylinder
-    radii = (adjacent_mag**0.5) / (2*(1.0-cos_theta))  # (n_res-3,)
+    radii = (adjacent_mag**0.5) / (2 * (1.0 - cos_theta))  # (n_res-3,)
     # special case: angle b/w bisectors is 0 (should virtually never happen)
     # guesstimate radius = half bisector magnitude
-    radii = np.where(cos_theta != 1, radii, (adjacent_mag**0.5)/2)
+    radii = np.where(cos_theta != 1, radii, (adjacent_mag**0.5) / 2)
     # height of local cylinder
     heights = np.abs(mdamath.pdot(vectors[1:-1], local_axes))  # (n_res-3,)
 
-    local_helix_directions = (bisectors.T/bimags).T  # (n_res-2, 3)
+    local_helix_directions = (bisectors.T / bimags).T  # (n_res-2, 3)
 
     # get origins by subtracting radius from atom i+1
     origins = positions[1:-1].copy()  # (n_res-2, 3)
-    origins[:-1] -= (radii*local_helix_directions[:-1].T).T
+    origins[:-1] -= (radii * local_helix_directions[:-1].T).T
     # subtract radius from atom i+2 in last one
-    origins[-1] -= radii[-1]*local_helix_directions[-1]
+    origins[-1] -= radii[-1] * local_helix_directions[-1]
 
     helix_axes = vector_of_best_fit(origins)
-    screw = local_screw_angles(helix_axes, np.asarray(ref_axis),
-                               local_helix_directions)
+    screw = local_screw_angles(
+        helix_axes, np.asarray(ref_axis), local_helix_directions
+    )
 
-    results = {'local_twists': local_twists,
-               'local_nres_per_turn': local_nres_per_turn,
-               'local_axes': local_axes,
-               'local_bends': local_bends,
-               'local_heights': heights,
-               'local_helix_directions': local_helix_directions,
-               'local_origins': origins,
-               'all_bends': bend_matrix,
-               'global_axis': helix_axes,
-               'local_screw_angles': screw}
+    results = {
+        "local_twists": local_twists,
+        "local_nres_per_turn": local_nres_per_turn,
+        "local_axes": local_axes,
+        "local_bends": local_bends,
+        "local_heights": heights,
+        "local_helix_directions": local_helix_directions,
+        "local_origins": origins,
+        "all_bends": bend_matrix,
+        "global_axis": helix_axes,
+        "local_screw_angles": screw,
+    }
     return results
 
 
@@ -377,14 +382,14 @@ class HELANAL(AnalysisBase):
 
     # shapes of properties from each frame, relative to n_residues
     attr_shapes = {
-        'local_twists': (-3,),
-        'local_bends': (-6,),
-        'local_heights': (-3,),
-        'local_nres_per_turn': (-3,),
-        'local_origins': (-2, 3),
-        'local_axes': (-3, 3),
-        'local_helix_directions': (-2, 3),
-        'local_screw_angles': (-2,),
+        "local_twists": (-3,),
+        "local_bends": (-6,),
+        "local_heights": (-3,),
+        "local_nres_per_turn": (-3,),
+        "local_origins": (-2, 3),
+        "local_axes": (-3, 3),
+        "local_helix_directions": (-2, 3),
+        "local_screw_angles": (-2,),
     }
 
     def __init__(
@@ -407,9 +412,9 @@ class HELANAL(AnalysisBase):
             groups = util.group_same_or_consecutive_integers(ag.resindices)
             counter = 0
             if len(groups) > 1:
-                msg = 'Your selection {} has gaps in the residues.'.format(s)
+                msg = "Your selection {} has gaps in the residues.".format(s)
                 if split_residue_sequences:
-                    msg += ' Splitting into {} helices.'.format(len(groups))
+                    msg += " Splitting into {} helices.".format(len(groups))
                 else:
                     groups = [ag.resindices]
                 warnings.warn(msg)
@@ -418,22 +423,26 @@ class HELANAL(AnalysisBase):
                 ng = len(g)
                 counter += ng
                 if ng < 9:
-                    warnings.warn('Fewer than 9 atoms found for helix in '
-                                  'selection {} with these resindices: {}. '
-                                  'This sequence will be skipped. HELANAL '
-                                  'is designed to work on at sequences of '
-                                  '≥9 residues.'.format(s, g))
+                    warnings.warn(
+                        "Fewer than 9 atoms found for helix in "
+                        "selection {} with these resindices: {}. "
+                        "This sequence will be skipped. HELANAL "
+                        "is designed to work on at sequences of "
+                        "≥9 residues.".format(s, g)
+                    )
                     continue
 
                 ids, counts = np.unique(g, return_counts=True)
                 if np.any(counts > 1):
-                    dup = ', '.join(map(str, ids[counts > 1]))
-                    warnings.warn('Your selection {} includes multiple atoms '
-                                  'for residues with these resindices: {}.'
-                                  'HELANAL is designed to work on one alpha-'
-                                  'carbon per residue.'.format(s, dup))
+                    dup = ", ".join(map(str, ids[counts > 1]))
+                    warnings.warn(
+                        "Your selection {} includes multiple atoms "
+                        "for residues with these resindices: {}."
+                        "HELANAL is designed to work on one alpha-"
+                        "carbon per residue.".format(s, dup)
+                    )
 
-                consecutive.append(ag[counter-ng:counter])
+                consecutive.append(ag[counter - ng : counter])
 
         self.atomgroups = consecutive
         self.ref_axis = np.asarray(ref_axis)
@@ -442,19 +451,25 @@ class HELANAL(AnalysisBase):
     def _zeros_per_frame(self, dims, n_positions=0):
         """Create zero arrays where first 2 dims are n_frames, n_values"""
         first = dims[0] + n_positions
-        npdims = (self.n_frames, first,) + dims[1:]  # py27 workaround
+        npdims = (
+            self.n_frames,
+            first,
+        ) + dims[
+            1:
+        ]  # py27 workaround
         return np.zeros(npdims, dtype=np.float64)
 
     def _prepare(self):
         n_res = [len(ag) for ag in self.atomgroups]
 
         for key, dims in self.attr_shapes.items():
-            empty = [self._zeros_per_frame(
-                dims, n_positions=n) for n in n_res]
+            empty = [self._zeros_per_frame(dims, n_positions=n) for n in n_res]
             self.results[key] = empty
 
         self.results.global_axis = [self._zeros_per_frame((3,)) for n in n_res]
-        self.results.all_bends = [self._zeros_per_frame((n-3, n-3)) for n in n_res]
+        self.results.all_bends = [
+            self._zeros_per_frame((n - 3, n - 3)) for n in n_res
+        ]
 
     def _single_frame(self):
         _f = self._frame_index
@@ -469,12 +484,13 @@ class HELANAL(AnalysisBase):
         self.results.global_tilts = tilts = []
         norm_ref = (self.ref_axis**2).sum() ** 0.5
         for axes in self.results.global_axis:
-            cos = np.matmul(self.ref_axis, axes.T) / \
-                (mdamath.pnorm(axes)*norm_ref)
+            cos = np.matmul(self.ref_axis, axes.T) / (
+                mdamath.pnorm(axes) * norm_ref
+            )
             cos = np.clip(cos, -1.0, 1.0)
             tilts.append(np.rad2deg(np.arccos(cos)))
 
-        global_attrs = ['global_axis', 'global_tilts', 'all_bends']
+        global_attrs = ["global_axis", "global_tilts", "all_bends"]
         attrnames = list(self.attr_shapes.keys()) + global_attrs
         # summarise
         self.results.summary = []
@@ -483,15 +499,17 @@ class HELANAL(AnalysisBase):
             for name in attrnames:
                 attr = self.results[name]
                 mean = attr[i].mean(axis=0)
-                dev = np.abs(attr[i]-mean)
-                stats[name] = {'mean': mean,
-                               'sample_sd': attr[i].std(axis=0, ddof=1),
-                               'abs_dev': dev.mean(axis=0)}
+                dev = np.abs(attr[i] - mean)
+                stats[name] = {
+                    "mean": mean,
+                    "sample_sd": attr[i].std(axis=0, ddof=1),
+                    "abs_dev": dev.mean(axis=0),
+                }
             self.results.summary.append(stats)
 
         # flatten?
         if len(self.atomgroups) == 1 and self._flatten:
-            for name in attrnames + ['summary']:
+            for name in attrnames + ["summary"]:
                 attr = self.results[name]
                 self.results[name] = attr[0]
 
@@ -506,7 +524,7 @@ class HELANAL(AnalysisBase):
         try:
             origins = self.results.local_origins
         except AttributeError:
-            raise ValueError('Call run() before universe_from_origins')
+            raise ValueError("Call run() before universe_from_origins")
 
         if not isinstance(origins, list):
             origins = [origins]
@@ -514,9 +532,12 @@ class HELANAL(AnalysisBase):
         universe = []
         for xyz in origins:
             n_res = xyz.shape[1]
-            u = mda.Universe.empty(n_res, n_residues=n_res,
-                                   atom_resindex=np.arange(n_res),
-                                   trajectory=True).load_new(xyz)
+            u = mda.Universe.empty(
+                n_res,
+                n_residues=n_res,
+                atom_resindex=np.arange(n_res),
+                trajectory=True,
+            ).load_new(xyz)
             universe.append(u)
         if not isinstance(self.results.local_origins, list):
             universe = universe[0]

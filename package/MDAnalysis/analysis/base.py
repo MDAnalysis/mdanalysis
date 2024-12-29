@@ -159,7 +159,12 @@ from .. import coordinates
 from ..core.groups import AtomGroup
 from ..lib.log import ProgressBar
 
-from .backends import BackendDask, BackendMultiprocessing, BackendSerial, BackendBase
+from .backends import (
+    BackendDask,
+    BackendMultiprocessing,
+    BackendSerial,
+    BackendBase,
+)
 from .results import Results, ResultsGroup
 
 logger = logging.getLogger(__name__)
@@ -288,10 +293,10 @@ class AnalysisBase(object):
         """
         return ("serial",)
 
-    # class authors: override _analysis_algorithm_is_parallelizable 
-    # in derived classes and only set to True if you have confirmed 
-    # that your algorithm works reliably when parallelized with 
-    # the split-apply-combine approach (see docs)   
+    # class authors: override _analysis_algorithm_is_parallelizable
+    # in derived classes and only set to True if you have confirmed
+    # that your algorithm works reliably when parallelized with
+    # the split-apply-combine approach (see docs)
     _analysis_algorithm_is_parallelizable = False
 
     @property
@@ -301,13 +306,13 @@ class AnalysisBase(object):
         :meth:`_single_frame` to multiple workers and then combine them with a
         proper :meth:`_conclude` call. If set to ``False``, no backends except
         for ``serial`` are supported.
-        
+
         .. note::   If you want to check parallelizability of the whole class, without
                     explicitly creating an instance of the class, see
                     :attr:`_analysis_algorithm_is_parallelizable`. Note that you
                     setting it to other value will break things if the algorithm
                     behind the analysis is not trivially parallelizable.
-        
+
 
         Returns
         -------
@@ -325,9 +330,9 @@ class AnalysisBase(object):
         self._verbose = verbose
         self.results = Results()
 
-    def _define_run_frames(self, trajectory,
-                           start=None, stop=None, step=None, frames=None
-                           ) -> Union[slice, np.ndarray]:
+    def _define_run_frames(
+        self, trajectory, start=None, stop=None, step=None, frames=None
+    ) -> Union[slice, np.ndarray]:
         """Defines limits for the whole run, as passed by self.run() arguments
 
         Parameters
@@ -362,10 +367,14 @@ class AnalysisBase(object):
         self._trajectory = trajectory
         if frames is not None:
             if not all(opt is None for opt in [start, stop, step]):
-                raise ValueError("start/stop/step cannot be combined with frames")
+                raise ValueError(
+                    "start/stop/step cannot be combined with frames"
+                )
             slicer = frames
         else:
-            start, stop, step = trajectory.check_slice_indices(start, stop, step)
+            start, stop, step = trajectory.check_slice_indices(
+                start, stop, step
+            )
             slicer = slice(start, stop, step)
         self.start, self.stop, self.step = start, stop, step
         return slicer
@@ -388,7 +397,9 @@ class AnalysisBase(object):
         self.frames = np.zeros(self.n_frames, dtype=int)
         self.times = np.zeros(self.n_frames)
 
-    def _setup_frames(self, trajectory, start=None, stop=None, step=None, frames=None):
+    def _setup_frames(
+        self, trajectory, start=None, stop=None, step=None, frames=None
+    ):
         """Pass a Reader object and define the desired iteration pattern
         through the trajectory
 
@@ -417,11 +428,11 @@ class AnalysisBase(object):
 
         .. versionchanged:: 1.0.0
             Added .frames and .times arrays as attributes
-            
+
         .. versionchanged:: 2.2.0
             Added ability to iterate through trajectory by passing a list of
             frame indices in the `frames` keyword argument
-            
+
         .. versionchanged:: 2.8.0
             Split function into two: :meth:`_define_run_frames` and
             :meth:`_prepare_sliced_trajectory`: first one defines the limits
@@ -450,8 +461,8 @@ class AnalysisBase(object):
 
     def _prepare(self):
         """
-        Set things up before the analysis loop begins. 
-        
+        Set things up before the analysis loop begins.
+
         Notes
         -----
         ``self.results`` is initialized already in :meth:`self.__init__` with an
@@ -477,9 +488,13 @@ class AnalysisBase(object):
         """
         pass  # pylint: disable=unnecessary-pass
 
-    def _compute(self, indexed_frames: np.ndarray,
-                 verbose: bool = None,
-                 *, progressbar_kwargs=None) -> "AnalysisBase":
+    def _compute(
+        self,
+        indexed_frames: np.ndarray,
+        verbose: bool = None,
+        *,
+        progressbar_kwargs=None,
+    ) -> "AnalysisBase":
         """Perform the calculation on a balanced slice of frames
         that have been setup prior to that using _setup_computation_groups()
 
@@ -504,7 +519,9 @@ class AnalysisBase(object):
             progressbar_kwargs = {}
         logger.info("Choosing frames to analyze")
         # if verbose unchanged, use class default
-        verbose = getattr(self, "_verbose", False) if verbose is None else verbose
+        verbose = (
+            getattr(self, "_verbose", False) if verbose is None else verbose
+        )
 
         frames = indexed_frames[:, 1]
 
@@ -514,10 +531,11 @@ class AnalysisBase(object):
         if len(frames) == 0:  # if `frames` were empty in `run` or `stop=0`
             return self
 
-        for idx, ts in enumerate(ProgressBar(
-                self._sliced_trajectory,
-                verbose=verbose,
-                **progressbar_kwargs)):
+        for idx, ts in enumerate(
+            ProgressBar(
+                self._sliced_trajectory, verbose=verbose, **progressbar_kwargs
+            )
+        ):
             self._frame_index = idx  # accessed later by subclasses
             self._ts = ts
             self.frames[idx] = ts.frame
@@ -527,9 +545,12 @@ class AnalysisBase(object):
         return self
 
     def _setup_computation_groups(
-        self, n_parts: int,
-        start: int = None, stop: int = None, step: int = None,
-        frames: Union[slice, np.ndarray] = None
+        self,
+        n_parts: int,
+        start: int = None,
+        stop: int = None,
+        step: int = None,
+        frames: Union[slice, np.ndarray] = None,
     ) -> list[np.ndarray]:
         """
         Splits the trajectory frames, defined by ``start/stop/step`` or
@@ -566,7 +587,9 @@ class AnalysisBase(object):
         .. versionadded:: 2.8.0
         """
         if frames is None:
-            start, stop, step = self._trajectory.check_slice_indices(start, stop, step)
+            start, stop, step = self._trajectory.check_slice_indices(
+                start, stop, step
+            )
             used_frames = np.arange(start, stop, step)
         elif not all(opt is None for opt in [start, stop, step]):
             raise ValueError("start/stop/step cannot be combined with frames")
@@ -578,23 +601,27 @@ class AnalysisBase(object):
             used_frames = arange[used_frames]
 
         # similar to list(enumerate(frames))
-        enumerated_frames = np.vstack([np.arange(len(used_frames)), used_frames]).T
+        enumerated_frames = np.vstack(
+            [np.arange(len(used_frames)), used_frames]
+        ).T
         if len(enumerated_frames) == 0:
             return [np.empty((0, 2), dtype=np.int64)]
         elif len(enumerated_frames) < n_parts:
             # Issue #4685
             n_parts = len(enumerated_frames)
-            warnings.warn(f"Set `n_parts` to {n_parts} to match the total "
-                          "number of frames being analyzed")
+            warnings.warn(
+                f"Set `n_parts` to {n_parts} to match the total "
+                "number of frames being analyzed"
+            )
 
         return np.array_split(enumerated_frames, n_parts)
 
     def _configure_backend(
-            self,
-            backend: Union[str, BackendBase],
-            n_workers: int,
-            unsupported_backend: bool = False
-            ) -> BackendBase:
+        self,
+        backend: Union[str, BackendBase],
+        n_workers: int,
+        unsupported_backend: bool = False,
+    ) -> BackendBase:
         """Matches a passed backend string value with class attributes
         :attr:`parallelizable` and :meth:`get_supported_backends()`
         to check if downstream calculations can be performed.
@@ -642,13 +669,12 @@ class AnalysisBase(object):
         builtin_backends = {
             "serial": BackendSerial,
             "multiprocessing": BackendMultiprocessing,
-            "dask": BackendDask
+            "dask": BackendDask,
         }
 
         backend_class = builtin_backends.get(backend, backend)
         supported_backend_classes = [
-            builtin_backends.get(b)
-            for b in self.get_supported_backends()
+            builtin_backends.get(b) for b in self.get_supported_backends()
         ]
 
         # check for serial-only classes
@@ -656,20 +682,28 @@ class AnalysisBase(object):
             raise ValueError(f"Can not parallelize class {self.__class__}")
 
         # make sure user enabled 'unsupported_backend=True' for custom classes
-        if (not unsupported_backend and self.parallelizable
-                and backend_class not in supported_backend_classes):
-            raise ValueError((
-                f"Must specify 'unsupported_backend=True'"
-                f"if you want to use a custom {backend_class=} for {self.__class__}"
-            ))
+        if (
+            not unsupported_backend
+            and self.parallelizable
+            and backend_class not in supported_backend_classes
+        ):
+            raise ValueError(
+                (
+                    f"Must specify 'unsupported_backend=True'"
+                    f"if you want to use a custom {backend_class=} for {self.__class__}"
+                )
+            )
 
         # check for the presence of parallelizable transformations
         if backend_class is not BackendSerial and any(
-                not t.parallelizable
-                for t in self._trajectory.transformations):
-            raise ValueError((
-                "Trajectory should not have "
-                "associated unparallelizable transformations"))
+            not t.parallelizable for t in self._trajectory.transformations
+        ):
+            raise ValueError(
+                (
+                    "Trajectory should not have "
+                    "associated unparallelizable transformations"
+                )
+            )
 
         # conclude mapping from string to backend class if it's a builtin backend
         if isinstance(backend, str):
@@ -679,21 +713,27 @@ class AnalysisBase(object):
         if (
             isinstance(backend, BackendBase)
             and n_workers is not None
-            and hasattr(backend, 'n_workers')
+            and hasattr(backend, "n_workers")
             and backend.n_workers != n_workers
         ):
-            raise ValueError((
-                f"n_workers specified twice: in {backend.n_workers=}"
-                f"and in run({n_workers=}). Remove it from run()"
-            ))
+            raise ValueError(
+                (
+                    f"n_workers specified twice: in {backend.n_workers=}"
+                    f"and in run({n_workers=}). Remove it from run()"
+                )
+            )
 
         # or pass along an instance of the class itself
         # after ensuring it has apply method
-        if not isinstance(backend, BackendBase) or not hasattr(backend, "apply"):
-            raise ValueError((
-                f"{backend=} is invalid: should have 'apply' method "
-                "and be instance of MDAnalysis.analysis.backends.BackendBase"
-            ))
+        if not isinstance(backend, BackendBase) or not hasattr(
+            backend, "apply"
+        ):
+            raise ValueError(
+                (
+                    f"{backend=} is invalid: should have 'apply' method "
+                    "and be instance of MDAnalysis.analysis.backends.BackendBase"
+                )
+            )
         return backend
 
     def run(
@@ -775,18 +815,23 @@ class AnalysisBase(object):
         # default to serial execution
         backend = "serial" if backend is None else backend
 
-        progressbar_kwargs = {} if progressbar_kwargs is None else progressbar_kwargs
-        if ((progressbar_kwargs or verbose) and 
-            not (backend == "serial" or 
-            isinstance(backend, BackendSerial))):
-            raise ValueError("Can not display progressbar with non-serial backend")
+        progressbar_kwargs = (
+            {} if progressbar_kwargs is None else progressbar_kwargs
+        )
+        if (progressbar_kwargs or verbose) and not (
+            backend == "serial" or isinstance(backend, BackendSerial)
+        ):
+            raise ValueError(
+                "Can not display progressbar with non-serial backend"
+            )
 
         # if number of workers not specified, try getting the number from
         # the backend instance if possible, or set to 1
         if n_workers is None:
             n_workers = (
                 backend.n_workers
-                if isinstance(backend, BackendBase) and hasattr(backend, "n_workers")
+                if isinstance(backend, BackendBase)
+                and hasattr(backend, "n_workers")
                 else 1
             )
 
@@ -798,22 +843,31 @@ class AnalysisBase(object):
         executor = self._configure_backend(
             backend=backend,
             n_workers=n_workers,
-            unsupported_backend=unsupported_backend)
+            unsupported_backend=unsupported_backend,
+        )
         if (
             hasattr(executor, "n_workers") and n_parts < executor.n_workers
         ):  # using executor's value here for non-default executors
-            warnings.warn((
-                f"Analysis not making use of all workers: "
-                f"{executor.n_workers=} is greater than {n_parts=}"))
+            warnings.warn(
+                (
+                    f"Analysis not making use of all workers: "
+                    f"{executor.n_workers=} is greater than {n_parts=}"
+                )
+            )
 
         # start preparing the run
         worker_func = partial(
             self._compute,
             progressbar_kwargs=progressbar_kwargs,
-            verbose=verbose)
+            verbose=verbose,
+        )
         self._setup_frames(
             trajectory=self._trajectory,
-            start=start, stop=stop, step=step, frames=frames)
+            start=start,
+            stop=stop,
+            step=step,
+            frames=frames,
+        )
         computation_groups = self._setup_computation_groups(
             start=start, stop=stop, step=step, frames=frames, n_parts=n_parts
         )
@@ -822,7 +876,8 @@ class AnalysisBase(object):
         # we need `AnalysisBase` classes
         # since they hold `frames`, `times` and `results` attributes
         remote_objects: list["AnalysisBase"] = executor.apply(
-            worker_func, computation_groups)
+            worker_func, computation_groups
+        )
         self.frames = np.hstack([obj.frames for obj in remote_objects])
         self.times = np.hstack([obj.times for obj in remote_objects])
 
@@ -911,8 +966,9 @@ class AnalysisFromFunction(AnalysisBase):
         return ("serial", "multiprocessing", "dask")
 
     def __init__(self, function, trajectory=None, *args, **kwargs):
-        if (trajectory is not None) and (not isinstance(
-                trajectory, coordinates.base.ProtoReader)):
+        if (trajectory is not None) and (
+            not isinstance(trajectory, coordinates.base.ProtoReader)
+        ):
             args = (trajectory,) + args
             trajectory = None
 
@@ -940,7 +996,9 @@ class AnalysisFromFunction(AnalysisBase):
         return ResultsGroup({"timeseries": ResultsGroup.flatten_sequence})
 
     def _single_frame(self):
-        self.results.timeseries.append(self.function(*self.args, **self.kwargs))
+        self.results.timeseries.append(
+            self.function(*self.args, **self.kwargs)
+        )
 
     def _conclude(self):
         self.results.frames = self.frames
@@ -1001,7 +1059,9 @@ def analysis_class(function):
 
     class WrapperClass(AnalysisFromFunction):
         def __init__(self, trajectory=None, *args, **kwargs):
-            super(WrapperClass, self).__init__(function, trajectory, *args, **kwargs)
+            super(WrapperClass, self).__init__(
+                function, trajectory, *args, **kwargs
+            )
 
         @classmethod
         def get_supported_backends(cls):
@@ -1045,8 +1105,9 @@ def _filter_baseanalysis_kwargs(function, kwargs):
     n_base_defaults = len(base_argspec.defaults)
     base_kwargs = {
         name: val
-        for name, val in zip(base_argspec.args[-n_base_defaults:],
-                             base_argspec.defaults)
+        for name, val in zip(
+            base_argspec.args[-n_base_defaults:], base_argspec.defaults
+        )
     }
 
     try:

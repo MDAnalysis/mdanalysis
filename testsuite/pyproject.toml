@@ -163,6 +163,7 @@ setup\.py
 | MDAnalysisTests/lib/.*\.py
 | MDAnalysisTests/transformations/.*\.py
 | MDAnalysisTests/topology/.*\.py
+| MDAnalysisTests/analysis/.*\.py
 | MDAnalysisTests/guesser/.*\.py
 | MDAnalysisTests/converters/.*\.py
 | MDAnalysisTests/coordinates/.*\.py

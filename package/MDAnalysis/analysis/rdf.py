@@ -217,24 +217,30 @@ class InterRDF(AnalysisBase):
        of the `results` attribute of
        :class:`~MDAnalysis.analysis.AnalysisBase`.
     """
-    def __init__(self,
-                 g1,
-                 g2,
-                 nbins=75,
-                 range=(0.0, 15.0),
-                 norm="rdf",
-                 exclusion_block=None,
-                 exclude_same=None,
-                 **kwargs):
+
+    def __init__(
+        self,
+        g1,
+        g2,
+        nbins=75,
+        range=(0.0, 15.0),
+        norm="rdf",
+        exclusion_block=None,
+        exclude_same=None,
+        **kwargs,
+    ):
         super(InterRDF, self).__init__(g1.universe.trajectory, **kwargs)
         self.g1 = g1
         self.g2 = g2
         self.norm = str(norm).lower()
 
-        self.rdf_settings = {'bins': nbins,
-                             'range': range}
+        self.rdf_settings = {"bins": nbins, "range": range}
         self._exclusion_block = exclusion_block
-        if exclude_same is not None and exclude_same not in ['residue', 'segment', 'chain']:
+        if exclude_same is not None and exclude_same not in [
+            "residue",
+            "segment",
+            "chain",
+        ]:
             raise ValueError(
                 "The exclude_same argument to InterRDF must be None, 'residue', 'segment' "
                 "or 'chain'."
@@ -243,12 +249,18 @@ class InterRDF(AnalysisBase):
             raise ValueError(
                 "The exclude_same argument to InterRDF cannot be used with exclusion_block."
             )
-        name_to_attr = {'residue': 'resindices', 'segment': 'segindices', 'chain': 'chainIDs'}
+        name_to_attr = {
+            "residue": "resindices",
+            "segment": "segindices",
+            "chain": "chainIDs",
+        }
         self.exclude_same = name_to_attr.get(exclude_same)
 
-        if self.norm not in ['rdf', 'density', 'none']:
-            raise ValueError(f"'{self.norm}' is an invalid norm. "
-                             "Use 'rdf', 'density' or 'none'.")
+        if self.norm not in ["rdf", "density", "none"]:
+            raise ValueError(
+                f"'{self.norm}' is an invalid norm. "
+                "Use 'rdf', 'density' or 'none'."
+            )
 
     def _prepare(self):
         # Empty histogram to store the RDF
@@ -263,17 +275,19 @@ class InterRDF(AnalysisBase):
             # Cumulative volume for rdf normalization
             self.volume_cum = 0
         # Set the max range to filter the search radius
-        self._maxrange = self.rdf_settings['range'][1]
+        self._maxrange = self.rdf_settings["range"][1]
 
     def _single_frame(self):
-        pairs, dist = distances.capped_distance(self.g1.positions,
-                                                self.g2.positions,
-                                                self._maxrange,
-                                                box=self._ts.dimensions)
+        pairs, dist = distances.capped_distance(
+            self.g1.positions,
+            self.g2.positions,
+            self._maxrange,
+            box=self._ts.dimensions,
+        )
         # Maybe exclude same molecule distances
         if self._exclusion_block is not None:
-            idxA = pairs[:, 0]//self._exclusion_block[0]
-            idxB = pairs[:, 1]//self._exclusion_block[1]
+            idxA = pairs[:, 0] // self._exclusion_block[0]
+            idxB = pairs[:, 1] // self._exclusion_block[1]
             mask = np.where(idxA != idxB)[0]
             dist = dist[mask]
 
@@ -295,7 +309,7 @@ class InterRDF(AnalysisBase):
         if self.norm in ["rdf", "density"]:
             # Volume in each radial shell
             vols = np.power(self.results.edges, 3)
-            norm *= 4/3 * np.pi * np.diff(vols)
+            norm *= 4 / 3 * np.pi * np.diff(vols)
 
         if self.norm == "rdf":
             # Number of each selection
@@ -317,33 +331,41 @@ class InterRDF(AnalysisBase):
 
     @property
     def edges(self):
-        wmsg = ("The `edges` attribute was deprecated in MDAnalysis 2.0.0 "
-                "and will be removed in MDAnalysis 3.0.0. Please use "
-                "`results.bins` instead")
+        wmsg = (
+            "The `edges` attribute was deprecated in MDAnalysis 2.0.0 "
+            "and will be removed in MDAnalysis 3.0.0. Please use "
+            "`results.bins` instead"
+        )
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.edges
 
     @property
     def count(self):
-        wmsg = ("The `count` attribute was deprecated in MDAnalysis 2.0.0 "
-                "and will be removed in MDAnalysis 3.0.0. Please use "
-                "`results.bins` instead")
+        wmsg = (
+            "The `count` attribute was deprecated in MDAnalysis 2.0.0 "
+            "and will be removed in MDAnalysis 3.0.0. Please use "
+            "`results.bins` instead"
+        )
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.count
 
     @property
     def bins(self):
-        wmsg = ("The `bins` attribute was deprecated in MDAnalysis 2.0.0 "
-                "and will be removed in MDAnalysis 3.0.0. Please use "
-                "`results.bins` instead")
+        wmsg = (
+            "The `bins` attribute was deprecated in MDAnalysis 2.0.0 "
+            "and will be removed in MDAnalysis 3.0.0. Please use "
+            "`results.bins` instead"
+        )
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.bins
 
     @property
     def rdf(self):
-        wmsg = ("The `rdf` attribute was deprecated in MDAnalysis 2.0.0 "
-                "and will be removed in MDAnalysis 3.0.0. Please use "
-                "`results.rdf` instead")
+        wmsg = (
+            "The `rdf` attribute was deprecated in MDAnalysis 2.0.0 "
+            "and will be removed in MDAnalysis 3.0.0. Please use "
+            "`results.rdf` instead"
+        )
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.rdf
 
@@ -540,54 +562,69 @@ class InterRDF_s(AnalysisBase):
     .. deprecated:: 2.3.0
        The `universe` parameter is superflous.
     """
-    def __init__(self,
-                 u,
-                 ags,
-                 nbins=75,
-                 range=(0.0, 15.0),
-                 norm="rdf",
-                 density=False,
-                 **kwargs):
-        super(InterRDF_s, self).__init__(ags[0][0].universe.trajectory,
-                                         **kwargs)
 
-        warnings.warn("The `u` attribute is superflous and will be removed "
-                      "in MDAnalysis 3.0.0.", DeprecationWarning)
+    def __init__(
+        self,
+        u,
+        ags,
+        nbins=75,
+        range=(0.0, 15.0),
+        norm="rdf",
+        density=False,
+        **kwargs,
+    ):
+        super(InterRDF_s, self).__init__(
+            ags[0][0].universe.trajectory, **kwargs
+        )
+
+        warnings.warn(
+            "The `u` attribute is superflous and will be removed "
+            "in MDAnalysis 3.0.0.",
+            DeprecationWarning,
+        )
 
         self.ags = ags
         self.norm = str(norm).lower()
-        self.rdf_settings = {'bins': nbins,
-                             'range': range}
+        self.rdf_settings = {"bins": nbins, "range": range}
 
-        if self.norm not in ['rdf', 'density', 'none']:
-            raise ValueError(f"'{self.norm}' is an invalid norm. "
-                             "Use 'rdf', 'density' or 'none'.")
+        if self.norm not in ["rdf", "density", "none"]:
+            raise ValueError(
+                f"'{self.norm}' is an invalid norm. "
+                "Use 'rdf', 'density' or 'none'."
+            )
 
         if density:
-            warnings.warn("The `density` attribute was deprecated in "
-                          "MDAnalysis 2.3.0 and will be removed in "
-                          "MDAnalysis 3.0.0. Please use `norm=density` "
-                          "instead.", DeprecationWarning)
+            warnings.warn(
+                "The `density` attribute was deprecated in "
+                "MDAnalysis 2.3.0 and will be removed in "
+                "MDAnalysis 3.0.0. Please use `norm=density` "
+                "instead.",
+                DeprecationWarning,
+            )
             self.norm = "density"
 
     def _prepare(self):
         count, edges = np.histogram([-1], **self.rdf_settings)
-        self.results.count = [np.zeros((ag1.n_atoms, ag2.n_atoms, len(count)),
-                                        dtype=np.float64) for ag1, ag2 in self.ags]
+        self.results.count = [
+            np.zeros((ag1.n_atoms, ag2.n_atoms, len(count)), dtype=np.float64)
+            for ag1, ag2 in self.ags
+        ]
         self.results.edges = edges
         self.results.bins = 0.5 * (edges[:-1] + edges[1:])
 
         if self.norm == "rdf":
             # Cumulative volume for rdf normalization
             self.volume_cum = 0
-        self._maxrange = self.rdf_settings['range'][1]
+        self._maxrange = self.rdf_settings["range"][1]
 
     def _single_frame(self):
         for i, (ag1, ag2) in enumerate(self.ags):
-            pairs, dist = distances.capped_distance(ag1.positions,
-                                                    ag2.positions,
-                                                    self._maxrange,
-                                                    box=self._ts.dimensions)
+            pairs, dist = distances.capped_distance(
+                ag1.positions,
+                ag2.positions,
+                self._maxrange,
+                box=self._ts.dimensions,
+            )
 
             for j, (idx1, idx2) in enumerate(pairs):
                 count, _ = np.histogram(dist[j], **self.rdf_settings)
@@ -601,7 +638,7 @@ class InterRDF_s(AnalysisBase):
         if self.norm in ["rdf", "density"]:
             # Volume in each radial shell
             vols = np.power(self.results.edges, 3)
-            norm *= 4/3 * np.pi * np.diff(vols)
+            norm *= 4 / 3 * np.pi * np.diff(vols)
 
         if self.norm == "rdf":
             # Average number density
@@ -639,40 +676,50 @@ class InterRDF_s(AnalysisBase):
 
     @property
     def edges(self):
-        wmsg = ("The `edges` attribute was deprecated in MDAnalysis 2.0.0 "
-                "and will be removed in MDAnalysis 3.0.0. Please use "
-                "`results.bins` instead")
+        wmsg = (
+            "The `edges` attribute was deprecated in MDAnalysis 2.0.0 "
+            "and will be removed in MDAnalysis 3.0.0. Please use "
+            "`results.bins` instead"
+        )
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.edges
 
     @property
     def count(self):
-        wmsg = ("The `count` attribute was deprecated in MDAnalysis 2.0.0 "
-                "and will be removed in MDAnalysis 3.0.0. Please use "
-                "`results.bins` instead")
+        wmsg = (
+            "The `count` attribute was deprecated in MDAnalysis 2.0.0 "
+            "and will be removed in MDAnalysis 3.0.0. Please use "
+            "`results.bins` instead"
+        )
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.count
 
     @property
     def bins(self):
-        wmsg = ("The `bins` attribute was deprecated in MDAnalysis 2.0.0 "
-                "and will be removed in MDAnalysis 3.0.0. Please use "
-                "`results.bins` instead")
+        wmsg = (
+            "The `bins` attribute was deprecated in MDAnalysis 2.0.0 "
+            "and will be removed in MDAnalysis 3.0.0. Please use "
+            "`results.bins` instead"
+        )
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.bins
 
     @property
     def rdf(self):
-        wmsg = ("The `rdf` attribute was deprecated in MDAnalysis 2.0.0 "
-                "and will be removed in MDAnalysis 3.0.0. Please use "
-                "`results.rdf` instead")
+        wmsg = (
+            "The `rdf` attribute was deprecated in MDAnalysis 2.0.0 "
+            "and will be removed in MDAnalysis 3.0.0. Please use "
+            "`results.rdf` instead"
+        )
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.rdf
 
     @property
     def cdf(self):
-        wmsg = ("The `cdf` attribute was deprecated in MDAnalysis 2.0.0 "
-                "and will be removed in MDAnalysis 3.0.0. Please use "
-                "`results.cdf` instead")
+        wmsg = (
+            "The `cdf` attribute was deprecated in MDAnalysis 2.0.0 "
+            "and will be removed in MDAnalysis 3.0.0. Please use "
+            "`results.cdf` instead"
+        )
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.cdf

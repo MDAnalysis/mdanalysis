@@ -239,10 +239,18 @@ class PCA(AnalysisBase):
        incorrectly handle cases where the ``frame`` argument
        was passed.
     """
+
     _analysis_algorithm_is_parallelizable = False
 
-    def __init__(self, universe, select='all', align=False, mean=None,
-                 n_components=None, **kwargs):
+    def __init__(
+        self,
+        universe,
+        select="all",
+        align=False,
+        mean=None,
+        n_components=None,
+        **kwargs,
+    ):
         super(PCA, self).__init__(universe.trajectory, **kwargs)
         self._u = universe
 
@@ -268,15 +276,18 @@ class PCA(AnalysisBase):
         else:
             self.mean = np.asarray(self._mean)
             if self.mean.shape[0] != self._n_atoms:
-                raise ValueError('Number of atoms in reference ({}) does '
-                                 'not match number of atoms in the '
-                                 'selection ({})'.format(self._n_atoms,
-                                                         self.mean.shape[0]))
+                raise ValueError(
+                    "Number of atoms in reference ({}) does "
+                    "not match number of atoms in the "
+                    "selection ({})".format(self._n_atoms, self.mean.shape[0])
+                )
             self._calc_mean = False
 
         if self.n_frames == 1:
-            raise ValueError('No covariance information can be gathered from a'
-                             'single trajectory frame.\n')
+            raise ValueError(
+                "No covariance information can be gathered from a"
+                "single trajectory frame.\n"
+            )
         n_dim = self._n_atoms * 3
         self.cov = np.zeros((n_dim, n_dim))
         self._ref_atom_positions = self._reference.positions
@@ -284,15 +295,20 @@ class PCA(AnalysisBase):
         self._ref_atom_positions -= self._ref_cog
 
         if self._calc_mean:
-            for ts in ProgressBar(self._sliced_trajectory,
-                                  verbose=self._verbose, desc="Mean Calculation"):
+            for ts in ProgressBar(
+                self._sliced_trajectory,
+                verbose=self._verbose,
+                desc="Mean Calculation",
+            ):
                 if self.align:
                     mobile_cog = self._atoms.center_of_geometry()
-                    mobile_atoms, old_rmsd = _fit_to(self._atoms.positions - mobile_cog,
-                                                     self._ref_atom_positions,
-                                                     self._atoms,
-                                                     mobile_com=mobile_cog,
-                                                     ref_com=self._ref_cog)
+                    mobile_atoms, old_rmsd = _fit_to(
+                        self._atoms.positions - mobile_cog,
+                        self._ref_atom_positions,
+                        self._atoms,
+                        mobile_com=mobile_cog,
+                        ref_com=self._ref_cog,
+                    )
 
                 self.mean += self._atoms.positions
             self.mean /= self.n_frames
@@ -301,11 +317,13 @@ class PCA(AnalysisBase):
     def _single_frame(self):
         if self.align:
             mobile_cog = self._atoms.center_of_geometry()
-            mobile_atoms, old_rmsd = _fit_to(self._atoms.positions - mobile_cog,
-                                             self._ref_atom_positions,
-                                             self._atoms,
-                                             mobile_com=mobile_cog,
-                                             ref_com=self._ref_cog)
+            mobile_atoms, old_rmsd = _fit_to(
+                self._atoms.positions - mobile_cog,
+                self._ref_atom_positions,
+                self._atoms,
+                mobile_com=mobile_cog,
+                ref_com=self._ref_cog,
+            )
             # now all structures are aligned to reference
             x = mobile_atoms.positions.ravel()
         else:
@@ -324,25 +342,31 @@ class PCA(AnalysisBase):
 
     @property
     def p_components(self):
-        wmsg = ("The `p_components` attribute was deprecated in "
-                "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
-                "Please use `results.p_components` instead.")
+        wmsg = (
+            "The `p_components` attribute was deprecated in "
+            "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
+            "Please use `results.p_components` instead."
+        )
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.p_components
 
     @property
     def variance(self):
-        wmsg = ("The `variance` attribute was deprecated in "
-                "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
-                "Please use `results.variance` instead.")
+        wmsg = (
+            "The `variance` attribute was deprecated in "
+            "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
+            "Please use `results.variance` instead."
+        )
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.variance
 
     @property
     def cumulated_variance(self):
-        wmsg = ("The `cumulated_variance` attribute was deprecated in "
-                "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
-                "Please use `results.cumulated_variance` instead.")
+        wmsg = (
+            "The `cumulated_variance` attribute was deprecated in "
+            "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
+            "Please use `results.cumulated_variance` instead."
+        )
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.cumulated_variance
 
@@ -356,13 +380,21 @@ class PCA(AnalysisBase):
             if n is None:
                 n = len(self._variance)
             self.results.variance = self._variance[:n]
-            self.results.cumulated_variance = (np.cumsum(self._variance) /
-                                               np.sum(self._variance))[:n]
+            self.results.cumulated_variance = (
+                np.cumsum(self._variance) / np.sum(self._variance)
+            )[:n]
             self.results.p_components = self._p_components[:, :n]
         self._n_components = n
 
-    def transform(self, atomgroup, n_components=None, start=None, stop=None,
-                  step=None, verbose=False):
+    def transform(
+        self,
+        atomgroup,
+        n_components=None,
+        start=None,
+        stop=None,
+        step=None,
+        verbose=False,
+    ):
         """Apply the dimensionality reduction on a trajectory
 
         Parameters
@@ -403,31 +435,37 @@ class PCA(AnalysisBase):
            on with ``verbose = True``, or off with ``verbose = False``
         """
         if not self._calculated:
-            raise ValueError('Call run() on the PCA before using transform')
+            raise ValueError("Call run() on the PCA before using transform")
 
         if isinstance(atomgroup, Universe):
             atomgroup = atomgroup.atoms
 
         if self._n_atoms != atomgroup.n_atoms:
-            raise ValueError('PCA has been fit for'
-                             '{} atoms. Your atomgroup'
-                             'has {} atoms'.format(self._n_atoms,
-                                                   atomgroup.n_atoms))
+            raise ValueError(
+                "PCA has been fit for"
+                "{} atoms. Your atomgroup"
+                "has {} atoms".format(self._n_atoms, atomgroup.n_atoms)
+            )
         if not (self._atoms.types == atomgroup.types).all():
-            warnings.warn('Atom types do not match with types used to fit PCA')
+            warnings.warn("Atom types do not match with types used to fit PCA")
 
         traj = atomgroup.universe.trajectory
         start, stop, step = traj.check_slice_indices(start, stop, step)
         n_frames = len(range(start, stop, step))
 
-        dim = (n_components if n_components is not None else
-               self.results.p_components.shape[1])
+        dim = (
+            n_components
+            if n_components is not None
+            else self.results.p_components.shape[1]
+        )
 
         dot = np.zeros((n_frames, dim))
 
-        for i, ts in tqdm(enumerate(traj[start:stop:step]), disable=not verbose,
-                          total=len(traj[start:stop:step])
-                          ):
+        for i, ts in tqdm(
+            enumerate(traj[start:stop:step]),
+            disable=not verbose,
+            total=len(traj[start:stop:step]),
+        ):
 
             xyz = atomgroup.positions.ravel() - self._xmean
             dot[i] = np.dot(xyz, self._p_components[:, :dim])
@@ -547,20 +585,22 @@ class PCA(AnalysisBase):
         .. versionadded:: 2.2.0
         """
         if not self._calculated:
-            raise ValueError('Call run() on the PCA before projecting')
+            raise ValueError("Call run() on the PCA before projecting")
 
         if group is not None:
             if anchor is None:
-                raise ValueError("'anchor' cannot be 'None'" +
-                                 " if 'group' is not 'None'")
+                raise ValueError(
+                    "'anchor' cannot be 'None'" + " if 'group' is not 'None'"
+                )
 
             anchors = group.select_atoms(anchor)
             anchors_res_ids = anchors.resindices
             if np.unique(anchors_res_ids).size != anchors_res_ids.size:
                 raise ValueError("More than one 'anchor' found in residues")
             if not np.isin(group.resindices, anchors_res_ids).all():
-                raise ValueError("Some residues in 'group'" +
-                                 " do not have an 'anchor'")
+                raise ValueError(
+                    "Some residues in 'group'" + " do not have an 'anchor'"
+                )
             if not anchors.issubset(self._atoms):
                 raise ValueError("Some 'anchors' are not part of PCA class")
 
@@ -568,18 +608,22 @@ class PCA(AnalysisBase):
             # sure that extrapolation works on residues, not random atoms.
             non_pca = group.residues.atoms - self._atoms
             pca_res_indices, pca_res_counts = np.unique(
-                self._atoms.resindices, return_counts=True)
+                self._atoms.resindices, return_counts=True
+            )
 
             non_pca_atoms = np.array([], dtype=int)
             for res in group.residues:
                 # n_common is the number of pca atoms in a residue
-                n_common = pca_res_counts[np.where(
-                            pca_res_indices == res.resindex)][0]
-                non_pca_atoms = np.append(non_pca_atoms,
-                                          res.atoms.n_atoms - n_common)
+                n_common = pca_res_counts[
+                    np.where(pca_res_indices == res.resindex)
+                ][0]
+                non_pca_atoms = np.append(
+                    non_pca_atoms, res.atoms.n_atoms - n_common
+                )
             # index_extrapolate records the anchor number for each non-PCA atom
-            index_extrapolate = np.repeat(np.arange(anchors.atoms.n_atoms),
-                                          non_pca_atoms)
+            index_extrapolate = np.repeat(
+                np.arange(anchors.atoms.n_atoms), non_pca_atoms
+            )
 
         if components is None:
             components = np.arange(self.results.p_components.shape[1])
@@ -591,22 +635,29 @@ class PCA(AnalysisBase):
 
             xyz = self._atoms.positions.ravel() - self._xmean
             self._atoms.positions = np.reshape(
-                (np.dot(np.dot(xyz, self._p_components[:, components]),
-                        self._p_components[:, components].T)
-                 + self._xmean), (-1, 3)
+                (
+                    np.dot(
+                        np.dot(xyz, self._p_components[:, components]),
+                        self._p_components[:, components].T,
+                    )
+                    + self._xmean
+                ),
+                (-1, 3),
             )
 
             if group is not None:
-                non_pca.positions += (anchors.positions -
-                                      anchors_coords_old)[index_extrapolate]
+                non_pca.positions += (anchors.positions - anchors_coords_old)[
+                    index_extrapolate
+                ]
             return ts
+
         return wrapped
 
     @due.dcite(
-        Doi('10.1002/(SICI)1097-0134(19990901)36:4<419::AID-PROT5>3.0.CO;2-U'),
-        Doi('10.1529/biophysj.104.052449'),
+        Doi("10.1002/(SICI)1097-0134(19990901)36:4<419::AID-PROT5>3.0.CO;2-U"),
+        Doi("10.1529/biophysj.104.052449"),
         description="RMSIP",
-        path='MDAnalysis.analysis.pca',
+        path="MDAnalysis.analysis.pca",
     )
     def rmsip(self, other, n_components=None):
         """Compute the root mean square inner product between subspaces.
@@ -667,23 +718,24 @@ class PCA(AnalysisBase):
         try:
             a = self.results.p_components
         except AttributeError:
-            raise ValueError('Call run() on the PCA before using rmsip')
+            raise ValueError("Call run() on the PCA before using rmsip")
 
         try:
             b = other.results.p_components
         except AttributeError:
             if isinstance(other, type(self)):
                 raise ValueError(
-                    'Call run() on the other PCA before using rmsip')
+                    "Call run() on the other PCA before using rmsip"
+                )
             else:
-                raise ValueError('other must be another PCA class')
+                raise ValueError("other must be another PCA class")
 
         return rmsip(a.T, b.T, n_components=n_components)
 
     @due.dcite(
-        Doi('10.1016/j.str.2007.12.011'),
+        Doi("10.1016/j.str.2007.12.011"),
         description="Cumulative overlap",
-        path='MDAnalysis.analysis.pca',
+        path="MDAnalysis.analysis.pca",
     )
     def cumulative_overlap(self, other, i=0, n_components=None):
         """Compute the cumulative overlap of a vector in a subspace.
@@ -722,16 +774,18 @@ class PCA(AnalysisBase):
             a = self.results.p_components
         except AttributeError:
             raise ValueError(
-                'Call run() on the PCA before using cumulative_overlap')
+                "Call run() on the PCA before using cumulative_overlap"
+            )
 
         try:
             b = other.results.p_components
         except AttributeError:
             if isinstance(other, type(self)):
                 raise ValueError(
-                    'Call run() on the other PCA before using cumulative_overlap')
+                    "Call run() on the other PCA before using cumulative_overlap"
+                )
             else:
-                raise ValueError('other must be another PCA class')
+                raise ValueError("other must be another PCA class")
 
         return cumulative_overlap(a.T, b.T, i=i, n_components=n_components)
 
@@ -767,15 +821,18 @@ def cosine_content(pca_space, i):
     t = np.arange(len(pca_space))
     T = len(pca_space)
     cos = np.cos(np.pi * t * (i + 1) / T)
-    return ((2.0 / T) * (scipy.integrate.simpson(cos*pca_space[:, i])) ** 2 /
-            scipy.integrate.simpson(pca_space[:, i] ** 2))
+    return (
+        (2.0 / T)
+        * (scipy.integrate.simpson(cos * pca_space[:, i])) ** 2
+        / scipy.integrate.simpson(pca_space[:, i] ** 2)
+    )
 
 
 @due.dcite(
-    Doi('10.1002/(SICI)1097-0134(19990901)36:4<419::AID-PROT5>3.0.CO;2-U'),
-    Doi('10.1529/biophysj.104.052449'),
+    Doi("10.1002/(SICI)1097-0134(19990901)36:4<419::AID-PROT5>3.0.CO;2-U"),
+    Doi("10.1529/biophysj.104.052449"),
     description="RMSIP",
-    path='MDAnalysis.analysis.pca',
+    path="MDAnalysis.analysis.pca",
 )
 def rmsip(a, b, n_components=None):
     """Compute the root mean square inner product between subspaces.
@@ -845,7 +902,7 @@ def rmsip(a, b, n_components=None):
     elif len(n_components) == 2:
         n_a, n_b = n_components
     else:
-        raise ValueError('Too many values provided for n_components')
+        raise ValueError("Too many values provided for n_components")
 
     if n_a is None:
         n_a = len(a)
@@ -853,14 +910,14 @@ def rmsip(a, b, n_components=None):
         n_b = len(b)
 
     sip = np.matmul(a[:n_a], b[:n_b].T) ** 2
-    msip = sip.sum()/n_a
+    msip = sip.sum() / n_a
     return msip**0.5
 
 
 @due.dcite(
-    Doi('10.1016/j.str.2007.12.011'),
+    Doi("10.1016/j.str.2007.12.011"),
     description="Cumulative overlap",
-    path='MDAnalysis.analysis.pca',
+    path="MDAnalysis.analysis.pca",
 )
 def cumulative_overlap(a, b, i=0, n_components=None):
     """Compute the cumulative overlap of a vector in a subspace.
@@ -906,5 +963,5 @@ def cumulative_overlap(a, b, i=0, n_components=None):
     b = b[:n_components]
     b_norms = (b**2).sum(axis=1) ** 0.5
 
-    o = np.abs(np.matmul(vec, b.T)) / (b_norms*vec_norm)
+    o = np.abs(np.matmul(vec, b.T)) / (b_norms * vec_norm)
     return (o**2).sum() ** 0.5
