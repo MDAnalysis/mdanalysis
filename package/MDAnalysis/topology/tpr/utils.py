@@ -423,6 +423,48 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
         elements = Elements(np.array(elements, dtype=object))
         top.add_TopologyAttr(elements)
 
+    # NOTE: the tpr striding code below serves the
+    # purpose of placing us in a suitable "seek" position
+    # in the binary file such that we are well placed
+    # for reading coords and velocities if they are present
+    # the order of operations is based on an analysis of
+    # the C++ code in do_mtop() function in the GROMACS
+    # source at:
+    # src/gromacs/fileio/tpxio.cpp
+    # TODO: expand tpx version support for striding to
+    # the coordinates
+    if fver == 134:
+        # TODO: the following value is important, and not sure
+        # how to access programmatically yet...
+        # from GMX source code:
+        # api/legacy/include/gromacs/topology/topology_enums.h
+        # worst case scenario we hard code it based on
+        # tpx/GMX version?
+        SimulationAtomGroupType_size = 10
+        n_atoms = data.unpack_int()
+        interm = data.unpack_uchar()
+        ngrid = data.unpack_int()
+        grid_spacing = data.unpack_int()
+        n_elements = grid_spacing ** 2
+        for i in range(ngrid):
+            for j in range(n_elements):
+                ndo_real(data, 4)
+        for i in range(SimulationAtomGroupType_size):
+            group_size = data.unpack_int()
+            ndo_int(data, group_size)
+        n_group_names = data.unpack_int()
+        for i in range(n_group_names):
+            data.unpack_int()
+        for i in range(SimulationAtomGroupType_size):
+            n_grp_numbers = data.unpack_int()
+            if n_grp_numbers != 0:
+                for i in range(n_grp_numbers):
+                    data.unpack_uchar()
+        im_excl_grp_size = data.unpack_int()
+        ndo_int(data, im_excl_grp_size)
+        # TODO: why is this needed?
+        data.unpack_int()
+
     return top
 
 

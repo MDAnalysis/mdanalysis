@@ -776,6 +776,7 @@ from . import MOL2
 from . import PDB
 from . import PDBQT
 from . import PQR
+from . import TPR
 from . import TRC
 from . import TRJ
 from . import TRR
