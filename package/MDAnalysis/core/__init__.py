@@ -50,7 +50,7 @@ the coordinates as a numpy array ::
 and write your own Python code.
 """
 
-__all__ = ['AtomGroup', 'Selection']
+__all__ = ["AtomGroup", "Selection"]
 
 from .groups import AtomGroup
 from .selection import Selection

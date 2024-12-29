@@ -32,13 +32,13 @@ from MDAnalysisTests.datafiles import PSF, DCD
 
 @pytest.mark.skipif(HAS_BIOPYTHON, reason="biopython is installed")
 def test_sequence_import_error():
-    p = mda.Universe(PSF, DCD).select_atoms('protein')
+    p = mda.Universe(PSF, DCD).select_atoms("protein")
     errmsg = "The `sequence_alignment` method requires an installation"
     with pytest.raises(ImportError, match=errmsg):
         _ = p.residues.sequence(format="string")
 
 
-@pytest.mark.skipif(not HAS_BIOPYTHON, reason='requires biopython')
+@pytest.mark.skipif(not HAS_BIOPYTHON, reason="requires biopython")
 class TestSequence:
     # all tests are done with the AdK system (PSF and DCD) sequence:
     # http://www.uniprot.org/uniprot/P69441.fasta
@@ -56,21 +56,28 @@ class TestSequence:
 
     def test_string(self, u):
         p = u.select_atoms("protein")
-        assert_equal(p.residues.sequence(format="string"),
-                     self.ref_adk_sequence)
+        assert_equal(
+            p.residues.sequence(format="string"), self.ref_adk_sequence
+        )
 
     def test_SeqRecord(self, u):
         p = u.select_atoms("protein")
-        s = p.residues.sequence(format="SeqRecord",
-                                id="P69441", name="KAD_ECOLI Adenylate kinase",
-                                description="EcAdK from pdb 4AKE")
+        s = p.residues.sequence(
+            format="SeqRecord",
+            id="P69441",
+            name="KAD_ECOLI Adenylate kinase",
+            description="EcAdK from pdb 4AKE",
+        )
         assert_equal(s.id, "P69441")
         assert_equal(str(s.seq), self.ref_adk_sequence)
 
     def test_SeqRecord_default(self, u):
         p = u.select_atoms("protein")
-        s = p.residues.sequence(id="P69441", name="KAD_ECOLI Adenylate kinase",
-                                description="EcAdK from pdb 4AKE")
+        s = p.residues.sequence(
+            id="P69441",
+            name="KAD_ECOLI Adenylate kinase",
+            description="EcAdK from pdb 4AKE",
+        )
         assert_equal(s.id, "P69441")
         assert_equal(str(s.seq), self.ref_adk_sequence)
 
@@ -94,7 +101,7 @@ class TestSequence:
 
     def test_format_TE(self, u):
         with pytest.raises(TypeError):
-            u.residues.sequence(format='chicken')
+            u.residues.sequence(format="chicken")
 
 
 class TestResidueGroup(object):
@@ -112,8 +119,9 @@ class TestResidueGroup(object):
         (Issue 135)"""
         rg = universe.atoms.residues
         newrg = rg[10:20:2]
-        assert isinstance(newrg, mda.core.groups.ResidueGroup), \
-            "Failed to make a new ResidueGroup: type mismatch"
+        assert isinstance(
+            newrg, mda.core.groups.ResidueGroup
+        ), "Failed to make a new ResidueGroup: type mismatch"
 
     def test_n_atoms(self, rg):
         assert_equal(rg.n_atoms, 3341)
@@ -132,8 +140,7 @@ class TestResidueGroup(object):
 
     def test_len(self, rg):
         """testing that len(residuegroup) == residuegroup.n_residues"""
-        assert_equal(len(rg), rg.n_residues,
-                     "len and n_residues disagree")
+        assert_equal(len(rg), rg.n_residues, "len and n_residues disagree")
 
     def test_set_resids(self, universe):
         rg = universe.select_atoms("bynum 12:42").residues
@@ -141,12 +148,18 @@ class TestResidueGroup(object):
         rg.resids = resid
         # check individual atoms
         for at in rg.atoms:
-            assert_equal(at.resid, resid,
-                         err_msg="failed to set_resid atoms 12:42 to same resid")
+            assert_equal(
+                at.resid,
+                resid,
+                err_msg="failed to set_resid atoms 12:42 to same resid",
+            )
         # check residues
-        assert_equal(rg.resids, resid * np.ones(rg.n_residues),
-                     err_msg="failed to set_resid of residues belonging to "
-                             "atoms 12:42 to same resid")
+        assert_equal(
+            rg.resids,
+            resid * np.ones(rg.n_residues),
+            err_msg="failed to set_resid of residues belonging to "
+            "atoms 12:42 to same resid",
+        )
 
     def test_set_resids(self, universe):
         """test_set_resid: set ResidueGroup resids on a per-residue basis"""
@@ -156,23 +169,30 @@ class TestResidueGroup(object):
         # check individual atoms
         for r, resid in zip(rg, resids):
             for at in r.atoms:
-                assert_equal(at.resid, resid,
-                             err_msg="failed to set_resid residues 10:18 to same "
-                                     "resid in residue {0}\n"
-                                     "(resids = {1}\nresidues = {2})".format(r,
-                                                                             resids,
-                                                                             rg))
-        assert_equal(rg.resids, resids,
-                     err_msg="failed to set_resid of residues belonging to "
-                             "residues 10:18 to new resids")
+                assert_equal(
+                    at.resid,
+                    resid,
+                    err_msg="failed to set_resid residues 10:18 to same "
+                    "resid in residue {0}\n"
+                    "(resids = {1}\nresidues = {2})".format(r, resids, rg),
+                )
+        assert_equal(
+            rg.resids,
+            resids,
+            err_msg="failed to set_resid of residues belonging to "
+            "residues 10:18 to new resids",
+        )
 
     def test_set_resids_updates_self(self, universe):
         rg = universe.select_atoms("resid 10:18").residues
         resids = np.array(rg.resids) + 1000
         rg.resids = resids
-        assert_equal(rg.resids, resids,
-                     err_msg="old selection was not changed in place "
-                             "after set_resid")
+        assert_equal(
+            rg.resids,
+            resids,
+            err_msg="old selection was not changed in place "
+            "after set_resid",
+        )
 
     def test_set_resnum_single(self, universe):
         rg = universe.residues[:3]
@@ -196,13 +216,13 @@ class TestResidueGroup(object):
         rg = universe.residues[:3]
         new = [22, 23, 24, 25]
         with pytest.raises(ValueError):
-            setattr(rg, 'resnums', new)
+            setattr(rg, "resnums", new)
 
     # INVALID: no `set_resnames` method; use `resnames` property directly
     @pytest.mark.skip
     def test_set_resname_single(self, universe):
         rg = universe.residues[:3]
-        new = 'newname'
+        new = "newname"
 
         rg.set_resnames(new)
         assert_equal(all(rg.resnames == new), True)
@@ -213,7 +233,7 @@ class TestResidueGroup(object):
     @pytest.mark.skip
     def test_set_resname_many(self, universe):
         rg = universe.residues[:3]
-        new = ['a', 'b', 'c']
+        new = ["a", "b", "c"]
         rg.set_resnames(new)
 
         assert_equal(all(rg.resnames == new), True)
@@ -224,7 +244,7 @@ class TestResidueGroup(object):
     @pytest.mark.skip
     def test_set_resname_ValueError(self, universe):
         rg = universe.residues[:3]
-        new = ['a', 'b', 'c', 'd']
+        new = ["a", "b", "c", "d"]
 
         with pytest.raises(ValueError):
             rg.set_resnames(new)
@@ -241,21 +261,31 @@ class TestResidueGroup(object):
         nres_new = universe.atoms.n_residues
         r_merged = universe.select_atoms("resid 12:14").residues
         natoms_new = universe.select_atoms("resid 12").n_atoms
-        assert_equal(len(r_merged), 1, err_msg="set_resid failed to merge "
-                                               "residues: merged = {0}".format(
-            r_merged))
-        assert_equal(nres_new, nres_old - 2,
-                     err_msg="set_resid failed to merge residues: "
-                             "merged = {0}".format(r_merged))
-        assert_equal(natoms_new, natoms_old, err_msg="set_resid lost atoms "
-                                                     "on merge".format(
-            r_merged))
+        assert_equal(
+            len(r_merged),
+            1,
+            err_msg="set_resid failed to merge "
+            "residues: merged = {0}".format(r_merged),
+        )
+        assert_equal(
+            nres_new,
+            nres_old - 2,
+            err_msg="set_resid failed to merge residues: "
+            "merged = {0}".format(r_merged),
+        )
+        assert_equal(
+            natoms_new,
+            natoms_old,
+            err_msg="set_resid lost atoms " "on merge".format(r_merged),
+        )
 
-        assert_equal(universe.residues.n_residues,
-                     universe.atoms.n_residues,
-                     err_msg="Universe.residues and Universe.atoms.n_residues "
-                             "do not agree after residue "
-                             "merge.")
+        assert_equal(
+            universe.residues.n_residues,
+            universe.atoms.n_residues,
+            err_msg="Universe.residues and Universe.atoms.n_residues "
+            "do not agree after residue "
+            "merge.",
+        )
 
     # INVALID: no `set_masses` method; use `masses` property directly
     @pytest.mark.skip
@@ -264,20 +294,25 @@ class TestResidueGroup(object):
         mass = 2.0
         rg.set_masses(mass)
         # check individual atoms
-        assert_equal([a.mass for a in rg.atoms],
-                     mass * np.ones(rg.n_atoms),
-                     err_msg="failed to set_mass H* atoms in resid 12:42 to {0}".format(
-                         mass))
+        assert_equal(
+            [a.mass for a in rg.atoms],
+            mass * np.ones(rg.n_atoms),
+            err_msg="failed to set_mass H* atoms in resid 12:42 to {0}".format(
+                mass
+            ),
+        )
 
     # VALID
     def test_atom_order(self, universe):
-        assert_equal(universe.residues.atoms.indices,
-                     sorted(universe.residues.atoms.indices))
+        assert_equal(
+            universe.residues.atoms.indices,
+            sorted(universe.residues.atoms.indices),
+        )
 
     def test_get_next_residue(self, rg):
         unsorted_rep_res = rg[[0, 1, 8, 3, 4, 0, 3, 1, -1]]
         next_res = unsorted_rep_res._get_next_residues_by_resid()
-        resids = list(unsorted_rep_res.resids+1)
+        resids = list(unsorted_rep_res.resids + 1)
         resids[-1] = None
         next_resids = [r.resid if r is not None else None for r in next_res]
         assert_equal(len(next_res), len(unsorted_rep_res))
@@ -286,7 +321,7 @@ class TestResidueGroup(object):
     def test_get_prev_residue(self, rg):
         unsorted_rep_res = rg[[0, 1, 8, 3, 4, 0, 3, 1, -1]]
         prev_res = unsorted_rep_res._get_prev_residues_by_resid()
-        resids = list(unsorted_rep_res.resids-1)
+        resids = list(unsorted_rep_res.resids - 1)
         resids[0] = resids[5] = None
         prev_resids = [r.resid if r is not None else None for r in prev_res]
         assert_equal(len(prev_res), len(unsorted_rep_res))

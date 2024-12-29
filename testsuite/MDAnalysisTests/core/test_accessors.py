@@ -25,8 +25,9 @@ import MDAnalysis as mda
 from MDAnalysisTests.util import import_not_available
 
 
-requires_rdkit = pytest.mark.skipif(import_not_available("rdkit"),
-                                    reason="requires RDKit")
+requires_rdkit = pytest.mark.skipif(
+    import_not_available("rdkit"), reason="requires RDKit"
+)
 
 
 @requires_rdkit
@@ -52,20 +53,25 @@ class TestConvertTo:
 
 class TestAccessor:
     def test_access_from_class(self):
-        assert (mda.core.AtomGroup.convert_to is
-                mda.core.accessors.ConverterWrapper)
+        assert (
+            mda.core.AtomGroup.convert_to
+            is mda.core.accessors.ConverterWrapper
+        )
 
 
 class TestConverterWrapper:
     def test_raises_valueerror(self):
         u = mda.Universe.empty(1)
-        with pytest.raises(ValueError,
-                           match="No 'mdanalysis' converter found"):
+        with pytest.raises(
+            ValueError, match="No 'mdanalysis' converter found"
+        ):
             u.atoms.convert_to("mdanalysis")
 
     @requires_rdkit
     def test_single_instance(self):
         u1 = mda.Universe.from_smiles("C")
         u2 = mda.Universe.from_smiles("CC")
-        assert (u1.atoms.convert_to.rdkit.__wrapped__ is
-                u2.atoms.convert_to.rdkit.__wrapped__)
+        assert (
+            u1.atoms.convert_to.rdkit.__wrapped__
+            is u2.atoms.convert_to.rdkit.__wrapped__
+        )

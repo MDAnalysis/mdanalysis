@@ -142,6 +142,7 @@ tables\.py
 | MDAnalysis/coordinates/.*\.py
 | MDAnalysis/tests/.*\.py
 | MDAnalysis/selections/.*\.py
+| MDAnalysis/core/.*\.py
 )
 '''
 extend-exclude = '''
