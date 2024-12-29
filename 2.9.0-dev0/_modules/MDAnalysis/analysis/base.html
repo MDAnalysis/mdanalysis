@@ -301,7 +301,12 @@
 <span class="kn">from</span> <span class="nn">..core.groups</span> <span class="kn">import</span> <span class="n">AtomGroup</span>
 <span class="kn">from</span> <span class="nn">..lib.log</span> <span class="kn">import</span> <span class="n">ProgressBar</span>
 
-<span class="kn">from</span> <span class="nn">.backends</span> <span class="kn">import</span> <span class="n">BackendDask</span><span class="p">,</span> <span class="n">BackendMultiprocessing</span><span class="p">,</span> <span class="n">BackendSerial</span><span class="p">,</span> <span class="n">BackendBase</span>
+<span class="kn">from</span> <span class="nn">.backends</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">BackendDask</span><span class="p">,</span>
+    <span class="n">BackendMultiprocessing</span><span class="p">,</span>
+    <span class="n">BackendSerial</span><span class="p">,</span>
+    <span class="n">BackendBase</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">.results</span> <span class="kn">import</span> <span class="n">Results</span><span class="p">,</span> <span class="n">ResultsGroup</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
@@ -435,10 +440,10 @@
         <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;serial&quot;</span><span class="p">,)</span></div>
 
 
-    <span class="c1"># class authors: override _analysis_algorithm_is_parallelizable </span>
-    <span class="c1"># in derived classes and only set to True if you have confirmed </span>
-    <span class="c1"># that your algorithm works reliably when parallelized with </span>
-    <span class="c1"># the split-apply-combine approach (see docs)   </span>
+    <span class="c1"># class authors: override _analysis_algorithm_is_parallelizable</span>
+    <span class="c1"># in derived classes and only set to True if you have confirmed</span>
+    <span class="c1"># that your algorithm works reliably when parallelized with</span>
+    <span class="c1"># the split-apply-combine approach (see docs)</span>
     <span class="n">_analysis_algorithm_is_parallelizable</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="nd">@property</span>
@@ -448,13 +453,13 @@
 <span class="sd">        :meth:`_single_frame` to multiple workers and then combine them with a</span>
 <span class="sd">        proper :meth:`_conclude` call. If set to ``False``, no backends except</span>
 <span class="sd">        for ``serial`` are supported.</span>
-<span class="sd">        </span>
+
 <span class="sd">        .. note::   If you want to check parallelizability of the whole class, without</span>
 <span class="sd">                    explicitly creating an instance of the class, see</span>
 <span class="sd">                    :attr:`_analysis_algorithm_is_parallelizable`. Note that you</span>
 <span class="sd">                    setting it to other value will break things if the algorithm</span>
 <span class="sd">                    behind the analysis is not trivially parallelizable.</span>
-<span class="sd">        </span>
+
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -474,9 +479,9 @@
 
 <div class="viewcode-block" id="AnalysisBase._define_run_frames">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/base.html#MDAnalysis.analysis.base.AnalysisBase._define_run_frames">[docs]</a>
-    <span class="k">def</span> <span class="nf">_define_run_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">,</span>
-                           <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">None</span>
-                           <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">slice</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">_define_run_frames</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">slice</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Defines limits for the whole run, as passed by self.run() arguments</span>
 
 <span class="sd">        Parameters</span>
@@ -511,10 +516,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span> <span class="o">=</span> <span class="n">trajectory</span>
         <span class="k">if</span> <span class="n">frames</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">opt</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="p">[</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">]):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;start/stop/step cannot be combined with frames&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;start/stop/step cannot be combined with frames&quot;</span>
+                <span class="p">)</span>
             <span class="n">slicer</span> <span class="o">=</span> <span class="n">frames</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span> <span class="o">=</span> <span class="n">trajectory</span><span class="o">.</span><span class="n">check_slice_indices</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+            <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span> <span class="o">=</span> <span class="n">trajectory</span><span class="o">.</span><span class="n">check_slice_indices</span><span class="p">(</span>
+                <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span>
+            <span class="p">)</span>
             <span class="n">slicer</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span>
         <span class="k">return</span> <span class="n">slicer</span></div>
@@ -543,7 +552,9 @@
 
 <div class="viewcode-block" id="AnalysisBase._setup_frames">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/base.html#MDAnalysis.analysis.base.AnalysisBase._setup_frames">[docs]</a>
-    <span class="k">def</span> <span class="nf">_setup_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_setup_frames</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Pass a Reader object and define the desired iteration pattern</span>
 <span class="sd">        through the trajectory</span>
 
@@ -572,11 +583,11 @@
 
 <span class="sd">        .. versionchanged:: 1.0.0</span>
 <span class="sd">            Added .frames and .times arrays as attributes</span>
-<span class="sd">            </span>
+
 <span class="sd">        .. versionchanged:: 2.2.0</span>
 <span class="sd">            Added ability to iterate through trajectory by passing a list of</span>
 <span class="sd">            frame indices in the `frames` keyword argument</span>
-<span class="sd">            </span>
+
 <span class="sd">        .. versionchanged:: 2.8.0</span>
 <span class="sd">            Split function into two: :meth:`_define_run_frames` and</span>
 <span class="sd">            :meth:`_prepare_sliced_trajectory`: first one defines the limits</span>
@@ -611,8 +622,8 @@
 <a class="viewcode-back" href="../../../documentation_pages/analysis/base.html#MDAnalysis.analysis.base.AnalysisBase._prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Set things up before the analysis loop begins. </span>
-<span class="sd">        </span>
+<span class="sd">        Set things up before the analysis loop begins.</span>
+
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
 <span class="sd">        ``self.results`` is initialized already in :meth:`self.__init__` with an</span>
@@ -644,9 +655,13 @@
 
 <div class="viewcode-block" id="AnalysisBase._compute">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/base.html#MDAnalysis.analysis.base.AnalysisBase._compute">[docs]</a>
-    <span class="k">def</span> <span class="nf">_compute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indexed_frames</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-                 <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="o">*</span><span class="p">,</span> <span class="n">progressbar_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;AnalysisBase&quot;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_compute</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">indexed_frames</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">progressbar_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;AnalysisBase&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform the calculation on a balanced slice of frames</span>
 <span class="sd">        that have been setup prior to that using _setup_computation_groups()</span>
 
@@ -671,7 +686,9 @@
             <span class="n">progressbar_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Choosing frames to analyze&quot;</span><span class="p">)</span>
         <span class="c1"># if verbose unchanged, use class default</span>
-        <span class="n">verbose</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_verbose&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="k">if</span> <span class="n">verbose</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">verbose</span>
+        <span class="n">verbose</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_verbose&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="k">if</span> <span class="n">verbose</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">verbose</span>
+        <span class="p">)</span>
 
         <span class="n">frames</span> <span class="o">=</span> <span class="n">indexed_frames</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
 
@@ -681,10 +698,11 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># if `frames` were empty in `run` or `stop=0`</span>
             <span class="k">return</span> <span class="bp">self</span>
 
-        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ProgressBar</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="p">,</span>
-                <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
-                <span class="o">**</span><span class="n">progressbar_kwargs</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+            <span class="n">ProgressBar</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="o">**</span><span class="n">progressbar_kwargs</span>
+            <span class="p">)</span>
+        <span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span> <span class="o">=</span> <span class="n">idx</span>  <span class="c1"># accessed later by subclasses</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span> <span class="o">=</span> <span class="n">ts</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span>
@@ -697,9 +715,12 @@
 <div class="viewcode-block" id="AnalysisBase._setup_computation_groups">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/base.html#MDAnalysis.analysis.base.AnalysisBase._setup_computation_groups">[docs]</a>
     <span class="k">def</span> <span class="nf">_setup_computation_groups</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">n_parts</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">frames</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">slice</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">n_parts</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">stop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">step</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">frames</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">slice</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Splits the trajectory frames, defined by ``start/stop/step`` or</span>
@@ -736,7 +757,9 @@
 <span class="sd">        .. versionadded:: 2.8.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">frames</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="o">.</span><span class="n">check_slice_indices</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+            <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="o">.</span><span class="n">check_slice_indices</span><span class="p">(</span>
+                <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span>
+            <span class="p">)</span>
             <span class="n">used_frames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">opt</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="p">[</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">]):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;start/stop/step cannot be combined with frames&quot;</span><span class="p">)</span>
@@ -748,14 +771,18 @@
             <span class="n">used_frames</span> <span class="o">=</span> <span class="n">arange</span><span class="p">[</span><span class="n">used_frames</span><span class="p">]</span>
 
         <span class="c1"># similar to list(enumerate(frames))</span>
-        <span class="n">enumerated_frames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">used_frames</span><span class="p">)),</span> <span class="n">used_frames</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">enumerated_frames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">used_frames</span><span class="p">)),</span> <span class="n">used_frames</span><span class="p">]</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">T</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">enumerated_frames</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)]</span>
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">enumerated_frames</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">n_parts</span><span class="p">:</span>
             <span class="c1"># Issue #4685</span>
             <span class="n">n_parts</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">enumerated_frames</span><span class="p">)</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Set `n_parts` to </span><span class="si">{</span><span class="n">n_parts</span><span class="si">}</span><span class="s2"> to match the total &quot;</span>
-                          <span class="s2">&quot;number of frames being analyzed&quot;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Set `n_parts` to </span><span class="si">{</span><span class="n">n_parts</span><span class="si">}</span><span class="s2"> to match the total &quot;</span>
+                <span class="s2">&quot;number of frames being analyzed&quot;</span>
+            <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">enumerated_frames</span><span class="p">,</span> <span class="n">n_parts</span><span class="p">)</span></div>
 
@@ -763,11 +790,11 @@
 <div class="viewcode-block" id="AnalysisBase._configure_backend">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/base.html#MDAnalysis.analysis.base.AnalysisBase._configure_backend">[docs]</a>
     <span class="k">def</span> <span class="nf">_configure_backend</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">backend</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BackendBase</span><span class="p">],</span>
-            <span class="n">n_workers</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-            <span class="n">unsupported_backend</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BackendBase</span><span class="p">:</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">backend</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BackendBase</span><span class="p">],</span>
+        <span class="n">n_workers</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">unsupported_backend</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BackendBase</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Matches a passed backend string value with class attributes</span>
 <span class="sd">        :attr:`parallelizable` and :meth:`get_supported_backends()`</span>
 <span class="sd">        to check if downstream calculations can be performed.</span>
@@ -815,13 +842,12 @@
         <span class="n">builtin_backends</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;serial&quot;</span><span class="p">:</span> <span class="n">BackendSerial</span><span class="p">,</span>
             <span class="s2">&quot;multiprocessing&quot;</span><span class="p">:</span> <span class="n">BackendMultiprocessing</span><span class="p">,</span>
-            <span class="s2">&quot;dask&quot;</span><span class="p">:</span> <span class="n">BackendDask</span>
+            <span class="s2">&quot;dask&quot;</span><span class="p">:</span> <span class="n">BackendDask</span><span class="p">,</span>
         <span class="p">}</span>
 
         <span class="n">backend_class</span> <span class="o">=</span> <span class="n">builtin_backends</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="n">backend</span><span class="p">)</span>
         <span class="n">supported_backend_classes</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">builtin_backends</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_supported_backends</span><span class="p">()</span>
+            <span class="n">builtin_backends</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_supported_backends</span><span class="p">()</span>
         <span class="p">]</span>
 
         <span class="c1"># check for serial-only classes</span>
@@ -829,20 +855,28 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Can not parallelize class </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># make sure user enabled &#39;unsupported_backend=True&#39; for custom classes</span>
-        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">unsupported_backend</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">parallelizable</span>
-                <span class="ow">and</span> <span class="n">backend_class</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">supported_backend_classes</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span>
-                <span class="sa">f</span><span class="s2">&quot;Must specify &#39;unsupported_backend=True&#39;&quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;if you want to use a custom </span><span class="si">{</span><span class="n">backend_class</span><span class="si">=}</span><span class="s2"> for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="p">))</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="n">unsupported_backend</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">parallelizable</span>
+            <span class="ow">and</span> <span class="n">backend_class</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">supported_backend_classes</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Must specify &#39;unsupported_backend=True&#39;&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;if you want to use a custom </span><span class="si">{</span><span class="n">backend_class</span><span class="si">=}</span><span class="s2"> for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
 
         <span class="c1"># check for the presence of parallelizable transformations</span>
         <span class="k">if</span> <span class="n">backend_class</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">BackendSerial</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span>
-                <span class="ow">not</span> <span class="n">t</span><span class="o">.</span><span class="n">parallelizable</span>
-                <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="o">.</span><span class="n">transformations</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span>
-                <span class="s2">&quot;Trajectory should not have &quot;</span>
-                <span class="s2">&quot;associated unparallelizable transformations&quot;</span><span class="p">))</span>
+            <span class="ow">not</span> <span class="n">t</span><span class="o">.</span><span class="n">parallelizable</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="o">.</span><span class="n">transformations</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="p">(</span>
+                    <span class="s2">&quot;Trajectory should not have &quot;</span>
+                    <span class="s2">&quot;associated unparallelizable transformations&quot;</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
 
         <span class="c1"># conclude mapping from string to backend class if it&#39;s a builtin backend</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -852,21 +886,27 @@
         <span class="k">if</span> <span class="p">(</span>
             <span class="nb">isinstance</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="n">BackendBase</span><span class="p">)</span>
             <span class="ow">and</span> <span class="n">n_workers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-            <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="s1">&#39;n_workers&#39;</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="s2">&quot;n_workers&quot;</span><span class="p">)</span>
             <span class="ow">and</span> <span class="n">backend</span><span class="o">.</span><span class="n">n_workers</span> <span class="o">!=</span> <span class="n">n_workers</span>
         <span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span>
-                <span class="sa">f</span><span class="s2">&quot;n_workers specified twice: in </span><span class="si">{</span><span class="n">backend</span><span class="o">.</span><span class="n">n_workers</span><span class="si">=}</span><span class="s2">&quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;and in run(</span><span class="si">{</span><span class="n">n_workers</span><span class="si">=}</span><span class="s2">). Remove it from run()&quot;</span>
-            <span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;n_workers specified twice: in </span><span class="si">{</span><span class="n">backend</span><span class="o">.</span><span class="n">n_workers</span><span class="si">=}</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;and in run(</span><span class="si">{</span><span class="n">n_workers</span><span class="si">=}</span><span class="s2">). Remove it from run()&quot;</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
 
         <span class="c1"># or pass along an instance of the class itself</span>
         <span class="c1"># after ensuring it has apply method</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="n">BackendBase</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="s2">&quot;apply&quot;</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">backend</span><span class="si">=}</span><span class="s2"> is invalid: should have &#39;apply&#39; method &quot;</span>
-                <span class="s2">&quot;and be instance of MDAnalysis.analysis.backends.BackendBase&quot;</span>
-            <span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="n">BackendBase</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span>
+            <span class="n">backend</span><span class="p">,</span> <span class="s2">&quot;apply&quot;</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">backend</span><span class="si">=}</span><span class="s2"> is invalid: should have &#39;apply&#39; method &quot;</span>
+                    <span class="s2">&quot;and be instance of MDAnalysis.analysis.backends.BackendBase&quot;</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
         <span class="k">return</span> <span class="n">backend</span></div>
 
 
@@ -951,18 +991,23 @@
         <span class="c1"># default to serial execution</span>
         <span class="n">backend</span> <span class="o">=</span> <span class="s2">&quot;serial&quot;</span> <span class="k">if</span> <span class="n">backend</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">backend</span>
 
-        <span class="n">progressbar_kwargs</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">progressbar_kwargs</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">progressbar_kwargs</span>
-        <span class="k">if</span> <span class="p">((</span><span class="n">progressbar_kwargs</span> <span class="ow">or</span> <span class="n">verbose</span><span class="p">)</span> <span class="ow">and</span> 
-            <span class="ow">not</span> <span class="p">(</span><span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;serial&quot;</span> <span class="ow">or</span> 
-            <span class="nb">isinstance</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="n">BackendSerial</span><span class="p">))):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Can not display progressbar with non-serial backend&quot;</span><span class="p">)</span>
+        <span class="n">progressbar_kwargs</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">{}</span> <span class="k">if</span> <span class="n">progressbar_kwargs</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">progressbar_kwargs</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">progressbar_kwargs</span> <span class="ow">or</span> <span class="n">verbose</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span>
+            <span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;serial&quot;</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="n">BackendSerial</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Can not display progressbar with non-serial backend&quot;</span>
+            <span class="p">)</span>
 
         <span class="c1"># if number of workers not specified, try getting the number from</span>
         <span class="c1"># the backend instance if possible, or set to 1</span>
         <span class="k">if</span> <span class="n">n_workers</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">n_workers</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="n">backend</span><span class="o">.</span><span class="n">n_workers</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="n">BackendBase</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="s2">&quot;n_workers&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="n">BackendBase</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="s2">&quot;n_workers&quot;</span><span class="p">)</span>
                 <span class="k">else</span> <span class="mi">1</span>
             <span class="p">)</span>
 
@@ -974,22 +1019,31 @@
         <span class="n">executor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_configure_backend</span><span class="p">(</span>
             <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span>
             <span class="n">n_workers</span><span class="o">=</span><span class="n">n_workers</span><span class="p">,</span>
-            <span class="n">unsupported_backend</span><span class="o">=</span><span class="n">unsupported_backend</span><span class="p">)</span>
+            <span class="n">unsupported_backend</span><span class="o">=</span><span class="n">unsupported_backend</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="k">if</span> <span class="p">(</span>
             <span class="nb">hasattr</span><span class="p">(</span><span class="n">executor</span><span class="p">,</span> <span class="s2">&quot;n_workers&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">n_parts</span> <span class="o">&lt;</span> <span class="n">executor</span><span class="o">.</span><span class="n">n_workers</span>
         <span class="p">):</span>  <span class="c1"># using executor&#39;s value here for non-default executors</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">((</span>
-                <span class="sa">f</span><span class="s2">&quot;Analysis not making use of all workers: &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">executor</span><span class="o">.</span><span class="n">n_workers</span><span class="si">=}</span><span class="s2"> is greater than </span><span class="si">{</span><span class="n">n_parts</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">))</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Analysis not making use of all workers: &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">executor</span><span class="o">.</span><span class="n">n_workers</span><span class="si">=}</span><span class="s2"> is greater than </span><span class="si">{</span><span class="n">n_parts</span><span class="si">=}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
 
         <span class="c1"># start preparing the run</span>
         <span class="n">worker_func</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_compute</span><span class="p">,</span>
             <span class="n">progressbar_kwargs</span><span class="o">=</span><span class="n">progressbar_kwargs</span><span class="p">,</span>
-            <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+            <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_setup_frames</span><span class="p">(</span>
             <span class="n">trajectory</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="p">,</span>
-            <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="n">frames</span><span class="p">)</span>
+            <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
+            <span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">,</span>
+            <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span>
+            <span class="n">frames</span><span class="o">=</span><span class="n">frames</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">computation_groups</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_setup_computation_groups</span><span class="p">(</span>
             <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="n">frames</span><span class="p">,</span> <span class="n">n_parts</span><span class="o">=</span><span class="n">n_parts</span>
         <span class="p">)</span>
@@ -998,7 +1052,8 @@
         <span class="c1"># we need `AnalysisBase` classes</span>
         <span class="c1"># since they hold `frames`, `times` and `results` attributes</span>
         <span class="n">remote_objects</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="s2">&quot;AnalysisBase&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">executor</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
-            <span class="n">worker_func</span><span class="p">,</span> <span class="n">computation_groups</span><span class="p">)</span>
+            <span class="n">worker_func</span><span class="p">,</span> <span class="n">computation_groups</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">frames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">obj</span><span class="o">.</span><span class="n">frames</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">remote_objects</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">obj</span><span class="o">.</span><span class="n">times</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">remote_objects</span><span class="p">])</span>
 
@@ -1097,8 +1152,9 @@
 
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">trajectory</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">trajectory</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span>
-                <span class="n">trajectory</span><span class="p">,</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">ProtoReader</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">trajectory</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">ProtoReader</span><span class="p">)</span>
+        <span class="p">):</span>
             <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">trajectory</span><span class="p">,)</span> <span class="o">+</span> <span class="n">args</span>
             <span class="n">trajectory</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -1134,7 +1190,9 @@
 <div class="viewcode-block" id="AnalysisFromFunction._single_frame">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/base.html#MDAnalysis.analysis.base.AnalysisFromFunction._single_frame">[docs]</a>
     <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">))</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AnalysisFromFunction._conclude">
@@ -1202,7 +1260,9 @@
 
     <span class="k">class</span> <span class="nc">WrapperClass</span><span class="p">(</span><span class="n">AnalysisFromFunction</span><span class="p">):</span>
         <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trajectory</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-            <span class="nb">super</span><span class="p">(</span><span class="n">WrapperClass</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">WrapperClass</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+                <span class="n">function</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+            <span class="p">)</span>
 
         <span class="nd">@classmethod</span>
         <span class="k">def</span> <span class="nf">get_supported_backends</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
@@ -1249,8 +1309,9 @@
     <span class="n">n_base_defaults</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">base_argspec</span><span class="o">.</span><span class="n">defaults</span><span class="p">)</span>
     <span class="n">base_kwargs</span> <span class="o">=</span> <span class="p">{</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">val</span>
-        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">base_argspec</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="o">-</span><span class="n">n_base_defaults</span><span class="p">:],</span>
-                             <span class="n">base_argspec</span><span class="o">.</span><span class="n">defaults</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+            <span class="n">base_argspec</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="o">-</span><span class="n">n_base_defaults</span><span class="p">:],</span> <span class="n">base_argspec</span><span class="o">.</span><span class="n">defaults</span>
+        <span class="p">)</span>
     <span class="p">}</span>
 
     <span class="k">try</span><span class="p">:</span>

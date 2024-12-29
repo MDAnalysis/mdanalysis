@@ -207,7 +207,7 @@
 
 <span class="sd">    elements : numpy.array</span>
 <span class="sd">        array containing the cluster elements.</span>
-<span class="sd">   &quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elem_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">centroid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">idn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Class constructor. If elem_list is None, an empty cluster is created</span>
@@ -229,7 +229,7 @@
 <span class="sd">            metadata, one value for each cluster element. The iterable</span>
 <span class="sd">            must have the same length as the elements array.</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">idn</span>
 
@@ -243,16 +243,20 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">elements</span> <span class="o">=</span> <span class="n">elem_list</span>
         <span class="k">if</span> <span class="n">centroid</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">LookupError</span><span class="p">(</span><span class="s2">&quot;Centroid of cluster not found in the element list&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">LookupError</span><span class="p">(</span>
+                <span class="s2">&quot;Centroid of cluster not found in the element list&quot;</span>
+            <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">centroid</span> <span class="o">=</span> <span class="n">centroid</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">metadata</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">metadata</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Size of metadata having label &quot;</span><span class="si">{0}</span><span class="s1">&quot; &#39;</span>
-                                    <span class="s1">&#39;is not equal to the number of cluster &#39;</span>
-                                    <span class="s1">&#39;elements&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                        <span class="s1">&#39;Size of metadata having label &quot;</span><span class="si">{0}</span><span class="s1">&quot; &#39;</span>
+                        <span class="s2">&quot;is not equal to the number of cluster &quot;</span>
+                        <span class="s2">&quot;elements&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+                    <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_metadata</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -269,8 +273,10 @@
 
     <span class="k">def</span> <span class="nf">add_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Size of metadata is not equal to the number of &quot;</span>
-                            <span class="s2">&quot;cluster elements&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;Size of metadata is not equal to the number of &quot;</span>
+                <span class="s2">&quot;cluster elements&quot;</span>
+            <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -281,9 +287,9 @@
             <span class="k">return</span> <span class="s2">&quot;&lt;Cluster with no elements&gt;&quot;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="s2">&quot;&lt;Cluster with </span><span class="si">{0}</span><span class="s2"> elements, centroid=</span><span class="si">{1}</span><span class="s2">, id=</span><span class="si">{2}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                                                               <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span>
-                                                               <span class="bp">self</span><span class="o">.</span><span class="n">centroid</span><span class="p">,</span>
-                                                               <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+                <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">centroid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+            <span class="p">)</span></div>
+
 
 
 <div class="viewcode-block" id="ClusterCollection">
@@ -299,38 +305,38 @@
 <span class="sd">    clusters : list</span>
 <span class="sd">        list of of Cluster objects which are part of the Cluster collection</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elements</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Class constructor. If elements is None, an empty cluster collection</span>
-<span class="sd">            will be created. Otherwise, the constructor takes as input an</span>
-<span class="sd">            iterable of ints, for instance:</span>
+<span class="sd">        will be created. Otherwise, the constructor takes as input an</span>
+<span class="sd">        iterable of ints, for instance:</span>
 
-<span class="sd">            [ a, a, a, a, b, b, b, c, c, ... , z, z ]</span>
+<span class="sd">        [ a, a, a, a, b, b, b, c, c, ... , z, z ]</span>
 
-<span class="sd">            the variables a,b,c,...,z are cluster centroids, here as cluster</span>
-<span class="sd">            element numbers (i.e. 3 means the 4th element of the ordered input</span>
-<span class="sd">            for clustering). The array maps a correspondence between</span>
-<span class="sd">            cluster elements (which are implicitly associated with the</span>
-<span class="sd">            position in the array) with centroids, i. e. defines clusters.</span>
-<span class="sd">            For instance:</span>
+<span class="sd">        the variables a,b,c,...,z are cluster centroids, here as cluster</span>
+<span class="sd">        element numbers (i.e. 3 means the 4th element of the ordered input</span>
+<span class="sd">        for clustering). The array maps a correspondence between</span>
+<span class="sd">        cluster elements (which are implicitly associated with the</span>
+<span class="sd">        position in the array) with centroids, i. e. defines clusters.</span>
+<span class="sd">        For instance:</span>
 
-<span class="sd">            [ 1, 1, 1, 4, 4, 5 ]</span>
+<span class="sd">        [ 1, 1, 1, 4, 4, 5 ]</span>
 
-<span class="sd">            means that elements 0, 1, 2 form a cluster which has 1 as centroid,</span>
-<span class="sd">            elements 3 and 4 form a cluster which has 4 as centroid, and</span>
-<span class="sd">            element 5 has its own cluster.</span>
+<span class="sd">        means that elements 0, 1, 2 form a cluster which has 1 as centroid,</span>
+<span class="sd">        elements 3 and 4 form a cluster which has 4 as centroid, and</span>
+<span class="sd">        element 5 has its own cluster.</span>
 
 
-<span class="sd">            Parameters</span>
-<span class="sd">            ----------</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
 
-<span class="sd">            elements : iterable of ints or None</span>
-<span class="sd">                clustering results. See the previous description for details</span>
+<span class="sd">        elements : iterable of ints or None</span>
+<span class="sd">            clustering results. See the previous description for details</span>
 
-<span class="sd">            metadata : {str:list, str:list,...} or None</span>
-<span class="sd">                metadata for the data elements. The list must be of the same</span>
-<span class="sd">                size as the elements array, with one value per element.</span>
+<span class="sd">        metadata : {str:list, str:list,...} or None</span>
+<span class="sd">            metadata for the data elements. The list must be of the same</span>
+<span class="sd">            size as the elements array, with one value per element.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">idn</span> <span class="o">=</span> <span class="mi">0</span>
@@ -345,9 +351,10 @@
         <span class="n">centroids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">elements_array</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">centroids</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">elements</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">i</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;element </span><span class="si">{0}</span><span class="s2">, which is a centroid, doesn&#39;t &quot;</span>
-                                 <span class="s2">&quot;belong to its own cluster&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                                     <span class="n">elements</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;element </span><span class="si">{0}</span><span class="s2">, which is a centroid, doesn&#39;t &quot;</span>
+                    <span class="s2">&quot;belong to its own cluster&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">elements</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="p">)</span>
         <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">centroids</span><span class="p">:</span>
             <span class="n">this_metadata</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="n">this_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">elements_array</span> <span class="o">==</span> <span class="n">c</span><span class="p">)</span>
@@ -355,8 +362,13 @@
                 <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">metadata</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                     <span class="n">this_metadata</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">v</span><span class="p">)[</span><span class="n">this_array</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">clusters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="n">Cluster</span><span class="p">(</span><span class="n">elem_list</span><span class="o">=</span><span class="n">this_array</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">idn</span><span class="o">=</span><span class="n">idn</span><span class="p">,</span> <span class="n">centroid</span><span class="o">=</span><span class="n">c</span><span class="p">,</span>
-                        <span class="n">metadata</span><span class="o">=</span><span class="n">this_metadata</span><span class="p">))</span>
+                <span class="n">Cluster</span><span class="p">(</span>
+                    <span class="n">elem_list</span><span class="o">=</span><span class="n">this_array</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="n">idn</span><span class="o">=</span><span class="n">idn</span><span class="p">,</span>
+                    <span class="n">centroid</span><span class="o">=</span><span class="n">c</span><span class="p">,</span>
+                    <span class="n">metadata</span><span class="o">=</span><span class="n">this_metadata</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
 
             <span class="n">idn</span> <span class="o">+=</span> <span class="mi">1</span>
 
@@ -412,7 +424,8 @@
             <span class="k">return</span> <span class="s2">&quot;&lt;ClusterCollection with no clusters&gt;&quot;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="s2">&quot;&lt;ClusterCollection with </span><span class="si">{0}</span><span class="s2"> clusters&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                                             <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">clusters</span><span class="p">))</span></div>
+                <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">clusters</span><span class="p">)</span>
+            <span class="p">)</span></div>
 
 </pre></div>
 

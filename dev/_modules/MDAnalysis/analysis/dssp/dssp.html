@@ -439,7 +439,6 @@
         <span class="p">)</span></div>
 
 
-
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">atoms</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Universe</span><span class="p">,</span> <span class="n">AtomGroup</span><span class="p">],</span>
@@ -464,14 +463,15 @@
             <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">heavyatom_names</span>
         <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_hydrogens</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="s2">&quot;AtomGroup&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">res</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;name </span><span class="si">{</span><span class="n">hydrogen_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">ag</span><span class="o">.</span><span class="n">residues</span>
+            <span class="n">res</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;name </span><span class="si">{</span><span class="n">hydrogen_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">ag</span><span class="o">.</span><span class="n">residues</span>
         <span class="p">]</span>
         <span class="c1"># can&#39;t do it the other way because I need missing values to exist</span>
         <span class="c1"># so that I could fill them in later</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_guess_hydrogens</span><span class="p">:</span>
             <span class="c1"># zip() assumes that _heavy_atoms and _hydrogens is ordered in the</span>
             <span class="c1"># same way. This is true as long as the original AtomGroup ag is</span>
-            <span class="c1"># sorted. With the hard-coded protein selection for ag this is always </span>
+            <span class="c1"># sorted. With the hard-coded protein selection for ag this is always</span>
             <span class="c1"># true but if the code on L277 ever changes, make sure to sort first!</span>
             <span class="k">for</span> <span class="n">calpha</span><span class="p">,</span> <span class="n">hydrogen</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_heavy_atoms</span><span class="p">[</span><span class="s2">&quot;CA&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">:],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hydrogens</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
@@ -520,7 +520,9 @@
         <span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">positions</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_guess_hydrogens</span><span class="p">:</span>
-            <span class="n">guessed_h_coords</span> <span class="o">=</span> <span class="n">_get_hydrogen_atom_position</span><span class="p">(</span><span class="n">coords</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">guessed_h_coords</span> <span class="o">=</span> <span class="n">_get_hydrogen_atom_position</span><span class="p">(</span>
+                <span class="n">coords</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="p">)</span>
 
             <span class="n">h_coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
                 <span class="p">[</span>
@@ -548,6 +550,7 @@
         <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span>
             <span class="n">lookup</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;dssp_ndarray&quot;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">flatten_sequence</span><span class="p">},</span>
         <span class="p">)</span></div>
+
 
 
 <div class="viewcode-block" id="translate">

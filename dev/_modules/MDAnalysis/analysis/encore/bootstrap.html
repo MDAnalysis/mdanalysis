@@ -214,9 +214,13 @@
     <span class="n">indexes</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">ens</span> <span class="ow">in</span> <span class="n">ensemble_identifiers</span><span class="p">:</span>
         <span class="n">old_indexes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ensemble_assignment</span> <span class="o">==</span> <span class="n">ens</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">indexes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">old_indexes</span><span class="p">),</span>
-                                         <span class="n">high</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">old_indexes</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
-                                         <span class="n">size</span><span class="o">=</span><span class="n">old_indexes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="n">indexes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span>
+                <span class="n">low</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">old_indexes</span><span class="p">),</span>
+                <span class="n">high</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">old_indexes</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="n">size</span><span class="o">=</span><span class="n">old_indexes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
 
     <span class="n">indexes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">indexes</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">this_m</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
@@ -230,10 +234,9 @@
 
 <div class="viewcode-block" id="get_distance_matrix_bootstrap_samples">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/bootstrap.html#MDAnalysis.analysis.encore.bootstrap.get_distance_matrix_bootstrap_samples">[docs]</a>
-<span class="k">def</span> <span class="nf">get_distance_matrix_bootstrap_samples</span><span class="p">(</span><span class="n">distance_matrix</span><span class="p">,</span>
-                                          <span class="n">ensemble_assignment</span><span class="p">,</span>
-                                          <span class="n">samples</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-                                          <span class="n">ncores</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">get_distance_matrix_bootstrap_samples</span><span class="p">(</span>
+    <span class="n">distance_matrix</span><span class="p">,</span> <span class="n">ensemble_assignment</span><span class="p">,</span> <span class="n">samples</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">ncores</span><span class="o">=</span><span class="mi">1</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates distance matrices corresponding to bootstrapped ensembles, by</span>
 <span class="sd">    resampling with replacement.</span>
@@ -260,8 +263,9 @@
 <span class="sd">    confdistmatrix : list of encore.utils.TriangularMatrix</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">bs_args</span> <span class="o">=</span> \
-            <span class="p">[([</span><span class="n">distance_matrix</span><span class="p">,</span> <span class="n">ensemble_assignment</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">samples</span><span class="p">)]</span>
+    <span class="n">bs_args</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">([</span><span class="n">distance_matrix</span><span class="p">,</span> <span class="n">ensemble_assignment</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
+    <span class="p">]</span>
 
     <span class="n">pc</span> <span class="o">=</span> <span class="n">ParallelCalculation</span><span class="p">(</span><span class="n">ncores</span><span class="p">,</span> <span class="n">bootstrapped_matrix</span><span class="p">,</span> <span class="n">bs_args</span><span class="p">)</span>
 
@@ -275,8 +279,7 @@
 
 <div class="viewcode-block" id="get_ensemble_bootstrap_samples">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/bootstrap.html#MDAnalysis.analysis.encore.bootstrap.get_ensemble_bootstrap_samples">[docs]</a>
-<span class="k">def</span> <span class="nf">get_ensemble_bootstrap_samples</span><span class="p">(</span><span class="n">ensemble</span><span class="p">,</span>
-                                   <span class="n">samples</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">get_ensemble_bootstrap_samples</span><span class="p">(</span><span class="n">ensemble</span><span class="p">,</span> <span class="n">samples</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generates a bootstrapped ensemble by resampling with replacement.</span>
 
@@ -302,11 +305,15 @@
         <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span>
             <span class="n">low</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="n">high</span><span class="o">=</span><span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-            <span class="n">size</span><span class="o">=</span><span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">size</span><span class="o">=</span><span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="p">)</span>
         <span class="n">ensembles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-            <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">ensemble</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
-                        <span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">)[</span><span class="n">indices</span><span class="p">,:,:],</span>
-                         <span class="nb">format</span><span class="o">=</span><span class="n">mda</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">MemoryReader</span><span class="p">))</span>
+            <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span>
+                <span class="n">ensemble</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
+                <span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="s2">&quot;fac&quot;</span><span class="p">)[</span><span class="n">indices</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:],</span>
+                <span class="nb">format</span><span class="o">=</span><span class="n">mda</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">MemoryReader</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
     <span class="k">return</span> <span class="n">ensembles</span></div>
 
 </pre></div>

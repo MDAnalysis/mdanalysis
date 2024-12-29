@@ -303,8 +303,12 @@
 
 <span class="kn">import</span> <span class="nn">MDAnalysis</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.core</span> <span class="kn">import</span> <span class="n">groups</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="kn">import</span> <span class="p">(</span><span class="n">fixedwidth_bins</span><span class="p">,</span> <span class="n">iterable</span><span class="p">,</span> <span class="n">asiterable</span><span class="p">,</span>
-                                 <span class="n">deprecate</span><span class="p">,)</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">fixedwidth_bins</span><span class="p">,</span>
+    <span class="n">iterable</span><span class="p">,</span>
+    <span class="n">asiterable</span><span class="p">,</span>
+    <span class="n">deprecate</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib</span> <span class="kn">import</span> <span class="n">NeighborSearch</span> <span class="k">as</span> <span class="n">NS</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">NoDataError</span><span class="p">,</span> <span class="n">MissingDataWarning</span>
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">units</span>
@@ -544,19 +548,27 @@
 <span class="sd">       for parallel execution on :mod:`multiprocessing`</span>
 <span class="sd">       and :mod:`dask` backends.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">_analysis_algorithm_is_parallelizable</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="DensityAnalysis.get_supported_backends">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.DensityAnalysis.get_supported_backends">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_supported_backends</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;serial&#39;</span><span class="p">,</span> <span class="s1">&#39;multiprocessing&#39;</span><span class="p">,</span> <span class="s1">&#39;dask&#39;</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;serial&quot;</span><span class="p">,</span> <span class="s2">&quot;multiprocessing&quot;</span><span class="p">,</span> <span class="s2">&quot;dask&quot;</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroup</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
-                 <span class="n">metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
-                 <span class="n">gridcenter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">xdim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ydim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zdim</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">atomgroup</span><span class="p">,</span>
+        <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">padding</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+        <span class="n">gridcenter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">xdim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ydim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">zdim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="n">u</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">DensityAnalysis</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_atomgroup</span> <span class="o">=</span> <span class="n">atomgroup</span>
@@ -570,16 +582,19 @@
         <span class="c1"># The grid with its dimensions has to be set up in __init__</span>
         <span class="c1"># so that parallel analysis works correctly: each process</span>
         <span class="c1"># needs to have a results._grid of the same size and the</span>
-        <span class="c1"># same self._bins and self._arange (so this cannot happen </span>
-        <span class="c1"># in _prepare(), which is executed in parallel on different </span>
-        <span class="c1"># parts of the trajectory).                    </span>
+        <span class="c1"># same self._bins and self._arange (so this cannot happen</span>
+        <span class="c1"># in _prepare(), which is executed in parallel on different</span>
+        <span class="c1"># parts of the trajectory).</span>
         <span class="n">coord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atomgroup</span><span class="o">.</span><span class="n">positions</span>
-        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_gridcenter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span>
-                <span class="nb">any</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_xdim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ydim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_zdim</span><span class="p">])):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gridcenter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">(</span>
+            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_xdim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ydim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_zdim</span><span class="p">]</span>
+        <span class="p">):</span>
             <span class="c1"># Issue 2372: padding is ignored, defaults to 2.0 therefore warn</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_padding</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Box padding (currently set at </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_padding</span><span class="si">}</span><span class="s2">) &quot;</span>
-                       <span class="sa">f</span><span class="s2">&quot;is not used in user defined grids.&quot;</span><span class="p">)</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Box padding (currently set at </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_padding</span><span class="si">}</span><span class="s2">) &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;is not used in user defined grids.&quot;</span>
+                <span class="p">)</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="c1"># Generate a copy of smin/smax from coords to later check if the</span>
@@ -588,18 +603,25 @@
                 <span class="n">smin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
                 <span class="n">smax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-                <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;No atoms in AtomGroup at input time frame. &quot;</span>
-                       <span class="s2">&quot;This may be intended; please ensure that &quot;</span>
-                       <span class="s2">&quot;your grid selection covers the atomic &quot;</span>
-                       <span class="s2">&quot;positions you wish to capture.&quot;</span><span class="p">)</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="s2">&quot;No atoms in AtomGroup at input time frame. &quot;</span>
+                    <span class="s2">&quot;This may be intended; please ensure that &quot;</span>
+                    <span class="s2">&quot;your grid selection covers the atomic &quot;</span>
+                    <span class="s2">&quot;positions you wish to capture.&quot;</span>
+                <span class="p">)</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-                <span class="n">smin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gridcenter</span>     <span class="c1">#assigns limits to be later -</span>
-                <span class="n">smax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gridcenter</span>     <span class="c1">#overwritten by _set_user_grid</span>
+                <span class="n">smin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gridcenter</span>  <span class="c1"># assigns limits to be later -</span>
+                <span class="n">smax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gridcenter</span>  <span class="c1"># overwritten by _set_user_grid</span>
             <span class="c1"># Overwrite smin/smax with user defined values</span>
-            <span class="n">smin</span><span class="p">,</span> <span class="n">smax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_user_grid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_gridcenter</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xdim</span><span class="p">,</span>
-                                             <span class="bp">self</span><span class="o">.</span><span class="n">_ydim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_zdim</span><span class="p">,</span> <span class="n">smin</span><span class="p">,</span>
-                                             <span class="n">smax</span><span class="p">)</span>
+            <span class="n">smin</span><span class="p">,</span> <span class="n">smax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_user_grid</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_gridcenter</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_xdim</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ydim</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_zdim</span><span class="p">,</span>
+                <span class="n">smin</span><span class="p">,</span>
+                <span class="n">smax</span><span class="p">,</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Make the box bigger to avoid as much as possible &#39;outlier&#39;. This</span>
             <span class="c1"># is important if the sites are defined at a high density: in this</span>
@@ -612,18 +634,21 @@
                 <span class="n">smin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_padding</span>
                 <span class="n">smax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_padding</span>
             <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-                <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;No atoms in AtomGroup at input time frame. &quot;</span>
-                          <span class="s2">&quot;Grid for density could not be automatically&quot;</span>
-                          <span class="s2">&quot; generated. If this is expected, a user&quot;</span>
-                          <span class="s2">&quot; defined grid will need to be &quot;</span>
-                          <span class="s2">&quot;provided instead.&quot;</span><span class="p">)</span>
+                <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="s2">&quot;No atoms in AtomGroup at input time frame. &quot;</span>
+                    <span class="s2">&quot;Grid for density could not be automatically&quot;</span>
+                    <span class="s2">&quot; generated. If this is expected, a user&quot;</span>
+                    <span class="s2">&quot; defined grid will need to be &quot;</span>
+                    <span class="s2">&quot;provided instead.&quot;</span>
+                <span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
         <span class="n">BINS</span> <span class="o">=</span> <span class="n">fixedwidth_bins</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_delta</span><span class="p">,</span> <span class="n">smin</span><span class="p">,</span> <span class="n">smax</span><span class="p">)</span>
-        <span class="n">arange</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">BINS</span><span class="p">[</span><span class="s1">&#39;min&#39;</span><span class="p">],</span> <span class="n">BINS</span><span class="p">[</span><span class="s1">&#39;max&#39;</span><span class="p">])))</span>
-        <span class="n">bins</span> <span class="o">=</span> <span class="n">BINS</span><span class="p">[</span><span class="s1">&#39;Nbins&#39;</span><span class="p">]</span>
+        <span class="n">arange</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">BINS</span><span class="p">[</span><span class="s2">&quot;min&quot;</span><span class="p">],</span> <span class="n">BINS</span><span class="p">[</span><span class="s2">&quot;max&quot;</span><span class="p">])))</span>
+        <span class="n">bins</span> <span class="o">=</span> <span class="n">BINS</span><span class="p">[</span><span class="s2">&quot;Nbins&quot;</span><span class="p">]</span>
         <span class="c1"># create empty grid with the right dimensions (and get the edges)</span>
-        <span class="n">grid</span><span class="p">,</span> <span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogramdd</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span>
-                                     <span class="nb">range</span><span class="o">=</span><span class="n">arange</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">grid</span><span class="p">,</span> <span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogramdd</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="n">arange</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
         <span class="n">grid</span> <span class="o">*=</span> <span class="mf">0.0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">_grid</span> <span class="o">=</span> <span class="n">grid</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_edges</span> <span class="o">=</span> <span class="n">edges</span>
@@ -631,30 +656,36 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_bins</span> <span class="o">=</span> <span class="n">bins</span>
 
     <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">h</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogramdd</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_atomgroup</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
-                              <span class="n">bins</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_bins</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_arange</span><span class="p">,</span>
-                              <span class="n">density</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">h</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogramdd</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_atomgroup</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+            <span class="n">bins</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_bins</span><span class="p">,</span>
+            <span class="nb">range</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_arange</span><span class="p">,</span>
+            <span class="n">density</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">_grid</span> <span class="o">+=</span> <span class="n">h</span>
 
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># average:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">_grid</span> <span class="o">/=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">)</span>
-        <span class="n">density</span> <span class="o">=</span> <span class="n">Density</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">_grid</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_edges</span><span class="p">,</span>
-                          <span class="n">units</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="s2">&quot;Angstrom&quot;</span><span class="p">},</span>
-                          <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;isDensity&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
+        <span class="n">density</span> <span class="o">=</span> <span class="n">Density</span><span class="p">(</span>
+            <span class="n">grid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">_grid</span><span class="p">,</span>
+            <span class="n">edges</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_edges</span><span class="p">,</span>
+            <span class="n">units</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="s2">&quot;Angstrom&quot;</span><span class="p">},</span>
+            <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;isDensity&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+        <span class="p">)</span>
         <span class="n">density</span><span class="o">.</span><span class="n">make_density</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">density</span> <span class="o">=</span> <span class="n">density</span>
 
     <span class="k">def</span> <span class="nf">_get_aggregator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span><span class="n">lookup</span><span class="o">=</span><span class="p">{</span>
-           <span class="s1">&#39;_grid&#39;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_sum</span><span class="p">}</span>
-                           <span class="p">)</span>
+        <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span><span class="n">lookup</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;_grid&quot;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_sum</span><span class="p">})</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">density</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `density` attribute was deprecated in MDAnalysis 2.0.0 &quot;</span>
-                <span class="s2">&quot;and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
-                <span class="s2">&quot;`results.density` instead&quot;</span><span class="p">)</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;The `density` attribute was deprecated in MDAnalysis 2.0.0 &quot;</span>
+            <span class="s2">&quot;and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
+            <span class="s2">&quot;`results.density` instead&quot;</span>
+        <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">density</span>
 
@@ -693,10 +724,12 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Check user inputs</span>
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="n">gridcenter</span><span class="p">,</span> <span class="n">xdim</span><span class="p">,</span> <span class="n">ydim</span><span class="p">,</span> <span class="n">zdim</span><span class="p">]):</span>
-            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Gridcenter or grid dimensions are not provided&quot;</span><span class="p">)</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;Gridcenter or grid dimensions are not provided&quot;</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">gridcenter</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">gridcenter</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,)</span>
+            <span class="n">gridcenter</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">gridcenter</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+                <span class="mi">3</span><span class="p">,</span>
+            <span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Gridcenter must be a 3D coordinate&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
         <span class="k">try</span><span class="p">:</span>
@@ -706,16 +739,17 @@
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">gridcenter</span><span class="p">))</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">xyzdim</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Gridcenter or grid dimensions have NaN element&quot;</span><span class="p">)</span>
 
-
         <span class="c1"># Set min/max by shifting by half the edge length of each dimension</span>
-        <span class="n">umin</span> <span class="o">=</span> <span class="n">gridcenter</span> <span class="o">-</span> <span class="n">xyzdim</span><span class="o">/</span><span class="mi">2</span>
-        <span class="n">umax</span> <span class="o">=</span> <span class="n">gridcenter</span> <span class="o">+</span> <span class="n">xyzdim</span><span class="o">/</span><span class="mi">2</span>
+        <span class="n">umin</span> <span class="o">=</span> <span class="n">gridcenter</span> <span class="o">-</span> <span class="n">xyzdim</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">umax</span> <span class="o">=</span> <span class="n">gridcenter</span> <span class="o">+</span> <span class="n">xyzdim</span> <span class="o">/</span> <span class="mi">2</span>
 
         <span class="c1"># Here we test if coords of selection fall outside of the defined grid</span>
         <span class="c1"># if this happens, we warn users they may want to resize their grids</span>
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">smin</span> <span class="o">&lt;</span> <span class="n">umin</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">(</span><span class="n">smax</span> <span class="o">&gt;</span> <span class="n">umax</span><span class="p">):</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Atom selection does not fit grid --- &quot;</span>
-                   <span class="s2">&quot;you may want to define a larger box&quot;</span><span class="p">)</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s2">&quot;Atom selection does not fit grid --- &quot;</span>
+                <span class="s2">&quot;you may want to define a larger box&quot;</span>
+            <span class="p">)</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">umin</span><span class="p">,</span> <span class="n">umax</span></div>
@@ -878,22 +912,25 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">length_unit</span> <span class="o">=</span> <span class="s1">&#39;Angstrom&#39;</span>
+        <span class="n">length_unit</span> <span class="o">=</span> <span class="s2">&quot;Angstrom&quot;</span>
 
-        <span class="n">parameters</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;parameters&#39;</span><span class="p">,</span> <span class="p">{})</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span>
-            <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;grid&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="nb">str</span><span class="p">)):</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;parameters&quot;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">str</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;grid&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="nb">str</span><span class="p">)</span>
+        <span class="p">):</span>
             <span class="c1"># try to be smart: when reading from a file then it is likely that</span>
             <span class="c1"># this is a density</span>
-            <span class="n">parameters</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;isDensity&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="n">parameters</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;isDensity&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">parameters</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;isDensity&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-        <span class="n">units</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;units&#39;</span><span class="p">,</span> <span class="p">{})</span>
-        <span class="n">units</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;length&#39;</span><span class="p">,</span> <span class="n">length_unit</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;isDensity&#39;</span><span class="p">]:</span>
-            <span class="n">units</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;density&#39;</span><span class="p">,</span> <span class="n">length_unit</span><span class="p">)</span>
+            <span class="n">parameters</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;isDensity&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">units</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;units&quot;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">units</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;length&quot;</span><span class="p">,</span> <span class="n">length_unit</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;isDensity&quot;</span><span class="p">]:</span>
+            <span class="n">units</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;density&quot;</span><span class="p">,</span> <span class="n">length_unit</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">units</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;density&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">units</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;density&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
         <span class="nb">super</span><span class="p">(</span><span class="n">Density</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -920,25 +957,31 @@
         <span class="c1"># all this unit crap should be a class...</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">unit_type</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># check here, too iffy to use dictionary[None]=None</span>
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span>
+                <span class="p">):</span>  <span class="c1"># check here, too iffy to use dictionary[None]=None</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="n">unit_type</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
                     <span class="k">continue</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">units</span><span class="o">.</span><span class="n">conversion_factor</span><span class="p">[</span><span class="n">unit_type</span><span class="p">][</span><span class="n">value</span><span class="p">]</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="n">unit_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
                 <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                    <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unit </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2"> of type </span><span class="si">{</span><span class="n">unit_type</span><span class="si">}</span><span class="s2"> is not &quot;</span>
-                              <span class="sa">f</span><span class="s2">&quot;recognized.&quot;</span><span class="p">)</span>
+                    <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Unit </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2"> of type </span><span class="si">{</span><span class="n">unit_type</span><span class="si">}</span><span class="s2"> is not &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;recognized.&quot;</span>
+                    <span class="p">)</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="n">errmsg</span> <span class="o">=</span> <span class="s1">&#39;&quot;unit&quot; must be a dictionary with keys &quot;length&quot; and &quot;density.&#39;</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s1">&#39;&quot;unit&quot; must be a dictionary with keys &quot;length&quot; and &quot;density.&#39;</span>
+            <span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">fatal</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
         <span class="c1"># need at least length and density (can be None)</span>
-        <span class="k">if</span> <span class="s1">&#39;length&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">&quot;length&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;unit&quot; must contain a unit for &quot;length&quot;.&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="s1">&#39;density&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="s2">&quot;density&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;density&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="Density.make_density">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.Density.make_density">[docs]</a>
@@ -955,7 +998,7 @@
         <span class="c1"># Make it a density by dividing by the volume of each grid cell</span>
         <span class="c1"># (from numpy.histogramdd, which is for general n-D grids)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;isDensity&#39;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;isDensity&quot;</span><span class="p">]:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Running make_density() makes no sense: Grid is already a density. Nothing done.&quot;</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
@@ -967,14 +1010,14 @@
             <span class="n">shape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
             <span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dedges</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">/=</span> <span class="n">dedges</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;isDensity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;isDensity&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="c1"># see units.densityUnit_factor for units</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;^{-3}&quot;</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;density&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;length&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;^{-3}&quot;</span></div>
 
 
 <div class="viewcode-block" id="Density.convert_length">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.Density.convert_length">[docs]</a>
-    <span class="k">def</span> <span class="nf">convert_length</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;Angstrom&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">convert_length</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;Angstrom&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert Grid object to the new `unit`.</span>
 
 <span class="sd">        Parameters</span>
@@ -991,17 +1034,19 @@
 <span class="sd">        histogram and a length unit and use :meth:`make_density`.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">unit</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">unit</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;length&quot;</span><span class="p">]:</span>
             <span class="k">return</span>
-        <span class="n">cvnfact</span> <span class="o">=</span> <span class="n">units</span><span class="o">.</span><span class="n">get_conversion_factor</span><span class="p">(</span><span class="s1">&#39;length&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">],</span> <span class="n">unit</span><span class="p">)</span>
+        <span class="n">cvnfact</span> <span class="o">=</span> <span class="n">units</span><span class="o">.</span><span class="n">get_conversion_factor</span><span class="p">(</span>
+            <span class="s2">&quot;length&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;length&quot;</span><span class="p">],</span> <span class="n">unit</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">edges</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="o">*</span> <span class="n">cvnfact</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">unit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;length&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">unit</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">()</span>  <span class="c1"># needed to recalculate midpoints and origin</span></div>
 
 
 <div class="viewcode-block" id="Density.convert_density">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.Density.convert_density">[docs]</a>
-    <span class="k">def</span> <span class="nf">convert_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;Angstrom^{-3}&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">convert_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;Angstrom^{-3}&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert the density to the physical units given by `unit`.</span>
 
 <span class="sd">        Parameters</span>
@@ -1040,28 +1085,37 @@
 <span class="sd">            and floating point artifacts for multiple conversions.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;isDensity&#39;</span><span class="p">]:</span>
-            <span class="n">errmsg</span> <span class="o">=</span> <span class="s1">&#39;The grid is not a density so convert_density() makes no sense.&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;isDensity&quot;</span><span class="p">]:</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;The grid is not a density so convert_density() makes no sense.&quot;</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">fatal</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">unit</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">unit</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;density&quot;</span><span class="p">]:</span>
             <span class="k">return</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">*=</span> <span class="n">units</span><span class="o">.</span><span class="n">get_conversion_factor</span><span class="p">(</span><span class="s1">&#39;density&#39;</span><span class="p">,</span>
-                                                     <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">],</span> <span class="n">unit</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">*=</span> <span class="n">units</span><span class="o">.</span><span class="n">get_conversion_factor</span><span class="p">(</span>
+                <span class="s2">&quot;density&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;density&quot;</span><span class="p">],</span> <span class="n">unit</span>
+            <span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The name of the unit (</span><span class="si">{</span><span class="n">unit</span><span class="si">}</span><span class="s2"> supplied) must be one &quot;</span>
-                      <span class="sa">f</span><span class="s2">&quot;of:</span><span class="se">\n</span><span class="si">{</span><span class="n">units</span><span class="o">.</span><span class="n">conversion_factor</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;The name of the unit (</span><span class="si">{</span><span class="n">unit</span><span class="si">}</span><span class="s2"> supplied) must be one &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;of:</span><span class="se">\n</span><span class="si">{</span><span class="n">units</span><span class="o">.</span><span class="n">conversion_factor</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">unit</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s2">&quot;density&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">unit</span></div>
 
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;isDensity&#39;</span><span class="p">]:</span>
-            <span class="n">grid_type</span> <span class="o">=</span> <span class="s1">&#39;density&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;isDensity&quot;</span><span class="p">]:</span>
+            <span class="n">grid_type</span> <span class="o">=</span> <span class="s2">&quot;density&quot;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">grid_type</span> <span class="o">=</span> <span class="s1">&#39;histogram&#39;</span>
-        <span class="k">return</span> <span class="s1">&#39;&lt;Density &#39;</span> <span class="o">+</span> <span class="n">grid_type</span> <span class="o">+</span> <span class="s1">&#39; with &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; bins&gt;&#39;</span></div>
+            <span class="n">grid_type</span> <span class="o">=</span> <span class="s2">&quot;histogram&quot;</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="s2">&quot;&lt;Density &quot;</span>
+            <span class="o">+</span> <span class="n">grid_type</span>
+            <span class="o">+</span> <span class="s2">&quot; with &quot;</span>
+            <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+            <span class="o">+</span> <span class="s2">&quot; bins&gt;&quot;</span>
+        <span class="p">)</span></div>
 
 </pre></div>
 

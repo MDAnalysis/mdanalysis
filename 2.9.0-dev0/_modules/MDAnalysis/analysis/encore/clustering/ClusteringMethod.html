@@ -192,8 +192,10 @@
     <span class="kn">import</span> <span class="nn">sklearn.cluster</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">sklearn</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;sklearn.cluster could not be imported: some functionality will &quot;</span> \
-          <span class="s2">&quot;not be available in encore.fit_clusters()&quot;</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;sklearn.cluster could not be imported: some functionality will &quot;</span>
+        <span class="s2">&quot;not be available in encore.fit_clusters()&quot;</span>
+    <span class="p">)</span>
     <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">ImportWarning</span><span class="p">)</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
     <span class="k">del</span> <span class="n">msg</span>
@@ -216,13 +218,13 @@
 
 <div class="viewcode-block" id="ClusteringMethod">
 <a class="viewcode-back" href="../../../../../documentation_pages/analysis/encore/clustering.html#MDAnalysis.analysis.encore.clustering.ClusteringMethod.ClusteringMethod">[docs]</a>
-<span class="k">class</span> <span class="nc">ClusteringMethod</span> <span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">ClusteringMethod</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for any Clustering Method</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Whether the method accepts a distance matrix</span>
-    <span class="n">accepts_distance_matrix</span><span class="o">=</span><span class="kc">True</span>
+    <span class="n">accepts_distance_matrix</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -237,11 +239,14 @@
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        NotImplementedError</span>
-<span class="sd">           Method or behavior needs to be defined by a subclass    </span>
-<span class="sd">        </span>
+<span class="sd">           Method or behavior needs to be defined by a subclass</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Class </span><span class="si">{0}</span><span class="s2"> doesn&#39;t implement __call__()&quot;</span>
-                                  <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+            <span class="s2">&quot;Class </span><span class="si">{0}</span><span class="s2"> doesn&#39;t implement __call__()&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
 
 
 
@@ -251,10 +256,15 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Interface to the natively implemented Affinity propagation procedure.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                 <span class="n">damping</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">preference</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span>
-                 <span class="n">max_iter</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">convergence_iter</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
-                 <span class="n">add_noise</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">damping</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
+        <span class="n">preference</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">max_iter</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+        <span class="n">convergence_iter</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+        <span class="n">add_noise</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -300,21 +310,24 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        numpy.array : array, shape(n_elements) </span>
+<span class="sd">        numpy.array : array, shape(n_elements)</span>
 <span class="sd">            centroid frames of the clusters for all of the elements</span>
 
 <span class="sd">        .. versionchanged:: 1.0.0</span>
 <span class="sd">           This method no longer returns ``details``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">clusters</span> <span class="o">=</span> <span class="n">affinityprop</span><span class="o">.</span><span class="n">AffinityPropagation</span><span class="p">(</span>
-            <span class="n">s</span><span class="o">=</span><span class="n">distance_matrix</span> <span class="o">*</span> <span class="o">-</span><span class="mf">1.</span><span class="p">,</span>   <span class="c1"># invert sign</span>
+            <span class="n">s</span><span class="o">=</span><span class="n">distance_matrix</span> <span class="o">*</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span>  <span class="c1"># invert sign</span>
             <span class="n">preference</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">preference</span><span class="p">,</span>
             <span class="n">lam</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">damping</span><span class="p">,</span>
-            <span class="n">max_iterations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span><span class="p">,</span>
-            <span class="n">convergence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convergence_iter</span><span class="p">,</span>
-            <span class="n">noise</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">add_noise</span><span class="p">))</span>
-        
+            <span class="n">max_iterations</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span><span class="p">,</span>
+            <span class="n">convergence</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">convergence_iter</span><span class="p">,</span>
+            <span class="n">noise</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">add_noise</span><span class="p">),</span>
+        <span class="p">)</span>
+
         <span class="k">return</span> <span class="n">clusters</span></div>
+
+
 
 <span class="k">if</span> <span class="n">sklearn</span><span class="p">:</span>
 
@@ -326,10 +339,14 @@
 <span class="sd">        in sklearn.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                     <span class="n">damping</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">preference</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span>
-                     <span class="n">max_iter</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">convergence_iter</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
-                     <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">damping</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
+            <span class="n">preference</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span>
+            <span class="n">max_iter</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+            <span class="n">convergence_iter</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Parameters</span>
 <span class="sd">            ----------</span>
@@ -357,14 +374,14 @@
 <span class="sd">                Other keyword arguments are passed to :class:`sklearn.cluster.AffinityPropagation`.</span>
 
 <span class="sd">            &quot;&quot;&quot;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ap</span> <span class="o">=</span> \
-                <span class="n">sklearn</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">AffinityPropagation</span><span class="p">(</span>
-                    <span class="n">damping</span><span class="o">=</span><span class="n">damping</span><span class="p">,</span>
-                    <span class="n">preference</span><span class="o">=</span><span class="n">preference</span><span class="p">,</span>
-                    <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span>
-                    <span class="n">convergence_iter</span><span class="o">=</span><span class="n">convergence_iter</span><span class="p">,</span>
-                    <span class="n">affinity</span><span class="o">=</span><span class="s2">&quot;precomputed&quot;</span><span class="p">,</span>
-                    <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ap</span> <span class="o">=</span> <span class="n">sklearn</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">AffinityPropagation</span><span class="p">(</span>
+                <span class="n">damping</span><span class="o">=</span><span class="n">damping</span><span class="p">,</span>
+                <span class="n">preference</span><span class="o">=</span><span class="n">preference</span><span class="p">,</span>
+                <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span>
+                <span class="n">convergence_iter</span><span class="o">=</span><span class="n">convergence_iter</span><span class="p">,</span>
+                <span class="n">affinity</span><span class="o">=</span><span class="s2">&quot;precomputed&quot;</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="p">)</span>
 
         <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance_matrix</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
@@ -376,24 +393,26 @@
 
 <span class="sd">            Returns</span>
 <span class="sd">            -------</span>
-<span class="sd">            numpy.array : array, shape(n_elements) </span>
+<span class="sd">            numpy.array : array, shape(n_elements)</span>
 <span class="sd">                centroid frames of the clusters for all of the elements</span>
 
 <span class="sd">            .. versionchanged:: 1.0.0</span>
 <span class="sd">               This method no longer returns ``details``</span>
 <span class="sd">            &quot;&quot;&quot;</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting Affinity Propagation: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span>
-                         <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ap</span><span class="o">.</span><span class="n">get_params</span><span class="p">()))</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s2">&quot;Starting Affinity Propagation: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ap</span><span class="o">.</span><span class="n">get_params</span><span class="p">()</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
 
             <span class="c1"># Convert from distance matrix to similarity matrix</span>
             <span class="n">similarity_matrix</span> <span class="o">=</span> <span class="n">distance_matrix</span><span class="o">.</span><span class="n">as_array</span><span class="p">()</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span>
             <span class="n">clusters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ap</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">similarity_matrix</span><span class="p">)</span>
-            <span class="n">clusters</span> <span class="o">=</span> <span class="n">encode_centroid_info</span><span class="p">(</span><span class="n">clusters</span><span class="p">,</span>
-                                            <span class="bp">self</span><span class="o">.</span><span class="n">ap</span><span class="o">.</span><span class="n">cluster_centers_indices_</span><span class="p">)</span>
-            
+            <span class="n">clusters</span> <span class="o">=</span> <span class="n">encode_centroid_info</span><span class="p">(</span>
+                <span class="n">clusters</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ap</span><span class="o">.</span><span class="n">cluster_centers_indices_</span>
+            <span class="p">)</span>
+
             <span class="k">return</span> <span class="n">clusters</span></div>
-
-
 
 
 <div class="viewcode-block" id="DBSCAN">
@@ -402,12 +421,15 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Interface to the DBSCAN clustering procedure implemented in sklearn.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                     <span class="n">eps</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
-                     <span class="n">min_samples</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-                     <span class="n">algorithm</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
-                     <span class="n">leaf_size</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
-                     <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">eps</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+            <span class="n">min_samples</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+            <span class="n">algorithm</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+            <span class="n">leaf_size</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Parameters</span>
 <span class="sd">            ----------</span>
@@ -440,12 +462,14 @@
 
 <span class="sd">            &quot;&quot;&quot;</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">dbscan</span> <span class="o">=</span> <span class="n">sklearn</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">DBSCAN</span><span class="p">(</span><span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">,</span>
-                                                 <span class="n">min_samples</span> <span class="o">=</span> <span class="n">min_samples</span><span class="p">,</span>
-                                                 <span class="n">algorithm</span><span class="o">=</span><span class="n">algorithm</span><span class="p">,</span>
-                                                 <span class="n">leaf_size</span> <span class="o">=</span> <span class="n">leaf_size</span><span class="p">,</span>
-                                                 <span class="n">metric</span><span class="o">=</span><span class="s2">&quot;precomputed&quot;</span><span class="p">,</span>
-                                                 <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dbscan</span> <span class="o">=</span> <span class="n">sklearn</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">DBSCAN</span><span class="p">(</span>
+                <span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">,</span>
+                <span class="n">min_samples</span><span class="o">=</span><span class="n">min_samples</span><span class="p">,</span>
+                <span class="n">algorithm</span><span class="o">=</span><span class="n">algorithm</span><span class="p">,</span>
+                <span class="n">leaf_size</span><span class="o">=</span><span class="n">leaf_size</span><span class="p">,</span>
+                <span class="n">metric</span><span class="o">=</span><span class="s2">&quot;precomputed&quot;</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="p">)</span>
 
         <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance_matrix</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
@@ -458,23 +482,23 @@
 
 <span class="sd">            Returns</span>
 <span class="sd">            -------</span>
-<span class="sd">            numpy.array : array, shape(n_elements) </span>
+<span class="sd">            numpy.array : array, shape(n_elements)</span>
 <span class="sd">                centroid frames of the clusters for all of the elements</span>
 
 <span class="sd">            .. versionchanged:: 1.0.0</span>
 <span class="sd">               This method no longer returns ``details``</span>
 <span class="sd">            &quot;&quot;&quot;</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting DBSCAN: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">dbscan</span><span class="o">.</span><span class="n">get_params</span><span class="p">()))</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s2">&quot;Starting DBSCAN: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dbscan</span><span class="o">.</span><span class="n">get_params</span><span class="p">())</span>
+            <span class="p">)</span>
             <span class="n">clusters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dbscan</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">distance_matrix</span><span class="o">.</span><span class="n">as_array</span><span class="p">())</span>
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">clusters</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
                 <span class="n">clusters</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="c1"># No centroid information is provided by DBSCAN, so we just</span>
             <span class="c1"># pick random members</span>
             <span class="n">cluster_representatives</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">clusters</span><span class="p">,</span> <span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">clusters</span> <span class="o">=</span> <span class="n">encode_centroid_info</span><span class="p">(</span><span class="n">clusters</span><span class="p">,</span>
-                                            <span class="n">cluster_representatives</span><span class="p">)</span>
-          
+            <span class="n">clusters</span> <span class="o">=</span> <span class="n">encode_centroid_info</span><span class="p">(</span><span class="n">clusters</span><span class="p">,</span> <span class="n">cluster_representatives</span><span class="p">)</span>
+
             <span class="k">return</span> <span class="n">clusters</span></div>
 
 
@@ -488,17 +512,20 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Interface to the KMeans clustering procedure implemented in sklearn.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                     <span class="n">n_clusters</span><span class="p">,</span>
-                     <span class="n">max_iter</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>
-                     <span class="n">n_init</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-                     <span class="n">init</span><span class="o">=</span><span class="s1">&#39;k-means++&#39;</span><span class="p">,</span>
-                     <span class="n">algorithm</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
-                     <span class="n">tol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span>
-                     <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                     <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                     <span class="n">copy_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                     <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">n_clusters</span><span class="p">,</span>
+            <span class="n">max_iter</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>
+            <span class="n">n_init</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+            <span class="n">init</span><span class="o">=</span><span class="s2">&quot;k-means++&quot;</span><span class="p">,</span>
+            <span class="n">algorithm</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+            <span class="n">tol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span>
+            <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">copy_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Parameters</span>
 <span class="sd">            ----------</span>
@@ -547,15 +574,17 @@
 <span class="sd">                the data mean.</span>
 
 <span class="sd">            &quot;&quot;&quot;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">kmeans</span> <span class="o">=</span> <span class="n">sklearn</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="n">n_clusters</span><span class="p">,</span>
-                                                 <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span>
-                                                 <span class="n">n_init</span><span class="o">=</span><span class="n">n_init</span><span class="p">,</span>
-                                                 <span class="n">init</span><span class="o">=</span><span class="n">init</span><span class="p">,</span>
-                                                 <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">,</span>
-                                                 <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
-                                                 <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">,</span>
-                                                 <span class="n">copy_x</span><span class="o">=</span><span class="n">copy_x</span><span class="p">,</span>
-                                                 <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">kmeans</span> <span class="o">=</span> <span class="n">sklearn</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">KMeans</span><span class="p">(</span>
+                <span class="n">n_clusters</span><span class="o">=</span><span class="n">n_clusters</span><span class="p">,</span>
+                <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span>
+                <span class="n">n_init</span><span class="o">=</span><span class="n">n_init</span><span class="p">,</span>
+                <span class="n">init</span><span class="o">=</span><span class="n">init</span><span class="p">,</span>
+                <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">,</span>
+                <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+                <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">,</span>
+                <span class="n">copy_x</span><span class="o">=</span><span class="n">copy_x</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="p">)</span>
 
         <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
@@ -568,20 +597,20 @@
 
 <span class="sd">            Returns</span>
 <span class="sd">            -------</span>
-<span class="sd">            numpy.array : array, shape(n_elements) </span>
+<span class="sd">            numpy.array : array, shape(n_elements)</span>
 <span class="sd">                centroid frames of the clusters for all of the elements</span>
 
 <span class="sd">            .. versionchanged:: 1.0.0</span>
 <span class="sd">               This method no longer returns ``details``</span>
 <span class="sd">            &quot;&quot;&quot;</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting Kmeans: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                         <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kmeans</span><span class="o">.</span><span class="n">get_params</span><span class="p">())))</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s2">&quot;Starting Kmeans: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">kmeans</span><span class="o">.</span><span class="n">get_params</span><span class="p">()))</span>
+            <span class="p">)</span>
             <span class="n">clusters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kmeans</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span>
             <span class="n">distances</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kmeans</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span>
             <span class="n">cluster_center_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">distances</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-            <span class="n">clusters</span> <span class="o">=</span> <span class="n">encode_centroid_info</span><span class="p">(</span><span class="n">clusters</span><span class="p">,</span>
-                                             <span class="n">cluster_center_indices</span><span class="p">)</span>
-            
+            <span class="n">clusters</span> <span class="o">=</span> <span class="n">encode_centroid_info</span><span class="p">(</span><span class="n">clusters</span><span class="p">,</span> <span class="n">cluster_center_indices</span><span class="p">)</span>
+
             <span class="k">return</span> <span class="n">clusters</span></div>
 
 </pre></div>

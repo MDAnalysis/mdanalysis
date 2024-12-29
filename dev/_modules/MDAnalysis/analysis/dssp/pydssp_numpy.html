@@ -207,7 +207,10 @@
 
 <span class="k">def</span> <span class="nf">_unfold</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">window</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
     <span class="s2">&quot;Helper function for 2D array upsampling&quot;</span>
-    <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">window</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">-</span> <span class="n">window</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">window</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">]</span>
+        <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">-</span> <span class="n">window</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
+    <span class="p">)</span>
     <span class="n">unfolded</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">unfolded</span><span class="p">,</span> <span class="n">axis</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
@@ -296,7 +299,9 @@
         <span class="n">h_1</span> <span class="o">=</span> <span class="n">coord</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="mi">4</span><span class="p">]</span>
         <span class="n">coord</span> <span class="o">=</span> <span class="n">coord</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">4</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Number of atoms should be 4 (N,CA,C,O) or 5 (N,CA,C,O,H)&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Number of atoms should be 4 (N,CA,C,O) or 5 (N,CA,C,O,H)&quot;</span>
+        <span class="p">)</span>
     <span class="c1"># after this:</span>
     <span class="c1"># h.shape == (n_atoms, 3)</span>
     <span class="c1"># coord.shape == (n_atoms, 4, 3)</span>
@@ -318,7 +323,9 @@
     <span class="c1"># electrostatic interaction energy</span>
     <span class="c1"># e[i, j] = e(CO_i) - e(NH_j)</span>
     <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span>
-        <span class="n">CONST_Q1Q2</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">d_on</span> <span class="o">+</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">d_ch</span> <span class="o">-</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">d_oh</span> <span class="o">-</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">d_cn</span><span class="p">)</span> <span class="o">*</span> <span class="n">CONST_F</span><span class="p">,</span>
+        <span class="n">CONST_Q1Q2</span>
+        <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">d_on</span> <span class="o">+</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">d_ch</span> <span class="o">-</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">d_oh</span> <span class="o">-</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">d_cn</span><span class="p">)</span>
+        <span class="o">*</span> <span class="n">CONST_F</span><span class="p">,</span>
         <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span>
     <span class="p">)</span>
 

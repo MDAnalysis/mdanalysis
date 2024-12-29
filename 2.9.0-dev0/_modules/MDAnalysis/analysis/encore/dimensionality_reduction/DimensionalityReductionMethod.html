@@ -192,20 +192,24 @@
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">sklearn</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="kn">import</span> <span class="nn">warnings</span>
-    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;sklearn.decomposition could not be imported: some &quot;</span>
-                  <span class="s2">&quot;functionality will not be available in &quot;</span>
-                  <span class="s2">&quot;encore.dimensionality_reduction()&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">ImportWarning</span><span class="p">)</span>
+
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+        <span class="s2">&quot;sklearn.decomposition could not be imported: some &quot;</span>
+        <span class="s2">&quot;functionality will not be available in &quot;</span>
+        <span class="s2">&quot;encore.dimensionality_reduction()&quot;</span><span class="p">,</span>
+        <span class="n">category</span><span class="o">=</span><span class="ne">ImportWarning</span><span class="p">,</span>
+    <span class="p">)</span>
 
 
 <div class="viewcode-block" id="DimensionalityReductionMethod">
 <a class="viewcode-back" href="../../../../../documentation_pages/analysis/encore/dimensionality_reduction.html#MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.DimensionalityReductionMethod">[docs]</a>
-<span class="k">class</span> <span class="nc">DimensionalityReductionMethod</span> <span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">DimensionalityReductionMethod</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for any Dimensionality Reduction Method</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Whether the method accepts a distance matrix</span>
-    <span class="n">accepts_distance_matrix</span><span class="o">=</span><span class="kc">True</span>
+    <span class="n">accepts_distance_matrix</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -224,8 +228,11 @@
 <span class="sd">            coordinates in reduced space</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Class </span><span class="si">{0}</span><span class="s2"> doesn&#39;t implement __call__()&quot;</span>
-                                  <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+            <span class="s2">&quot;Class </span><span class="si">{0}</span><span class="s2"> doesn&#39;t implement __call__()&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
 
 
 
@@ -235,13 +242,16 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Interface to the natively implemented Affinity propagation procedure.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                 <span class="n">dimension</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
-                 <span class="n">distance_cutoff</span> <span class="o">=</span> <span class="mf">1.5</span><span class="p">,</span>
-                 <span class="n">min_lam</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
-                 <span class="n">max_lam</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span>
-                 <span class="n">ncycle</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
-                 <span class="n">nstep</span> <span class="o">=</span> <span class="mi">10000</span><span class="p">,):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">dimension</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">distance_cutoff</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
+        <span class="n">min_lam</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">max_lam</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+        <span class="n">ncycle</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="n">nstep</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -287,19 +297,19 @@
 <span class="sd">            coordinates in reduced space</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">final_stress</span><span class="p">,</span> <span class="n">coordinates</span> <span class="o">=</span> \
+        <span class="n">final_stress</span><span class="p">,</span> <span class="n">coordinates</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">stochasticproxembed</span><span class="o">.</span><span class="n">StochasticProximityEmbedding</span><span class="p">(</span>
-            <span class="n">s</span><span class="o">=</span><span class="n">distance_matrix</span><span class="p">,</span>
-            <span class="n">rco</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">distance_cutoff</span><span class="p">,</span>
-            <span class="n">dim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">,</span>
-            <span class="n">minlam</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_lam</span><span class="p">,</span>
-            <span class="n">maxlam</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_lam</span><span class="p">,</span>
-            <span class="n">ncycle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ncycle</span><span class="p">,</span>
-            <span class="n">nstep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nstep</span><span class="p">,</span>
-            <span class="n">stressfreq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stressfreq</span>
+                <span class="n">s</span><span class="o">=</span><span class="n">distance_matrix</span><span class="p">,</span>
+                <span class="n">rco</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">distance_cutoff</span><span class="p">,</span>
+                <span class="n">dim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">,</span>
+                <span class="n">minlam</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">min_lam</span><span class="p">,</span>
+                <span class="n">maxlam</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">max_lam</span><span class="p">,</span>
+                <span class="n">ncycle</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ncycle</span><span class="p">,</span>
+                <span class="n">nstep</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nstep</span><span class="p">,</span>
+                <span class="n">stressfreq</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">stressfreq</span><span class="p">,</span>
+            <span class="p">)</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">coordinates</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;final_stress&quot;</span><span class="p">:</span> <span class="n">final_stress</span><span class="p">}</span></div>
-
 
 
 
@@ -316,9 +326,7 @@
         <span class="c1"># Whether the method accepts a distance matrix</span>
         <span class="n">accepts_distance_matrix</span> <span class="o">=</span> <span class="kc">False</span>
 
-        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                     <span class="n">dimension</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
-                     <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimension</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Parameters</span>
 <span class="sd">            ----------</span>
@@ -327,8 +335,9 @@
 <span class="sd">                Number of dimensions to which the conformational space will be</span>
 <span class="sd">                reduced to (default is 3).</span>
 <span class="sd">            &quot;&quot;&quot;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pca</span> <span class="o">=</span> <span class="n">sklearn</span><span class="o">.</span><span class="n">decomposition</span><span class="o">.</span><span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="n">dimension</span><span class="p">,</span>
-                                                 <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pca</span> <span class="o">=</span> <span class="n">sklearn</span><span class="o">.</span><span class="n">decomposition</span><span class="o">.</span><span class="n">PCA</span><span class="p">(</span>
+                <span class="n">n_components</span><span class="o">=</span><span class="n">dimension</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+            <span class="p">)</span>
 
         <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>

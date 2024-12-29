@@ -180,30 +180,40 @@
 <span class="sd">:mod:`MDAnalysis.lib.distances`</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;distance_array&#39;</span><span class="p">,</span> <span class="s1">&#39;self_distance_array&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;contact_matrix&#39;</span><span class="p">,</span> <span class="s1">&#39;dist&#39;</span><span class="p">,</span> <span class="s1">&#39;between&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;distance_array&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;self_distance_array&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;contact_matrix&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;dist&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;between&quot;</span><span class="p">,</span>
+<span class="p">]</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy.sparse</span>
 
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.distances</span> <span class="kn">import</span> <span class="p">(</span>
-           <span class="n">capped_distance</span><span class="p">,</span>
-           <span class="n">self_distance_array</span><span class="p">,</span> <span class="n">distance_array</span><span class="p">,</span>  <span class="c1"># legacy reasons</span>
+    <span class="n">capped_distance</span><span class="p">,</span>
+    <span class="n">self_distance_array</span><span class="p">,</span>
+    <span class="n">distance_array</span><span class="p">,</span>  <span class="c1"># legacy reasons</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.lib.c_distances</span> <span class="kn">import</span> <span class="n">contact_matrix_no_pbc</span><span class="p">,</span> <span class="n">contact_matrix_pbc</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.c_distances</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">contact_matrix_no_pbc</span><span class="p">,</span>
+    <span class="n">contact_matrix_pbc</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.NeighborSearch</span> <span class="kn">import</span> <span class="n">AtomNeighborSearch</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.distances</span> <span class="kn">import</span> <span class="n">calc_bonds</span>
 
 
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">logging</span>
+
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.analysis.distances&quot;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="contact_matrix">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/distances.html#MDAnalysis.analysis.distances.contact_matrix">[docs]</a>
 <span class="k">def</span> <span class="nf">contact_matrix</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mf">15.0</span><span class="p">,</span> <span class="n">returntype</span><span class="o">=</span><span class="s2">&quot;numpy&quot;</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;Calculates a matrix of contacts.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculates a matrix of contacts.</span>
 
 <span class="sd">    There is a fast, high-memory-usage version for small systems</span>
 <span class="sd">    (*returntype* = &#39;numpy&#39;), and a slower, low-memory-usage version for</span>
@@ -241,20 +251,24 @@
 
 <span class="sd">    .. versionchanged:: 0.11.0</span>
 <span class="sd">       Keyword *suppress_progmet* and *progress_meter_freq* were removed.</span>
-<span class="sd">    &#39;&#39;&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="n">returntype</span> <span class="o">==</span> <span class="s2">&quot;numpy&quot;</span><span class="p">:</span>
         <span class="n">adj</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">coord</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">coord</span><span class="p">)),</span> <span class="kc">False</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
-        <span class="n">pairs</span> <span class="o">=</span> <span class="n">capped_distance</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">coord</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="o">=</span><span class="n">cutoff</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span> <span class="n">return_distances</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        
+        <span class="n">pairs</span> <span class="o">=</span> <span class="n">capped_distance</span><span class="p">(</span>
+            <span class="n">coord</span><span class="p">,</span> <span class="n">coord</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="o">=</span><span class="n">cutoff</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span> <span class="n">return_distances</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+
         <span class="n">idx</span><span class="p">,</span> <span class="n">idy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">pairs</span><span class="p">)</span>
-        <span class="n">adj</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="n">idy</span><span class="p">]</span><span class="o">=</span><span class="kc">True</span>
-        
+        <span class="n">adj</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="n">idy</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
         <span class="k">return</span> <span class="n">adj</span>
     <span class="k">elif</span> <span class="n">returntype</span> <span class="o">==</span> <span class="s2">&quot;sparse&quot;</span><span class="p">:</span>
         <span class="c1"># Initialize square List of Lists matrix of dimensions equal to number</span>
         <span class="c1"># of coordinates passed</span>
-        <span class="n">sparse_contacts</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">lil_matrix</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">coord</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">coord</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;bool&#39;</span><span class="p">)</span>
+        <span class="n">sparse_contacts</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">lil_matrix</span><span class="p">(</span>
+            <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">coord</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">coord</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;bool&quot;</span>
+        <span class="p">)</span>
         <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># with PBC</span>
             <span class="n">contact_matrix_pbc</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">sparse_contacts</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">)</span>
@@ -301,14 +315,16 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="n">A</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">!=</span> <span class="n">B</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;AtomGroups A and B do not have the same number of atoms&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;AtomGroups A and B do not have the same number of atoms&quot;</span>
+        <span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">off_A</span><span class="p">,</span> <span class="n">off_B</span> <span class="o">=</span> <span class="n">offset</span>
     <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
         <span class="n">off_A</span> <span class="o">=</span> <span class="n">off_B</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
     <span class="n">residues_A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">resids</span><span class="p">)</span> <span class="o">+</span> <span class="n">off_A</span>
     <span class="n">residues_B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">resids</span><span class="p">)</span> <span class="o">+</span> <span class="n">off_B</span>
-    
+
     <span class="n">d</span> <span class="o">=</span> <span class="n">calc_bonds</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">B</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">box</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">residues_A</span><span class="p">,</span> <span class="n">residues_B</span><span class="p">,</span> <span class="n">d</span><span class="p">])</span></div>
 

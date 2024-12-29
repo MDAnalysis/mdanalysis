@@ -163,9 +163,9 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="c1">#Analyse a trajectory using elastic network models, following the approach of Hall et al (JACS 2007)</span>
-<span class="c1">#Ben Hall (benjamin.a.hall@ucl.ac.uk) is to blame</span>
-<span class="c1">#Copyright 2011; Consider under GPL v2 or later</span>
+<span class="c1"># Analyse a trajectory using elastic network models, following the approach of Hall et al (JACS 2007)</span>
+<span class="c1"># Ben Hall (benjamin.a.hall@ucl.ac.uk) is to blame</span>
+<span class="c1"># Copyright 2011; Consider under GPL v2 or later</span>
 <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Elastic network analysis of MD trajectories --- :mod:`MDAnalysis.analysis.gnm`</span>
 <span class="sd">==============================================================================</span>
@@ -239,11 +239,11 @@
 
 <span class="kn">from</span> <span class="nn">MDAnalysis.analysis.base</span> <span class="kn">import</span> <span class="n">Results</span>
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;MDAnalysis.analysis.GNM&#39;</span><span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.analysis.GNM&quot;</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_dsq</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-    <span class="n">diff</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span>
+    <span class="n">diff</span> <span class="o">=</span> <span class="n">a</span> <span class="o">-</span> <span class="n">b</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">diff</span><span class="p">)</span>
 
 
@@ -277,10 +277,14 @@
     <span class="n">low_x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
     <span class="n">low_y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
     <span class="n">low_z</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
-    <span class="c1">#Ok now generate a list with 3 dimensions representing boxes in x, y and z</span>
-    <span class="n">grid</span> <span class="o">=</span> <span class="p">[[[[]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">((</span><span class="n">high_z</span> <span class="o">-</span> <span class="n">low_z</span><span class="p">)</span> <span class="o">/</span> <span class="n">cutoff</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
-             <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">((</span><span class="n">high_y</span> <span class="o">-</span> <span class="n">low_y</span><span class="p">)</span> <span class="o">/</span> <span class="n">cutoff</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
-            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">((</span><span class="n">high_x</span> <span class="o">-</span> <span class="n">low_x</span><span class="p">)</span> <span class="o">/</span> <span class="n">cutoff</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+    <span class="c1"># Ok now generate a list with 3 dimensions representing boxes in x, y and z</span>
+    <span class="n">grid</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">[</span>
+            <span class="p">[[]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">((</span><span class="n">high_z</span> <span class="o">-</span> <span class="n">low_z</span><span class="p">)</span> <span class="o">/</span> <span class="n">cutoff</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">((</span><span class="n">high_y</span> <span class="o">-</span> <span class="n">low_y</span><span class="p">)</span> <span class="o">/</span> <span class="n">cutoff</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">((</span><span class="n">high_x</span> <span class="o">-</span> <span class="n">low_x</span><span class="p">)</span> <span class="o">/</span> <span class="n">cutoff</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="p">]</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">pos</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">positions</span><span class="p">):</span>
         <span class="n">x_pos</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">low_x</span><span class="p">)</span> <span class="o">/</span> <span class="n">cutoff</span><span class="p">)</span>
         <span class="n">y_pos</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">low_y</span><span class="p">)</span> <span class="o">/</span> <span class="n">cutoff</span><span class="p">)</span>
@@ -311,7 +315,8 @@
     <span class="n">n_y</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="n">n_z</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
     <span class="k">for</span> <span class="n">cell_x</span><span class="p">,</span> <span class="n">cell_y</span><span class="p">,</span> <span class="n">cell_z</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span>
-            <span class="nb">range</span><span class="p">(</span><span class="n">n_x</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_y</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_z</span><span class="p">)):</span>
+        <span class="nb">range</span><span class="p">(</span><span class="n">n_x</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_y</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_z</span><span class="p">)</span>
+    <span class="p">):</span>
         <span class="n">atoms</span> <span class="o">=</span> <span class="n">grid</span><span class="p">[</span><span class="n">cell_x</span><span class="p">][</span><span class="n">cell_y</span><span class="p">][</span><span class="n">cell_z</span><span class="p">]</span>
         <span class="c1"># collect all atoms in own cell and neighboring cell</span>
         <span class="n">all_atoms</span> <span class="o">=</span> <span class="p">[]</span>
@@ -397,8 +402,8 @@
 <span class="sd">       ``eigenvectors`` of the ``results`` attribute.</span>
 
 <span class="sd">    .. versionchanged:: 2.8.0</span>
-<span class="sd">       Enabled **parallel execution** with the ``multiprocessing`` and ``dask`` </span>
-<span class="sd">       backends; use the new method :meth:`get_supported_backends` to see all </span>
+<span class="sd">       Enabled **parallel execution** with the ``multiprocessing`` and ``dask``</span>
+<span class="sd">       backends; use the new method :meth:`get_supported_backends` to see all</span>
 <span class="sd">       supported backends.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -410,13 +415,15 @@
     <span class="k">def</span> <span class="nf">get_supported_backends</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;serial&quot;</span><span class="p">,</span> <span class="s2">&quot;multiprocessing&quot;</span><span class="p">,</span> <span class="s2">&quot;dask&quot;</span><span class="p">)</span></div>
 
-    
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                 <span class="n">universe</span><span class="p">,</span>
-                 <span class="n">select</span><span class="o">=</span><span class="s1">&#39;protein and name CA&#39;</span><span class="p">,</span>
-                 <span class="n">cutoff</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span>
-                 <span class="n">ReportVector</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">Bonus_groups</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">universe</span><span class="p">,</span>
+        <span class="n">select</span><span class="o">=</span><span class="s2">&quot;protein and name CA&quot;</span><span class="p">,</span>
+        <span class="n">cutoff</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span>
+        <span class="n">ReportVector</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">Bonus_groups</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">GNMAnalysis</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="n">universe</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">select</span> <span class="o">=</span> <span class="n">select</span>
@@ -426,12 +433,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">eigenvectors</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_timesteps</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># time for each frame</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ReportVector</span> <span class="o">=</span> <span class="n">ReportVector</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">Bonus_groups</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">Bonus_groups</span><span class="p">]</span> \
-                            <span class="k">if</span> <span class="n">Bonus_groups</span> <span class="k">else</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Bonus_groups</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">Bonus_groups</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">Bonus_groups</span>
+            <span class="k">else</span> <span class="p">[]</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ca</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_generate_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">outputobject</span><span class="p">,</span>
-                         <span class="n">ReportVector</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">counter</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_generate_output</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">outputobject</span><span class="p">,</span> <span class="n">ReportVector</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">counter</span><span class="o">=</span><span class="mi">0</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Appends time, eigenvalues and eigenvectors to results.</span>
 
 <span class="sd">        This generates the output by adding eigenvalue and</span>
@@ -450,7 +461,8 @@
                         <span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
                         <span class="n">w</span><span class="p">[</span><span class="n">list_map</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
                         <span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                        <span class="n">file</span><span class="o">=</span><span class="n">oup</span><span class="p">)</span>
+                        <span class="n">file</span><span class="o">=</span><span class="n">oup</span><span class="p">,</span>
+                    <span class="p">)</span>
 
         <span class="n">outputobject</span><span class="o">.</span><span class="n">eigenvalues</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">w</span><span class="p">[</span><span class="n">list_map</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
         <span class="n">outputobject</span><span class="o">.</span><span class="n">eigenvectors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">list_map</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
@@ -471,9 +483,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ca</span><span class="o">.</span><span class="n">positions</span>
 
-        <span class="c1">#add the com from each bonus group to the ca_positions list</span>
+        <span class="c1"># add the com from each bonus group to the ca_positions list</span>
         <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Bonus_groups</span><span class="p">:</span>
-            <span class="c1">#bonus = self.u.select_atoms(item)</span>
+            <span class="c1"># bonus = self.u.select_atoms(item)</span>
             <span class="n">positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">positions</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">()))</span>
 
         <span class="n">natoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">positions</span><span class="p">)</span>
@@ -482,8 +494,10 @@
         <span class="n">cutoffsq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="o">**</span><span class="mi">2</span>
 
         <span class="k">for</span> <span class="n">i_atom</span><span class="p">,</span> <span class="n">j_atom</span> <span class="ow">in</span> <span class="n">neighbour_generator</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">j_atom</span> <span class="o">&gt;</span> <span class="n">i_atom</span> <span class="ow">and</span> <span class="n">_dsq</span><span class="p">(</span><span class="n">positions</span><span class="p">[</span><span class="n">i_atom</span><span class="p">],</span>
-                                        <span class="n">positions</span><span class="p">[</span><span class="n">j_atom</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">cutoffsq</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">j_atom</span> <span class="o">&gt;</span> <span class="n">i_atom</span>
+                <span class="ow">and</span> <span class="n">_dsq</span><span class="p">(</span><span class="n">positions</span><span class="p">[</span><span class="n">i_atom</span><span class="p">],</span> <span class="n">positions</span><span class="p">[</span><span class="n">j_atom</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">cutoffsq</span>
+            <span class="p">):</span>
                 <span class="n">matrix</span><span class="p">[</span><span class="n">i_atom</span><span class="p">][</span><span class="n">j_atom</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
                 <span class="n">matrix</span><span class="p">[</span><span class="n">j_atom</span><span class="p">][</span><span class="n">i_atom</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
                 <span class="n">matrix</span><span class="p">[</span><span class="n">i_atom</span><span class="p">][</span><span class="n">i_atom</span><span class="p">]</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">[</span><span class="n">i_atom</span><span class="p">][</span><span class="n">i_atom</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
@@ -508,7 +522,8 @@
             <span class="n">v</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">,</span>
             <span class="n">ReportVector</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ReportVector</span><span class="p">,</span>
-            <span class="n">counter</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
+            <span class="n">counter</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">frame</span><span class="p">,</span>
+        <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">times</span>
@@ -586,16 +601,17 @@
 <span class="sd">       ``eigenvectors`` of the `results` attribute.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                 <span class="n">universe</span><span class="p">,</span>
-                 <span class="n">select</span><span class="o">=</span><span class="s1">&#39;protein&#39;</span><span class="p">,</span>
-                 <span class="n">cutoff</span><span class="o">=</span><span class="mf">4.5</span><span class="p">,</span>
-                 <span class="n">ReportVector</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">weights</span><span class="o">=</span><span class="s2">&quot;size&quot;</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">closeContactGNMAnalysis</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span>
-                                                      <span class="n">select</span><span class="p">,</span>
-                                                      <span class="n">cutoff</span><span class="p">,</span>
-                                                      <span class="n">ReportVector</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">universe</span><span class="p">,</span>
+        <span class="n">select</span><span class="o">=</span><span class="s2">&quot;protein&quot;</span><span class="p">,</span>
+        <span class="n">cutoff</span><span class="o">=</span><span class="mf">4.5</span><span class="p">,</span>
+        <span class="n">ReportVector</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">weights</span><span class="o">=</span><span class="s2">&quot;size&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">closeContactGNMAnalysis</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span> <span class="n">ReportVector</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">weights</span>
 
 <div class="viewcode-block" id="closeContactGNMAnalysis.generate_kirchoff">
@@ -613,17 +629,21 @@
 
         <span class="c1"># cache sqrt of residue sizes (slow) so that sr[i]*sr[j] == sqrt(r[i]*r[j])</span>
         <span class="n">inv_sqrt_res_sizes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ca</span><span class="o">.</span><span class="n">residues</span><span class="p">))</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">==</span> <span class="s1">&#39;size&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">==</span> <span class="s2">&quot;size&quot;</span><span class="p">:</span>
             <span class="n">inv_sqrt_res_sizes</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
-                <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ca</span><span class="o">.</span><span class="n">residues</span><span class="p">])</span>
+                <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ca</span><span class="o">.</span><span class="n">residues</span><span class="p">]</span>
+            <span class="p">)</span>
 
         <span class="k">for</span> <span class="n">i_atom</span><span class="p">,</span> <span class="n">j_atom</span> <span class="ow">in</span> <span class="n">neighbour_generator</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">j_atom</span> <span class="o">&gt;</span> <span class="n">i_atom</span> <span class="ow">and</span> <span class="n">_dsq</span><span class="p">(</span><span class="n">positions</span><span class="p">[</span><span class="n">i_atom</span><span class="p">],</span>
-                                        <span class="n">positions</span><span class="p">[</span><span class="n">j_atom</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">cutoffsq</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">j_atom</span> <span class="o">&gt;</span> <span class="n">i_atom</span>
+                <span class="ow">and</span> <span class="n">_dsq</span><span class="p">(</span><span class="n">positions</span><span class="p">[</span><span class="n">i_atom</span><span class="p">],</span> <span class="n">positions</span><span class="p">[</span><span class="n">j_atom</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">cutoffsq</span>
+            <span class="p">):</span>
                 <span class="n">iresidue</span> <span class="o">=</span> <span class="n">residue_index_map</span><span class="p">[</span><span class="n">i_atom</span><span class="p">]</span>
                 <span class="n">jresidue</span> <span class="o">=</span> <span class="n">residue_index_map</span><span class="p">[</span><span class="n">j_atom</span><span class="p">]</span>
-                <span class="n">contact</span> <span class="o">=</span> <span class="p">(</span><span class="n">inv_sqrt_res_sizes</span><span class="p">[</span><span class="n">iresidue</span><span class="p">]</span> <span class="o">*</span>
-                           <span class="n">inv_sqrt_res_sizes</span><span class="p">[</span><span class="n">jresidue</span><span class="p">])</span>
+                <span class="n">contact</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">inv_sqrt_res_sizes</span><span class="p">[</span><span class="n">iresidue</span><span class="p">]</span> <span class="o">*</span> <span class="n">inv_sqrt_res_sizes</span><span class="p">[</span><span class="n">jresidue</span><span class="p">]</span>
+                <span class="p">)</span>
                 <span class="n">matrix</span><span class="p">[</span><span class="n">iresidue</span><span class="p">][</span><span class="n">jresidue</span><span class="p">]</span> <span class="o">-=</span> <span class="n">contact</span>
                 <span class="n">matrix</span><span class="p">[</span><span class="n">jresidue</span><span class="p">][</span><span class="n">iresidue</span><span class="p">]</span> <span class="o">-=</span> <span class="n">contact</span>
                 <span class="n">matrix</span><span class="p">[</span><span class="n">iresidue</span><span class="p">][</span><span class="n">iresidue</span><span class="p">]</span> <span class="o">+=</span> <span class="n">contact</span>

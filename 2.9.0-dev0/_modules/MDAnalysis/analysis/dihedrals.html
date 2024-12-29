@@ -415,14 +415,18 @@
 <span class="sd">       introduced :meth:`get_supported_backends` allowing for parallel</span>
 <span class="sd">       execution on ``multiprocessing`` and ``dask`` backends.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">_analysis_algorithm_is_parallelizable</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="Dihedral.get_supported_backends">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/dihedrals.html#MDAnalysis.analysis.dihedrals.Dihedral.get_supported_backends">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_supported_backends</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;serial&#39;</span><span class="p">,</span> <span class="s1">&#39;multiprocessing&#39;</span><span class="p">,</span> <span class="s1">&#39;dask&#39;</span><span class="p">,)</span></div>
-
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="s2">&quot;serial&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;multiprocessing&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;dask&quot;</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroups</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -439,7 +443,8 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Dihedral</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="n">atomgroups</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">atomgroups</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">atomgroups</span> <span class="o">=</span> <span class="n">atomgroups</span>
 
         <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">ag</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">4</span> <span class="k">for</span> <span class="n">ag</span> <span class="ow">in</span> <span class="n">atomgroups</span><span class="p">]):</span>
@@ -454,12 +459,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">angles</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span> <span class="nf">_get_aggregator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span><span class="n">lookup</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;angles&#39;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_vstack</span><span class="p">})</span>
+        <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span><span class="n">lookup</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;angles&quot;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_vstack</span><span class="p">})</span>
 
     <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">angle</span> <span class="o">=</span> <span class="n">calc_dihedrals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ag1</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag2</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
-                               <span class="bp">self</span><span class="o">.</span><span class="n">ag3</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag4</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
-                               <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ag1</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
+        <span class="n">angle</span> <span class="o">=</span> <span class="n">calc_dihedrals</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ag1</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ag2</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ag3</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ag4</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+            <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ag1</span><span class="o">.</span><span class="n">dimensions</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">angles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -467,9 +476,11 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">angles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `angle` attribute was deprecated in MDAnalysis 2.0.0 &quot;</span>
-                <span class="s2">&quot;and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
-                <span class="s2">&quot;`results.angles` instead&quot;</span><span class="p">)</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;The `angle` attribute was deprecated in MDAnalysis 2.0.0 &quot;</span>
+            <span class="s2">&quot;and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
+            <span class="s2">&quot;`results.angles` instead&quot;</span>
+        <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">angles</span></div>
 
@@ -544,19 +555,32 @@
 <span class="sd">       introduced :meth:`get_supported_backends` allowing for parallel</span>
 <span class="sd">       execution on ``multiprocessing`` and ``dask`` backends.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">_analysis_algorithm_is_parallelizable</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="Ramachandran.get_supported_backends">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/dihedrals.html#MDAnalysis.analysis.dihedrals.Ramachandran.get_supported_backends">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_supported_backends</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;serial&#39;</span><span class="p">,</span> <span class="s1">&#39;multiprocessing&#39;</span><span class="p">,</span> <span class="s1">&#39;dask&#39;</span><span class="p">,)</span></div>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="s2">&quot;serial&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;multiprocessing&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;dask&quot;</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroup</span><span class="p">,</span> <span class="n">c_name</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">n_name</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">ca_name</span><span class="o">=</span><span class="s1">&#39;CA&#39;</span><span class="p">,</span>
-                 <span class="n">check_protein</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">atomgroup</span><span class="p">,</span>
+        <span class="n">c_name</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">,</span>
+        <span class="n">n_name</span><span class="o">=</span><span class="s2">&quot;N&quot;</span><span class="p">,</span>
+        <span class="n">ca_name</span><span class="o">=</span><span class="s2">&quot;CA&quot;</span><span class="p">,</span>
+        <span class="n">check_protein</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Ramachandran</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span> <span class="o">=</span> <span class="n">atomgroup</span>
         <span class="n">residues</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">residues</span>
 
@@ -564,12 +588,16 @@
             <span class="n">protein</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;protein&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">residues</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="n">residues</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">protein</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Found atoms outside of protein. Only atoms &quot;</span>
-                                <span class="s2">&quot;inside of a &#39;protein&#39; selection can be used to &quot;</span>
-                                <span class="s2">&quot;calculate dihedrals.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Found atoms outside of protein. Only atoms &quot;</span>
+                    <span class="s2">&quot;inside of a &#39;protein&#39; selection can be used to &quot;</span>
+                    <span class="s2">&quot;calculate dihedrals.&quot;</span>
+                <span class="p">)</span>
             <span class="k">elif</span> <span class="ow">not</span> <span class="n">residues</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span><span class="n">protein</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]]):</span>
-                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Cannot determine phi and psi angles for the first &quot;</span>
-                            <span class="s2">&quot;or last residues&quot;</span><span class="p">)</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;Cannot determine phi and psi angles for the first &quot;</span>
+                    <span class="s2">&quot;or last residues&quot;</span>
+                <span class="p">)</span>
                 <span class="n">residues</span> <span class="o">=</span> <span class="n">residues</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">protein</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
 
         <span class="n">prev</span> <span class="o">=</span> <span class="n">residues</span><span class="o">.</span><span class="n">_get_prev_residues_by_resid</span><span class="p">()</span>
@@ -578,17 +606,20 @@
         <span class="n">keep</span> <span class="o">=</span> <span class="n">keep</span> <span class="o">&amp;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">r</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">nxt</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">keep</span><span class="p">):</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Some residues in selection do not have &quot;</span>
-                          <span class="s2">&quot;phi or psi selections&quot;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;Some residues in selection do not have &quot;</span>
+                <span class="s2">&quot;phi or psi selections&quot;</span>
+            <span class="p">)</span>
         <span class="n">prev</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">prev</span><span class="p">[</span><span class="n">keep</span><span class="p">])</span>
         <span class="n">nxt</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">nxt</span><span class="p">[</span><span class="n">keep</span><span class="p">])</span>
         <span class="n">residues</span> <span class="o">=</span> <span class="n">residues</span><span class="p">[</span><span class="n">keep</span><span class="p">]</span>
 
         <span class="c1"># find n, c, ca</span>
-        <span class="n">keep_prev</span> <span class="o">=</span> <span class="p">[</span><span class="nb">sum</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span><span class="o">==</span><span class="n">c_name</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">prev</span><span class="p">]</span>
+        <span class="n">keep_prev</span> <span class="o">=</span> <span class="p">[</span><span class="nb">sum</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span> <span class="o">==</span> <span class="n">c_name</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">prev</span><span class="p">]</span>
         <span class="n">rnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">n_name</span><span class="p">,</span> <span class="n">c_name</span><span class="p">,</span> <span class="n">ca_name</span><span class="p">]</span>
-        <span class="n">keep_res</span> <span class="o">=</span> <span class="p">[</span><span class="nb">all</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span> <span class="o">==</span> <span class="n">n</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">rnames</span><span class="p">)</span>
-                    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">residues</span><span class="p">]</span>
+        <span class="n">keep_res</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="nb">all</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span> <span class="o">==</span> <span class="n">n</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">rnames</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">residues</span>
+        <span class="p">]</span>
         <span class="n">keep_next</span> <span class="o">=</span> <span class="p">[</span><span class="nb">sum</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span> <span class="o">==</span> <span class="n">n_name</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">nxt</span><span class="p">]</span>
 
         <span class="c1"># alright we&#39;ll keep these</span>
@@ -604,20 +635,27 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ag4</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">rnames</span> <span class="o">==</span> <span class="n">c_name</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ag5</span> <span class="o">=</span> <span class="n">nxt</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">nxt</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span> <span class="o">==</span> <span class="n">n_name</span><span class="p">]</span>
 
-
     <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">angles</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span> <span class="nf">_get_aggregator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span><span class="n">lookup</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;angles&#39;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_vstack</span><span class="p">})</span>
+        <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span><span class="n">lookup</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;angles&quot;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_vstack</span><span class="p">})</span>
 
     <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">phi_angles</span> <span class="o">=</span> <span class="n">calc_dihedrals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ag1</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag2</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
-                                    <span class="bp">self</span><span class="o">.</span><span class="n">ag3</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag4</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
-                                    <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ag1</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
-        <span class="n">psi_angles</span> <span class="o">=</span> <span class="n">calc_dihedrals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ag2</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag3</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
-                                    <span class="bp">self</span><span class="o">.</span><span class="n">ag4</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag5</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
-                                    <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ag1</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
+        <span class="n">phi_angles</span> <span class="o">=</span> <span class="n">calc_dihedrals</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ag1</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ag2</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ag3</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ag4</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+            <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ag1</span><span class="o">.</span><span class="n">dimensions</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">psi_angles</span> <span class="o">=</span> <span class="n">calc_dihedrals</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ag2</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ag3</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ag4</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ag5</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+            <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ag1</span><span class="o">.</span><span class="n">dimensions</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">phi_psi</span> <span class="o">=</span> <span class="p">[(</span><span class="n">phi</span><span class="p">,</span> <span class="n">psi</span><span class="p">)</span> <span class="k">for</span> <span class="n">phi</span><span class="p">,</span> <span class="n">psi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">phi_angles</span><span class="p">,</span> <span class="n">psi_angles</span><span class="p">)]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">angles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">phi_psi</span><span class="p">)</span>
 
@@ -654,32 +692,41 @@
         <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">([</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">])</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xticks</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">181</span><span class="p">,</span> <span class="mi">60</span><span class="p">),</span> <span class="n">yticks</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">181</span><span class="p">,</span> <span class="mi">60</span><span class="p">),</span>
-               <span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\phi$&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\psi$&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+            <span class="n">xticks</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">181</span><span class="p">,</span> <span class="mi">60</span><span class="p">),</span>
+            <span class="n">yticks</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">181</span><span class="p">,</span> <span class="mi">60</span><span class="p">),</span>
+            <span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\phi$&quot;</span><span class="p">,</span>
+            <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\psi$&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">degree_formatter</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">ticker</span><span class="o">.</span><span class="n">StrMethodFormatter</span><span class="p">(</span>
-            <span class="sa">r</span><span class="s2">&quot;</span><span class="si">{x:g}</span><span class="s2">$\degree$&quot;</span><span class="p">)</span>
+            <span class="sa">r</span><span class="s2">&quot;</span><span class="si">{x:g}</span><span class="s2">$\degree$&quot;</span>
+        <span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">degree_formatter</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">degree_formatter</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">ref</span><span class="p">:</span>
-            <span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
-                               <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+            <span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+            <span class="p">)</span>
             <span class="n">levels</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">15000</span><span class="p">]</span>
-            <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;#A1D4FF&#39;</span><span class="p">,</span> <span class="s1">&#39;#35A1FF&#39;</span><span class="p">]</span>
+            <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;#A1D4FF&quot;</span><span class="p">,</span> <span class="s2">&quot;#35A1FF&quot;</span><span class="p">]</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">Rama_ref</span><span class="p">),</span> <span class="n">levels</span><span class="o">=</span><span class="n">levels</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="n">colors</span><span class="p">)</span>
         <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">angles</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
-                <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">angles</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]),</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">angles</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]),</span> <span class="mi">2</span>
+        <span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">a</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">a</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ax</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">angles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `angle` attribute was deprecated in MDAnalysis 2.0.0 &quot;</span>
-                <span class="s2">&quot;and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
-                <span class="s2">&quot;`results.angles` instead&quot;</span><span class="p">)</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;The `angle` attribute was deprecated in MDAnalysis 2.0.0 &quot;</span>
+            <span class="s2">&quot;and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
+            <span class="s2">&quot;`results.angles` instead&quot;</span>
+        <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">angles</span></div>
 
@@ -708,10 +755,13 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroup</span><span class="p">,</span>
-                 <span class="n">select_remove</span><span class="o">=</span><span class="s2">&quot;resname ALA CYS* GLY PRO SER THR VAL&quot;</span><span class="p">,</span>
-                 <span class="n">select_protein</span><span class="o">=</span><span class="s2">&quot;protein&quot;</span><span class="p">,</span>
-                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">atomgroup</span><span class="p">,</span>
+        <span class="n">select_remove</span><span class="o">=</span><span class="s2">&quot;resname ALA CYS* GLY PRO SER THR VAL&quot;</span><span class="p">,</span>
+        <span class="n">select_protein</span><span class="o">=</span><span class="s2">&quot;protein&quot;</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        atomgroup : AtomGroup or ResidueGroup</span>
@@ -747,20 +797,25 @@
 <span class="sd">           :class:`MDAnalysis.analysis.base.Results` instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Ramachandran</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">atomgroup</span> <span class="o">=</span> <span class="n">atomgroup</span>
         <span class="n">residues</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">residues</span>
         <span class="n">protein</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select_protein</span><span class="p">)</span><span class="o">.</span><span class="n">residues</span>
         <span class="n">remove</span> <span class="o">=</span> <span class="n">residues</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select_remove</span><span class="p">)</span><span class="o">.</span><span class="n">residues</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">residues</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">protein</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Found atoms outside of protein. Only atoms &quot;</span>
-                             <span class="s2">&quot;inside of a protein &quot;</span>
-                             <span class="sa">f</span><span class="s2">&quot;(select_protein=&#39;</span><span class="si">{</span><span class="n">select_protein</span><span class="si">}</span><span class="s2">&#39;) can be &quot;</span>
-                             <span class="s2">&quot;used to calculate dihedrals.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Found atoms outside of protein. Only atoms &quot;</span>
+                <span class="s2">&quot;inside of a protein &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;(select_protein=&#39;</span><span class="si">{</span><span class="n">select_protein</span><span class="si">}</span><span class="s2">&#39;) can be &quot;</span>
+                <span class="s2">&quot;used to calculate dihedrals.&quot;</span>
+            <span class="p">)</span>
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">remove</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;All residues selected with &#39;</span><span class="si">{</span><span class="n">select_remove</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
-                          <span class="s2">&quot;have been removed from the selection.&quot;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;All residues selected with &#39;</span><span class="si">{</span><span class="n">select_remove</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
+                <span class="s2">&quot;have been removed from the selection.&quot;</span>
+            <span class="p">)</span>
             <span class="n">residues</span> <span class="o">=</span> <span class="n">residues</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">remove</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ag1</span> <span class="o">=</span> <span class="n">residues</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;name N&quot;</span><span class="p">)</span>
@@ -772,14 +827,19 @@
         <span class="c1"># if there is an altloc attribute, too many atoms will be selected which</span>
         <span class="c1"># must be removed before using the class, or the file is missing atoms</span>
         <span class="c1"># for some residues which must also be removed</span>
-        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ag1</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ag</span><span class="p">)</span> <span class="k">for</span> <span class="n">ag</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ag2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag3</span><span class="p">,</span>
-                                                   <span class="bp">self</span><span class="o">.</span><span class="n">ag4</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag5</span><span class="p">]):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Too many or too few atoms selected. Check for &quot;</span>
-                             <span class="s2">&quot;missing or duplicate atoms in topology.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span>
+            <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ag1</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ag</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">ag</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ag2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag3</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag4</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag5</span><span class="p">]</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Too many or too few atoms selected. Check for &quot;</span>
+                <span class="s2">&quot;missing or duplicate atoms in topology.&quot;</span>
+            <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">angles</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">angles</span><span class="p">))</span> <span class="o">+</span> <span class="mi">360</span><span class="p">)</span> <span class="o">%</span> <span class="mi">360</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">angles</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">angles</span><span class="p">))</span> <span class="o">+</span> <span class="mi">360</span>
+        <span class="p">)</span> <span class="o">%</span> <span class="mi">360</span>
 
 <div class="viewcode-block" id="Janin.plot">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/dihedrals.html#MDAnalysis.analysis.dihedrals.Janin.plot">[docs]</a>
@@ -811,22 +871,28 @@
         <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">])</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">180</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">180</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xticks</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">361</span><span class="p">,</span> <span class="mi">60</span><span class="p">),</span> <span class="n">yticks</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">361</span><span class="p">,</span> <span class="mi">60</span><span class="p">),</span>
-               <span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\chi_1$&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\chi_2$&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="mi">180</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="mi">180</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+            <span class="n">xticks</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">361</span><span class="p">,</span> <span class="mi">60</span><span class="p">),</span>
+            <span class="n">yticks</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">361</span><span class="p">,</span> <span class="mi">60</span><span class="p">),</span>
+            <span class="n">xlabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\chi_1$&quot;</span><span class="p">,</span>
+            <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\chi_2$&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">degree_formatter</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">ticker</span><span class="o">.</span><span class="n">StrMethodFormatter</span><span class="p">(</span>
-            <span class="sa">r</span><span class="s2">&quot;</span><span class="si">{x:g}</span><span class="s2">$\degree$&quot;</span><span class="p">)</span>
+            <span class="sa">r</span><span class="s2">&quot;</span><span class="si">{x:g}</span><span class="s2">$\degree$&quot;</span>
+        <span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">degree_formatter</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">degree_formatter</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">ref</span><span class="p">:</span>
             <span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
             <span class="n">levels</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">600</span><span class="p">]</span>
-            <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;#A1D4FF&#39;</span><span class="p">,</span> <span class="s1">&#39;#35A1FF&#39;</span><span class="p">]</span>
+            <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;#A1D4FF&quot;</span><span class="p">,</span> <span class="s2">&quot;#35A1FF&quot;</span><span class="p">]</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">Janin_ref</span><span class="p">),</span> <span class="n">levels</span><span class="o">=</span><span class="n">levels</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="n">colors</span><span class="p">)</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">angles</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">angles</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]),</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">angles</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">angles</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]),</span> <span class="mi">2</span>
+        <span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">a</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">a</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ax</span></div>
 </div>

@@ -189,7 +189,7 @@
 
 <div class="viewcode-block" id="sort_backbone">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/polymer.html#MDAnalysis.analysis.polymer.sort_backbone">[docs]</a>
-<span class="nd">@requires</span><span class="p">(</span><span class="s1">&#39;bonds&#39;</span><span class="p">)</span>
+<span class="nd">@requires</span><span class="p">(</span><span class="s2">&quot;bonds&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">sort_backbone</span><span class="p">(</span><span class="n">backbone</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Rearrange a linear AtomGroup into backbone order</span>
 
@@ -212,25 +212,30 @@
 <span class="sd">    .. versionadded:: 0.20.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">backbone</span><span class="o">.</span><span class="n">n_fragments</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> fragments found in backbone.  &quot;</span>
-                         <span class="s2">&quot;backbone must be a single contiguous AtomGroup&quot;</span>
-                         <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">backbone</span><span class="o">.</span><span class="n">n_fragments</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> fragments found in backbone.  &quot;</span>
+            <span class="s2">&quot;backbone must be a single contiguous AtomGroup&quot;</span>
+            <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">backbone</span><span class="o">.</span><span class="n">n_fragments</span><span class="p">)</span>
+        <span class="p">)</span>
 
-    <span class="n">branches</span> <span class="o">=</span> <span class="p">[</span><span class="n">at</span> <span class="k">for</span> <span class="n">at</span> <span class="ow">in</span> <span class="n">backbone</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">at</span><span class="o">.</span><span class="n">bonded_atoms</span> <span class="o">&amp;</span> <span class="n">backbone</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="n">branches</span> <span class="o">=</span> <span class="p">[</span><span class="n">at</span> <span class="k">for</span> <span class="n">at</span> <span class="ow">in</span> <span class="n">backbone</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">at</span><span class="o">.</span><span class="n">bonded_atoms</span> <span class="o">&amp;</span> <span class="n">backbone</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">branches</span><span class="p">:</span>
         <span class="c1"># find which atom has too many bonds for easier debug</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="s2">&quot;Backbone is not linear.  &quot;</span>
             <span class="s2">&quot;The following atoms have more than two bonds in backbone: </span><span class="si">{}</span><span class="s2">.&quot;</span>
-            <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">branches</span><span class="p">)))</span>
+            <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">branches</span><span class="p">))</span>
+        <span class="p">)</span>
 
-    <span class="n">caps</span> <span class="o">=</span> <span class="p">[</span><span class="n">atom</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">backbone</span>
-           <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span> <span class="o">&amp;</span> <span class="n">backbone</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">caps</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">atom</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">backbone</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span> <span class="o">&amp;</span> <span class="n">backbone</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+    <span class="p">]</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">caps</span><span class="p">:</span>
         <span class="c1"># cyclical structure</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Could not find starting point of backbone, &quot;</span>
-                         <span class="s2">&quot;is the backbone cyclical?&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Could not find starting point of backbone, &quot;</span>
+            <span class="s2">&quot;is the backbone cyclical?&quot;</span>
+        <span class="p">)</span>
 
     <span class="c1"># arbitrarily choose one of the capping atoms to be the startpoint</span>
     <span class="n">sorted_backbone</span> <span class="o">=</span> <span class="n">AtomGroup</span><span class="p">([</span><span class="n">caps</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
@@ -376,9 +381,11 @@
 <span class="sd">       :attr:`lb`, :attr:`lp`, :attr:`fit` are now stored in a</span>
 <span class="sd">       :class:`MDAnalysis.analysis.base.Results` instance.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroups</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">PersistenceLength</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="n">atomgroups</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">atomgroups</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_atomgroups</span> <span class="o">=</span> <span class="n">atomgroups</span>
 
         <span class="c1"># Check that all chains are the same length</span>
@@ -403,30 +410,36 @@
             <span class="n">vecs</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">vecs</span> <span class="o">*</span> <span class="n">vecs</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))[:,</span> <span class="kc">None</span><span class="p">]</span>
 
             <span class="n">inner_pr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inner</span><span class="p">(</span><span class="n">vecs</span><span class="p">,</span> <span class="n">vecs</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[:(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">inner_pr</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">:]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[:</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">inner_pr</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">:]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">lb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `lb` attribute was deprecated in &quot;</span>
-                <span class="s2">&quot;MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. &quot;</span>
-                <span class="s2">&quot;Please use `results.variance` instead.&quot;</span><span class="p">)</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;The `lb` attribute was deprecated in &quot;</span>
+            <span class="s2">&quot;MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. &quot;</span>
+            <span class="s2">&quot;Please use `results.variance` instead.&quot;</span>
+        <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">lb</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">lp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `lp` attribute was deprecated in &quot;</span>
-                <span class="s2">&quot;MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. &quot;</span>
-                <span class="s2">&quot;Please use `results.variance` instead.&quot;</span><span class="p">)</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;The `lp` attribute was deprecated in &quot;</span>
+            <span class="s2">&quot;MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. &quot;</span>
+            <span class="s2">&quot;Please use `results.variance` instead.&quot;</span>
+        <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">lp</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `fit` attribute was deprecated in &quot;</span>
-                <span class="s2">&quot;MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. &quot;</span>
-                <span class="s2">&quot;Please use `results.variance` instead.&quot;</span><span class="p">)</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;The `fit` attribute was deprecated in &quot;</span>
+            <span class="s2">&quot;MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. &quot;</span>
+            <span class="s2">&quot;Please use `results.variance` instead.&quot;</span>
+        <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">fit</span>
 
@@ -456,13 +469,15 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bond_autocorrelation</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;Use the run method first&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">lb</span> <span class="o">*</span>\
-                            <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bond_autocorrelation</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">lb</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span>
+            <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bond_autocorrelation</span><span class="p">)</span>
+        <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">lp</span> <span class="o">=</span> <span class="n">fit_exponential_decay</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
-                                                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bond_autocorrelation</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">lp</span> <span class="o">=</span> <span class="n">fit_exponential_decay</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bond_autocorrelation</span>
+        <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">fit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">x</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">lp</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">fit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">x</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">lp</span><span class="p">)</span>
 
 <div class="viewcode-block" id="PersistenceLength.plot">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/polymer.html#MDAnalysis.analysis.polymer.PersistenceLength.plot">[docs]</a>
@@ -479,20 +494,21 @@
 <span class="sd">        ax : the axis that the graph was plotted on</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
         <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bond_autocorrelation</span><span class="p">,</span>
-                <span class="s1">&#39;ro&#39;</span><span class="p">,</span>
-                <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Result&#39;</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">fit</span><span class="p">,</span>
-                <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Fit&#39;</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$C(x)$&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bond_autocorrelation</span><span class="p">,</span>
+            <span class="s2">&quot;ro&quot;</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Result&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">fit</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Fit&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$C(x)$&quot;</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mi">40</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">lb</span><span class="p">)</span>
 
-        <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;best&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">ax</span></div>
 </div>
@@ -521,8 +537,9 @@
 <span class="sd">    This function assumes that data starts at 1.0 and decays to 0.0</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">expfunc</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="o">/</span><span class="n">a</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span> <span class="o">/</span> <span class="n">a</span><span class="p">)</span>
 
     <span class="n">a</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">optimize</span><span class="o">.</span><span class="n">curve_fit</span><span class="p">(</span><span class="n">expfunc</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 

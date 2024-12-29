@@ -383,10 +383,18 @@
 <span class="sd">       incorrectly handle cases where the ``frame`` argument</span>
 <span class="sd">       was passed.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">_analysis_algorithm_is_parallelizable</span> <span class="o">=</span> <span class="kc">False</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">n_components</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">universe</span><span class="p">,</span>
+        <span class="n">select</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
+        <span class="n">align</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">mean</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">n_components</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">PCA</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_u</span> <span class="o">=</span> <span class="n">universe</span>
 
@@ -412,15 +420,18 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mean</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Number of atoms in reference (</span><span class="si">{}</span><span class="s1">) does &#39;</span>
-                                 <span class="s1">&#39;not match number of atoms in the &#39;</span>
-                                 <span class="s1">&#39;selection (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span><span class="p">,</span>
-                                                         <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Number of atoms in reference (</span><span class="si">{}</span><span class="s2">) does &quot;</span>
+                    <span class="s2">&quot;not match number of atoms in the &quot;</span>
+                    <span class="s2">&quot;selection (</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_calc_mean</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No covariance information can be gathered from a&#39;</span>
-                             <span class="s1">&#39;single trajectory frame.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;No covariance information can be gathered from a&quot;</span>
+                <span class="s2">&quot;single trajectory frame.</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
         <span class="n">n_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span> <span class="o">*</span> <span class="mi">3</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cov</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_dim</span><span class="p">,</span> <span class="n">n_dim</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ref_atom_positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reference</span><span class="o">.</span><span class="n">positions</span>
@@ -428,15 +439,20 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_ref_atom_positions</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ref_cog</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc_mean</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">ProgressBar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="p">,</span>
-                                  <span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Mean Calculation&quot;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">ProgressBar</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_sliced_trajectory</span><span class="p">,</span>
+                <span class="n">verbose</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span><span class="p">,</span>
+                <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Mean Calculation&quot;</span><span class="p">,</span>
+            <span class="p">):</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">align</span><span class="p">:</span>
                     <span class="n">mobile_cog</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="o">.</span><span class="n">center_of_geometry</span><span class="p">()</span>
-                    <span class="n">mobile_atoms</span><span class="p">,</span> <span class="n">old_rmsd</span> <span class="o">=</span> <span class="n">_fit_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span> <span class="n">mobile_cog</span><span class="p">,</span>
-                                                     <span class="bp">self</span><span class="o">.</span><span class="n">_ref_atom_positions</span><span class="p">,</span>
-                                                     <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">,</span>
-                                                     <span class="n">mobile_com</span><span class="o">=</span><span class="n">mobile_cog</span><span class="p">,</span>
-                                                     <span class="n">ref_com</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ref_cog</span><span class="p">)</span>
+                    <span class="n">mobile_atoms</span><span class="p">,</span> <span class="n">old_rmsd</span> <span class="o">=</span> <span class="n">_fit_to</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span> <span class="n">mobile_cog</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_ref_atom_positions</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">,</span>
+                        <span class="n">mobile_com</span><span class="o">=</span><span class="n">mobile_cog</span><span class="p">,</span>
+                        <span class="n">ref_com</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ref_cog</span><span class="p">,</span>
+                    <span class="p">)</span>
 
                 <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="o">.</span><span class="n">positions</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span>
@@ -445,11 +461,13 @@
     <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">align</span><span class="p">:</span>
             <span class="n">mobile_cog</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="o">.</span><span class="n">center_of_geometry</span><span class="p">()</span>
-            <span class="n">mobile_atoms</span><span class="p">,</span> <span class="n">old_rmsd</span> <span class="o">=</span> <span class="n">_fit_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span> <span class="n">mobile_cog</span><span class="p">,</span>
-                                             <span class="bp">self</span><span class="o">.</span><span class="n">_ref_atom_positions</span><span class="p">,</span>
-                                             <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">,</span>
-                                             <span class="n">mobile_com</span><span class="o">=</span><span class="n">mobile_cog</span><span class="p">,</span>
-                                             <span class="n">ref_com</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ref_cog</span><span class="p">)</span>
+            <span class="n">mobile_atoms</span><span class="p">,</span> <span class="n">old_rmsd</span> <span class="o">=</span> <span class="n">_fit_to</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span> <span class="n">mobile_cog</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ref_atom_positions</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">,</span>
+                <span class="n">mobile_com</span><span class="o">=</span><span class="n">mobile_cog</span><span class="p">,</span>
+                <span class="n">ref_com</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ref_cog</span><span class="p">,</span>
+            <span class="p">)</span>
             <span class="c1"># now all structures are aligned to reference</span>
             <span class="n">x</span> <span class="o">=</span> <span class="n">mobile_atoms</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
@@ -468,25 +486,31 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">p_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `p_components` attribute was deprecated in &quot;</span>
-                <span class="s2">&quot;MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. &quot;</span>
-                <span class="s2">&quot;Please use `results.p_components` instead.&quot;</span><span class="p">)</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;The `p_components` attribute was deprecated in &quot;</span>
+            <span class="s2">&quot;MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. &quot;</span>
+            <span class="s2">&quot;Please use `results.p_components` instead.&quot;</span>
+        <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">p_components</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">variance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `variance` attribute was deprecated in &quot;</span>
-                <span class="s2">&quot;MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. &quot;</span>
-                <span class="s2">&quot;Please use `results.variance` instead.&quot;</span><span class="p">)</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;The `variance` attribute was deprecated in &quot;</span>
+            <span class="s2">&quot;MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. &quot;</span>
+            <span class="s2">&quot;Please use `results.variance` instead.&quot;</span>
+        <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">variance</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">cumulated_variance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `cumulated_variance` attribute was deprecated in &quot;</span>
-                <span class="s2">&quot;MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. &quot;</span>
-                <span class="s2">&quot;Please use `results.cumulated_variance` instead.&quot;</span><span class="p">)</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;The `cumulated_variance` attribute was deprecated in &quot;</span>
+            <span class="s2">&quot;MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. &quot;</span>
+            <span class="s2">&quot;Please use `results.cumulated_variance` instead.&quot;</span>
+        <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">cumulated_variance</span>
 
@@ -500,15 +524,23 @@
             <span class="k">if</span> <span class="n">n</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variance</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">variance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variance</span><span class="p">[:</span><span class="n">n</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">cumulated_variance</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variance</span><span class="p">)</span> <span class="o">/</span>
-                                               <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variance</span><span class="p">))[:</span><span class="n">n</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">cumulated_variance</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variance</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variance</span><span class="p">)</span>
+            <span class="p">)[:</span><span class="n">n</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">p_components</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p_components</span><span class="p">[:,</span> <span class="p">:</span><span class="n">n</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_n_components</span> <span class="o">=</span> <span class="n">n</span>
 
 <div class="viewcode-block" id="PCA.transform">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.PCA.transform">[docs]</a>
-    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroup</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                  <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">atomgroup</span><span class="p">,</span>
+        <span class="n">n_components</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply the dimensionality reduction on a trajectory</span>
 
 <span class="sd">        Parameters</span>
@@ -549,31 +581,37 @@
 <span class="sd">           on with ``verbose = True``, or off with ``verbose = False``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculated</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Call run() on the PCA before using transform&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Call run() on the PCA before using transform&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">atomgroup</span><span class="p">,</span> <span class="n">Universe</span><span class="p">):</span>
             <span class="n">atomgroup</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">atoms</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span> <span class="o">!=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;PCA has been fit for&#39;</span>
-                             <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> atoms. Your atomgroup&#39;</span>
-                             <span class="s1">&#39;has </span><span class="si">{}</span><span class="s1"> atoms&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span><span class="p">,</span>
-                                                   <span class="n">atomgroup</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;PCA has been fit for&quot;</span>
+                <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> atoms. Your atomgroup&quot;</span>
+                <span class="s2">&quot;has </span><span class="si">{}</span><span class="s2"> atoms&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span><span class="p">,</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span>
+            <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="o">.</span><span class="n">types</span> <span class="o">==</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">types</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Atom types do not match with types used to fit PCA&#39;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Atom types do not match with types used to fit PCA&quot;</span><span class="p">)</span>
 
         <span class="n">traj</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span>
         <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span> <span class="o">=</span> <span class="n">traj</span><span class="o">.</span><span class="n">check_slice_indices</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
         <span class="n">n_frames</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">))</span>
 
-        <span class="n">dim</span> <span class="o">=</span> <span class="p">(</span><span class="n">n_components</span> <span class="k">if</span> <span class="n">n_components</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span>
-               <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">p_components</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">dim</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">n_components</span>
+            <span class="k">if</span> <span class="n">n_components</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">p_components</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="p">)</span>
 
         <span class="n">dot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_frames</span><span class="p">,</span> <span class="n">dim</span><span class="p">))</span>
 
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">traj</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">:</span><span class="n">step</span><span class="p">]),</span> <span class="n">disable</span><span class="o">=</span><span class="ow">not</span> <span class="n">verbose</span><span class="p">,</span>
-                          <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">traj</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">:</span><span class="n">step</span><span class="p">])</span>
-                          <span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span>
+            <span class="nb">enumerate</span><span class="p">(</span><span class="n">traj</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">:</span><span class="n">step</span><span class="p">]),</span>
+            <span class="n">disable</span><span class="o">=</span><span class="ow">not</span> <span class="n">verbose</span><span class="p">,</span>
+            <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">traj</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">:</span><span class="n">step</span><span class="p">]),</span>
+        <span class="p">):</span>
 
             <span class="n">xyz</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xmean</span>
             <span class="n">dot</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p_components</span><span class="p">[:,</span> <span class="p">:</span><span class="n">dim</span><span class="p">])</span>
@@ -696,20 +734,22 @@
 <span class="sd">        .. versionadded:: 2.2.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculated</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Call run() on the PCA before projecting&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Call run() on the PCA before projecting&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">group</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">anchor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;anchor&#39; cannot be &#39;None&#39;&quot;</span> <span class="o">+</span>
-                                 <span class="s2">&quot; if &#39;group&#39; is not &#39;None&#39;&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;&#39;anchor&#39; cannot be &#39;None&#39;&quot;</span> <span class="o">+</span> <span class="s2">&quot; if &#39;group&#39; is not &#39;None&#39;&quot;</span>
+                <span class="p">)</span>
 
             <span class="n">anchors</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">anchor</span><span class="p">)</span>
             <span class="n">anchors_res_ids</span> <span class="o">=</span> <span class="n">anchors</span><span class="o">.</span><span class="n">resindices</span>
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">anchors_res_ids</span><span class="p">)</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="n">anchors_res_ids</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;More than one &#39;anchor&#39; found in residues&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">resindices</span><span class="p">,</span> <span class="n">anchors_res_ids</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some residues in &#39;group&#39;&quot;</span> <span class="o">+</span>
-                                 <span class="s2">&quot; do not have an &#39;anchor&#39;&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Some residues in &#39;group&#39;&quot;</span> <span class="o">+</span> <span class="s2">&quot; do not have an &#39;anchor&#39;&quot;</span>
+                <span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">anchors</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Some &#39;anchors&#39; are not part of PCA class&quot;</span><span class="p">)</span>
 
@@ -717,18 +757,22 @@
             <span class="c1"># sure that extrapolation works on residues, not random atoms.</span>
             <span class="n">non_pca</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">atoms</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span>
             <span class="n">pca_res_indices</span><span class="p">,</span> <span class="n">pca_res_counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="o">.</span><span class="n">resindices</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="o">.</span><span class="n">resindices</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
 
             <span class="n">non_pca_atoms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">group</span><span class="o">.</span><span class="n">residues</span><span class="p">:</span>
                 <span class="c1"># n_common is the number of pca atoms in a residue</span>
-                <span class="n">n_common</span> <span class="o">=</span> <span class="n">pca_res_counts</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
-                            <span class="n">pca_res_indices</span> <span class="o">==</span> <span class="n">res</span><span class="o">.</span><span class="n">resindex</span><span class="p">)][</span><span class="mi">0</span><span class="p">]</span>
-                <span class="n">non_pca_atoms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">non_pca_atoms</span><span class="p">,</span>
-                                          <span class="n">res</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">-</span> <span class="n">n_common</span><span class="p">)</span>
+                <span class="n">n_common</span> <span class="o">=</span> <span class="n">pca_res_counts</span><span class="p">[</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">pca_res_indices</span> <span class="o">==</span> <span class="n">res</span><span class="o">.</span><span class="n">resindex</span><span class="p">)</span>
+                <span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">non_pca_atoms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">non_pca_atoms</span><span class="p">,</span> <span class="n">res</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">-</span> <span class="n">n_common</span>
+                <span class="p">)</span>
             <span class="c1"># index_extrapolate records the anchor number for each non-PCA atom</span>
-            <span class="n">index_extrapolate</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">anchors</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">),</span>
-                                          <span class="n">non_pca_atoms</span><span class="p">)</span>
+            <span class="n">index_extrapolate</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">anchors</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">),</span> <span class="n">non_pca_atoms</span>
+            <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">components</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">components</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">p_components</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
@@ -740,25 +784,32 @@
 
             <span class="n">xyz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xmean</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
-                <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p_components</span><span class="p">[:,</span> <span class="n">components</span><span class="p">]),</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_p_components</span><span class="p">[:,</span> <span class="n">components</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-                 <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xmean</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+                <span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p_components</span><span class="p">[:,</span> <span class="n">components</span><span class="p">]),</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_p_components</span><span class="p">[:,</span> <span class="n">components</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xmean</span>
+                <span class="p">),</span>
+                <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
             <span class="p">)</span>
 
             <span class="k">if</span> <span class="n">group</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">non_pca</span><span class="o">.</span><span class="n">positions</span> <span class="o">+=</span> <span class="p">(</span><span class="n">anchors</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span>
-                                      <span class="n">anchors_coords_old</span><span class="p">)[</span><span class="n">index_extrapolate</span><span class="p">]</span>
+                <span class="n">non_pca</span><span class="o">.</span><span class="n">positions</span> <span class="o">+=</span> <span class="p">(</span><span class="n">anchors</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span> <span class="n">anchors_coords_old</span><span class="p">)[</span>
+                    <span class="n">index_extrapolate</span>
+                <span class="p">]</span>
             <span class="k">return</span> <span class="n">ts</span>
+
         <span class="k">return</span> <span class="n">wrapped</span></div>
 
 
 <div class="viewcode-block" id="PCA.rmsip">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.PCA.rmsip">[docs]</a>
     <span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
-        <span class="n">Doi</span><span class="p">(</span><span class="s1">&#39;10.1002/(SICI)1097-0134(19990901)36:4&lt;419::AID-PROT5&gt;3.0.CO;2-U&#39;</span><span class="p">),</span>
-        <span class="n">Doi</span><span class="p">(</span><span class="s1">&#39;10.1529/biophysj.104.052449&#39;</span><span class="p">),</span>
+        <span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1002/(SICI)1097-0134(19990901)36:4&lt;419::AID-PROT5&gt;3.0.CO;2-U&quot;</span><span class="p">),</span>
+        <span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1529/biophysj.104.052449&quot;</span><span class="p">),</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;RMSIP&quot;</span><span class="p">,</span>
-        <span class="n">path</span><span class="o">=</span><span class="s1">&#39;MDAnalysis.analysis.pca&#39;</span><span class="p">,</span>
+        <span class="n">path</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.analysis.pca&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">def</span> <span class="nf">rmsip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the root mean square inner product between subspaces.</span>
@@ -819,16 +870,17 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">p_components</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Call run() on the PCA before using rmsip&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Call run() on the PCA before using rmsip&quot;</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">b</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">p_components</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s1">&#39;Call run() on the other PCA before using rmsip&#39;</span><span class="p">)</span>
+                    <span class="s2">&quot;Call run() on the other PCA before using rmsip&quot;</span>
+                <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;other must be another PCA class&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;other must be another PCA class&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">rmsip</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="n">n_components</span><span class="p">)</span></div>
 
@@ -836,9 +888,9 @@
 <div class="viewcode-block" id="PCA.cumulative_overlap">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.PCA.cumulative_overlap">[docs]</a>
     <span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
-        <span class="n">Doi</span><span class="p">(</span><span class="s1">&#39;10.1016/j.str.2007.12.011&#39;</span><span class="p">),</span>
+        <span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1016/j.str.2007.12.011&quot;</span><span class="p">),</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Cumulative overlap&quot;</span><span class="p">,</span>
-        <span class="n">path</span><span class="o">=</span><span class="s1">&#39;MDAnalysis.analysis.pca&#39;</span><span class="p">,</span>
+        <span class="n">path</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.analysis.pca&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">def</span> <span class="nf">cumulative_overlap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the cumulative overlap of a vector in a subspace.</span>
@@ -877,16 +929,18 @@
             <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">p_components</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s1">&#39;Call run() on the PCA before using cumulative_overlap&#39;</span><span class="p">)</span>
+                <span class="s2">&quot;Call run() on the PCA before using cumulative_overlap&quot;</span>
+            <span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">b</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">p_components</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s1">&#39;Call run() on the other PCA before using cumulative_overlap&#39;</span><span class="p">)</span>
+                    <span class="s2">&quot;Call run() on the other PCA before using cumulative_overlap&quot;</span>
+                <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;other must be another PCA class&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;other must be another PCA class&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">cumulative_overlap</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="n">n_components</span><span class="p">)</span></div>
 </div>
@@ -926,18 +980,21 @@
     <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pca_space</span><span class="p">))</span>
     <span class="n">T</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pca_space</span><span class="p">)</span>
     <span class="n">cos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">t</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">T</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">((</span><span class="mf">2.0</span> <span class="o">/</span> <span class="n">T</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">integrate</span><span class="o">.</span><span class="n">simpson</span><span class="p">(</span><span class="n">cos</span><span class="o">*</span><span class="n">pca_space</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]))</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span>
-            <span class="n">scipy</span><span class="o">.</span><span class="n">integrate</span><span class="o">.</span><span class="n">simpson</span><span class="p">(</span><span class="n">pca_space</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="p">(</span><span class="mf">2.0</span> <span class="o">/</span> <span class="n">T</span><span class="p">)</span>
+        <span class="o">*</span> <span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">integrate</span><span class="o">.</span><span class="n">simpson</span><span class="p">(</span><span class="n">cos</span> <span class="o">*</span> <span class="n">pca_space</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]))</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="o">/</span> <span class="n">scipy</span><span class="o">.</span><span class="n">integrate</span><span class="o">.</span><span class="n">simpson</span><span class="p">(</span><span class="n">pca_space</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="rmsip">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.rmsip">[docs]</a>
 <span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
-    <span class="n">Doi</span><span class="p">(</span><span class="s1">&#39;10.1002/(SICI)1097-0134(19990901)36:4&lt;419::AID-PROT5&gt;3.0.CO;2-U&#39;</span><span class="p">),</span>
-    <span class="n">Doi</span><span class="p">(</span><span class="s1">&#39;10.1529/biophysj.104.052449&#39;</span><span class="p">),</span>
+    <span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1002/(SICI)1097-0134(19990901)36:4&lt;419::AID-PROT5&gt;3.0.CO;2-U&quot;</span><span class="p">),</span>
+    <span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1529/biophysj.104.052449&quot;</span><span class="p">),</span>
     <span class="n">description</span><span class="o">=</span><span class="s2">&quot;RMSIP&quot;</span><span class="p">,</span>
-    <span class="n">path</span><span class="o">=</span><span class="s1">&#39;MDAnalysis.analysis.pca&#39;</span><span class="p">,</span>
+    <span class="n">path</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.analysis.pca&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">rmsip</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute the root mean square inner product between subspaces.</span>
@@ -1007,7 +1064,7 @@
     <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">n_components</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
         <span class="n">n_a</span><span class="p">,</span> <span class="n">n_b</span> <span class="o">=</span> <span class="n">n_components</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Too many values provided for n_components&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Too many values provided for n_components&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">n_a</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">n_a</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
@@ -1015,7 +1072,7 @@
         <span class="n">n_b</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
 
     <span class="n">sip</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">a</span><span class="p">[:</span><span class="n">n_a</span><span class="p">],</span> <span class="n">b</span><span class="p">[:</span><span class="n">n_b</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
-    <span class="n">msip</span> <span class="o">=</span> <span class="n">sip</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="n">n_a</span>
+    <span class="n">msip</span> <span class="o">=</span> <span class="n">sip</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">n_a</span>
     <span class="k">return</span> <span class="n">msip</span><span class="o">**</span><span class="mf">0.5</span></div>
 
 
@@ -1023,9 +1080,9 @@
 <div class="viewcode-block" id="cumulative_overlap">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.cumulative_overlap">[docs]</a>
 <span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
-    <span class="n">Doi</span><span class="p">(</span><span class="s1">&#39;10.1016/j.str.2007.12.011&#39;</span><span class="p">),</span>
+    <span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1016/j.str.2007.12.011&quot;</span><span class="p">),</span>
     <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Cumulative overlap&quot;</span><span class="p">,</span>
-    <span class="n">path</span><span class="o">=</span><span class="s1">&#39;MDAnalysis.analysis.pca&#39;</span><span class="p">,</span>
+    <span class="n">path</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.analysis.pca&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">cumulative_overlap</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute the cumulative overlap of a vector in a subspace.</span>
@@ -1071,7 +1128,7 @@
     <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="p">[:</span><span class="n">n_components</span><span class="p">]</span>
     <span class="n">b_norms</span> <span class="o">=</span> <span class="p">(</span><span class="n">b</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
 
-    <span class="n">o</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">T</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">b_norms</span><span class="o">*</span><span class="n">vec_norm</span><span class="p">)</span>
+    <span class="n">o</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">T</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">b_norms</span> <span class="o">*</span> <span class="n">vec_norm</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">o</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">**</span> <span class="mf">0.5</span></div>
 
 </pre></div>

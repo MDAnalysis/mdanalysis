@@ -304,11 +304,11 @@
         <span class="n">method</span> <span class="o">=</span> <span class="n">ClusteringMethod</span><span class="o">.</span><span class="n">AffinityPropagationNative</span><span class="p">()</span>
     <span class="c1"># Internally, ensembles are always transformed to a list of lists</span>
     <span class="k">if</span> <span class="n">ensembles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ensembles</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ensembles</span><span class="p">,</span> <span class="s2">&quot;__iter__&quot;</span><span class="p">):</span>
             <span class="n">ensembles</span> <span class="o">=</span> <span class="p">[</span><span class="n">ensembles</span><span class="p">]</span>
 
         <span class="n">ensembles_list</span> <span class="o">=</span> <span class="n">ensembles</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ensembles</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ensembles</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;__iter__&quot;</span><span class="p">):</span>
             <span class="n">ensembles_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">ensembles</span><span class="p">]</span>
 
         <span class="c1"># Calculate merged ensembles and transfer to memory</span>
@@ -320,35 +320,41 @@
             <span class="n">merged_ensembles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">merge_universes</span><span class="p">(</span><span class="n">ensembles</span><span class="p">))</span>
 
     <span class="n">methods</span> <span class="o">=</span> <span class="n">method</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="s2">&quot;__iter__&quot;</span><span class="p">):</span>
         <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="n">method</span><span class="p">]</span>
 
     <span class="c1"># Check whether any of the clustering methods can make use of a distance</span>
     <span class="c1"># matrix</span>
-    <span class="n">any_method_accept_distance_matrix</span> <span class="o">=</span> \
-        <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">([</span><span class="n">_method</span><span class="o">.</span><span class="n">accepts_distance_matrix</span> <span class="k">for</span> <span class="n">_method</span> <span class="ow">in</span> <span class="n">methods</span><span class="p">])</span>
+    <span class="n">any_method_accept_distance_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">_method</span><span class="o">.</span><span class="n">accepts_distance_matrix</span> <span class="k">for</span> <span class="n">_method</span> <span class="ow">in</span> <span class="n">methods</span><span class="p">]</span>
+    <span class="p">)</span>
 
     <span class="c1"># If distance matrices are provided, check that it matches the number</span>
     <span class="c1"># of ensembles</span>
     <span class="k">if</span> <span class="n">distance_matrix</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">distance_matrix</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">distance_matrix</span><span class="p">,</span> <span class="s2">&quot;__iter__&quot;</span><span class="p">):</span>
             <span class="n">distance_matrix</span> <span class="o">=</span> <span class="p">[</span><span class="n">distance_matrix</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">ensembles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> \
-                        <span class="nb">len</span><span class="p">(</span><span class="n">distance_matrix</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">merged_ensembles</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Dimensions of provided list of distance matrices &quot;</span>
-                             <span class="s2">&quot;does not match that of provided list of &quot;</span>
-                             <span class="s2">&quot;ensembles: </span><span class="si">{0}</span><span class="s2"> vs </span><span class="si">{1}</span><span class="s2">&quot;</span>
-                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">distance_matrix</span><span class="p">),</span>
-                                     <span class="nb">len</span><span class="p">(</span><span class="n">merged_ensembles</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="n">ensembles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">distance_matrix</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span>
+            <span class="n">merged_ensembles</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Dimensions of provided list of distance matrices &quot;</span>
+                <span class="s2">&quot;does not match that of provided list of &quot;</span>
+                <span class="s2">&quot;ensembles: </span><span class="si">{0}</span><span class="s2"> vs </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="nb">len</span><span class="p">(</span><span class="n">distance_matrix</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">merged_ensembles</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
 
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># Calculate distance matrices for all merged ensembles - if not provided</span>
         <span class="k">if</span> <span class="n">any_method_accept_distance_matrix</span><span class="p">:</span>
             <span class="n">distance_matrix</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">merged_ensemble</span> <span class="ow">in</span> <span class="n">merged_ensembles</span><span class="p">:</span>
-                <span class="n">distance_matrix</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">get_distance_matrix</span><span class="p">(</span><span class="n">merged_ensemble</span><span class="p">,</span>
-                                                           <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
-                                                           <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+                <span class="n">distance_matrix</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">get_distance_matrix</span><span class="p">(</span>
+                        <span class="n">merged_ensemble</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
 
     <span class="n">args</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">methods</span><span class="p">:</span>
@@ -356,11 +362,14 @@
             <span class="n">args</span> <span class="o">+=</span> <span class="p">[(</span><span class="n">d</span><span class="p">,)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">distance_matrix</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">merged_ensemble</span> <span class="ow">in</span> <span class="n">merged_ensembles</span><span class="p">:</span>
-                <span class="n">coordinates</span> <span class="o">=</span> <span class="n">merged_ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="s2">&quot;fac&quot;</span><span class="p">)</span>
+                <span class="n">coordinates</span> <span class="o">=</span> <span class="n">merged_ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span>
+                    <span class="n">order</span><span class="o">=</span><span class="s2">&quot;fac&quot;</span>
+                <span class="p">)</span>
 
                 <span class="c1"># Flatten coordinate matrix into n_frame x n_coordinates</span>
-                <span class="n">coordinates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span>
-                                         <span class="p">(</span><span class="n">coordinates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+                <span class="n">coordinates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+                    <span class="n">coordinates</span><span class="p">,</span> <span class="p">(</span><span class="n">coordinates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="p">)</span>
 
                 <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">coordinates</span><span class="p">,))</span>
 
@@ -375,14 +384,16 @@
     <span class="k">if</span> <span class="n">ensembles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">ensemble_assignment</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ensemble</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ensembles</span><span class="p">):</span>
-            <span class="n">ensemble_assignment</span> <span class="o">+=</span> <span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span>
+            <span class="n">ensemble_assignment</span> <span class="o">+=</span> <span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span>
         <span class="n">ensemble_assignment</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ensemble_assignment</span><span class="p">)</span>
-        <span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;ensemble_membership&#39;</span><span class="p">:</span> <span class="n">ensemble_assignment</span><span class="p">}</span>
+        <span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;ensemble_membership&quot;</span><span class="p">:</span> <span class="n">ensemble_assignment</span><span class="p">}</span>
 
     <span class="c1"># Create clusters collections from clustering results,</span>
     <span class="c1"># one for each cluster. None if clustering didn&#39;t work.</span>
-    <span class="n">ccs</span> <span class="o">=</span> <span class="p">[</span><span class="n">ClusterCollection</span><span class="p">(</span><span class="n">clusters</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                             <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">)</span> <span class="k">for</span> <span class="n">clusters</span> <span class="ow">in</span> <span class="n">results</span><span class="p">]</span>
+    <span class="n">ccs</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">ClusterCollection</span><span class="p">(</span><span class="n">clusters</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">clusters</span> <span class="ow">in</span> <span class="n">results</span>
+    <span class="p">]</span>
 
     <span class="k">if</span> <span class="n">allow_collapsed_result</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">ccs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">ccs</span> <span class="o">=</span> <span class="n">ccs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>

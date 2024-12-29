@@ -357,20 +357,30 @@
         <span class="n">torsionAdded</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">for</span> <span class="n">a1</span> <span class="ow">in</span> <span class="n">selected_atoms</span><span class="p">:</span>
             <span class="c1"># Find a0, which is a new atom connected to the selected atom</span>
-            <span class="n">a0_list</span> <span class="o">=</span> <span class="n">_sort_atoms_by_mass</span><span class="p">(</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">a1</span><span class="o">.</span><span class="n">bonded_atoms</span> \
-                <span class="k">if</span> <span class="p">(</span><span class="n">a</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">a</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">selected_atoms</span><span class="p">))</span>
+            <span class="n">a0_list</span> <span class="o">=</span> <span class="n">_sort_atoms_by_mass</span><span class="p">(</span>
+                <span class="n">a</span>
+                <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">a1</span><span class="o">.</span><span class="n">bonded_atoms</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">a</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">a</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">selected_atoms</span><span class="p">)</span>
+            <span class="p">)</span>
             <span class="k">for</span> <span class="n">a0</span> <span class="ow">in</span> <span class="n">a0_list</span><span class="p">:</span>
                 <span class="c1"># Find a2, which is connected to a1, is not a terminal atom,</span>
                 <span class="c1"># and has been selected</span>
-                <span class="n">a2_list</span> <span class="o">=</span> <span class="n">_sort_atoms_by_mass</span><span class="p">(</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">a1</span><span class="o">.</span><span class="n">bonded_atoms</span> \
-                    <span class="k">if</span> <span class="p">(</span><span class="n">a</span><span class="o">!=</span><span class="n">a0</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span> <span class="ow">and</span> \
-                        <span class="p">(</span><span class="n">a</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">a</span> <span class="ow">in</span> <span class="n">selected_atoms</span><span class="p">))</span>
+                <span class="n">a2_list</span> <span class="o">=</span> <span class="n">_sort_atoms_by_mass</span><span class="p">(</span>
+                    <span class="n">a</span>
+                    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">a1</span><span class="o">.</span><span class="n">bonded_atoms</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">a</span> <span class="o">!=</span> <span class="n">a0</span><span class="p">)</span>
+                    <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>
+                    <span class="ow">and</span> <span class="p">(</span><span class="n">a</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">)</span>
+                    <span class="ow">and</span> <span class="p">(</span><span class="n">a</span> <span class="ow">in</span> <span class="n">selected_atoms</span><span class="p">)</span>
+                <span class="p">)</span>
                 <span class="k">for</span> <span class="n">a2</span> <span class="ow">in</span> <span class="n">a2_list</span><span class="p">:</span>
                     <span class="c1"># Find a3, which is</span>
                     <span class="c1"># connected to a2, has been selected, and is not a1</span>
-                    <span class="n">a3_list</span> <span class="o">=</span> <span class="n">_sort_atoms_by_mass</span><span class="p">(</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">a2</span><span class="o">.</span><span class="n">bonded_atoms</span> \
-                        <span class="k">if</span> <span class="p">(</span><span class="n">a</span><span class="o">!=</span><span class="n">a1</span><span class="p">)</span> <span class="ow">and</span> \
-                            <span class="p">(</span><span class="n">a</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">a</span> <span class="ow">in</span> <span class="n">selected_atoms</span><span class="p">))</span>
+                    <span class="n">a3_list</span> <span class="o">=</span> <span class="n">_sort_atoms_by_mass</span><span class="p">(</span>
+                        <span class="n">a</span>
+                        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">a2</span><span class="o">.</span><span class="n">bonded_atoms</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="n">a</span> <span class="o">!=</span> <span class="n">a1</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">a</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">a</span> <span class="ow">in</span> <span class="n">selected_atoms</span><span class="p">)</span>
+                    <span class="p">)</span>
                     <span class="k">for</span> <span class="n">a3</span> <span class="ow">in</span> <span class="n">a3_list</span><span class="p">:</span>
                         <span class="c1"># Add the torsion to the list of torsions</span>
                         <span class="n">torsions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">([</span><span class="n">a0</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">]))</span>
@@ -381,11 +391,11 @@
                         <span class="k">break</span>  <span class="c1"># out of the a3 loop</span>
                     <span class="k">break</span>  <span class="c1"># out of the a2 loop</span>
         <span class="k">if</span> <span class="n">torsionAdded</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Selected atoms:&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Selected atoms:&quot;</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">selected_atoms</span><span class="p">])</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Torsions found:&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Torsions found:&quot;</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">([</span><span class="nb">list</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">indices</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">torsions</span><span class="p">])</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Additional torsions not found.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Additional torsions not found.&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">torsions</span>
 
 
@@ -398,13 +408,14 @@
 <span class="sd">    the group of atoms and all frame in the trajectory belonging to `ag`.</span>
 
 <span class="sd">    .. versionchanged:: 2.8.0</span>
-<span class="sd">       Enabled **parallel execution** with the ``multiprocessing`` and ``dask`` </span>
-<span class="sd">       backends; use the new method :meth:`get_supported_backends` to see all </span>
+<span class="sd">       Enabled **parallel execution** with the ``multiprocessing`` and ``dask``</span>
+<span class="sd">       backends; use the new method :meth:`get_supported_backends` to see all</span>
 <span class="sd">       supported backends.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">_analysis_algorithm_is_parallelizable</span> <span class="o">=</span> <span class="kc">True</span>
-      
+
 <div class="viewcode-block" id="BAT.get_supported_backends">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/bat.html#MDAnalysis.analysis.bat.BAT.get_supported_backends">[docs]</a>
     <span class="nd">@classmethod</span>
@@ -417,11 +428,10 @@
 
 
     <span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
-       <span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1002/jcc.26036&quot;</span><span class="p">),</span>
-       <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Bond-Angle-Torsions Coordinate Transformation&quot;</span><span class="p">,</span>
-       <span class="n">path</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.analysis.bat.BAT&quot;</span><span class="p">,</span>
+        <span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1002/jcc.26036&quot;</span><span class="p">),</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Bond-Angle-Torsions Coordinate Transformation&quot;</span><span class="p">,</span>
+        <span class="n">path</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.analysis.bat.BAT&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-   
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="n">initial_atom</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ----------</span>
@@ -454,20 +464,21 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_ag</span> <span class="o">=</span> <span class="n">ag</span>
 
         <span class="c1"># Check that the ag contains bonds</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ag</span><span class="p">,</span> <span class="s1">&#39;bonds&#39;</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;AtomGroup has no attribute bonds&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ag</span><span class="p">,</span> <span class="s2">&quot;bonds&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;AtomGroup has no attribute bonds&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ag</span><span class="o">.</span><span class="n">fragments</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;AtomGroup has more than one molecule&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;AtomGroup has more than one molecule&quot;</span><span class="p">)</span>
 
         <span class="c1"># Determine the root</span>
         <span class="c1"># The initial atom must be a terminal atom</span>
-        <span class="n">terminal_atoms</span> <span class="o">=</span> <span class="n">_sort_atoms_by_mass</span><span class="p">(</span>\
-            <span class="p">[</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ag</span><span class="o">.</span><span class="n">atoms</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">bonds</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">initial_atom</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="n">terminal_atoms</span> <span class="o">=</span> <span class="n">_sort_atoms_by_mass</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ag</span><span class="o">.</span><span class="n">atoms</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">bonds</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">initial_atom</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># Select the heaviest root atoms from the heaviest terminal atom</span>
             <span class="n">initial_atom</span> <span class="o">=</span> <span class="n">terminal_atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="p">(</span><span class="ow">not</span> <span class="n">initial_atom</span> <span class="ow">in</span> <span class="n">terminal_atoms</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Initial atom is not a terminal atom&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">initial_atom</span> <span class="ow">in</span> <span class="n">terminal_atoms</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Initial atom is not a terminal atom&quot;</span><span class="p">)</span>
         <span class="c1"># The next atom in the root is bonded to the initial atom</span>
         <span class="c1"># Since the initial atom is a terminal atom, there is only</span>
         <span class="c1"># one bonded atom</span>
@@ -477,16 +488,25 @@
         <span class="c1"># If there are more than three atoms,</span>
         <span class="c1"># then the last atom cannot be a terminal atom.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ag</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
-            <span class="n">third_atom</span> <span class="o">=</span> <span class="n">_sort_atoms_by_mass</span><span class="p">(</span>\
-                <span class="p">[</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">second_atom</span><span class="o">.</span><span class="n">bonded_atoms</span> \
-                <span class="k">if</span> <span class="p">(</span><span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ag</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">a</span><span class="o">!=</span><span class="n">initial_atom</span><span class="p">)</span> \
-                <span class="ow">and</span> <span class="p">(</span><span class="n">a</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">terminal_atoms</span><span class="p">)],</span> \
-                <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">third_atom</span> <span class="o">=</span> <span class="n">_sort_atoms_by_mass</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">a</span>
+                    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">second_atom</span><span class="o">.</span><span class="n">bonded_atoms</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ag</span><span class="p">)</span>
+                    <span class="ow">and</span> <span class="p">(</span><span class="n">a</span> <span class="o">!=</span> <span class="n">initial_atom</span><span class="p">)</span>
+                    <span class="ow">and</span> <span class="p">(</span><span class="n">a</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">terminal_atoms</span><span class="p">)</span>
+                <span class="p">],</span>
+                <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">third_atom</span> <span class="o">=</span> <span class="n">_sort_atoms_by_mass</span><span class="p">(</span>\
-                <span class="p">[</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">second_atom</span><span class="o">.</span><span class="n">bonded_atoms</span> \
-                <span class="k">if</span> <span class="p">(</span><span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ag</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">a</span><span class="o">!=</span><span class="n">initial_atom</span><span class="p">)],</span> \
-                <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">third_atom</span> <span class="o">=</span> <span class="n">_sort_atoms_by_mass</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">a</span>
+                    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">second_atom</span><span class="o">.</span><span class="n">bonded_atoms</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ag</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">a</span> <span class="o">!=</span> <span class="n">initial_atom</span><span class="p">)</span>
+                <span class="p">],</span>
+                <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_root</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">([</span><span class="n">initial_atom</span><span class="p">,</span> <span class="n">second_atom</span><span class="p">,</span> <span class="n">third_atom</span><span class="p">])</span>
 
         <span class="c1"># Construct a list of torsion angles</span>
@@ -494,18 +514,23 @@
 
         <span class="c1"># Get indices of the root and torsion atoms</span>
         <span class="c1"># in a Cartesian positions array that matches the AtomGroup</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_root_XYZ_inds</span> <span class="o">=</span> <span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ag</span><span class="o">.</span><span class="n">indices</span><span class="o">==</span><span class="n">a</span><span class="o">.</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> \
-            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_torsion_XYZ_inds</span> <span class="o">=</span> <span class="p">[[(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ag</span><span class="o">.</span><span class="n">indices</span><span class="o">==</span><span class="n">a</span><span class="o">.</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> \
-            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">t</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_torsions</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_root_XYZ_inds</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ag</span><span class="o">.</span><span class="n">indices</span> <span class="o">==</span> <span class="n">a</span><span class="o">.</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_torsion_XYZ_inds</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ag</span><span class="o">.</span><span class="n">indices</span> <span class="o">==</span> <span class="n">a</span><span class="o">.</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">t</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_torsions</span>
+        <span class="p">]</span>
 
         <span class="c1"># The primary torsion is the first torsion on the list</span>
         <span class="c1"># with the same central atoms</span>
         <span class="n">prior_atoms</span> <span class="o">=</span> <span class="p">[</span><span class="nb">sorted</span><span class="p">([</span><span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">])</span> <span class="k">for</span> <span class="p">(</span><span class="n">a0</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_torsions</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_primary_torsion_indices</span> <span class="o">=</span> <span class="p">[</span><span class="n">prior_atoms</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">prior_atoms</span><span class="p">[</span><span class="n">n</span><span class="p">])</span> \
-            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">prior_atoms</span><span class="p">))]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_unique_primary_torsion_indices</span> <span class="o">=</span> \
-            <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_primary_torsion_indices</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_primary_torsion_indices</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">prior_atoms</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">prior_atoms</span><span class="p">[</span><span class="n">n</span><span class="p">])</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">prior_atoms</span><span class="p">))</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unique_primary_torsion_indices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+            <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_primary_torsion_indices</span><span class="p">)</span>
+        <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_ag1</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">([</span><span class="n">ag</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">ag</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_torsions</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ag2</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">([</span><span class="n">ag</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">ag</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_torsions</span><span class="p">])</span>
@@ -517,7 +542,8 @@
 
     <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
-                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="mi">3</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_ag</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="mi">3</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ag</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span>
+        <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Calculate coordinates based on the root atoms</span>
@@ -531,13 +557,24 @@
         <span class="n">v01</span> <span class="o">=</span> <span class="n">p1</span> <span class="o">-</span> <span class="n">p0</span>
         <span class="n">v21</span> <span class="o">=</span> <span class="n">p1</span> <span class="o">-</span> <span class="n">p2</span>
         <span class="c1"># Internal coordinates</span>
-        <span class="n">r01</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;i,i-&gt;&#39;</span><span class="p">,</span><span class="n">v01</span><span class="p">,</span><span class="n">v01</span><span class="p">))</span>  
+        <span class="n">r01</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;i,i-&gt;&quot;</span><span class="p">,</span> <span class="n">v01</span><span class="p">,</span> <span class="n">v01</span><span class="p">))</span>
         <span class="c1"># Distance between first two root atoms</span>
-        <span class="n">r12</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;i,i-&gt;&#39;</span><span class="p">,</span><span class="n">v21</span><span class="p">,</span><span class="n">v21</span><span class="p">))</span>  
+        <span class="n">r12</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;i,i-&gt;&quot;</span><span class="p">,</span> <span class="n">v21</span><span class="p">,</span> <span class="n">v21</span><span class="p">))</span>
         <span class="c1"># Distance between second two root atoms</span>
         <span class="c1"># Angle between root atoms</span>
-        <span class="n">a012</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="o">-</span><span class="mf">1.</span><span class="p">,</span><span class="nb">min</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;i,i-&gt;&#39;</span><span class="p">,</span><span class="n">v01</span><span class="p">,</span><span class="n">v21</span><span class="p">)</span><span class="o">/</span>\
-                              <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;i,i-&gt;&#39;</span><span class="p">,</span><span class="n">v01</span><span class="p">,</span><span class="n">v01</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;i,i-&gt;&#39;</span><span class="p">,</span><span class="n">v21</span><span class="p">,</span><span class="n">v21</span><span class="p">)))))</span>
+        <span class="n">a012</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span>
+            <span class="nb">max</span><span class="p">(</span>
+                <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span>
+                <span class="nb">min</span><span class="p">(</span>
+                    <span class="mf">1.0</span><span class="p">,</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;i,i-&gt;&quot;</span><span class="p">,</span> <span class="n">v01</span><span class="p">,</span> <span class="n">v21</span><span class="p">)</span>
+                    <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;i,i-&gt;&quot;</span><span class="p">,</span> <span class="n">v01</span><span class="p">,</span> <span class="n">v01</span><span class="p">)</span>
+                        <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;i,i-&gt;&quot;</span><span class="p">,</span> <span class="n">v21</span><span class="p">,</span> <span class="n">v21</span><span class="p">)</span>
+                    <span class="p">),</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
         <span class="c1"># External coordinates</span>
         <span class="n">e</span> <span class="o">=</span> <span class="n">v01</span> <span class="o">/</span> <span class="n">r01</span>
         <span class="n">phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">e</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>  <span class="c1"># Polar angle</span>
@@ -547,35 +584,41 @@
         <span class="n">sp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
         <span class="n">ct</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
         <span class="n">st</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
-        <span class="n">Rz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">cp</span> <span class="o">*</span> <span class="n">ct</span><span class="p">,</span> <span class="n">ct</span> <span class="o">*</span> <span class="n">sp</span><span class="p">,</span> <span class="o">-</span><span class="n">st</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="n">sp</span><span class="p">,</span> <span class="n">cp</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                       <span class="p">[</span><span class="n">cp</span> <span class="o">*</span> <span class="n">st</span><span class="p">,</span> <span class="n">sp</span> <span class="o">*</span> <span class="n">st</span><span class="p">,</span> <span class="n">ct</span><span class="p">]])</span>
+        <span class="n">Rz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[[</span><span class="n">cp</span> <span class="o">*</span> <span class="n">ct</span><span class="p">,</span> <span class="n">ct</span> <span class="o">*</span> <span class="n">sp</span><span class="p">,</span> <span class="o">-</span><span class="n">st</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="n">sp</span><span class="p">,</span> <span class="n">cp</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="n">cp</span> <span class="o">*</span> <span class="n">st</span><span class="p">,</span> <span class="n">sp</span> <span class="o">*</span> <span class="n">st</span><span class="p">,</span> <span class="n">ct</span><span class="p">]]</span>
+        <span class="p">)</span>
         <span class="n">pos2</span> <span class="o">=</span> <span class="n">Rz</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">p2</span> <span class="o">-</span> <span class="n">p1</span><span class="p">)</span>
         <span class="c1"># Angle about the rotation axis</span>
         <span class="n">omega</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">pos2</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pos2</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="n">root_based</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">p0</span><span class="p">,</span> <span class="p">[</span><span class="n">phi</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="n">r01</span><span class="p">,</span> <span class="n">r12</span><span class="p">,</span> <span class="n">a012</span><span class="p">]))</span>
 
         <span class="c1"># Calculate internal coordinates from the torsion list</span>
-        <span class="n">bonds</span> <span class="o">=</span> <span class="n">calc_bonds</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ag1</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
-                           <span class="bp">self</span><span class="o">.</span><span class="n">_ag2</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
-                           <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ag1</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
-        <span class="n">angles</span> <span class="o">=</span> <span class="n">calc_angles</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ag1</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
-                             <span class="bp">self</span><span class="o">.</span><span class="n">_ag2</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
-                             <span class="bp">self</span><span class="o">.</span><span class="n">_ag3</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
-                             <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ag1</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
-        <span class="n">torsions</span> <span class="o">=</span> <span class="n">calc_dihedrals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ag1</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
-                                  <span class="bp">self</span><span class="o">.</span><span class="n">_ag2</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
-                                  <span class="bp">self</span><span class="o">.</span><span class="n">_ag3</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
-                                  <span class="bp">self</span><span class="o">.</span><span class="n">_ag4</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
-                                  <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ag1</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
+        <span class="n">bonds</span> <span class="o">=</span> <span class="n">calc_bonds</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ag1</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ag2</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ag1</span><span class="o">.</span><span class="n">dimensions</span>
+        <span class="p">)</span>
+        <span class="n">angles</span> <span class="o">=</span> <span class="n">calc_angles</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ag1</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ag2</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ag3</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+            <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ag1</span><span class="o">.</span><span class="n">dimensions</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">torsions</span> <span class="o">=</span> <span class="n">calc_dihedrals</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ag1</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ag2</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ag3</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ag4</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+            <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ag1</span><span class="o">.</span><span class="n">dimensions</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="c1"># When appropriate, calculate improper torsions</span>
         <span class="n">shift</span> <span class="o">=</span> <span class="n">torsions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_primary_torsion_indices</span><span class="p">]</span>
-        <span class="n">shift</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_unique_primary_torsion_indices</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="n">shift</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_unique_primary_torsion_indices</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
         <span class="n">torsions</span> <span class="o">-=</span> <span class="n">shift</span>
         <span class="c1"># Wrap torsions to between -np.pi and np.pi</span>
         <span class="n">torsions</span> <span class="o">=</span> <span class="p">((</span><span class="n">torsions</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bat</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
-                <span class="p">(</span><span class="n">root_based</span><span class="p">,</span> <span class="n">bonds</span><span class="p">,</span> <span class="n">angles</span><span class="p">,</span> <span class="n">torsions</span><span class="p">))</span>
+            <span class="p">(</span><span class="n">root_based</span><span class="p">,</span> <span class="n">bonds</span><span class="p">,</span> <span class="n">angles</span><span class="p">,</span> <span class="n">torsions</span><span class="p">)</span>
+        <span class="p">)</span>
 
 <div class="viewcode-block" id="BAT.load">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/bat.html#MDAnalysis.analysis.bat.BAT.load">[docs]</a>
@@ -604,16 +647,20 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 
         <span class="c1"># Check array dimensions</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bat</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="mi">3</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_ag</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">):</span>
-            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Dimensions of array in loaded file, &#39;</span>
-                      <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">,&#39;</span>
-                      <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">), differ from required &#39;</span>
-                      <span class="sa">f</span><span class="s1">&#39;dimensions of (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_ag</span><span class="o">.</span><span class="n">n_atoms</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bat</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="mi">3</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ag</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">):</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s2">&quot;Dimensions of array in loaded file, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">,&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">), differ from required &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;dimensions of (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_ag</span><span class="o">.</span><span class="n">n_atoms</span><span class="si">}</span><span class="s2">)&quot;</span>
+            <span class="p">)</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
         <span class="c1"># Check position of initial atom</span>
         <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bat</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Position of initial atom in file &#39;</span> <span class="o">+</span> \
-                <span class="s1">&#39;inconsistent with current trajectory in starting frame.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Position of initial atom in file &quot;</span>
+                <span class="o">+</span> <span class="s2">&quot;inconsistent with current trajectory in starting frame.&quot;</span>
+            <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
 
@@ -656,21 +703,21 @@
         <span class="n">origin</span> <span class="o">=</span> <span class="n">bat_frame</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
         <span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">omega</span><span class="p">)</span> <span class="o">=</span> <span class="n">bat_frame</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>
         <span class="p">(</span><span class="n">r01</span><span class="p">,</span> <span class="n">r12</span><span class="p">,</span> <span class="n">a012</span><span class="p">)</span> <span class="o">=</span> <span class="n">bat_frame</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">9</span><span class="p">]</span>
-        <span class="n">n_torsions</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ag</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">-</span> <span class="mi">3</span><span class="p">)</span>
-        <span class="n">bonds</span> <span class="o">=</span> <span class="n">bat_frame</span><span class="p">[</span><span class="mi">9</span><span class="p">:</span><span class="n">n_torsions</span> <span class="o">+</span> <span class="mi">9</span><span class="p">]</span>
-        <span class="n">angles</span> <span class="o">=</span> <span class="n">bat_frame</span><span class="p">[</span><span class="n">n_torsions</span> <span class="o">+</span> <span class="mi">9</span><span class="p">:</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n_torsions</span> <span class="o">+</span> <span class="mi">9</span><span class="p">]</span>
-        <span class="n">torsions</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">bat_frame</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n_torsions</span> <span class="o">+</span> <span class="mi">9</span><span class="p">:])</span>
+        <span class="n">n_torsions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ag</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">-</span> <span class="mi">3</span>
+        <span class="n">bonds</span> <span class="o">=</span> <span class="n">bat_frame</span><span class="p">[</span><span class="mi">9</span> <span class="p">:</span> <span class="n">n_torsions</span> <span class="o">+</span> <span class="mi">9</span><span class="p">]</span>
+        <span class="n">angles</span> <span class="o">=</span> <span class="n">bat_frame</span><span class="p">[</span><span class="n">n_torsions</span> <span class="o">+</span> <span class="mi">9</span> <span class="p">:</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">n_torsions</span> <span class="o">+</span> <span class="mi">9</span><span class="p">]</span>
+        <span class="n">torsions</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">bat_frame</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n_torsions</span> <span class="o">+</span> <span class="mi">9</span> <span class="p">:])</span>
         <span class="c1"># When appropriate, convert improper to proper torsions</span>
         <span class="n">shift</span> <span class="o">=</span> <span class="n">torsions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_primary_torsion_indices</span><span class="p">]</span>
-        <span class="n">shift</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_unique_primary_torsion_indices</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="n">shift</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_unique_primary_torsion_indices</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
         <span class="n">torsions</span> <span class="o">+=</span> <span class="n">shift</span>
         <span class="c1"># Wrap torsions to between -np.pi and np.pi</span>
         <span class="n">torsions</span> <span class="o">=</span> <span class="p">((</span><span class="n">torsions</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
 
         <span class="c1"># Set initial root atom positions based on internal coordinates</span>
-        <span class="n">p0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>
-        <span class="n">p1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">r01</span><span class="p">])</span>
-        <span class="n">p2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">r12</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">a012</span><span class="p">),</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">r01</span> <span class="o">-</span> <span class="n">r12</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">a012</span><span class="p">)])</span>
+        <span class="n">p0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
+        <span class="n">p1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">r01</span><span class="p">])</span>
+        <span class="n">p2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">r12</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">a012</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">r01</span> <span class="o">-</span> <span class="n">r12</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">a012</span><span class="p">)])</span>
 
         <span class="c1"># Rotate the third atom by the appropriate value</span>
         <span class="n">co</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">omega</span><span class="p">)</span>
@@ -684,8 +731,9 @@
         <span class="n">ct</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
         <span class="n">st</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
         <span class="c1"># $R_Z(\phi) R_Y(\theta)$</span>
-        <span class="n">Re</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">cp</span> <span class="o">*</span> <span class="n">ct</span><span class="p">,</span> <span class="o">-</span><span class="n">sp</span><span class="p">,</span> <span class="n">cp</span> <span class="o">*</span> <span class="n">st</span><span class="p">],</span> <span class="p">[</span><span class="n">ct</span> <span class="o">*</span> <span class="n">sp</span><span class="p">,</span> <span class="n">cp</span><span class="p">,</span> <span class="n">sp</span> <span class="o">*</span> <span class="n">st</span><span class="p">],</span>
-                       <span class="p">[</span><span class="o">-</span><span class="n">st</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ct</span><span class="p">]])</span>
+        <span class="n">Re</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[[</span><span class="n">cp</span> <span class="o">*</span> <span class="n">ct</span><span class="p">,</span> <span class="o">-</span><span class="n">sp</span><span class="p">,</span> <span class="n">cp</span> <span class="o">*</span> <span class="n">st</span><span class="p">],</span> <span class="p">[</span><span class="n">ct</span> <span class="o">*</span> <span class="n">sp</span><span class="p">,</span> <span class="n">cp</span><span class="p">,</span> <span class="n">sp</span> <span class="o">*</span> <span class="n">st</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="n">st</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ct</span><span class="p">]]</span>
+        <span class="p">)</span>
         <span class="n">p1</span> <span class="o">=</span> <span class="n">Re</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span>
         <span class="n">p2</span> <span class="o">=</span> <span class="n">Re</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">p2</span><span class="p">)</span>
         <span class="c1"># Translate the first three atoms by the origin</span>
@@ -699,8 +747,9 @@
         <span class="n">XYZ</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_root_XYZ_inds</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span> <span class="o">=</span> <span class="n">p2</span>
 
         <span class="c1"># Place the remaining atoms</span>
-        <span class="k">for</span> <span class="p">((</span><span class="n">a0</span><span class="p">,</span><span class="n">a1</span><span class="p">,</span><span class="n">a2</span><span class="p">,</span><span class="n">a3</span><span class="p">),</span> <span class="n">r01</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">torsion</span><span class="p">)</span> \
-            <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_torsion_XYZ_inds</span><span class="p">,</span> <span class="n">bonds</span><span class="p">,</span> <span class="n">angles</span><span class="p">,</span> <span class="n">torsions</span><span class="p">):</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">a0</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">a3</span><span class="p">),</span> <span class="n">r01</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">torsion</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_torsion_XYZ_inds</span><span class="p">,</span> <span class="n">bonds</span><span class="p">,</span> <span class="n">angles</span><span class="p">,</span> <span class="n">torsions</span>
+        <span class="p">):</span>
 
             <span class="n">p1</span> <span class="o">=</span> <span class="n">XYZ</span><span class="p">[</span><span class="n">a1</span><span class="p">]</span>
             <span class="n">p3</span> <span class="o">=</span> <span class="n">XYZ</span><span class="p">[</span><span class="n">a3</span><span class="p">]</span>
@@ -712,19 +761,20 @@
             <span class="n">cs_tor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">torsion</span><span class="p">)</span>
 
             <span class="n">v21</span> <span class="o">=</span> <span class="n">p1</span> <span class="o">-</span> <span class="n">p2</span>
-            <span class="n">v21</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;i,i-&gt;&#39;</span><span class="p">,</span><span class="n">v21</span><span class="p">,</span><span class="n">v21</span><span class="p">))</span>
+            <span class="n">v21</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;i,i-&gt;&quot;</span><span class="p">,</span> <span class="n">v21</span><span class="p">,</span> <span class="n">v21</span><span class="p">))</span>
             <span class="n">v32</span> <span class="o">=</span> <span class="n">p2</span> <span class="o">-</span> <span class="n">p3</span>
-            <span class="n">v32</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;i,i-&gt;&#39;</span><span class="p">,</span><span class="n">v32</span><span class="p">,</span><span class="n">v32</span><span class="p">))</span>
+            <span class="n">v32</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;i,i-&gt;&quot;</span><span class="p">,</span> <span class="n">v32</span><span class="p">,</span> <span class="n">v32</span><span class="p">))</span>
 
             <span class="n">vp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">v32</span><span class="p">,</span> <span class="n">v21</span><span class="p">)</span>
-            <span class="n">cs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;i,i-&gt;&#39;</span><span class="p">,</span><span class="n">v21</span><span class="p">,</span><span class="n">v32</span><span class="p">)</span>
+            <span class="n">cs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;i,i-&gt;&quot;</span><span class="p">,</span> <span class="n">v21</span><span class="p">,</span> <span class="n">v32</span><span class="p">)</span>
 
             <span class="n">sn</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">cs</span> <span class="o">*</span> <span class="n">cs</span><span class="p">),</span> <span class="mf">0.0000000001</span><span class="p">)</span>
             <span class="n">vp</span> <span class="o">=</span> <span class="n">vp</span> <span class="o">/</span> <span class="n">sn</span>
             <span class="n">vu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">vp</span><span class="p">,</span> <span class="n">v21</span><span class="p">)</span>
 
-            <span class="n">XYZ</span><span class="p">[</span><span class="n">a0</span><span class="p">]</span> <span class="o">=</span> <span class="n">p1</span> <span class="o">+</span> \
-              <span class="n">r01</span><span class="o">*</span><span class="p">(</span><span class="n">vu</span><span class="o">*</span><span class="n">sn_ang</span><span class="o">*</span><span class="n">cs_tor</span> <span class="o">+</span> <span class="n">vp</span><span class="o">*</span><span class="n">sn_ang</span><span class="o">*</span><span class="n">sn_tor</span> <span class="o">-</span> <span class="n">v21</span><span class="o">*</span><span class="n">cs_ang</span><span class="p">)</span>
+            <span class="n">XYZ</span><span class="p">[</span><span class="n">a0</span><span class="p">]</span> <span class="o">=</span> <span class="n">p1</span> <span class="o">+</span> <span class="n">r01</span> <span class="o">*</span> <span class="p">(</span>
+                <span class="n">vu</span> <span class="o">*</span> <span class="n">sn_ang</span> <span class="o">*</span> <span class="n">cs_tor</span> <span class="o">+</span> <span class="n">vp</span> <span class="o">*</span> <span class="n">sn_ang</span> <span class="o">*</span> <span class="n">sn_tor</span> <span class="o">-</span> <span class="n">v21</span> <span class="o">*</span> <span class="n">cs_ang</span>
+            <span class="p">)</span>
         <span class="k">return</span> <span class="n">XYZ</span></div>
 
 
@@ -734,7 +784,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ag</span>
 
     <span class="k">def</span> <span class="nf">_get_aggregator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span><span class="n">lookup</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;bat&#39;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_vstack</span><span class="p">})</span></div>
+        <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span><span class="n">lookup</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;bat&quot;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_vstack</span><span class="p">})</span></div>
 
 </pre></div>
 

@@ -388,16 +388,20 @@
 <span class="kn">from</span> <span class="nn">..core</span> <span class="kn">import</span> <span class="n">groups</span>
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;MDAnalysis.analysis.msd&#39;</span><span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.analysis.msd&quot;</span><span class="p">)</span>
 
-<span class="n">due</span><span class="o">.</span><span class="n">cite</span><span class="p">(</span><span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.21105/joss.00877&quot;</span><span class="p">),</span>
-         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Mean Squared Displacements with tidynamics&quot;</span><span class="p">,</span>
-         <span class="n">path</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.analysis.msd&quot;</span><span class="p">,</span>
-         <span class="n">cite_module</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">due</span><span class="o">.</span><span class="n">cite</span><span class="p">(</span><span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1051/sfn/201112010&quot;</span><span class="p">),</span>
-         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;FCA fast correlation algorithm&quot;</span><span class="p">,</span>
-         <span class="n">path</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.analysis.msd&quot;</span><span class="p">,</span>
-         <span class="n">cite_module</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">due</span><span class="o">.</span><span class="n">cite</span><span class="p">(</span>
+    <span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.21105/joss.00877&quot;</span><span class="p">),</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Mean Squared Displacements with tidynamics&quot;</span><span class="p">,</span>
+    <span class="n">path</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.analysis.msd&quot;</span><span class="p">,</span>
+    <span class="n">cite_module</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">due</span><span class="o">.</span><span class="n">cite</span><span class="p">(</span>
+    <span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1051/sfn/201112010&quot;</span><span class="p">),</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;FCA fast correlation algorithm&quot;</span><span class="p">,</span>
+    <span class="n">path</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.analysis.msd&quot;</span><span class="p">,</span>
+    <span class="n">cite_module</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="k">del</span> <span class="n">Doi</span>
 
 
@@ -441,7 +445,7 @@
 <span class="sd">    .. versionadded:: 2.0.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">msd_type</span><span class="o">=</span><span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">fft</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">msd_type</span><span class="o">=</span><span class="s2">&quot;xyz&quot;</span><span class="p">,</span> <span class="n">fft</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -458,8 +462,9 @@
 <span class="sd">            The tidynamics package is required for `fft=True`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">groups</span><span class="o">.</span><span class="n">UpdatingAtomGroup</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;UpdatingAtomGroups are not valid for MSD &quot;</span>
-                            <span class="s2">&quot;computation&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;UpdatingAtomGroups are not valid for MSD &quot;</span> <span class="s2">&quot;computation&quot;</span>
+            <span class="p">)</span>
 
         <span class="nb">super</span><span class="p">(</span><span class="n">EinsteinMSD</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -481,18 +486,25 @@
     <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># self.n_frames only available here</span>
         <span class="c1"># these need to be zeroed prior to each run() call</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">msds_by_particle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span>
-                                                  <span class="bp">self</span><span class="o">.</span><span class="n">n_particles</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">msds_by_particle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_particles</span><span class="p">)</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_position_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
-            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_particles</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim_fac</span><span class="p">))</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_particles</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim_fac</span><span class="p">)</span>
+        <span class="p">)</span>
         <span class="c1"># self.results.timeseries not set here</span>
 
     <span class="k">def</span> <span class="nf">_parse_msd_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Sets up the desired dimensionality of the MSD.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">keys</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="s1">&#39;xy&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-                <span class="s1">&#39;xz&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="s1">&#39;yz&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="s1">&#39;xyz&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]}</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Sets up the desired dimensionality of the MSD.&quot;&quot;&quot;</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+            <span class="s2">&quot;xy&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+            <span class="s2">&quot;xz&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+            <span class="s2">&quot;yz&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+            <span class="s2">&quot;xyz&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+        <span class="p">}</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">msd_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msd_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
@@ -500,19 +512,19 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_dim</span> <span class="o">=</span> <span class="n">keys</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">msd_type</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s1">&#39;invalid msd_type: </span><span class="si">{}</span><span class="s1"> specified, please specify one of xyz, &#39;</span>
-                <span class="s1">&#39;xy, xz, yz, x, y, z&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">msd_type</span><span class="p">))</span>
+                <span class="s2">&quot;invalid msd_type: </span><span class="si">{}</span><span class="s2"> specified, please specify one of xyz, &quot;</span>
+                <span class="s2">&quot;xy, xz, yz, x, y, z&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">msd_type</span><span class="p">)</span>
+            <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">dim_fac</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dim</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Constructs array of positions for MSD calculation.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Constructs array of positions for MSD calculation.&quot;&quot;&quot;</span>
         <span class="c1"># shape of position array set here, use span in last dimension</span>
         <span class="c1"># from this point on</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_position_array</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="o">.</span><span class="n">positions</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dim</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_position_array</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span>
+            <span class="p">:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dim</span>
+        <span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fft</span><span class="p">:</span>
@@ -521,9 +533,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_conclude_simple</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_conclude_simple</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculates the MSD via the simple &quot;windowed&quot; algorithm.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculates the MSD via the simple &quot;windowed&quot; algorithm.&quot;&quot;&quot;</span>
         <span class="n">lagtimes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">)</span>
         <span class="n">positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_position_array</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">lag</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">lagtimes</span><span class="p">):</span>
@@ -533,26 +543,27 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">msds_by_particle</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_conclude_fft</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># with FFT, np.float64 bit prescision required.</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculates the MSD via the FCA fast correlation algorithm.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculates the MSD via the FCA fast correlation algorithm.&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="kn">import</span> <span class="nn">tidynamics</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;ERROR --- tidynamics was not found!</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot;ERROR --- tidynamics was not found!</span>
 
-<span class="s2">                tidynamics is required to compute an FFT based MSD (default)</span>
+<span class="sd">                tidynamics is required to compute an FFT based MSD (default)</span>
 
-<span class="s2">                try installing it using pip eg:</span>
+<span class="sd">                try installing it using pip eg:</span>
 
-<span class="s2">                    pip install tidynamics</span>
+<span class="sd">                    pip install tidynamics</span>
 
-<span class="s2">                or set fft=False&quot;&quot;&quot;</span><span class="p">)</span>
+<span class="sd">                or set fft=False&quot;&quot;&quot;</span>
+            <span class="p">)</span>
 
         <span class="n">positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_position_array</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_particles</span><span class="p">)):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">msds_by_particle</span><span class="p">[:,</span> <span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">tidynamics</span><span class="o">.</span><span class="n">msd</span><span class="p">(</span>
-                <span class="n">positions</span><span class="p">[:,</span> <span class="n">n</span><span class="p">,</span> <span class="p">:])</span>
+                <span class="n">positions</span><span class="p">[:,</span> <span class="n">n</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">msds_by_particle</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
 
 </pre></div>

@@ -177,6 +177,7 @@
 <span class="sd">-------</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
+
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="kn">import</span> <span class="n">is_installed</span>
@@ -248,8 +249,9 @@
 <span class="sd">            checked during ``_validate()`` run</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span>
-            <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_workers</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_workers</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="sa">f</span><span class="s2">&quot;n_workers should be positive integer, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_workers</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_workers</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_workers</span>
+            <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;n_workers should be positive integer, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_workers</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="p">}</span></div>
 
 
@@ -344,8 +346,8 @@
 <span class="sd">            checked during ``_validate()`` run</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">n_workers</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="s2">&quot;n_workers is ignored when executing with backend=&#39;serial&#39;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">n_workers</span>
+            <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;n_workers is ignored when executing with backend=&#39;serial&#39;&quot;</span>
         <span class="p">}</span></div>
 
 
@@ -483,10 +485,12 @@
         <span class="kn">import</span> <span class="nn">dask</span>
 
         <span class="n">computations</span> <span class="o">=</span> <span class="p">[</span><span class="n">delayed</span><span class="p">(</span><span class="n">func</span><span class="p">)(</span><span class="n">task</span><span class="p">)</span> <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">computations</span><span class="p">]</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">computations</span><span class="p">,</span>
-                               <span class="n">scheduler</span><span class="o">=</span><span class="s2">&quot;processes&quot;</span><span class="p">,</span>
-                               <span class="n">chunksize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                               <span class="n">num_workers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_workers</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">dask</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span>
+            <span class="n">computations</span><span class="p">,</span>
+            <span class="n">scheduler</span><span class="o">=</span><span class="s2">&quot;processes&quot;</span><span class="p">,</span>
+            <span class="n">chunksize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">num_workers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_workers</span><span class="p">,</span>
+        <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">results</span></div>
 
 
@@ -505,9 +509,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">base_checks</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_get_checks</span><span class="p">()</span>
         <span class="n">checks</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">is_installed</span><span class="p">(</span><span class="s2">&quot;dask&quot;</span><span class="p">):</span>
-            <span class="p">(</span><span class="s2">&quot;module &#39;dask&#39; is missing. Please install &#39;dask&#39;: &quot;</span>
-             <span class="s2">&quot;https://docs.dask.org/en/stable/install.html&quot;</span><span class="p">)</span>
+            <span class="n">is_installed</span><span class="p">(</span><span class="s2">&quot;dask&quot;</span><span class="p">):</span> <span class="p">(</span>
+                <span class="s2">&quot;module &#39;dask&#39; is missing. Please install &#39;dask&#39;: &quot;</span>
+                <span class="s2">&quot;https://docs.dask.org/en/stable/install.html&quot;</span>
+            <span class="p">)</span>
         <span class="p">}</span>
         <span class="k">return</span> <span class="n">base_checks</span> <span class="o">|</span> <span class="n">checks</span></div>
 </div>

@@ -404,7 +404,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
     <span class="n">r0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">r0</span><span class="p">)</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">beta</span><span class="o">*</span><span class="p">(</span><span class="n">r</span> <span class="o">-</span> <span class="n">lambda_constant</span> <span class="o">*</span> <span class="n">r0</span><span class="p">)))</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">beta</span> <span class="o">*</span> <span class="p">(</span><span class="n">r</span> <span class="o">-</span> <span class="n">lambda_constant</span> <span class="o">*</span> <span class="n">r0</span><span class="p">)))</span>
 
     <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">r0</span><span class="p">)</span></div>
 
@@ -551,8 +551,17 @@
         <span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">refgroup</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;hard_cut&quot;</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">4.5</span><span class="p">,</span>
-                 <span class="n">pbc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">basekwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">u</span><span class="p">,</span>
+        <span class="n">select</span><span class="p">,</span>
+        <span class="n">refgroup</span><span class="p">,</span>
+        <span class="n">method</span><span class="o">=</span><span class="s2">&quot;hard_cut&quot;</span><span class="p">,</span>
+        <span class="n">radius</span><span class="o">=</span><span class="mf">4.5</span><span class="p">,</span>
+        <span class="n">pbc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">basekwargs</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -596,12 +605,14 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">fraction_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span> <span class="k">if</span> <span class="n">kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
 
-        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;hard_cut&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;hard_cut&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fraction_contacts</span> <span class="o">=</span> <span class="n">hard_cut_q</span>
-        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;soft_cut&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;soft_cut&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fraction_contacts</span> <span class="o">=</span> <span class="n">soft_cut_q</span>
-        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;radius_cut&#39;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">fraction_contacts</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">radius_cut_q</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="n">radius</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;radius_cut&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fraction_contacts</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span>
+                <span class="n">radius_cut_q</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="n">radius</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">method</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;method has to be callable&quot;</span><span class="p">)</span>
@@ -612,7 +623,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">grA</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">grB</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_atomgroup</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">sel</span><span class="p">)</span> <span class="k">for</span> <span class="n">sel</span> <span class="ow">in</span> <span class="n">select</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">pbc</span> <span class="o">=</span> <span class="n">pbc</span>
-        
+
         <span class="c1"># contacts formed in reference</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">r0</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">initial_contacts</span> <span class="o">=</span> <span class="p">[]</span>
@@ -622,23 +633,37 @@
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">refgroup</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">AtomGroup</span><span class="p">):</span>
             <span class="n">refA</span><span class="p">,</span> <span class="n">refB</span> <span class="o">=</span> <span class="n">refgroup</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">r0</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">distance_array</span><span class="p">(</span><span class="n">refA</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">refB</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
-                                            <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_box</span><span class="p">(</span><span class="n">refA</span><span class="o">.</span><span class="n">universe</span><span class="p">)))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">r0</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">distance_array</span><span class="p">(</span>
+                    <span class="n">refA</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+                    <span class="n">refB</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+                    <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_box</span><span class="p">(</span><span class="n">refA</span><span class="o">.</span><span class="n">universe</span><span class="p">),</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">initial_contacts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">contact_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r0</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">radius</span><span class="p">))</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">refA</span><span class="p">,</span> <span class="n">refB</span> <span class="ow">in</span> <span class="n">refgroup</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">r0</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">distance_array</span><span class="p">(</span><span class="n">refA</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">refB</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
-                                                <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_box</span><span class="p">(</span><span class="n">refA</span><span class="o">.</span><span class="n">universe</span><span class="p">)))</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">initial_contacts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">contact_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r0</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">radius</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">r0</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">distance_array</span><span class="p">(</span>
+                        <span class="n">refA</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+                        <span class="n">refB</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+                        <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_box</span><span class="p">(</span><span class="n">refA</span><span class="o">.</span><span class="n">universe</span><span class="p">),</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">initial_contacts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">contact_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r0</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">radius</span><span class="p">)</span>
+                <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">n_initial_contacts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">initial_contacts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_get_atomgroup</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">sel</span><span class="p">):</span>
-        <span class="n">select_error_message</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;selection must be either string or a &quot;</span>
-                                <span class="s2">&quot;static AtomGroup. Updating AtomGroups &quot;</span>
-                                <span class="s2">&quot;are not supported.&quot;</span><span class="p">)</span>
+        <span class="n">select_error_message</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;selection must be either string or a &quot;</span>
+            <span class="s2">&quot;static AtomGroup. Updating AtomGroups &quot;</span>
+            <span class="s2">&quot;are not supported.&quot;</span>
+        <span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sel</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">sel</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sel</span><span class="p">,</span> <span class="n">AtomGroup</span><span class="p">):</span>
@@ -672,17 +697,19 @@
         <span class="k">return</span> <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="k">if</span> <span class="n">pbc</span> <span class="k">else</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r0</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">frame</span>
-        
+
         <span class="c1"># compute distance array for a frame</span>
-        <span class="n">d</span> <span class="o">=</span> <span class="n">distance_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grA</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">grB</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
-                            <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_box</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="p">))</span>
-        
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">initial_contacts</span><span class="p">,</span> <span class="n">r0</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_contacts</span><span class="p">,</span>
-                                                       <span class="bp">self</span><span class="o">.</span><span class="n">r0</span><span class="p">),</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">distance_array</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">grA</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">grB</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_box</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">initial_contacts</span><span class="p">,</span> <span class="n">r0</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+            <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_contacts</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">r0</span><span class="p">),</span> <span class="mi">1</span>
+        <span class="p">):</span>
             <span class="c1"># select only the contacts that were formed in the reference state</span>
             <span class="n">r</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">initial_contacts</span><span class="p">]</span>
             <span class="n">r0</span> <span class="o">=</span> <span class="n">r0</span><span class="p">[</span><span class="n">initial_contacts</span><span class="p">]</span>
@@ -691,14 +718,17 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `timeseries` attribute was deprecated in MDAnalysis &quot;</span>
-                <span class="s2">&quot;2.0.0 and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
-                <span class="s2">&quot;`results.timeseries` instead&quot;</span><span class="p">)</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;The `timeseries` attribute was deprecated in MDAnalysis &quot;</span>
+            <span class="s2">&quot;2.0.0 and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
+            <span class="s2">&quot;`results.timeseries` instead&quot;</span>
+        <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span>
 
     <span class="k">def</span> <span class="nf">_get_aggregator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span><span class="n">lookup</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;timeseries&#39;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_vstack</span><span class="p">})</span></div>
+        <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span><span class="n">lookup</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;timeseries&quot;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_vstack</span><span class="p">})</span></div>
+
 
 
 <span class="k">def</span> <span class="nf">_new_selections</span><span class="p">(</span><span class="n">u_orig</span><span class="p">,</span> <span class="n">selections</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
@@ -710,7 +740,7 @@
 
 <div class="viewcode-block" id="q1q2">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.q1q2">[docs]</a>
-<span class="k">def</span> <span class="nf">q1q2</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">4.5</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">q1q2</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">4.5</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Perform a q1-q2 analysis.</span>
 
 <span class="sd">    Compares native contacts between the starting structure and final structure</span>
@@ -730,7 +760,7 @@
 <span class="sd">    contacts : :class:`Contacts`</span>
 <span class="sd">        Contact Analysis that is set up for a q1-q2 analysis</span>
 
-<span class="sd">    </span>
+
 <span class="sd">    .. versionchanged:: 1.0.0</span>
 <span class="sd">       Changed `selection` keyword to `select`</span>
 <span class="sd">       Support for setting ``start``, ``stop``, and ``step`` has been removed.</span>
@@ -739,9 +769,13 @@
     <span class="n">selection</span> <span class="o">=</span> <span class="p">(</span><span class="n">select</span><span class="p">,</span> <span class="n">select</span><span class="p">)</span>
     <span class="n">first_frame_refs</span> <span class="o">=</span> <span class="n">_new_selections</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
     <span class="n">last_frame_refs</span> <span class="o">=</span> <span class="n">_new_selections</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span>
-                    <span class="p">(</span><span class="n">first_frame_refs</span><span class="p">,</span> <span class="n">last_frame_refs</span><span class="p">),</span>
-                    <span class="n">radius</span><span class="o">=</span><span class="n">radius</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;radius_cut&#39;</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">Contacts</span><span class="p">(</span>
+        <span class="n">u</span><span class="p">,</span>
+        <span class="n">selection</span><span class="p">,</span>
+        <span class="p">(</span><span class="n">first_frame_refs</span><span class="p">,</span> <span class="n">last_frame_refs</span><span class="p">),</span>
+        <span class="n">radius</span><span class="o">=</span><span class="n">radius</span><span class="p">,</span>
+        <span class="n">method</span><span class="o">=</span><span class="s2">&quot;radius_cut&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
 
 </pre></div>
 

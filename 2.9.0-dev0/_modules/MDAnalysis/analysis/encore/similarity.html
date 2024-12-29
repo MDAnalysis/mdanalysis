@@ -322,24 +322,32 @@
 
 <span class="kn">from</span> <span class="nn">...coordinates.memory</span> <span class="kn">import</span> <span class="n">MemoryReader</span>
 <span class="kn">from</span> <span class="nn">.confdistmatrix</span> <span class="kn">import</span> <span class="n">get_distance_matrix</span>
-<span class="kn">from</span> <span class="nn">.bootstrap</span> <span class="kn">import</span> <span class="p">(</span><span class="n">get_distance_matrix_bootstrap_samples</span><span class="p">,</span>
-                        <span class="n">get_ensemble_bootstrap_samples</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.bootstrap</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">get_distance_matrix_bootstrap_samples</span><span class="p">,</span>
+    <span class="n">get_ensemble_bootstrap_samples</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">.clustering.cluster</span> <span class="kn">import</span> <span class="n">cluster</span>
 <span class="kn">from</span> <span class="nn">.clustering.ClusteringMethod</span> <span class="kn">import</span> <span class="n">AffinityPropagationNative</span>
 <span class="kn">from</span> <span class="nn">.dimensionality_reduction.DimensionalityReductionMethod</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">StochasticProximityEmbeddingNative</span><span class="p">)</span>
+    <span class="n">StochasticProximityEmbeddingNative</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">.dimensionality_reduction.reduce_dimensionality</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">reduce_dimensionality</span><span class="p">)</span>
+    <span class="n">reduce_dimensionality</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">.covariance</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">covariance_matrix</span><span class="p">,</span> <span class="n">ml_covariance_estimator</span><span class="p">,</span> <span class="n">shrinkage_covariance_estimator</span><span class="p">)</span>
+    <span class="n">covariance_matrix</span><span class="p">,</span>
+    <span class="n">ml_covariance_estimator</span><span class="p">,</span>
+    <span class="n">shrinkage_covariance_estimator</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">merge_universes</span>
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">trm_indices_diag</span><span class="p">,</span> <span class="n">trm_indices_nodiag</span>
 
 <span class="c1"># Low boundary value for log() argument - ensure no nans</span>
-<span class="n">EPSILON</span> <span class="o">=</span> <span class="mf">1E-15</span>
+<span class="n">EPSILON</span> <span class="o">=</span> <span class="mf">1e-15</span>
 
 <span class="n">xlogy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span>
-    <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="o">&lt;=</span> <span class="n">EPSILON</span> <span class="ow">and</span> <span class="n">y</span> <span class="o">&lt;=</span> <span class="n">EPSILON</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+    <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="o">&lt;=</span> <span class="n">EPSILON</span> <span class="ow">and</span> <span class="n">y</span> <span class="o">&lt;=</span> <span class="n">EPSILON</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="p">)</span>
 
 
 <div class="viewcode-block" id="discrete_kullback_leibler_divergence">
@@ -389,19 +397,18 @@
 
 <span class="sd">    djs : float</span>
 <span class="sd">        Discrete Jensen-Shannon divergence</span>
-<span class="sd">&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">discrete_kullback_leibler_divergence</span><span class="p">(</span><span class="n">pA</span><span class="p">,</span> <span class="p">(</span><span class="n">pA</span> <span class="o">+</span> <span class="n">pB</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">+</span>
-                  <span class="n">discrete_kullback_leibler_divergence</span><span class="p">(</span><span class="n">pB</span><span class="p">,</span> <span class="p">(</span><span class="n">pA</span> <span class="o">+</span> <span class="n">pB</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">))</span></div>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span>
+        <span class="n">discrete_kullback_leibler_divergence</span><span class="p">(</span><span class="n">pA</span><span class="p">,</span> <span class="p">(</span><span class="n">pA</span> <span class="o">+</span> <span class="n">pB</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span>
+        <span class="o">+</span> <span class="n">discrete_kullback_leibler_divergence</span><span class="p">(</span><span class="n">pB</span><span class="p">,</span> <span class="p">(</span><span class="n">pA</span> <span class="o">+</span> <span class="n">pB</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span>
+    <span class="p">)</span></div>
 
 
 
 <span class="c1"># calculate harmonic similarity</span>
 <div class="viewcode-block" id="harmonic_ensemble_similarity">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.harmonic_ensemble_similarity">[docs]</a>
-<span class="k">def</span> <span class="nf">harmonic_ensemble_similarity</span><span class="p">(</span><span class="n">sigma1</span><span class="p">,</span>
-                                 <span class="n">sigma2</span><span class="p">,</span>
-                                 <span class="n">x1</span><span class="p">,</span>
-                                 <span class="n">x2</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">harmonic_ensemble_similarity</span><span class="p">(</span><span class="n">sigma1</span><span class="p">,</span> <span class="n">sigma2</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate the harmonic ensemble similarity measure</span>
 <span class="sd">    as defined in :footcite:p:`Tiberti2015`.</span>
@@ -438,21 +445,25 @@
     <span class="n">d_avg</span> <span class="o">=</span> <span class="n">x1</span> <span class="o">-</span> <span class="n">x2</span>
 
     <span class="c1"># Distance measure</span>
-    <span class="n">trace</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">sigma1</span><span class="p">,</span> <span class="n">sigma2_inv</span><span class="p">)</span> <span class="o">+</span>
-                        <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">sigma2</span><span class="p">,</span> <span class="n">sigma1_inv</span><span class="p">)</span>
-                        <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">sigma1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="n">trace</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">sigma1</span><span class="p">,</span> <span class="n">sigma2_inv</span><span class="p">)</span>
+        <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">sigma2</span><span class="p">,</span> <span class="n">sigma1_inv</span><span class="p">)</span>
+        <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">sigma1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="p">)</span>
 
-    <span class="n">d_hes</span> <span class="o">=</span> <span class="mf">0.25</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">d_avg</span><span class="p">),</span>
-                              <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">sigma1_inv</span> <span class="o">+</span> <span class="n">sigma2_inv</span><span class="p">,</span>
-                                        <span class="n">d_avg</span><span class="p">))</span> <span class="o">+</span> <span class="n">trace</span><span class="p">)</span>
+    <span class="n">d_hes</span> <span class="o">=</span> <span class="mf">0.25</span> <span class="o">*</span> <span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">d_avg</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">sigma1_inv</span> <span class="o">+</span> <span class="n">sigma2_inv</span><span class="p">,</span> <span class="n">d_avg</span><span class="p">))</span>
+        <span class="o">+</span> <span class="n">trace</span>
+    <span class="p">)</span>
     <span class="k">return</span> <span class="n">d_hes</span></div>
 
 
 
 <div class="viewcode-block" id="clustering_ensemble_similarity">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.clustering_ensemble_similarity">[docs]</a>
-<span class="k">def</span> <span class="nf">clustering_ensemble_similarity</span><span class="p">(</span><span class="n">cc</span><span class="p">,</span> <span class="n">ens1</span><span class="p">,</span> <span class="n">ens1_id</span><span class="p">,</span> <span class="n">ens2</span><span class="p">,</span> <span class="n">ens2_id</span><span class="p">,</span>
-                                   <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">clustering_ensemble_similarity</span><span class="p">(</span>
+    <span class="n">cc</span><span class="p">,</span> <span class="n">ens1</span><span class="p">,</span> <span class="n">ens1_id</span><span class="p">,</span> <span class="n">ens2</span><span class="p">,</span> <span class="n">ens2_id</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Clustering ensemble similarity: calculate the probability densities from</span>
 <span class="sd">     the clusters and calculate discrete Jensen-Shannon divergence.</span>
 
@@ -485,16 +496,26 @@
 <span class="sd">        Jensen-Shannon divergence between the two ensembles, as calculated by</span>
 <span class="sd">        the clustering ensemble similarity method</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ens1_coordinates</span> <span class="o">=</span> <span class="n">ens1</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span><span class="n">ens1</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">),</span>
-                                                  <span class="n">order</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">)</span>
-    <span class="n">ens2_coordinates</span> <span class="o">=</span> <span class="n">ens2</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span><span class="n">ens2</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">),</span>
-                                                  <span class="n">order</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">)</span>
-    <span class="n">tmpA</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;ensemble_membership&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">ens1_id</span><span class="p">)[</span>
-                            <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">ens1_coordinates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span>
-                        <span class="n">c</span> <span class="ow">in</span> <span class="n">cc</span><span class="p">])</span>
-    <span class="n">tmpB</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;ensemble_membership&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">ens2_id</span><span class="p">)[</span>
-                            <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">ens2_coordinates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span>
-                        <span class="n">c</span> <span class="ow">in</span> <span class="n">cc</span><span class="p">])</span>
+    <span class="n">ens1_coordinates</span> <span class="o">=</span> <span class="n">ens1</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span>
+        <span class="n">ens1</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;fac&quot;</span>
+    <span class="p">)</span>
+    <span class="n">ens2_coordinates</span> <span class="o">=</span> <span class="n">ens2</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span>
+        <span class="n">ens2</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;fac&quot;</span>
+    <span class="p">)</span>
+    <span class="n">tmpA</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;ensemble_membership&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">ens1_id</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">ens1_coordinates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cc</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">tmpB</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;ensemble_membership&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">ens2_id</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">ens2_coordinates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cc</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
 
     <span class="c1"># Exclude clusters which have 0 elements in both ensembles</span>
     <span class="n">pA</span> <span class="o">=</span> <span class="n">tmpA</span><span class="p">[</span><span class="n">tmpA</span> <span class="o">+</span> <span class="n">tmpB</span> <span class="o">&gt;</span> <span class="n">EPSILON</span><span class="p">]</span>
@@ -506,8 +527,9 @@
 
 <div class="viewcode-block" id="cumulative_clustering_ensemble_similarity">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.cumulative_clustering_ensemble_similarity">[docs]</a>
-<span class="k">def</span> <span class="nf">cumulative_clustering_ensemble_similarity</span><span class="p">(</span><span class="n">cc</span><span class="p">,</span> <span class="n">ens1_id</span><span class="p">,</span> <span class="n">ens2_id</span><span class="p">,</span>
-                                              <span class="n">ens1_id_min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ens2_id_min</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">cumulative_clustering_ensemble_similarity</span><span class="p">(</span>
+    <span class="n">cc</span><span class="p">,</span> <span class="n">ens1_id</span><span class="p">,</span> <span class="n">ens2_id</span><span class="p">,</span> <span class="n">ens1_id_min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ens2_id_min</span><span class="o">=</span><span class="mi">1</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate clustering ensemble similarity between joined ensembles.</span>
 <span class="sd">    This means that, after clustering has been performed, some ensembles are</span>
@@ -539,16 +561,28 @@
 <span class="sd">            Jensen-Shannon divergence between the two ensembles, as</span>
 <span class="sd">            calculated by the clustering ensemble similarity method</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">ensA</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
-        <span class="n">c</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;ensemble_membership&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">ens1_id</span><span class="p">,</span>
-        <span class="n">c</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;ensemble_membership&#39;</span><span class="p">])</span>
-                     <span class="o">&gt;=</span> <span class="n">ens1_id_min</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cc</span><span class="p">]</span>
-    <span class="n">ensB</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
-        <span class="n">c</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;ensemble_membership&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">ens2_id</span><span class="p">,</span>
-        <span class="n">c</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;ensemble_membership&#39;</span><span class="p">])</span>
-                     <span class="o">&gt;=</span> <span class="n">ens2_id_min</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cc</span><span class="p">]</span>
+    <span class="n">ensA</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;ensemble_membership&quot;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">ens1_id</span><span class="p">,</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;ensemble_membership&quot;</span><span class="p">],</span>
+            <span class="p">)</span>
+            <span class="o">&gt;=</span> <span class="n">ens1_id_min</span>
+        <span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cc</span>
+    <span class="p">]</span>
+    <span class="n">ensB</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;ensemble_membership&quot;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">ens2_id</span><span class="p">,</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;ensemble_membership&quot;</span><span class="p">],</span>
+            <span class="p">)</span>
+            <span class="o">&gt;=</span> <span class="n">ens2_id_min</span>
+        <span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cc</span>
+    <span class="p">]</span>
     <span class="n">sizeA</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ensA</span><span class="p">))</span>
     <span class="n">sizeB</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ensB</span><span class="p">))</span>
 
@@ -565,8 +599,7 @@
 
 <div class="viewcode-block" id="gen_kde_pdfs">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.gen_kde_pdfs">[docs]</a>
-<span class="k">def</span> <span class="nf">gen_kde_pdfs</span><span class="p">(</span><span class="n">embedded_space</span><span class="p">,</span> <span class="n">ensemble_assignment</span><span class="p">,</span> <span class="n">nensembles</span><span class="p">,</span>
-                 <span class="n">nsamples</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">gen_kde_pdfs</span><span class="p">(</span><span class="n">embedded_space</span><span class="p">,</span> <span class="n">ensemble_assignment</span><span class="p">,</span> <span class="n">nensembles</span><span class="p">,</span> <span class="n">nsamples</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate Kernel Density Estimates (KDE) from embedded spaces and</span>
 <span class="sd">    elaborate the coordinates for later use.</span>
@@ -611,7 +644,8 @@
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nensembles</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
         <span class="n">this_embedded</span> <span class="o">=</span> <span class="n">embedded_space</span><span class="o">.</span><span class="n">transpose</span><span class="p">()[</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ensemble_assignment</span><span class="p">)</span> <span class="o">==</span> <span class="n">i</span><span class="p">)]</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ensemble_assignment</span><span class="p">)</span> <span class="o">==</span> <span class="n">i</span><span class="p">)</span>
+        <span class="p">]</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
         <span class="n">embedded_ensembles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">this_embedded</span><span class="p">)</span>
         <span class="n">kdes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">gaussian_kde</span><span class="p">(</span><span class="n">this_embedded</span><span class="p">))</span>
 
@@ -629,9 +663,16 @@
 
 <div class="viewcode-block" id="dimred_ensemble_similarity">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.dimred_ensemble_similarity">[docs]</a>
-<span class="k">def</span> <span class="nf">dimred_ensemble_similarity</span><span class="p">(</span><span class="n">kde1</span><span class="p">,</span> <span class="n">resamples1</span><span class="p">,</span> <span class="n">kde2</span><span class="p">,</span> <span class="n">resamples2</span><span class="p">,</span>
-                               <span class="n">ln_P1_exp_P1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ln_P2_exp_P2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                               <span class="n">ln_P1P2_exp_P1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ln_P1P2_exp_P2</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">dimred_ensemble_similarity</span><span class="p">(</span>
+    <span class="n">kde1</span><span class="p">,</span>
+    <span class="n">resamples1</span><span class="p">,</span>
+    <span class="n">kde2</span><span class="p">,</span>
+    <span class="n">resamples2</span><span class="p">,</span>
+    <span class="n">ln_P1_exp_P1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">ln_P2_exp_P2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">ln_P1P2_exp_P1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">ln_P1P2_exp_P2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the Jensen-Shannon divergence according the Dimensionality</span>
 <span class="sd">    reduction method.</span>
 
@@ -703,24 +744,41 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">ln_P1_exp_P1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ln_P2_exp_P2</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ln_P1P2_exp_P1</span> <span class="ow">and</span> <span class="ow">not</span> \
-            <span class="n">ln_P1P2_exp_P2</span><span class="p">:</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="ow">not</span> <span class="n">ln_P1_exp_P1</span>
+        <span class="ow">and</span> <span class="ow">not</span> <span class="n">ln_P2_exp_P2</span>
+        <span class="ow">and</span> <span class="ow">not</span> <span class="n">ln_P1P2_exp_P1</span>
+        <span class="ow">and</span> <span class="ow">not</span> <span class="n">ln_P1P2_exp_P2</span>
+    <span class="p">):</span>
         <span class="n">ln_P1_exp_P1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">kde1</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">resamples1</span><span class="p">)))</span>
         <span class="n">ln_P2_exp_P2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">kde2</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">resamples2</span><span class="p">)))</span>
-        <span class="n">ln_P1P2_exp_P1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
-            <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">kde1</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">resamples1</span><span class="p">)</span> <span class="o">+</span> <span class="n">kde2</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">resamples1</span><span class="p">))))</span>
-        <span class="n">ln_P1P2_exp_P2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
-            <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">kde1</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">resamples2</span><span class="p">)</span> <span class="o">+</span> <span class="n">kde2</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">resamples2</span><span class="p">))))</span>
+        <span class="n">ln_P1P2_exp_P1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+                <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">kde1</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">resamples1</span><span class="p">)</span> <span class="o">+</span> <span class="n">kde2</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">resamples1</span><span class="p">))</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">ln_P1P2_exp_P2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+                <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">kde1</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">resamples2</span><span class="p">)</span> <span class="o">+</span> <span class="n">kde2</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">resamples2</span><span class="p">))</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
 
     <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span>
-        <span class="n">ln_P1_exp_P1</span> <span class="o">-</span> <span class="n">ln_P1P2_exp_P1</span> <span class="o">+</span> <span class="n">ln_P2_exp_P2</span> <span class="o">-</span> <span class="n">ln_P1P2_exp_P2</span><span class="p">)</span></div>
+        <span class="n">ln_P1_exp_P1</span> <span class="o">-</span> <span class="n">ln_P1P2_exp_P1</span> <span class="o">+</span> <span class="n">ln_P2_exp_P2</span> <span class="o">-</span> <span class="n">ln_P1P2_exp_P2</span>
+    <span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="cumulative_gen_kde_pdfs">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.cumulative_gen_kde_pdfs">[docs]</a>
-<span class="k">def</span> <span class="nf">cumulative_gen_kde_pdfs</span><span class="p">(</span><span class="n">embedded_space</span><span class="p">,</span> <span class="n">ensemble_assignment</span><span class="p">,</span> <span class="n">nensembles</span><span class="p">,</span>
-                            <span class="n">nsamples</span><span class="p">,</span> <span class="n">ens_id_min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ens_id_max</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">cumulative_gen_kde_pdfs</span><span class="p">(</span>
+    <span class="n">embedded_space</span><span class="p">,</span>
+    <span class="n">ensemble_assignment</span><span class="p">,</span>
+    <span class="n">nensembles</span><span class="p">,</span>
+    <span class="n">nsamples</span><span class="p">,</span>
+    <span class="n">ens_id_min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">ens_id_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate Kernel Density Estimates (KDE) from embedded spaces and</span>
 <span class="sd">    elaborate the coordinates for later use. However, consider more than</span>
@@ -780,9 +838,13 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">ens_id_max</span><span class="p">:</span>
         <span class="n">ens_id_max</span> <span class="o">=</span> <span class="n">nensembles</span> <span class="o">+</span> <span class="mi">1</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ens_id_min</span><span class="p">,</span> <span class="n">ens_id_max</span><span class="p">):</span>
-        <span class="n">this_embedded</span> <span class="o">=</span> <span class="n">embedded_space</span><span class="o">.</span><span class="n">transpose</span><span class="p">()[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">ensemble_assignment</span> <span class="o">&gt;=</span> <span class="n">ens_id_min</span><span class="p">,</span>
-                              <span class="n">ensemble_assignment</span> <span class="o">&lt;=</span> <span class="n">i</span><span class="p">))]</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+        <span class="n">this_embedded</span> <span class="o">=</span> <span class="n">embedded_space</span><span class="o">.</span><span class="n">transpose</span><span class="p">()[</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
+                    <span class="n">ensemble_assignment</span> <span class="o">&gt;=</span> <span class="n">ens_id_min</span><span class="p">,</span> <span class="n">ensemble_assignment</span> <span class="o">&lt;=</span> <span class="n">i</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">]</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
         <span class="n">embedded_ensembles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">this_embedded</span><span class="p">)</span>
         <span class="n">kdes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">gaussian_kde</span><span class="p">(</span><span class="n">this_embedded</span><span class="p">))</span>
 
@@ -796,8 +858,9 @@
 
 <div class="viewcode-block" id="write_output">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.write_output">[docs]</a>
-<span class="k">def</span> <span class="nf">write_output</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">base_fname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-                 <span class="n">extension</span><span class="o">=</span><span class="s2">&quot;dat&quot;</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">write_output</span><span class="p">(</span>
+    <span class="n">matrix</span><span class="p">,</span> <span class="n">base_fname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">extension</span><span class="o">=</span><span class="s2">&quot;dat&quot;</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Write output matrix with a nice format, to stdout and optionally a file.</span>
 
@@ -833,9 +896,9 @@
 
 <div class="viewcode-block" id="prepare_ensembles_for_convergence_increasing_window">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.prepare_ensembles_for_convergence_increasing_window">[docs]</a>
-<span class="k">def</span> <span class="nf">prepare_ensembles_for_convergence_increasing_window</span><span class="p">(</span><span class="n">ensemble</span><span class="p">,</span>
-                                                        <span class="n">window_size</span><span class="p">,</span>
-                                                        <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">prepare_ensembles_for_convergence_increasing_window</span><span class="p">(</span>
+    <span class="n">ensemble</span><span class="p">,</span> <span class="n">window_size</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate ensembles to be fed to ces_convergence or dres_convergence</span>
 <span class="sd">    from a single ensemble. Basically, the different slices the algorithm</span>
@@ -864,8 +927,9 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">ens_size</span> <span class="o">=</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span><span class="n">ensemble</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">),</span>
-                                              <span class="n">order</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">ens_size</span> <span class="o">=</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span>
+        <span class="n">ensemble</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;fac&quot;</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="n">rest_slices</span> <span class="o">=</span> <span class="n">ens_size</span> <span class="o">//</span> <span class="n">window_size</span>
     <span class="n">residuals</span> <span class="o">=</span> <span class="n">ens_size</span> <span class="o">%</span> <span class="n">window_size</span>
@@ -877,12 +941,16 @@
         <span class="n">slices_n</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">slices_n</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">window_size</span><span class="p">)</span>
     <span class="n">slices_n</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">slices_n</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">residuals</span> <span class="o">+</span> <span class="n">window_size</span><span class="p">)</span>
 
-    <span class="k">for</span> <span class="n">s</span><span class="p">,</span><span class="n">sl</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">slices_n</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
-        <span class="n">tmp_ensembles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span>
-            <span class="n">ensemble</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
-            <span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">)</span>
-            <span class="p">[</span><span class="n">slices_n</span><span class="p">[</span><span class="n">s</span><span class="p">]:</span><span class="n">slices_n</span><span class="p">[</span><span class="n">s</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="p">:,</span> <span class="p">:],</span>
-            <span class="nb">format</span><span class="o">=</span><span class="n">MemoryReader</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">sl</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">slices_n</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="n">tmp_ensembles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span>
+                <span class="n">ensemble</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
+                <span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="s2">&quot;fac&quot;</span><span class="p">)[</span>
+                    <span class="n">slices_n</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="p">:</span> <span class="n">slices_n</span><span class="p">[</span><span class="n">s</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="p">:,</span> <span class="p">:</span>
+                <span class="p">],</span>
+                <span class="nb">format</span><span class="o">=</span><span class="n">MemoryReader</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">tmp_ensembles</span></div>
 
@@ -890,14 +958,16 @@
 
 <div class="viewcode-block" id="hes">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.hes">[docs]</a>
-<span class="k">def</span> <span class="nf">hes</span><span class="p">(</span><span class="n">ensembles</span><span class="p">,</span>
-        <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
-        <span class="n">cov_estimator</span><span class="o">=</span><span class="s2">&quot;shrinkage&quot;</span><span class="p">,</span>
-        <span class="n">weights</span><span class="o">=</span><span class="s1">&#39;mass&#39;</span><span class="p">,</span>
-        <span class="n">align</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">estimate_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">bootstrapping_samples</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-        <span class="n">calc_diagonal</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">hes</span><span class="p">(</span>
+    <span class="n">ensembles</span><span class="p">,</span>
+    <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
+    <span class="n">cov_estimator</span><span class="o">=</span><span class="s2">&quot;shrinkage&quot;</span><span class="p">,</span>
+    <span class="n">weights</span><span class="o">=</span><span class="s2">&quot;mass&quot;</span><span class="p">,</span>
+    <span class="n">align</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">estimate_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">bootstrapping_samples</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">calc_diagonal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculates the Harmonic Ensemble Similarity (HES) between ensembles.</span>
 
 <span class="sd">    The HES is calculated with the symmetrized version of Kullback-Leibler</span>
@@ -1009,8 +1079,11 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span> <span class="ow">and</span> <span class="n">weights</span> <span class="o">==</span> <span class="s1">&#39;mass&#39;</span><span class="p">:</span>
-        <span class="n">weights</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;mass&#39;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">))]</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span>
+        <span class="ow">and</span> <span class="n">weights</span> <span class="o">==</span> <span class="s2">&quot;mass&quot;</span>
+    <span class="p">):</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;mass&quot;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">))]</span>
     <span class="k">elif</span> <span class="n">weights</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;need weights for every ensemble&quot;</span><span class="p">)</span>
@@ -1022,10 +1095,9 @@
     <span class="c1"># on the universe.</span>
     <span class="k">if</span> <span class="n">align</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ensembles</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span>
-            <span class="n">mda</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">align</span><span class="o">.</span><span class="n">AlignTraj</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">ensembles</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                                         <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
-                                         <span class="n">weights</span><span class="o">=</span><span class="n">w</span><span class="p">,</span>
-                                         <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+            <span class="n">mda</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">align</span><span class="o">.</span><span class="n">AlignTraj</span><span class="p">(</span>
+                <span class="n">e</span><span class="p">,</span> <span class="n">ensembles</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">ensemble</span> <span class="ow">in</span> <span class="n">ensembles</span><span class="p">:</span>
             <span class="n">ensemble</span><span class="o">.</span><span class="n">transfer_to_memory</span><span class="p">()</span>
@@ -1045,7 +1117,8 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
             <span class="s2">&quot;Covariance estimator </span><span class="si">{0}</span><span class="s2"> is not supported. &quot;</span>
-            <span class="s2">&quot;Choose between &#39;shrinkage&#39; and &#39;ml&#39;.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cov_estimator</span><span class="p">))</span>
+            <span class="s2">&quot;Choose between &#39;shrinkage&#39; and &#39;ml&#39;.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cov_estimator</span><span class="p">)</span>
+        <span class="p">)</span>
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="n">out_matrix_eln</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">)</span>
@@ -1059,8 +1132,9 @@
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ensemble</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ensembles</span><span class="p">):</span>
             <span class="n">ensembles_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="n">get_ensemble_bootstrap_samples</span><span class="p">(</span>
-                    <span class="n">ensemble</span><span class="p">,</span>
-                    <span class="n">samples</span><span class="o">=</span><span class="n">bootstrapping_samples</span><span class="p">))</span>
+                    <span class="n">ensemble</span><span class="p">,</span> <span class="n">samples</span><span class="o">=</span><span class="n">bootstrapping_samples</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
         <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bootstrapping_samples</span><span class="p">):</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;The coordinates will be bootstrapped.&quot;</span><span class="p">)</span>
 
@@ -1068,21 +1142,30 @@
             <span class="n">sigmas</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">out_matrix_eln</span><span class="p">,</span> <span class="n">out_matrix_eln</span><span class="p">))</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">e_orig</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ensembles</span><span class="p">):</span>
-                <span class="n">xs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span>
-                    <span class="n">ensembles_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">t</span><span class="p">]</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span>
-                        <span class="n">e_orig</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">),</span>
-                        <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;fac&#39;</span><span class="p">)),</span>
-                    <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
-                <span class="n">sigmas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">covariance_matrix</span><span class="p">(</span><span class="n">ensembles_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">t</span><span class="p">],</span>
-                                                <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                                                <span class="n">estimator</span><span class="o">=</span><span class="n">covariance_estimator</span><span class="p">,</span>
-                                                <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">))</span>
+                <span class="n">xs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span>
+                        <span class="n">ensembles_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">t</span><span class="p">]</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span>
+                            <span class="n">e_orig</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;fac&quot;</span><span class="p">)</span>
+                        <span class="p">),</span>
+                        <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                    <span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+                <span class="p">)</span>
+                <span class="n">sigmas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">covariance_matrix</span><span class="p">(</span>
+                        <span class="n">ensembles_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">t</span><span class="p">],</span>
+                        <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                        <span class="n">estimator</span><span class="o">=</span><span class="n">covariance_estimator</span><span class="p">,</span>
+                        <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
 
             <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">pairs_indices</span><span class="p">:</span>
-                <span class="n">value</span> <span class="o">=</span> <span class="n">harmonic_ensemble_similarity</span><span class="p">(</span><span class="n">x1</span><span class="o">=</span><span class="n">xs</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
-                                                     <span class="n">x2</span><span class="o">=</span><span class="n">xs</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
-                                                     <span class="n">sigma1</span><span class="o">=</span><span class="n">sigmas</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
-                                                     <span class="n">sigma2</span><span class="o">=</span><span class="n">sigmas</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">harmonic_ensemble_similarity</span><span class="p">(</span>
+                    <span class="n">x1</span><span class="o">=</span><span class="n">xs</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+                    <span class="n">x2</span><span class="o">=</span><span class="n">xs</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
+                    <span class="n">sigma1</span><span class="o">=</span><span class="n">sigmas</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+                    <span class="n">sigma2</span><span class="o">=</span><span class="n">sigmas</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
+                <span class="p">)</span>
                 <span class="n">values</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">value</span>
                 <span class="n">values</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">value</span>
             <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
@@ -1097,31 +1180,32 @@
 
     <span class="k">for</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ensembles</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span>
         <span class="c1"># Extract coordinates from each ensemble</span>
-        <span class="n">coordinates_system</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">),</span>
-                                                     <span class="n">order</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">)</span>
+        <span class="n">coordinates_system</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span>
+            <span class="n">e</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;fac&quot;</span>
+        <span class="p">)</span>
 
         <span class="c1"># Average coordinates in each system</span>
         <span class="n">xs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">coordinates_system</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
 
         <span class="c1"># Covariance matrices in each system</span>
-        <span class="n">sigmas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">covariance_matrix</span><span class="p">(</span><span class="n">e</span><span class="p">,</span>
-                                        <span class="n">weights</span><span class="o">=</span><span class="n">w</span><span class="p">,</span>
-                                        <span class="n">estimator</span><span class="o">=</span><span class="n">covariance_estimator</span><span class="p">,</span>
-                                        <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">))</span>
+        <span class="n">sigmas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">covariance_matrix</span><span class="p">(</span>
+                <span class="n">e</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">estimator</span><span class="o">=</span><span class="n">covariance_estimator</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="n">select</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
 
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">pairs_indices</span><span class="p">:</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="n">harmonic_ensemble_similarity</span><span class="p">(</span><span class="n">x1</span><span class="o">=</span><span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                                             <span class="n">x2</span><span class="o">=</span><span class="n">xs</span><span class="p">[</span><span class="n">j</span><span class="p">],</span>
-                                             <span class="n">sigma1</span><span class="o">=</span><span class="n">sigmas</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                                             <span class="n">sigma2</span><span class="o">=</span><span class="n">sigmas</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">harmonic_ensemble_similarity</span><span class="p">(</span>
+            <span class="n">x1</span><span class="o">=</span><span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">x2</span><span class="o">=</span><span class="n">xs</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">sigma1</span><span class="o">=</span><span class="n">sigmas</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">sigma2</span><span class="o">=</span><span class="n">sigmas</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+        <span class="p">)</span>
         <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
         <span class="n">values</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="c1"># Save details as required</span>
     <span class="n">details</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">out_matrix_eln</span><span class="p">):</span>
-        <span class="n">details</span><span class="p">[</span><span class="s1">&#39;ensemble</span><span class="si">{0:d}</span><span class="s1">_mean&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-        <span class="n">details</span><span class="p">[</span><span class="s1">&#39;ensemble</span><span class="si">{0:d}</span><span class="s1">_covariance_matrix&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">sigmas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">details</span><span class="p">[</span><span class="s2">&quot;ensemble</span><span class="si">{0:d}</span><span class="s2">_mean&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">details</span><span class="p">[</span><span class="s2">&quot;ensemble</span><span class="si">{0:d}</span><span class="s2">_covariance_matrix&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">sigmas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="n">values</span><span class="p">,</span> <span class="n">details</span></div>
 
@@ -1276,39 +1360,42 @@
         <span class="n">pairs_indices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">trm_indices_nodiag</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">)))</span>
 
     <span class="n">clustering_methods</span> <span class="o">=</span> <span class="n">clustering_method</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">clustering_method</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">clustering_method</span><span class="p">,</span> <span class="s2">&quot;__iter__&quot;</span><span class="p">):</span>
         <span class="n">clustering_methods</span> <span class="o">=</span> <span class="p">[</span><span class="n">clustering_method</span><span class="p">]</span>
 
-    <span class="n">any_method_accept_distance_matrix</span> <span class="o">=</span> \
-        <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">([</span><span class="n">method</span><span class="o">.</span><span class="n">accepts_distance_matrix</span> <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">clustering_methods</span><span class="p">])</span>
-    <span class="n">all_methods_accept_distance_matrix</span> <span class="o">=</span> \
-        <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">([</span><span class="n">method</span><span class="o">.</span><span class="n">accepts_distance_matrix</span> <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">clustering_methods</span><span class="p">])</span>
+    <span class="n">any_method_accept_distance_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">method</span><span class="o">.</span><span class="n">accepts_distance_matrix</span> <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">clustering_methods</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">all_methods_accept_distance_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">method</span><span class="o">.</span><span class="n">accepts_distance_matrix</span> <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">clustering_methods</span><span class="p">]</span>
+    <span class="p">)</span>
 
     <span class="c1"># Register which ensembles the samples belong to</span>
     <span class="n">ensemble_assignment</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ensemble</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ensembles</span><span class="p">):</span>
-        <span class="n">ensemble_assignment</span> <span class="o">+=</span> <span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span>
+        <span class="n">ensemble_assignment</span> <span class="o">+=</span> <span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span>
 
     <span class="c1"># Calculate distance matrix if not provided</span>
     <span class="k">if</span> <span class="n">any_method_accept_distance_matrix</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">distance_matrix</span><span class="p">:</span>
-        <span class="n">distance_matrix</span> <span class="o">=</span> <span class="n">get_distance_matrix</span><span class="p">(</span><span class="n">merge_universes</span><span class="p">(</span><span class="n">ensembles</span><span class="p">),</span>
-                                              <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
-                                              <span class="n">ncores</span><span class="o">=</span><span class="n">ncores</span><span class="p">)</span>
+        <span class="n">distance_matrix</span> <span class="o">=</span> <span class="n">get_distance_matrix</span><span class="p">(</span>
+            <span class="n">merge_universes</span><span class="p">(</span><span class="n">ensembles</span><span class="p">),</span> <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span> <span class="n">ncores</span><span class="o">=</span><span class="n">ncores</span>
+        <span class="p">)</span>
     <span class="k">if</span> <span class="n">estimate_error</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">any_method_accept_distance_matrix</span><span class="p">:</span>
-            <span class="n">distance_matrix</span> <span class="o">=</span> \
-                <span class="n">get_distance_matrix_bootstrap_samples</span><span class="p">(</span>
-                    <span class="n">distance_matrix</span><span class="p">,</span>
-                    <span class="n">ensemble_assignment</span><span class="p">,</span>
-                    <span class="n">samples</span><span class="o">=</span><span class="n">bootstrapping_samples</span><span class="p">,</span>
-                    <span class="n">ncores</span><span class="o">=</span><span class="n">ncores</span><span class="p">)</span>
+            <span class="n">distance_matrix</span> <span class="o">=</span> <span class="n">get_distance_matrix_bootstrap_samples</span><span class="p">(</span>
+                <span class="n">distance_matrix</span><span class="p">,</span>
+                <span class="n">ensemble_assignment</span><span class="p">,</span>
+                <span class="n">samples</span><span class="o">=</span><span class="n">bootstrapping_samples</span><span class="p">,</span>
+                <span class="n">ncores</span><span class="o">=</span><span class="n">ncores</span><span class="p">,</span>
+            <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">all_methods_accept_distance_matrix</span><span class="p">:</span>
             <span class="n">ensembles_list</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ensemble</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ensembles</span><span class="p">):</span>
                 <span class="n">ensembles_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                     <span class="n">get_ensemble_bootstrap_samples</span><span class="p">(</span>
-                        <span class="n">ensemble</span><span class="p">,</span>
-                        <span class="n">samples</span><span class="o">=</span><span class="n">bootstrapping_samples</span><span class="p">))</span>
+                        <span class="n">ensemble</span><span class="p">,</span> <span class="n">samples</span><span class="o">=</span><span class="n">bootstrapping_samples</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
             <span class="n">ensembles</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bootstrapping_samples</span><span class="p">):</span>
                 <span class="n">ensembles</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
@@ -1318,16 +1405,17 @@
             <span class="c1"># if all methods accept distances matrices, duplicate</span>
             <span class="c1"># ensemble so that it matches size of distance matrices</span>
             <span class="c1"># (no need to resample them since they will not be used)</span>
-            <span class="n">ensembles</span> <span class="o">=</span> <span class="p">[</span><span class="n">ensembles</span><span class="p">]</span><span class="o">*</span><span class="n">bootstrapping_samples</span>
-
+            <span class="n">ensembles</span> <span class="o">=</span> <span class="p">[</span><span class="n">ensembles</span><span class="p">]</span> <span class="o">*</span> <span class="n">bootstrapping_samples</span>
 
     <span class="c1"># Call clustering procedure</span>
-    <span class="n">ccs</span> <span class="o">=</span> <span class="n">cluster</span><span class="p">(</span><span class="n">ensembles</span><span class="p">,</span>
-                  <span class="n">method</span><span class="o">=</span> <span class="n">clustering_methods</span><span class="p">,</span>
-                  <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
-                  <span class="n">distance_matrix</span> <span class="o">=</span> <span class="n">distance_matrix</span><span class="p">,</span>
-                  <span class="n">ncores</span> <span class="o">=</span> <span class="n">ncores</span><span class="p">,</span>
-                  <span class="n">allow_collapsed_result</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">ccs</span> <span class="o">=</span> <span class="n">cluster</span><span class="p">(</span>
+        <span class="n">ensembles</span><span class="p">,</span>
+        <span class="n">method</span><span class="o">=</span><span class="n">clustering_methods</span><span class="p">,</span>
+        <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
+        <span class="n">distance_matrix</span><span class="o">=</span><span class="n">distance_matrix</span><span class="p">,</span>
+        <span class="n">ncores</span><span class="o">=</span><span class="n">ncores</span><span class="p">,</span>
+        <span class="n">allow_collapsed_result</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="c1"># Do error analysis</span>
     <span class="k">if</span> <span class="n">estimate_error</span><span class="p">:</span>
@@ -1343,20 +1431,20 @@
                     <span class="n">failed_runs</span> <span class="o">+=</span> <span class="mi">1</span>
                     <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
                     <span class="k">continue</span>
-                <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">[</span><span class="n">j</span><span class="p">]),</span>
-                                           <span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">[</span><span class="n">j</span><span class="p">]))))</span>
+                <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">[</span><span class="n">j</span><span class="p">]),</span> <span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">[</span><span class="n">j</span><span class="p">])))</span>
+                <span class="p">)</span>
 
                 <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">pairs_indices</span><span class="p">:</span>
                     <span class="c1"># Calculate dJS</span>
-                    <span class="n">this_djs</span> <span class="o">=</span> \
-                        <span class="n">clustering_ensemble_similarity</span><span class="p">(</span><span class="n">ccs</span><span class="p">[</span><span class="n">k</span><span class="p">],</span>
-                                                       <span class="n">ensembles</span><span class="p">[</span><span class="n">j</span><span class="p">][</span>
-                                                           <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
-                                                       <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
-                                                       <span class="n">ensembles</span><span class="p">[</span><span class="n">j</span><span class="p">][</span>
-                                                           <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
-                                                       <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
-                                                       <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">)</span>
+                    <span class="n">this_djs</span> <span class="o">=</span> <span class="n">clustering_ensemble_similarity</span><span class="p">(</span>
+                        <span class="n">ccs</span><span class="p">[</span><span class="n">k</span><span class="p">],</span>
+                        <span class="n">ensembles</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+                        <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                        <span class="n">ensembles</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
+                        <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                        <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
+                    <span class="p">)</span>
                     <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">this_djs</span>
                     <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">this_djs</span>
                 <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -1364,7 +1452,7 @@
             <span class="n">avgs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">outs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
             <span class="n">stds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">outs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
 
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">clustering_method</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">clustering_method</span><span class="p">,</span> <span class="s2">&quot;__iter__&quot;</span><span class="p">):</span>
             <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">avgs</span> <span class="o">=</span> <span class="n">avgs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -1382,19 +1470,20 @@
 
             <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">pairs_indices</span><span class="p">:</span>
                 <span class="c1"># Calculate dJS</span>
-                <span class="n">this_val</span> <span class="o">=</span> \
-                    <span class="n">clustering_ensemble_similarity</span><span class="p">(</span><span class="n">ccs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                                                   <span class="n">ensembles</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
-                                                   <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
-                                                   <span class="n">ensembles</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
-                                                   <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
-                                                   <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">)</span>
+                <span class="n">this_val</span> <span class="o">=</span> <span class="n">clustering_ensemble_similarity</span><span class="p">(</span>
+                    <span class="n">ccs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                    <span class="n">ensembles</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+                    <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="n">ensembles</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
+                    <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
+                <span class="p">)</span>
                 <span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">this_val</span>
                 <span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">this_val</span>
 
-    <span class="n">details</span><span class="p">[</span><span class="s1">&#39;clustering&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ccs</span>
+    <span class="n">details</span><span class="p">[</span><span class="s2">&quot;clustering&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ccs</span>
 
-    <span class="k">if</span> <span class="n">allow_collapsed_result</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">clustering_method</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">allow_collapsed_result</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">clustering_method</span><span class="p">,</span> <span class="s2">&quot;__iter__&quot;</span><span class="p">):</span>
         <span class="n">values</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="n">values</span><span class="p">,</span> <span class="n">details</span></div>
@@ -1554,43 +1643,54 @@
         <span class="n">pairs_indices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">trm_indices_nodiag</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">)))</span>
 
     <span class="n">dimensionality_reduction_methods</span> <span class="o">=</span> <span class="n">dimensionality_reduction_method</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dimensionality_reduction_method</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dimensionality_reduction_method</span><span class="p">,</span> <span class="s2">&quot;__iter__&quot;</span><span class="p">):</span>
         <span class="n">dimensionality_reduction_methods</span> <span class="o">=</span> <span class="p">[</span><span class="n">dimensionality_reduction_method</span><span class="p">]</span>
 
-    <span class="n">any_method_accept_distance_matrix</span> <span class="o">=</span> \
-        <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">([</span><span class="n">method</span><span class="o">.</span><span class="n">accepts_distance_matrix</span> <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">dimensionality_reduction_methods</span><span class="p">])</span>
-    <span class="n">all_methods_accept_distance_matrix</span> <span class="o">=</span> \
-        <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">([</span><span class="n">method</span><span class="o">.</span><span class="n">accepts_distance_matrix</span> <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">dimensionality_reduction_methods</span><span class="p">])</span>
+    <span class="n">any_method_accept_distance_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">method</span><span class="o">.</span><span class="n">accepts_distance_matrix</span>
+            <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">dimensionality_reduction_methods</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">all_methods_accept_distance_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">method</span><span class="o">.</span><span class="n">accepts_distance_matrix</span>
+            <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">dimensionality_reduction_methods</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
 
     <span class="c1"># Register which ensembles the samples belong to</span>
     <span class="n">ensemble_assignment</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ensemble</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ensembles</span><span class="p">):</span>
-        <span class="n">ensemble_assignment</span> <span class="o">+=</span> <span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span>
+        <span class="n">ensemble_assignment</span> <span class="o">+=</span> <span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span>
 
     <span class="c1"># Calculate distance matrix if not provided</span>
     <span class="k">if</span> <span class="n">any_method_accept_distance_matrix</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">distance_matrix</span><span class="p">:</span>
-        <span class="n">distance_matrix</span> <span class="o">=</span> <span class="n">get_distance_matrix</span><span class="p">(</span><span class="n">merge_universes</span><span class="p">(</span><span class="n">ensembles</span><span class="p">),</span>
-                                              <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
-                                              <span class="n">ncores</span><span class="o">=</span><span class="n">ncores</span><span class="p">)</span>
+        <span class="n">distance_matrix</span> <span class="o">=</span> <span class="n">get_distance_matrix</span><span class="p">(</span>
+            <span class="n">merge_universes</span><span class="p">(</span><span class="n">ensembles</span><span class="p">),</span> <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span> <span class="n">ncores</span><span class="o">=</span><span class="n">ncores</span>
+        <span class="p">)</span>
     <span class="k">if</span> <span class="n">estimate_error</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">any_method_accept_distance_matrix</span><span class="p">:</span>
-            <span class="n">distance_matrix</span> <span class="o">=</span> \
-                <span class="n">get_distance_matrix_bootstrap_samples</span><span class="p">(</span>
-                    <span class="n">distance_matrix</span><span class="p">,</span>
-                    <span class="n">ensemble_assignment</span><span class="p">,</span>
-                    <span class="n">samples</span><span class="o">=</span><span class="n">bootstrapping_samples</span><span class="p">,</span>
-                    <span class="n">ncores</span><span class="o">=</span><span class="n">ncores</span><span class="p">)</span>
+            <span class="n">distance_matrix</span> <span class="o">=</span> <span class="n">get_distance_matrix_bootstrap_samples</span><span class="p">(</span>
+                <span class="n">distance_matrix</span><span class="p">,</span>
+                <span class="n">ensemble_assignment</span><span class="p">,</span>
+                <span class="n">samples</span><span class="o">=</span><span class="n">bootstrapping_samples</span><span class="p">,</span>
+                <span class="n">ncores</span><span class="o">=</span><span class="n">ncores</span><span class="p">,</span>
+            <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">all_methods_accept_distance_matrix</span><span class="p">:</span>
             <span class="n">ensembles_list</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ensemble</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ensembles</span><span class="p">):</span>
                 <span class="n">ensembles_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                     <span class="n">get_ensemble_bootstrap_samples</span><span class="p">(</span>
-                        <span class="n">ensemble</span><span class="p">,</span>
-                        <span class="n">samples</span><span class="o">=</span><span class="n">bootstrapping_samples</span><span class="p">))</span>
+                        <span class="n">ensemble</span><span class="p">,</span> <span class="n">samples</span><span class="o">=</span><span class="n">bootstrapping_samples</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
             <span class="n">ensembles</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bootstrapping_samples</span><span class="p">):</span>
-                <span class="n">ensembles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ensembles_list</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span>
-                                 <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ensembles_list</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+                <span class="n">ensembles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">ensembles_list</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ensembles_list</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># if all methods accept distances matrices, duplicate</span>
             <span class="c1"># ensemble so that it matches size of distance matrices</span>
@@ -1602,9 +1702,10 @@
         <span class="n">ensembles</span><span class="p">,</span>
         <span class="n">method</span><span class="o">=</span><span class="n">dimensionality_reduction_methods</span><span class="p">,</span>
         <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
-        <span class="n">distance_matrix</span> <span class="o">=</span> <span class="n">distance_matrix</span><span class="p">,</span>
-        <span class="n">ncores</span> <span class="o">=</span> <span class="n">ncores</span><span class="p">,</span>
-        <span class="n">allow_collapsed_result</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">distance_matrix</span><span class="o">=</span><span class="n">distance_matrix</span><span class="p">,</span>
+        <span class="n">ncores</span><span class="o">=</span><span class="n">ncores</span><span class="p">,</span>
+        <span class="n">allow_collapsed_result</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="n">details</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">details</span><span class="p">[</span><span class="s2">&quot;reduced_coordinates&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">coordinates</span>
@@ -1615,24 +1716,28 @@
         <span class="n">values</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">avgs</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">stds</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">method</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dimensionality_reduction_methods</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">method</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dimensionality_reduction_methods</span><span class="p">):</span>
             <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bootstrapping_samples</span><span class="p">):</span>
 
-                <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">[</span><span class="n">j</span><span class="p">]),</span>
-                                           <span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">[</span><span class="n">j</span><span class="p">]))))</span>
+                <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">[</span><span class="n">j</span><span class="p">]),</span> <span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">[</span><span class="n">j</span><span class="p">])))</span>
+                <span class="p">)</span>
 
                 <span class="n">kdes</span><span class="p">,</span> <span class="n">resamples</span><span class="p">,</span> <span class="n">embedded_ensembles</span> <span class="o">=</span> <span class="n">gen_kde_pdfs</span><span class="p">(</span>
                     <span class="n">coordinates</span><span class="p">[</span><span class="n">k</span><span class="p">],</span>
                     <span class="n">ensemble_assignment</span><span class="p">,</span>
                     <span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">[</span><span class="n">j</span><span class="p">]),</span>
-                    <span class="n">nsamples</span><span class="o">=</span><span class="n">nsamples</span><span class="p">)</span>
+                    <span class="n">nsamples</span><span class="o">=</span><span class="n">nsamples</span><span class="p">,</span>
+                <span class="p">)</span>
 
                 <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">pairs_indices</span><span class="p">:</span>
-                    <span class="n">this_value</span> <span class="o">=</span> <span class="n">dimred_ensemble_similarity</span><span class="p">(</span><span class="n">kdes</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
-                                                            <span class="n">resamples</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
-                                                            <span class="n">kdes</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
-                                                            <span class="n">resamples</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+                    <span class="n">this_value</span> <span class="o">=</span> <span class="n">dimred_ensemble_similarity</span><span class="p">(</span>
+                        <span class="n">kdes</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+                        <span class="n">resamples</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+                        <span class="n">kdes</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
+                        <span class="n">resamples</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
+                    <span class="p">)</span>
                     <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">this_value</span>
                     <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">this_value</span>
 
@@ -1641,7 +1746,7 @@
             <span class="n">avgs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">outs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
             <span class="n">stds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">outs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
 
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dimensionality_reduction_method</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dimensionality_reduction_method</span><span class="p">,</span> <span class="s2">&quot;__iter__&quot;</span><span class="p">):</span>
             <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">avgs</span> <span class="o">=</span> <span class="n">avgs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -1651,24 +1756,29 @@
 
     <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">method</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dimensionality_reduction_methods</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">method</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dimensionality_reduction_methods</span><span class="p">):</span>
 
         <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">))))</span>
-        <span class="n">kdes</span><span class="p">,</span> <span class="n">resamples</span><span class="p">,</span> <span class="n">embedded_ensembles</span> <span class="o">=</span> <span class="n">gen_kde_pdfs</span><span class="p">(</span><span class="n">coordinates</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                                                           <span class="n">ensemble_assignment</span><span class="p">,</span>
-                                                           <span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">),</span>
-                                                           <span class="n">nsamples</span><span class="o">=</span><span class="n">nsamples</span><span class="p">)</span>
+        <span class="n">kdes</span><span class="p">,</span> <span class="n">resamples</span><span class="p">,</span> <span class="n">embedded_ensembles</span> <span class="o">=</span> <span class="n">gen_kde_pdfs</span><span class="p">(</span>
+            <span class="n">coordinates</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+            <span class="n">ensemble_assignment</span><span class="p">,</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">),</span>
+            <span class="n">nsamples</span><span class="o">=</span><span class="n">nsamples</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">pairs_indices</span><span class="p">:</span>
-            <span class="n">this_value</span> <span class="o">=</span> <span class="n">dimred_ensemble_similarity</span><span class="p">(</span><span class="n">kdes</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
-                                                    <span class="n">resamples</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
-                                                    <span class="n">kdes</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
-                                                    <span class="n">resamples</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+            <span class="n">this_value</span> <span class="o">=</span> <span class="n">dimred_ensemble_similarity</span><span class="p">(</span>
+                <span class="n">kdes</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+                <span class="n">resamples</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+                <span class="n">kdes</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
+                <span class="n">resamples</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
+            <span class="p">)</span>
             <span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">this_value</span>
             <span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">this_value</span>
 
-    <span class="k">if</span> <span class="n">allow_collapsed_result</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dimensionality_reduction_method</span><span class="p">,</span>
-                                              <span class="s1">&#39;__iter__&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">allow_collapsed_result</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span>
+        <span class="n">dimensionality_reduction_method</span><span class="p">,</span> <span class="s2">&quot;__iter__&quot;</span>
+    <span class="p">):</span>
         <span class="n">values</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="n">values</span><span class="p">,</span> <span class="n">details</span></div>
@@ -1759,13 +1869,16 @@
         <span class="p">)</span>
 
     <span class="n">ensembles</span> <span class="o">=</span> <span class="n">prepare_ensembles_for_convergence_increasing_window</span><span class="p">(</span>
-        <span class="n">original_ensemble</span><span class="p">,</span> <span class="n">window_size</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">)</span>
+        <span class="n">original_ensemble</span><span class="p">,</span> <span class="n">window_size</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="n">select</span>
+    <span class="p">)</span>
 
-    <span class="n">ccs</span> <span class="o">=</span> <span class="n">cluster</span><span class="p">(</span><span class="n">ensembles</span><span class="p">,</span>
-                  <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
-                  <span class="n">method</span><span class="o">=</span><span class="n">clustering_method</span><span class="p">,</span>
-                  <span class="n">allow_collapsed_result</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                  <span class="n">ncores</span><span class="o">=</span><span class="n">ncores</span><span class="p">)</span>
+    <span class="n">ccs</span> <span class="o">=</span> <span class="n">cluster</span><span class="p">(</span>
+        <span class="n">ensembles</span><span class="p">,</span>
+        <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
+        <span class="n">method</span><span class="o">=</span><span class="n">clustering_method</span><span class="p">,</span>
+        <span class="n">allow_collapsed_result</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">ncores</span><span class="o">=</span><span class="n">ncores</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">cc</span> <span class="ow">in</span> <span class="n">ccs</span><span class="p">:</span>
@@ -1774,9 +1887,8 @@
         <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">)))</span>
         <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">ensemble</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ensembles</span><span class="p">):</span>
             <span class="n">out</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">cumulative_clustering_ensemble_similarity</span><span class="p">(</span>
-                <span class="n">cc</span><span class="p">,</span>
-                <span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">),</span>
-                <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">cc</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">),</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="p">)</span>
 
     <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
     <span class="k">return</span> <span class="n">out</span></div>
@@ -1866,19 +1978,20 @@
         <span class="p">)</span>
 
     <span class="n">ensembles</span> <span class="o">=</span> <span class="n">prepare_ensembles_for_convergence_increasing_window</span><span class="p">(</span>
-        <span class="n">original_ensemble</span><span class="p">,</span> <span class="n">window_size</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">)</span>
+        <span class="n">original_ensemble</span><span class="p">,</span> <span class="n">window_size</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="n">select</span>
+    <span class="p">)</span>
 
-    <span class="n">coordinates</span><span class="p">,</span> <span class="n">dimred_details</span> <span class="o">=</span> \
-        <span class="n">reduce_dimensionality</span><span class="p">(</span>
-            <span class="n">ensembles</span><span class="p">,</span>
-            <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
-            <span class="n">method</span><span class="o">=</span><span class="n">dimensionality_reduction_method</span><span class="p">,</span>
-            <span class="n">allow_collapsed_result</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-            <span class="n">ncores</span><span class="o">=</span><span class="n">ncores</span><span class="p">)</span>
+    <span class="n">coordinates</span><span class="p">,</span> <span class="n">dimred_details</span> <span class="o">=</span> <span class="n">reduce_dimensionality</span><span class="p">(</span>
+        <span class="n">ensembles</span><span class="p">,</span>
+        <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
+        <span class="n">method</span><span class="o">=</span><span class="n">dimensionality_reduction_method</span><span class="p">,</span>
+        <span class="n">allow_collapsed_result</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">ncores</span><span class="o">=</span><span class="n">ncores</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="n">ensemble_assignment</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ensemble</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ensembles</span><span class="p">):</span>
-        <span class="n">ensemble_assignment</span> <span class="o">+=</span> <span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span>
+        <span class="n">ensemble_assignment</span> <span class="o">+=</span> <span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span>
     <span class="n">ensemble_assignment</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ensemble_assignment</span><span class="p">)</span>
 
     <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1886,18 +1999,17 @@
 
         <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">)))</span>
 
-        <span class="n">kdes</span><span class="p">,</span> <span class="n">resamples</span><span class="p">,</span> <span class="n">embedded_ensembles</span> <span class="o">=</span> \
-            <span class="n">cumulative_gen_kde_pdfs</span><span class="p">(</span>
-                <span class="n">coordinates</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                <span class="n">ensemble_assignment</span><span class="o">=</span><span class="n">ensemble_assignment</span><span class="p">,</span>
-                <span class="n">nensembles</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">),</span>
-                <span class="n">nsamples</span><span class="o">=</span><span class="n">nsamples</span><span class="p">)</span>
+        <span class="n">kdes</span><span class="p">,</span> <span class="n">resamples</span><span class="p">,</span> <span class="n">embedded_ensembles</span> <span class="o">=</span> <span class="n">cumulative_gen_kde_pdfs</span><span class="p">(</span>
+            <span class="n">coordinates</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+            <span class="n">ensemble_assignment</span><span class="o">=</span><span class="n">ensemble_assignment</span><span class="p">,</span>
+            <span class="n">nensembles</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">ensembles</span><span class="p">),</span>
+            <span class="n">nsamples</span><span class="o">=</span><span class="n">nsamples</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">ensemble</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ensembles</span><span class="p">):</span>
-            <span class="n">out</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">dimred_ensemble_similarity</span><span class="p">(</span><span class="n">kdes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
-                                                    <span class="n">resamples</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
-                                                    <span class="n">kdes</span><span class="p">[</span><span class="n">j</span><span class="p">],</span>
-                                                    <span class="n">resamples</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+            <span class="n">out</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">dimred_ensemble_similarity</span><span class="p">(</span>
+                <span class="n">kdes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">resamples</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">kdes</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">resamples</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+            <span class="p">)</span>
 
     <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
     <span class="k">return</span> <span class="n">out</span></div>

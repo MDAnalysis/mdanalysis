@@ -181,6 +181,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
+
 <div class="viewcode-block" id="ml_covariance_estimator">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/covariance.html#MDAnalysis.analysis.encore.covariance.ml_covariance_estimator">[docs]</a>
 <span class="k">def</span> <span class="nf">ml_covariance_estimator</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">reference_coordinates</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -214,8 +215,7 @@
         <span class="n">coordinates_offset</span> <span class="o">=</span> <span class="n">coordinates</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
     <span class="c1"># Calculate covariance manually</span>
-    <span class="n">coordinates_cov</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">coordinates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                                <span class="n">coordinates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="n">coordinates_cov</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">coordinates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
     <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">coordinates_offset</span><span class="p">:</span>
         <span class="n">coordinates_cov</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
     <span class="n">coordinates_cov</span> <span class="o">/=</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -223,11 +223,12 @@
     <span class="k">return</span> <span class="n">coordinates_cov</span></div>
 
 
+
 <div class="viewcode-block" id="shrinkage_covariance_estimator">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/covariance.html#MDAnalysis.analysis.encore.covariance.shrinkage_covariance_estimator">[docs]</a>
-<span class="k">def</span> <span class="nf">shrinkage_covariance_estimator</span><span class="p">(</span> <span class="n">coordinates</span><span class="p">,</span>
-                                    <span class="n">reference_coordinates</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                                    <span class="n">shrinkage_parameter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">shrinkage_covariance_estimator</span><span class="p">(</span>
+    <span class="n">coordinates</span><span class="p">,</span> <span class="n">reference_coordinates</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shrinkage_parameter</span><span class="o">=</span><span class="kc">None</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Shrinkage estimator of the covariance matrix using the method described in</span>
 
@@ -272,8 +273,11 @@
     <span class="n">xmkt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="c1"># Call maximum likelihood estimator (note the additional column)</span>
-    <span class="n">sample</span> <span class="o">=</span> <span class="n">ml_covariance_estimator</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">xmkt</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]]),</span> <span class="mi">0</span><span class="p">)</span>\
-        <span class="o">*</span> <span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">sample</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">ml_covariance_estimator</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">xmkt</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]]),</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="o">*</span> <span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="p">)</span>
 
     <span class="c1"># Split covariance matrix into components</span>
     <span class="n">covmkt</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">]</span>
@@ -281,56 +285,62 @@
     <span class="n">sample</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[:</span><span class="n">n</span><span class="p">,</span> <span class="p">:</span><span class="n">n</span><span class="p">]</span>
 
     <span class="c1"># Prior</span>
-    <span class="n">prior</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">covmkt</span><span class="p">,</span> <span class="n">covmkt</span><span class="p">)</span><span class="o">/</span><span class="n">varmkt</span>
+    <span class="n">prior</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">covmkt</span><span class="p">,</span> <span class="n">covmkt</span><span class="p">)</span> <span class="o">/</span> <span class="n">varmkt</span>
     <span class="n">prior</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">make_mask</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">n</span><span class="p">))]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
 
     <span class="c1"># If shrinkage parameter is not set, estimate it</span>
     <span class="k">if</span> <span class="n">shrinkage_parameter</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 
         <span class="c1"># Frobenius norm</span>
-        <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">sample</span> <span class="o">-</span> <span class="n">prior</span><span class="p">,</span> <span class="nb">ord</span><span class="o">=</span><span class="s1">&#39;fro&#39;</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">sample</span> <span class="o">-</span> <span class="n">prior</span><span class="p">,</span> <span class="nb">ord</span><span class="o">=</span><span class="s2">&quot;fro&quot;</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
 
         <span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span>
-        <span class="n">p</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">y</span><span class="p">))</span>\
-            <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sample</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
-        <span class="n">rdiag</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>\
-            <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">y</span><span class="p">))</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sample</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">rdiag</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="p">)</span>
         <span class="n">z</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">xmkt</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">],</span> <span class="n">n</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">v1</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">z</span><span class="p">)</span> \
-            <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">covmkt</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">],</span> <span class="n">n</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">sample</span>
-        <span class="n">roff1</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
-            <span class="n">v1</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span>
-                <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span>
-                    <span class="n">covmkt</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">],</span> <span class="n">n</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-                <span class="p">)</span>
-            <span class="p">)</span><span class="o">/</span><span class="n">varmkt</span> <span class="o">-</span>
-                 <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">v1</span><span class="p">)</span><span class="o">*</span><span class="n">covmkt</span><span class="p">)</span><span class="o">/</span><span class="n">varmkt</span><span class="p">)</span>
-        <span class="n">v3</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">z</span><span class="p">),</span> <span class="n">z</span><span class="p">)</span> <span class="o">-</span> <span class="n">varmkt</span><span class="o">*</span><span class="n">sample</span>
-        <span class="n">roff3</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">v3</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">covmkt</span><span class="p">,</span> <span class="n">covmkt</span><span class="p">))</span><span class="o">/</span><span class="n">varmkt</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span>
-                 <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">v3</span><span class="p">)</span><span class="o">*</span><span class="n">covmkt</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">varmkt</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">roff</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">roff1</span><span class="o">-</span><span class="n">roff3</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">rdiag</span><span class="o">+</span><span class="n">roff</span>
+        <span class="n">v1</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="mi">1</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">z</span><span class="p">)</span>
+            <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">covmkt</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">],</span> <span class="n">n</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">sample</span>
+        <span class="p">)</span>
+        <span class="n">roff1</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+                <span class="n">v1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">covmkt</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">],</span> <span class="n">n</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+            <span class="p">)</span>
+            <span class="o">/</span> <span class="n">varmkt</span>
+            <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">v1</span><span class="p">)</span> <span class="o">*</span> <span class="n">covmkt</span><span class="p">)</span> <span class="o">/</span> <span class="n">varmkt</span>
+        <span class="p">)</span>
+        <span class="n">v3</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">z</span><span class="p">),</span> <span class="n">z</span><span class="p">)</span> <span class="o">-</span> <span class="n">varmkt</span> <span class="o">*</span> <span class="n">sample</span>
+        <span class="n">roff3</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">v3</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">covmkt</span><span class="p">,</span> <span class="n">covmkt</span><span class="p">))</span> <span class="o">/</span> <span class="n">varmkt</span><span class="o">**</span><span class="mi">2</span>
+            <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">v3</span><span class="p">)</span> <span class="o">*</span> <span class="n">covmkt</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">varmkt</span><span class="o">**</span><span class="mi">2</span>
+        <span class="p">)</span>
+        <span class="n">roff</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">roff1</span> <span class="o">-</span> <span class="n">roff3</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">rdiag</span> <span class="o">+</span> <span class="n">roff</span>
 
         <span class="c1"># Shrinkage constant</span>
-        <span class="n">k</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span><span class="o">-</span><span class="n">r</span><span class="p">)</span><span class="o">/</span><span class="n">c</span>
-        <span class="n">shrinkage_parameter</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">k</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">t</span><span class="p">)))</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="n">r</span><span class="p">)</span> <span class="o">/</span> <span class="n">c</span>
+        <span class="n">shrinkage_parameter</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">k</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">t</span><span class="p">)))</span>
 
     <span class="c1"># calculate covariance matrix</span>
-    <span class="n">sigma</span> <span class="o">=</span> <span class="n">shrinkage_parameter</span><span class="o">*</span><span class="n">prior</span><span class="o">+</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">shrinkage_parameter</span><span class="p">)</span><span class="o">*</span><span class="n">sample</span>
+    <span class="n">sigma</span> <span class="o">=</span> <span class="n">shrinkage_parameter</span> <span class="o">*</span> <span class="n">prior</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">shrinkage_parameter</span><span class="p">)</span> <span class="o">*</span> <span class="n">sample</span>
 
     <span class="k">return</span> <span class="n">sigma</span></div>
 
 
 
-
-
 <div class="viewcode-block" id="covariance_matrix">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/covariance.html#MDAnalysis.analysis.encore.covariance.covariance_matrix">[docs]</a>
-<span class="k">def</span> <span class="nf">covariance_matrix</span><span class="p">(</span><span class="n">ensemble</span><span class="p">,</span>
-                      <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
-                      <span class="n">estimator</span><span class="o">=</span><span class="n">shrinkage_covariance_estimator</span><span class="p">,</span>
-                      <span class="n">weights</span><span class="o">=</span><span class="s1">&#39;mass&#39;</span><span class="p">,</span>
-                      <span class="n">reference</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">covariance_matrix</span><span class="p">(</span>
+    <span class="n">ensemble</span><span class="p">,</span>
+    <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
+    <span class="n">estimator</span><span class="o">=</span><span class="n">shrinkage_covariance_estimator</span><span class="p">,</span>
+    <span class="n">weights</span><span class="o">=</span><span class="s2">&quot;mass&quot;</span><span class="p">,</span>
+    <span class="n">reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates (optionally mass weighted) covariance matrix</span>
 
@@ -359,8 +369,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Extract coordinates from ensemble</span>
     <span class="n">coordinates</span> <span class="o">=</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span>
-        <span class="n">ensemble</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">),</span>
-        <span class="n">order</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">)</span>
+        <span class="n">ensemble</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;fac&quot;</span>
+    <span class="p">)</span>
 
     <span class="c1"># Flatten coordinate matrix into n_frame x n_coordinates</span>
     <span class="n">coordinates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="p">(</span><span class="n">coordinates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
@@ -380,7 +390,10 @@
     <span class="c1"># Optionally correct with weights</span>
     <span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># Calculate mass-weighted covariance matrix</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span> <span class="ow">and</span> <span class="n">weights</span> <span class="o">==</span> <span class="s1">&#39;mass&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span>
+            <span class="ow">and</span> <span class="n">weights</span> <span class="o">==</span> <span class="s2">&quot;mass&quot;</span>
+        <span class="p">):</span>
             <span class="k">if</span> <span class="n">select</span><span class="p">:</span>
                 <span class="n">weights</span> <span class="o">=</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">)</span><span class="o">.</span><span class="n">masses</span>
             <span class="k">else</span><span class="p">:</span>
@@ -391,13 +404,15 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">req_len</span> <span class="o">=</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span>
             <span class="k">if</span> <span class="n">req_len</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">weights</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;number of weights is unequal to number of &quot;</span>
-                                 <span class="s2">&quot;atoms in ensemble&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;number of weights is unequal to number of &quot;</span>
+                    <span class="s2">&quot;atoms in ensemble&quot;</span>
+                <span class="p">)</span>
 
         <span class="c1"># broadcast to a (len(weights), 3) array</span>
         <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
-        <span class="n">weight_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">weights</span><span class="p">))</span><span class="o">*</span><span class="n">weights</span><span class="p">)</span>
+        <span class="n">weight_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">weights</span><span class="p">))</span> <span class="o">*</span> <span class="n">weights</span><span class="p">)</span>
         <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">weight_matrix</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">sigma</span><span class="p">,</span> <span class="n">weight_matrix</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="n">sigma</span></div>
