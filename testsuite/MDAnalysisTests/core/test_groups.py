@@ -1683,8 +1683,8 @@ class TestDecorator(object):
                 # We call a deprecated argument that does not appear in the
                 # function's signature. This is done on purpose to test the
                 # deprecation. We need to tell the linter.
-                # pylint: disable-next=unexpected-keyword-arg
                 assert (
+                    # pylint: disable-next=unexpected-keyword-arg
                     self.dummy_funtion(
                         compound=compound, pbc=pbc, unwrap=unwrap
                     )
