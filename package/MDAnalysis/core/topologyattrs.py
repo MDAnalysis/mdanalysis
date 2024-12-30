@@ -259,12 +259,8 @@ def _build_stub(method_name, method, attribute_name):
             attribute_name
         )
     )
-    # The first line of the original docstring is not indented, but the
-    # subsequent lines are. We want to dedent the whole docstring.
-    first_line, other_lines = method.__doc__.split("\n", 1)
-    stub_method.__doc__ = (
-        first_line + "\n" + textwrap.dedent(other_lines) + "\n\n" + annotation
-    )
+    # The original docstring is arrumed to be formatted with black
+    stub_method.__doc__ = textwrap.dedent(method.__doc__) + "\n\n" + annotation
     stub_method.__name__ = method_name
     stub_method.__signature__ = inspect_signature(method)
     return stub_method
@@ -324,7 +320,6 @@ BFACTOR_WARNING = (
 
 
 def deprecate_bfactor_warning(func):
-
     def wrapper(*args, **kwargs):
         """
         Bfactor alias with warning
@@ -843,7 +838,6 @@ class _StringInternerMixin:
 # woe betide anyone who switches this inheritance order
 # Mixin needs to be first (L to R) to get correct __init__ and set_atoms
 class AtomStringAttr(_StringInternerMixin, AtomAttr):
-
     @_check_length
     def set_atoms(self, ag, values):
         return self._set_X(ag, values)
@@ -2885,7 +2879,6 @@ class ResidueAttr(TopologyAttr):
 # woe betide anyone who switches this inheritance order
 # Mixin needs to be first (L to R) to get correct __init__ and set_atoms
 class ResidueStringAttr(_StringInternerMixin, ResidueAttr):
-
     @_check_length
     def set_residues(self, ag, values):
         return self._set_X(ag, values)
@@ -3116,7 +3109,6 @@ class SegmentAttr(TopologyAttr):
 # woe betide anyone who switches this inheritance order
 # Mixin needs to be first (L to R) to get correct __init__ and set_atoms
 class SegmentStringAttr(_StringInternerMixin, SegmentAttr):
-
     @_check_length
     def set_segments(self, ag, values):
         return self._set_X(ag, values)
