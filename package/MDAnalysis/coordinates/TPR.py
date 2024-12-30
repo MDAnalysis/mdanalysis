@@ -18,7 +18,7 @@ class TPRReader(base.SingleFrameReaderBase):
     # or perhaps combine the topology and coordinate reading
     # with some inheritance shenanigans?
     format = "TPR"
-    units = {"length": "nm"}
+    units = {"length": "nm", "velocity": "nm/ps"}
     _Timestep = Timestep
 
     def _read_first_frame(self):
@@ -71,3 +71,7 @@ class TPRReader(base.SingleFrameReaderBase):
         if th.bX:
             self.ts._pos = np.asarray(tpr_utils.ndo_rvec(data, th.natoms),
                                       dtype=np.float32)
+        if th.bV:
+            self.ts._velocities = np.asarray(tpr_utils.ndo_rvec(data, th.natoms),
+                                             dtype=np.float32)
+            self.ts.has_velocities = True
