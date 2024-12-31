@@ -433,7 +433,7 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
     # src/gromacs/fileio/tpxio.cpp
     # TODO: expand tpx version support for striding to
     # the coordinates
-    if fver >= 133:
+    if fver >= 129:
         # TODO: the following value is important, and not sure
         # how to access programmatically yet...
         # from GMX source code:
