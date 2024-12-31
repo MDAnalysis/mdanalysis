@@ -14,15 +14,17 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, ChiahsinChu, RMeli
+??/??/?? IAlibay, ChiahsinChu, RMeli, hmacdope
 
  * 2.9.0
 
 Fixes
 
 Enhancements
+ * Improve distopia backend support in line with new functionality available 
+   in distopia >= 0.3.1 (PR #4734)
  * Add check and warning for empty (all zero) coordinates in RDKit converter (PR #4824)
- * Added `precision` for XYZWriter (Issue #4775, PR #4771)
+ * Added `precision` for XYZWriter (Issue #4775, PR #4771) 
 
 Changes
 
@@ -33,7 +35,7 @@ Deprecations
          ljwoods2, aditya292002, pstaerk, PicoCentauri, BFedder,
          tyler.je.reddy, SampurnaM, leonwehrhan, kainszs, orionarcher, 
          yuxuanzhuang, PythonFZ, laksh-krishna-sharma, orbeckst, MattTDavies,
-         talagayev, aya9aladdin, hmacdope
+         talagayev, aya9aladdin
 
  * 2.8.0
 
@@ -81,8 +83,6 @@ Fixes
  * Fix groups.py doctests using sphinx directives (Issue #3925, PR #4374)
 
 Enhancements
- * Improve distopia backend support in line with new functionality available 
-   in distopia >= 0.3.1 (PR #4734)
  * Removed type and mass guessing from all topology parsers (PR #3753)
  * Added guess_TopologyAttrs() API to the Universe to handle attribute
    guessing (PR #3753)

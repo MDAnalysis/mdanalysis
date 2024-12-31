@@ -106,7 +106,7 @@ and must be selected.**
    :class:`~MDAnalysis.core.groups.AtomGroup` or an :class:`np.ndarray`
 .. versionchanged:: 2.5.0
    Interface to the `distopia`_ package added.
-.. versionchanged:: 2.8.0
+.. versionchanged:: 2.9.0
    Distopia support greatly expanded (with distopia ≥ 0.3.1).
 
 Functions
@@ -325,7 +325,7 @@ def distance_array(
     .. versionchanged:: 2.3.0
        Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
        argument in any position and checks inputs using type hinting.
-    .. versionchanged:: 2.8.0
+    .. versionchanged:: 2.9.0
        Added support for the `distopia` backend.
     """
     confnum = configuration.shape[0]
@@ -436,7 +436,7 @@ def self_distance_array(
     .. versionchanged:: 2.3.0
        Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
        argument in any position and checks inputs using type hinting.
-    .. versionchanged:: 2.8.0
+    .. versionchanged:: 2.9.0
        Added support for the `distopia` backend.
     """
     refnum = reference.shape[0]
