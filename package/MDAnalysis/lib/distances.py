@@ -1553,6 +1553,9 @@ def calc_bonds(coords1: Union[npt.NDArray, 'AtomGroup'],
         # mda expects the result to be in float64, so we need to convert it back
         # to float64, change for 3.0, see #3707
         bondlengths = bondlengths.astype(np.float64)
+        if result is not None:
+            result[:] = bondlengths
+
     return bondlengths
 
 
@@ -1666,6 +1669,8 @@ def calc_angles(coords1: Union[npt.NDArray, 'AtomGroup'],
         # mda expects the result to be in float64, so we need to convert it back
         # to float64, change for 3.0, see #3707
         angles = angles.astype(np.float64)
+        if result is not None:
+            result[:] = angles
     return angles
 
 
@@ -1794,6 +1799,8 @@ def calc_dihedrals(coords1: Union[npt.NDArray, 'AtomGroup'],
         # mda expects the result to be in float64, so we need to convert it back
         # to float64, change for 3.0, see #3707
         dihedrals = dihedrals.astype(np.float64)
+        if result is not None:
+            result[:] = dihedrals
     return dihedrals
 
 
