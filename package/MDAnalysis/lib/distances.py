@@ -374,6 +374,8 @@ def distance_array(
         # mda expects the result to be in float64, so we need to convert it back
         # to float64, change for 3.0, see #3707
         distances = distances.astype(np.float64)
+        if result is not None:
+            result[:] = distances
 
     return distances
 
@@ -482,6 +484,8 @@ def self_distance_array(
         # mda expects the result to be in float64, so we need to convert it back
         # to float64, change for 3.0, see #3707
         distances = distances.astype(np.float64)
+        if result is not None:
+            result[:] = distances
 
     return distances
 
