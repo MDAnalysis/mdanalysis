@@ -34,8 +34,10 @@ This software is copyright
               listed in the file AUTHORS
 unless stated otherwise in the source files.
 
-MDAnalysis is released under the GPL software license, version 2, with
-the following exceptions (see AUTHORS and LICENSE for details):
+MDAnalysis is packaged under the GNU Lesser General Public License, version 3
+or any later version (LGPLv3+). Invidiual source code components are provided under the
+GNU Lesser General Public License, version 2.1 or any later version (LGPLv2.1+),
+with the following exceptions (see AUTHORS and LICENSE for details):
 
 - The DCD reading/writing code is licensed under the UIUC Open Source
   License.

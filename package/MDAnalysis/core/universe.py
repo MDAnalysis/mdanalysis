@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -84,7 +84,10 @@ from .groups import (ComponentBase, GroupBase,
                      Atom, Residue, Segment,
                      AtomGroup, ResidueGroup, SegmentGroup)
 from .topology import Topology
-from .topologyattrs import AtomAttr, ResidueAttr, SegmentAttr, BFACTOR_WARNING
+from .topologyattrs import (
+    AtomAttr, ResidueAttr, SegmentAttr,
+    BFACTOR_WARNING, _Connection
+)
 from .topologyobjects import TopologyObject
 from ..guesser.base import get_guesser
 
@@ -235,9 +238,24 @@ class Universe(object):
         Once Universe has been loaded, attempt to guess the connectivity
         between atoms.  This will populate the .bonds, .angles, and .dihedrals
         attributes of the Universe.
+
+        .. deprecated:: 2.8.0
+           This keyword is deprecated and will be removed in MDAnalysis 3.0.
+           Please pass ("bonds", "angles", "dihedrals") into
+           `to_guess` or `force_guess` instead to guess bonds, angles,
+           and dihedrals respectively.
+
     vdwradii: dict, ``None``, default ``None``
         For use with *guess_bonds*. Supply a dict giving a vdwradii for each
         atom type which are used in guessing bonds.
+
+        .. deprecated:: 2.8.0
+           This keyword is deprecated and will be removed in MDAnalysis 3.0.
+           Please pass it into Guesser creation (:mod:`~MDAnalysis.guesser`),
+           or to :meth:`~MDAnalysis.core.universe.Universe.guess_TopologyAttrs`
+           method instead. If passed into `guess_TopologyAttrs`, it will
+           override the values set during Guesser creation.
+
     context: str or :mod:`Guesser<MDAnalysis.guesser>`, default ``'default'``
         Type of the Guesser to be used in guessing TopologyAttrs
     to_guess: list[str] (optional, default ``['types', 'masses']``)
@@ -260,8 +278,25 @@ class Universe(object):
     fudge_factor: float, default [0.55]
         For use with *guess_bonds*. Supply the factor by which atoms must
         overlap each other to be considered a bond.
+
+        .. deprecated:: 2.8.0
+           This keyword is deprecated and will be removed in MDAnalysis 3.0.
+           Please pass it into Guesser creation (:mod:`~MDAnalysis.guesser`),
+           or to :meth:`~MDAnalysis.core.universe.Universe.guess_TopologyAttrs`
+           method instead. If passed into `guess_TopologyAttrs`, it will
+           override the values set during Guesser creation.
+
     lower_bound: float, default [0.1]
         For use with *guess_bonds*. Supply the minimum bond length.
+
+        .. deprecated:: 2.8.0
+           This keyword is deprecated and will be removed in MDAnalysis 3.0.
+           Please pass it into Guesser creation (:mod:`~MDAnalysis.guesser`),
+           or to :meth:`~MDAnalysis.core.universe.Universe.guess_TopologyAttrs`
+           method instead. If passed into `guess_TopologyAttrs`, it will
+           override the values set during Guesser creation.
+
+           
     transformations: function or list, ``None``, default ``None``
         Provide a list of transformations that you wish to apply to the
         trajectory upon reading. Transformations can be found in
@@ -407,10 +442,29 @@ class Universe(object):
             self._trajectory.add_transformations(*transformations)
 
         if guess_bonds:
-            force_guess = list(force_guess) + ['bonds', 'angles', 'dihedrals']
+            warnings.warn(
+                "Bond guessing through the `guess_bonds` keyword is deprecated"
+                " and will be removed in MDAnalysis 3.0. "
+                "Instead, pass 'bonds', 'angles', and 'dihedrals' to "
+                "the `to_guess` keyword in Universe for guessing these "
+                "if they are not present, or `force_guess` if they are "
+                "and you wish to replace these bonds with guessed values. "
+                "The kwargs `fudge_factor`, `vdwradii`, and `lower_bound` "
+                "are also deprecated and will be removed in MDAnalysis 3.0, "
+                "where they should be passed into the Context for guessing on "
+                "Universe instantiation. If using guess_TopologyAttrs, "
+                "pass these kwargs to the method instead, as they will override "
+                "the previous Context values.",
+                DeprecationWarning
+            )
+            # Original behaviour is to add additionally guessed bond info
+            # this is achieved by adding to the `to_guess` list (unliked `force_guess`
+            # which replaces existing bonds).
+            to_guess = list(to_guess) + ['bonds', 'angles', 'dihedrals']
 
         self.guess_TopologyAttrs(
-            context, to_guess, force_guess, vdwradii=vdwradii, **kwargs)
+            context, to_guess, force_guess, error_if_missing=False
+        )
 
 
     def copy(self):
@@ -1132,7 +1186,6 @@ class Universe(object):
             self.add_TopologyAttr(object_type, [])
             attr = getattr(self._topology, object_type)
 
-
         attr._add_bonds(indices, types=types, guessed=guessed, order=order)
 
     def add_bonds(self, values, types=None, guessed=False, order=None):
@@ -1183,6 +1236,16 @@ class Universe(object):
         """
         self._add_topology_objects('bonds', values, types=types,
                                  guessed=guessed, order=order)
+        self._invalidate_bond_related_caches()
+
+    def _invalidate_bond_related_caches(self):
+        """
+        Invalidate caches related to bonds and fragments.
+        
+        This should be called whenever the Universe's bonds are modified.
+
+        .. versionadded: 2.8.0
+        """
         # Invalidate bond-related caches
         self._cache.pop('fragments', None)
         self._cache['_valid'].pop('fragments', None)
@@ -1259,7 +1322,7 @@ class Universe(object):
         Parameters
         ----------
         object_type : {'bonds', 'angles', 'dihedrals', 'impropers'}
-            The type of TopologyObject to add.
+            The type of TopologyObject to delete.
         values : iterable of tuples, AtomGroups, or TopologyObjects; or TopologyGroup
             An iterable of: tuples of atom indices, or AtomGroups,
             or TopologyObjects.
@@ -1282,7 +1345,6 @@ class Universe(object):
             attr = getattr(self._topology, object_type)
         except AttributeError:
             raise ValueError('There are no {} to delete'.format(object_type))
-
         attr._delete_bonds(indices)
 
     def delete_bonds(self, values):
@@ -1323,10 +1385,7 @@ class Universe(object):
         .. versionadded:: 1.0.0
         """
         self._delete_topology_objects('bonds', values)
-        # Invalidate bond-related caches
-        self._cache.pop('fragments', None)
-        self._cache['_valid'].pop('fragments', None)
-        self._cache['_valid'].pop('fragindices', None)
+        self._invalidate_bond_related_caches()
 
     def delete_angles(self, values):
         """Delete Angles from this Universe.
@@ -1498,7 +1557,9 @@ class Universe(object):
         return cls(mol, **kwargs)
 
     def guess_TopologyAttrs(
-            self, context=None, to_guess=None, force_guess=None, **kwargs):
+        self, context=None, to_guess=None, force_guess=None,
+        error_if_missing=True, **kwargs
+    ):
         """
         Guess and add attributes through a specific context-aware guesser.
 
@@ -1523,6 +1584,13 @@ class Universe(object):
             TopologyAttr does not already exist in the Universe, this has no
             effect. If the TopologyAttr does already exist, all values will
             be overwritten by guessed values.
+        error_if_missing: bool
+            If `True`, raise an error if the guesser cannot guess the attribute
+            due to missing TopologyAttrs used as the inputs for guessing.
+            If `False`, a warning will be raised instead.
+            Errors will always be raised if an attribute is in the
+            ``force_guess`` list, even if this parameter is set to False.
+
         **kwargs: extra arguments to be passed to the guesser class
 
         Examples
@@ -1537,7 +1605,11 @@ class Universe(object):
         if not context:
             context = self._context
 
-        guesser = get_guesser(context, self.universe, **kwargs)
+        # update iteratively to avoid multiple kwargs clashing
+        guesser_kwargs = {}
+        guesser_kwargs.update(self._kwargs)
+        guesser_kwargs.update(kwargs)
+        guesser = get_guesser(context, self.universe, **guesser_kwargs)
         self._context = guesser
 
         if to_guess is None:
@@ -1552,7 +1624,12 @@ class Universe(object):
         # in the same order that the user provided
         total_guess = list(dict.fromkeys(total_guess))
 
-        objects = ['bonds', 'angles', 'dihedrals', 'impropers']
+        # Set of all Connectivity related attribute names
+        # used to special case attribute replacement after calling the guesser
+        objects = set(
+            topattr.attrname for topattr in _TOPOLOGY_ATTRS.values()
+            if issubclass(topattr, _Connection)
+        )
 
         # Checking if the universe is empty to avoid errors
         # from guesser methods
@@ -1577,18 +1654,34 @@ class Universe(object):
             for attr in total_guess:
                 if guesser.is_guessable(attr):
                     fg =  attr in force_guess
-                    values = guesser.guess_attr(attr, fg)
-
-                    if values is not None:
-                        if attr in objects:
-                            self._add_topology_objects(
-                                attr, values, guessed=True)
+                    try:
+                        values = guesser.guess_attr(attr, fg)
+                    except NoDataError as e:
+                        if error_if_missing or fg:
+                            raise e
                         else:
-                            guessed_attr = _TOPOLOGY_ATTRS[attr](values, True)
-                            self.add_TopologyAttr(guessed_attr)
-                        logger.info(
-                            f'attribute {attr} has been guessed'
-                            ' successfully.')
+                            warnings.warn(str(e))
+                            continue
+
+                    # None indicates no additional guessing was done
+                    if values is None:
+                        continue
+                    if attr in objects:
+                        # delete existing connections if they exist
+                        if fg and hasattr(self.atoms, attr):
+                            group = getattr(self.atoms, attr)
+                            self._delete_topology_objects(attr, group)
+                        # this method appends any new bonds in values to existing bonds
+                        self._add_topology_objects(
+                            attr, values, guessed=True)
+                        if attr == "bonds":
+                            self._invalidate_bond_related_caches()
+                    else:
+                        guessed_attr = _TOPOLOGY_ATTRS[attr](values, True)
+                        self.add_TopologyAttr(guessed_attr)
+                    logger.info(
+                        f'attribute {attr} has been guessed'
+                        ' successfully.')
 
                 else:
                     raise ValueError(f'{context} guesser can not guess the'

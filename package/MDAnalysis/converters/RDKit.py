@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -363,9 +363,12 @@ class RDKitConverter(base.ConverterBase):
 
         # add a conformer for the current Timestep
         if hasattr(ag, "positions"):
-            if np.isnan(ag.positions).any():
-                warnings.warn("NaN detected in coordinates, the output "
-                              "molecule will not have 3D coordinates assigned")
+            if np.isnan(ag.positions).any() or np.allclose(
+                ag.positions, 0.0, rtol=0.0, atol=1e-12
+            ):
+                warnings.warn("NaN or empty coordinates detected in coordinates, "
+                              "the output molecule will not have 3D coordinates "
+                              "assigned")
             else:
                 # assign coordinates
                 conf = Chem.Conformer(mol.GetNumAtoms())

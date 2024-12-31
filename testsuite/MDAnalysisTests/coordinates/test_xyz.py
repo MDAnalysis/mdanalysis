@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -121,6 +121,17 @@ class TestXYZWriter(BaseWriterTest):
                 lines = xyzout.readlines()
 
                 assert lines[1].strip() == remarkin
+
+    def test_precision(self, universe, tmpdir):
+        outfile = "write-precision.xyz"
+        precision = 10
+
+        with tmpdir.as_cwd():
+            universe.atoms.write(outfile, precision=precision)
+            with open(outfile, "r") as xyzout:
+                lines = xyzout.readlines()
+                # check that the precision is set correctly
+                assert len(lines[2].split()[1].split(".")[1]) == precision
 
 
 class XYZ_BZ_Reference(XYZReference):

@@ -53,7 +53,7 @@ classifiers = [
     'Development Status :: 6 - Mature',
     'Environment :: Console',
     'Intended Audience :: Science/Research',
-    'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
+    'License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)',
     'Operating System :: POSIX',
     'Operating System :: MacOS :: MacOS X',
     'Operating System :: Microsoft :: Windows',
@@ -130,6 +130,12 @@ include = '''
 (
 tables\.py
 | due\.py
+| setup\.py
+| MDAnalysis/auxiliary/.*\.py
+| MDAnalysis/visualization/.*\.py
+| MDAnalysis/lib/.*\.py^
+| MDAnalysis/transformations/.*\.py
 )
 '''
+extend-exclude = '__pycache__'
 required-version = '24'

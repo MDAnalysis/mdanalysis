@@ -6,7 +6,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -50,7 +50,7 @@ class MDA_SDist(sdist.sdist):
     # To avoid having duplicate AUTHORS file...
     def run(self):
         here = os.path.dirname(os.path.abspath(__file__))
-        has_authors = os.path.exists(os.path.join(here, 'AUTHORS'))
+        has_authors = os.path.exists(os.path.join(here, "AUTHORS"))
 
         if not has_authors:
             # If there is no AUTHORS file here, lets hope we're in
@@ -59,8 +59,9 @@ class MDA_SDist(sdist.sdist):
             repo_root = os.path.split(here)[0]
             try:
                 shutil.copyfile(
-                    os.path.join(repo_root, 'package', 'AUTHORS'),
-                    os.path.join(here, 'AUTHORS'))
+                    os.path.join(repo_root, "package", "AUTHORS"),
+                    os.path.join(here, "AUTHORS"),
+                )
             except:
                 raise IOError("Couldn't grab AUTHORS file")
             else:
@@ -69,19 +70,19 @@ class MDA_SDist(sdist.sdist):
             super(MDA_SDist, self).run()
         finally:
             if not has_authors and copied_authors:
-                os.remove(os.path.join(here, 'AUTHORS'))
+                os.remove(os.path.join(here, "AUTHORS"))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # this must be in-sync with MDAnalysis
-    RELEASE = "2.8.0-dev0"
+    RELEASE = "2.9.0-dev0"
 
     setup(
         version=RELEASE,
         install_requires=[
-            'MDAnalysis=={0!s}'.format(RELEASE),  # same as this release!
-            'pytest>=3.3.0', # Raised to 3.3.0 due to Issue 2329
-            'hypothesis',
+            "MDAnalysis=={0!s}".format(RELEASE),  # same as this release!
+            "pytest>=3.3.0",  # Raised to 3.3.0 due to Issue 2329
+            "hypothesis",
         ],
-        cmdclass={'sdist': MDA_SDist},
+        cmdclass={"sdist": MDA_SDist},
     )

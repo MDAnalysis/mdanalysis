@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -26,6 +26,7 @@ import MDAnalysis as mda
 import numpy as np
 from numpy.testing import assert_allclose, assert_equal
 
+from MDAnalysisTests.util import no_deprecated_call
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
     ITP,  # GROMACS itp
@@ -490,3 +491,22 @@ def test_missing_elements_no_attribute():
         u = mda.Universe(ITP_atomtypes)
     with pytest.raises(AttributeError):
         _ = u.atoms.elements
+    with no_deprecated_call():
+        mda.Universe(ITP_atomtypes)
+
+
+def test_elements_deprecation_warning():
+    """Test deprecation warning is present"""
+    with pytest.warns(DeprecationWarning, match="removed in release 3.0"):
+        mda.Universe(ITP_nomass)
+
+
+def test_elements_nodeprecation_warning():
+    """Test deprecation warning is not present if elements isn't guessed"""
+    with pytest.warns(UserWarning) as record:
+        mda.Universe(ITP_atomtypes)
+    assert len(record) == 2
+
+    warned = [warn.message.args[0] for warn in record]
+    assert "Element information is missing" in warned[0]
+    assert "No coordinate reader found" in warned[1]

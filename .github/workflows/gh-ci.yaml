@@ -72,7 +72,7 @@ jobs:
         os-type: ${{ matrix.os }}
 
     - name: setup_micromamba
-      uses: mamba-org/setup-micromamba@v1
+      uses: mamba-org/setup-micromamba@v2
       with:
         environment-name: mda
         create-args: >-
@@ -150,7 +150,7 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: setup_micromamba
-      uses: mamba-org/setup-micromamba@v1
+      uses: mamba-org/setup-micromamba@v2
       with:
         environment-name: mda
         create-args: >-

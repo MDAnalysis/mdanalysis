@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -120,6 +120,30 @@ def test_incompatible_n_workers(u):
     backend = ManyWorkersBackend(n_workers=2)
     with pytest.raises(ValueError):
         FrameAnalysis(u).run(backend=backend, n_workers=3)
+
+
+def test_frame_values_incompatability(u):
+    start, stop, step = 0, 4, 1
+    frames = [1, 2, 3, 4]
+
+    with pytest.raises(ValueError,
+                       match="start/stop/step cannot be combined with frames"):
+        FrameAnalysis(u.trajectory).run(
+            frames=frames,
+            start=start,
+            stop=stop,
+            step=step
+        )
+
+def test_n_workers_conflict_raises_value_error(u):
+    backend_instance = ManyWorkersBackend(n_workers=4)
+
+    with pytest.raises(ValueError, match="n_workers specified twice"):
+        FrameAnalysis(u.trajectory).run(
+            backend=backend_instance,
+            n_workers=1,
+            unsupported_backend=True
+        )
 
 @pytest.mark.parametrize('run_class,backend,n_workers', [
     (Parallelizable, 'not-existing-backend', 2),
@@ -285,6 +309,19 @@ def test_parallelizable_transformations():
     # test that parallel fails
     with pytest.raises(ValueError):
         FrameAnalysis(u.trajectory).run(backend='multiprocessing')
+
+
+def test_instance_serial_backend(u):
+    # test that isinstance is checked and the correct ValueError raise appears
+    msg = 'Can not display progressbar with non-serial backend'
+    with pytest.raises(ValueError, match=msg):
+        FrameAnalysis(u.trajectory).run(
+            backend=backends.BackendMultiprocessing(n_workers=2),
+            verbose=True,
+            progressbar_kwargs={"leave": True},
+            unsupported_backend=True
+        )
+
 
 def test_frame_bool_fail(client_FrameAnalysis):
     u = mda.Universe(TPR, XTC)  # dt = 100

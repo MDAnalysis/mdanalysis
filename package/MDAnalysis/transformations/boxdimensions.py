@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -33,6 +33,7 @@ all timesteps or to a specified vector at each frame.
 import numpy as np
 
 from .base import TransformationBase
+
 
 class set_dimensions(TransformationBase):
     """
@@ -85,33 +86,31 @@ class set_dimensions(TransformationBase):
        Added the option to set varying box dimensions (i.e. an NPT trajectory).
     """
 
-    def __init__(self,
-                 dimensions,
-                 max_threads=None,
-                 parallelizable=True):
-        super().__init__(max_threads=max_threads,
-                         parallelizable=parallelizable)
+    def __init__(self, dimensions, max_threads=None, parallelizable=True):
+        super().__init__(
+            max_threads=max_threads, parallelizable=parallelizable
+        )
         self.dimensions = dimensions
 
         try:
             self.dimensions = np.asarray(self.dimensions, np.float32)
         except ValueError:
             errmsg = (
-                f'{self.dimensions} cannot be converted into '
-                'np.float32 numpy.ndarray'
+                f"{self.dimensions} cannot be converted into "
+                "np.float32 numpy.ndarray"
             )
             raise ValueError(errmsg)
         try:
             self.dimensions = self.dimensions.reshape(-1, 6)
         except ValueError:
             errmsg = (
-                f'{self.dimensions} array does not have valid box '
-                'dimension shape.\nSimulation box dimensions are '
-                'given by an float array of shape (6, 0), (1, 6), '
-                'or (N, 6) where N is the number of frames in the '
-                'trajectory and the dimension vector(s) containing '
-                '3 lengths and 3 angles: '
-                '[a, b, c, alpha, beta, gamma]'
+                f"{self.dimensions} array does not have valid box "
+                "dimension shape.\nSimulation box dimensions are "
+                "given by an float array of shape (6, 0), (1, 6), "
+                "or (N, 6) where N is the number of frames in the "
+                "trajectory and the dimension vector(s) containing "
+                "3 lengths and 3 angles: "
+                "[a, b, c, alpha, beta, gamma]"
             )
             raise ValueError(errmsg)
 

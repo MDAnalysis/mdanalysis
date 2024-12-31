@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -30,7 +30,7 @@ r"""Generating densities from trajectories --- :mod:`MDAnalysis.analysis.density
 
 :Author: Oliver Beckstein
 :Year: 2011
-:Copyright: GNU Public License v3
+:Copyright: Lesser GNU Public License v2.1+
 
 The module provides classes and functions to generate and represent
 volumetric data, in particular densities.
