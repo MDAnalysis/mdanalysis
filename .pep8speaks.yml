@@ -4,7 +4,7 @@ scanner:
 
 pycodestyle:  # Valid if scanner.linter is pycodestyle
     max-line-length: 79
-    ignore: ["E203", "E701"]
+    ignore: ["E203", "E701", "W503"]
     exclude: []
     count: False
     first: False
@@ -17,7 +17,7 @@ pycodestyle:  # Valid if scanner.linter is pycodestyle
 
 flake8:  # Valid if scanner.linter is flake8
     max-line-length: 79
-    ignore: ["E203", "E501", "E701"]
+    ignore: ["E203", "E501", "E701", "W503"]
     exclude: []
     count: False
     show-source: False
