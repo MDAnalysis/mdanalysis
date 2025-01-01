@@ -172,6 +172,9 @@ setup\.py
 | MDAnalysisTests/parallelism/.*\.py
 | MDAnalysisTests/scripts/.*\.py
 | MDAnalysisTests/core/.*\.py
+| MDAnalysisTests/import/.*\.py
+| MDAnalysisTests/utils/.*\.py
+| MDAnalysisTests/visualization/.*\.py
 )
 '''
 extend-exclude = '''
