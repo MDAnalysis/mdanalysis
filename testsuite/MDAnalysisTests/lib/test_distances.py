@@ -571,10 +571,6 @@ class TestDistanceArrayDCD_TRIC(object):
         natoms = len(U.atoms)
         d = np.zeros((natoms, natoms), np.float64)
         distances.distance_array(x0, x1, result=d, backend=backend)
-        # START: DEBUG printing --- remove
-        print("AFTER")
-        print(d)
-        # END: DEBUG printing --- remove
         assert_equal(
             d.shape,
             (natoms, natoms),
