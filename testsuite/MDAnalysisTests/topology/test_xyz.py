@@ -37,8 +37,8 @@ class XYZBase(ParserBase):
     parser = mda.topology.XYZParser.XYZParser
     expected_n_residues = 1
     expected_n_segments = 1
-    expected_attrs = ['names', 'elements']
-    guessed_attrs = ['masses', 'types']
+    expected_attrs = ["names", "elements"]
+    guessed_attrs = ["masses", "types"]
 
 
 class TestXYZMini(XYZBase):
@@ -60,5 +60,5 @@ class TestXYZParser(XYZBase):
 
     def test_guessed_types(self, filename):
         u = mda.Universe(filename)
-        expected = ['H', 'H', 'H', 'H', 'H', 'H', 'H']
+        expected = ["H", "H", "H", "H", "H", "H", "H"]
         assert_equal(u.atoms.types[:7], expected)

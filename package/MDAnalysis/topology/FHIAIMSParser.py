@@ -77,7 +77,8 @@ class FHIAIMSParser(TopologyReaderBase):
         Removed type and mass guessing (attributes guessing takes place now
         through universe.guess_TopologyAttrs() API).
     """
-    format = ['IN', 'FHIAIMS']
+
+    format = ["IN", "FHIAIMS"]
 
     def parse(self, **kwargs):
         """Read the file and return the structure.
@@ -99,18 +100,22 @@ class FHIAIMSParser(TopologyReaderBase):
                     continue
                 # we are now seeing something that's neither atom nor lattice
                 raise ValueError(
-                    'Non-conforming line: ({0})in FHI-AIMS input file {0}'.format(line, self.filename))
+                    "Non-conforming line: ({0})in FHI-AIMS input file {0}".format(
+                        line, self.filename
+                    )
+                )
             names = np.asarray(names)
             natoms = len(names)
 
-        attrs = [Atomnames(names),
-                 Atomids(np.arange(natoms) + 1),
-                 Resids(np.array([1])),
-                 Resnums(np.array([1])),
-                 Segids(np.array(['SYSTEM'], dtype=object)),
-                 Elements(names)]
+        attrs = [
+            Atomnames(names),
+            Atomids(np.arange(natoms) + 1),
+            Resids(np.array([1])),
+            Resnums(np.array([1])),
+            Segids(np.array(["SYSTEM"], dtype=object)),
+            Elements(names),
+        ]
 
-        top = Topology(natoms, 1, 1,
-                       attrs=attrs)
+        top = Topology(natoms, 1, 1, attrs=attrs)
 
         return top

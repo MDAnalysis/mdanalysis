@@ -50,7 +50,7 @@ def test_bonds(u):
 
 
 def test_write_read(u, tmpdir):
-    outfile = str(tmpdir.join('test.pdb'))
+    outfile = str(tmpdir.join("test.pdb"))
     u.select_atoms("all").write(outfile)
     u2 = Universe(outfile)
     assert len(u.atoms) == len(u2.atoms)

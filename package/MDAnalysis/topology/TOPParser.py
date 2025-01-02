@@ -111,20 +111,21 @@ from ..core.topologyattrs import (
     Bonds,
     Angles,
     Dihedrals,
-    Impropers
+    Impropers,
 )
 
 import warnings
 import logging
 
-logger = logging.getLogger('MDAnalysis.topology.TOPParser')
+logger = logging.getLogger("MDAnalysis.topology.TOPParser")
 
 
 class TypeIndices(AtomAttr):
     """Numerical type of each Atom"""
-    attrname = 'type_indices'
-    singular = 'type_index'
-    level = 'atom'
+
+    attrname = "type_indices"
+    singular = "type_index"
+    level = "atom"
 
 
 class TOPParser(TopologyReaderBase):
@@ -173,7 +174,8 @@ class TOPParser(TopologyReaderBase):
     .. versionchanged:: 2.7.0
       gets Segments and chainIDs from flag RESIDUE_CHAINID, when present
     """
-    format = ['TOP', 'PRMTOP', 'PARM7']
+
+    format = ["TOP", "PRMTOP", "PARM7"]
 
     def parse(self, **kwargs):
         """Parse Amber PRMTOP topology file *filename*.
@@ -188,8 +190,13 @@ class TOPParser(TopologyReaderBase):
             "CHARGE": (1, 5, self.parse_charges, "charge", 0),
             "ATOMIC_NUMBER": (1, 10, self.parse_elements, "elements", 0),
             "MASS": (1, 5, self.parse_masses, "mass", 0),
-            "ATOM_TYPE_INDEX": (1, 10, self.parse_type_indices, "type_indices",
-                                0),
+            "ATOM_TYPE_INDEX": (
+                1,
+                10,
+                self.parse_type_indices,
+                "type_indices",
+                0,
+            ),
             "AMBER_ATOM_TYPE": (1, 20, self.parse_types, "types", 0),
             "RESIDUE_LABEL": (1, 20, self.parse_resnames, "resname", 11),
             "RESIDUE_POINTER": (1, 10, self.parse_residx, "respoint", 11),
@@ -198,7 +205,13 @@ class TOPParser(TopologyReaderBase):
             "ANGLES_INC_HYDROGEN": (4, 10, self.parse_bonded, "angh", 4),
             "ANGLES_WITHOUT_HYDROGEN": (4, 10, self.parse_bonded, "anga", 5),
             "DIHEDRALS_INC_HYDROGEN": (5, 10, self.parse_bonded, "dihh", 6),
-            "DIHEDRALS_WITHOUT_HYDROGEN": (5, 10, self.parse_bonded, "diha", 7),
+            "DIHEDRALS_WITHOUT_HYDROGEN": (
+                5,
+                10,
+                self.parse_bonded,
+                "diha",
+                7,
+            ),
             "RESIDUE_CHAINID": (1, 20, self.parse_chainids, "segids", 11),
         }
 
@@ -211,21 +224,26 @@ class TOPParser(TopologyReaderBase):
             if not header.startswith("%VE"):
                 raise ValueError(
                     "{0} is not a valid TOP file. %VE Missing in header"
-                    "".format(self.filename))
+                    "".format(self.filename)
+                )
             title = next(self.topfile).split()
 
             if not (title[1] == "TITLE"):
                 # Raise a separate warning if Chamber-style TOP is detected
                 if title[1] == "CTITLE":
-                    emsg = ("{0} is detected as a Chamber-style TOP file. "
-                            "At this time MDAnalysis does not support such "
-                            "topologies".format(self.filename))
+                    emsg = (
+                        "{0} is detected as a Chamber-style TOP file. "
+                        "At this time MDAnalysis does not support such "
+                        "topologies".format(self.filename)
+                    )
                 else:
-                    emsg = ("{0} is not a valid TOP file. "
-                            "'TITLE' missing in header".format(self.filename))
+                    emsg = (
+                        "{0} is not a valid TOP file. "
+                        "'TITLE' missing in header".format(self.filename)
+                    )
                 raise ValueError(emsg)
 
-            while not header.startswith('%FLAG POINTERS'):
+            while not header.startswith("%FLAG POINTERS"):
                 header = next(self.topfile)
             next(self.topfile)
 
@@ -238,14 +256,17 @@ class TOPParser(TopologyReaderBase):
 
             while next_section is not None:
                 try:
-                    (num_per_record, per_line,
-                     func, name, sect_num) = sections[next_section]
+                    (num_per_record, per_line, func, name, sect_num) = (
+                        sections[next_section]
+                    )
                 except KeyError:
+
                     def next_getter():
                         return self.skipper()
+
                 else:
                     num = sys_info[sect_num] * num_per_record
-                    numlines = (num // per_line)
+                    numlines = num // per_line
                     if num % per_line != 0:
                         numlines += 1
 
@@ -265,56 +286,72 @@ class TOPParser(TopologyReaderBase):
                     try:
                         next_section = line.split("%FLAG")[1].strip()
                     except IndexError:
-                        errmsg = (f"%FLAG section not found, formatting error "
-                                  f"for PARM7 file {self.filename} ")
+                        errmsg = (
+                            f"%FLAG section not found, formatting error "
+                            f"for PARM7 file {self.filename} "
+                        )
                         raise IndexError(errmsg) from None
 
         # strip out a few values to play with them
-        n_atoms = len(attrs['name'])
+        n_atoms = len(attrs["name"])
 
-        resptrs = attrs.pop('respoint')
+        resptrs = attrs.pop("respoint")
         resptrs.append(n_atoms)
         residx = np.zeros(n_atoms, dtype=np.int32)
         for i, (x, y) in enumerate(zip(resptrs[:-1], resptrs[1:])):
             residx[x:y] = i
 
-        n_res = len(attrs['resname'])
+        n_res = len(attrs["resname"])
 
         # Deal with recreating bonds and angle records here
-        attrs['bonds'] = Bonds([i for i in itertools.chain(
-                                attrs.pop('bonda'), attrs.pop('bondh'))])
+        attrs["bonds"] = Bonds(
+            [
+                i
+                for i in itertools.chain(
+                    attrs.pop("bonda"), attrs.pop("bondh")
+                )
+            ]
+        )
 
-        attrs['angles'] = Angles([i for i in itertools.chain(
-                                attrs.pop('anga'), attrs.pop('angh'))])
+        attrs["angles"] = Angles(
+            [i for i in itertools.chain(attrs.pop("anga"), attrs.pop("angh"))]
+        )
 
-        attrs['dihedrals'], attrs['impropers'] = self.parse_dihedrals(
-                              attrs.pop('diha'), attrs.pop('dihh'))
+        attrs["dihedrals"], attrs["impropers"] = self.parse_dihedrals(
+            attrs.pop("diha"), attrs.pop("dihh")
+        )
 
         # Warn user if elements not in topology
-        if 'elements' not in attrs:
-            msg = ("ATOMIC_NUMBER record not found, elements attribute will "
-                   "not be populated. If needed these can be guessed using "
-                   "universe.guess_TopologyAttrs(to_guess=['elements']).")
+        if "elements" not in attrs:
+            msg = (
+                "ATOMIC_NUMBER record not found, elements attribute will "
+                "not be populated. If needed these can be guessed using "
+                "universe.guess_TopologyAttrs(to_guess=['elements'])."
+            )
             logger.warning(msg)
             warnings.warn(msg)
-        elif np.any(attrs['elements'].values == ""):
+        elif np.any(attrs["elements"].values == ""):
             # only send out one warning that some elements are unknown
-            msg = ("Unknown ATOMIC_NUMBER value found for some atoms, these "
-                   "have been given an empty element record. If needed these "
-                   "can be guessed using "
-                   "universe.guess_TopologyAttrs(to_guess=['elements']).")
+            msg = (
+                "Unknown ATOMIC_NUMBER value found for some atoms, these "
+                "have been given an empty element record. If needed these "
+                "can be guessed using "
+                "universe.guess_TopologyAttrs(to_guess=['elements'])."
+            )
             logger.warning(msg)
             warnings.warn(msg)
 
         # atom ids are mandatory
-        attrs['atomids'] = Atomids(np.arange(n_atoms) + 1)
-        attrs['resids'] = Resids(np.arange(n_res) + 1)
-        attrs['resnums'] = Resnums(np.arange(n_res) + 1)
+        attrs["atomids"] = Atomids(np.arange(n_atoms) + 1)
+        attrs["resids"] = Resids(np.arange(n_res) + 1)
+        attrs["resnums"] = Resnums(np.arange(n_res) + 1)
 
         # Amber's 'RESIDUE_CHAINID' is a by-residue attribute, turn it into
         # a by-atom attribute when present. See PR #4007.
         if "segids" in attrs and len(attrs["segids"]) == n_res:
-            segidx, (segids,) = change_squash((attrs["segids"],), (attrs["segids"],))
+            segidx, (segids,) = change_squash(
+                (attrs["segids"],), (attrs["segids"],)
+            )
             chainids = [attrs["segids"][r] for r in residx]
 
             attrs["segids"] = Segids(segids)
@@ -467,8 +504,8 @@ class TOPParser(TopologyReaderBase):
         """
 
         vals = self.parsesection_mapper(
-                numlines,
-                lambda x: Z2SYMB[int(x)] if int(x) > 0 else "")
+            numlines, lambda x: Z2SYMB[int(x)] if int(x) > 0 else ""
+        )
         attr = Elements(np.array(vals, dtype=object))
         return attr
 
@@ -556,8 +593,10 @@ class TOPParser(TopologyReaderBase):
         Therefore, to extract the required information, we split out the list
         into chunks of size num_per_record, and only extract the atom ids.
         """
-        vals = [tuple(data[x:x+chunksize-1])
-                for x in range(0, len(data), chunksize)]
+        vals = [
+            tuple(data[x : x + chunksize - 1])
+            for x in range(0, len(data), chunksize)
+        ]
         return vals
 
     def parse_bonded(self, num_per_record, numlines):
@@ -603,7 +642,7 @@ class TOPParser(TopologyReaderBase):
         section = []
 
         def get_fmt(file):
-            """ Skips '%COMMENT' lines until it gets the FORMAT specification
+            """Skips '%COMMENT' lines until it gets the FORMAT specification
             for the section."""
             line = next(file)
             if line[:7] == "%FORMAT":
@@ -622,7 +661,7 @@ class TOPParser(TopologyReaderBase):
         for i in range(numlines):
             l = next(self.topfile)
             for j in range(len(x.entries)):
-                val = l[x.entries[j].start:x.entries[j].stop].strip()
+                val = l[x.entries[j].start : x.entries[j].stop].strip()
                 if val:
                     section.append(mapper(val))
         return section
@@ -665,7 +704,7 @@ class TOPParser(TopologyReaderBase):
         dihed = []
         for i in itertools.chain(diha, dihh):
             if i[3] < 0:
-                improp.append(i[:2]+(abs(i[2]),)+(abs(i[3]),))
+                improp.append(i[:2] + (abs(i[2]),) + (abs(i[3]),))
             elif i[2] < 0:
                 vals = i[:2] + (abs(i[2]),) + i[3:]
                 dihed.append(vals)

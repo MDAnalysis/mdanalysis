@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
@@ -64,7 +64,7 @@ from ..core.topologyattrs import (
     Bonds,
     Angles,
     Dihedrals,
-    Impropers
+    Impropers,
 )
 from ..core.topology import Topology
 
@@ -94,7 +94,8 @@ class PSFParser(TopologyReaderBase):
     .. versionchanged:: 2.8.0
        PSFParser now reads string resids and converts them to integers.
     """
-    format = 'PSF'
+
+    format = "PSF"
 
     def parse(self, **kwargs):
         """Parse PSF file into Topology
@@ -107,18 +108,19 @@ class PSFParser(TopologyReaderBase):
         with openany(self.filename) as psffile:
             header = next(psffile)
             if not header.startswith("PSF"):
-                err = ("{0} is not valid PSF file (header = {1})"
-                       "".format(self.filename, header))
+                err = "{0} is not valid PSF file (header = {1})" "".format(
+                    self.filename, header
+                )
                 logger.error(err)
                 raise ValueError(err)
             header_flags = header[3:].split()
 
             if "NAMD" in header_flags:
-                self._format = "NAMD"        # NAMD/VMD
+                self._format = "NAMD"  # NAMD/VMD
             elif "EXT" in header_flags:
-                self._format = "EXTENDED"    # CHARMM
+                self._format = "EXTENDED"  # CHARMM
             else:
-                self._format = "STANDARD"    # CHARMM
+                self._format = "STANDARD"  # CHARMM
 
             next(psffile)
             title = next(psffile).split()
@@ -129,28 +131,28 @@ class PSFParser(TopologyReaderBase):
             # psfremarks = [psffile.next() for i in range(int(title[0]))]
             for _ in range(int(title[0])):
                 next(psffile)
-            logger.debug("PSF file {0}: format {1}"
-                         "".format(self.filename, self._format))
+            logger.debug(
+                "PSF file {0}: format {1}"
+                "".format(self.filename, self._format)
+            )
 
             # Atoms first and mandatory
-            top = self._parse_sec(
-                psffile, ('NATOM', 1, 1, self._parseatoms))
+            top = self._parse_sec(psffile, ("NATOM", 1, 1, self._parseatoms))
             # Then possibly other sections
             sections = (
-                #("atoms", ("NATOM", 1, 1, self._parseatoms)),
+                # ("atoms", ("NATOM", 1, 1, self._parseatoms)),
                 (Bonds, ("NBOND", 2, 4, self._parsesection)),
                 (Angles, ("NTHETA", 3, 3, self._parsesection)),
                 (Dihedrals, ("NPHI", 4, 2, self._parsesection)),
                 (Impropers, ("NIMPHI", 4, 2, self._parsesection)),
-                #("donors", ("NDON", 2, 4, self._parsesection)),
-                #("acceptors", ("NACC", 2, 4, self._parsesection))
+                # ("donors", ("NDON", 2, 4, self._parsesection)),
+                # ("acceptors", ("NACC", 2, 4, self._parsesection))
             )
 
             try:
                 for attr, info in sections:
                     next(psffile)
-                    top.add_TopologyAttr(
-                        attr(self._parse_sec(psffile, info)))
+                    top.add_TopologyAttr(attr(self._parse_sec(psffile, info)))
             except StopIteration:
                 # Reached the end of the file before we expected
                 for attr in (Bonds, Angles, Dihedrals, Impropers):
@@ -173,15 +175,16 @@ class PSFParser(TopologyReaderBase):
         header = header.split()
         # Get the number
         num = float(header[0])
-        sect_type = header[1].strip('!:')
+        sect_type = header[1].strip("!:")
         # Make sure the section type matches the desc
         if not sect_type == desc:
-            err = ("Expected section {0} but found {1}"
-                   "".format(desc, sect_type))
+            err = "Expected section {0} but found {1}" "".format(
+                desc, sect_type
+            )
             logger.error(err)
             raise ValueError(err)
         # Now figure out how many lines to read
-        numlines = int(ceil(num/per_line))
+        numlines = int(ceil(num / per_line))
 
         psffile_next = functools.partial(next, psffile)
         return parsefunc(psffile_next, atoms_per, numlines)
@@ -238,23 +241,42 @@ class PSFParser(TopologyReaderBase):
         """
         # how to partition the line into the individual atom components
         atom_parsers = {
-            'STANDARD': lambda l:
-            (l[:8], l[9:13].strip() or "SYSTEM", l[14:18],
-             l[19:23].strip(), l[24:28].strip(),
-             l[29:33].strip(), l[34:48], l[48:62]),
+            "STANDARD": lambda l: (
+                l[:8],
+                l[9:13].strip() or "SYSTEM",
+                l[14:18],
+                l[19:23].strip(),
+                l[24:28].strip(),
+                l[29:33].strip(),
+                l[34:48],
+                l[48:62],
+            ),
             # l[62:70], l[70:84], l[84:98] ignore IMOVE, ECH and EHA,
-            'EXTENDED': lambda l:
-            (l[:10], l[11:19].strip() or "SYSTEM", l[20:28],
-             l[29:37].strip(), l[38:46].strip(),
-             l[47:51].strip(), l[52:66], l[66:70]),
+            "EXTENDED": lambda l: (
+                l[:10],
+                l[11:19].strip() or "SYSTEM",
+                l[20:28],
+                l[29:37].strip(),
+                l[38:46].strip(),
+                l[47:51].strip(),
+                l[52:66],
+                l[66:70],
+            ),
             # l[70:78],  l[78:84], l[84:98] ignore IMOVE, ECH and EHA,
-            'NAMD': lambda l: l.split()[:8],
+            "NAMD": lambda l: l.split()[:8],
         }
         atom_parser = atom_parsers[self._format]
         # once partitioned, assigned each component the correct type
-        set_type = lambda x: (int(x[0]) - 1, x[1] or "SYSTEM",
-                              atoi(x[2]), x[3],
-                              x[4], x[5], float(x[6]), float(x[7]))
+        set_type = lambda x: (
+            int(x[0]) - 1,
+            x[1] or "SYSTEM",
+            atoi(x[2]),
+            x[3],
+            x[4],
+            x[5],
+            float(x[6]),
+            float(x[7]),
+        )
 
         # Oli: I don't think that this is the correct OUTPUT format:
         #   psf_atom_format = "   %5d %4s %4d %4s %-4s %-4s %10.6f      %7.4f%s\n"
@@ -289,13 +311,17 @@ class PSFParser(TopologyReaderBase):
             except ValueError:
                 # last ditch attempt: this *might* be a NAMD/VMD
                 # space-separated "PSF" file from VMD version < 1.9.1
-                atom_parser = atom_parsers['NAMD']
+                atom_parser = atom_parsers["NAMD"]
                 vals = set_type(atom_parser(line))
-                logger.warning("Guessing that this is actually a"
-                               " NAMD-type PSF file..."
-                               " continuing with fingers crossed!")
-                logger.debug("First NAMD-type line: {0}: {1}"
-                             "".format(i, line.rstrip()))
+                logger.warning(
+                    "Guessing that this is actually a"
+                    " NAMD-type PSF file..."
+                    " continuing with fingers crossed!"
+                )
+                logger.debug(
+                    "First NAMD-type line: {0}: {1}"
+                    "".format(i, line.rstrip())
+                )
 
             atomids[i] = vals[0]
             segids[i] = vals[1]
@@ -316,8 +342,8 @@ class PSFParser(TopologyReaderBase):
         # Residue
         # resids, resnames
         residx, (new_resids, new_resnames, perres_segids) = change_squash(
-            (resids, resnames, segids),
-            (resids, resnames, segids))
+            (resids, resnames, segids), (resids, resnames, segids)
+        )
         # transform from atom:Rid to atom:Rix
         residueids = Resids(new_resids)
         residuenums = Resnums(new_resids.copy())
@@ -327,13 +353,24 @@ class PSFParser(TopologyReaderBase):
         segidx, perseg_segids = squash_by(perres_segids)[:2]
         segids = Segids(perseg_segids)
 
-        top = Topology(len(atomids), len(new_resids), len(segids),
-                       attrs=[atomids, atomnames, atomtypes,
-                              charges, masses,
-                              residueids, residuenums, residuenames,
-                              segids],
-                       atom_resindex=residx,
-                       residue_segindex=segidx)
+        top = Topology(
+            len(atomids),
+            len(new_resids),
+            len(segids),
+            attrs=[
+                atomids,
+                atomnames,
+                atomtypes,
+                charges,
+                masses,
+                residueids,
+                residuenums,
+                residuenames,
+                segids,
+            ],
+            atom_resindex=residx,
+            residue_segindex=segidx,
+        )
 
         return top
 
@@ -344,5 +381,5 @@ class PSFParser(TopologyReaderBase):
             # Subtract 1 from each number to ensure zero-indexing for the atoms
             fields = np.int64(lines().split()) - 1
             for j in range(0, len(fields), atoms_per):
-                section.append(tuple(fields[j:j+atoms_per]))
+                section.append(tuple(fields[j : j + atoms_per]))
         return section

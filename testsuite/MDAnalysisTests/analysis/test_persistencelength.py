@@ -45,8 +45,7 @@ class TestPersistenceLength(object):
     @staticmethod
     @pytest.fixture()
     def p(u):
-        ags = [r.atoms.select_atoms('name C* N*')
-               for r in u.residues]
+        ags = [r.atoms.select_atoms("name C* N*") for r in u.residues]
 
         p = polymer.PersistenceLength(ags)
         return p
@@ -69,17 +68,19 @@ class TestPersistenceLength(object):
 
     def test_fit(self, p_run):
         assert_almost_equal(p_run.results.lp, 6.504, 3)
-        assert len(p_run.results.fit) == len(p_run.results.bond_autocorrelation)
+        assert len(p_run.results.fit) == len(
+            p_run.results.bond_autocorrelation
+        )
 
     def test_raise_NoDataError(self, p):
-        #Ensure that a NoDataError is raised if perform_fit()
+        # Ensure that a NoDataError is raised if perform_fit()
         # is called before the run() method of AnalysisBase
         with pytest.raises(NoDataError):
             p._perform_fit()
 
     def test_plot_ax_return(self, p_run):
-        '''Ensure that a matplotlib axis object is
-        returned when plot() is called.'''
+        """Ensure that a matplotlib axis object is
+        returned when plot() is called."""
         actual = p_run.plot()
         expected = matplotlib.axes.Axes
         assert isinstance(actual, expected)
@@ -125,7 +126,7 @@ class TestFitExponential(object):
 
 class TestSortBackbone(object):
     @staticmethod
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def u():
         return mda.Universe(TRZ_psf, TRZ)
 
@@ -160,10 +161,9 @@ class TestSortBackbone(object):
     def test_circular(self):
         u = mda.Universe.empty(6, trajectory=True)
         # circular structure
-        bondlist = [(0, 1), (1, 2), (2, 3),
-                    (3, 4), (4, 5), (5, 0)]
+        bondlist = [(0, 1), (1, 2), (2, 3), (3, 4), (4, 5), (5, 0)]
         u.add_TopologyAttr(Bonds(bondlist))
 
         with pytest.raises(ValueError) as ex:
             polymer.sort_backbone(u.atoms)
-        assert 'cyclical' in str(ex.value)
+        assert "cyclical" in str(ex.value)

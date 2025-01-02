@@ -1592,9 +1592,12 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False, match_atoms=True):
         rsize_mismatches = np.absolute(rsize1 - rsize2)
         mismatch_mask = (rsize_mismatches > 0)
         if np.any(mismatch_mask):
-            def get_atoms_byres(g, match_mask=np.logical_not(mismatch_mask)):
+
+            def get_atoms_byres(g, match_mask=None):
                 # not pretty... but need to do things on a per-atom basis in
                 # order to preserve original selection
+                if match_mask is None:
+                    match_mask = np.logical_not(mismatch_mask)
                 ag = g.atoms
                 good = ag.residues.resids[match_mask]  # resid for each residue
                 resids = ag.resids                     # resid for each atom

@@ -24,14 +24,21 @@ import pytest
 
 import os
 from numpy.testing import (
-    assert_equal, assert_array_equal,
-    assert_array_almost_equal, TestCase,
-    assert_almost_equal
+    assert_equal,
+    assert_array_equal,
+    assert_array_almost_equal,
+    TestCase,
+    assert_almost_equal,
 )
 
 from MDAnalysisTests.datafiles import (
-    mol2_molecules, mol2_molecule, mol2_broken_molecule,
-    mol2_zinc, mol2_comments_header, mol2_ligand, mol2_sodium_ion
+    mol2_molecules,
+    mol2_molecule,
+    mol2_broken_molecule,
+    mol2_zinc,
+    mol2_comments_header,
+    mol2_ligand,
+    mol2_sodium_ion,
 )
 from MDAnalysis import Universe
 import MDAnalysis as mda
@@ -40,7 +47,7 @@ from MDAnalysisTests import make_Universe
 
 class TestMol2(object):
     def setup_method(self):
-        self.outfile = 'test.mol2'
+        self.outfile = "test.mol2"
 
     def test_read(self):
         u = Universe(mol2_molecules)
@@ -48,7 +55,9 @@ class TestMol2(object):
         assert_equal(u.trajectory.n_frames, 200)
 
         u.trajectory[199]
-        assert_array_almost_equal(u.atoms.positions[0], [1.7240, 11.2730, 14.1200])
+        assert_array_almost_equal(
+            u.atoms.positions[0], [1.7240, 11.2730, 14.1200]
+        )
 
     def test_read_statusbit(self):
         u = Universe(mol2_ligand)
@@ -94,9 +103,9 @@ class TestMol2(object):
 
         # This doesn't work with 2.6
         # Checks the text of the error message, so it low priority
-        #with self.assertRaises(Exception) as context:
+        # with self.assertRaises(Exception) as context:
         #    u = Universe(mol2_broken_molecule)
-        #self.assertEqual("The mol2 block (BrokenMolecule.mol2:0) has no atoms" in context.exception.message,
+        # self.assertEqual("The mol2 block (BrokenMolecule.mol2:0) has no atoms" in context.exception.message,
         # True)
 
     def test_comments_header(self):
@@ -104,7 +113,9 @@ class TestMol2(object):
         assert_equal(len(u.atoms), 9)
         assert_equal(u.trajectory.n_frames, 2)
         u.trajectory[1]
-        assert_array_almost_equal(u.atoms.positions[2], [-12.2710, -1.9540, -16.0480])
+        assert_array_almost_equal(
+            u.atoms.positions[2], [-12.2710, -1.9540, -16.0480]
+        )
 
     def test_no_bonds(self, tmpdir):
         # Issue #3057
@@ -112,7 +123,7 @@ class TestMol2(object):
         ag = u.atoms
         assert not hasattr(ag, "bonds")
         with tmpdir.as_cwd():
-            outfile = 'test.mol2'
+            outfile = "test.mol2"
             ag.write(outfile)
             u2 = Universe(outfile)
         assert not hasattr(u2.atoms, "bonds")
@@ -152,17 +163,21 @@ class TestMol2_traj(TestCase):
 
     def test_reverse_traj(self):
         frames = [ts.frame for ts in self.traj[20:5:-1]]
-        assert_equal(frames, list(range(20, 5, -1)),
-                     "reversing traj [20:5:-1]")
+        assert_equal(
+            frames, list(range(20, 5, -1)), "reversing traj [20:5:-1]"
+        )
 
     def test_n_frames(self):
-        assert_equal(self.universe.trajectory.n_frames, 200, "wrong number of frames in traj")
+        assert_equal(
+            self.universe.trajectory.n_frames,
+            200,
+            "wrong number of frames in traj",
+        )
 
 
 class TestMOL2NoSubstructure(object):
-    """MOL2 file without substructure
+    """MOL2 file without substructure"""
 
-    """
     n_atoms = 45
 
     def test_load(self):
@@ -175,7 +190,7 @@ class TestMOL2NoSubstructure(object):
 
     def test_write_nostructure(self, tmpdir):
         with tmpdir.as_cwd():
-            outfile = 'test.mol2'
+            outfile = "test.mol2"
 
             u = mda.Universe(mol2_zinc)
             with mda.Writer(outfile) as W:
@@ -188,23 +203,24 @@ class TestMOL2NoSubstructure(object):
 
 def test_mol2_write_NIE(tmpdir):
     with tmpdir.as_cwd():
-        outfile = os.path.join('test.mol2')
+        outfile = os.path.join("test.mol2")
         u = make_Universe(trajectory=True)
         with pytest.raises(NotImplementedError):
             u.atoms.write(outfile)
+
 
 def test_mol2_multi_write(tmpdir):
     # see: gh-2678
     with tmpdir.as_cwd():
         u = mda.Universe(mol2_molecules)
-        u.atoms[:4].write('group1.mol2')
-        u.atoms[:4].write('group1.mol2')
+        u.atoms[:4].write("group1.mol2")
+        u.atoms[:4].write("group1.mol2")
 
 
 def test_mol2_universe_write(tmpdir):
     # see Issue 2717
     with tmpdir.as_cwd():
-        outfile = 'test.mol2'
+        outfile = "test.mol2"
 
         u = mda.Universe(mol2_comments_header)
 

@@ -36,25 +36,16 @@ from MDAnalysis.lib.picklable_file_io import (
     bz2_pickle_open,
     gzip_pickle_open,
 )
-from MDAnalysis.coordinates.GSD import (
-    GSDPicklable,
-    gsd_pickle_open,
-    HAS_GSD
-)
+from MDAnalysis.coordinates.GSD import GSDPicklable, gsd_pickle_open, HAS_GSD
 from MDAnalysis.coordinates.TRJ import (
     NCDFPicklable,
 )
-from MDAnalysis.coordinates.chemfiles import (
-    check_chemfiles_version
-)
+from MDAnalysis.coordinates.chemfiles import check_chemfiles_version
+
 if check_chemfiles_version():
-    from MDAnalysis.coordinates.chemfiles import (
-        ChemfilesPicklable
-    )
+    from MDAnalysis.coordinates.chemfiles import ChemfilesPicklable
 from MDAnalysis.coordinates.H5MD import HAS_H5PY
-from MDAnalysis.coordinates.H5MD import (
-    H5PYPicklable
-)
+from MDAnalysis.coordinates.H5MD import H5PYPicklable
 
 from MDAnalysis.tests.datafiles import (
     PDB,
@@ -65,17 +56,19 @@ from MDAnalysis.tests.datafiles import (
     GSD,
     NCDF,
     TPR_xvf,
-    H5MD_xvf
+    H5MD_xvf,
 )
 
 
-@pytest.fixture(params=[
-    # filename mode
-    (PDB, 'r'),
-    (PDB, 'rt'),
-    (XYZ_bz2, 'rt'),
-    (GMS_ASYMOPT, 'rt')
-])
+@pytest.fixture(
+    params=[
+        # filename mode
+        (PDB, "r"),
+        (PDB, "rt"),
+        (XYZ_bz2, "rt"),
+        (GMS_ASYMOPT, "rt"),
+    ]
+)
 def f_text(request):
     filename, mode = request.param
     return anyopen(filename, mode)
@@ -96,12 +89,14 @@ def test_offset_text_same(f_text):
     assert_equal(f_text_pickled.tell(), f_text.tell())
 
 
-@pytest.fixture(params=[
-    # filename mode ref_class
-    (PDB, 'rb', BufferIOPicklable),
-    (XYZ_bz2, 'rb', BZ2Picklable),
-    (MMTF_gz, 'rb', GzipPicklable)
-])
+@pytest.fixture(
+    params=[
+        # filename mode ref_class
+        (PDB, "rb", BufferIOPicklable),
+        (XYZ_bz2, "rb", BZ2Picklable),
+        (MMTF_gz, "rb", GzipPicklable),
+    ]
+)
 def f_byte(request):
     filename, mode, ref_reader_class = request.param
     return anyopen(filename, mode), ref_reader_class
@@ -136,14 +131,16 @@ def test_fileio_pickle():
     assert_equal(raw_io.readlines(), raw_io_pickled.readlines())
 
 
-@pytest.fixture(params=[
-    # filename mode open_func open_class
-    ('test.pdb', 'w', pickle_open, FileIOPicklable),
-    ('test.pdb', 'x', pickle_open, FileIOPicklable),
-    ('test.pdb', 'a', pickle_open, FileIOPicklable),
-    ('test.bz2', 'w', bz2_pickle_open, BZ2Picklable),
-    ('test.gz', 'w', gzip_pickle_open, GzipPicklable),
-])
+@pytest.fixture(
+    params=[
+        # filename mode open_func open_class
+        ("test.pdb", "w", pickle_open, FileIOPicklable),
+        ("test.pdb", "x", pickle_open, FileIOPicklable),
+        ("test.pdb", "a", pickle_open, FileIOPicklable),
+        ("test.bz2", "w", bz2_pickle_open, BZ2Picklable),
+        ("test.gz", "w", gzip_pickle_open, GzipPicklable),
+    ]
+)
 def unpicklable_f(request):
     filename, mode, open_func, open_class = request.param
     return filename, mode, open_func, open_class
@@ -162,26 +159,28 @@ def test_pickle_with_write_mode(unpicklable_f, tmpdir):
         f_pickled = pickle.loads(pickle.dumps(f_open_by_class))
 
 
-@pytest.mark.skipif(not HAS_GSD, reason='gsd not installed')
+@pytest.mark.skipif(not HAS_GSD, reason="gsd not installed")
 def test_GSD_pickle():
-    gsd_io = gsd_pickle_open(GSD, mode='r')
+    gsd_io = gsd_pickle_open(GSD, mode="r")
     gsd_io_pickled = pickle.loads(pickle.dumps(gsd_io))
-    assert_equal(gsd_io[0].particles.position,
-                 gsd_io_pickled[0].particles.position)
+    assert_equal(
+        gsd_io[0].particles.position, gsd_io_pickled[0].particles.position
+    )
 
 
-@pytest.mark.skipif(not HAS_GSD, reason='gsd not installed')
+@pytest.mark.skipif(not HAS_GSD, reason="gsd not installed")
 def test_GSD_with_write_mode(tmpdir):
     with pytest.raises(ValueError, match=r"Only read mode"):
-        gsd_io = gsd_pickle_open(tmpdir.mkdir("gsd").join('t.gsd'),
-                                 mode='w')
+        gsd_io = gsd_pickle_open(tmpdir.mkdir("gsd").join("t.gsd"), mode="w")
 
 
 def test_NCDF_pickle():
     ncdf_io = NCDFPicklable(NCDF, mmap=None)
     ncdf_io_pickled = pickle.loads(pickle.dumps(ncdf_io))
-    assert_equal(ncdf_io.variables['coordinates'][0],
-                 ncdf_io_pickled.variables['coordinates'][0])
+    assert_equal(
+        ncdf_io.variables["coordinates"][0],
+        ncdf_io_pickled.variables["coordinates"][0],
+    )
 
 
 def test_NCDF_mmap_pickle():
@@ -190,8 +189,9 @@ def test_NCDF_mmap_pickle():
     assert_equal(ncdf_io_pickled.use_mmap, False)
 
 
-@pytest.mark.skipif(not check_chemfiles_version(),
-                    reason="Wrong version of chemfiles")
+@pytest.mark.skipif(
+    not check_chemfiles_version(), reason="Wrong version of chemfiles"
+)
 def test_Chemfiles_pickle():
     chemfiles_io = ChemfilesPicklable(XYZ)
     chemfiles_io_pickled = pickle.loads(pickle.dumps(chemfiles_io))
@@ -199,29 +199,34 @@ def test_Chemfiles_pickle():
     #  As opposed to `chemfiles_io.read().positions)
     frame = chemfiles_io.read()
     frame_pickled = chemfiles_io_pickled.read()
-    assert_equal(frame.positions[:],
-                 frame_pickled.positions[:])
+    assert_equal(frame.positions[:], frame_pickled.positions[:])
 
 
-@pytest.mark.skipif(not check_chemfiles_version(),
-                    reason="Wrong version of chemfiles")
+@pytest.mark.skipif(
+    not check_chemfiles_version(), reason="Wrong version of chemfiles"
+)
 def test_Chemfiles_with_write_mode(tmpdir):
     with pytest.raises(ValueError, match=r"Only read mode"):
-        chemfiles_io = ChemfilesPicklable(tmpdir.mkdir("xyz").join('t.xyz'),
-                                          mode='w')
+        chemfiles_io = ChemfilesPicklable(
+            tmpdir.mkdir("xyz").join("t.xyz"), mode="w"
+        )
 
 
 @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
 def test_H5MD_pickle():
-    h5md_io = H5PYPicklable(H5MD_xvf, 'r')
+    h5md_io = H5PYPicklable(H5MD_xvf, "r")
     h5md_io_pickled = pickle.loads(pickle.dumps(h5md_io))
-    assert_equal(h5md_io['particles/trajectory/position/value'][0],
-                 h5md_io_pickled['particles/trajectory/position/value'][0])
+    assert_equal(
+        h5md_io["particles/trajectory/position/value"][0],
+        h5md_io_pickled["particles/trajectory/position/value"][0],
+    )
 
 
 @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
 def test_H5MD_pickle_with_driver():
-    h5md_io = H5PYPicklable(H5MD_xvf, 'r', driver='core')
+    h5md_io = H5PYPicklable(H5MD_xvf, "r", driver="core")
     h5md_io_pickled = pickle.loads(pickle.dumps(h5md_io))
-    assert_equal(h5md_io['particles/trajectory/position/value'][0],
-                 h5md_io_pickled['particles/trajectory/position/value'][0])
+    assert_equal(
+        h5md_io["particles/trajectory/position/value"][0],
+        h5md_io_pickled["particles/trajectory/position/value"][0],
+    )
