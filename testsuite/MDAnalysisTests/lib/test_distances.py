@@ -27,7 +27,7 @@ import numpy as np
 from numpy.testing import assert_equal, assert_almost_equal, assert_allclose
 import itertools
 from itertools import combinations_with_replacement as comb
-
+from types import ModuleType
 import MDAnalysis
 import numpy as np
 import pytest
@@ -1092,14 +1092,27 @@ def test_HAS_DISTOPIA_distopia_too_old():
     # mock a version of distopia that is too old
     sys.modules.pop("distopia", None)
     sys.modules.pop("MDAnalysis.lib._distopia", None)
-    if HAS_DISTOPIA:
-        with patch("distopia.__version__", "0.1.0"):
-            with pytest.warns(
-                RuntimeWarning, match="distopia will NOT be used"
-            ):
-                import MDAnalysis.lib._distopia
 
-                assert not MDAnalysis.lib._distopia.HAS_DISTOPIA
+    module_name = "distopia"
+    mocked_module = ModuleType(module_name)
+    # too old version
+    mocked_module.__version__ =  "0.1.0"
+    sys.modules[module_name] = mocked_module
+
+
+    import MDAnalysis.lib._distopia
+    assert not MDAnalysis.lib._distopia.HAS_DISTOPIA
+
+    sys.modules.pop("distopia", None)
+    sys.modules.pop("MDAnalysis.lib._distopia", None)
+
+    # new enough version
+    mocked_module.__version__ =  "0.4.0"
+    sys.modules[module_name] = mocked_module
+
+    import MDAnalysis.lib._distopia
+    assert MDAnalysis.lib._distopia.HAS_DISTOPIA
+
 
 
 class TestCythonFunctions(object):
