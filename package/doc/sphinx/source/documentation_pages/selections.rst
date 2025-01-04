@@ -114,6 +114,11 @@ protein, backbone, nucleic, nucleicbackbone
     is identfied by a hard-coded set of residue names so it  may not
     work for esoteric residues.
 
+water
+    selects all atoms that belong to a set of water residues; water
+    is defined with a set of common water abbreviations present in
+    topology files and may not work with certain water residue names.
+
 segid *seg-name*
     select by segid (as given in the topology), e.g. ``segid 4AKE`` or
     ``segid DMPC``
