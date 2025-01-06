@@ -259,7 +259,9 @@ def _build_stub(method_name, method, attribute_name):
             attribute_name
         )
     )
-    # The original docstring is arrumed to be formatted with black
+    # The original docstring is assumed to be formatted with black
+    # (i.e., *all text* lines are already indented, the first line 
+    # is a triple quote followed by newline)
     stub_method.__doc__ = textwrap.dedent(method.__doc__) + "\n\n" + annotation
     stub_method.__name__ = method_name
     stub_method.__signature__ = inspect_signature(method)
