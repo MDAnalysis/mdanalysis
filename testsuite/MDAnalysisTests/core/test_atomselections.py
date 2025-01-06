@@ -48,6 +48,8 @@ from MDAnalysis.tests.datafiles import (
     PDB_helix,
     PDB_elements,
     PDB_charges,
+    waterPSF,
+    PDB_full,
 )
 from MDAnalysisTests import make_Universe
 
@@ -648,6 +650,38 @@ class TestSelectionsNucleicAcids(object):
         rna = universe.select_atoms("nucleicsugar")
         assert_equal(rna.n_residues, 23)
         assert_equal(rna.n_atoms, rna.n_residues * 5)
+
+
+class TestSelectionsWater(object):
+    @pytest.fixture(scope='class')
+    def universe(self):
+        return MDAnalysis.Universe(GRO)
+
+    @pytest.fixture(scope='class')
+    def universe2(self):
+        return MDAnalysis.Universe(waterPSF)
+
+    @pytest.fixture(scope='class')
+    def universe3(self):
+        return MDAnalysis.Universe(PDB_full)
+
+    def test_water_gro(self, universe):
+        # Test SOL water with 4 atoms
+        water_gro = universe.select_atoms("water")
+        assert_equal(water_gro.n_atoms, 44336)
+        assert_equal(water_gro.n_residues, 11084)
+
+    def test_water_tip3(self, universe2):
+        # Test TIP3 water with 3 atoms
+        water_tip3 = universe2.select_atoms('water')
+        assert_equal(water_tip3.n_atoms, 15)
+        assert_equal(water_tip3.n_residues, 5)
+
+    def test_water_pdb(self, universe3):
+        # Test HOH water with 1 atom
+        water_pdb = universe3.select_atoms("water")
+        assert_equal(water_pdb.n_residues, 188)
+        assert_equal(water_pdb.n_atoms, 188)
 
 
 class BaseDistanceSelection(object):
