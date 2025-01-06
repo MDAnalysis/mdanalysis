@@ -121,7 +121,7 @@ water
     Currently the following water resnames are supported:
     3 letter resnames: ``H2O``, ``HOH``, ``OH2``, ``HHO``, ``OHH``, ``TIP``,
     ``T3P``, ``T4P``, ``T5P``, ``SOL``, ``WAT``.
-    4 letter resnames:``TIP2``, ``TIP3``, ``TIP4``.
+    4 letter resnames: ``TIP2``, ``TIP3``, ``TIP4``.
 
 segid *seg-name*
     select by segid (as given in the topology), e.g. ``segid 4AKE`` or
