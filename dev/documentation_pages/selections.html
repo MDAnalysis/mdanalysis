@@ -257,6 +257,14 @@ suitable <a class="reference internal" href="core/topologyattrs.html#MDAnalysis.
 is identfied by a hard-coded set of residue names so it  may not
 work for esoteric residues.</p>
 </dd>
+<dt>water</dt><dd><p>selects all atoms that belong to a set of water residues; water
+is defined with a set of common water abbreviations present in
+topology files and may not work with certain water residue names.
+Currently the following water resnames are supported:
+3 letter resnames: <code class="docutils literal notranslate"><span class="pre">H2O</span></code>, <code class="docutils literal notranslate"><span class="pre">HOH</span></code>, <code class="docutils literal notranslate"><span class="pre">OH2</span></code>, <code class="docutils literal notranslate"><span class="pre">HHO</span></code>, <code class="docutils literal notranslate"><span class="pre">OHH</span></code>, <code class="docutils literal notranslate"><span class="pre">TIP</span></code>,
+<code class="docutils literal notranslate"><span class="pre">T3P</span></code>, <code class="docutils literal notranslate"><span class="pre">T4P</span></code>, <code class="docutils literal notranslate"><span class="pre">T5P</span></code>, <code class="docutils literal notranslate"><span class="pre">SOL</span></code>, <code class="docutils literal notranslate"><span class="pre">WAT</span></code>.
+4 letter resnames: <code class="docutils literal notranslate"><span class="pre">TIP2</span></code>, <code class="docutils literal notranslate"><span class="pre">TIP3</span></code>, <code class="docutils literal notranslate"><span class="pre">TIP4</span></code>.</p>
+</dd>
 <dt>segid <em>seg-name</em></dt><dd><p>select by segid (as given in the topology), e.g. <code class="docutils literal notranslate"><span class="pre">segid</span> <span class="pre">4AKE</span></code> or
 <code class="docutils literal notranslate"><span class="pre">segid</span> <span class="pre">DMPC</span></code></p>
 </dd>
