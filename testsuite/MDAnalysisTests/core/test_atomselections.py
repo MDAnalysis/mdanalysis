@@ -20,46 +20,28 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+import itertools
 import os
 import textwrap
 from io import StringIO
-import itertools
-import numpy as np
-from numpy.lib import NumpyVersion
-from numpy.testing import (
-    assert_equal,
-)
 
 import MDAnalysis
 import MDAnalysis as mda
 import MDAnalysis.core.selection
-from MDAnalysis.lib.distances import distance_array
-from MDAnalysis.core.selection import Parser
-from MDAnalysis import SelectionError, SelectionWarning
-
-from MDAnalysis.tests.datafiles import (
-    PSF,
-    DCD,
-    PRMpbc,
-    TRJpbc_bz2,
-    PSF_NAMD,
-    PDB_NAMD,
-    GRO,
-    RNA_PSF,
-    NUCLsel,
-    TPR,
-    XTC,
-    TRZ_psf,
-    TRZ,
-    PDB_icodes,
-    PDB_HOLE,
-    PDB_helix,
-    PDB_elements,
-    PDB_charges,
-)
-from MDAnalysisTests import make_Universe
-
+import numpy as np
 import pytest
+from MDAnalysis import SelectionError, SelectionWarning
+from MDAnalysis.core.selection import Parser
+from MDAnalysis.lib.distances import distance_array
+from MDAnalysis.tests.datafiles import (DCD, GRO, PDB_HOLE, PDB_NAMD, PSF,
+                                        PSF_NAMD, RNA_PSF, TPR, TRZ, XTC,
+                                        NUCLsel, PDB_charges, PDB_elements,
+                                        PDB_helix, PDB_icodes, PRMpbc,
+                                        TRJpbc_bz2, TRZ_psf)
+from numpy.lib import NumpyVersion
+from numpy.testing import assert_equal
+
+from MDAnalysisTests import make_Universe
 
 
 class TestSelectionsCHARMM(object):
