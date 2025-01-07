@@ -33,11 +33,28 @@ import pytest
 from MDAnalysis import SelectionError, SelectionWarning
 from MDAnalysis.core.selection import Parser
 from MDAnalysis.lib.distances import distance_array
-from MDAnalysis.tests.datafiles import (DCD, GRO, PDB_HOLE, PDB_NAMD, PSF,
-                                        PSF_NAMD, RNA_PSF, TPR, TRZ, XTC,
-                                        NUCLsel, PDB_charges, PDB_elements,
-                                        PDB_full, PDB_helix, PDB_icodes,
-                                        PRMpbc, TRJpbc_bz2, TRZ_psf, waterPSF)
+from MDAnalysis.tests.datafiles import (
+    DCD,
+    GRO,
+    PDB_HOLE,
+    PDB_NAMD,
+    PSF,
+    PSF_NAMD,
+    RNA_PSF,
+    TPR,
+    TRZ,
+    XTC,
+    NUCLsel,
+    PDB_charges,
+    PDB_elements,
+    PDB_full,
+    PDB_helix,
+    PDB_icodes,
+    PRMpbc,
+    TRJpbc_bz2,
+    TRZ_psf,
+    waterPSF,
+)
 from numpy.lib import NumpyVersion
 from numpy.testing import assert_equal
 
