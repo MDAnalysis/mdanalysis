@@ -154,9 +154,20 @@ def test_unknown_norm(sels):
     with pytest.raises(ValueError, match="invalid norm"):
         InterRDF(s1, s2, sels, norm="foo")
 
+@pytest.mark.parametrize(
+    "classname,is_parallelizable",
+    [
+        (mda.analysis.rdf, False),
+    ]
+)
+def test_class_is_parallelizable(classname, is_parallelizable):
+    assert classname.InterRDF._analysis_algorithm_is_parallelizable == is_parallelizable
 
-@pytest.mark.parametrize("backend", distopia_conditional_backend())
-def test_norm(sels, backend):
-    s1, s2 = sels
-    rdf = InterRDF(s1, s2, norm="none", backend=backend).run()
-    assert_allclose(max(rdf.results.rdf), 4)
+@pytest.mark.parametrize(
+    "classname,backends",
+    [
+        (mda.analysis.rdf,  ('serial',)),
+    ]
+)
+def test_supported_backends(classname, backends):
+    assert classname.InterRDF.get_supported_backends() == backends

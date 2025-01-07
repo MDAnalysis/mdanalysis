@@ -119,9 +119,10 @@ Enhancements
    (Issue #4677, PR #4729)
  * Enables parallelization for analysis.contacts.Contacts (Issue #4660)
  * Enable parallelization for analysis.nucleicacids.NucPairDist (Issue #4670)
- * Add check and warning for empty (all zero) coordinates in RDKit converter
-   (PR #4824)
- * Added `precision` for XYZWriter (Issue #4775, PR #4771) 
+ * Add check and warning for empty (all zero) coordinates in RDKit converter (PR #4824)
+ * Added `precision` for XYZWriter (Issue #4775, PR #4771)
+ * explicitly mark `analysis.rdf.InterRDF` and `analysis.rdf.InterRDF` as not parallelizable (Issue #4675)
+
 
 Changes
  * MDAnalysis.analysis.psa, MDAnalysis.analysis.waterdynamics and

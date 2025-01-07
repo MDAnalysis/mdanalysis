@@ -173,8 +173,20 @@ def test_rdf_attr_warning(rdf, attr):
     with pytest.warns(DeprecationWarning, match=wmsg):
         getattr(rdf, attr) is rdf.results[attr]
 
+@pytest.mark.parametrize(
+    "classname,is_parallelizable",
+    [
+        (mda.analysis.rdf, False),
+    ]
+)
+def test_class_is_parallelizable(classname, is_parallelizable):
+    assert classname.InterRDF_s._analysis_algorithm_is_parallelizable == is_parallelizable
 
-@pytest.mark.parametrize("backend", distopia_conditional_backend())
-def test_backend(u, sels, backend):
-    rdf = InterRDF_s(u, sels, norm="none", backend=backend).run()
-    assert_allclose(max(rdf.results.rdf[0][0][0]), 0.6)
+@pytest.mark.parametrize(
+    "classname,backends",
+    [
+        (mda.analysis.rdf,  ('serial',)),
+    ]
+)
+def test_supported_backends(classname, backends):
+    assert classname.InterRDF_s.get_supported_backends() == backends

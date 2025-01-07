@@ -223,6 +223,12 @@ class InterRDF(AnalysisBase):
        :class:`~MDAnalysis.analysis.AnalysisBase`.
     """
 
+    @classmethod
+    def get_supported_backends(cls):
+        return ('serial',)
+
+    _analysis_algorithm_is_parallelizable = False
+
     def __init__(
         self,
         g1,
@@ -578,6 +584,12 @@ class InterRDF_s(AnalysisBase):
        The `universe` parameter is superflous.
     """
 
+    @classmethod
+    def get_supported_backends(cls):
+        return ('serial',)
+
+    _analysis_algorithm_is_parallelizable = False
+    
     def __init__(
         self,
         u,
