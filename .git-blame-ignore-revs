@@ -8,7 +8,9 @@
 # MDAnalysis was automatically formatted with `black` (end of 2024, beginning of 2025).
 # Formatting PRs (should) contain "[fmt]" in the title (and so do the related commits).
 # See https://github.com/MDAnalysis/mdanalysis/issues/2450 for more details.
-# The following commits are squash commits that contain only formatting changes.
+# The following commits are squash commits that contain only^ formatting changes.
+#    ^ This is not strictly true. See PRs for the nitty gritty details.
+#.     PR numbers are listed just above the commit being ignored.
 #4725 
 571431a169e5881f7d09930c4d7e633df0f2cd40
 #4726
