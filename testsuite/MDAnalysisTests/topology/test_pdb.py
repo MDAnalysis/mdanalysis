@@ -22,28 +22,28 @@
 #
 from io import StringIO
 
-import pytest
-import numpy as np
-from numpy.testing import assert_equal, assert_allclose
 import MDAnalysis as mda
+import numpy as np
+import pytest
+from MDAnalysis import NoDataError
+from MDAnalysis.guesser import tables
+from MDAnalysis.topology.PDBParser import PDBParser
+from numpy.testing import assert_allclose, assert_equal
 
-from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
     PDB,
     PDB_HOLE,
-    PDB_small,
+    PDB_chainidnewres,
+    PDB_charges,
     PDB_conect,
     PDB_conect2TER,
-    PDB_singleconect,
-    PDB_chainidnewres,
-    PDB_sameresid_diffresname,
-    PDB_helix,
     PDB_elements,
-    PDB_charges,
+    PDB_helix,
+    PDB_sameresid_diffresname,
+    PDB_singleconect,
+    PDB_small,
 )
-from MDAnalysis.topology.PDBParser import PDBParser
-from MDAnalysis import NoDataError
-from MDAnalysis.guesser import tables
+from MDAnalysisTests.topology.base import ParserBase
 
 _PDBPARSER = mda.topology.PDBParser.PDBParser
 
@@ -64,24 +64,34 @@ hybrid36 = [
     ("   24", 24),
     ("  645", 645),
     (" 4951", 4951),
-    ("10267", 10267)
+    ("10267", 10267),
 ]
 
 
-@pytest.mark.parametrize('hybrid, integer', hybrid36)
+@pytest.mark.parametrize("hybrid, integer", hybrid36)
 def test_hy36decode(hybrid, integer):
     assert mda.topology.PDBParser.hy36decode(5, hybrid) == integer
 
 
 class PDBBase(ParserBase):
-    expected_attrs = ['ids', 'names', 'record_types', 'resids',
-                      'resnames', 'altLocs', 'icodes', 'occupancies',
-                      'tempfactors', 'chainIDs']
-    guessed_attrs = ['types', 'masses']
+    expected_attrs = [
+        "ids",
+        "names",
+        "record_types",
+        "resids",
+        "resnames",
+        "altLocs",
+        "icodes",
+        "occupancies",
+        "tempfactors",
+        "chainIDs",
+    ]
+    guessed_attrs = ["types", "masses"]
 
 
 class TestPDBParser(PDBBase):
     """This one has neither chainids or segids"""
+
     parser = mda.topology.PDBParser.PDBParser
     ref_filename = PDB
     expected_n_atoms = 47681
@@ -91,6 +101,7 @@ class TestPDBParser(PDBBase):
 
 class TestPDBParserSegids(PDBBase):
     """Has segids"""
+
     parser = mda.topology.PDBParser.PDBParser
     ref_filename = PDB_small
     expected_n_atoms = 3341
@@ -102,20 +113,24 @@ class TestPDBConect(object):
     """Testing PDB topology parsing (PDB)"""
 
     def test_conect_parser(self):
-        lines = ("CONECT1233212331",
-                 "CONECT123331233112334",
-                 "CONECT123341233312335",
-                 "CONECT123351233412336",
-                 "CONECT12336123271233012335",
-                 "CONECT12337 7718 84081234012344",
-                 "CONECT1233812339123401234112345")
-        results = ((12332, [12331]),
-                   (12333, [12331, 12334]),
-                   (12334, [12333, 12335]),
-                   (12335, [12334, 12336]),
-                   (12336, [12327, 12330, 12335]),
-                   (12337, [7718, 8408, 12340, 12344]),
-                   (12338, [12339, 12340, 12341, 12345]))
+        lines = (
+            "CONECT1233212331",
+            "CONECT123331233112334",
+            "CONECT123341233312335",
+            "CONECT123351233412336",
+            "CONECT12336123271233012335",
+            "CONECT12337 7718 84081234012344",
+            "CONECT1233812339123401234112345",
+        )
+        results = (
+            (12332, [12331]),
+            (12333, [12331, 12334]),
+            (12334, [12333, 12335]),
+            (12335, [12334, 12336]),
+            (12336, [12327, 12330, 12335]),
+            (12337, [7718, 8408, 12340, 12344]),
+            (12338, [12339, 12340, 12341, 12345]),
+        )
         for line, res in zip(lines, results):
             bonds = mda.topology.PDBParser._parse_conect(line)
             assert_equal(bonds[0], res[0])
@@ -124,8 +139,9 @@ class TestPDBConect(object):
 
     def test_conect_parser_runtime(self):
         with pytest.raises(RuntimeError):
-            mda.topology.PDBParser._parse_conect('CONECT12337 7718 '
-                                                 '84081234012344123')
+            mda.topology.PDBParser._parse_conect(
+                "CONECT12337 7718 " "84081234012344123"
+            )
 
     def test_conect_topo_parser(self):
         """Check that the parser works as intended,
@@ -145,7 +161,7 @@ def test_conect2ter():
     with pytest.warns(UserWarning):
         struc = parse()
 
-    assert hasattr(struc, 'bonds')
+    assert hasattr(struc, "bonds")
     assert len(struc.bonds.values) == 4
 
 
@@ -157,7 +173,7 @@ def test_single_conect():
 
     with pytest.warns(UserWarning):
         struc = parse()
-    assert hasattr(struc, 'bonds')
+    assert hasattr(struc, "bonds")
     assert len(struc.bonds.values) == 2
 
 
@@ -169,7 +185,7 @@ def test_new_chainid_new_res():
     assert len(u.residues) == 4
     assert_equal(u.residues.resids, [1, 2, 3, 3])
     assert len(u.segments) == 4
-    assert_equal(u.segments.segids, ['A', 'B', 'C', 'D'])
+    assert_equal(u.segments.segids, ["A", "B", "C", "D"])
     assert len(u.segments[0].atoms) == 5
     assert len(u.segments[1].atoms) == 5
     assert len(u.segments[2].atoms) == 5
@@ -180,7 +196,7 @@ def test_sameresid_diffresname():
     with _PDBPARSER(PDB_sameresid_diffresname) as p:
         top = p.parse()
     resids = [9, 9]
-    resnames = ['GLN', 'POPC']
+    resnames = ["GLN", "POPC"]
     for i, (resid, resname) in enumerate(zip(resids, resnames)):
         assert top.resids.values[i] == resid
         assert top.resnames.values[i] == resname
@@ -189,11 +205,11 @@ def test_sameresid_diffresname():
 def test_PDB_record_types():
     u = mda.Universe(PDB_HOLE)
 
-    assert u.atoms[0].record_type == 'ATOM'
-    assert u.atoms[132].record_type == 'HETATM'
+    assert u.atoms[0].record_type == "ATOM"
+    assert u.atoms[132].record_type == "HETATM"
 
-    assert_equal(u.atoms[10:20].record_types, 'ATOM')
-    assert_equal(u.atoms[271:].record_types, 'HETATM')
+    assert_equal(u.atoms[10:20].record_types, "ATOM")
+    assert_equal(u.atoms[271:].record_types, "HETATM")
 
 
 PDB_noresid = """\
@@ -210,7 +226,7 @@ ENDMDL
 
 
 def test_PDB_no_resid():
-    u = mda.Universe(StringIO(PDB_noresid), format='PDB')
+    u = mda.Universe(StringIO(PDB_noresid), format="PDB")
 
     assert len(u.atoms) == 4
     assert len(u.residues) == 1
@@ -242,7 +258,7 @@ HETATM    3 Mg    Mg A   3      03.000  03.000  03.000  1.00 00.00          Mg
 
 
 def test_PDB_hex():
-    u = mda.Universe(StringIO(PDB_hex), format='PDB')
+    u = mda.Universe(StringIO(PDB_hex), format="PDB")
     assert len(u.atoms) == 5
     assert u.atoms[0].id == 1
     assert u.atoms[1].id == 100000
@@ -253,7 +269,7 @@ def test_PDB_hex():
 
 @pytest.mark.filterwarnings("error:Failed to guess the mass")
 def test_PDB_metals():
-    u = mda.Universe(StringIO(PDB_metals), format='PDB')
+    u = mda.Universe(StringIO(PDB_metals), format="PDB")
 
     assert len(u.atoms) == 4
     assert u.atoms[0].mass == pytest.approx(tables.masses["CU"])
@@ -266,11 +282,17 @@ def test_PDB_elements():
     """The test checks whether elements attribute are assigned
     properly given a PDB file with valid elements record.
     """
-    u = mda.Universe(PDB_elements, format='PDB')
-    element_list = np.array(['N', 'C', 'C', 'O', 'C', 'C', 'O', 'N', 'H',
-                             'H', 'H', 'H', 'H', 'H', 'H', 'H', 'Cu', 'Fe',
-                             'Mg', 'Ca', 'S', 'O', 'C', 'C', 'S', 'O', 'C',
-                             'C'], dtype=object)
+    u = mda.Universe(PDB_elements, format="PDB")
+    # fmt: off
+    element_list = np.array(
+        [
+            'N', 'C', 'C', 'O', 'C', 'C', 'O', 'N', 'H', 'H', 'H', 'H', 'H',
+            'H', 'H', 'H', 'Cu', 'Fe', 'Mg', 'Ca', 'S', 'O', 'C', 'C', 'S',
+            'O', 'C', 'C'
+        ],
+        dtype=object
+    )
+    # fmt: on
     assert_equal(u.atoms.elements, element_list)
 
 
@@ -280,8 +302,10 @@ def test_missing_elements_noattribute():
     1) a warning is raised if elements are missing
     2) the elements attribute is not set
     """
-    wmsg = ("Element information is missing, elements attribute will not be "
-            "populated")
+    wmsg = (
+        "Element information is missing, elements attribute will not be "
+        "populated"
+    )
     with pytest.warns(UserWarning, match=wmsg):
         u = mda.Universe(PDB_small)
     with pytest.raises(AttributeError):
@@ -308,14 +332,21 @@ def test_wrong_elements_warnings():
     """The test checks whether there are invalid elements in the elements
     column which have been parsed and returns an appropriate warning.
     """
-    with pytest.warns(UserWarning, match='Unknown element XX found'):
-        u = mda.Universe(StringIO(PDB_wrong_ele,), format='PDB')
+    with pytest.warns(UserWarning, match="Unknown element XX found"):
+        u = mda.Universe(
+            StringIO(
+                PDB_wrong_ele,
+            ),
+            format="PDB",
+        )
 
-    expected_elements = np.array(['N', '', 'C', 'O', '', 'Cu', 'Fe', 'Mg'],
-                                 dtype=object)
-    gussed_types = np.array(['N', '', 'C', 'O', 'XX', 'CU', 'Fe', 'MG'])
-    guseed_masses = np.array([14.007, 0.0, 12.011, 15.999,  0.0,
-                              63.546, 55.847, 24.305], dtype=float)
+    expected_elements = np.array(
+        ["N", "", "C", "O", "", "Cu", "Fe", "Mg"], dtype=object
+    )
+    gussed_types = np.array(["N", "", "C", "O", "XX", "CU", "Fe", "MG"])
+    guseed_masses = np.array(
+        [14.007, 0.0, 12.011, 15.999, 0.0, 63.546, 55.847, 24.305], dtype=float
+    )
 
     assert_equal(u.atoms.elements, expected_elements)
     assert_equal(u.atoms.types, gussed_types)
@@ -324,12 +355,22 @@ def test_wrong_elements_warnings():
 
 def test_guessed_masses_and_types_values():
     """Test that guessed masses and types have the expected values for universe
-       constructed from PDB file.
+    constructed from PDB file.
     """
-    u = mda.Universe(PDB, format='PDB')
-    gussed_types = np.array(['N', 'H', 'H', 'H', 'C', 'H', 'C', 'H', 'H', 'C'])
-    guseed_masses = [14.007, 1.008, 1.008, 1.008,
-                     12.011, 1.008, 12.011, 1.008, 1.008, 12.011]
+    u = mda.Universe(PDB, format="PDB")
+    gussed_types = np.array(["N", "H", "H", "H", "C", "H", "C", "H", "H", "C"])
+    guseed_masses = [
+        14.007,
+        1.008,
+        1.008,
+        1.008,
+        12.011,
+        1.008,
+        12.011,
+        1.008,
+        1.008,
+        12.011,
+    ]
     failed_type_guesses = u.atoms.types == ""
 
     assert_allclose(u.atoms.masses[:10], guseed_masses)
@@ -353,9 +394,15 @@ def test_PDB_charges():
     properly given a PDB file with a valid formal charges record.
     """
     u = mda.Universe(PDB_charges)
-    formal_charges = np.array([0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0,
-                               0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
-                               0, 0, 0, 0, 0], dtype=int)
+    # fmt: off
+    formal_charges = np.array(
+        [
+            0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        ],
+        dtype=int
+    )
+    # fmt: on
     assert_equal(u.atoms.formalcharges, formal_charges)
 
 
@@ -377,10 +424,10 @@ END
 """
 
 
-@pytest.mark.parametrize('infile,entry', [
-        [PDB_charges_nosign, r'2'],
-        [PDB_charges_invertsign, r'\+2']
-])
+@pytest.mark.parametrize(
+    "infile,entry",
+    [[PDB_charges_nosign, r"2"], [PDB_charges_invertsign, r"\+2"]],
+)
 def test_PDB_bad_charges(infile, entry):
     """
     Test that checks that a warning is raised and formal charges are not set:
@@ -389,5 +436,5 @@ def test_PDB_bad_charges(infile, entry):
     """
     wmsg = f"Unknown entry {entry} encountered in formal charge field."
     with pytest.warns(UserWarning, match=wmsg):
-        u = mda.Universe(StringIO(infile), format='PDB')
-        assert not hasattr(u, 'formalcharges')
+        u = mda.Universe(StringIO(infile), format="PDB")
+        assert not hasattr(u, "formalcharges")

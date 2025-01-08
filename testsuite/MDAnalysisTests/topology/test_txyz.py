@@ -31,8 +31,8 @@ from numpy.testing import assert_equal, assert_allclose
 
 class TestTXYZParser(ParserBase):
     parser = mda.topology.TXYZParser.TXYZParser
-    guessed_attrs = ['masses']
-    expected_attrs = ['ids', 'names', 'bonds', 'types', 'elements']
+    guessed_attrs = ["masses"]
+    expected_attrs = ["ids", "names", "bonds", "types", "elements"]
 
     expected_n_residues = 1
     expected_n_atoms = 9
@@ -55,12 +55,15 @@ class TestTXYZParser(ParserBase):
         type_is_str = [isinstance(atom_type, str) for atom_type in types]
         assert all(type_is_str)
 
+
 def test_TXYZ_elements():
     """The test checks whether elements attribute are assigned
     properly given a TXYZ file with valid elements record.
     """
-    u = mda.Universe(TXYZ, format='TXYZ')
-    element_list = np.array(['C', 'H', 'H', 'O', 'H', 'C', 'H', 'H', 'H'], dtype=object)
+    u = mda.Universe(TXYZ, format="TXYZ")
+    element_list = np.array(
+        ["C", "H", "H", "O", "H", "C", "H", "H", "H"], dtype=object
+    )
     assert_equal(u.atoms.elements, element_list)
 
 
@@ -70,8 +73,10 @@ def test_missing_elements_noattribute():
     1) a warning is raised if elements are missing
     2) the elements attribute is not set
     """
-    wmsg = ("Element information is missing, elements attribute "
-            "will not be populated. If needed these can be ")
+    wmsg = (
+        "Element information is missing, elements attribute "
+        "will not be populated. If needed these can be "
+    )
     with pytest.warns(UserWarning, match=wmsg):
         u = mda.Universe(ARC_PBC)
     with pytest.raises(AttributeError):
@@ -80,6 +85,15 @@ def test_missing_elements_noattribute():
 
 def test_guessed_masses():
     u = mda.Universe(TXYZ)
-    expected = [12.011,  1.008,  1.008, 15.999,  1.008, 12.011,
-                1.008,  1.008, 1.008]
+    expected = [
+        12.011,
+        1.008,
+        1.008,
+        15.999,
+        1.008,
+        12.011,
+        1.008,
+        1.008,
+        1.008,
+    ]
     assert_allclose(u.atoms.masses, expected)

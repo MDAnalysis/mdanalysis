@@ -60,35 +60,36 @@ from . import PDBParser
 class ExtendedPDBParser(PDBParser.PDBParser):
     """Parser that handles non-standard "extended" PDB file.
 
-    Extended PDB files (MDAnalysis format specifier *XPDB*) may contain residue
-    sequence numbers up to 99,999 by utilizing the insertion character field of
-    the PDB standard.
+     Extended PDB files (MDAnalysis format specifier *XPDB*) may contain residue
+     sequence numbers up to 99,999 by utilizing the insertion character field of
+     the PDB standard.
 
-    Creates a Topology with the following Attributes (if present):
-     - serials
-     - names
-     - altLocs
-     - chainids
-     - tempfactors
-     - occupancies
-     - resids
-     - resnames
-     - segids
-     - elements
-     - bonds
-     - formalcharges
+     Creates a Topology with the following Attributes (if present):
+      - serials
+      - names
+      - altLocs
+      - chainids
+      - tempfactors
+      - occupancies
+      - resids
+      - resnames
+      - segids
+      - elements
+      - bonds
+      - formalcharges
 
-   .. note::
+    .. note::
 
-      By default, atomtypes and masses will be guessed on Universe creation.
-      This may change in release 3.0.
-      See :ref:`Guessers` for more information.
+       By default, atomtypes and masses will be guessed on Universe creation.
+       This may change in release 3.0.
+       See :ref:`Guessers` for more information.
 
 
-    See Also
-    --------
-    :class:`MDAnalysis.coordinates.PDB.ExtendedPDBReader`
+     See Also
+     --------
+     :class:`MDAnalysis.coordinates.PDB.ExtendedPDBReader`
 
-    .. versionadded:: 0.8
+     .. versionadded:: 0.8
     """
-    format = 'XPDB'
+
+    format = "XPDB"

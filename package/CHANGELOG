@@ -27,6 +27,7 @@ Fixes
    the function to prevent shared state. (Issue #4655)
 
 Enhancements
+ * Addition of 'water' token for water selection (Issue #4839)
  * Enables parallelization for analysis.density.DensityAnalysis (Issue #4677, PR #4729)
  * Enables parallelization for analysis.contacts.Contacts (Issue #4660)
  * Enable parallelization for analysis.nucleicacids.NucPairDist (Issue #4670)

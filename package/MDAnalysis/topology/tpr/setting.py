@@ -38,8 +38,22 @@ The currently read file format versions are defined in
 """
 
 #: Gromacs TPR file format versions that can be read by the TPRParser.
-SUPPORTED_VERSIONS = (58, 73, 83, 100, 103, 110, 112,
-                      116, 119, 122, 127, 129, 133, 134)
+SUPPORTED_VERSIONS = (
+    58,
+    73,
+    83,
+    100,
+    103,
+    110,
+    112,
+    116,
+    119,
+    122,
+    127,
+    129,
+    133,
+    134,
+)
 
 # Some constants
 STRLEN = 4096
@@ -50,7 +64,7 @@ NR_CBTDIHS = 6  # <gromacs-5.1-dir>/src/gromacs/topology/idef.h
 NR_FOURDIHS = 4  # <gromacs-5.1-dir>/src/gromacs/topology/idef.h
 egcNR = 10  # include/types/topolog.h
 TPX_TAG_RELEASE = "release"  # <gromacs-5.1-dir>/src/gromacs/fileio/tpxio.c
-tpx_version = 103    # <gromacs-5.1-dir>/src/gromacs/fileio/tpxio.c
+tpx_version = 103  # <gromacs-5.1-dir>/src/gromacs/fileio/tpxio.c
 tpx_generation = 27  # <gromacs-5.1-dir>/src/gromacs/fileio/tpxio.c
 tpxv_RestrictedBendingAndCombinedAngleTorsionPotentials = 98
 tpxv_GenericInternalParameters = 117
@@ -61,6 +75,7 @@ tpxv_RemoveTholeRfac = 127
 
 
 #: Function types from ``<gromacs_dir>/include/types/idef.h``
+# fmt: off
 (
     F_BONDS, F_G96BONDS, F_MORSE, F_CUBICBONDS,
     F_CONNBONDS, F_HARMONIC, F_FENEBONDS, F_TABBONDS,
@@ -83,9 +98,12 @@ tpxv_RemoveTholeRfac = 127
     F_ETOT, F_ECONSERVED, F_TEMP, F_VTEMP_NOLONGERUSED,
     F_PDISPCORR, F_PRES, F_DHDL_CON, F_DVDL,
     F_DKDL, F_DVDL_COUL, F_DVDL_VDW, F_DVDL_BONDED,
-    F_DVDL_RESTRAINT, F_DVDL_TEMPERATURE, F_NRE) = list(range(95))
+    F_DVDL_RESTRAINT, F_DVDL_TEMPERATURE, F_NRE
+) = list(range(95))
+# fmt: on
 
 #: Function types from ``<gromacs_dir>/src/gmxlib/tpxio.c``
+# fmt: off
 ftupd = [
     (20, F_CUBICBONDS), (20, F_CONNBONDS), (20, F_HARMONIC), (34, F_FENEBONDS),
     (43, F_TABBONDS), (43, F_TABBONDSNC), (70, F_RESTRBONDS),
@@ -110,6 +128,7 @@ ftupd = [
     (tpxv_VSite1, F_VSITE1),
     (tpxv_VSite2FD, F_VSITE2FD),
 ]
+# fmt: on
 
 #: Interaction types from ``<gromacs_dir>/gmxlib/ifunc.c``
 interaction_types = [
@@ -206,5 +225,5 @@ interaction_types = [
     ("DVV/DL", "dVvdw/dl", None),
     ("DVB/DL", "dVbonded/dl", None),
     ("DVR/DL", "dVrestraint/dl", None),
-    ("DVT/DL", "dVtemperature/dl", None)
+    ("DVT/DL", "dVtemperature/dl", None),
 ]

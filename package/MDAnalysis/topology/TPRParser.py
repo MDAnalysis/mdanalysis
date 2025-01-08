@@ -174,6 +174,7 @@ from .base import TopologyReaderBase
 from ..core.topologyattrs import Resnums
 
 import logging
+
 logger = logging.getLogger("MDAnalysis.topology.TPRparser")
 
 
@@ -183,7 +184,8 @@ class TPRParser(TopologyReaderBase):
     .. _Gromacs: http://www.gromacs.org
     .. _TPR file: http://manual.gromacs.org/current/online/tpr.html
     """
-    format = 'TPR'
+
+    format = "TPR"
 
     def parse(self, tpr_resid_from_one=True, **kwargs):
         """Parse a Gromacs TPR file into a MDAnalysis internal topology structure.
@@ -206,11 +208,11 @@ class TPRParser(TopologyReaderBase):
         .. versionchanged:: 2.0.0
             Changed to ``tpr_resid_from_one=True`` by default.
         """
-        with openany(self.filename, mode='rb') as infile:
+        with openany(self.filename, mode="rb") as infile:
             tprf = infile.read()
         data = tpr_utils.TPXUnpacker(tprf)
         try:
-            th = tpr_utils.read_tpxheader(data)                    # tpxheader
+            th = tpr_utils.read_tpxheader(data)  # tpxheader
         except (EOFError, ValueError):
             msg = f"{self.filename}: Invalid tpr file or cannot be recognized"
             logger.critical(msg)
@@ -232,18 +234,21 @@ class TPRParser(TopologyReaderBase):
                 raise IOError(msg)
             data = tpr_utils.TPXUnpacker2020.from_unpacker(data)
 
-        state_ngtc = th.ngtc         # done init_state() in src/gmxlib/tpxio.c
+        state_ngtc = th.ngtc  # done init_state() in src/gmxlib/tpxio.c
         if th.bBox:
             tpr_utils.extract_box_info(data, th.fver)
 
         if state_ngtc > 0:
-            if th.fver < 69:                      # redundancy due to  different versions
+            if th.fver < 69:  # redundancy due to  different versions
                 tpr_utils.ndo_real(data, state_ngtc)
-            tpr_utils.ndo_real(data, state_ngtc)        # relevant to Berendsen tcoupl_lambda
+            tpr_utils.ndo_real(
+                data, state_ngtc
+            )  # relevant to Berendsen tcoupl_lambda
 
         if th.bTop:
-            tpr_top = tpr_utils.do_mtop(data, th.fver,
-                                        tpr_resid_from_one=tpr_resid_from_one)
+            tpr_top = tpr_utils.do_mtop(
+                data, th.fver, tpr_resid_from_one=tpr_resid_from_one
+            )
         else:
             msg = f"{self.filename}: No topology found in tpr file"
             logger.critical(msg)
@@ -252,7 +257,6 @@ class TPRParser(TopologyReaderBase):
         tpr_top.add_TopologyAttr(Resnums(tpr_top.resids.values.copy()))
 
         return tpr_top
-
 
     def _log_header(self, th):
         logger.info(f"Gromacs version   : {th.ver_str}")

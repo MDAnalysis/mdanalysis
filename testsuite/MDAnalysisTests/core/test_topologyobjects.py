@@ -31,18 +31,24 @@ import MDAnalysis as mda
 from MDAnalysis.lib.distances import calc_bonds, calc_angles, calc_dihedrals
 from MDAnalysisTests.datafiles import LAMMPSdata_many_bonds
 from MDAnalysis.core.topologyobjects import (
-    TopologyGroup, TopologyObject, TopologyDict,
+    TopologyGroup,
+    TopologyObject,
+    TopologyDict,
     # TODO: the following items are not used
-    Bond, Angle, Dihedral, ImproperDihedral,
+    Bond,
+    Angle,
+    Dihedral,
+    ImproperDihedral,
 )
 
 
 from MDAnalysisTests.datafiles import PSF, DCD, TRZ_psf, TRZ
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def PSFDCD():
     return mda.Universe(PSF, DCD)
+
 
 class TestTopologyObjects(object):
     """Test the base TopologyObject funtionality
@@ -54,6 +60,7 @@ class TestTopologyObjects(object):
     iter
     len
     """
+
     precision = 3  # see Issue #271 and #1556
 
     @staticmethod
@@ -82,9 +89,9 @@ class TestTopologyObjects(object):
         return PSFDCD.atoms[12].bonds[0]
 
     def test_repr(self, TO1):
-        assert_equal(repr(TO1), '<TopologyObject between: Atom 1, Atom 2>')
+        assert_equal(repr(TO1), "<TopologyObject between: Atom 1, Atom 2>")
 
-    def test_eq(self, a1 ,TO1, TO2, PSFDCD):
+    def test_eq(self, a1, TO1, TO2, PSFDCD):
         TO1_b = TopologyObject(a1.indices, PSFDCD)
 
         assert_equal(TO1 == TO1_b, True)
@@ -145,7 +152,7 @@ class TestTopologyObjects(object):
         assert_almost_equal(b.length(), 1.7661301556941993, self.precision)
 
     def test_bondrepr(self, b):
-        assert_equal(repr(b), '<Bond between: Atom 9, Atom 12>')
+        assert_equal(repr(b), "<Bond between: Atom 9, Atom 12>")
 
     # Angle class checks
     def test_angle(self, PSFDCD):
@@ -157,16 +164,13 @@ class TestTopologyObjects(object):
     def test_angle_repr(self, PSFDCD):
         angle = PSFDCD.atoms[[30, 10, 20]].angle
 
-        assert_equal(repr(angle), '<Angle between: Atom 30, Atom 10, Atom 20>')
+        assert_equal(repr(angle), "<Angle between: Atom 30, Atom 10, Atom 20>")
 
     def test_angle_180(self):
         # we edit the coordinates, so make our own universe
         u = mda.Universe(PSF, DCD)
         angle = u.atoms[210].angles[0]
-        coords = np.array([[1, 1, 1],
-                           [2, 1, 1],
-                           [3, 1, 1]],
-                          dtype=np.float32)
+        coords = np.array([[1, 1, 1], [2, 1, 1], [3, 1, 1]], dtype=np.float32)
 
         angle.atoms.positions = coords
 
@@ -182,8 +186,10 @@ class TestTopologyObjects(object):
     def test_dihedral_repr(self, PSFDCD):
         dihedral = PSFDCD.atoms[[4, 7, 8, 1]].dihedral
 
-        assert_equal(repr(dihedral),
-                     '<Dihedral between: Atom 4, Atom 7, Atom 8, Atom 1>')
+        assert_equal(
+            repr(dihedral),
+            "<Dihedral between: Atom 4, Atom 7, Atom 8, Atom 1>",
+        )
 
     # Improper_Dihedral class check
     def test_improper(self, PSFDCD):
@@ -197,12 +203,13 @@ class TestTopologyObjects(object):
 
         assert_equal(
             repr(imp),
-            '<ImproperDihedral between: Atom 4, Atom 7, Atom 8, Atom 1>')
+            "<ImproperDihedral between: Atom 4, Atom 7, Atom 8, Atom 1>",
+        )
 
     def test_ureybradley_repr(self, PSFDCD):
         ub = PSFDCD.atoms[[30, 10]].ureybradley
 
-        assert_equal(repr(ub), '<UreyBradley between: Atom 30, Atom 10>')
+        assert_equal(repr(ub), "<UreyBradley between: Atom 30, Atom 10>")
 
     def test_ureybradley_repr_VE(self, PSFDCD):
         with pytest.raises(ValueError):
@@ -214,18 +221,22 @@ class TestTopologyObjects(object):
         assert ub.partner(PSFDCD.atoms[10]) == PSFDCD.atoms[30]
 
     def test_ureybradley_distance(self, b):
-        assert_almost_equal(b.atoms.ureybradley.distance(), b.length(), self.precision)
+        assert_almost_equal(
+            b.atoms.ureybradley.distance(), b.length(), self.precision
+        )
 
     def test_cmap_repr(self, PSFDCD):
         cmap = PSFDCD.atoms[[4, 7, 8, 1, 2]].cmap
 
         assert_equal(
             repr(cmap),
-            '<CMap between: Atom 4, Atom 7, Atom 8, Atom 1, Atom 2>')
-    
+            "<CMap between: Atom 4, Atom 7, Atom 8, Atom 1, Atom 2>",
+        )
+
     def test_cmap_repr_VE(self, PSFDCD):
         with pytest.raises(ValueError):
             cmap = PSFDCD.atoms[[30, 10, 2]].cmap
+
 
 class TestTopologyGroup(object):
     """Tests TopologyDict and TopologyGroup classes with psf input"""
@@ -271,7 +282,7 @@ class TestTopologyGroup(object):
 
     def test_td_keyerror(self, b_td):
         with pytest.raises(KeyError):
-            b_td[('something', 'stupid')]
+            b_td[("something", "stupid")]
 
     def test_td_universe(self, b_td, PSFDCD):
         assert b_td.universe is PSFDCD
@@ -282,15 +293,15 @@ class TestTopologyGroup(object):
         assert len(res1.atoms.bonds.types()) == 12
 
     def test_bonds_contains(self, b_td):
-        assert ('57', '2') in b_td
+        assert ("57", "2") in b_td
 
     def test_bond_uniqueness(self, PSFDCD):
         bondtypes = PSFDCD.atoms.bonds.types()
         # check that a key doesn't appear in reversed format in keylist
         # have to exclude case of b[::-1] == b as this is false positive
-        assert not any([b[::-1] in bondtypes
-                        for b in bondtypes if b[::-1] != b])
-
+        assert not any(
+            [b[::-1] in bondtypes for b in bondtypes if b[::-1] != b]
+        )
 
     def test_bond_reversal(self, PSFDCD, b_td):
         bondtypes = PSFDCD.atoms.bonds.types()
@@ -315,12 +326,11 @@ class TestTopologyGroup(object):
         assert len(PSFDCD.atoms.angles.types()) == 130
 
     def test_angles_contains(self, a_td):
-        assert ('23', '73', '1') in a_td
+        assert ("23", "73", "1") in a_td
 
     def test_angles_uniqueness(self, a_td):
         bondtypes = a_td.keys()
-        assert not any(b[::-1] in bondtypes
-                       for b in bondtypes if b[::-1] != b)
+        assert not any(b[::-1] in bondtypes for b in bondtypes if b[::-1] != b)
 
     def test_angles_reversal(self, a_td):
         bondtypes = list(a_td.keys())
@@ -336,7 +346,7 @@ class TestTopologyGroup(object):
         assert len(PSFDCD.atoms.dihedrals.types()) == 220
 
     def test_dihedrals_contains(self, t_td):
-        assert ('30', '29', '20', '70') in t_td
+        assert ("30", "29", "20", "70") in t_td
 
     def test_dihedrals_uniqueness(self, t_td):
         bondtypes = t_td.keys()
@@ -353,26 +363,26 @@ class TestTopologyGroup(object):
 
     def test_bad_creation(self):
         """Test making a TopologyDict out of nonsense"""
-        inputlist = ['a', 'b', 'c']
+        inputlist = ["a", "b", "c"]
         with pytest.raises(TypeError):
             TopologyDict(inputlist)
 
     def test_bad_creation_TG(self):
         """Test making a TopologyGroup out of nonsense"""
-        inputlist = ['a', 'b', 'c']
+        inputlist = ["a", "b", "c"]
         with pytest.raises(TypeError):
             TopologyGroup(inputlist)
 
     def test_tg_creation_bad_btype(self, PSFDCD):
         vals = np.array([[0, 10], [5, 15]])
         with pytest.raises(ValueError):
-            TopologyGroup(vals, PSFDCD, btype='apple')
+            TopologyGroup(vals, PSFDCD, btype="apple")
 
     def test_bond_tg_creation_notype(self, PSFDCD):
         vals = np.array([[0, 10], [5, 15]])
         tg = TopologyGroup(vals, PSFDCD)
 
-        assert tg.btype == 'bond'
+        assert tg.btype == "bond"
         assert_equal(tg[0].indices, (0, 10))
         assert_equal(tg[1].indices, (5, 15))
 
@@ -380,7 +390,7 @@ class TestTopologyGroup(object):
         vals = np.array([[0, 5, 10], [5, 10, 15]])
         tg = TopologyGroup(vals, PSFDCD)
 
-        assert tg.btype == 'angle'
+        assert tg.btype == "angle"
         assert_equal(tg[0].indices, (0, 5, 10))
         assert_equal(tg[1].indices, (5, 10, 15))
 
@@ -389,7 +399,7 @@ class TestTopologyGroup(object):
 
         tg = TopologyGroup(vals, PSFDCD)
 
-        assert tg.btype == 'dihedral'
+        assert tg.btype == "dihedral"
         assert_equal(tg[0].indices, (0, 2, 4, 6))
         assert_equal(tg[1].indices, (5, 7, 9, 11))
 
@@ -410,27 +420,28 @@ class TestTopologyGroup(object):
         * check they're equal
         * change one very slightly and see if they notice
         """
-        tg = PSFDCD.atoms.bonds.selectBonds(('23', '3'))
-        tg2 = PSFDCD.atoms.bonds.selectBonds(('23', '3'))
+        tg = PSFDCD.atoms.bonds.selectBonds(("23", "3"))
+        tg2 = PSFDCD.atoms.bonds.selectBonds(("23", "3"))
 
         assert tg == tg2
 
-        tg3 = PSFDCD.atoms.bonds.selectBonds(('81', '10'))
+        tg3 = PSFDCD.atoms.bonds.selectBonds(("81", "10"))
 
         assert not (tg == tg3)
         assert tg != tg3
 
     def test_create_TopologyGroup(self, res1, PSFDCD):
-        res1_tg = res1.atoms.bonds.select_bonds(('23', '3'))  # make a tg
+        res1_tg = res1.atoms.bonds.select_bonds(("23", "3"))  # make a tg
         assert len(res1_tg) == 4  # check size of tg
         testbond = PSFDCD.atoms[7].bonds[0]
         assert testbond in res1_tg  # check a known bond is present
 
-        res1_tg2 = res1.atoms.bonds.select_bonds(('23', '3'))
+        res1_tg2 = res1.atoms.bonds.select_bonds(("23", "3"))
         assert res1_tg == res1_tg2
 
-    @pytest.mark.parametrize('attr',
-                             ['bonds', 'angles', 'dihedrals', 'impropers'])
+    @pytest.mark.parametrize(
+        "attr", ["bonds", "angles", "dihedrals", "impropers"]
+    )
     def test_TG_loose_intersection(self, PSFDCD, attr):
         """Pull bonds from a TG which are at least partially in an AG"""
         ag = PSFDCD.atoms[10:60]
@@ -464,28 +475,30 @@ class TestTopologyGroup(object):
 
         # bonds
         assert check_strict_intersection(PSFDCD.atoms.bonds, testinput)
-        assert (manual(PSFDCD.atoms.bonds, testinput) ==
-                set(PSFDCD.atoms.bonds.atomgroup_intersection(
-                    testinput, strict=True)))
+        assert manual(PSFDCD.atoms.bonds, testinput) == set(
+            PSFDCD.atoms.bonds.atomgroup_intersection(testinput, strict=True)
+        )
         # angles
         assert check_strict_intersection(PSFDCD.atoms.angles, testinput)
-        assert (manual(PSFDCD.atoms.angles, testinput) ==
-                set(PSFDCD.atoms.angles.atomgroup_intersection(
-                    testinput, strict=True)))
+        assert manual(PSFDCD.atoms.angles, testinput) == set(
+            PSFDCD.atoms.angles.atomgroup_intersection(testinput, strict=True)
+        )
         # dihedrals
         assert check_strict_intersection(PSFDCD.atoms.dihedrals, testinput)
-        assert (manual(PSFDCD.atoms.dihedrals, testinput) ==
-                set(PSFDCD.atoms.dihedrals.atomgroup_intersection(
-                    testinput, strict=True)))
+        assert manual(PSFDCD.atoms.dihedrals, testinput) == set(
+            PSFDCD.atoms.dihedrals.atomgroup_intersection(
+                testinput, strict=True
+            )
+        )
 
     def test_add_TopologyGroups(self, res1, res2, PSFDCD):
-        res1_tg = res1.atoms.bonds.selectBonds(('23', '3'))
-        res2_tg = res2.atoms.bonds.selectBonds(('23', '3'))
+        res1_tg = res1.atoms.bonds.selectBonds(("23", "3"))
+        res2_tg = res2.atoms.bonds.selectBonds(("23", "3"))
 
         combined_tg = res1_tg + res2_tg  # add tgs together
         assert len(combined_tg) == 10
 
-        big_tg = PSFDCD.atoms.bonds.selectBonds(('23', '3'))
+        big_tg = PSFDCD.atoms.bonds.selectBonds(("23", "3"))
         big_tg += combined_tg  # try and add some already included bonds
         assert len(big_tg) == 494  # check len doesn't change
 
@@ -501,7 +514,7 @@ class TestTopologyGroup(object):
         to = PSFDCD.bonds[5]
         tg3 = tg1 + to
 
-        assert_equal(tg3.indices,  to.indices[None, :])
+        assert_equal(tg3.indices, to.indices[None, :])
 
     def test_add_TG_to_empty_TG(self, PSFDCD):
         tg1 = PSFDCD.bonds[:0]  # empty
@@ -548,8 +561,7 @@ class TestTopologyGroup(object):
         tg = PSFDCD.atoms.bonds[:10]
         tg2 = tg[[1, 4, 5]]
 
-        manual = TopologyGroup(tg.indices[[1, 4, 5]],
-                               tg.universe, tg.btype)
+        manual = TopologyGroup(tg.indices[[1, 4, 5]], tg.universe, tg.btype)
 
         assert list(tg2) == list(manual)
 
@@ -576,7 +588,7 @@ class TestTopologyGroup(object):
         a1 = tg.atom1
 
         assert len(tg) == len(a1)
-        for (atom, bond) in zip(a1, tg):
+        for atom, bond in zip(a1, tg):
             assert atom == bond[0]
 
     def test_atom2(self, PSFDCD):
@@ -584,7 +596,7 @@ class TestTopologyGroup(object):
         a2 = tg.atom2
 
         assert len(tg) == len(a2)
-        for (atom, bond) in zip(a2, tg):
+        for atom, bond in zip(a2, tg):
             assert atom == bond[1]
 
     def test_atom3_IE(self, PSFDCD):
@@ -596,7 +608,7 @@ class TestTopologyGroup(object):
         tg = PSFDCD.angles[:5]
         a3 = tg.atom3
         assert len(tg) == len(a3)
-        for (atom, bond) in zip(a3, tg):
+        for atom, bond in zip(a3, tg):
             assert atom == bond[2]
 
     def test_atom4_IE(self, PSFDCD):
@@ -609,7 +621,7 @@ class TestTopologyGroup(object):
 
         a4 = tg.atom4
         assert len(tg) == len(a4)
-        for (atom, bond) in zip(a4, tg):
+        for atom, bond in zip(a4, tg):
             assert atom == bond[3]
 
 
@@ -619,6 +631,7 @@ class TestTopologyGroup_Cython(object):
      - work (return proper values)
      - catch errors
     """
+
     @staticmethod
     @pytest.fixture
     def bgroup(PSFDCD):
@@ -646,20 +659,30 @@ class TestTopologyGroup_Cython(object):
                 tg.bonds()
 
     def test_right_type_bonds(self, bgroup, PSFDCD):
-        assert_equal(bgroup.bonds(),
-                     calc_bonds(bgroup.atom1.positions,
-                                bgroup.atom2.positions))
-        assert_equal(bgroup.bonds(pbc=True),
-                     calc_bonds(bgroup.atom1.positions,
-                                bgroup.atom2.positions,
-                                box=PSFDCD.dimensions))
-        assert_equal(bgroup.values(),
-                     calc_bonds(bgroup.atom1.positions,
-                                bgroup.atom2.positions))
-        assert_equal(bgroup.values(pbc=True),
-                     calc_bonds(bgroup.atom1.positions,
-                                bgroup.atom2.positions,
-                                box=PSFDCD.dimensions))
+        assert_equal(
+            bgroup.bonds(),
+            calc_bonds(bgroup.atom1.positions, bgroup.atom2.positions),
+        )
+        assert_equal(
+            bgroup.bonds(pbc=True),
+            calc_bonds(
+                bgroup.atom1.positions,
+                bgroup.atom2.positions,
+                box=PSFDCD.dimensions,
+            ),
+        )
+        assert_equal(
+            bgroup.values(),
+            calc_bonds(bgroup.atom1.positions, bgroup.atom2.positions),
+        )
+        assert_equal(
+            bgroup.values(pbc=True),
+            calc_bonds(
+                bgroup.atom1.positions,
+                bgroup.atom2.positions,
+                box=PSFDCD.dimensions,
+            ),
+        )
 
     # angles
     def test_wrong_type_angles(self, bgroup, dgroup, igroup):
@@ -668,24 +691,40 @@ class TestTopologyGroup_Cython(object):
                 tg.angles()
 
     def test_right_type_angles(self, agroup, PSFDCD):
-        assert_equal(agroup.angles(),
-                     calc_angles(agroup.atom1.positions,
-                                 agroup.atom2.positions,
-                                 agroup.atom3.positions))
-        assert_equal(agroup.angles(pbc=True),
-                     calc_angles(agroup.atom1.positions,
-                                 agroup.atom2.positions,
-                                 agroup.atom3.positions,
-                                 box=PSFDCD.dimensions))
-        assert_equal(agroup.values(),
-                     calc_angles(agroup.atom1.positions,
-                                 agroup.atom2.positions,
-                                 agroup.atom3.positions))
-        assert_equal(agroup.values(pbc=True),
-                     calc_angles(agroup.atom1.positions,
-                                 agroup.atom2.positions,
-                                 agroup.atom3.positions,
-                                 box=PSFDCD.dimensions))
+        assert_equal(
+            agroup.angles(),
+            calc_angles(
+                agroup.atom1.positions,
+                agroup.atom2.positions,
+                agroup.atom3.positions,
+            ),
+        )
+        assert_equal(
+            agroup.angles(pbc=True),
+            calc_angles(
+                agroup.atom1.positions,
+                agroup.atom2.positions,
+                agroup.atom3.positions,
+                box=PSFDCD.dimensions,
+            ),
+        )
+        assert_equal(
+            agroup.values(),
+            calc_angles(
+                agroup.atom1.positions,
+                agroup.atom2.positions,
+                agroup.atom3.positions,
+            ),
+        )
+        assert_equal(
+            agroup.values(pbc=True),
+            calc_angles(
+                agroup.atom1.positions,
+                agroup.atom2.positions,
+                agroup.atom3.positions,
+                box=PSFDCD.dimensions,
+            ),
+        )
 
     # dihedrals & impropers
     def test_wrong_type_dihedrals(self, bgroup, agroup):
@@ -694,52 +733,84 @@ class TestTopologyGroup_Cython(object):
                 tg.dihedrals()
 
     def test_right_type_dihedrals(self, dgroup, PSFDCD):
-        assert_equal(dgroup.dihedrals(),
-                     calc_dihedrals(dgroup.atom1.positions,
-                                   dgroup.atom2.positions,
-                                   dgroup.atom3.positions,
-                                   dgroup.atom4.positions))
-        assert_equal(dgroup.dihedrals(pbc=True),
-                     calc_dihedrals(dgroup.atom1.positions,
-                                   dgroup.atom2.positions,
-                                   dgroup.atom3.positions,
-                                   dgroup.atom4.positions,
-                                   box=PSFDCD.dimensions))
-        assert_equal(dgroup.values(),
-                     calc_dihedrals(dgroup.atom1.positions,
-                                   dgroup.atom2.positions,
-                                   dgroup.atom3.positions,
-                                   dgroup.atom4.positions))
-        assert_equal(dgroup.values(pbc=True),
-                     calc_dihedrals(dgroup.atom1.positions,
-                                   dgroup.atom2.positions,
-                                   dgroup.atom3.positions,
-                                   dgroup.atom4.positions,
-                                   box=PSFDCD.dimensions))
+        assert_equal(
+            dgroup.dihedrals(),
+            calc_dihedrals(
+                dgroup.atom1.positions,
+                dgroup.atom2.positions,
+                dgroup.atom3.positions,
+                dgroup.atom4.positions,
+            ),
+        )
+        assert_equal(
+            dgroup.dihedrals(pbc=True),
+            calc_dihedrals(
+                dgroup.atom1.positions,
+                dgroup.atom2.positions,
+                dgroup.atom3.positions,
+                dgroup.atom4.positions,
+                box=PSFDCD.dimensions,
+            ),
+        )
+        assert_equal(
+            dgroup.values(),
+            calc_dihedrals(
+                dgroup.atom1.positions,
+                dgroup.atom2.positions,
+                dgroup.atom3.positions,
+                dgroup.atom4.positions,
+            ),
+        )
+        assert_equal(
+            dgroup.values(pbc=True),
+            calc_dihedrals(
+                dgroup.atom1.positions,
+                dgroup.atom2.positions,
+                dgroup.atom3.positions,
+                dgroup.atom4.positions,
+                box=PSFDCD.dimensions,
+            ),
+        )
 
     def test_right_type_impropers(self, igroup, PSFDCD):
-        assert_equal(igroup.dihedrals(),
-                     calc_dihedrals(igroup.atom1.positions,
-                                   igroup.atom2.positions,
-                                   igroup.atom3.positions,
-                                   igroup.atom4.positions))
-        assert_equal(igroup.dihedrals(pbc=True),
-                     calc_dihedrals(igroup.atom1.positions,
-                                   igroup.atom2.positions,
-                                   igroup.atom3.positions,
-                                   igroup.atom4.positions,
-                                   box=PSFDCD.dimensions))
-        assert_equal(igroup.values(),
-                     calc_dihedrals(igroup.atom1.positions,
-                                   igroup.atom2.positions,
-                                   igroup.atom3.positions,
-                                   igroup.atom4.positions))
-        assert_equal(igroup.values(pbc=True),
-                     calc_dihedrals(igroup.atom1.positions,
-                                   igroup.atom2.positions,
-                                   igroup.atom3.positions,
-                                   igroup.atom4.positions,
-                                   box=PSFDCD.dimensions))
+        assert_equal(
+            igroup.dihedrals(),
+            calc_dihedrals(
+                igroup.atom1.positions,
+                igroup.atom2.positions,
+                igroup.atom3.positions,
+                igroup.atom4.positions,
+            ),
+        )
+        assert_equal(
+            igroup.dihedrals(pbc=True),
+            calc_dihedrals(
+                igroup.atom1.positions,
+                igroup.atom2.positions,
+                igroup.atom3.positions,
+                igroup.atom4.positions,
+                box=PSFDCD.dimensions,
+            ),
+        )
+        assert_equal(
+            igroup.values(),
+            calc_dihedrals(
+                igroup.atom1.positions,
+                igroup.atom2.positions,
+                igroup.atom3.positions,
+                igroup.atom4.positions,
+            ),
+        )
+        assert_equal(
+            igroup.values(pbc=True),
+            calc_dihedrals(
+                igroup.atom1.positions,
+                igroup.atom2.positions,
+                igroup.atom3.positions,
+                igroup.atom4.positions,
+                box=PSFDCD.dimensions,
+            ),
+        )
 
 
 def test_bond_length_pbc():
@@ -752,16 +823,18 @@ def test_bond_length_pbc():
 
     assert_almost_equal(ref, u.bonds[0].length(pbc=True), decimal=6)
 
+
 def test_cross_universe_eq():
     u1 = mda.Universe(PSF)
     u2 = mda.Universe(PSF)
 
     assert not (u1.bonds[0] == u2.bonds[0])
 
+
 def test_zero_size_TG_indices_bonds():
     u = mda.Universe.empty(10)
 
-    u.add_TopologyAttr('bonds', values=[(1, 2), (2, 3)])
+    u.add_TopologyAttr("bonds", values=[(1, 2), (2, 3)])
 
     ag = u.atoms[[0]]
 
@@ -770,10 +843,11 @@ def test_zero_size_TG_indices_bonds():
     assert idx.shape == (0, 2)
     assert idx.dtype == np.int32
 
+
 def test_zero_size_TG_indices_angles():
     u = mda.Universe.empty(10)
 
-    u.add_TopologyAttr('angles', values=[(1, 2, 3), (2, 3, 4)])
+    u.add_TopologyAttr("angles", values=[(1, 2, 3), (2, 3, 4)])
 
     ag = u.atoms[[0]]
 
