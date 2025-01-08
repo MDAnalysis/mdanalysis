@@ -110,10 +110,7 @@ class TestFragments(object):
     Test ring molecules?
     """
 
-    @pytest.mark.parametrize('u', (
-            case1(),
-            case2()
-    ))
+    @pytest.mark.parametrize("u", (case1(), case2()))
     def test_total_frags(self, u):
         fragments = u.atoms.fragments
         fragindices = u.atoms.fragindices
@@ -127,23 +124,17 @@ class TestFragments(object):
         assert len(np.unique(fragindices)) == len(fragments)
         # check fragindices dtype:
         assert fragindices.dtype == np.intp
-        #check n_fragments
+        # check n_fragments
         assert u.atoms.n_fragments == len(fragments)
 
-    @pytest.mark.parametrize('u', (
-            case1(),
-            case2()
-    ))
+    @pytest.mark.parametrize("u", (case1(), case2()))
     def test_frag_external_ordering(self, u):
         # check fragments and fragindices are sorted correctly:
         for i, frag in enumerate(u.atoms.fragments):
             assert frag[0].index == i * 25
             assert np.unique(frag.fragindices)[0] == i
 
-    @pytest.mark.parametrize('u', (
-            case1(),
-            case2()
-    ))
+    @pytest.mark.parametrize("u", (case1(), case2()))
     def test_frag_internal_ordering(self, u):
         # check atoms are sorted within fragments and have the same fragindex:
         for i, frag in enumerate(u.atoms.fragments):
@@ -151,10 +142,7 @@ class TestFragments(object):
             assert len(np.unique(frag.fragindices)) == 1
             assert frag.n_fragments == 1
 
-    @pytest.mark.parametrize('u', (
-            case1(),
-            case2()
-    ))
+    @pytest.mark.parametrize("u", (case1(), case2()))
     def test_atom_access(self, u):
         # check atom can access fragment and fragindex:
         for at in (u.atoms[0], u.atoms[76], u.atoms[111]):
@@ -167,10 +155,7 @@ class TestFragments(object):
             with pytest.raises(AttributeError):
                 x = at.n_fragments
 
-    @pytest.mark.parametrize('u', (
-            case1(),
-            case2()
-    ))
+    @pytest.mark.parametrize("u", (case1(), case2()))
     def test_atomgroup_access(self, u):
         # check atomgroup can access fragments
         # first 60 atoms have 3 fragments, given as tuple
@@ -198,36 +183,36 @@ class TestFragments(object):
         u = make_Universe()
         ag = u.atoms[:10]
         with pytest.raises(NoDataError):
-            getattr(ag, 'fragments')
+            getattr(ag, "fragments")
         with pytest.raises(NoDataError):
-            getattr(ag, 'fragindices')
+            getattr(ag, "fragindices")
         with pytest.raises(NoDataError):
-            getattr(ag, 'n_fragments')
+            getattr(ag, "n_fragments")
 
     def test_atom_fragment_nobonds_NDE(self):
         # should raise NDE
         u = make_Universe()
         with pytest.raises(NoDataError):
-            getattr(u.atoms[10], 'fragment')
+            getattr(u.atoms[10], "fragment")
         with pytest.raises(NoDataError):
-            getattr(u.atoms[10], 'fragindex')
+            getattr(u.atoms[10], "fragindex")
 
     def test_atomgroup_fragment_cache_invalidation_bond_making(self):
         u = case1()
         fgs = u.atoms.fragments
-        assert fgs is u.atoms._cache['fragments']
-        assert u.atoms._cache_key in u._cache['_valid']['fragments']
+        assert fgs is u.atoms._cache["fragments"]
+        assert u.atoms._cache_key in u._cache["_valid"]["fragments"]
         u.add_bonds((fgs[0][-1] + fgs[1][0],))  # should trigger invalidation
-        assert 'fragments' not in u._cache['_valid']
+        assert "fragments" not in u._cache["_valid"]
         assert len(fgs) > len(u.atoms.fragments)  # recomputed
 
     def test_atomgroup_fragment_cache_invalidation_bond_breaking(self):
         u = case1()
         fgs = u.atoms.fragments
-        assert fgs is u.atoms._cache['fragments']
-        assert u.atoms._cache_key in u._cache['_valid']['fragments']
+        assert fgs is u.atoms._cache["fragments"]
+        assert u.atoms._cache_key in u._cache["_valid"]["fragments"]
         u.delete_bonds((u.atoms.bonds[3],))  # should trigger invalidation
-        assert 'fragments' not in u._cache['_valid']
+        assert "fragments" not in u._cache["_valid"]
         assert len(fgs) < len(u.atoms.fragments)  # recomputed
 
 

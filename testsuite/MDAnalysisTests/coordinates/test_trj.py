@@ -23,70 +23,91 @@
 import numpy as np
 import pytest
 
-from numpy.testing import (
-    assert_equal,
-    assert_almost_equal
-)
+from numpy.testing import assert_equal, assert_almost_equal
 
 import MDAnalysis as mda
 from MDAnalysisTests.coordinates.reference import RefACHE, RefCappedAla
-from MDAnalysisTests.datafiles import (PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2)
+from MDAnalysisTests.datafiles import PRM, TRJ, TRJ_bz2, PRMpbc, TRJpbc_bz2
 
 
 class _TRJReaderTest(object):
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def universe(self):
         return mda.Universe(self.topology_file, self.trajectory_file)
 
     def test_load_prm(self, universe):
-        assert_equal(len(universe.atoms), self.ref_n_atoms,
-                     "load Universe from PRM and TRJ")
+        assert_equal(
+            len(universe.atoms),
+            self.ref_n_atoms,
+            "load Universe from PRM and TRJ",
+        )
 
     def test_n_atoms(self, universe):
-        assert_equal(universe.trajectory.n_atoms, self.ref_n_atoms,
-                     "wrong number of atoms")
+        assert_equal(
+            universe.trajectory.n_atoms,
+            self.ref_n_atoms,
+            "wrong number of atoms",
+        )
 
     def test_n_frames(self, universe):
-        assert_equal(universe.trajectory.n_frames, self.ref_n_frames,
-                     "wrong number of frames in xyz")
+        assert_equal(
+            universe.trajectory.n_frames,
+            self.ref_n_frames,
+            "wrong number of frames in xyz",
+        )
 
     def test_periodic(self, universe):
         assert_equal(universe.trajectory.periodic, self.ref_periodic)
 
     def test_amber_proteinselection(self, universe):
-        protein = universe.select_atoms('protein')
-        assert_equal(protein.n_atoms, self.ref_proteinatoms,
-                     "error in protein selection (HIS or termini?)")
+        protein = universe.select_atoms("protein")
+        assert_equal(
+            protein.n_atoms,
+            self.ref_proteinatoms,
+            "error in protein selection (HIS or termini?)",
+        )
 
     def test_sum_centres_of_geometry(self, universe):
-        protein = universe.select_atoms('protein')
-        total = np.sum([protein.center_of_geometry() for ts in
-                        universe.trajectory])
-        assert_almost_equal(total, self.ref_sum_centre_of_geometry, self.prec,
-                            err_msg="sum of centers of geometry over the "
-                                    "trajectory do not match")
+        protein = universe.select_atoms("protein")
+        total = np.sum(
+            [protein.center_of_geometry() for ts in universe.trajectory]
+        )
+        assert_almost_equal(
+            total,
+            self.ref_sum_centre_of_geometry,
+            self.prec,
+            err_msg="sum of centers of geometry over the "
+            "trajectory do not match",
+        )
 
     def test_initial_frame_is_0(self, universe):
-        assert_equal(universe.trajectory.ts.frame, 0,
-                     "initial frame is not 0 but {0}".format(
-                         universe.trajectory.ts.frame))
+        assert_equal(
+            universe.trajectory.ts.frame,
+            0,
+            "initial frame is not 0 but {0}".format(
+                universe.trajectory.ts.frame
+            ),
+        )
 
     def test_starts_with_first_frame(self, universe):
         """Test that coordinate arrays are filled as soon as the trajectory
         has been opened."""
-        assert np.any(universe.atoms.positions > 0), "Reader does not " \
-                                                     "populate positions right away."
+        assert np.any(universe.atoms.positions > 0), (
+            "Reader does not " "populate positions right away."
+        )
 
     def test_rewind(self, universe):
         trj = universe.trajectory
         trj.next()
         trj.next()  # for readers that do not support indexing
-        assert_equal(trj.ts.frame, 2,
-                     "failed to forward to frame 2 (frameindex 2)")
+        assert_equal(
+            trj.ts.frame, 2, "failed to forward to frame 2 (frameindex 2)"
+        )
         trj.rewind()
         assert_equal(trj.ts.frame, 0, "failed to rewind to first frame")
-        assert np.any(universe.atoms.positions > 0), "Reader does not " \
-                                                     "populate positions after rewinding."
+        assert np.any(universe.atoms.positions > 0), (
+            "Reader does not " "populate positions after rewinding."
+        )
 
     def test_full_slice(self, universe):
         trj_iter = universe.trajectory[:]
@@ -135,4 +156,4 @@ class TestBzippedTRJReaderPBC(_TRJReaderTest, RefCappedAla):
 
 def test_trj_no_natoms():
     with pytest.raises(ValueError):
-        mda.coordinates.TRJ.TRJReader('somefile.txt')
+        mda.coordinates.TRJ.TRJReader("somefile.txt")

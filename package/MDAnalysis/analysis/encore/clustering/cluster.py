@@ -160,11 +160,11 @@ def cluster(
         method = ClusteringMethod.AffinityPropagationNative()
     # Internally, ensembles are always transformed to a list of lists
     if ensembles is not None:
-        if not hasattr(ensembles, '__iter__'):
+        if not hasattr(ensembles, "__iter__"):
             ensembles = [ensembles]
 
         ensembles_list = ensembles
-        if not hasattr(ensembles[0], '__iter__'):
+        if not hasattr(ensembles[0], "__iter__"):
             ensembles_list = [ensembles]
 
         # Calculate merged ensembles and transfer to memory
@@ -176,35 +176,41 @@ def cluster(
             merged_ensembles.append(merge_universes(ensembles))
 
     methods = method
-    if not hasattr(method, '__iter__'):
+    if not hasattr(method, "__iter__"):
         methods = [method]
 
     # Check whether any of the clustering methods can make use of a distance
     # matrix
-    any_method_accept_distance_matrix = \
-        np.any([_method.accepts_distance_matrix for _method in methods])
+    any_method_accept_distance_matrix = np.any(
+        [_method.accepts_distance_matrix for _method in methods]
+    )
 
     # If distance matrices are provided, check that it matches the number
     # of ensembles
     if distance_matrix:
-        if not hasattr(distance_matrix, '__iter__'):
+        if not hasattr(distance_matrix, "__iter__"):
             distance_matrix = [distance_matrix]
-        if ensembles is not None and \
-                        len(distance_matrix) != len(merged_ensembles):
-            raise ValueError("Dimensions of provided list of distance matrices "
-                             "does not match that of provided list of "
-                             "ensembles: {0} vs {1}"
-                             .format(len(distance_matrix),
-                                     len(merged_ensembles)))
+        if ensembles is not None and len(distance_matrix) != len(
+            merged_ensembles
+        ):
+            raise ValueError(
+                "Dimensions of provided list of distance matrices "
+                "does not match that of provided list of "
+                "ensembles: {0} vs {1}".format(
+                    len(distance_matrix), len(merged_ensembles)
+                )
+            )
 
     else:
         # Calculate distance matrices for all merged ensembles - if not provided
         if any_method_accept_distance_matrix:
             distance_matrix = []
             for merged_ensemble in merged_ensembles:
-                distance_matrix.append(get_distance_matrix(merged_ensemble,
-                                                           select=select,
-                                                           **kwargs))
+                distance_matrix.append(
+                    get_distance_matrix(
+                        merged_ensemble, select=select, **kwargs
+                    )
+                )
 
     args = []
     for method in methods:
@@ -212,11 +218,14 @@ def cluster(
             args += [(d,) for d in distance_matrix]
         else:
             for merged_ensemble in merged_ensembles:
-                coordinates = merged_ensemble.trajectory.timeseries(order="fac")
+                coordinates = merged_ensemble.trajectory.timeseries(
+                    order="fac"
+                )
 
                 # Flatten coordinate matrix into n_frame x n_coordinates
-                coordinates = np.reshape(coordinates,
-                                         (coordinates.shape[0], -1))
+                coordinates = np.reshape(
+                    coordinates, (coordinates.shape[0], -1)
+                )
 
                 args.append((coordinates,))
 
@@ -231,14 +240,16 @@ def cluster(
     if ensembles is not None:
         ensemble_assignment = []
         for i, ensemble in enumerate(ensembles):
-            ensemble_assignment += [i+1]*len(ensemble.trajectory)
+            ensemble_assignment += [i + 1] * len(ensemble.trajectory)
         ensemble_assignment = np.array(ensemble_assignment)
-        metadata = {'ensemble_membership': ensemble_assignment}
+        metadata = {"ensemble_membership": ensemble_assignment}
 
     # Create clusters collections from clustering results,
     # one for each cluster. None if clustering didn't work.
-    ccs = [ClusterCollection(clusters[1],
-                             metadata=metadata) for clusters in results]
+    ccs = [
+        ClusterCollection(clusters[1], metadata=metadata)
+        for clusters in results
+    ]
 
     if allow_collapsed_result and len(ccs) == 1:
         ccs = ccs[0]

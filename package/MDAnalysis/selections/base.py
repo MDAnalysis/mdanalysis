@@ -60,7 +60,7 @@ class _Selectionmeta(type):
     def __init__(cls, name, bases, classdict):
         type.__init__(type, name, bases, classdict)
         try:
-            fmt = util.asiterable(classdict['format'])
+            fmt = util.asiterable(classdict["format"])
         except KeyError:
             pass
         else:
@@ -97,17 +97,20 @@ class SelectionWriterBase(metaclass=_Selectionmeta):
        and closed with the :meth:`close` method or when exiting the `with`
        statement.
     """
+
     #: Name of the format.
     format = None
     #: Extension of output files.
     ext = None
     #: Special character to continue a line across a newline.
-    continuation = ''
+    continuation = ""
     #: Comment format string; should contain '%s' or ``None`` for no comments.
     commentfmt = None
     default_numterms = 8
 
-    def __init__(self, filename, mode="w", numterms=None, preamble=None, **kwargs):
+    def __init__(
+        self, filename, mode="w", numterms=None, preamble=None, **kwargs
+    ):
         """Set up for writing to *filename*.
 
         Parameters
@@ -126,8 +129,10 @@ class SelectionWriterBase(metaclass=_Selectionmeta):
             use as defaults for :meth:`write`
         """
         self.filename = util.filename(filename, ext=self.ext)
-        if not mode in ('a', 'w'):
-            raise ValueError("mode must be one of 'w', 'a', not {0!r}".format(mode))
+        if not mode in ("a", "w"):
+            raise ValueError(
+                "mode must be one of 'w', 'a', not {0!r}".format(mode)
+            )
         self.mode = mode
         self._current_mode = mode[0]
         if numterms is None or numterms < 0:
@@ -154,8 +159,8 @@ class SelectionWriterBase(metaclass=_Selectionmeta):
         A newline is appended to non-empty strings.
         """
         if self.commentfmt is None:
-            return ''
-        return self.commentfmt % s + '\n'
+            return ""
+        return self.commentfmt % s + "\n"
 
     def write_preamble(self):
         """Write a header, depending on the file format."""
@@ -188,7 +193,7 @@ class SelectionWriterBase(metaclass=_Selectionmeta):
                 frame = u.trajectory.ts.frame
             except AttributeError:
                 frame = 1  # should catch cases when we are analyzing a single PDB (?)
-        name = name or self.otherargs.get('name', None)
+        name = name or self.otherargs.get("name", None)
         if name is None:
             if number is None:
                 self.number += 1
@@ -203,13 +208,15 @@ class SelectionWriterBase(metaclass=_Selectionmeta):
         out = self._outfile
         self._write_head(out, name=name)
         for iatom in range(0, len(selection.atoms), step):
-            line = selection_terms[iatom:iatom + step]
+            line = selection_terms[iatom : iatom + step]
             out.write(" ".join(line))
             if len(line) == step and not iatom + step == len(selection.atoms):
-                out.write(' ' + self.continuation + '\n')
-        out.write(' ')  # safe so that we don't have to put a space at the start of tail
+                out.write(" " + self.continuation + "\n")
+        out.write(
+            " "
+        )  # safe so that we don't have to put a space at the start of tail
         self._write_tail(out)
-        out.write('\n')  # always terminate with newline
+        out.write("\n")  # always terminate with newline
 
     def close(self):
         """Close the file
@@ -234,11 +241,11 @@ class SelectionWriterBase(metaclass=_Selectionmeta):
 
     def _write_head(self, out, **kwargs):
         """Initial output to open file object *out*."""
-        pass # pylint: disable=unnecessary-pass
+        pass  # pylint: disable=unnecessary-pass
 
     def _write_tail(self, out, **kwargs):
         """Last output to open file object *out*."""
-        pass # pylint: disable=unnecessary-pass
+        pass  # pylint: disable=unnecessary-pass
 
     # Context manager support to match Coordinate writers
     # all file handles use a with block in their write method, so these do nothing special

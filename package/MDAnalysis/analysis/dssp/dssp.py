@@ -292,7 +292,6 @@ class DSSP(AnalysisBase):
             "dask",
         )
 
-
     def __init__(
         self,
         atoms: Union[Universe, AtomGroup],
@@ -317,14 +316,15 @@ class DSSP(AnalysisBase):
             for t in heavyatom_names
         }
         self._hydrogens: list["AtomGroup"] = [
-            res.atoms.select_atoms(f"name {hydrogen_name}") for res in ag.residues
+            res.atoms.select_atoms(f"name {hydrogen_name}")
+            for res in ag.residues
         ]
         # can't do it the other way because I need missing values to exist
         # so that I could fill them in later
         if not self._guess_hydrogens:
             # zip() assumes that _heavy_atoms and _hydrogens is ordered in the
             # same way. This is true as long as the original AtomGroup ag is
-            # sorted. With the hard-coded protein selection for ag this is always 
+            # sorted. With the hard-coded protein selection for ag this is always
             # true but if the code on L277 ever changes, make sure to sort first!
             for calpha, hydrogen in zip(
                 self._heavy_atoms["CA"][1:], self._hydrogens[1:]
@@ -373,7 +373,9 @@ class DSSP(AnalysisBase):
         coords = np.array(positions)
 
         if not self._guess_hydrogens:
-            guessed_h_coords = _get_hydrogen_atom_position(coords.swapaxes(0, 1))
+            guessed_h_coords = _get_hydrogen_atom_position(
+                coords.swapaxes(0, 1)
+            )
 
             h_coords = np.array(
                 [
@@ -401,6 +403,7 @@ class DSSP(AnalysisBase):
         return ResultsGroup(
             lookup={"dssp_ndarray": ResultsGroup.flatten_sequence},
         )
+
 
 def translate(onehot: np.ndarray) -> np.ndarray:
     """Translate a one-hot encoding summary into char-based secondary structure

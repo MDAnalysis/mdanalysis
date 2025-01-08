@@ -24,33 +24,47 @@ import re
 
 import MDAnalysisTests
 
+
 def test_import():
     try:
         import MDAnalysis
     except ImportError:
-        raise AssertionError('Failed to import module MDAnalysis. Install MDAnalysis'
-                'first to run the tests, e.g. "pip install mdanalysis"')
+        raise AssertionError(
+            "Failed to import module MDAnalysis. Install MDAnalysis"
+            'first to run the tests, e.g. "pip install mdanalysis"'
+        )
 
 
 def test_matching_versions():
     import MDAnalysis.version
-    assert MDAnalysis.version.__version__ == MDAnalysisTests.__version__, \
-        "MDAnalysis release {0} must be installed to have meaningful tests, not {1}".format(
-            MDAnalysisTests.__version__, MDAnalysis.__version__)
+
+    assert (
+        MDAnalysis.version.__version__ == MDAnalysisTests.__version__
+    ), "MDAnalysis release {0} must be installed to have meaningful tests, not {1}".format(
+        MDAnalysisTests.__version__, MDAnalysis.__version__
+    )
 
 
 def test_version_format(version=None):
     if version is None:
         import MDAnalysis.version
+
         version = MDAnalysis.version.__version__
     # see https://github.com/MDAnalysis/mdanalysis/wiki/SemanticVersioning for format definition
-    m = re.match(r'(?P<MAJOR>\d+)\.(?P<MINOR>\d+)\.(?P<PATCH>\d+)(-(?P<suffix>\w+))?$',
-                 version)
-    assert m, "version {0} does not match the MAJOR.MINOR.PATCH(-suffix) format".format(version)
+    m = re.match(
+        r"(?P<MAJOR>\d+)\.(?P<MINOR>\d+)\.(?P<PATCH>\d+)(-(?P<suffix>\w+))?$",
+        version,
+    )
+    assert (
+        m
+    ), "version {0} does not match the MAJOR.MINOR.PATCH(-suffix) format".format(
+        version
+    )
 
 
 def test_version_at_packagelevel():
     import MDAnalysis
+
     try:
         version = MDAnalysis.__version__
     except:
@@ -61,24 +75,24 @@ def test_version_at_packagelevel():
 # The following allow testing of the memleak tester plugin.
 # Keep commented out unless you suspect the plugin
 # might be misbehaving. Apparently python3 is immune to these leaks!"""
-#from numpy.testing import TestCase
-#class A():
+# from numpy.testing import TestCase
+# class A():
 #    """This is a small leaky class that won't break anything."""
 #    def __init__(self):
 #        self.self_ref = self
 #    def __del__(self):
 #        pass
 #
-#def test_that_memleaks():
+# def test_that_memleaks():
 #    """Test that memleaks (Issue 323)"""
 #    a = A()
 #
-#class TestML1(TestCase):
+# class TestML1(TestCase):
 #    def test_that_memleaks(self):
 #        """Test that memleaks (Issue 323)"""
 #        self.a = A()
 #
-#class TestML2(TestCase):
+# class TestML2(TestCase):
 #    def setUp(self):
 #        a = A()
 #    def test_that_memleaks(self):

@@ -64,8 +64,10 @@ from pathsimanalysis import (
 )
 
 
-wmsg = ('Deprecation in version 2.8.0:\n'
-        'MDAnalysis.analysis.psa is deprecated in favour of the MDAKit '
-        'PathSimAnalysis (https://github.com/MDAnalysis/PathSimAnalysis) '
-        'and will be removed in MDAnalysis version 3.0.0')
+wmsg = (
+    "Deprecation in version 2.8.0:\n"
+    "MDAnalysis.analysis.psa is deprecated in favour of the MDAKit "
+    "PathSimAnalysis (https://github.com/MDAnalysis/PathSimAnalysis) "
+    "and will be removed in MDAnalysis version 3.0.0"
+)
 warnings.warn(wmsg, category=DeprecationWarning)

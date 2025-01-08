@@ -53,7 +53,7 @@ from . import base
 class SelectionWriter(base.SelectionWriterBase):
     format = "VMD"
     ext = "vmd"
-    continuation = '\\'
+    continuation = "\\"
     commentfmt = "# %s"
 
     def _write_head(self, out, **kwargs):

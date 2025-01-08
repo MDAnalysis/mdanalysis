@@ -118,7 +118,7 @@ from ..core.topologyattrs import (
     Angles,
     Dihedrals,
     Impropers,
-    CMaps
+    CMaps,
 )
 from ..core.topology import Topology
 
@@ -136,7 +136,8 @@ class ParmEdParser(TopologyReaderBase):
     """
     For ParmEd structures
     """
-    format = 'PARMED'
+
+    format = "PARMED"
 
     @staticmethod
     def _format_hint(thing):
@@ -228,30 +229,27 @@ class ParmEdParser(TopologyReaderBase):
             try:
                 elements.append(Z2SYMB[z])
             except KeyError:
-                elements.append('')
+                elements.append("")
 
         # Make Atom TopologyAttrs
         for vals, Attr, dtype in (
-                (names, Atomnames, object),
-                (masses, Masses, np.float32),
-                (charges, Charges, np.float32),
-                (types, Atomtypes, object),
-                (elements, Elements, object),
-                (serials, Atomids, np.int32),
-                (chainids, ChainIDs, object),
-
-                (altLocs, AltLocs, object),
-                (bfactors, Tempfactors, np.float32),
-                (occupancies, Occupancies, np.float32),
-
-                (screens, GBScreens, np.float32),
-                (solvent_radii, SolventRadii, np.float32),
-                (nonbonded_indices, NonbondedIndices, np.int32),
-
-                (rmins, RMins, np.float32),
-                (epsilons, Epsilons, np.float32),
-                (rmin14s, RMin14s, np.float32),
-                (epsilon14s, Epsilon14s, np.float32),
+            (names, Atomnames, object),
+            (masses, Masses, np.float32),
+            (charges, Charges, np.float32),
+            (types, Atomtypes, object),
+            (elements, Elements, object),
+            (serials, Atomids, np.int32),
+            (chainids, ChainIDs, object),
+            (altLocs, AltLocs, object),
+            (bfactors, Tempfactors, np.float32),
+            (occupancies, Occupancies, np.float32),
+            (screens, GBScreens, np.float32),
+            (solvent_radii, SolventRadii, np.float32),
+            (nonbonded_indices, NonbondedIndices, np.int32),
+            (rmins, RMins, np.float32),
+            (epsilons, Epsilons, np.float32),
+            (rmin14s, RMin14s, np.float32),
+            (epsilon14s, Epsilon14s, np.float32),
         ):
             attrs.append(Attr(np.array(vals, dtype=dtype)))
 
@@ -262,7 +260,8 @@ class ParmEdParser(TopologyReaderBase):
 
         residx, (resids, resnames, chainids, segids) = change_squash(
             (resids, resnames, chainids, segids),
-            (resids, resnames, chainids, segids))
+            (resids, resnames, chainids, segids),
+        )
 
         n_residues = len(resids)
         attrs.append(Resids(resids))
@@ -311,8 +310,11 @@ class ParmEdParser(TopologyReaderBase):
             bond_types = list(map(squash_identical, bond_types))
             bond_orders = list(map(squash_identical, bond_orders))
 
-        attrs.append(Bonds(bond_values, types=bond_types, guessed=False,
-                           order=bond_orders))
+        attrs.append(
+            Bonds(
+                bond_values, types=bond_types, guessed=False, order=bond_orders
+            )
+        )
 
         for pmdlist, na, values, types in (
             (structure.urey_bradleys, 2, ub_values, ub_types),
@@ -323,7 +325,7 @@ class ParmEdParser(TopologyReaderBase):
         ):
 
             for p in pmdlist:
-                atoms = ['atom{}'.format(i) for i in range(1, na+1)]
+                atoms = ["atom{}".format(i) for i in range(1, na + 1)]
                 idx = tuple(getattr(p, a).idx for a in atoms)
                 if idx not in values:
                     values[idx] = [p]
@@ -345,9 +347,13 @@ class ParmEdParser(TopologyReaderBase):
             types = list(map(squash_identical, types))
             attrs.append(Attr(vals, types=types, guessed=False, order=None))
 
-        top = Topology(n_atoms, n_residues, n_segments,
-                       attrs=attrs,
-                       atom_resindex=residx,
-                       residue_segindex=segidx)
+        top = Topology(
+            n_atoms,
+            n_residues,
+            n_segments,
+            attrs=attrs,
+            atom_resindex=residx,
+            residue_segindex=segidx,
+        )
 
         return top

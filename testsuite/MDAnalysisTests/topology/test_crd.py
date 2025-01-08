@@ -33,10 +33,16 @@ from numpy.testing import assert_allclose
 class TestCRDParser(ParserBase):
     parser = mda.topology.CRDParser.CRDParser
     ref_filename = CRD
-    expected_attrs = ['ids', 'names', 'tempfactors',
-                      'resids', 'resnames', 'resnums',
-                      'segids']
-    guessed_attrs = ['masses', 'types']
+    expected_attrs = [
+        "ids",
+        "names",
+        "tempfactors",
+        "resids",
+        "resnames",
+        "resnums",
+        "segids",
+    ]
+    guessed_attrs = ["masses", "types"]
 
     expected_n_atoms = 3341
     expected_n_residues = 214
@@ -44,10 +50,10 @@ class TestCRDParser(ParserBase):
 
     def test_guessed_masses(self, filename):
         u = mda.Universe(filename)
-        expected = [14.007,  1.008,  1.008,  1.008, 12.011,  1.008, 12.011]
+        expected = [14.007, 1.008, 1.008, 1.008, 12.011, 1.008, 12.011]
         assert_allclose(u.atoms.masses[:7], expected)
 
     def test_guessed_types(self, filename):
         u = mda.Universe(filename)
-        expected = ['N', 'H', 'H', 'H', 'C', 'H', 'C']
+        expected = ["N", "H", "H", "H", "C", "H", "C"]
         assert (u.atoms.types[:7] == expected).all()

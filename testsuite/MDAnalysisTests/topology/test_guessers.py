@@ -42,31 +42,38 @@ try:
 except ImportError:
     pass
 
-requires_rdkit = pytest.mark.skipif(import_not_available("rdkit"),
-                                    reason="requires RDKit")
+requires_rdkit = pytest.mark.skipif(
+    import_not_available("rdkit"), reason="requires RDKit"
+)
 
 
 class TestGuessMasses(object):
     def test_guess_masses(self):
-        out = guessers.guess_masses(['C', 'C', 'H'])
+        out = guessers.guess_masses(["C", "C", "H"])
 
         assert isinstance(out, np.ndarray)
         assert_equal(out, np.array([12.011, 12.011, 1.008]))
 
     def test_guess_masses_warn(self):
-        with pytest.warns(UserWarning, match='Failed to guess the mass'):
-            guessers.guess_masses(['X'])
+        with pytest.warns(UserWarning, match="Failed to guess the mass"):
+            guessers.guess_masses(["X"])
 
     def test_guess_masses_miss(self):
-        out = guessers.guess_masses(['X', 'Z'])
+        out = guessers.guess_masses(["X", "Z"])
         assert_equal(out, np.array([0.0, 0.0]))
 
-    @pytest.mark.parametrize('element, value', (('H', 1.008), ('XYZ', 0.0), ))
+    @pytest.mark.parametrize(
+        "element, value",
+        (
+            ("H", 1.008),
+            ("XYZ", 0.0),
+        ),
+    )
     def test_get_atom_mass(self, element, value):
         assert guessers.get_atom_mass(element) == value
 
     def test_guess_atom_mass(self):
-        assert guessers.guess_atom_mass('1H') == 1.008
+        assert guessers.guess_atom_mass("1H") == 1.008
 
 
 class TestGuessTypes(object):
@@ -74,50 +81,53 @@ class TestGuessTypes(object):
     # guess_atom_type
     # guess_atom_element
     def test_guess_types(self):
-        out = guessers.guess_types(['MG2+', 'C12'])
+        out = guessers.guess_types(["MG2+", "C12"])
 
         assert isinstance(out, np.ndarray)
-        assert_equal(out, np.array(['MG', 'C'], dtype=object))
+        assert_equal(out, np.array(["MG", "C"], dtype=object))
 
     def test_guess_atom_element(self):
-        assert guessers.guess_atom_element('MG2+') == 'MG'
+        assert guessers.guess_atom_element("MG2+") == "MG"
 
     def test_guess_atom_element_empty(self):
-        assert guessers.guess_atom_element('') == ''
+        assert guessers.guess_atom_element("") == ""
 
     def test_guess_atom_element_singledigit(self):
-        assert guessers.guess_atom_element('1') == '1'
+        assert guessers.guess_atom_element("1") == "1"
 
     def test_guess_atom_element_1H(self):
-        assert guessers.guess_atom_element('1H') == 'H'
-        assert guessers.guess_atom_element('2H') == 'H'
-    
-    @pytest.mark.parametrize('name, element', (
-        ('AO5*', 'O'),
-        ('F-', 'F'),
-        ('HB1', 'H'),
-        ('OC2', 'O'),
-        ('1he2', 'H'),
-        ('3hg2', 'H'),
-        ('OH-', 'O'),
-        ('HO', 'H'),
-        ('he', 'H'), 
-        ('zn', 'ZN'),
-        ('Ca2+', 'CA'),
-        ('CA', 'C'),
-        ('N0A', 'N'),
-        ('C0U', 'C'),
-        ('C0S', 'C'),
-        ('Na+', 'NA'),
-        ('Cu2+', 'CU')
-    ))
+        assert guessers.guess_atom_element("1H") == "H"
+        assert guessers.guess_atom_element("2H") == "H"
+
+    @pytest.mark.parametrize(
+        "name, element",
+        (
+            ("AO5*", "O"),
+            ("F-", "F"),
+            ("HB1", "H"),
+            ("OC2", "O"),
+            ("1he2", "H"),
+            ("3hg2", "H"),
+            ("OH-", "O"),
+            ("HO", "H"),
+            ("he", "H"),
+            ("zn", "ZN"),
+            ("Ca2+", "CA"),
+            ("CA", "C"),
+            ("N0A", "N"),
+            ("C0U", "C"),
+            ("C0S", "C"),
+            ("Na+", "NA"),
+            ("Cu2+", "CU"),
+        ),
+    )
     def test_guess_element_from_name(self, name, element):
         assert guessers.guess_atom_element(name) == element
 
 
 def test_guess_charge():
     # this always returns 0.0
-    assert guessers.guess_atom_charge('this') == 0.0
+    assert guessers.guess_atom_charge("this") == 0.0
 
 
 def test_guess_bonds_Error():
@@ -141,42 +151,45 @@ def bond_sort(arr):
     # sort from low to high, also within a tuple
     # e.g. ([5, 4], [0, 1], [0, 3]) -> ([0, 1], [0, 3], [4, 5])
     out = []
-    for (i, j) in arr:
+    for i, j in arr:
         if i > j:
             i, j = j, i
         out.append((i, j))
     return sorted(out)
 
+
 def test_guess_bonds_water():
     u = mda.Universe(datafiles.two_water_gro)
-    bonds = bond_sort(guessers.guess_bonds(u.atoms, u.atoms.positions, u.dimensions))
-    assert_equal(bonds, ((0, 1),
-                         (0, 2),
-                         (3, 4),
-                         (3, 5)))
+    bonds = bond_sort(
+        guessers.guess_bonds(u.atoms, u.atoms.positions, u.dimensions)
+    )
+    assert_equal(bonds, ((0, 1), (0, 2), (3, 4), (3, 5)))
+
 
 def test_guess_bonds_adk():
     u = mda.Universe(datafiles.PSF, datafiles.DCD)
     u.atoms.types = guessers.guess_types(u.atoms.names)
     bonds = bond_sort(guessers.guess_bonds(u.atoms, u.atoms.positions))
-    assert_equal(np.sort(u.bonds.indices, axis=0),
-                 np.sort(bonds, axis=0))
+    assert_equal(np.sort(u.bonds.indices, axis=0), np.sort(bonds, axis=0))
+
 
 def test_guess_bonds_peptide():
     u = mda.Universe(datafiles.PSF_NAMD, datafiles.PDB_NAMD)
     u.atoms.types = guessers.guess_types(u.atoms.names)
     bonds = bond_sort(guessers.guess_bonds(u.atoms, u.atoms.positions))
-    assert_equal(np.sort(u.bonds.indices, axis=0),
-                 np.sort(bonds, axis=0))
+    assert_equal(np.sort(u.bonds.indices, axis=0), np.sort(bonds, axis=0))
 
 
-@pytest.mark.parametrize("smi", [
-    "c1ccccc1",
-    "C1=CC=CC=C1",
-    "CCO",
-    "c1ccccc1Cc1ccccc1",
-    "CN1C=NC2=C1C(=O)N(C(=O)N2C)C",
-])
+@pytest.mark.parametrize(
+    "smi",
+    [
+        "c1ccccc1",
+        "C1=CC=CC=C1",
+        "CCO",
+        "c1ccccc1Cc1ccccc1",
+        "CN1C=NC2=C1C(=O)N(C(=O)N2C)C",
+    ],
+)
 @requires_rdkit
 def test_guess_aromaticities(smi):
     mol = Chem.MolFromSmiles(smi)
@@ -187,20 +200,25 @@ def test_guess_aromaticities(smi):
     assert_equal(values, expected)
 
 
-@pytest.mark.parametrize("smi", [
-    "c1ccccc1",
-    "C1=CC=CC=C1",
-    "CCO",
-    "c1ccccc1Cc1ccccc1",
-    "CN1C=NC2=C1C(=O)N(C(=O)N2C)C",
-])
+@pytest.mark.parametrize(
+    "smi",
+    [
+        "c1ccccc1",
+        "C1=CC=CC=C1",
+        "CCO",
+        "c1ccccc1Cc1ccccc1",
+        "CN1C=NC2=C1C(=O)N(C(=O)N2C)C",
+    ],
+)
 @requires_rdkit
 def test_guess_gasteiger_charges(smi):
     mol = Chem.MolFromSmiles(smi)
     mol = Chem.AddHs(mol)
     ComputeGasteigerCharges(mol, throwOnParamFailure=True)
-    expected = np.array([atom.GetDoubleProp("_GasteigerCharge")
-                         for atom in mol.GetAtoms()], dtype=np.float32)
+    expected = np.array(
+        [atom.GetDoubleProp("_GasteigerCharge") for atom in mol.GetAtoms()],
+        dtype=np.float32,
+    )
     u = mda.Universe(mol)
     values = guessers.guess_gasteiger_charges(u.atoms)
     assert_equal(values, expected)
@@ -208,21 +226,24 @@ def test_guess_gasteiger_charges(smi):
 
 class TestDeprecationWarning:
     wmsg = (
-    "MDAnalysis.topology.guessers is deprecated in favour of "
-    "the new Guessers API. "
-    "See MDAnalysis.guesser.default_guesser for more details."
+        "MDAnalysis.topology.guessers is deprecated in favour of "
+        "the new Guessers API. "
+        "See MDAnalysis.guesser.default_guesser for more details."
     )
 
-    @pytest.mark.parametrize('func, arg', [
-        [guessers.guess_masses, ['C']],
-        [guessers.validate_atom_types, ['C']],
-        [guessers.guess_types, ['CA']],
-        [guessers.guess_atom_type, 'CA'],
-        [guessers.guess_atom_element, 'CA'],
-        [guessers.get_atom_mass, 'C'],
-        [guessers.guess_atom_mass, 'CA'],
-        [guessers.guess_atom_charge, 'CA'],
-    ])
+    @pytest.mark.parametrize(
+        "func, arg",
+        [
+            [guessers.guess_masses, ["C"]],
+            [guessers.validate_atom_types, ["C"]],
+            [guessers.guess_types, ["CA"]],
+            [guessers.guess_atom_type, "CA"],
+            [guessers.guess_atom_element, "CA"],
+            [guessers.get_atom_mass, "C"],
+            [guessers.guess_atom_mass, "CA"],
+            [guessers.guess_atom_charge, "CA"],
+        ],
+    )
     def test_mass_type_elements_deprecations(self, func, arg):
         with pytest.warns(DeprecationWarning, match=self.wmsg):
             func(arg)
@@ -251,7 +272,7 @@ class TestDeprecationWarning:
 
     @requires_rdkit
     def test_rdkit_guessers_deprecations(self):
-        mol = Chem.MolFromSmiles('c1ccccc1')
+        mol = Chem.MolFromSmiles("c1ccccc1")
         mol = Chem.AddHs(mol)
         u = mda.Universe(mol)
 

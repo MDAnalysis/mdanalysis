@@ -63,7 +63,7 @@ class Cluster(object):
 
     elements : numpy.array
         array containing the cluster elements.
-   """
+    """
 
     def __init__(self, elem_list=None, centroid=None, idn=None, metadata=None):
         """Class constructor. If elem_list is None, an empty cluster is created
@@ -85,7 +85,7 @@ class Cluster(object):
             metadata, one value for each cluster element. The iterable
             must have the same length as the elements array.
 
-    """
+        """
 
         self.id = idn
 
@@ -99,16 +99,20 @@ class Cluster(object):
         self.metadata = {}
         self.elements = elem_list
         if centroid not in self.elements:
-            raise LookupError("Centroid of cluster not found in the element list")
+            raise LookupError(
+                "Centroid of cluster not found in the element list"
+            )
 
         self.centroid = centroid
         self.size = self.elements.shape[0]
         if metadata:
             for name, data in metadata.items():
                 if len(data) != self.size:
-                    raise TypeError('Size of metadata having label "{0}" '
-                                    'is not equal to the number of cluster '
-                                    'elements'.format(name))
+                    raise TypeError(
+                        'Size of metadata having label "{0}" '
+                        "is not equal to the number of cluster "
+                        "elements".format(name)
+                    )
             self.add_metadata(name, data)
 
     def __iter__(self):
@@ -125,8 +129,10 @@ class Cluster(object):
 
     def add_metadata(self, name, data):
         if len(data) != self.size:
-            raise TypeError("Size of metadata is not equal to the number of "
-                            "cluster elements")
+            raise TypeError(
+                "Size of metadata is not equal to the number of "
+                "cluster elements"
+            )
         self.metadata[name] = np.array(data)
 
     def __repr__(self):
@@ -137,9 +143,9 @@ class Cluster(object):
             return "<Cluster with no elements>"
         else:
             return "<Cluster with {0} elements, centroid={1}, id={2}>".format(
-                                                               self.size,
-                                                               self.centroid,
-                                                               self.id)
+                self.size, self.centroid, self.id
+            )
+
 
 class ClusterCollection(object):
     """Clusters collection class; this class represents the results of a full
@@ -152,38 +158,38 @@ class ClusterCollection(object):
     clusters : list
         list of of Cluster objects which are part of the Cluster collection
 
-"""
+    """
 
     def __init__(self, elements=None, metadata=None):
         """Class constructor. If elements is None, an empty cluster collection
-            will be created. Otherwise, the constructor takes as input an
-            iterable of ints, for instance:
+        will be created. Otherwise, the constructor takes as input an
+        iterable of ints, for instance:
 
-            [ a, a, a, a, b, b, b, c, c, ... , z, z ]
+        [ a, a, a, a, b, b, b, c, c, ... , z, z ]
 
-            the variables a,b,c,...,z are cluster centroids, here as cluster
-            element numbers (i.e. 3 means the 4th element of the ordered input
-            for clustering). The array maps a correspondence between
-            cluster elements (which are implicitly associated with the
-            position in the array) with centroids, i. e. defines clusters.
-            For instance:
+        the variables a,b,c,...,z are cluster centroids, here as cluster
+        element numbers (i.e. 3 means the 4th element of the ordered input
+        for clustering). The array maps a correspondence between
+        cluster elements (which are implicitly associated with the
+        position in the array) with centroids, i. e. defines clusters.
+        For instance:
 
-            [ 1, 1, 1, 4, 4, 5 ]
+        [ 1, 1, 1, 4, 4, 5 ]
 
-            means that elements 0, 1, 2 form a cluster which has 1 as centroid,
-            elements 3 and 4 form a cluster which has 4 as centroid, and
-            element 5 has its own cluster.
+        means that elements 0, 1, 2 form a cluster which has 1 as centroid,
+        elements 3 and 4 form a cluster which has 4 as centroid, and
+        element 5 has its own cluster.
 
 
-            Parameters
-            ----------
+        Parameters
+        ----------
 
-            elements : iterable of ints or None
-                clustering results. See the previous description for details
+        elements : iterable of ints or None
+            clustering results. See the previous description for details
 
-            metadata : {str:list, str:list,...} or None
-                metadata for the data elements. The list must be of the same
-                size as the elements array, with one value per element.
+        metadata : {str:list, str:list,...} or None
+            metadata for the data elements. The list must be of the same
+            size as the elements array, with one value per element.
 
         """
         idn = 0
@@ -198,9 +204,10 @@ class ClusterCollection(object):
         centroids = np.unique(elements_array)
         for i in centroids:
             if elements[i] != i:
-                raise ValueError("element {0}, which is a centroid, doesn't "
-                                 "belong to its own cluster".format(
-                                     elements[i]))
+                raise ValueError(
+                    "element {0}, which is a centroid, doesn't "
+                    "belong to its own cluster".format(elements[i])
+                )
         for c in centroids:
             this_metadata = {}
             this_array = np.where(elements_array == c)
@@ -208,8 +215,13 @@ class ClusterCollection(object):
                 for k, v in metadata.items():
                     this_metadata[k] = np.asarray(v)[this_array]
             self.clusters.append(
-                Cluster(elem_list=this_array[0], idn=idn, centroid=c,
-                        metadata=this_metadata))
+                Cluster(
+                    elem_list=this_array[0],
+                    idn=idn,
+                    centroid=c,
+                    metadata=this_metadata,
+                )
+            )
 
             idn += 1
 
@@ -259,4 +271,5 @@ class ClusterCollection(object):
             return "<ClusterCollection with no clusters>"
         else:
             return "<ClusterCollection with {0} clusters>".format(
-                                             len(self.clusters))
+                len(self.clusters)
+            )

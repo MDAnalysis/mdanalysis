@@ -122,24 +122,26 @@ class PQRReader(base.SingleFrameReaderBase):
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
     """
-    format = 'PQR'
-    units = {'time': None, 'length': 'Angstrom'}
+
+    format = "PQR"
+    units = {"time": None, "length": "Angstrom"}
 
     # how to slice fields[x:y] to grab coordinates
     _SLICE_INDICES = {
-        'ORIGINAL': (-5, -2),
-        'NO_CHAINID': (-5, -2),
-        'GROMACS': (-6, -3),
+        "ORIGINAL": (-5, -2),
+        "NO_CHAINID": (-5, -2),
+        "GROMACS": (-6, -3),
     }
 
     def _read_first_frame(self):
         from ..topology.PQRParser import PQRParser
+
         flavour = None
 
         coords = []
         with util.openany(self.filename) as pqrfile:
             for line in pqrfile:
-                if line.startswith(('ATOM', 'HETATM')):
+                if line.startswith(("ATOM", "HETATM")):
                     if flavour is None:
                         flavour = PQRParser.guess_flavour(line)
                         x, y = self._SLICE_INDICES[flavour]
@@ -149,8 +151,7 @@ class PQRReader(base.SingleFrameReaderBase):
                     coords.append(fields[x:y])
 
         self.n_atoms = len(coords)
-        self.ts = self._Timestep.from_coordinates(
-            coords, **self._ts_kwargs)
+        self.ts = self._Timestep.from_coordinates(coords, **self._ts_kwargs)
         self.ts.frame = 0  # 0-based frame number
         if self.convert_units:
             # in-place !
@@ -192,13 +193,16 @@ class PQRWriter(base.WriterBase):
        Files are now written in `wt` mode, and keep extensions, allowing
        for files to be written under compressed formats
     """
-    format = 'PQR'
-    units = {'time': None, 'length': 'Angstrom'}
+
+    format = "PQR"
+    units = {"time": None, "length": "Angstrom"}
 
     # serial, atomName, residueName, chainID, residueNumber, XYZ, charge, radius
-    fmt_ATOM = ("ATOM {serial:6d} {name:<4}  {resname:<3} {chainid:1.1}"
-                " {resid:4d}   {pos[0]:-8.3f} {pos[1]:-8.3f}"
-                " {pos[2]:-8.3f} {charge:-7.4f} {radius:6.4f}\n")
+    fmt_ATOM = (
+        "ATOM {serial:6d} {name:<4}  {resname:<3} {chainid:1.1}"
+        " {resid:4d}   {pos[0]:-8.3f} {pos[1]:-8.3f}"
+        " {pos[2]:-8.3f} {charge:-7.4f} {radius:6.4f}\n"
+    )
     fmt_remark = "REMARK   {0} {1}\n"
 
     def __init__(self, filename, convert_units=True, **kwargs):
@@ -214,9 +218,11 @@ class PQRWriter(base.WriterBase):
              remark lines (list of strings) or single string to be added to the
              top of the PQR file
         """
-        self.filename = util.filename(filename, ext='pqr', keep=True)
-        self.convert_units = convert_units  # convert length and time to base units
-        self.remarks = kwargs.pop('remarks', "PQR file written by MDAnalysis")
+        self.filename = util.filename(filename, ext="pqr", keep=True)
+        self.convert_units = (
+            convert_units  # convert length and time to base units
+        )
+        self.remarks = kwargs.pop("remarks", "PQR file written by MDAnalysis")
 
     def write(self, selection, frame=None):
         """Write selection at current trajectory frame to file.
@@ -250,9 +256,13 @@ class PQRWriter(base.WriterBase):
                 frame = 0  # should catch cases when we are analyzing a single frame(?)
 
         atoms = selection.atoms  # make sure to use atoms (Issue 46)
-        coordinates = atoms.positions  # can write from selection == Universe (Issue 49)
+        coordinates = (
+            atoms.positions
+        )  # can write from selection == Universe (Issue 49)
         if self.convert_units:
-            self.convert_pos_to_native(coordinates)  # inplace because coordinates is already a copy
+            self.convert_pos_to_native(
+                coordinates
+            )  # inplace because coordinates is already a copy
 
         # Check atom attributes
         # required:
@@ -266,11 +276,11 @@ class PQRWriter(base.WriterBase):
         attrs = {}
         missing_topology = []
         for attr, dflt in (
-                ('names', itertools.cycle(('X',))),
-                ('resnames', itertools.cycle(('UNK',))),
-                ('resids', itertools.cycle((1,))),
-                ('charges', itertools.cycle((0.0,))),
-                ('radii', itertools.cycle((1.0,))),
+            ("names", itertools.cycle(("X",))),
+            ("resnames", itertools.cycle(("UNK",))),
+            ("resids", itertools.cycle((1,))),
+            ("charges", itertools.cycle((0.0,))),
+            ("radii", itertools.cycle((1.0,))),
         ):
             try:
                 attrs[attr] = getattr(atoms, attr)
@@ -283,16 +293,16 @@ class PQRWriter(base.WriterBase):
         # if neither, use ' '
         # if 'SYSTEM', use ' '
         try:
-            attrs['chainids'] = atoms.chainids
+            attrs["chainids"] = atoms.chainids
         except AttributeError:
             try:
-                attrs['chainids'] = atoms.segids
+                attrs["chainids"] = atoms.segids
             except AttributeError:
                 pass
-        if not 'chainids' in attrs or all(attrs['chainids'] == 'SYSTEM'):
-            attrs['chainids'] = itertools.cycle((' ',))
+        if not "chainids" in attrs or all(attrs["chainids"] == "SYSTEM"):
+            attrs["chainids"] = itertools.cycle((" ",))
 
-        if 'charges' in missing_topology:
+        if "charges" in missing_topology:
             total_charge = 0.0
         else:
             total_charge = atoms.total_charge()
@@ -301,28 +311,62 @@ class PQRWriter(base.WriterBase):
             warnings.warn(
                 "Supplied AtomGroup was missing the following attributes: "
                 "{miss}. These will be written with default values. "
-                "".format(miss=', '.join(missing_topology)))
+                "".format(miss=", ".join(missing_topology))
+            )
 
-        with util.openany(self.filename, 'wt') as pqrfile:
+        with util.openany(self.filename, "wt") as pqrfile:
             # Header / Remarks
             # The *remarknumber* is typically 1 but :program:`pdb2pgr`
             # also uses 6 for the total charge and 5 for warnings.
             for rem in util.asiterable(self.remarks):
                 pqrfile.write(self.fmt_remark.format(rem, 1))
-            pqrfile.write(self.fmt_remark.format(
-                "Input: frame {0} of {1}".format(frame, u.trajectory.filename),
-                5))
-            pqrfile.write(self.fmt_remark.format(
-                "total charge: {0:+8.4f} e".format(total_charge), 6))
+            pqrfile.write(
+                self.fmt_remark.format(
+                    "Input: frame {0} of {1}".format(
+                        frame, u.trajectory.filename
+                    ),
+                    5,
+                )
+            )
+            pqrfile.write(
+                self.fmt_remark.format(
+                    "total charge: {0:+8.4f} e".format(total_charge), 6
+                )
+            )
 
             # Atom descriptions and coords
-            for atom_index, (pos, name, resname, chainid, resid, charge, radius) in enumerate(zip(
-                        coordinates, attrs['names'], attrs['resnames'], attrs['chainids'],
-                        attrs['resids'], attrs['charges'], attrs['radii']), start=1):
+            for atom_index, (
+                pos,
+                name,
+                resname,
+                chainid,
+                resid,
+                charge,
+                radius,
+            ) in enumerate(
+                zip(
+                    coordinates,
+                    attrs["names"],
+                    attrs["resnames"],
+                    attrs["chainids"],
+                    attrs["resids"],
+                    attrs["charges"],
+                    attrs["radii"],
+                ),
+                start=1,
+            ):
                 # pad so that only 4-letter atoms are left-aligned
                 name = " " + name if len(name) < 4 else name
 
-                pqrfile.write(self.fmt_ATOM.format(
-                    serial=atom_index, name=name, resname=resname,
-                    chainid=chainid, resid=resid, pos=pos, charge=charge,
-                    radius=radius))
+                pqrfile.write(
+                    self.fmt_ATOM.format(
+                        serial=atom_index,
+                        name=name,
+                        resname=resname,
+                        chainid=chainid,
+                        resid=resid,
+                        pos=pos,
+                        charge=charge,
+                        radius=radius,
+                    )
+                )
