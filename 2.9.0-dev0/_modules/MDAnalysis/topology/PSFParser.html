@@ -22,7 +22,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MDAnalysis.topology.PSFParser &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/site.css" />
 
   
@@ -185,15 +185,15 @@
 <span class="sd">   :inherited-members:</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">functools</span>
-<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">ceil</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">functools</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">ceil</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">openany</span><span class="p">,</span> <span class="n">atoi</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..lib.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">openany</span><span class="p">,</span> <span class="n">atoi</span>
 
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">TopologyReaderBase</span><span class="p">,</span> <span class="n">squash_by</span><span class="p">,</span> <span class="n">change_squash</span>
-<span class="kn">from</span> <span class="nn">..core.topologyattrs</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">TopologyReaderBase</span><span class="p">,</span> <span class="n">squash_by</span><span class="p">,</span> <span class="n">change_squash</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core.topologyattrs</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">Atomids</span><span class="p">,</span>
     <span class="n">Atomnames</span><span class="p">,</span>
     <span class="n">Atomtypes</span><span class="p">,</span>
@@ -208,14 +208,14 @@
     <span class="n">Dihedrals</span><span class="p">,</span>
     <span class="n">Impropers</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">..core.topology</span> <span class="kn">import</span> <span class="n">Topology</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core.topology</span><span class="w"> </span><span class="kn">import</span> <span class="n">Topology</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.topology.PSF&quot;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="PSFParser">
 <a class="viewcode-back" href="../../../documentation_pages/topology/PSFParser.html#MDAnalysis.topology.PSFParser.PSFParser">[docs]</a>
-<span class="k">class</span> <span class="nc">PSFParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PSFParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Read topology information from a CHARMM/NAMD/XPLOR PSF_ file.</span>
 
 <span class="sd">    Creates a Topology with the following Attributes:</span>
@@ -243,7 +243,7 @@
 
 <div class="viewcode-block" id="PSFParser.parse">
 <a class="viewcode-back" href="../../../documentation_pages/topology/PSFParser.html#MDAnalysis.topology.PSFParser.PSFParser.parse">[docs]</a>
-    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse PSF file into Topology</span>
 
 <span class="sd">        Returns</span>
@@ -308,7 +308,7 @@
         <span class="k">return</span> <span class="n">top</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_parse_sec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">psffile</span><span class="p">,</span> <span class="n">section_info</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parse_sec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">psffile</span><span class="p">,</span> <span class="n">section_info</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse a single section of the PSF</span>
 
 <span class="sd">        Returns</span>
@@ -336,7 +336,7 @@
         <span class="n">psffile_next</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="nb">next</span><span class="p">,</span> <span class="n">psffile</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">parsefunc</span><span class="p">(</span><span class="n">psffile_next</span><span class="p">,</span> <span class="n">atoms_per</span><span class="p">,</span> <span class="n">numlines</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_parseatoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="p">,</span> <span class="n">atoms_per</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parseatoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="p">,</span> <span class="n">atoms_per</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parses atom section in a Charmm PSF file.</span>
 
 <span class="sd">        Normal (standard) and extended (EXT) PSF format are</span>
@@ -452,7 +452,7 @@
             <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
                 <span class="n">err</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2"> is not valid PSF file&quot;</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">vals</span> <span class="o">=</span> <span class="n">set_type</span><span class="p">(</span><span class="n">atom_parser</span><span class="p">(</span><span class="n">line</span><span class="p">))</span>
             <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
@@ -521,7 +521,7 @@
 
         <span class="k">return</span> <span class="n">top</span>
 
-    <span class="k">def</span> <span class="nf">_parsesection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="p">,</span> <span class="n">atoms_per</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parsesection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="p">,</span> <span class="n">atoms_per</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
         <span class="n">section</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">numlines</span><span class="p">):</span>

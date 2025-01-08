@@ -23,7 +23,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.8.1.4. Secondary structure assignment (helix, sheet and loop) — MDAnalysis.analysis.dssp &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/site.css" />
 
   
@@ -219,8 +219,8 @@ processing or its use of the <em>pytorch</em> library.</p>
 <h3><span class="section-number">4.8.1.4.1.1. </span>Assigning secondary structure of a PDB file<a class="headerlink" href="#assigning-secondary-structure-of-a-pdb-file" title="Link to this heading"></a></h3>
 <p>In this example we will simply print a string representing a protein’s secondary
 structure.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PDB</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.dssp</span> <span class="kn">import</span> <span class="n">DSSP</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.tests.datafiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">PDB</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.dssp</span><span class="w"> </span><span class="kn">import</span> <span class="n">DSSP</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PDB</span><span class="p">)</span>
 <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DSSP</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dssp</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
@@ -232,8 +232,8 @@ structure.</p>
 <p>Here we take a trajectory and calculate its average secondary structure, i.e.
 assign a secondary structure label ‘X’ to a residue if most of the frames in the
 trajectory got assigned the ‘X’ label.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.dssp</span> <span class="kn">import</span> <span class="n">DSSP</span><span class="p">,</span> <span class="n">translate</span>
-<span class="kn">from</span> <span class="nn">MDAnalysisTests.datafiles</span> <span class="kn">import</span> <span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.dssp</span><span class="w"> </span><span class="kn">import</span> <span class="n">DSSP</span><span class="p">,</span> <span class="n">translate</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysisTests.datafiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span><span class="p">)</span>
 <span class="n">long_run</span> <span class="o">=</span> <span class="n">DSSP</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 <span class="n">mean_secondary_structure</span> <span class="o">=</span> <span class="n">translate</span><span class="p">(</span><span class="n">long_run</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dssp_ndarray</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
@@ -252,8 +252,8 @@ along the simulation, and have some meaningful (‘E’ or ‘H’) secondary st
 during more than set <cite>threshold</cite> fraction of frames. We will call these residues
 “persistent”, for clarity, and label them according to the structure
 that they maintain during the run:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.dssp</span> <span class="kn">import</span> <span class="n">DSSP</span><span class="p">,</span> <span class="n">translate</span>
-<span class="kn">from</span> <span class="nn">MDAnalysisTests.datafiles</span> <span class="kn">import</span> <span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.dssp</span><span class="w"> </span><span class="kn">import</span> <span class="n">DSSP</span><span class="p">,</span> <span class="n">translate</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysisTests.datafiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span><span class="p">)</span>
 <span class="n">threshold</span> <span class="o">=</span> <span class="mf">0.8</span>
 
@@ -339,9 +339,9 @@ for your specific case.</p>
 </dl>
 <p class="rubric">Examples</p>
 <p>For example, you can assign secondary structure for a single PDB file:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.dssp</span> <span class="kn">import</span> <span class="n">DSSP</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysisTests.datafiles</span> <span class="kn">import</span> <span class="n">PDB</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.dssp</span><span class="w"> </span><span class="kn">import</span> <span class="n">DSSP</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysisTests.datafiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">PDB</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PDB</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">run</span> <span class="o">=</span> <span class="n">DSSP</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">run</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dssp</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:</span><span class="mi">20</span><span class="p">]))</span>
@@ -358,8 +358,8 @@ at all residues <code class="docutils literal notranslate"><span class="pre">run
 of <em>loop</em> ‘-’ (index 0), <em>helix</em> ‘H’ (index 1), and <em>sheet</em> ‘E’
 (index 2), respectively for each frame of the trajectory. It can be
 used to compute, for instance, the <strong>average secondary structure</strong>:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.dssp</span> <span class="kn">import</span> <span class="n">translate</span><span class="p">,</span> <span class="n">DSSP</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysisTests.datafiles</span> <span class="kn">import</span> <span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.dssp</span><span class="w"> </span><span class="kn">import</span> <span class="n">translate</span><span class="p">,</span> <span class="n">DSSP</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysisTests.datafiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">run</span> <span class="o">=</span> <span class="n">DSSP</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mean_secondary_structure</span> <span class="o">=</span> <span class="n">translate</span><span class="p">(</span><span class="n">run</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dssp_ndarray</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
@@ -571,8 +571,8 @@ assignment.</p>
 ‘-’, ‘H’, ‘E’ are loop, helix and sheet, respectively. Input array must
 have its last axis of shape 3: <code class="docutils literal notranslate"><span class="pre">(n_residues,</span> <span class="pre">3)</span></code> or <code class="docutils literal notranslate"><span class="pre">(n_frames,</span> <span class="pre">n_residues,</span> <span class="pre">3)</span></code></p>
 <p class="rubric">Examples</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.dssp</span> <span class="kn">import</span> <span class="n">translate</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.dssp</span><span class="w"> </span><span class="kn">import</span> <span class="n">translate</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="c1"># encoding &#39;HE-&#39;</span>
 <span class="n">onehot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">],</span>  <span class="c1"># &#39;H&#39;</span>
                    <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">],</span>  <span class="c1"># &#39;E&#39;</span>

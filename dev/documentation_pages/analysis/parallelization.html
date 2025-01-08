@@ -23,7 +23,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.2.4. Parallel analysis &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/site.css" />
 
   
@@ -321,7 +321,7 @@ is possible to iterate over all these attributes later. <code class="docutils li
 exactly that: given a list of the <code class="docutils literal notranslate"><span class="pre">Results</span></code> objects with the same attributes,
 it applies a specific aggregation function to every attribute, and stores it as
 a same attribute of the returned object:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.results</span> <span class="kn">import</span> <span class="n">ResultsGroup</span><span class="p">,</span> <span class="n">Results</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.results</span><span class="w"> </span><span class="kn">import</span> <span class="n">ResultsGroup</span><span class="p">,</span> <span class="n">Results</span>
 <span class="n">group</span> <span class="o">=</span> <span class="n">ResultsGroup</span><span class="p">(</span><span class="n">lookup</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;mass&#39;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">float_mean</span><span class="p">})</span>
 <span class="n">obj1</span> <span class="o">=</span> <span class="n">Results</span><span class="p">(</span><span class="n">mass</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">obj2</span> <span class="o">=</span> <span class="n">Results</span><span class="p">(</span><span class="n">mass</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
@@ -390,17 +390,17 @@ ETA by dividing <code class="docutils literal notranslate"><span class="pre">ser
 your algorithm allows you to do that, i.e. you can process each frame independently.
 Then it’s rather simple – let’s look at the actual code that added
 parallelization to the <a class="reference internal" href="rms.html#MDAnalysis.analysis.rms.RMSD" title="MDAnalysis.analysis.rms.RMSD"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rms.RMSD</span></code></a>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.base</span> <span class="kn">import</span> <span class="n">AnalysisBase</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.results</span> <span class="kn">import</span> <span class="n">ResultsGroup</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnalysisBase</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.results</span><span class="w"> </span><span class="kn">import</span> <span class="n">ResultsGroup</span>
 
-<span class="k">class</span> <span class="nc">RMSD</span><span class="p">(</span><span class="n">BackendBase</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RMSD</span><span class="p">(</span><span class="n">BackendBase</span><span class="p">):</span>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">get_supported_backends</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_supported_backends</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;serial&#39;</span><span class="p">,</span> <span class="s1">&#39;multiprocessing&#39;</span><span class="p">,</span> <span class="s1">&#39;dask&#39;</span><span class="p">,)</span>
 
     <span class="n">_analysis_algorithm_is_parallelizable</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">_get_aggregator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_aggregator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span><span class="n">lookup</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;rmsd&#39;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_vstack</span><span class="p">})</span>
 </pre></div>
 </div>
@@ -434,21 +434,21 @@ when a new class instance is created:</p>
 <li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">MDAnalysis.analysis.backends._get_checks()</span></code></p></li>
 <li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">MDAnalysis.analysis.backends._get_warnings()</span></code></p></li>
 </ol>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.backends</span> <span class="kn">import</span> <span class="n">BackendBase</span>
-<span class="k">class</span> <span class="nc">ThreadsBackend</span><span class="p">(</span><span class="n">BackendBase</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_workers</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">starting_message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Useless backend&quot;</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.backends</span><span class="w"> </span><span class="kn">import</span> <span class="n">BackendBase</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ThreadsBackend</span><span class="p">(</span><span class="n">BackendBase</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_workers</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">starting_message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Useless backend&quot;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_workers</span> <span class="o">=</span> <span class="n">n_workers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">starting_message</span> <span class="o">=</span> <span class="n">starting_message</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_validate</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_get_warnings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_warnings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="s1">&#39;warning: this backend is useless&#39;</span><span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">_get_checks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_checks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_workers</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="s1">&#39;error: self.n_workers is not an integer&#39;</span><span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">computations</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">multiprocessing.dummy</span> <span class="kn">import</span> <span class="n">Pool</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">computations</span><span class="p">):</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">multiprocessing.dummy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pool</span>
 
         <span class="k">with</span> <span class="n">Pool</span><span class="p">(</span><span class="n">processes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_workers</span><span class="p">)</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">starting_message</span><span class="p">)</span>
@@ -460,7 +460,7 @@ when a new class instance is created:</p>
 explicitly support it, you must <em>explicitly state</em> that you’re about to use an
 unsupported_backend by passing the keyword argument
 <code class="docutils literal notranslate"><span class="pre">unsupported_backend=True</span></code>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.rms</span> <span class="kn">import</span> <span class="n">RMSD</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.rms</span><span class="w"> </span><span class="kn">import</span> <span class="n">RMSD</span>
 <span class="n">R</span> <span class="o">=</span> <span class="n">RMSD</span><span class="p">(</span><span class="o">...</span><span class="p">)</span> <span class="c1"># setup the run</span>
 <span class="n">n_workers</span> <span class="o">=</span> <span class="mi">2</span>
 <span class="n">backend</span> <span class="o">=</span> <span class="n">ThreadsBackend</span><span class="p">(</span><span class="n">n_workers</span><span class="o">=</span><span class="n">n_workers</span><span class="p">)</span>

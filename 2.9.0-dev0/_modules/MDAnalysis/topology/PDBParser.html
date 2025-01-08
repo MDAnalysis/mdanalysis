@@ -22,7 +22,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MDAnalysis.topology.PDBParser &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/site.css" />
 
   
@@ -207,14 +207,14 @@
 <span class="sd">   :inherited-members:</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
-<span class="kn">from</span> <span class="nn">..guesser.tables</span> <span class="kn">import</span> <span class="n">SYMB2Z</span>
-<span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">util</span>
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">TopologyReaderBase</span><span class="p">,</span> <span class="n">change_squash</span>
-<span class="kn">from</span> <span class="nn">..core.topology</span> <span class="kn">import</span> <span class="n">Topology</span>
-<span class="kn">from</span> <span class="nn">..core.topologyattrs</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..guesser.tables</span><span class="w"> </span><span class="kn">import</span> <span class="n">SYMB2Z</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..lib</span><span class="w"> </span><span class="kn">import</span> <span class="n">util</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">TopologyReaderBase</span><span class="p">,</span> <span class="n">change_squash</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core.topology</span><span class="w"> </span><span class="kn">import</span> <span class="n">Topology</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core.topologyattrs</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">Atomnames</span><span class="p">,</span>
     <span class="n">Atomids</span><span class="p">,</span>
     <span class="n">AltLocs</span><span class="p">,</span>
@@ -234,7 +234,7 @@
 <span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">float_or_default</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">default</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">float_or_default</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">default</span><span class="p">):</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
@@ -247,7 +247,7 @@
 <span class="n">DIGITS_LOWER_VALUES</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([</span><span class="n">pair</span> <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">DIGITS_LOWER</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">36</span><span class="p">))])</span>
 
 
-<span class="k">def</span> <span class="nf">decode_pure</span><span class="p">(</span><span class="n">digits_values</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">decode_pure</span><span class="p">(</span><span class="n">digits_values</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Decodes the string s using the digit, value associations for each</span>
 <span class="sd">    character.</span>
 
@@ -271,7 +271,7 @@
     <span class="k">return</span> <span class="n">result</span>
 
 
-<span class="k">def</span> <span class="nf">hy36decode</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">hy36decode</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Decodes base-10/upper-case base-36/lower-case base-36 hybrid.</span>
 
@@ -302,7 +302,7 @@
 
 <div class="viewcode-block" id="PDBParser">
 <a class="viewcode-back" href="../../../documentation_pages/topology/PDBParser.html#MDAnalysis.topology.PDBParser.PDBParser">[docs]</a>
-<span class="k">class</span> <span class="nc">PDBParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PDBParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Parser that obtains a list of atoms from a standard PDB file.</span>
 
 <span class="sd">    Creates the following Attributes (if present):</span>
@@ -351,7 +351,7 @@
 
 <div class="viewcode-block" id="PDBParser.parse">
 <a class="viewcode-back" href="../../../documentation_pages/topology/PDBParser.html#MDAnalysis.topology.PDBParser.PDBParser.parse">[docs]</a>
-    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse atom information from PDB file</span>
 
 <span class="sd">        Returns</span>
@@ -376,7 +376,7 @@
         <span class="k">return</span> <span class="n">top</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_parseatoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parseatoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the initial Topology object&quot;&quot;&quot;</span>
         <span class="n">resid_prev</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># resid looping hack</span>
 
@@ -558,7 +558,7 @@
 
         <span class="k">return</span> <span class="n">top</span>
 
-    <span class="k">def</span> <span class="nf">_parsebonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">serials</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parsebonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">serials</span><span class="p">):</span>
         <span class="c1"># Could optimise this by saving lines in the main loop</span>
         <span class="c1"># then doing post processing after all Atoms have been read</span>
         <span class="c1"># ie do one pass through the file only</span>
@@ -598,7 +598,7 @@
 
 
 
-<span class="k">def</span> <span class="nf">_parse_conect</span><span class="p">(</span><span class="n">conect</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_conect</span><span class="p">(</span><span class="n">conect</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;parse a CONECT record from pdbs</span>
 
 <span class="sd">    Parameters</span>

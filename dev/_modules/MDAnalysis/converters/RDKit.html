@@ -22,7 +22,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MDAnalysis.converters.RDKit &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/site.css" />
 
   
@@ -223,22 +223,22 @@
 <span class="sd">.. _`RDKitConverter benchmark`: https://github.com/MDAnalysis/RDKitConverter-benchmark</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">lru_cache</span>
-<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">lru_cache</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="n">StringIO</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
-<span class="kn">from</span> <span class="nn">..coordinates</span> <span class="kn">import</span> <span class="n">memory</span>
-<span class="kn">from</span> <span class="nn">..coordinates.PDB</span> <span class="kn">import</span> <span class="n">PDBWriter</span>
-<span class="kn">from</span> <span class="nn">..core.topologyattrs</span> <span class="kn">import</span> <span class="n">_TOPOLOGY_ATTRS</span>
-<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">NoDataError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">base</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..coordinates</span><span class="w"> </span><span class="kn">import</span> <span class="n">memory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..coordinates.PDB</span><span class="w"> </span><span class="kn">import</span> <span class="n">PDBWriter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core.topologyattrs</span><span class="w"> </span><span class="kn">import</span> <span class="n">_TOPOLOGY_ATTRS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">NoDataError</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">rdkit</span> <span class="kn">import</span> <span class="n">Chem</span>
-    <span class="kn">from</span> <span class="nn">rdkit.Chem</span> <span class="kn">import</span> <span class="n">AllChem</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">rdkit.Chem</span><span class="w"> </span><span class="kn">import</span> <span class="n">AllChem</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="k">pass</span>
 <span class="k">else</span><span class="p">:</span>
@@ -302,7 +302,7 @@
 
 <div class="viewcode-block" id="RDKitReader">
 <a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKit.RDKitReader">[docs]</a>
-<span class="k">class</span> <span class="nc">RDKitReader</span><span class="p">(</span><span class="n">memory</span><span class="o">.</span><span class="n">MemoryReader</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RDKitReader</span><span class="p">(</span><span class="n">memory</span><span class="o">.</span><span class="n">MemoryReader</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Coordinate reader for RDKit.</span>
 
 <span class="sd">    .. versionadded:: 2.0.0</span>
@@ -314,17 +314,17 @@
     <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="s2">&quot;Angstrom&quot;</span><span class="p">}</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_format_hint</span><span class="p">(</span><span class="n">thing</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_format_hint</span><span class="p">(</span><span class="n">thing</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Can this reader read *thing*?&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">rdkit</span> <span class="kn">import</span> <span class="n">Chem</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
             <span class="c1"># if we can&#39;t import rdkit, it&#39;s probably not rdkit</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">thing</span><span class="p">,</span> <span class="n">Chem</span><span class="o">.</span><span class="n">Mol</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read coordinates from an RDKit molecule.</span>
 <span class="sd">        Each conformer in the original RDKit molecule will be read as a frame</span>
 <span class="sd">        in the resulting universe.</span>
@@ -349,7 +349,7 @@
 
 <div class="viewcode-block" id="RDKitConverter">
 <a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKit.RDKitConverter">[docs]</a>
-<span class="k">class</span> <span class="nc">RDKitConverter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ConverterBase</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RDKitConverter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ConverterBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert MDAnalysis :class:`~MDAnalysis.core.groups.AtomGroup` or</span>
 <span class="sd">    :class:`~MDAnalysis.core.universe.Universe` to RDKit</span>
 <span class="sd">    :class:`~rdkit.Chem.rdchem.Mol`</span>
@@ -477,7 +477,7 @@
 
 <div class="viewcode-block" id="RDKitConverter.convert">
 <a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKit.RDKitConverter.convert">[docs]</a>
-    <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">convert</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">NoImplicit</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Write selection at current trajectory frame to</span>
@@ -502,7 +502,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">rdkit</span> <span class="kn">import</span> <span class="n">Chem</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
                 <span class="s2">&quot;RDKit is required for the RDKitConverter but &quot;</span>
@@ -516,7 +516,7 @@
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
                 <span class="s2">&quot;No `atoms` attribute in object of type </span><span class="si">{}</span><span class="s2">, &quot;</span>
                 <span class="s2">&quot;please use a valid AtomGroup or Universe&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span>
-            <span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
 
         <span class="c1"># parameters passed to atomgroup_to_mol</span>
         <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">NoImplicit</span><span class="o">=</span><span class="n">NoImplicit</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">)</span>
@@ -554,7 +554,7 @@
 
 
 <span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">atomgroup_to_mol</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">NoImplicit</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">atomgroup_to_mol</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">NoImplicit</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts an AtomGroup to an RDKit molecule without coordinates.</span>
 
 <span class="sd">    Parameters</span>
@@ -579,7 +579,7 @@
             <span class="s2">&quot;but is not present in this AtomGroup. Please refer to the &quot;</span>
             <span class="s2">&quot;documentation to guess elements from other attributes or &quot;</span>
             <span class="s2">&quot;type `help(MDAnalysis.topology.guessers)`&quot;</span>
-        <span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
 
     <span class="k">if</span> <span class="s2">&quot;H&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ag</span><span class="o">.</span><span class="n">elements</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">force</span><span class="p">:</span>
@@ -605,12 +605,12 @@
     <span class="n">resnames</span> <span class="o">=</span> <span class="n">pdb_attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;resnames&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">resnames</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 
-        <span class="k">def</span> <span class="nf">get_resname</span><span class="p">(</span><span class="n">idx</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">get_resname</span><span class="p">(</span><span class="n">idx</span><span class="p">):</span>
             <span class="k">return</span> <span class="s2">&quot;&quot;</span>
 
     <span class="k">else</span><span class="p">:</span>
 
-        <span class="k">def</span> <span class="nf">get_resname</span><span class="p">(</span><span class="n">idx</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">get_resname</span><span class="p">(</span><span class="n">idx</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">resnames</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
 
     <span class="n">other_attrs</span> <span class="o">=</span> <span class="p">{}</span>
@@ -682,7 +682,7 @@
     <span class="k">return</span> <span class="n">mol</span>
 
 
-<span class="k">def</span> <span class="nf">set_converter_cache_size</span><span class="p">(</span><span class="n">maxsize</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">set_converter_cache_size</span><span class="p">(</span><span class="n">maxsize</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the maximum cache size of the RDKit converter</span>
 
 <span class="sd">    Parameters</span>
@@ -696,7 +696,7 @@
     <span class="n">atomgroup_to_mol</span> <span class="o">=</span> <span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="n">maxsize</span><span class="p">)(</span><span class="n">atomgroup_to_mol</span><span class="o">.</span><span class="n">__wrapped__</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_add_mda_attr_to_rdkit</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">mi</span><span class="p">,</span> <span class="n">resname</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_add_mda_attr_to_rdkit</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">mi</span><span class="p">,</span> <span class="n">resname</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts an MDAnalysis atom attribute into the RDKit equivalent and</span>
 <span class="sd">    stores it into an RDKit :class:`~rdkit.Chem.rdchem.AtomPDBResidueInfo`.</span>
 
@@ -723,27 +723,27 @@
     <span class="nb">getattr</span><span class="p">(</span><span class="n">mi</span><span class="p">,</span> <span class="s2">&quot;Set</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">rdattr</span><span class="p">)(</span><span class="n">value</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_set_str_prop</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_set_str_prop</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
     <span class="n">atom</span><span class="o">.</span><span class="n">SetProp</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_set_float_prop</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_set_float_prop</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
     <span class="n">atom</span><span class="o">.</span><span class="n">SetDoubleProp</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_set_np_float_prop</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_set_np_float_prop</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
     <span class="n">atom</span><span class="o">.</span><span class="n">SetDoubleProp</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
 
 
-<span class="k">def</span> <span class="nf">_set_int_prop</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_set_int_prop</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
     <span class="n">atom</span><span class="o">.</span><span class="n">SetIntProp</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_set_np_int_prop</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_set_np_int_prop</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
     <span class="n">atom</span><span class="o">.</span><span class="n">SetIntProp</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
 
 
-<span class="k">def</span> <span class="nf">_ignore_prop</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_ignore_prop</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
     <span class="k">pass</span>
 
 
@@ -764,12 +764,12 @@
 <span class="p">}</span>
 
 
-<span class="k">def</span> <span class="nf">_set_atom_property</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_set_atom_property</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Saves any attribute and value into an RDKit atom property&quot;&quot;&quot;</span>
     <span class="n">_atom_property_dispatcher</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="n">_ignore_prop</span><span class="p">)(</span><span class="n">atom</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_atom_sorter</span><span class="p">(</span><span class="n">atom</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_atom_sorter</span><span class="p">(</span><span class="n">atom</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Sorts atoms in the molecule in a way that makes it easy for the bond</span>
 <span class="sd">    order and charge infering code to get the correct state on the first</span>
 <span class="sd">    try. Currently sorts by number of unpaired electrons, then by number of</span>
@@ -786,7 +786,7 @@
 
 <div class="viewcode-block" id="_infer_bo_and_charges">
 <a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKit._infer_bo_and_charges">[docs]</a>
-<span class="k">def</span> <span class="nf">_infer_bo_and_charges</span><span class="p">(</span><span class="n">mol</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_infer_bo_and_charges</span><span class="p">(</span><span class="n">mol</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Infer bond orders and formal charges from a molecule.</span>
 
 <span class="sd">    Since most MD topology files don&#39;t explicitly retain information on bond</span>
@@ -875,7 +875,7 @@
 
 
 
-<span class="k">def</span> <span class="nf">_get_nb_unpaired_electrons</span><span class="p">(</span><span class="n">atom</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_nb_unpaired_electrons</span><span class="p">(</span><span class="n">atom</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate the number of unpaired electrons (NUE) of an atom</span>
 
 <span class="sd">    Parameters</span>
@@ -895,7 +895,7 @@
 
 <div class="viewcode-block" id="_standardize_patterns">
 <a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKit._standardize_patterns">[docs]</a>
-<span class="k">def</span> <span class="nf">_standardize_patterns</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_standardize_patterns</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Standardizes functional groups</span>
 
 <span class="sd">    Uses :func:`_rebuild_conjugated_bonds` to standardize conjugated systems,</span>
@@ -971,7 +971,7 @@
 
 
 
-<span class="k">def</span> <span class="nf">_apply_reactions</span><span class="p">(</span><span class="n">reactions</span><span class="p">,</span> <span class="n">reactant</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_apply_reactions</span><span class="p">(</span><span class="n">reactions</span><span class="p">,</span> <span class="n">reactant</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Applies a series of unimolecular reactions to a molecule. The reactions</span>
 <span class="sd">    must not add any atom to the product. The molecule is modified inplace.</span>
 
@@ -995,7 +995,7 @@
 
 <div class="viewcode-block" id="_rebuild_conjugated_bonds">
 <a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKit._rebuild_conjugated_bonds">[docs]</a>
-<span class="k">def</span> <span class="nf">_rebuild_conjugated_bonds</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_rebuild_conjugated_bonds</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Rebuild conjugated bonds without negatively charged atoms at the</span>
 <span class="sd">    beginning and end of the conjugated system</span>
 

@@ -22,7 +22,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MDAnalysis.topology.TOPParser &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/site.css" />
 
   
@@ -230,14 +230,14 @@
 <span class="sd">   :inherited-members:</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
 
-<span class="kn">from</span> <span class="nn">..guesser.tables</span> <span class="kn">import</span> <span class="n">Z2SYMB</span>
-<span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">openany</span><span class="p">,</span> <span class="n">FORTRANReader</span>
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">TopologyReaderBase</span><span class="p">,</span> <span class="n">change_squash</span>
-<span class="kn">from</span> <span class="nn">..core.topology</span> <span class="kn">import</span> <span class="n">Topology</span>
-<span class="kn">from</span> <span class="nn">..core.topologyattrs</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..guesser.tables</span><span class="w"> </span><span class="kn">import</span> <span class="n">Z2SYMB</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..lib.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">openany</span><span class="p">,</span> <span class="n">FORTRANReader</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">TopologyReaderBase</span><span class="p">,</span> <span class="n">change_squash</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core.topology</span><span class="w"> </span><span class="kn">import</span> <span class="n">Topology</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core.topologyattrs</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">Atomnames</span><span class="p">,</span>
     <span class="n">Atomtypes</span><span class="p">,</span>
     <span class="n">Atomids</span><span class="p">,</span>
@@ -256,13 +256,13 @@
     <span class="n">Impropers</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.topology.TOPParser&quot;</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">TypeIndices</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TypeIndices</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Numerical type of each Atom&quot;&quot;&quot;</span>
 
     <span class="n">attrname</span> <span class="o">=</span> <span class="s2">&quot;type_indices&quot;</span>
@@ -272,7 +272,7 @@
 
 <div class="viewcode-block" id="TOPParser">
 <a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser">[docs]</a>
-<span class="k">class</span> <span class="nc">TOPParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TOPParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Reads topology information from an AMBER top file.</span>
 
 <span class="sd">    Reads the following Attributes if in topology:</span>
@@ -323,7 +323,7 @@
 
 <div class="viewcode-block" id="TOPParser.parse">
 <a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse">[docs]</a>
-    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse Amber PRMTOP topology file *filename*.</span>
 
 <span class="sd">        Returns</span>
@@ -407,7 +407,7 @@
                     <span class="p">)</span>
                 <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
 
-                    <span class="k">def</span> <span class="nf">next_getter</span><span class="p">():</span>
+                    <span class="k">def</span><span class="w"> </span><span class="nf">next_getter</span><span class="p">():</span>
                         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">skipper</span><span class="p">()</span>
 
                 <span class="k">else</span><span class="p">:</span>
@@ -418,7 +418,7 @@
 
                     <span class="n">attrs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">)</span>
 
-                    <span class="k">def</span> <span class="nf">next_getter</span><span class="p">():</span>
+                    <span class="k">def</span><span class="w"> </span><span class="nf">next_getter</span><span class="p">():</span>
                         <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topfile</span><span class="p">)</span>
 
                 <span class="k">try</span><span class="p">:</span>
@@ -436,7 +436,7 @@
                             <span class="sa">f</span><span class="s2">&quot;%FLAG section not found, formatting error &quot;</span>
                             <span class="sa">f</span><span class="s2">&quot;for PARM7 file </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2"> &quot;</span>
                         <span class="p">)</span>
-                        <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
+                        <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
 
         <span class="c1"># strip out a few values to play with them</span>
         <span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">])</span>
@@ -529,7 +529,7 @@
 
 <div class="viewcode-block" id="TOPParser.skipper">
 <a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.skipper">[docs]</a>
-    <span class="k">def</span> <span class="nf">skipper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">skipper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;TOPParser :class: helper function, skips lines of input parm7 file</span>
 <span class="sd">        until we find the next %FLAG entry and return that</span>
 
@@ -546,7 +546,7 @@
 
 <div class="viewcode-block" id="TOPParser.parse_names">
 <a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse_names">[docs]</a>
-    <span class="k">def</span> <span class="nf">parse_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Extracts atoms names from parm7 file</span>
 
 <span class="sd">        Parameters</span>
@@ -569,7 +569,7 @@
 
 <div class="viewcode-block" id="TOPParser.parse_resnames">
 <a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse_resnames">[docs]</a>
-    <span class="k">def</span> <span class="nf">parse_resnames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse_resnames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Extracts the names of each residue</span>
 
 <span class="sd">        Parameters</span>
@@ -592,7 +592,7 @@
 
 <div class="viewcode-block" id="TOPParser.parse_charges">
 <a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse_charges">[docs]</a>
-    <span class="k">def</span> <span class="nf">parse_charges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse_charges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Extracts the partial charges for each atom</span>
 
 <span class="sd">        Parameters</span>
@@ -617,7 +617,7 @@
 
 <div class="viewcode-block" id="TOPParser.parse_masses">
 <a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse_masses">[docs]</a>
-    <span class="k">def</span> <span class="nf">parse_masses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse_masses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Extracts the mass of each atom</span>
 
 <span class="sd">        Parameters</span>
@@ -640,7 +640,7 @@
 
 <div class="viewcode-block" id="TOPParser.parse_elements">
 <a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse_elements">[docs]</a>
-    <span class="k">def</span> <span class="nf">parse_elements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse_elements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Extracts the atomic numbers of each atom and converts to element type</span>
 
 <span class="sd">        Parameters</span>
@@ -676,7 +676,7 @@
 
 <div class="viewcode-block" id="TOPParser.parse_types">
 <a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse_types">[docs]</a>
-    <span class="k">def</span> <span class="nf">parse_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Extracts the force field atom types of each atom</span>
 
 <span class="sd">        Parameters</span>
@@ -699,7 +699,7 @@
 
 <div class="viewcode-block" id="TOPParser.parse_type_indices">
 <a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse_type_indices">[docs]</a>
-    <span class="k">def</span> <span class="nf">parse_type_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse_type_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Extracts the index of atom types of the each atom involved in Lennard</span>
 <span class="sd">        Jones (6-12) interactions.</span>
 
@@ -723,7 +723,7 @@
 
 <div class="viewcode-block" id="TOPParser.parse_residx">
 <a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse_residx">[docs]</a>
-    <span class="k">def</span> <span class="nf">parse_residx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse_residx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Extracts the residue pointers for each atom</span>
 
 <span class="sd">        Parameters</span>
@@ -744,7 +744,7 @@
 
 <div class="viewcode-block" id="TOPParser.parse_chunks">
 <a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse_chunks">[docs]</a>
-    <span class="k">def</span> <span class="nf">parse_chunks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">chunksize</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse_chunks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">chunksize</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Helper function to parse AMBER PRMTOP bonds/angles.</span>
 
 <span class="sd">        Parameters</span>
@@ -778,7 +778,7 @@
 
 <div class="viewcode-block" id="TOPParser.parse_bonded">
 <a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse_bonded">[docs]</a>
-    <span class="k">def</span> <span class="nf">parse_bonded</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse_bonded</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Extracts bond information from PARM7 format files</span>
 
 <span class="sd">        Parameters</span>
@@ -805,7 +805,7 @@
 
 <div class="viewcode-block" id="TOPParser.parsesection_mapper">
 <a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parsesection_mapper">[docs]</a>
-    <span class="k">def</span> <span class="nf">parsesection_mapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">numlines</span><span class="p">,</span> <span class="n">mapper</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parsesection_mapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">numlines</span><span class="p">,</span> <span class="n">mapper</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parses FORTRAN formatted section, and returns a list of all entries</span>
 <span class="sd">        in each line</span>
 
@@ -823,7 +823,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">section</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">def</span> <span class="nf">get_fmt</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">get_fmt</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Skips &#39;%COMMENT&#39; lines until it gets the FORMAT specification</span>
 <span class="sd">            for the section.&quot;&quot;&quot;</span>
             <span class="n">line</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
@@ -851,7 +851,7 @@
 
 <div class="viewcode-block" id="TOPParser.parse_dihedrals">
 <a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse_dihedrals">[docs]</a>
-    <span class="k">def</span> <span class="nf">parse_dihedrals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diha</span><span class="p">,</span> <span class="n">dihh</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse_dihedrals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diha</span><span class="p">,</span> <span class="n">dihh</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Combines hydrogen and non-hydrogen containing AMBER dihedral lists</span>
 <span class="sd">        and extracts sublists for conventional dihedrals and improper angles</span>
 
@@ -903,7 +903,7 @@
 
 <div class="viewcode-block" id="TOPParser.parse_chainids">
 <a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse_chainids">[docs]</a>
-    <span class="k">def</span> <span class="nf">parse_chainids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">numlines</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse_chainids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">numlines</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Extracts the chainID of each residue</span>
 
 <span class="sd">        Parameters</span>

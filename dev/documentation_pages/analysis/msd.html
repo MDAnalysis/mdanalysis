@@ -23,7 +23,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.8.2.2. Mean Squared Displacement — MDAnalysis.analysis.msd &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/site.css" />
 
   
@@ -225,9 +225,9 @@ random walk. Files provided as part of the MDAnalysis test suite are used
 (in the variables <code class="xref py py-data docutils literal notranslate"><span class="pre">RANDOM_WALK</span></code> and
 <code class="xref py py-data docutils literal notranslate"><span class="pre">RANDOM_WALK_TOPO</span></code>)</p>
 <p>First load all modules and test data</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
-<span class="kn">import</span> <span class="nn">MDAnalysis.analysis.msd</span> <span class="k">as</span> <span class="nn">msd</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">RANDOM_WALK_TOPO</span><span class="p">,</span> <span class="n">RANDOM_WALK</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.msd</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">msd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.tests.datafiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">RANDOM_WALK_TOPO</span><span class="p">,</span> <span class="n">RANDOM_WALK</span>
 </pre></div>
 </div>
 <p>Given a universe containing trajectory data we can extract the MSD
@@ -245,7 +245,7 @@ analysis by using the class <a class="reference internal" href="#MDAnalysis.anal
 <dt>Visual inspection of the MSD is important, so let’s take a look at it with a</dt><dd><p>simple plot.</p>
 </dd>
 </dl>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="n">nframes</span> <span class="o">=</span> <span class="n">MSD</span><span class="o">.</span><span class="n">n_frames</span>
 <span class="n">timestep</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1"># this needs to be the actual time between frames</span>
 <span class="n">lagtimes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nframes</span><span class="p">)</span><span class="o">*</span><span class="n">timestep</span> <span class="c1"># make the lag-time axis</span>
@@ -295,7 +295,7 @@ a self-diffusivity.</p>
 a linear model. An example of this is shown below, using the MSD computed in
 the example above. The segment between <span class="math notranslate nohighlight">\(\tau = 20\)</span> and <span class="math notranslate nohighlight">\(\tau = 60\)</span>
 is used to demonstrate selection of a MSD segment.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">linregress</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">linregress</span>
 <span class="n">start_time</span> <span class="o">=</span> <span class="mi">20</span>
 <span class="n">start_index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">start_time</span><span class="o">/</span><span class="n">timestep</span><span class="p">)</span>
 <span class="n">end_time</span> <span class="o">=</span> <span class="mi">60</span>

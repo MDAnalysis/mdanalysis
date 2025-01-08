@@ -22,7 +22,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MDAnalysis.converters.OpenMM &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/site.css" />
 
   
@@ -206,14 +206,14 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">..coordinates</span> <span class="kn">import</span> <span class="n">base</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..coordinates</span><span class="w"> </span><span class="kn">import</span> <span class="n">base</span>
 
 
 <div class="viewcode-block" id="OpenMMSimulationReader">
 <a class="viewcode-back" href="../../../documentation_pages/converters/OpenMM.html#MDAnalysis.converters.OpenMM.OpenMMSimulationReader">[docs]</a>
-<span class="k">class</span> <span class="nc">OpenMMSimulationReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">SingleFrameReaderBase</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">OpenMMSimulationReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">SingleFrameReaderBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Reader for OpenMM Simulation objects</span>
 
 
@@ -230,19 +230,19 @@
     <span class="p">}</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_format_hint</span><span class="p">(</span><span class="n">thing</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_format_hint</span><span class="p">(</span><span class="n">thing</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Can this reader read *thing*?&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">openmm.app</span> <span class="kn">import</span> <span class="n">Simulation</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">openmm.app</span><span class="w"> </span><span class="kn">import</span> <span class="n">Simulation</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-                <span class="kn">from</span> <span class="nn">simtk.openmm.app</span> <span class="kn">import</span> <span class="n">Simulation</span>
+                <span class="kn">from</span><span class="w"> </span><span class="nn">simtk.openmm.app</span><span class="w"> </span><span class="kn">import</span> <span class="n">Simulation</span>
             <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">False</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">thing</span><span class="p">,</span> <span class="n">Simulation</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_read_first_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_read_first_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">getNumAtoms</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mda_timestep_from_omm_context</span><span class="p">()</span>
@@ -259,12 +259,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">convert_forces_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_forces</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">convert_time_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dt</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_mda_timestep_from_omm_context</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_mda_timestep_from_omm_context</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct Timestep object from OpenMM context&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="kn">import</span> <span class="nn">openmm.unit</span> <span class="k">as</span> <span class="nn">u</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">openmm.unit</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">u</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-            <span class="kn">import</span> <span class="nn">simtk.unit</span> <span class="k">as</span> <span class="nn">u</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">simtk.unit</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">u</span>
 
         <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">getState</span><span class="p">(</span>
             <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">getVelocities</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">getForces</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">getEnergy</span><span class="o">=</span><span class="kc">True</span>
@@ -295,7 +295,7 @@
 
 <div class="viewcode-block" id="OpenMMAppReader">
 <a class="viewcode-back" href="../../../documentation_pages/converters/OpenMM.html#MDAnalysis.converters.OpenMM.OpenMMAppReader">[docs]</a>
-<span class="k">class</span> <span class="nc">OpenMMAppReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">SingleFrameReaderBase</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">OpenMMAppReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">SingleFrameReaderBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Reader for OpenMM Application layer objects</span>
 
 <span class="sd">    See also `the object definition in the OpenMM Application layer &lt;http://docs.openmm.org/latest/api-python/generated/openmm.app.simulation.Simulation.html#openmm.app.simulation.Simulation&gt;`_</span>
@@ -307,19 +307,19 @@
     <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="s2">&quot;ps&quot;</span><span class="p">,</span> <span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="s2">&quot;nm&quot;</span><span class="p">}</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_format_hint</span><span class="p">(</span><span class="n">thing</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_format_hint</span><span class="p">(</span><span class="n">thing</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Can this reader read *thing*?&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">openmm</span> <span class="kn">import</span> <span class="n">app</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">openmm</span><span class="w"> </span><span class="kn">import</span> <span class="n">app</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-                <span class="kn">from</span> <span class="nn">simtk.openmm</span> <span class="kn">import</span> <span class="n">app</span>
+                <span class="kn">from</span><span class="w"> </span><span class="nn">simtk.openmm</span><span class="w"> </span><span class="kn">import</span> <span class="n">app</span>
             <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">False</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">thing</span><span class="p">,</span> <span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">PDBFile</span><span class="p">,</span> <span class="n">app</span><span class="o">.</span><span class="n">Modeller</span><span class="p">,</span> <span class="n">app</span><span class="o">.</span><span class="n">PDBxFile</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">_read_first_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_read_first_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">getNumAtoms</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mda_timestep_from_omm_app</span><span class="p">()</span>
@@ -334,7 +334,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span>
                 <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_mda_timestep_from_omm_app</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_mda_timestep_from_omm_app</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct Timestep object from OpenMM Application object&quot;&quot;&quot;</span>
 
         <span class="n">omm_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span>
@@ -353,7 +353,7 @@
 
 
 
-<span class="k">def</span> <span class="nf">_sanitize_box_angles</span><span class="p">(</span><span class="n">angles</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_sanitize_box_angles</span><span class="p">(</span><span class="n">angles</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Ensure box angles correspond to first quadrant</span>
 
 <span class="sd">    See `discussion on unitcell angles &lt;https://github.com/MDAnalysis/mdanalysis/pull/2917/files#r620558575&gt;`_</span>

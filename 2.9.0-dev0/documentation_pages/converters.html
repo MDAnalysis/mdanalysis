@@ -23,7 +23,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>8. Converter modules &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/site.css" />
 
   
@@ -164,9 +164,9 @@ packages.</p>
 creating a Universe from files. Typically MDAnalysis will recognise which
 library it is dealing with, so you will not need to pass in a <code class="docutils literal notranslate"><span class="pre">format</span></code> keyword.</p>
 <p>For example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">GRO</span>
-<span class="kn">import</span> <span class="nn">parmed</span> <span class="k">as</span> <span class="nn">pmd</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">GRO</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">parmed</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pmd</span>
 
 <span class="n">pgro</span> <span class="o">=</span> <span class="n">pmd</span><span class="o">.</span><span class="n">load_file</span><span class="p">(</span><span class="n">GRO</span><span class="p">)</span>  <span class="c1"># creates parmed structure</span>
 <span class="n">ugro</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">pgro</span><span class="p">)</span>  <span class="c1"># you can just pass it in</span>

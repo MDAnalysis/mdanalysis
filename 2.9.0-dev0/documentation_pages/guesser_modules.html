@@ -23,7 +23,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>6. Guesser modules &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/site.css" />
 
   
@@ -174,8 +174,8 @@ Please see the <a class="reference internal" href="guesser_modules/default_guess
 <section id="guessing-using-guess-topologyattrs-api">
 <h3><span class="section-number">6.1.2. </span>Guessing using <a class="reference internal" href="core/universe.html#MDAnalysis.core.universe.Universe.guess_TopologyAttrs" title="MDAnalysis.core.universe.Universe.guess_TopologyAttrs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">guess_TopologyAttrs()</span></code></a> API<a class="headerlink" href="#guessing-using-guess-topologyattrs-api" title="Link to this heading"></a></h3>
 <p>Guessing can be done through the Universe’s <a class="reference internal" href="core/universe.html#MDAnalysis.core.universe.Universe.guess_TopologyAttrs" title="MDAnalysis.core.universe.Universe.guess_TopologyAttrs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">guess_TopologyAttrs()</span></code></a> as following:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
-<span class="kn">from</span> <span class="nn">MDAnalysisTests.datafiles</span> <span class="kn">import</span> <span class="n">PDB</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysisTests.datafiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">PDB</span>
 
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PDB</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="s1">&#39;elements&#39;</span><span class="p">))</span>  <span class="c1"># returns False</span>
@@ -188,8 +188,8 @@ Please see the <a class="reference internal" href="guesser_modules/default_guess
 attribute to the <code class="docutils literal notranslate"><span class="pre">AtomGroup</span></code> of the universe.</p>
 <p>If the attribute already exists in the universe, passing the attribute of interest to the <code class="docutils literal notranslate"><span class="pre">to_guess</span></code> parameter will only fill the empty values of the attribute if any exists.
 To override all the attribute values, you can pass the attribute to the <code class="docutils literal notranslate"><span class="pre">force_guess</span></code> parameter instead of <code class="docutils literal notranslate"><span class="pre">to_guess</span></code> as following:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
-<span class="kn">from</span> <span class="nn">MDAnalysisTests.datafiles</span> <span class="kn">import</span> <span class="n">PRM12</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysisTests.datafiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">PRM12</span>
 
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PRM12</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="n">to_guess</span><span class="o">=</span><span class="p">())</span> <span class="c1"># types [&#39;HW&#39;, &#39;OW&#39;, ..]</span>
 

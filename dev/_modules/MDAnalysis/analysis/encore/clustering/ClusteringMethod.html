@@ -22,7 +22,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MDAnalysis.analysis.encore.clustering.ClusteringMethod &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/site.css" />
 
   
@@ -180,16 +180,16 @@
 <span class="sd">   in MDAnalysis 3.0.0.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 
 <span class="c1"># Import native affinity propagation implementation</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">affinityprop</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">affinityprop</span>
 
 <span class="c1"># Attempt to import scikit-learn clustering algorithms</span>
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">sklearn.cluster</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">sklearn.cluster</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">sklearn</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
@@ -203,7 +203,7 @@
 
 <div class="viewcode-block" id="encode_centroid_info">
 <a class="viewcode-back" href="../../../../../documentation_pages/analysis/encore/clustering.html#MDAnalysis.analysis.encore.clustering.ClusteringMethod.encode_centroid_info">[docs]</a>
-<span class="k">def</span> <span class="nf">encode_centroid_info</span><span class="p">(</span><span class="n">clusters</span><span class="p">,</span> <span class="n">cluster_centers_indices</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">encode_centroid_info</span><span class="p">(</span><span class="n">clusters</span><span class="p">,</span> <span class="n">cluster_centers_indices</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Adjust cluster indices to include centroid information</span>
 <span class="sd">    as described in documentation for ClusterCollection</span>
@@ -218,7 +218,7 @@
 
 <div class="viewcode-block" id="ClusteringMethod">
 <a class="viewcode-back" href="../../../../../documentation_pages/analysis/encore/clustering.html#MDAnalysis.analysis.encore.clustering.ClusteringMethod.ClusteringMethod">[docs]</a>
-<span class="k">class</span> <span class="nc">ClusteringMethod</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ClusteringMethod</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for any Clustering Method</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -226,7 +226,7 @@
     <span class="c1"># Whether the method accepts a distance matrix</span>
     <span class="n">accepts_distance_matrix</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -252,12 +252,12 @@
 
 <div class="viewcode-block" id="AffinityPropagationNative">
 <a class="viewcode-back" href="../../../../../documentation_pages/analysis/encore/clustering.html#MDAnalysis.analysis.encore.clustering.ClusteringMethod.AffinityPropagationNative">[docs]</a>
-<span class="k">class</span> <span class="nc">AffinityPropagationNative</span><span class="p">(</span><span class="n">ClusteringMethod</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AffinityPropagationNative</span><span class="p">(</span><span class="n">ClusteringMethod</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Interface to the natively implemented Affinity propagation procedure.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">damping</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
         <span class="n">preference</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span>
@@ -299,7 +299,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">convergence_iter</span> <span class="o">=</span> <span class="n">convergence_iter</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_noise</span> <span class="o">=</span> <span class="n">add_noise</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance_matrix</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance_matrix</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -333,13 +333,13 @@
 
 <div class="viewcode-block" id="AffinityPropagation">
 <a class="viewcode-back" href="../../../../../documentation_pages/analysis/encore/clustering.html#MDAnalysis.analysis.encore.clustering.ClusteringMethod.AffinityPropagation">[docs]</a>
-    <span class="k">class</span> <span class="nc">AffinityPropagation</span><span class="p">(</span><span class="n">ClusteringMethod</span><span class="p">):</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">AffinityPropagation</span><span class="p">(</span><span class="n">ClusteringMethod</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Interface to the Affinity propagation clustering procedure implemented</span>
 <span class="sd">        in sklearn.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">damping</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
             <span class="n">preference</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span>
@@ -383,7 +383,7 @@
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
             <span class="p">)</span>
 
-        <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance_matrix</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance_matrix</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Parameters</span>
 <span class="sd">            ----------</span>
@@ -417,12 +417,12 @@
 
 <div class="viewcode-block" id="DBSCAN">
 <a class="viewcode-back" href="../../../../../documentation_pages/analysis/encore/clustering.html#MDAnalysis.analysis.encore.clustering.ClusteringMethod.DBSCAN">[docs]</a>
-    <span class="k">class</span> <span class="nc">DBSCAN</span><span class="p">(</span><span class="n">ClusteringMethod</span><span class="p">):</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">DBSCAN</span><span class="p">(</span><span class="n">ClusteringMethod</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Interface to the DBSCAN clustering procedure implemented in sklearn.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">eps</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
             <span class="n">min_samples</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
@@ -471,7 +471,7 @@
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
             <span class="p">)</span>
 
-        <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance_matrix</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance_matrix</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Parameters</span>
 <span class="sd">            ----------</span>
@@ -504,7 +504,7 @@
 
 <div class="viewcode-block" id="KMeans">
 <a class="viewcode-back" href="../../../../../documentation_pages/analysis/encore/clustering.html#MDAnalysis.analysis.encore.clustering.ClusteringMethod.KMeans">[docs]</a>
-    <span class="k">class</span> <span class="nc">KMeans</span><span class="p">(</span><span class="n">ClusteringMethod</span><span class="p">):</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">KMeans</span><span class="p">(</span><span class="n">ClusteringMethod</span><span class="p">):</span>
 
         <span class="c1"># Whether the method accepts a distance matrix</span>
         <span class="n">accepts_distance_matrix</span> <span class="o">=</span> <span class="kc">False</span>
@@ -513,7 +513,7 @@
 <span class="sd">        Interface to the KMeans clustering procedure implemented in sklearn.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">n_clusters</span><span class="p">,</span>
             <span class="n">max_iter</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>
@@ -586,7 +586,7 @@
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
             <span class="p">)</span>
 
-        <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Parameters</span>
 <span class="sd">            ----------</span>

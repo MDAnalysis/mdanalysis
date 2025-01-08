@@ -23,7 +23,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>5.10. ITP topology parser &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/site.css" />
 
   
@@ -195,8 +195,8 @@ If they are not in the working directory, ITPParser will look for them in the
 Variables can be defined with the <cite>#define</cite> directive in files, or by passing
 in <a class="reference internal" href="#itp-define-kwargs"><span class="std std-ref">keyword arguments</span></a>.</p>
 <p class="rubric">Examples</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">ITP_tip5p</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.tests.datafiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">ITP_tip5p</span>
 
 <span class="c1">#  override charge of HW2 atom (defined in file as HW2_CHARGE)</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">ITP_tip5p</span><span class="p">,</span> <span class="n">HW2_CHARGE</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">infer_system</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -206,7 +206,7 @@ in <a class="reference internal" href="#itp-define-kwargs"><span class="std std-
 <p class="admonition-title">Note</p>
 <p>AMBER also uses topology files with the .top extension. To use ITPParser
 to read GROMACS top files, pass <code class="docutils literal notranslate"><span class="pre">topology_format='ITP'</span></code>.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="s1">&#39;topol.top&#39;</span><span class="p">,</span> <span class="n">topology_format</span><span class="o">=</span><span class="s1">&#39;ITP&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -241,8 +241,8 @@ SOL             2
 <p>Define these preprocessor variables by passing keyword arguments. Any arguments that you
 pass in <em>override</em> any variables defined in the file. For example, the universe below
 will have charges of 3 for the HW1 and HW2 atoms:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">ITP_tip5p</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.tests.datafiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">ITP_tip5p</span>
 
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">ITP_tip5p</span><span class="p">,</span> <span class="n">EXTRA_ATOMS</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">HW1_CHARGE</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">HW2_CHARGE</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>

@@ -22,7 +22,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MDAnalysis.core._get_readers &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/site.css" />
 
   
@@ -161,18 +161,24 @@
 <span class="sd">circular imports.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
 
-<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="p">(</span><span class="n">_READERS</span><span class="p">,</span> <span class="n">_READER_HINTS</span><span class="p">,</span>
-                <span class="n">_PARSERS</span><span class="p">,</span> <span class="n">_PARSER_HINTS</span><span class="p">,</span>
-                <span class="n">_MULTIFRAME_WRITERS</span><span class="p">,</span> <span class="n">_SINGLEFRAME_WRITERS</span><span class="p">,</span> <span class="n">_CONVERTERS</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">util</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">_READERS</span><span class="p">,</span>
+    <span class="n">_READER_HINTS</span><span class="p">,</span>
+    <span class="n">_PARSERS</span><span class="p">,</span>
+    <span class="n">_PARSER_HINTS</span><span class="p">,</span>
+    <span class="n">_MULTIFRAME_WRITERS</span><span class="p">,</span>
+    <span class="n">_SINGLEFRAME_WRITERS</span><span class="p">,</span>
+    <span class="n">_CONVERTERS</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..lib</span><span class="w"> </span><span class="kn">import</span> <span class="n">util</span>
 
 
 <div class="viewcode-block" id="get_reader_for">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/core.html#MDAnalysis.coordinates.core.get_reader_for">[docs]</a>
-<span class="k">def</span> <span class="nf">get_reader_for</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_reader_for</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the appropriate trajectory reader class for `filename`.</span>
 
 <span class="sd">    Parameters</span>
@@ -224,8 +230,8 @@
         <span class="k">return</span> <span class="nb">format</span>
 
     <span class="c1"># ChainReader gets returned even if format is specified</span>
-    <span class="k">if</span> <span class="n">_READER_HINTS</span><span class="p">[</span><span class="s1">&#39;CHAIN&#39;</span><span class="p">](</span><span class="n">filename</span><span class="p">):</span>
-        <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;CHAIN&#39;</span>
+    <span class="k">if</span> <span class="n">_READER_HINTS</span><span class="p">[</span><span class="s2">&quot;CHAIN&quot;</span><span class="p">](</span><span class="n">filename</span><span class="p">):</span>
+        <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;CHAIN&quot;</span>
     <span class="c1"># Only guess if format is not specified</span>
     <span class="k">if</span> <span class="nb">format</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">fmt_name</span><span class="p">,</span> <span class="n">test</span> <span class="ow">in</span> <span class="n">_READER_HINTS</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -247,14 +253,16 @@
             <span class="s2">&quot;           Use the format keyword to explicitly set the format: &#39;Universe(...,format=FORMAT)&#39;</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;           For missing formats, raise an issue at &quot;</span>
             <span class="s2">&quot;https://github.com/MDAnalysis/mdanalysis/issues&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="nb">format</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">_READERS</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span></div>
+                <span class="nb">format</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">_READERS</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span></div>
 
 
 
 <div class="viewcode-block" id="get_writer_for">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/core.html#MDAnalysis.coordinates.core.get_writer_for">[docs]</a>
-<span class="k">def</span> <span class="nf">get_writer_for</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">multiframe</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_writer_for</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">multiframe</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return an appropriate trajectory or frame writer class for `filename`.</span>
 
 <span class="sd">    The format is determined by the `format` argument or the extension of</span>
@@ -305,7 +313,7 @@
 <span class="sd">       The `filename` argument has been made mandatory.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;NULL&#39;</span>
+        <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;NULL&quot;</span>
     <span class="k">elif</span> <span class="nb">format</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">root</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">get_ext</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
@@ -315,22 +323,28 @@
             <span class="c1"># A TypeError is raised in py3.6</span>
             <span class="c1"># &quot;TypeError: expected str, bytes or os.PathLike object&quot;</span>
             <span class="n">errmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;File format could not be guessed from &quot;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">format</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">check_compressed_format</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">ext</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span>
-            <span class="s1">&#39;File format could not be guessed from </span><span class="si">{}</span><span class="s1">, &#39;</span>
-            <span class="s1">&#39;resulting in empty string - &#39;</span>
-            <span class="s1">&#39;only None or valid formats are supported.&#39;</span>
-            <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+    <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="p">(</span>
+                <span class="s2">&quot;File format could not be guessed from </span><span class="si">{}</span><span class="s2">, &quot;</span>
+                <span class="s2">&quot;resulting in empty string - &quot;</span>
+                <span class="s2">&quot;only None or valid formats are supported.&quot;</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="p">)</span>
 
     <span class="nb">format</span> <span class="o">=</span> <span class="nb">format</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">multiframe</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># Multiframe takes priority, else use singleframe</span>
-        <span class="n">options</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">_SINGLEFRAME_WRITERS</span><span class="p">)</span>  <span class="c1"># do copy to avoid changing in place</span>
-        <span class="n">options</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">_MULTIFRAME_WRITERS</span><span class="p">)</span>  <span class="c1"># update overwrites existing entries</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span>
+            <span class="n">_SINGLEFRAME_WRITERS</span>
+        <span class="p">)</span>  <span class="c1"># do copy to avoid changing in place</span>
+        <span class="n">options</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="n">_MULTIFRAME_WRITERS</span>
+        <span class="p">)</span>  <span class="c1"># update overwrites existing entries</span>
         <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;No trajectory or frame writer for format &#39;</span><span class="si">{0}</span><span class="s2">&#39;&quot;</span>
     <span class="k">elif</span> <span class="n">multiframe</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
         <span class="n">options</span> <span class="o">=</span> <span class="n">_MULTIFRAME_WRITERS</span>
@@ -339,18 +353,20 @@
         <span class="n">options</span> <span class="o">=</span> <span class="n">_SINGLEFRAME_WRITERS</span>
         <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;No single frame writer for format &#39;</span><span class="si">{0}</span><span class="s2">&#39;&quot;</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown value &#39;</span><span class="si">{0}</span><span class="s2">&#39; for multiframe,&quot;</span>
-                         <span class="s2">&quot; only True, False, None allowed&quot;</span>
-                         <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">multiframe</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Unknown value &#39;</span><span class="si">{0}</span><span class="s2">&#39; for multiframe,&quot;</span>
+            <span class="s2">&quot; only True, False, None allowed&quot;</span>
+            <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">multiframe</span><span class="p">)</span>
+        <span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">options</span><span class="p">[</span><span class="nb">format</span><span class="p">]</span>
     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">format</span><span class="p">))</span> <span class="kn">from</span> <span class="kc">None</span></div>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">format</span><span class="p">))</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span></div>
 
 
 
-<span class="k">def</span> <span class="nf">get_parser_for</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_parser_for</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the appropriate topology parser for `filename`.</span>
 
 <span class="sd">    Automatic detection is disabled when an explicit `format` is</span>
@@ -400,12 +416,15 @@
                 <span class="s2">&quot;   See https://docs.mdanalysis.org/documentation_pages/topology/init.html#supported-topology-formats</span><span class="se">\n</span><span class="s2">&quot;</span>
                 <span class="s2">&quot;   For missing formats, raise an issue at </span><span class="se">\n</span><span class="s2">&quot;</span>
                 <span class="s2">&quot;   https://github.com/MDAnalysis/mdanalysis/issues&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="nb">format</span><span class="p">,</span> <span class="n">_PARSERS</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
+                    <span class="nb">format</span><span class="p">,</span> <span class="n">_PARSERS</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">_PARSERS</span><span class="p">[</span><span class="s1">&#39;MINIMAL&#39;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">_PARSERS</span><span class="p">[</span><span class="s2">&quot;MINIMAL&quot;</span><span class="p">]</span>
 
-<span class="k">def</span> <span class="nf">get_converter_for</span><span class="p">(</span><span class="nb">format</span><span class="p">):</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_converter_for</span><span class="p">(</span><span class="nb">format</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the appropriate topology converter for ``format``.</span>
 
 <span class="sd">    Parameters</span>
@@ -424,8 +443,8 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">writer</span> <span class="o">=</span> <span class="n">_CONVERTERS</span><span class="p">[</span><span class="nb">format</span><span class="p">]</span>
     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-        <span class="n">errmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;No converter found for </span><span class="si">{</span><span class="nb">format</span><span class="si">}</span><span class="s1"> format&#39;</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
+        <span class="n">errmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;No converter found for </span><span class="si">{</span><span class="nb">format</span><span class="si">}</span><span class="s2"> format&quot;</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
     <span class="k">return</span> <span class="n">writer</span>
 </pre></div>
 

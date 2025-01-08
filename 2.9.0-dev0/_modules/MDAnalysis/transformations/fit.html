@@ -22,7 +22,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MDAnalysis.transformations.fit &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/site.css" />
 
   
@@ -174,17 +174,17 @@
 <span class="sd">.. autoclass:: fit_rot_trans</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">..analysis</span> <span class="kn">import</span> <span class="n">align</span>
-<span class="kn">from</span> <span class="nn">..lib.transformations</span> <span class="kn">import</span> <span class="n">euler_from_matrix</span><span class="p">,</span> <span class="n">euler_matrix</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">align</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..lib.transformations</span><span class="w"> </span><span class="kn">import</span> <span class="n">euler_from_matrix</span><span class="p">,</span> <span class="n">euler_matrix</span>
 
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">TransformationBase</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">TransformationBase</span>
 
 
 <div class="viewcode-block" id="fit_translation">
 <a class="viewcode-back" href="../../../documentation_pages/transformations/fit.html#MDAnalysis.transformations.fit.fit_translation">[docs]</a>
-<span class="k">class</span> <span class="nc">fit_translation</span><span class="p">(</span><span class="n">TransformationBase</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">fit_translation</span><span class="p">(</span><span class="n">TransformationBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Translates a given AtomGroup so that its center of geometry/mass matches</span>
 <span class="sd">    the respective center of the given reference. A plane can be given by the</span>
 <span class="sd">    user using the option `plane`, and will result in the removal of</span>
@@ -235,7 +235,7 @@
 <span class="sd">       limiting threads and checking if it can be used in parallel analysis.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">ag</span><span class="p">,</span>
         <span class="n">reference</span><span class="p">,</span>
@@ -260,7 +260,7 @@
             <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">plane</span><span class="si">}</span><span class="s2"> is not a valid plane&quot;</span>
-                <span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
+                <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_residues</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_residues</span><span class="p">:</span>
                 <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span>
@@ -274,14 +274,14 @@
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="si">}</span><span class="s2"> or </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="si">}</span><span class="s2"> is not valid&quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;Universe/AtomGroup&quot;</span>
             <span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ref</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile</span> <span class="o">=</span> <span class="n">align</span><span class="o">.</span><span class="n">get_matching_atoms</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="o">.</span><span class="n">atoms</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">align</span><span class="o">.</span><span class="n">get_weights</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ref_com</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
         <span class="n">mobile_com</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mobile</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span>
         <span class="p">)</span>
@@ -296,7 +296,7 @@
 
 <div class="viewcode-block" id="fit_rot_trans">
 <a class="viewcode-back" href="../../../documentation_pages/transformations/fit.html#MDAnalysis.transformations.fit.fit_rot_trans">[docs]</a>
-<span class="k">class</span> <span class="nc">fit_rot_trans</span><span class="p">(</span><span class="n">TransformationBase</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">fit_rot_trans</span><span class="p">(</span><span class="n">TransformationBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Perform a spatial superposition by minimizing the RMSD.</span>
 
 <span class="sd">    Spatially align the group of atoms `ag` to `reference` by doing a RMSD</span>
@@ -357,7 +357,7 @@
 <span class="sd">       limiting threads and checking if it can be used in parallel analysis.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">ag</span><span class="p">,</span>
         <span class="n">reference</span><span class="p">,</span>
@@ -382,7 +382,7 @@
             <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">plane</span><span class="si">}</span><span class="s2"> is not a valid plane&quot;</span>
-                <span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
+                <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_residues</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_residues</span><span class="p">:</span>
                 <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span>
@@ -395,7 +395,7 @@
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="si">}</span><span class="s2"> or </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="si">}</span><span class="s2"> is not valid &quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;Universe/AtomGroup&quot;</span>
             <span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ref</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile</span> <span class="o">=</span> <span class="n">align</span><span class="o">.</span><span class="n">get_matching_atoms</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="o">.</span><span class="n">atoms</span>
         <span class="p">)</span>
@@ -403,7 +403,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ref_com</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ref_coordinates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_com</span>
 
-    <span class="k">def</span> <span class="nf">_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
         <span class="n">mobile_com</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span>
         <span class="n">mobile_coordinates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span> <span class="n">mobile_com</span>
         <span class="n">rotation</span><span class="p">,</span> <span class="n">dump</span> <span class="o">=</span> <span class="n">align</span><span class="o">.</span><span class="n">rotation_matrix</span><span class="p">(</span>

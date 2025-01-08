@@ -23,7 +23,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>5.27. Guessing unknown Topology information — MDAnalysis.topology.guessers &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/site.css" />
 
   
@@ -195,9 +195,9 @@ while <cite>guess_Xs</cite> will work on an array of many atoms.</p>
 <p>Currently, it is possible to guess elements from atom names using
 <code class="xref py py-func docutils literal notranslate"><span class="pre">guess_atom_element()</span></code> (or the synonymous <code class="xref py py-func docutils literal notranslate"><span class="pre">guess_atom_type()</span></code>). This can
 be done in the following manner:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.topology.guessers</span> <span class="kn">import</span> <span class="n">guess_atom_element</span>
-<span class="kn">from</span> <span class="nn">MDAnalysisTests.datafiles</span> <span class="kn">import</span> <span class="n">PRM7</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.topology.guessers</span><span class="w"> </span><span class="kn">import</span> <span class="n">guess_atom_element</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysisTests.datafiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">PRM7</span>
 
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PRM7</span><span class="p">)</span>
 
@@ -213,9 +213,9 @@ be done in the following manner:</p>
 important to note that element guessing is not always accurate. Indeed in cases
 where the atom type is not recognised, we may end up with the wrong element.
 For example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.topology.guessers</span> <span class="kn">import</span> <span class="n">guess_atom_element</span>
-<span class="kn">from</span> <span class="nn">MDAnalysisTests.datafiles</span> <span class="kn">import</span> <span class="n">PRM19SBOPC</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.topology.guessers</span><span class="w"> </span><span class="kn">import</span> <span class="n">guess_atom_element</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysisTests.datafiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">PRM19SBOPC</span>
 
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PRM19SBOPC</span><span class="p">)</span>
 
@@ -232,9 +232,9 @@ carefully check the outcomes of any guessers.</p>
 <p>In some cases, one may want to guess elements for an entire universe and add
 this guess as a topology attribute. This can be done using <code class="xref py py-func docutils literal notranslate"><span class="pre">guess_types()</span></code>
 in the following manner:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.topology.guessers</span> <span class="kn">import</span> <span class="n">guess_types</span>
-<span class="kn">from</span> <span class="nn">MDAnalysisTests.datafiles</span> <span class="kn">import</span> <span class="n">PRM7</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.topology.guessers</span><span class="w"> </span><span class="kn">import</span> <span class="n">guess_types</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysisTests.datafiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">PRM7</span>
 
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PRM7</span><span class="p">)</span>
 

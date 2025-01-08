@@ -22,7 +22,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MDAnalysis.analysis.legacy.x3dna &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/site.css" />
 
   
@@ -259,23 +259,23 @@
 <span class="sd">.. autoexception:: ApplicationError</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">errno</span>
-<span class="kn">import</span> <span class="nn">glob</span>
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">os.path</span>
-<span class="kn">import</span> <span class="nn">shutil</span>
-<span class="kn">import</span> <span class="nn">subprocess</span>
-<span class="kn">import</span> <span class="nn">tempfile</span>
-<span class="kn">import</span> <span class="nn">textwrap</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">errno</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os.path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">textwrap</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrderedDict</span>
 
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">ApplicationError</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="kn">import</span> <span class="n">asiterable</span><span class="p">,</span> <span class="n">deprecate</span><span class="p">,</span> <span class="n">realpath</span><span class="p">,</span> <span class="n">which</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">ApplicationError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.lib.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">asiterable</span><span class="p">,</span> <span class="n">deprecate</span><span class="p">,</span> <span class="n">realpath</span><span class="p">,</span> <span class="n">which</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.analysis.x3dna&quot;</span><span class="p">)</span>
 
@@ -288,7 +288,7 @@
         <span class="s2">&quot;MDAnalysis 3.0.0, see #3788&quot;</span>
     <span class="p">),</span>
 <span class="p">)</span>
-<span class="k">def</span> <span class="nf">mean_std_from_x3dnaPickle</span><span class="p">(</span><span class="n">profile</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">mean_std_from_x3dnaPickle</span><span class="p">(</span><span class="n">profile</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get mean and standard deviation of helicoidal parameters from a saved `profile`.</span>
 
 <span class="sd">    The `profile` should have been saved with :meth:`BaseX3DNA.save`. Then</span>
@@ -429,7 +429,7 @@
     <span class="k">return</span> <span class="n">na_avg</span><span class="p">,</span> <span class="n">na_std</span>
 
 
-<span class="k">class</span> <span class="nc">BaseX3DNA</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BaseX3DNA</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Baseclass for X3DNA_ analysis, providing plotting and utility functions.</span>
 
 <span class="sd">    When methods return helicoidal basepair parameter as lists, then the order</span>
@@ -461,7 +461,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;x3dna.pickle&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;x3dna.pickle&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Save :attr:`profiles` as a Python pickle file *filename*.</span>
 
 <span class="sd">        Load profiles dictionary with ::</span>
@@ -470,13 +470,13 @@
 <span class="sd">           profiles = cPickle.load(open(filename))</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">import</span> <span class="nn">cPickle</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">cPickle</span>
 
         <span class="n">cPickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">),</span> <span class="n">cPickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">mean_std</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mean_std</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the mean and standard deviation of base parameters.</span>
 
 <span class="sd">        Returns</span>
@@ -548,7 +548,7 @@
         <span class="n">na_avg</span><span class="p">,</span> <span class="n">na_std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">na_avg</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">na_std</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">na_avg</span><span class="p">,</span> <span class="n">na_std</span>
 
-    <span class="k">def</span> <span class="nf">mean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the mean value for the base parameters.</span>
 
 <span class="sd">        Returns</span>
@@ -604,7 +604,7 @@
         <span class="n">na_avg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">na_avg</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">na_avg</span>
 
-    <span class="k">def</span> <span class="nf">std</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">std</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the standard deviation for the base parameters.</span>
 
 <span class="sd">        Returns</span>
@@ -660,7 +660,7 @@
         <span class="n">na_std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">na_std</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">na_std</span>
 
-    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Plot time-averaged base parameters for each basse pair in a 1D graph.</span>
 
 <span class="sd">        One plot is produced for each parameter. It shows the the mean and</span>
@@ -696,7 +696,7 @@
             <span class="n">ax</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0!s}</span><span class="s2">.png&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">((</span><span class="n">param</span><span class="p">)))</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">sorted_profiles_iter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sorted_profiles_iter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return an iterator over profiles sorted by frame/order parameter.</span>
 
 <span class="sd">        The iterator produces tuples ``(q, profile)``. Typically, `q` is the</span>
@@ -712,7 +712,7 @@
 
 <div class="viewcode-block" id="X3DNA">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/legacy/x3dna.html#MDAnalysis.analysis.legacy.x3dna.X3DNA">[docs]</a>
-<span class="k">class</span> <span class="nc">X3DNA</span><span class="p">(</span><span class="n">BaseX3DNA</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">X3DNA</span><span class="p">(</span><span class="n">BaseX3DNA</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Run X3DNA_ on a single frame or a DCD trajectory.</span>
 
 <span class="sd">    Only a subset of all X3DNA control parameters is supported and can be set</span>
@@ -763,7 +763,7 @@
             <span class="s2">&quot;MDAnalysis 3.0.0, see #3788&quot;</span>
         <span class="p">),</span>
     <span class="p">)</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up parameters to run X3DNA_ on PDB *filename*.</span>
 
 <span class="sd">        Parameters</span>
@@ -850,7 +850,7 @@
 
 <div class="viewcode-block" id="X3DNA.run">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/legacy/x3dna.html#MDAnalysis.analysis.legacy.x3dna.X3DNA.run">[docs]</a>
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Run X3DNA on the input file.&quot;&quot;&quot;</span>
         <span class="n">inpname</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;inpfile&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">outname</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;outfile&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logfile</span><span class="p">)</span>
@@ -888,7 +888,7 @@
 
 <div class="viewcode-block" id="X3DNA.collect">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/legacy/x3dna.html#MDAnalysis.analysis.legacy.x3dna.X3DNA.collect">[docs]</a>
-    <span class="k">def</span> <span class="nf">collect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">collect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse the output from a X3DNA run into numpy recarrays.</span>
 
 <span class="sd">        Can deal with outputs containing multiple frames.</span>
@@ -923,7 +923,7 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Collecting X3DNA profiles for run with id </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">run</span><span class="p">)</span>
         <span class="n">length</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># length of trajectory --- is this really needed?? No... just for info</span>
         <span class="k">if</span> <span class="s2">&quot;*&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">:</span>
-            <span class="kn">import</span> <span class="nn">glob</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
 
             <span class="n">filenames</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
             <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">filenames</span><span class="p">)</span>
@@ -1113,7 +1113,7 @@
             <span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tempfiles</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
@@ -1126,7 +1126,7 @@
 
 <div class="viewcode-block" id="X3DNAtraj">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/legacy/x3dna.html#MDAnalysis.analysis.legacy.x3dna.X3DNAtraj">[docs]</a>
-<span class="k">class</span> <span class="nc">X3DNAtraj</span><span class="p">(</span><span class="n">BaseX3DNA</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">X3DNAtraj</span><span class="p">(</span><span class="n">BaseX3DNA</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Analyze all frames in a trajectory.</span>
 
 <span class="sd">    The :class:`X3DNA` class provides a direct interface to X3DNA. X3DNA itself</span>
@@ -1148,7 +1148,7 @@
             <span class="s2">&quot;MDAnalysis 3.0.0, see #3788&quot;</span>
         <span class="p">),</span>
     <span class="p">)</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up the class.</span>
 
 <span class="sd">        Parameters</span>
@@ -1196,7 +1196,7 @@
 
 <div class="viewcode-block" id="X3DNAtraj.run">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/legacy/x3dna.html#MDAnalysis.analysis.legacy.x3dna.X3DNAtraj.run">[docs]</a>
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Run X3DNA on the whole trajectory and collect profiles.</span>
 
 <span class="sd">        Keyword arguments `start`, `stop`, and `step` can be used to only</span>
@@ -1239,7 +1239,7 @@
 
 <div class="viewcode-block" id="X3DNAtraj.run_x3dna">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/legacy/x3dna.html#MDAnalysis.analysis.legacy.x3dna.X3DNAtraj.run_x3dna">[docs]</a>
-    <span class="k">def</span> <span class="nf">run_x3dna</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pdbfile</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run_x3dna</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pdbfile</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Run X3DNA on a single PDB file `pdbfile`.&quot;&quot;&quot;</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;x3dna_param&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x3dna_param</span>
         <span class="n">H</span> <span class="o">=</span> <span class="n">X3DNA</span><span class="p">(</span><span class="n">pdbfile</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>

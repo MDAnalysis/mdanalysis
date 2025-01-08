@@ -22,7 +22,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MDAnalysis.transformations.nojump &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/site.css" />
 
   
@@ -177,17 +177,17 @@
 <span class="sd">.. autoclass:: NoJump</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">TransformationBase</span>
-<span class="kn">from</span> <span class="nn">..due</span> <span class="kn">import</span> <span class="n">due</span><span class="p">,</span> <span class="n">Doi</span>
-<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">NoDataError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">TransformationBase</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..due</span><span class="w"> </span><span class="kn">import</span> <span class="n">due</span><span class="p">,</span> <span class="n">Doi</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">NoDataError</span>
 
 
 <div class="viewcode-block" id="NoJump">
 <a class="viewcode-back" href="../../../documentation_pages/transformations/nojump.html#MDAnalysis.transformations.nojump.NoJump">[docs]</a>
-<span class="k">class</span> <span class="nc">NoJump</span><span class="p">(</span><span class="n">TransformationBase</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">NoJump</span><span class="p">(</span><span class="n">TransformationBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns transformed coordinates for the given timestep so that an atom</span>
 <span class="sd">    does not move more than half the periodic box size between two timesteps, and will move</span>
@@ -239,7 +239,7 @@
         <span class="s2">&quot;and proposes the non-orthogonal approach.&quot;</span><span class="p">,</span>
         <span class="n">path</span><span class="o">=</span><span class="vm">__name__</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">check_continuity</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">max_threads</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -252,7 +252,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">older_frame</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">check_c</span> <span class="o">=</span> <span class="n">check_continuity</span>
 
-    <span class="k">def</span> <span class="nf">_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
         <span class="n">L</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">triclinic_dimensions</span>
         <span class="k">if</span> <span class="n">L</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Periodic box dimensions not provided at step </span><span class="si">{</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="si">}</span><span class="s2">&quot;</span>

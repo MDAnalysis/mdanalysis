@@ -22,7 +22,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MDAnalysis.converters.ParmEd &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/site.css" />
 
   
@@ -219,23 +219,23 @@
 <span class="sd">   to :mod:`~MDAnalysis.converters`</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">functools</span>
-<span class="kn">import</span> <span class="nn">itertools</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">functools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
-<span class="kn">from</span> <span class="nn">..guesser.tables</span> <span class="kn">import</span> <span class="n">SYMB2Z</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">numpy.lib</span> <span class="kn">import</span> <span class="n">NumpyVersion</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..guesser.tables</span><span class="w"> </span><span class="kn">import</span> <span class="n">SYMB2Z</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy.lib</span><span class="w"> </span><span class="kn">import</span> <span class="n">NumpyVersion</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
-<span class="kn">from</span> <span class="nn">..coordinates.base</span> <span class="kn">import</span> <span class="n">SingleFrameReaderBase</span>
-<span class="kn">from</span> <span class="nn">..core.universe</span> <span class="kn">import</span> <span class="n">Universe</span>
-<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">NoDataError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">base</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..coordinates.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">SingleFrameReaderBase</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core.universe</span><span class="w"> </span><span class="kn">import</span> <span class="n">Universe</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">NoDataError</span>
 
 
 <div class="viewcode-block" id="ParmEdReader">
 <a class="viewcode-back" href="../../../documentation_pages/converters/ParmEd.html#MDAnalysis.converters.ParmEd.ParmEdReader">[docs]</a>
-<span class="k">class</span> <span class="nc">ParmEdReader</span><span class="p">(</span><span class="n">SingleFrameReaderBase</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ParmEdReader</span><span class="p">(</span><span class="n">SingleFrameReaderBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Coordinate reader for ParmEd.&quot;&quot;&quot;</span>
 
     <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;PARMED&quot;</span>
@@ -244,20 +244,20 @@
     <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;length&quot;</span><span class="p">:</span> <span class="s2">&quot;Angstrom&quot;</span><span class="p">}</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_format_hint</span><span class="p">(</span><span class="n">thing</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_format_hint</span><span class="p">(</span><span class="n">thing</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Can this reader read *thing*?</span>
 
 <span class="sd">        .. versionadded:: 1.0.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="kn">import</span> <span class="nn">parmed</span> <span class="k">as</span> <span class="nn">pmd</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">parmed</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pmd</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
             <span class="c1"># if we can&#39;t import parmed, it&#39;s probably not parmed</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">thing</span><span class="p">,</span> <span class="n">pmd</span><span class="o">.</span><span class="n">Structure</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_read_first_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_read_first_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts_kwargs</span><span class="p">)</span>
@@ -283,13 +283,13 @@
 <span class="p">}</span>
 
 
-<span class="k">def</span> <span class="nf">get_indices_from_subset</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">atomgroup</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">universe</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_indices_from_subset</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">atomgroup</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">universe</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">atomgroup</span><span class="p">[</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
 
 
 <div class="viewcode-block" id="ParmEdConverter">
 <a class="viewcode-back" href="../../../documentation_pages/converters/ParmEd.html#MDAnalysis.converters.ParmEd.ParmEdConverter">[docs]</a>
-<span class="k">class</span> <span class="nc">ParmEdConverter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ConverterBase</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ParmEdConverter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ConverterBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert MDAnalysis AtomGroup or Universe to ParmEd :class:`~parmed.structure.Structure`.</span>
 
 <span class="sd">    Example</span>
@@ -312,7 +312,7 @@
 
 <div class="viewcode-block" id="ParmEdConverter.convert">
 <a class="viewcode-back" href="../../../documentation_pages/converters/ParmEd.html#MDAnalysis.converters.ParmEd.ParmEdConverter.convert">[docs]</a>
-    <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Write selection at current trajectory frame to :class:`~parmed.structure.Structure`.</span>
 
 <span class="sd">        Parameters</span>
@@ -323,7 +323,7 @@
             <span class="c1"># TODO: remove this guard when parmed has a release</span>
             <span class="c1"># that supports NumPy 2</span>
             <span class="k">if</span> <span class="n">NumpyVersion</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span> <span class="o">&lt;</span> <span class="s2">&quot;2.0.0&quot;</span><span class="p">:</span>
-                <span class="kn">import</span> <span class="nn">parmed</span> <span class="k">as</span> <span class="nn">pmd</span>
+                <span class="kn">import</span><span class="w"> </span><span class="nn">parmed</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pmd</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ImportError</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
@@ -340,7 +340,7 @@
             <span class="c1"># make sure to use atoms (Issue 46)</span>
             <span class="n">ag_or_ts</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">atoms</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;No atoms found in obj argument&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;No atoms found in obj argument&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
 
         <span class="c1"># Check for topology information</span>
         <span class="n">missing_topology</span> <span class="o">=</span> <span class="p">[]</span>

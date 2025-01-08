@@ -22,7 +22,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MDAnalysis.analysis.helix_analysis &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/site.css" />
 
   
@@ -240,17 +240,17 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
-<span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">util</span><span class="p">,</span> <span class="n">mdamath</span>
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">AnalysisBase</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..lib</span><span class="w"> </span><span class="kn">import</span> <span class="n">util</span><span class="p">,</span> <span class="n">mdamath</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnalysisBase</span>
 
 
 <div class="viewcode-block" id="vector_of_best_fit">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/helix_analysis.html#MDAnalysis.analysis.helix_analysis.vector_of_best_fit">[docs]</a>
-<span class="k">def</span> <span class="nf">vector_of_best_fit</span><span class="p">(</span><span class="n">coordinates</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">vector_of_best_fit</span><span class="p">(</span><span class="n">coordinates</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Fit vector through the centered coordinates,</span>
 <span class="sd">    pointing to the first coordinate (i.e. upside-down).</span>
 
@@ -278,7 +278,7 @@
 
 <div class="viewcode-block" id="local_screw_angles">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/helix_analysis.html#MDAnalysis.analysis.helix_analysis.local_screw_angles">[docs]</a>
-<span class="k">def</span> <span class="nf">local_screw_angles</span><span class="p">(</span><span class="n">global_axis</span><span class="p">,</span> <span class="n">ref_axis</span><span class="p">,</span> <span class="n">helix_directions</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">local_screw_angles</span><span class="p">(</span><span class="n">global_axis</span><span class="p">,</span> <span class="n">ref_axis</span><span class="p">,</span> <span class="n">helix_directions</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Cylindrical azimuth angles between the local direction vectors,</span>
 <span class="sd">    as projected onto the cross-section of the helix, from (-pi, pi].</span>
@@ -337,7 +337,7 @@
 
 <div class="viewcode-block" id="helix_analysis">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/helix_analysis.html#MDAnalysis.analysis.helix_analysis.helix_analysis">[docs]</a>
-<span class="k">def</span> <span class="nf">helix_analysis</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="n">ref_axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">helix_analysis</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="n">ref_axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate helix properties from atomic coordinates.</span>
 
@@ -463,7 +463,7 @@
 
 <div class="viewcode-block" id="HELANAL">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/helix_analysis.html#MDAnalysis.analysis.helix_analysis.HELANAL">[docs]</a>
-<span class="k">class</span> <span class="nc">HELANAL</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">HELANAL</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Perform HELANAL helix analysis on your trajectory.</span>
 
@@ -545,7 +545,7 @@
         <span class="s2">&quot;local_screw_angles&quot;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,),</span>
     <span class="p">}</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">universe</span><span class="p">,</span>
         <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
@@ -601,7 +601,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ref_axis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ref_axis</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_flatten</span> <span class="o">=</span> <span class="n">flatten_single_helix</span>
 
-    <span class="k">def</span> <span class="nf">_zeros_per_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dims</span><span class="p">,</span> <span class="n">n_positions</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_zeros_per_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dims</span><span class="p">,</span> <span class="n">n_positions</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create zero arrays where first 2 dims are n_frames, n_values&quot;&quot;&quot;</span>
         <span class="n">first</span> <span class="o">=</span> <span class="n">dims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">n_positions</span>
         <span class="n">npdims</span> <span class="o">=</span> <span class="p">(</span>
@@ -612,7 +612,7 @@
         <span class="p">]</span>  <span class="c1"># py27 workaround</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">npdims</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">n_res</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">ag</span><span class="p">)</span> <span class="k">for</span> <span class="n">ag</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomgroups</span><span class="p">]</span>
 
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">dims</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">attr_shapes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -624,7 +624,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_zeros_per_frame</span><span class="p">((</span><span class="n">n</span> <span class="o">-</span> <span class="mi">3</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">3</span><span class="p">))</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">n_res</span>
         <span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">_f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ag</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomgroups</span><span class="p">):</span>
             <span class="n">results</span> <span class="o">=</span> <span class="n">helix_analysis</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">ref_axis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_axis</span><span class="p">)</span>
@@ -632,7 +632,7 @@
                 <span class="n">attr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
                 <span class="n">attr</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">_f</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
-    <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># compute tilt of global axes</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">global_tilts</span> <span class="o">=</span> <span class="n">tilts</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">norm_ref</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_axis</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">**</span> <span class="mf">0.5</span>
@@ -666,7 +666,7 @@
                 <span class="n">attr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">universe_from_origins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">universe_from_origins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create MDAnalysis Universe from the local origins.</span>
 

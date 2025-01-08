@@ -22,7 +22,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/site.css" />
 
   
@@ -346,16 +346,16 @@
 <span class="sd">   :members:</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">scipy.optimize</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.optimize</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
-<span class="kn">from</span> <span class="nn">MDAnalysis.lib._cutil</span> <span class="kn">import</span> <span class="n">_in2d</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.lib.log</span> <span class="kn">import</span> <span class="n">ProgressBar</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.lib.distances</span> <span class="kn">import</span> <span class="n">capped_distance</span><span class="p">,</span> <span class="n">calc_angles</span><span class="p">,</span> <span class="n">calc_bonds</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.core.groups</span> <span class="kn">import</span> <span class="n">requires</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.lib._cutil</span><span class="w"> </span><span class="kn">import</span> <span class="n">_in2d</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.lib.log</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProgressBar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.lib.distances</span><span class="w"> </span><span class="kn">import</span> <span class="n">capped_distance</span><span class="p">,</span> <span class="n">calc_angles</span><span class="p">,</span> <span class="n">calc_bonds</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.core.groups</span><span class="w"> </span><span class="kn">import</span> <span class="n">requires</span>
 
-<span class="kn">from</span> <span class="nn">MDAnalysis.due</span> <span class="kn">import</span> <span class="n">due</span><span class="p">,</span> <span class="n">Doi</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.due</span><span class="w"> </span><span class="kn">import</span> <span class="n">due</span><span class="p">,</span> <span class="n">Doi</span>
 
 <span class="n">due</span><span class="o">.</span><span class="n">cite</span><span class="p">(</span>
     <span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1063/1.4922445&quot;</span><span class="p">),</span>
@@ -368,7 +368,7 @@
 <div class="viewcode-block" id="find_hydrogen_donors">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/hbond_autocorrel.html#MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.find_hydrogen_donors">[docs]</a>
 <span class="nd">@requires</span><span class="p">(</span><span class="s2">&quot;bonds&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">find_hydrogen_donors</span><span class="p">(</span><span class="n">hydrogens</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">find_hydrogen_donors</span><span class="p">(</span><span class="n">hydrogens</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the donor atom for each hydrogen</span>
 
 <span class="sd">    Parameters</span>
@@ -390,7 +390,7 @@
 
 <div class="viewcode-block" id="HydrogenBondAutoCorrel">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/hbond_autocorrel.html#MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.HydrogenBondAutoCorrel">[docs]</a>
-<span class="k">class</span> <span class="nc">HydrogenBondAutoCorrel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">HydrogenBondAutoCorrel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Perform a time autocorrelation of the hydrogen bonds in the system.</span>
 
 <span class="sd">    Parameters</span>
@@ -436,7 +436,7 @@
 <span class="sd">      :attr:`HydrogenBondAutoCorrel.solution[&#39;results&#39;]` instead.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">universe</span><span class="p">,</span>
         <span class="n">hydrogens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -462,7 +462,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Trajectory must support slicing&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Trajectory must support slicing&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">h</span> <span class="o">=</span> <span class="n">hydrogens</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="n">acceptors</span>
@@ -507,7 +507,7 @@
             <span class="s2">&quot;estimate&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># y values of fit against time</span>
         <span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">_slice_traj</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_time</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_slice_traj</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_time</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up start and end points in the trajectory for the</span>
 <span class="sd">        different passes</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -549,7 +549,7 @@
 
 <div class="viewcode-block" id="HydrogenBondAutoCorrel.run">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/hbond_autocorrel.html#MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.HydrogenBondAutoCorrel.run">[docs]</a>
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Run all the required passes</span>
 
 <span class="sd">        Parameters</span>
@@ -595,7 +595,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s2">&quot;results&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">main_results</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_single_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_single_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform a single pass of the trajectory&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">start</span><span class="p">]</span>
 
@@ -678,7 +678,7 @@
 
 <div class="viewcode-block" id="HydrogenBondAutoCorrel.solve">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/hbond_autocorrel.html#MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.HydrogenBondAutoCorrel.solve">[docs]</a>
-    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p_guess</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p_guess</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Fit results to an multi exponential decay and integrate to find</span>
 <span class="sd">        characteristic time</span>
 
@@ -722,7 +722,7 @@
         <span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
         <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s2">&quot;results&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">within_bounds</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">within_bounds</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Returns True/False if boundary conditions are met or not.</span>
 <span class="sd">            Uses length of p to detect whether it&#39;s handling continuous /</span>
 <span class="sd">            intermittent</span>
@@ -748,7 +748,7 @@
                     <span class="o">&amp;</span> <span class="p">(</span><span class="n">tau3</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">)</span>
                 <span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">err</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">err</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Custom residual function, returns real residual if all</span>
 <span class="sd">            boundaries are met, else returns a large number to trick the</span>
 <span class="sd">            leastsq algorithm</span>
@@ -758,12 +758,12 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">100000</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">double</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">A1</span><span class="p">,</span> <span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">double</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">A1</span><span class="p">,</span> <span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Sum of two exponential functions&quot;&quot;&quot;</span>
             <span class="n">A2</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">A1</span>
             <span class="k">return</span> <span class="n">A1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span> <span class="o">/</span> <span class="n">tau1</span><span class="p">)</span> <span class="o">+</span> <span class="n">A2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span> <span class="o">/</span> <span class="n">tau2</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">triple</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">A1</span><span class="p">,</span> <span class="n">A2</span><span class="p">,</span> <span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span><span class="p">,</span> <span class="n">tau3</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">triple</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">A1</span><span class="p">,</span> <span class="n">A2</span><span class="p">,</span> <span class="n">tau1</span><span class="p">,</span> <span class="n">tau2</span><span class="p">,</span> <span class="n">tau3</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Sum of three exponential functions&quot;&quot;&quot;</span>
             <span class="n">A3</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">A1</span> <span class="o">+</span> <span class="n">A2</span><span class="p">)</span>
             <span class="k">return</span> <span class="p">(</span>
@@ -817,7 +817,7 @@
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Solution to results not found&quot;</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="s2">&quot;&lt;MDAnalysis HydrogenBondAutoCorrel analysis measuring the &quot;</span>
             <span class="s2">&quot;</span><span class="si">{btype}</span><span class="s2"> lifetime of </span><span class="si">{n}</span><span class="s2"> different hydrogens&gt;&quot;</span>

@@ -23,7 +23,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.4.1. Hydrogen Bond Analysis — MDAnalysis.analysis.hydrogenbonds.hbond_analysis &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/site.css" />
 
   
@@ -239,8 +239,8 @@ and can be accessed via <a class="reference internal" href="#MDAnalysis.analysis
 <h2><span class="section-number">4.4.1.3. </span>Example use of <a class="reference internal" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis" title="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">HydrogenBondAnalysis</span></code></a><a class="headerlink" href="#example-use-of-hydrogenbondanalysis" title="Link to this heading"></a></h2>
 <p>The simplest use case is to allow <a class="reference internal" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis" title="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">HydrogenBondAnalysis</span></code></a> to guess the acceptor and hydrogen atoms, and to
 identify donor-hydrogen pairs via the bonding information in the topology:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span> <span class="kn">import</span> <span class="n">HydrogenBondAnalysis</span> <span class="k">as</span> <span class="n">HBA</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">HydrogenBondAnalysis</span> <span class="k">as</span> <span class="n">HBA</span>
 
 <span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">psf</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
 
@@ -250,8 +250,8 @@ identify donor-hydrogen pairs via the bonding information in the topology:</p>
 </div>
 <p>It is also possible to specify which hydrogens and acceptors to use in the analysis. For example, to find all hydrogen
 bonds in water:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span> <span class="kn">import</span> <span class="n">HydrogenBondAnalysis</span> <span class="k">as</span> <span class="n">HBA</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">HydrogenBondAnalysis</span> <span class="k">as</span> <span class="n">HBA</span>
 
 <span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">psf</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
 
@@ -262,8 +262,8 @@ bonds in water:</p>
 <p>Alternatively, <code class="xref py py-attr docutils literal notranslate"><span class="pre">hydrogens_sel</span></code> and <code class="xref py py-attr docutils literal notranslate"><span class="pre">acceptors_sel</span></code> may be generated via the <code class="xref py py-attr docutils literal notranslate"><span class="pre">guess_hydrogens</span></code> and
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">guess_acceptors</span></code>. This selection strings may then be modified prior to calling <code class="xref py py-attr docutils literal notranslate"><span class="pre">run</span></code>, or a subset of
 the universe may be used to guess the atoms. For example, find hydrogens and acceptors belonging to a protein:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span> <span class="kn">import</span> <span class="n">HydrogenBondAnalysis</span> <span class="k">as</span> <span class="n">HBA</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">HydrogenBondAnalysis</span> <span class="k">as</span> <span class="n">HBA</span>
 
 <span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">psf</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
 
@@ -276,8 +276,8 @@ the universe may be used to guess the atoms. For example, find hydrogens and acc
 <p>Slightly more complex selection strings are also possible. For example, to find hydrogen bonds involving a protein and
 any water molecules within 10 Å of the protein (which may be useful for subsequently finding the lifetime of
 protein-water hydrogen bonds or finding water-bridging hydrogen bond paths):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span> <span class="kn">import</span> <span class="n">HydrogenBondAnalysis</span> <span class="k">as</span> <span class="n">HBA</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">HydrogenBondAnalysis</span> <span class="k">as</span> <span class="n">HBA</span>
 
 <span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">psf</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
 
@@ -298,8 +298,8 @@ protein-water hydrogen bonds or finding water-bridging hydrogen bond paths):</p>
 protein and water, one can use the <code class="xref py py-attr docutils literal notranslate"><span class="pre">between</span></code> keyword. The
 following will find protein-water hydrogen bonds but not protein-protein
 or water-water hydrogen bonds:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span> <span class="kn">import</span> <span class="p">(</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
   <span class="n">HydrogenBondAnalysis</span> <span class="k">as</span> <span class="n">HBA</span><span class="p">)</span>
 
 <span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">psf</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
@@ -327,7 +327,7 @@ with use of <code class="xref py py-attr docutils literal notranslate"><span cla
 protein-water and protein-protein hydrogen bonds will be found, but
 no water-water hydrogen bonds.</p>
 <p>One can also define hydrogen bonds with atom types:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span> <span class="kn">import</span> <span class="n">HydrogenBondAnalysis</span> <span class="k">as</span> <span class="n">HBA</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">HydrogenBondAnalysis</span> <span class="k">as</span> <span class="n">HBA</span>
 <span class="n">hbonds</span> <span class="o">=</span> <span class="n">HBA</span><span class="p">(</span>
              <span class="n">universe</span><span class="o">=</span><span class="n">u</span><span class="p">,</span>
              <span class="n">donors_sel</span><span class="o">=</span><span class="s1">&#39;type 2&#39;</span><span class="p">,</span>
@@ -350,8 +350,8 @@ identified. However, if, for example, a <cite>PDB</cite> file is used instead, a
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">donors_sel</span></code> may be provided along with a <code class="xref py py-attr docutils literal notranslate"><span class="pre">hydrogens_sel</span></code> and the
 donor-hydrogen pairs will be identified via a distance cutoff,
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">d_h_cutoff</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span> <span class="kn">import</span> <span class="p">(</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
   <span class="n">HydrogenBondAnalysis</span> <span class="k">as</span> <span class="n">HBA</span><span class="p">)</span>
 
 <span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">pdb</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>

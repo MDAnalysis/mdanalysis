@@ -22,7 +22,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MDAnalysis.topology.MMTFParser &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/site.css" />
 
   
@@ -220,14 +220,14 @@
 
 <span class="sd">.. _Macromolecular Transmission Format (MMTF) format: https://mmtf.rcsb.org/</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
-<span class="kn">import</span> <span class="nn">mmtf</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">mmtf</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
-<span class="kn">from</span> <span class="nn">..core.topology</span> <span class="kn">import</span> <span class="n">Topology</span>
-<span class="kn">from</span> <span class="nn">..core.topologyattrs</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">base</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core.topology</span><span class="w"> </span><span class="kn">import</span> <span class="n">Topology</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core.topologyattrs</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">AltLocs</span><span class="p">,</span>
     <span class="n">Atomids</span><span class="p">,</span>
     <span class="n">Atomnames</span><span class="p">,</span>
@@ -243,23 +243,23 @@
     <span class="n">Segids</span><span class="p">,</span>
     <span class="n">SegmentAttr</span><span class="p">,</span>  <span class="c1"># for model</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">..core.selection</span> <span class="kn">import</span> <span class="n">RangeSelection</span>
-<span class="kn">from</span> <span class="nn">..due</span> <span class="kn">import</span> <span class="n">due</span><span class="p">,</span> <span class="n">Doi</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core.selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">RangeSelection</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..due</span><span class="w"> </span><span class="kn">import</span> <span class="n">due</span><span class="p">,</span> <span class="n">Doi</span>
 
 
-<span class="k">def</span> <span class="nf">_parse_mmtf</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_mmtf</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">fn</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;gz&quot;</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">mmtf</span><span class="o">.</span><span class="n">parse_gzip</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">mmtf</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">Models</span><span class="p">(</span><span class="n">SegmentAttr</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Models</span><span class="p">(</span><span class="n">SegmentAttr</span><span class="p">):</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s2">&quot;models&quot;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s2">&quot;model&quot;</span>
     <span class="n">transplants</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">models</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">models</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Models in this Universe.</span>
 
 <span class="sd">        The MMTF format can define various models for a given structure. The</span>
@@ -279,11 +279,11 @@
     <span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">ModelSelection</span><span class="p">(</span><span class="n">RangeSelection</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ModelSelection</span><span class="p">(</span><span class="n">RangeSelection</span><span class="p">):</span>
     <span class="n">token</span> <span class="o">=</span> <span class="s2">&quot;model&quot;</span>
     <span class="n">field</span> <span class="o">=</span> <span class="s2">&quot;models&quot;</span>
 
-    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
         <span class="n">vals</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">models</span>
 
@@ -300,11 +300,11 @@
 
 <div class="viewcode-block" id="MMTFParser">
 <a class="viewcode-back" href="../../../documentation_pages/topology/MMTFParser.html#MDAnalysis.topology.MMTFParser.MMTFParser">[docs]</a>
-<span class="k">class</span> <span class="nc">MMTFParser</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MMTFParser</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;MMTF&quot;</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_format_hint</span><span class="p">(</span><span class="n">thing</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_format_hint</span><span class="p">(</span><span class="n">thing</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Can parser read *thing*?</span>
 
 <span class="sd">        .. versionadded:: 1.0.0</span>
@@ -316,13 +316,13 @@
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;MMTF Parser&quot;</span><span class="p">,</span>
         <span class="n">path</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.topology.MMTFParser&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">mmtf</span><span class="o">.</span><span class="n">MMTFDecoder</span><span class="p">):</span>
             <span class="n">mtop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">mtop</span> <span class="o">=</span> <span class="n">_parse_mmtf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">iter_atoms</span><span class="p">(</span><span class="n">field</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">iter_atoms</span><span class="p">(</span><span class="n">field</span><span class="p">):</span>
             <span class="c1"># iterate through atoms in groups</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">mtop</span><span class="o">.</span><span class="n">group_type_list</span><span class="p">:</span>
                 <span class="n">g</span> <span class="o">=</span> <span class="n">mtop</span><span class="o">.</span><span class="n">group_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>

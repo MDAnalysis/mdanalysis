@@ -22,7 +22,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MDAnalysis.analysis.hydrogenbonds.hbond_analysis &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/site.css" />
 
   
@@ -377,20 +377,20 @@
 <span class="sd">         Will be removed in MDAnalysis 3.0.0. Please use</span>
 <span class="sd">         :attr:`results.hbonds` instead.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Iterable</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">AnalysisBase</span><span class="p">,</span> <span class="n">Results</span><span class="p">,</span> <span class="n">ResultsGroup</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.lib.distances</span> <span class="kn">import</span> <span class="n">capped_distance</span><span class="p">,</span> <span class="n">calc_angles</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.lib.correlations</span> <span class="kn">import</span> <span class="n">autocorrelation</span><span class="p">,</span> <span class="n">correct_intermittency</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.exceptions</span> <span class="kn">import</span> <span class="n">NoDataError</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.core.groups</span> <span class="kn">import</span> <span class="n">AtomGroup</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel</span> <span class="kn">import</span> <span class="n">find_hydrogen_donors</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..base</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnalysisBase</span><span class="p">,</span> <span class="n">Results</span><span class="p">,</span> <span class="n">ResultsGroup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.lib.distances</span><span class="w"> </span><span class="kn">import</span> <span class="n">capped_distance</span><span class="p">,</span> <span class="n">calc_angles</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.lib.correlations</span><span class="w"> </span><span class="kn">import</span> <span class="n">autocorrelation</span><span class="p">,</span> <span class="n">correct_intermittency</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">NoDataError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.core.groups</span><span class="w"> </span><span class="kn">import</span> <span class="n">AtomGroup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_hydrogen_donors</span>
 
-<span class="kn">from</span> <span class="nn">...due</span> <span class="kn">import</span> <span class="n">due</span><span class="p">,</span> <span class="n">Doi</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">...due</span><span class="w"> </span><span class="kn">import</span> <span class="n">due</span><span class="p">,</span> <span class="n">Doi</span>
 
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
@@ -406,7 +406,7 @@
 
 <div class="viewcode-block" id="HydrogenBondAnalysis">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/hydrogenbonds.html#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis">[docs]</a>
-<span class="k">class</span> <span class="nc">HydrogenBondAnalysis</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">HydrogenBondAnalysis</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Perform an analysis of hydrogen bonds in a Universe.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -416,11 +416,11 @@
 <div class="viewcode-block" id="HydrogenBondAnalysis.get_supported_backends">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/hydrogenbonds.html#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.get_supported_backends">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">get_supported_backends</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_supported_backends</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;serial&#39;</span><span class="p">,</span> <span class="s1">&#39;multiprocessing&#39;</span><span class="p">,</span> <span class="s1">&#39;dask&#39;</span><span class="p">,)</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span>
                  <span class="n">donors_sel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hydrogens_sel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">acceptors_sel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">between</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">d_h_cutoff</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span>
                  <span class="n">d_a_cutoff</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">d_h_a_angle_cutoff</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span>
@@ -551,7 +551,7 @@
 
 <div class="viewcode-block" id="HydrogenBondAnalysis.guess_hydrogens">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/hydrogenbonds.html#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.guess_hydrogens">[docs]</a>
-    <span class="k">def</span> <span class="nf">guess_hydrogens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">guess_hydrogens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                         <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span>
                         <span class="n">max_mass</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span>
                         <span class="n">min_charge</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
@@ -620,7 +620,7 @@
 
 <div class="viewcode-block" id="HydrogenBondAnalysis.guess_donors">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/hydrogenbonds.html#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.guess_donors">[docs]</a>
-    <span class="k">def</span> <span class="nf">guess_donors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">max_charge</span><span class="o">=-</span><span class="mf">0.5</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">guess_donors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">max_charge</span><span class="o">=-</span><span class="mf">0.5</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Guesses which atoms could be considered donors in the analysis. Only</span>
 <span class="sd">        use if the universe topology does not contain bonding information, </span>
 <span class="sd">        otherwise donor-hydrogen pairs may be incorrectly assigned.</span>
@@ -699,7 +699,7 @@
 
 <div class="viewcode-block" id="HydrogenBondAnalysis.guess_acceptors">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/hydrogenbonds.html#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.guess_acceptors">[docs]</a>
-    <span class="k">def</span> <span class="nf">guess_acceptors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">max_charge</span><span class="o">=-</span><span class="mf">0.5</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">guess_acceptors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">max_charge</span><span class="o">=-</span><span class="mf">0.5</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Guesses which atoms could be considered acceptors in the analysis.</span>
 
 <span class="sd">        Acceptor selections may be achieved with either a resname, atom </span>
@@ -751,7 +751,7 @@
 
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_group_categories</span><span class="p">(</span><span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_group_categories</span><span class="p">(</span><span class="n">group</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Find categories according to universe constraints</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
@@ -785,7 +785,7 @@
 
         <span class="k">return</span> <span class="s2">&quot; or &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">group_list</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_get_dh_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_dh_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Finds donor-hydrogen pairs.</span>
 
 <span class="sd">        Returns</span>
@@ -830,7 +830,7 @@
 
         <span class="k">return</span> <span class="n">donors</span><span class="p">,</span> <span class="n">hydrogens</span>
 
-    <span class="k">def</span> <span class="nf">_filter_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">donors</span><span class="p">,</span> <span class="n">acceptors</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_filter_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">donors</span><span class="p">,</span> <span class="n">acceptors</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a mask to filter donor, hydrogen and acceptor atoms.</span>
 
 <span class="sd">        This can be used to consider only hydrogen bonds between two or more</span>
@@ -871,11 +871,11 @@
         <span class="k">return</span> <span class="n">mask</span>
 
 
-    <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span> <span class="o">=</span> <span class="p">[[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]]</span>
 
 
-    <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">dimensions</span>
 
@@ -949,15 +949,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">hbond_distances</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">hbond_angles</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
 
-    <span class="k">def</span> <span class="nf">_get_aggregator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_aggregator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span><span class="n">lookup</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;hbonds&#39;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_hstack</span><span class="p">})</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">hbonds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">hbonds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `hbonds` attribute was deprecated in MDAnalysis 2.0.0 &quot;</span>
                 <span class="s2">&quot;and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
                 <span class="s2">&quot;`results.hbonds` instead.&quot;</span><span class="p">)</span>
@@ -966,7 +966,7 @@
 
 <div class="viewcode-block" id="HydrogenBondAnalysis.lifetime">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/hydrogenbonds.html#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.lifetime">[docs]</a>
-    <span class="k">def</span> <span class="nf">lifetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tau_max</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">window_step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">intermittency</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">lifetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tau_max</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">window_step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">intermittency</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Computes and returns the time-autocorrelation</span>
 <span class="sd">        (HydrogenBondLifetimes) of hydrogen bonds.</span>
 
@@ -1057,7 +1057,7 @@
 
 <div class="viewcode-block" id="HydrogenBondAnalysis.count_by_time">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/hydrogenbonds.html#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.count_by_time">[docs]</a>
-    <span class="k">def</span> <span class="nf">count_by_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">count_by_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Counts the number of hydrogen bonds per timestep.</span>
 
 <span class="sd">        Returns</span>
@@ -1082,7 +1082,7 @@
 
 <div class="viewcode-block" id="HydrogenBondAnalysis.count_by_type">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/hydrogenbonds.html#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.count_by_type">[docs]</a>
-    <span class="k">def</span> <span class="nf">count_by_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">count_by_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Counts the total number of each unique type of hydrogen bond.</span>
 
 <span class="sd">        Returns</span>
@@ -1121,7 +1121,7 @@
 
 <div class="viewcode-block" id="HydrogenBondAnalysis.count_by_ids">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/hydrogenbonds.html#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.count_by_ids">[docs]</a>
-    <span class="k">def</span> <span class="nf">count_by_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">count_by_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Counts the total number hydrogen bonds formed by unique combinations of donor, hydrogen and acceptor atoms.</span>
 
 <span class="sd">        Returns</span>

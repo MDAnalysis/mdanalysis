@@ -22,7 +22,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MDAnalysis.core.selection &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/site.css" />
 
   
@@ -180,20 +180,20 @@
 <span class="sd">:class:`~MDAnalysis.core.groups.AtomGroup`.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">collections</span>
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">fnmatch</span>
-<span class="kn">import</span> <span class="nn">functools</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">types</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">collections</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">fnmatch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">functools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">types</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 
-<span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">unique_int_1d</span>
-<span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">distances</span>
-<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">SelectionError</span><span class="p">,</span> <span class="n">NoDataError</span><span class="p">,</span> <span class="n">SelectionWarning</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..lib.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">unique_int_1d</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..lib</span><span class="w"> </span><span class="kn">import</span> <span class="n">distances</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">SelectionError</span><span class="p">,</span> <span class="n">NoDataError</span><span class="p">,</span> <span class="n">SelectionWarning</span>
 
 <span class="c1">#: Regular expression for recognizing a floating point number in a selection.</span>
 <span class="c1">#: Numbers such as 1.2, 1.2e-01, -1.2 are all parsed as Python floats.</span>
@@ -208,7 +208,7 @@
 
 <div class="viewcode-block" id="is_keyword">
 <a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.is_keyword">[docs]</a>
-<span class="k">def</span> <span class="nf">is_keyword</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_keyword</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Is val a selection keyword?</span>
 
 <span class="sd">    Returns False on any of the following strings:</span>
@@ -226,7 +226,7 @@
 
 <div class="viewcode-block" id="grab_not_keywords">
 <a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.grab_not_keywords">[docs]</a>
-<span class="k">def</span> <span class="nf">grab_not_keywords</span><span class="p">(</span><span class="n">tokens</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">grab_not_keywords</span><span class="p">(</span><span class="n">tokens</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Pop tokens from the left until you hit a keyword</span>
 
 <span class="sd">    Parameters</span>
@@ -265,7 +265,7 @@
 
 <div class="viewcode-block" id="join_separated_values">
 <a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.join_separated_values">[docs]</a>
-<span class="k">def</span> <span class="nf">join_separated_values</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">join_separated_values</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Join range values that are separated by whitespace</span>
 
 <span class="sd">    Parameters</span>
@@ -313,8 +313,8 @@
 <span class="c1"># And and Or are exception and aren&#39;t strictly a Selection</span>
 <span class="c1"># as they work on other Selections rather than doing work themselves.</span>
 <span class="c1"># So their init is a little strange too....</span>
-<span class="k">class</span> <span class="nc">_Operationmeta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_Operationmeta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">):</span>
         <span class="nb">type</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">_OPERATIONS</span><span class="p">[</span><span class="n">classdict</span><span class="p">[</span><span class="s1">&#39;token&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">cls</span>
@@ -322,21 +322,21 @@
             <span class="k">pass</span>
 
 
-<span class="k">class</span> <span class="nc">LogicOperation</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">_Operationmeta</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lsel</span><span class="p">,</span> <span class="n">rsel</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">LogicOperation</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">_Operationmeta</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lsel</span><span class="p">,</span> <span class="n">rsel</span><span class="p">,</span> <span class="n">parser</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rsel</span> <span class="o">=</span> <span class="n">rsel</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lsel</span> <span class="o">=</span> <span class="n">lsel</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parser</span> <span class="o">=</span> <span class="n">parser</span>
 
-    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">asunique</span><span class="p">(</span><span class="nb">sorted</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">sorted</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">AndOperation</span><span class="p">(</span><span class="n">LogicOperation</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AndOperation</span><span class="p">(</span><span class="n">LogicOperation</span><span class="p">):</span>
     <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;and&#39;</span>
     <span class="n">precedence</span> <span class="o">=</span> <span class="mi">3</span>
 
-    <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="n">rsel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rsel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
         <span class="n">lsel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lsel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
 
@@ -346,11 +346,11 @@
         <span class="k">return</span> <span class="n">rsel</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
 
 
-<span class="k">class</span> <span class="nc">OrOperation</span><span class="p">(</span><span class="n">LogicOperation</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">OrOperation</span><span class="p">(</span><span class="n">LogicOperation</span><span class="p">):</span>
     <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;or&#39;</span>
     <span class="n">precedence</span> <span class="o">=</span> <span class="mi">3</span>
 
-    <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="n">lsel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lsel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
         <span class="n">rsel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rsel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
 
@@ -362,13 +362,13 @@
 
 <div class="viewcode-block" id="return_empty_on_apply">
 <a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.return_empty_on_apply">[docs]</a>
-<span class="k">def</span> <span class="nf">return_empty_on_apply</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">return_empty_on_apply</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Decorator to return empty AtomGroups from the apply() function</span>
 <span class="sd">    without evaluating it</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">group</span>
         <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">)</span>
@@ -376,8 +376,8 @@
 
 
 
-<span class="k">class</span> <span class="nc">_Selectionmeta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_Selectionmeta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">):</span>
         <span class="nb">type</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">_SELECTIONDICT</span><span class="p">[</span><span class="n">classdict</span><span class="p">[</span><span class="s1">&#39;token&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">cls</span>
@@ -386,19 +386,19 @@
             <span class="k">pass</span>
 
 
-<span class="k">class</span> <span class="nc">Selection</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">_Selectionmeta</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Selection</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">_Selectionmeta</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parser</span> <span class="o">=</span> <span class="n">parser</span>
 
-    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">asunique</span><span class="p">(</span><span class="nb">sorted</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">sorted</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">AllSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AllSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
     <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span>
 
-    <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="c1"># Check whether group is identical to the one stored</span>
         <span class="c1"># in the corresponding universe, in which case this</span>
         <span class="c1"># is returned directly. This works since the Universe.atoms</span>
@@ -408,33 +408,33 @@
         <span class="k">return</span> <span class="n">group</span><span class="p">[:]</span>
 
 
-<span class="k">class</span> <span class="nc">UnarySelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">UnarySelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">)</span>
         <span class="n">sel</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_expression</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">precedence</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sel</span> <span class="o">=</span> <span class="n">sel</span>
 
 
-<span class="k">class</span> <span class="nc">NotSelection</span><span class="p">(</span><span class="n">UnarySelection</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">NotSelection</span><span class="p">(</span><span class="n">UnarySelection</span><span class="p">):</span>
     <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;not&#39;</span>
     <span class="n">precedence</span> <span class="o">=</span> <span class="mi">5</span>
 
-    <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="n">notsel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="n">notsel</span><span class="o">.</span><span class="n">indices</span><span class="p">)]</span>
 
 
-<span class="k">class</span> <span class="nc">GlobalSelection</span><span class="p">(</span><span class="n">UnarySelection</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">GlobalSelection</span><span class="p">(</span><span class="n">UnarySelection</span><span class="p">):</span>
     <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;global&#39;</span>
     <span class="n">precedence</span> <span class="o">=</span> <span class="mi">5</span>
 
-    <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span><span class="o">.</span><span class="n">unique</span>
 
 
 <div class="viewcode-block" id="ByResSelection">
 <a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.ByResSelection">[docs]</a>
-<span class="k">class</span> <span class="nc">ByResSelection</span><span class="p">(</span><span class="n">UnarySelection</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ByResSelection</span><span class="p">(</span><span class="n">UnarySelection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Selects all atoms that are in the same segment and residue as selection</span>
 
@@ -445,7 +445,7 @@
     <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;byres&#39;</span>
     <span class="n">precedence</span> <span class="o">=</span> <span class="mi">1</span>
 
-    <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
         <span class="n">unique_res</span> <span class="o">=</span> <span class="n">unique_int_1d</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">resindices</span><span class="p">)</span>
         <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">resindices</span><span class="p">,</span> <span class="n">unique_res</span><span class="p">)</span>
@@ -454,18 +454,18 @@
 
 
 
-<span class="k">class</span> <span class="nc">AroundSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AroundSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
     <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;around&#39;</span>
     <span class="n">precedence</span> <span class="o">=</span> <span class="mi">1</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">periodic</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sel</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_expression</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">precedence</span><span class="p">)</span>
 
     <span class="nd">@return_empty_on_apply</span>
-    <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="n">indices</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
         <span class="c1"># All atoms in group that aren&#39;t in sel</span>
@@ -483,11 +483,11 @@
 
         <span class="k">return</span> <span class="n">sys</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)]</span>
 
-<span class="k">class</span> <span class="nc">SphericalLayerSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SphericalLayerSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
     <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;sphlayer&#39;</span>
     <span class="n">precedence</span> <span class="o">=</span> <span class="mi">1</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">periodic</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">inRadius</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">())</span>
@@ -495,7 +495,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">sel</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_expression</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">precedence</span><span class="p">)</span>
 
     <span class="nd">@return_empty_on_apply</span>
-    <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="n">indices</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sel</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -513,11 +513,11 @@
         <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)]</span>
 
 
-<span class="k">class</span> <span class="nc">IsoLayerSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">IsoLayerSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
     <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;isolayer&#39;</span>
     <span class="n">precedence</span> <span class="o">=</span> <span class="mi">1</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">periodic</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">inRadius</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">())</span>
@@ -525,7 +525,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">sel</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_expression</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">precedence</span><span class="p">)</span>
 
     <span class="nd">@return_empty_on_apply</span>
-    <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="n">indices</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
         <span class="c1"># All atoms in group that aren&#39;t in sel</span>
@@ -553,18 +553,18 @@
         <span class="k">return</span> <span class="n">sys</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)]</span>
 
 
-<span class="k">class</span> <span class="nc">SphericalZoneSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SphericalZoneSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
     <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;sphzone&#39;</span>
     <span class="n">precedence</span> <span class="o">=</span> <span class="mi">1</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">periodic</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sel</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_expression</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">precedence</span><span class="p">)</span>
 
     <span class="nd">@return_empty_on_apply</span>
-    <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="n">indices</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sel</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -581,9 +581,9 @@
         <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)]</span>
 
 
-<span class="k">class</span> <span class="nc">CylindricalSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CylindricalSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
     <span class="nd">@return_empty_on_apply</span>
-    <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="n">sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sel</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">group</span><span class="p">[[]]</span>
@@ -641,11 +641,11 @@
         <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
 
 
-<span class="k">class</span> <span class="nc">CylindricalZoneSelection</span><span class="p">(</span><span class="n">CylindricalSelection</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CylindricalZoneSelection</span><span class="p">(</span><span class="n">CylindricalSelection</span><span class="p">):</span>
     <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;cyzone&#39;</span>
     <span class="n">precedence</span> <span class="o">=</span> <span class="mi">1</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">periodic</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">exRadius</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">())</span>
@@ -654,11 +654,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">sel</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_expression</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">precedence</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">CylindricalLayerSelection</span><span class="p">(</span><span class="n">CylindricalSelection</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CylindricalLayerSelection</span><span class="p">(</span><span class="n">CylindricalSelection</span><span class="p">):</span>
     <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;cylayer&#39;</span>
     <span class="n">precedence</span> <span class="o">=</span> <span class="mi">1</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">periodic</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">inRadius</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">())</span>
@@ -668,10 +668,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">sel</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_expression</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">precedence</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">PointSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PointSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
     <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;point&#39;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">periodic</span>
         <span class="n">x</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">())</span>
@@ -681,7 +681,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">())</span>
 
     <span class="nd">@return_empty_on_apply</span>
-    <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="n">indices</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="n">box</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">dimensions</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="k">else</span> <span class="kc">None</span>
@@ -694,16 +694,16 @@
         <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)]</span>
 
 
-<span class="k">class</span> <span class="nc">AtomSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AtomSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
     <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">segid</span> <span class="o">=</span> <span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">resid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="n">sub</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="n">group</span><span class="o">.</span><span class="n">names</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">sub</span><span class="p">:</span>
             <span class="n">sub</span> <span class="o">=</span> <span class="n">sub</span><span class="p">[</span><span class="n">sub</span><span class="o">.</span><span class="n">resids</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">resid</span><span class="p">]</span>
@@ -712,15 +712,15 @@
         <span class="k">return</span> <span class="n">sub</span><span class="o">.</span><span class="n">unique</span>
 
 
-<span class="k">class</span> <span class="nc">BondedSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BondedSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
     <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;bonded&#39;</span>
     <span class="n">precedence</span> <span class="o">=</span> <span class="mi">1</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sel</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_expression</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">precedence</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="n">grp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
         <span class="c1"># Check if we have bonds</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">group</span><span class="o">.</span><span class="n">bonds</span><span class="p">:</span>
@@ -743,10 +743,10 @@
         <span class="k">return</span> <span class="n">group</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">idx</span><span class="p">)]</span>
 
 
-<span class="k">class</span> <span class="nc">SelgroupSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SelgroupSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
     <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;group&#39;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">)</span>
         <span class="n">grpname</span> <span class="o">=</span> <span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">grpname</span> <span class="ow">in</span> <span class="n">_RESERVED_KWARGS</span><span class="p">:</span>
@@ -757,21 +757,21 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">grp</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">selgroups</span><span class="p">[</span><span class="n">grpname</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="n">errmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Failed to find group: </span><span class="si">{</span><span class="n">grpname</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">grp</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="SingleCharSelection">
 <a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SingleCharSelection">[docs]</a>
-<span class="k">class</span> <span class="nc">SingleCharSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SingleCharSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;for when an attribute is just a single character, eg RSChirality</span>
 
 <span class="sd">    .. versionadded:: 2.1.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">)</span>
         <span class="n">vals</span> <span class="o">=</span> <span class="n">grab_not_keywords</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">vals</span><span class="p">:</span>
@@ -780,7 +780,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">vals</span>
 
     <span class="nd">@return_empty_on_apply</span>
-    <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="n">attr</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">)</span>
 
         <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
@@ -789,13 +789,13 @@
 
 
 
-<span class="k">class</span> <span class="nc">_ProtoStringSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_ProtoStringSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Selections based on text attributes</span>
 
 <span class="sd">    .. versionchanged:: 1.0.0</span>
 <span class="sd">        Supports multiple wildcards, based on fnmatch</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">)</span>
         <span class="n">vals</span> <span class="o">=</span> <span class="n">grab_not_keywords</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">vals</span><span class="p">:</span>
@@ -804,7 +804,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">vals</span>
 
     <span class="nd">@return_empty_on_apply</span>
-    <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="c1"># rather than work on group.names, cheat and look at the lookup table</span>
         <span class="n">nmattr</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">)</span>
 
@@ -822,7 +822,7 @@
 
 <div class="viewcode-block" id="AromaticSelection">
 <a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.AromaticSelection">[docs]</a>
-<span class="k">class</span> <span class="nc">AromaticSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AromaticSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Select aromatic atoms.</span>
 
 <span class="sd">    Aromaticity is available in the `aromaticities` attribute and is made</span>
@@ -830,14 +830,14 @@
     <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;aromatic&#39;</span>
     <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;aromaticities&#39;</span>
 
-    <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">group</span><span class="o">.</span><span class="n">aromaticities</span><span class="p">]</span></div>
 
 
 
 <div class="viewcode-block" id="SmartsSelection">
 <a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SmartsSelection">[docs]</a>
-<span class="k">class</span> <span class="nc">SmartsSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SmartsSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Select atoms based on SMARTS queries.</span>
 
 <span class="sd">    Uses RDKit to run the query and converts the result to MDAnalysis.</span>
@@ -854,7 +854,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;smarts&#39;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">)</span>
         <span class="c1"># The parser will add spaces around parentheses and then split the</span>
         <span class="c1"># selection based on spaces to create the tokens</span>
@@ -881,9 +881,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">rdkit_kwargs</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">rdkit_kwargs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">smarts_kwargs</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">smarts_kwargs</span>
 
-    <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">rdkit</span> <span class="kn">import</span> <span class="n">Chem</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;RDKit is required for SMARTS-based atom &quot;</span>
                               <span class="s2">&quot;selection but it&#39;s not installed. Try &quot;</span>
@@ -915,7 +915,7 @@
 
 <div class="viewcode-block" id="ResidSelection">
 <a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.ResidSelection">[docs]</a>
-<span class="k">class</span> <span class="nc">ResidSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ResidSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Select atoms based on numerical fields</span>
 
 <span class="sd">    Allows the use of &#39;:&#39;, &#39;-&#39; and &#39;to&#39; to specify a range of values</span>
@@ -925,7 +925,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;resid&#39;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">)</span>
         <span class="n">values</span> <span class="o">=</span> <span class="n">grab_not_keywords</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">values</span><span class="p">:</span>
@@ -962,7 +962,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">lowers</span> <span class="o">=</span> <span class="n">lowers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">uppers</span> <span class="o">=</span> <span class="n">uppers</span>
 
-    <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="c1"># Grab arrays here to reduce number of calls to main topology</span>
         <span class="n">vals</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">resids</span>
         <span class="k">try</span><span class="p">:</span>  <span class="c1"># optional attribute</span>
@@ -974,7 +974,7 @@
                 <span class="nb">any</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lowers</span><span class="p">)):</span>
                 <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Selection specified icodes, while the topology &quot;</span>
                           <span class="s2">&quot;doesn&#39;t have any.&quot;</span><span class="p">)</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">icodes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sel_with_icodes</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">icodes</span><span class="p">)</span>
@@ -983,7 +983,7 @@
 
         <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_sel_without_icodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vals</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_sel_without_icodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vals</span><span class="p">):</span>
         <span class="c1"># Final mask that gets applied to group</span>
         <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vals</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
 
@@ -998,7 +998,7 @@
 
         <span class="k">return</span> <span class="n">mask</span>
 
-    <span class="k">def</span> <span class="nf">_sel_with_icodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vals</span><span class="p">,</span> <span class="n">icodes</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_sel_with_icodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vals</span><span class="p">,</span> <span class="n">icodes</span><span class="p">):</span>
         <span class="c1"># Final mask that gets applied to group</span>
         <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vals</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
 
@@ -1046,10 +1046,10 @@
 
 <div class="viewcode-block" id="BoolSelection">
 <a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.BoolSelection">[docs]</a>
-<span class="k">class</span> <span class="nc">BoolSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BoolSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Selection for boolean values&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">)</span>
         <span class="n">values</span> <span class="o">=</span> <span class="n">grab_not_keywords</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">values</span><span class="p">:</span>
@@ -1068,7 +1068,7 @@
                                  <span class="s2">&quot;Use &#39;True&#39; or &#39;False&#39;&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bval</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="n">vals</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">)</span>
         <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vals</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
@@ -1079,14 +1079,14 @@
 
 <div class="viewcode-block" id="RangeSelection">
 <a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.RangeSelection">[docs]</a>
-<span class="k">class</span> <span class="nc">RangeSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RangeSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Range selection for int values&quot;&quot;&quot;</span>
 
     <span class="n">value_offset</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">pattern</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">INT_PATTERN</span><span class="si">}</span><span class="s2">)</span><span class="si">{</span><span class="n">RANGE_PATTERN</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">INT_PATTERN</span><span class="si">}</span><span class="s2">)&quot;</span>
     <span class="n">dtype</span> <span class="o">=</span> <span class="nb">int</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rtol</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">rtol</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">atol</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">atol</span>
@@ -1109,7 +1109,7 @@
                 <span class="n">selrange</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">selrange</span><span class="p">:</span>
                     <span class="n">errmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Failed to parse number: </span><span class="si">{</span><span class="n">val</span><span class="si">}</span><span class="s2">&quot;</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
                 <span class="n">lower</span><span class="p">,</span> <span class="n">upper</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">selrange</span><span class="o">.</span><span class="n">groups</span><span class="p">())</span>
 
             <span class="n">lowers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lower</span><span class="p">)</span>
@@ -1118,7 +1118,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">lowers</span> <span class="o">=</span> <span class="n">lowers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">uppers</span> <span class="o">=</span> <span class="n">uppers</span>
 
-    <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
         <span class="n">vals</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_offset</span>
 
@@ -1136,13 +1136,13 @@
 
 <div class="viewcode-block" id="FloatRangeSelection">
 <a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.FloatRangeSelection">[docs]</a>
-<span class="k">class</span> <span class="nc">FloatRangeSelection</span><span class="p">(</span><span class="n">RangeSelection</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FloatRangeSelection</span><span class="p">(</span><span class="n">RangeSelection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Range selection for float values&quot;&quot;&quot;</span>
 
     <span class="n">pattern</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">FLOAT_PATTERN</span><span class="si">}</span><span class="s2">)</span><span class="si">{</span><span class="n">RANGE_PATTERN</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">FLOAT_PATTERN</span><span class="si">}</span><span class="s2">)&quot;</span>
     <span class="n">dtype</span> <span class="o">=</span> <span class="nb">float</span>
 
-    <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
         <span class="n">vals</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_offset</span>
 
@@ -1173,7 +1173,7 @@
 
 <div class="viewcode-block" id="ByNumSelection">
 <a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.ByNumSelection">[docs]</a>
-<span class="k">class</span> <span class="nc">ByNumSelection</span><span class="p">(</span><span class="n">RangeSelection</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ByNumSelection</span><span class="p">(</span><span class="n">RangeSelection</span><span class="p">):</span>
     <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;bynum&#39;</span>
     <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;indices&#39;</span>
     <span class="n">value_offset</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># queries are in 1 based indices</span></div>
@@ -1182,7 +1182,7 @@
 
 <div class="viewcode-block" id="ProteinSelection">
 <a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.ProteinSelection">[docs]</a>
-<span class="k">class</span> <span class="nc">ProteinSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ProteinSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Consists of all residues with  recognized residue names.</span>
 
 <span class="sd">    Recognized residue names in :attr:`ProteinSelection.prot_res`.</span>
@@ -1228,7 +1228,7 @@
         <span class="s1">&#39;CCYX&#39;</span><span class="p">,</span> <span class="s1">&#39;CMET&#39;</span><span class="p">,</span> <span class="s1">&#39;CME&#39;</span><span class="p">,</span> <span class="s1">&#39;ASF&#39;</span><span class="p">,</span>
     <span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="n">resname_attr</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">resnames</span>
         <span class="c1"># which values in resname attr are in prot_res?</span>
         <span class="n">matches</span> <span class="o">=</span> <span class="p">[</span><span class="n">ix</span> <span class="k">for</span> <span class="p">(</span><span class="n">nm</span><span class="p">,</span> <span class="n">ix</span><span class="p">)</span> <span class="ow">in</span> <span class="n">resname_attr</span><span class="o">.</span><span class="n">namedict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
@@ -1242,7 +1242,7 @@
 
 <div class="viewcode-block" id="NucleicSelection">
 <a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.NucleicSelection">[docs]</a>
-<span class="k">class</span> <span class="nc">NucleicSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">NucleicSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;All atoms in nucleic acid residues with recognized residue names.</span>
 
 <span class="sd">    Recognized residue names:</span>
@@ -1269,7 +1269,7 @@
         <span class="s1">&#39;RA3&#39;</span><span class="p">,</span> <span class="s1">&#39;RU3&#39;</span><span class="p">,</span> <span class="s1">&#39;RG3&#39;</span><span class="p">,</span> <span class="s1">&#39;RC3&#39;</span>
     <span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="n">resnames</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">resnames</span>
         <span class="n">nmidx</span> <span class="o">=</span> <span class="n">resnames</span><span class="o">.</span><span class="n">nmidx</span><span class="p">[</span><span class="n">group</span><span class="o">.</span><span class="n">resindices</span><span class="p">]</span>
 
@@ -1283,7 +1283,7 @@
 
 <div class="viewcode-block" id="WaterSelection">
 <a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.WaterSelection">[docs]</a>
-<span class="k">class</span> <span class="nc">WaterSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">WaterSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;All atoms in water residues with recognized water residue names.</span>
 
 <span class="sd">    Recognized residue names:</span>
@@ -1304,7 +1304,7 @@
         <span class="s1">&#39;TIP&#39;</span><span class="p">,</span> <span class="s1">&#39;TIP2&#39;</span><span class="p">,</span> <span class="s1">&#39;TIP3&#39;</span><span class="p">,</span> <span class="s1">&#39;TIP4&#39;</span>
     <span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="n">resnames</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">resnames</span>
         <span class="n">nmidx</span> <span class="o">=</span> <span class="n">resnames</span><span class="o">.</span><span class="n">nmidx</span><span class="p">[</span><span class="n">group</span><span class="o">.</span><span class="n">resindices</span><span class="p">]</span>
 
@@ -1317,7 +1317,7 @@
 
 <div class="viewcode-block" id="BackboneSelection">
 <a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.BackboneSelection">[docs]</a>
-<span class="k">class</span> <span class="nc">BackboneSelection</span><span class="p">(</span><span class="n">ProteinSelection</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BackboneSelection</span><span class="p">(</span><span class="n">ProteinSelection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A BackboneSelection contains all atoms with name &#39;N&#39;, &#39;CA&#39;, &#39;C&#39;, &#39;O&#39;.</span>
 
 <span class="sd">    This excludes OT* on C-termini</span>
@@ -1331,7 +1331,7 @@
     <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;backbone&#39;</span>
     <span class="n">bb_atoms</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;CA&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;O&#39;</span><span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="n">atomnames</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">names</span>
         <span class="n">resnames</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">resnames</span>
 
@@ -1353,7 +1353,7 @@
 
 <div class="viewcode-block" id="NucleicBackboneSelection">
 <a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.NucleicBackboneSelection">[docs]</a>
-<span class="k">class</span> <span class="nc">NucleicBackboneSelection</span><span class="p">(</span><span class="n">NucleicSelection</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">NucleicBackboneSelection</span><span class="p">(</span><span class="n">NucleicSelection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Contains all atoms with name &quot;P&quot;, &quot;C5&#39;&quot;, C3&#39;&quot;, &quot;O3&#39;&quot;, &quot;O5&#39;&quot;.</span>
 
 <span class="sd">    These atoms are only recognized if they are in a residue matched</span>
@@ -1367,7 +1367,7 @@
     <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;nucleicbackbone&#39;</span>
     <span class="n">bb_atoms</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;P&quot;</span><span class="p">,</span> <span class="s2">&quot;C5&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;C3&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;O3&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;O5&#39;&quot;</span><span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="n">atomnames</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">names</span>
         <span class="n">resnames</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">resnames</span>
 
@@ -1389,7 +1389,7 @@
 
 <div class="viewcode-block" id="BaseSelection">
 <a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.BaseSelection">[docs]</a>
-<span class="k">class</span> <span class="nc">BaseSelection</span><span class="p">(</span><span class="n">NucleicSelection</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BaseSelection</span><span class="p">(</span><span class="n">NucleicSelection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Selection of atoms in nucleobases.</span>
 
 <span class="sd">    Recognized atom names (from CHARMM):</span>
@@ -1408,7 +1408,7 @@
         <span class="s1">&#39;O6&#39;</span><span class="p">,</span> <span class="s1">&#39;N2&#39;</span><span class="p">,</span> <span class="s1">&#39;N6&#39;</span><span class="p">,</span>
         <span class="s1">&#39;O2&#39;</span><span class="p">,</span> <span class="s1">&#39;N4&#39;</span><span class="p">,</span> <span class="s1">&#39;O4&#39;</span><span class="p">,</span> <span class="s1">&#39;C5M&#39;</span><span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="n">atomnames</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">names</span>
         <span class="n">resnames</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">resnames</span>
 
@@ -1430,7 +1430,7 @@
 
 <div class="viewcode-block" id="NucleicSugarSelection">
 <a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.NucleicSugarSelection">[docs]</a>
-<span class="k">class</span> <span class="nc">NucleicSugarSelection</span><span class="p">(</span><span class="n">NucleicSelection</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">NucleicSugarSelection</span><span class="p">(</span><span class="n">NucleicSelection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Contains all atoms with name C1&#39;, C2&#39;, C3&#39;, C4&#39;, O2&#39;, O4&#39;, O3&#39;.</span>
 
 
@@ -1441,7 +1441,7 @@
     <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;nucleicsugar&#39;</span>
     <span class="n">sug_atoms</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;C1&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;C2&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;C3&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;C4&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;O4&#39;&quot;</span><span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="n">atomnames</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">names</span>
         <span class="n">resnames</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">resnames</span>
 
@@ -1463,7 +1463,7 @@
 
 <div class="viewcode-block" id="PropertySelection">
 <a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.PropertySelection">[docs]</a>
-<span class="k">class</span> <span class="nc">PropertySelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PropertySelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Some of the possible properties:</span>
 <span class="sd">    x, y, z, radius, mass,</span>
 
@@ -1497,7 +1497,7 @@
              <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="s2">&quot;positions&quot;</span><span class="p">,</span>
              <span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="s2">&quot;positions&quot;</span><span class="p">}</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Possible splitting around operator:</span>
 
@@ -1555,7 +1555,7 @@
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid operator : &#39;</span><span class="si">{</span><span class="n">oper</span><span class="si">}</span><span class="s2">&#39; Use one of : &quot;</span>
                       <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ops</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">oper</span> <span class="o">==</span> <span class="s2">&quot;==&quot;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">operator</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">operator</span><span class="p">,</span>
@@ -1563,16 +1563,16 @@
                                                   <span class="n">rtol</span><span class="o">=</span><span class="n">parser</span><span class="o">.</span><span class="n">rtol</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">values</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">])</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="n">errmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Expected one of </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
+            <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
         <span class="k">except</span> <span class="n">NoDataError</span><span class="p">:</span>
             <span class="n">attr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">]</span>
             <span class="n">errmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;This Universe does not contain </span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s2"> information&quot;</span>
-            <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
+            <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">col</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}[</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">]</span>
@@ -1591,7 +1591,7 @@
 
 <div class="viewcode-block" id="SameSelection">
 <a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SameSelection">[docs]</a>
-<span class="k">class</span> <span class="nc">SameSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SameSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Selects all atoms that have the same subkeyword value as any atom in selection</span>
 
@@ -1622,7 +1622,7 @@
         <span class="s1">&#39;resnum&#39;</span><span class="p">:</span> <span class="s1">&#39;resnums&#39;</span><span class="p">,</span>
     <span class="p">}</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">)</span>
 
         <span class="n">prop</span> <span class="o">=</span> <span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
@@ -1635,7 +1635,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">sel</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_expression</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">precedence</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">prop</span> <span class="o">=</span> <span class="n">prop</span>
 
-    <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">res</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">group</span><span class="p">[[]]</span>  <span class="c1"># empty selection</span>
@@ -1673,7 +1673,7 @@
 
 <div class="viewcode-block" id="SelectionParser">
 <a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SelectionParser">[docs]</a>
-<span class="k">class</span> <span class="nc">SelectionParser</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SelectionParser</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A small parser for selection expressions.  Demonstration of</span>
 <span class="sd">    recursive descent parsing using Precedence climbing (see</span>
 <span class="sd">    http://www.engr.mun.ca/~theo/Misc/exp_parsing.htm).  Transforms</span>
@@ -1695,14 +1695,14 @@
     <span class="c1"># Borg pattern: http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/66531</span>
     <span class="n">_shared_state</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">p</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">p</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">):</span>
         <span class="bp">self</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">p</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_shared_state</span>
         <span class="k">return</span> <span class="bp">self</span>
 
 <div class="viewcode-block" id="SelectionParser.expect">
 <a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SelectionParser.expect">[docs]</a>
-    <span class="k">def</span> <span class="nf">expect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">expect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Anticipate and remove a given token&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">token</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
@@ -1714,7 +1714,7 @@
 
 <div class="viewcode-block" id="SelectionParser.parse">
 <a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SelectionParser.parse">[docs]</a>
-    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selectstr</span><span class="p">,</span> <span class="n">selgroups</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-08</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selectstr</span><span class="p">,</span> <span class="n">selgroups</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-08</span><span class="p">,</span>
               <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-05</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rdkit_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">smarts_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a Selection object from a string.</span>
 
@@ -1779,7 +1779,7 @@
         <span class="k">return</span> <span class="n">parsetree</span></div>
 
 
-    <span class="k">def</span> <span class="nf">parse_expression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse_expression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
         <span class="n">exp1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_subexp</span><span class="p">()</span>
         <span class="k">while</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">_OPERATIONS</span> <span class="ow">and</span>
                <span class="n">_OPERATIONS</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">precedence</span> <span class="o">&gt;=</span> <span class="n">p</span><span class="p">):</span>
@@ -1789,7 +1789,7 @@
             <span class="n">exp1</span> <span class="o">=</span> <span class="n">op</span><span class="p">(</span><span class="n">exp1</span><span class="p">,</span> <span class="n">exp2</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">exp1</span>
 
-    <span class="k">def</span> <span class="nf">_parse_subexp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parse_subexp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">op</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="s1">&#39;(&#39;</span><span class="p">:</span>
@@ -1801,10 +1801,10 @@
             <span class="k">return</span> <span class="n">_SELECTIONDICT</span><span class="p">[</span><span class="n">op</span><span class="p">](</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="n">errmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Unknown selection token: &#39;</span><span class="si">{</span><span class="n">op</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
-            <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
+            <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
         <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">errmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Selection failed: &#39;</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
-            <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span></div>
+            <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span></div>
 
 
 
@@ -1820,7 +1820,7 @@
 
 <div class="viewcode-block" id="gen_selection_class">
 <a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.gen_selection_class">[docs]</a>
-<span class="k">def</span> <span class="nf">gen_selection_class</span><span class="p">(</span><span class="n">singular</span><span class="p">,</span> <span class="n">attrname</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">per_object</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">gen_selection_class</span><span class="p">(</span><span class="n">singular</span><span class="p">,</span> <span class="n">attrname</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">per_object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Selection class factory for arbitrary TopologyAttrs.</span>
 
 <span class="sd">    Normally this should not be used except within the codebase</span>

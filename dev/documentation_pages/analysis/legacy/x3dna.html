@@ -23,7 +23,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.11.1.1.1. Generation and Analysis of X3DNA helicoidal parameter profiles — MDAnalysis.analysis.legacy.x3dna &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/site.css" />
 
   
@@ -206,8 +206,8 @@ separately.</p>
 <section id="single-structure">
 <h3><span class="section-number">4.11.1.1.1.1.1. </span>Single structure<a class="headerlink" href="#single-structure" title="Link to this heading"></a></h3>
 <p>B-DNA structure:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.x3dna</span> <span class="kn">import</span> <span class="n">X3DNA</span><span class="p">,</span> <span class="n">X3DNAtraj</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PDB_X3DNA</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.x3dna</span><span class="w"> </span><span class="kn">import</span> <span class="n">X3DNA</span><span class="p">,</span> <span class="n">X3DNAtraj</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.tests.datafiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">PDB_X3DNA</span>
 
 <span class="c1"># set path to your x3dna binary in bashrc file</span>
 <span class="n">H</span> <span class="o">=</span> <span class="n">X3DNA</span><span class="p">(</span><span class="n">PDB_X3DNA</span><span class="p">,</span> <span class="n">executable</span><span class="o">=</span><span class="s2">&quot;x3dna_ensemble analyze -b 355d.bps -p pdbfile&quot;</span><span class="p">)</span>
@@ -423,7 +423,7 @@ PNG file with name “&lt;parameter_name&gt;.png”.</p>
 <span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'x3dna.pickle'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.legacy.x3dna.X3DNA.save" title="Link to this definition"></a></dt>
 <dd><p>Save <a class="reference internal" href="#MDAnalysis.analysis.legacy.x3dna.X3DNA.profiles" title="MDAnalysis.analysis.legacy.x3dna.X3DNA.profiles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">profiles</span></code></a> as a Python pickle file <em>filename</em>.</p>
 <p>Load profiles dictionary with</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">cPickle</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">cPickle</span>
 <span class="n">profiles</span> <span class="o">=</span> <span class="n">cPickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -574,7 +574,7 @@ the class constructor.</p>
 <span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'x3dna.pickle'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.legacy.x3dna.X3DNAtraj.save" title="Link to this definition"></a></dt>
 <dd><p>Save <a class="reference internal" href="#MDAnalysis.analysis.legacy.x3dna.X3DNAtraj.profiles" title="MDAnalysis.analysis.legacy.x3dna.X3DNAtraj.profiles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">profiles</span></code></a> as a Python pickle file <em>filename</em>.</p>
 <p>Load profiles dictionary with</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">cPickle</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">cPickle</span>
 <span class="n">profiles</span> <span class="o">=</span> <span class="n">cPickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
 </pre></div>
 </div>

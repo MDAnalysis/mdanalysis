@@ -22,7 +22,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MDAnalysis.analysis.encore.covariance &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/site.css" />
 
   
@@ -179,12 +179,12 @@
 <span class="sd">   in MDAnalysis 3.0.0.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 
 <div class="viewcode-block" id="ml_covariance_estimator">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/covariance.html#MDAnalysis.analysis.encore.covariance.ml_covariance_estimator">[docs]</a>
-<span class="k">def</span> <span class="nf">ml_covariance_estimator</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">reference_coordinates</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ml_covariance_estimator</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">reference_coordinates</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Standard maximum likelihood estimator of the covariance matrix.</span>
 
@@ -226,7 +226,7 @@
 
 <div class="viewcode-block" id="shrinkage_covariance_estimator">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/covariance.html#MDAnalysis.analysis.encore.covariance.shrinkage_covariance_estimator">[docs]</a>
-<span class="k">def</span> <span class="nf">shrinkage_covariance_estimator</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">shrinkage_covariance_estimator</span><span class="p">(</span>
     <span class="n">coordinates</span><span class="p">,</span> <span class="n">reference_coordinates</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shrinkage_parameter</span><span class="o">=</span><span class="kc">None</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -334,7 +334,7 @@
 
 <div class="viewcode-block" id="covariance_matrix">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/covariance.html#MDAnalysis.analysis.encore.covariance.covariance_matrix">[docs]</a>
-<span class="k">def</span> <span class="nf">covariance_matrix</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">covariance_matrix</span><span class="p">(</span>
     <span class="n">ensemble</span><span class="p">,</span>
     <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
     <span class="n">estimator</span><span class="o">=</span><span class="n">shrinkage_covariance_estimator</span><span class="p">,</span>

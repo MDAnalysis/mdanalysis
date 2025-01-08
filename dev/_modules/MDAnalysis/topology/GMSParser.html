@@ -22,7 +22,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MDAnalysis.topology.GMSParser &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/site.css" />
 
   
@@ -187,13 +187,13 @@
 <span class="sd">   :inherited-members:</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">openany</span>
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">TopologyReaderBase</span>
-<span class="kn">from</span> <span class="nn">..core.topology</span> <span class="kn">import</span> <span class="n">Topology</span>
-<span class="kn">from</span> <span class="nn">..core.topologyattrs</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..lib.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">openany</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">TopologyReaderBase</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core.topology</span><span class="w"> </span><span class="kn">import</span> <span class="n">Topology</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core.topologyattrs</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">Atomids</span><span class="p">,</span>
     <span class="n">Atomnames</span><span class="p">,</span>
     <span class="n">Resids</span><span class="p">,</span>
@@ -203,7 +203,7 @@
 <span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">AtomicCharges</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AtomicCharges</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s2">&quot;atomiccharges&quot;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s2">&quot;atomiccharge&quot;</span>
     <span class="n">per_object</span> <span class="o">=</span> <span class="s2">&quot;atom&quot;</span>
@@ -211,7 +211,7 @@
 
 <div class="viewcode-block" id="GMSParser">
 <a class="viewcode-back" href="../../../documentation_pages/topology/GMSParser.html#MDAnalysis.topology.GMSParser.GMSParser">[docs]</a>
-<span class="k">class</span> <span class="nc">GMSParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">GMSParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;GAMESS_ topology parser.</span>
 
 <span class="sd">    Creates the following Attributes:</span>
@@ -236,7 +236,7 @@
 
 <div class="viewcode-block" id="GMSParser.parse">
 <a class="viewcode-back" href="../../../documentation_pages/topology/GMSParser.html#MDAnalysis.topology.GMSParser.GMSParser.parse">[docs]</a>
-    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Read list of atoms from a GAMESS file.&quot;&quot;&quot;</span>
         <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">at_charges</span> <span class="o">=</span> <span class="p">[]</span>

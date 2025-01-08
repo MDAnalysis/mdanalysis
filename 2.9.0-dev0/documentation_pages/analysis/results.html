@@ -23,7 +23,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.2.3. Analysis results and their aggregation — MDAnalysis.analysis.results &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/site.css" />
 
   
@@ -176,7 +176,7 @@ used for storing and aggregating data in
 <p>The <a class="reference internal" href="#MDAnalysis.analysis.results.Results" title="MDAnalysis.analysis.results.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code></a> class is an extension of a built-in dictionary
 type, that holds all assigned attributes in <code class="xref py py-attr docutils literal notranslate"><span class="pre">self.data</span></code> and
 allows for access either via dict-like syntax, or via class-like syntax:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.results</span> <span class="kn">import</span> <span class="n">Results</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.results</span><span class="w"> </span><span class="kn">import</span> <span class="n">Results</span>
 <span class="n">r</span> <span class="o">=</span> <span class="n">Results</span><span class="p">()</span>
 <span class="n">r</span><span class="o">.</span><span class="n">array</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
 <span class="k">assert</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;array&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">r</span><span class="o">.</span><span class="n">array</span> <span class="o">==</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
@@ -186,8 +186,8 @@ allows for access either via dict-like syntax, or via class-like syntax:</p>
 It is mainly used by <a class="reference internal" href="base.html#MDAnalysis.analysis.base.AnalysisBase" title="MDAnalysis.analysis.base.AnalysisBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base.AnalysisBase</span></code></a> class,
 that uses <a class="reference internal" href="#MDAnalysis.analysis.results.ResultsGroup.merge" title="MDAnalysis.analysis.results.ResultsGroup.merge"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ResultsGroup.merge()</span></code></a> method to aggregate results from
 multiple workers, initialized during a parallel run:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.results</span> <span class="kn">import</span> <span class="n">Results</span><span class="p">,</span> <span class="n">ResultsGroup</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.results</span><span class="w"> </span><span class="kn">import</span> <span class="n">Results</span><span class="p">,</span> <span class="n">ResultsGroup</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="n">r1</span><span class="p">,</span> <span class="n">r2</span> <span class="o">=</span> <span class="n">Results</span><span class="p">(),</span> <span class="n">Results</span><span class="p">()</span>
 <span class="n">r1</span><span class="o">.</span><span class="n">masses</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
@@ -229,7 +229,7 @@ class in <a class="reference external" href="https://scikit-learn.org/">scikit-l
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.base</span> <span class="kn">import</span> <span class="n">Results</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">Results</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="n">Results</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]</span>
 <span class="go">2</span>
@@ -267,7 +267,7 @@ obtain a complete data set.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.results</span> <span class="kn">import</span> <span class="n">ResultsGroup</span><span class="p">,</span> <span class="n">Results</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.results</span><span class="w"> </span><span class="kn">import</span> <span class="n">ResultsGroup</span><span class="p">,</span> <span class="n">Results</span>
 <span class="n">group</span> <span class="o">=</span> <span class="n">ResultsGroup</span><span class="p">(</span><span class="n">lookup</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;mass&#39;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">float_mean</span><span class="p">})</span>
 <span class="n">obj1</span> <span class="o">=</span> <span class="n">Results</span><span class="p">(</span><span class="n">mass</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">obj2</span> <span class="o">=</span> <span class="n">Results</span><span class="p">(</span><span class="n">mass</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>

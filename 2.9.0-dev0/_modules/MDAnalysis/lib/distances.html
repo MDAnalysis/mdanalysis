@@ -22,7 +22,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MDAnalysis.lib.distances &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/site.css" />
 
   
@@ -260,26 +260,26 @@
 <span class="sd">.. autofunction:: undo_augment(results, translation, nreal)</span>
 <span class="sd">.. autofunction:: minimize_vectors(vectors, box)</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">numpy.typing</span> <span class="k">as</span> <span class="nn">npt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">npt</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Callable</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Callable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
-    <span class="kn">from</span> <span class="nn">..core.groups</span> <span class="kn">import</span> <span class="n">AtomGroup</span>
-<span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="n">check_coords</span><span class="p">,</span> <span class="n">check_box</span>
-<span class="kn">from</span> <span class="nn">.mdamath</span> <span class="kn">import</span> <span class="n">triclinic_vectors</span>
-<span class="kn">from</span> <span class="nn">._augment</span> <span class="kn">import</span> <span class="n">augment_coordinates</span><span class="p">,</span> <span class="n">undo_augment</span>
-<span class="kn">from</span> <span class="nn">.nsgrid</span> <span class="kn">import</span> <span class="n">FastNS</span>
-<span class="kn">from</span> <span class="nn">.c_distances</span> <span class="kn">import</span> <span class="n">_minimize_vectors_ortho</span><span class="p">,</span> <span class="n">_minimize_vectors_triclinic</span>
-<span class="kn">from</span> <span class="nn">._distopia</span> <span class="kn">import</span> <span class="n">HAS_DISTOPIA</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..core.groups</span><span class="w"> </span><span class="kn">import</span> <span class="n">AtomGroup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_coords</span><span class="p">,</span> <span class="n">check_box</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.mdamath</span><span class="w"> </span><span class="kn">import</span> <span class="n">triclinic_vectors</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._augment</span><span class="w"> </span><span class="kn">import</span> <span class="n">augment_coordinates</span><span class="p">,</span> <span class="n">undo_augment</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.nsgrid</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastNS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.c_distances</span><span class="w"> </span><span class="kn">import</span> <span class="n">_minimize_vectors_ortho</span><span class="p">,</span> <span class="n">_minimize_vectors_triclinic</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._distopia</span><span class="w"> </span><span class="kn">import</span> <span class="n">HAS_DISTOPIA</span>
 
 
 <span class="c1"># hack to select backend with backend=&lt;backend&gt; kwarg. Note that</span>
 <span class="c1"># the cython parallel code (prange) in parallel.distances is</span>
 <span class="c1"># independent from the OpenMP code</span>
-<span class="kn">import</span> <span class="nn">importlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">importlib</span>
 
 <span class="n">_distances</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="n">_distances</span><span class="p">[</span><span class="s2">&quot;serial&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span>
@@ -299,7 +299,7 @@
 <span class="k">del</span> <span class="n">importlib</span>
 
 
-<span class="k">def</span> <span class="nf">_run</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_run</span><span class="p">(</span>
     <span class="n">funcname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">args</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -316,13 +316,13 @@
             <span class="sa">f</span><span class="s2">&quot;Function </span><span class="si">{</span><span class="n">funcname</span><span class="si">}</span><span class="s2"> not available with backend </span><span class="si">{</span><span class="n">backend</span><span class="si">}</span><span class="s2"> &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;try one of: </span><span class="si">{</span><span class="n">_distances</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
     <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
 <span class="c1"># serial versions are always available (and are typically used within</span>
 <span class="c1"># the core and topology modules)</span>
-<span class="kn">from</span> <span class="nn">.c_distances</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.c_distances</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">_UINT64_MAX</span><span class="p">,</span>
     <span class="n">calc_distance_array</span><span class="p">,</span>
     <span class="n">calc_distance_array_ortho</span><span class="p">,</span>
@@ -344,10 +344,10 @@
     <span class="n">triclinic_pbc</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">.c_distances_openmp</span> <span class="kn">import</span> <span class="n">OPENMP_ENABLED</span> <span class="k">as</span> <span class="n">USED_OPENMP</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.c_distances_openmp</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPENMP_ENABLED</span> <span class="k">as</span> <span class="n">USED_OPENMP</span>
 
 
-<span class="k">def</span> <span class="nf">_check_result_array</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_check_result_array</span><span class="p">(</span>
     <span class="n">result</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">],</span> <span class="n">shape</span><span class="p">:</span> <span class="nb">tuple</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if the result array is ok to use.</span>
@@ -403,7 +403,7 @@
     <span class="n">check_lengths_match</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="k">def</span> <span class="nf">distance_array</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">distance_array</span><span class="p">(</span>
     <span class="n">reference</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">&quot;AtomGroup&quot;</span><span class="p">],</span>
     <span class="n">configuration</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">&quot;AtomGroup&quot;</span><span class="p">],</span>
     <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -504,7 +504,7 @@
 <div class="viewcode-block" id="self_distance_array">
 <a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.self_distance_array">[docs]</a>
 <span class="nd">@check_coords</span><span class="p">(</span><span class="s2">&quot;reference&quot;</span><span class="p">,</span> <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">self_distance_array</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">self_distance_array</span><span class="p">(</span>
     <span class="n">reference</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">&quot;AtomGroup&quot;</span><span class="p">],</span>
     <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">result</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -606,7 +606,7 @@
     <span class="n">check_lengths_match</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="k">def</span> <span class="nf">capped_distance</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">capped_distance</span><span class="p">(</span>
     <span class="n">reference</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">&quot;AtomGroup&quot;</span><span class="p">],</span>
     <span class="n">configuration</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">&quot;AtomGroup&quot;</span><span class="p">],</span>
     <span class="n">max_cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
@@ -728,7 +728,7 @@
 
 
 
-<span class="k">def</span> <span class="nf">_determine_method</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_determine_method</span><span class="p">(</span>
     <span class="n">reference</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span>
     <span class="n">configuration</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span>
     <span class="n">max_cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
@@ -816,7 +816,7 @@
     <span class="n">check_lengths_match</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="k">def</span> <span class="nf">_bruteforce_capped</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_bruteforce_capped</span><span class="p">(</span>
     <span class="n">reference</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">&quot;AtomGroup&quot;</span><span class="p">],</span>
     <span class="n">configuration</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">&quot;AtomGroup&quot;</span><span class="p">],</span>
     <span class="n">max_cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
@@ -912,7 +912,7 @@
     <span class="n">check_lengths_match</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="k">def</span> <span class="nf">_pkdtree_capped</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_pkdtree_capped</span><span class="p">(</span>
     <span class="n">reference</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">&quot;AtomGroup&quot;</span><span class="p">],</span>
     <span class="n">configuration</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">&quot;AtomGroup&quot;</span><span class="p">],</span>
     <span class="n">max_cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
@@ -977,7 +977,7 @@
 <span class="sd">       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an</span>
 <span class="sd">       argument in any position and checks inputs using type hinting.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">.pkdtree</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.pkdtree</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
         <span class="n">PeriodicKDTree</span><span class="p">,</span>
     <span class="p">)</span>  <span class="c1"># must be here to avoid circular import</span>
 
@@ -1015,7 +1015,7 @@
     <span class="n">check_lengths_match</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="k">def</span> <span class="nf">_nsgrid_capped</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_nsgrid_capped</span><span class="p">(</span>
     <span class="n">reference</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">&quot;AtomGroup&quot;</span><span class="p">],</span>
     <span class="n">configuration</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">&quot;AtomGroup&quot;</span><span class="p">],</span>
     <span class="n">max_cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
@@ -1135,7 +1135,7 @@
     <span class="n">check_lengths_match</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="k">def</span> <span class="nf">self_capped_distance</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">self_capped_distance</span><span class="p">(</span>
     <span class="n">reference</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">&quot;AtomGroup&quot;</span><span class="p">],</span>
     <span class="n">max_cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="n">min_cutoff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1254,7 +1254,7 @@
 
 
 
-<span class="k">def</span> <span class="nf">_determine_method_self</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_determine_method_self</span><span class="p">(</span>
     <span class="n">reference</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span>
     <span class="n">max_cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="n">min_cutoff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1329,7 +1329,7 @@
     <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="k">def</span> <span class="nf">_bruteforce_capped_self</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_bruteforce_capped_self</span><span class="p">(</span>
     <span class="n">reference</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">&quot;AtomGroup&quot;</span><span class="p">],</span>
     <span class="n">max_cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="n">min_cutoff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1418,7 +1418,7 @@
     <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="k">def</span> <span class="nf">_pkdtree_capped_self</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_pkdtree_capped_self</span><span class="p">(</span>
     <span class="n">reference</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">&quot;AtomGroup&quot;</span><span class="p">],</span>
     <span class="n">max_cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="n">min_cutoff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1476,7 +1476,7 @@
 <span class="sd">       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an</span>
 <span class="sd">       argument in any position and checks inputs using type hinting.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">.pkdtree</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.pkdtree</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
         <span class="n">PeriodicKDTree</span><span class="p">,</span>
     <span class="p">)</span>  <span class="c1"># must be here to avoid circular import</span>
 
@@ -1512,7 +1512,7 @@
     <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="k">def</span> <span class="nf">_nsgrid_capped_self</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_nsgrid_capped_self</span><span class="p">(</span>
     <span class="n">reference</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">&quot;AtomGroup&quot;</span><span class="p">],</span>
     <span class="n">max_cutoff</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="n">min_cutoff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1618,7 +1618,7 @@
 <div class="viewcode-block" id="transform_RtoS">
 <a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.transform_RtoS">[docs]</a>
 <span class="nd">@check_coords</span><span class="p">(</span><span class="s2">&quot;coords&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">transform_RtoS</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;serial&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">transform_RtoS</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;serial&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Transform an array of coordinates from real space to S space (a.k.a.</span>
 <span class="sd">    lambda space)</span>
 
@@ -1671,7 +1671,7 @@
 <div class="viewcode-block" id="transform_StoR">
 <a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.transform_StoR">[docs]</a>
 <span class="nd">@check_coords</span><span class="p">(</span><span class="s2">&quot;coords&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">transform_StoR</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;serial&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">transform_StoR</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;serial&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Transform an array of coordinates from S space into real space.</span>
 
 <span class="sd">    S space represents fractional space within the unit cell for this system.</span>
@@ -1718,7 +1718,7 @@
 <div class="viewcode-block" id="calc_bonds">
 <a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.calc_bonds">[docs]</a>
 <span class="nd">@check_coords</span><span class="p">(</span><span class="s2">&quot;coords1&quot;</span><span class="p">,</span> <span class="s2">&quot;coords2&quot;</span><span class="p">,</span> <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">calc_bonds</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">calc_bonds</span><span class="p">(</span>
     <span class="n">coords1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">&quot;AtomGroup&quot;</span><span class="p">],</span>
     <span class="n">coords2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">&quot;AtomGroup&quot;</span><span class="p">],</span>
     <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1827,7 +1827,7 @@
 <div class="viewcode-block" id="calc_angles">
 <a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.calc_angles">[docs]</a>
 <span class="nd">@check_coords</span><span class="p">(</span><span class="s2">&quot;coords1&quot;</span><span class="p">,</span> <span class="s2">&quot;coords2&quot;</span><span class="p">,</span> <span class="s2">&quot;coords3&quot;</span><span class="p">,</span> <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">calc_angles</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">calc_angles</span><span class="p">(</span>
     <span class="n">coords1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">&quot;AtomGroup&quot;</span><span class="p">],</span>
     <span class="n">coords2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">&quot;AtomGroup&quot;</span><span class="p">],</span>
     <span class="n">coords3</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">&quot;AtomGroup&quot;</span><span class="p">],</span>
@@ -1940,7 +1940,7 @@
 <div class="viewcode-block" id="calc_dihedrals">
 <a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.calc_dihedrals">[docs]</a>
 <span class="nd">@check_coords</span><span class="p">(</span><span class="s2">&quot;coords1&quot;</span><span class="p">,</span> <span class="s2">&quot;coords2&quot;</span><span class="p">,</span> <span class="s2">&quot;coords3&quot;</span><span class="p">,</span> <span class="s2">&quot;coords4&quot;</span><span class="p">,</span> <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">calc_dihedrals</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">calc_dihedrals</span><span class="p">(</span>
     <span class="n">coords1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">&quot;AtomGroup&quot;</span><span class="p">],</span>
     <span class="n">coords2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">&quot;AtomGroup&quot;</span><span class="p">],</span>
     <span class="n">coords3</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">&quot;AtomGroup&quot;</span><span class="p">],</span>
@@ -2069,7 +2069,7 @@
 <div class="viewcode-block" id="apply_PBC">
 <a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.apply_PBC">[docs]</a>
 <span class="nd">@check_coords</span><span class="p">(</span><span class="s2">&quot;coords&quot;</span><span class="p">,</span> <span class="n">allow_atomgroup</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">apply_PBC</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">apply_PBC</span><span class="p">(</span>
     <span class="n">coords</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="s2">&quot;AtomGroup&quot;</span><span class="p">],</span>
     <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;serial&quot;</span><span class="p">,</span>
@@ -2126,7 +2126,7 @@
 <div class="viewcode-block" id="minimize_vectors">
 <a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.minimize_vectors">[docs]</a>
 <span class="nd">@check_coords</span><span class="p">(</span><span class="s2">&quot;vectors&quot;</span><span class="p">,</span> <span class="n">enforce_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">enforce_dtype</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">minimize_vectors</span><span class="p">(</span><span class="n">vectors</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="n">box</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">minimize_vectors</span><span class="p">(</span><span class="n">vectors</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">,</span> <span class="n">box</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Apply minimum image convention to an array of vectors</span>
 
 <span class="sd">    This function is required for calculating the correct vectors between two</span>

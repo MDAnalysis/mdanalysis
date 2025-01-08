@@ -23,7 +23,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>14. Library functions — MDAnalysis.lib &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/site.css" />
 
   
@@ -244,12 +244,12 @@ for advanced developers only.</p>
 <p>For example, imagine we are writing a Cython extension module in
 <a class="reference internal" href="#module-MDAnalysis.lib" title="MDAnalysis.lib: ``lib`` collects independent code for re-use in MDAnalysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a> and we would like to make a function that creates a
 <a class="reference internal" href="coordinates/timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.timestep.Timestep</span></code></a></p>
-<div class="highlight-cython notranslate"><div class="highlight"><pre><span></span><span class="k">from</span> <span class="nn">MDAnalysis.lib.libmdanalysis</span> <span class="k">cimport</span> <span class="n">timestep</span>
+<div class="highlight-cython notranslate"><div class="highlight"><pre><span></span><span class="k">from</span><span class="w"> </span><span class="nn">MDAnalysis.lib.libmdanalysis</span><span class="w"> </span><span class="k">cimport</span> <span class="n">timestep</span>
 <span class="c"># or we could use the relative cimport</span>
 <span class="c"># from .libmdanalysis cimport timestep</span>
 
-<span class="k">cdef</span> <span class="kt">timestep</span>.<span class="kt">Timestep</span> <span class="nf">make_timestep</span><span class="p">(</span><span class="nb">int</span> <span class="n">natoms</span><span class="p">):</span>
-   <span class="k">cdef</span> <span class="kt">timestep</span>.<span class="kt">Timestep</span> <span class="nf">ts</span> <span class="o">=</span> <span class="n">timestep</span><span class="o">.</span><span class="n">Timestep</span><span class="p">(</span><span class="n">natoms</span><span class="p">)</span>
+<span class="k">cdef</span><span class="w"> </span><span class="kt">timestep</span>.<span class="kt">Timestep</span> <span class="nf">make_timestep</span><span class="p">(</span><span class="nb">int</span> <span class="n">natoms</span><span class="p">):</span>
+   <span class="k">cdef</span><span class="w"> </span><span class="kt">timestep</span>.<span class="kt">Timestep</span> <span class="nf">ts</span><span class="w"> </span><span class="o">=</span> <span class="n">timestep</span><span class="o">.</span><span class="n">Timestep</span><span class="p">(</span><span class="n">natoms</span><span class="p">)</span>
    <span class="k">return</span> <span class="n">ts</span>
 </pre></div>
 </div>

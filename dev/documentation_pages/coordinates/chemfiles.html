@@ -23,7 +23,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>7.28. Reading trajectories with chemfiles — MDAnalysis.coordinates.chemfiles &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/site.css" />
 
   
@@ -195,8 +195,8 @@ file reading. Check the list of <a class="reference external" href="formats">che
 <h2><span class="section-number">7.28.1. </span>Using the CHEMFILES reader<a class="headerlink" href="#using-the-chemfiles-reader" title="Link to this heading"></a></h2>
 <p>When reading, set the <code class="docutils literal notranslate"><span class="pre">format=&quot;CHEMFILES&quot;</span></code> keyword argument and I/O is delegated to
 <a class="reference external" href="https://chemfiles.org">chemfiles</a>. For example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests</span> <span class="kn">import</span> <span class="n">datafiles</span> <span class="k">as</span> <span class="n">data</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.tests</span><span class="w"> </span><span class="kn">import</span> <span class="n">datafiles</span> <span class="k">as</span> <span class="n">data</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">TPR</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">TRR</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;CHEMFILES&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span>
 <span class="go">&lt;ChemfilesReader ~/anaconda3/envs/mda3/lib/python3.8/site-packages/MDAnalysisTests/data/adk_oplsaa.trr with 10 frames of 47681 atoms&gt;</span>

@@ -22,7 +22,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MDAnalysis.guesser.default_guesser &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/site.css" />
 
   
@@ -244,21 +244,21 @@
 <span class="sd">   :inherited-members:</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">GuesserBase</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">GuesserBase</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
 
-<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 
-<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">NoDataError</span>
-<span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">distances</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">tables</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">NoDataError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..lib</span><span class="w"> </span><span class="kn">import</span> <span class="n">distances</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">tables</span>
 
 
 <div class="viewcode-block" id="DefaultGuesser">
 <a class="viewcode-back" href="../../../documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser">[docs]</a>
-<span class="k">class</span> <span class="nc">DefaultGuesser</span><span class="p">(</span><span class="n">GuesserBase</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">DefaultGuesser</span><span class="p">(</span><span class="n">GuesserBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This guesser holds generic methods (not directed to specific contexts) for</span>
 <span class="sd">    guessing different topology attribute. It has the same methods which where</span>
@@ -308,7 +308,7 @@
 
     <span class="n">context</span> <span class="o">=</span> <span class="s2">&quot;default&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">universe</span><span class="p">,</span>
         <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -338,7 +338,7 @@
 
 <div class="viewcode-block" id="DefaultGuesser.guess_masses">
 <a class="viewcode-back" href="../../../documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_masses">[docs]</a>
-    <span class="k">def</span> <span class="nf">guess_masses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom_types</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">indices_to_guess</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">guess_masses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom_types</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">indices_to_guess</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Guess the mass of many atoms based upon their type.</span>
 <span class="sd">        For guessing masses through :meth:`~MDAnalysis.core.universe.Universe.guess_TopologyAttrs`:</span>
 
@@ -379,7 +379,7 @@
                             <span class="s2">&quot;there is no reference attributes&quot;</span>
                             <span class="s2">&quot; (elements, types, or names)&quot;</span>
                             <span class="s2">&quot; in this universe to guess mass from&quot;</span>
-                        <span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
+                        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
 
         <span class="k">if</span> <span class="n">indices_to_guess</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">atom_types</span> <span class="o">=</span> <span class="n">atom_types</span><span class="p">[</span><span class="n">indices_to_guess</span><span class="p">]</span>
@@ -392,7 +392,7 @@
 
 <div class="viewcode-block" id="DefaultGuesser.get_atom_mass">
 <a class="viewcode-back" href="../../../documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.get_atom_mass">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_atom_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_atom_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the atomic mass in u for *element*.</span>
 <span class="sd">        Masses are looked up in :data:`MDAnalysis.guesser.tables.masses`.</span>
 
@@ -416,7 +416,7 @@
 
 <div class="viewcode-block" id="DefaultGuesser.guess_atom_mass">
 <a class="viewcode-back" href="../../../documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_atom_mass">[docs]</a>
-    <span class="k">def</span> <span class="nf">guess_atom_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomname</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">guess_atom_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomname</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Guess a mass based on the atom name.</span>
 
 <span class="sd">        :func:`guess_atom_element` is used to determine the kind of atom.</span>
@@ -429,7 +429,7 @@
 
 <div class="viewcode-block" id="DefaultGuesser.guess_types">
 <a class="viewcode-back" href="../../../documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_types">[docs]</a>
-    <span class="k">def</span> <span class="nf">guess_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom_types</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">indices_to_guess</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">guess_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom_types</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">indices_to_guess</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Guess the atom type of many atoms based on atom name</span>
 
 <span class="sd">        Parameters</span>
@@ -456,7 +456,7 @@
                 <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span>
                     <span class="s2">&quot;there is no reference attributes in this universe &quot;</span>
                     <span class="s2">&quot;to guess types from&quot;</span>
-                <span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
+                <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
 
         <span class="k">if</span> <span class="n">indices_to_guess</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">atom_types</span> <span class="o">=</span> <span class="n">atom_types</span><span class="p">[</span><span class="n">indices_to_guess</span><span class="p">]</span>
@@ -469,7 +469,7 @@
 
 <div class="viewcode-block" id="DefaultGuesser.guess_atom_element">
 <a class="viewcode-back" href="../../../documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_atom_element">[docs]</a>
-    <span class="k">def</span> <span class="nf">guess_atom_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomname</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">guess_atom_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomname</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Guess the element of the atom from the name.</span>
 
 <span class="sd">        First all numbers and symbols are stripped from the name.</span>
@@ -529,7 +529,7 @@
 
 <div class="viewcode-block" id="DefaultGuesser.guess_bonds">
 <a class="viewcode-back" href="../../../documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_bonds">[docs]</a>
-    <span class="k">def</span> <span class="nf">guess_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">guess_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Guess if bonds exist between two atoms based on their distance.</span>
 
 <span class="sd">        Bond between two atoms is created, if the two atoms are within</span>
@@ -635,7 +635,7 @@
 
 <div class="viewcode-block" id="DefaultGuesser.guess_angles">
 <a class="viewcode-back" href="../../../documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_angles">[docs]</a>
-    <span class="k">def</span> <span class="nf">guess_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bonds</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">guess_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bonds</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Given a list of Bonds, find all angles that exist between atoms.</span>
 
 <span class="sd">        Works by assuming that if atoms 1 &amp; 2 are bonded, and 2 &amp; 3 are bonded,</span>
@@ -658,7 +658,7 @@
 <span class="sd">        :meth:`guess_bonds`</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">..core.universe</span> <span class="kn">import</span> <span class="n">Universe</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..core.universe</span><span class="w"> </span><span class="kn">import</span> <span class="n">Universe</span>
 
         <span class="n">angles_found</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
@@ -693,7 +693,7 @@
 
 <div class="viewcode-block" id="DefaultGuesser.guess_dihedrals">
 <a class="viewcode-back" href="../../../documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_dihedrals">[docs]</a>
-    <span class="k">def</span> <span class="nf">guess_dihedrals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angles</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">guess_dihedrals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angles</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Given a list of Angles, find all dihedrals that exist between atoms.</span>
 
 <span class="sd">        Works by assuming that if (1,2,3) is an angle, and 3 &amp; 4 are bonded,</span>
@@ -711,7 +711,7 @@
 <span class="sd">            Suitable for use in u._topology</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">..core.universe</span> <span class="kn">import</span> <span class="n">Universe</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..core.universe</span><span class="w"> </span><span class="kn">import</span> <span class="n">Universe</span>
 
         <span class="k">if</span> <span class="n">angles</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="s2">&quot;angles&quot;</span><span class="p">):</span>
@@ -752,7 +752,7 @@
 
 <div class="viewcode-block" id="DefaultGuesser.guess_improper_dihedrals">
 <a class="viewcode-back" href="../../../documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_improper_dihedrals">[docs]</a>
-    <span class="k">def</span> <span class="nf">guess_improper_dihedrals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angles</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">guess_improper_dihedrals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angles</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Given a list of Angles, find all improper dihedrals</span>
 <span class="sd">        that exist between atoms.</span>
 
@@ -768,7 +768,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="kn">from</span> <span class="nn">..core.universe</span> <span class="kn">import</span> <span class="n">Universe</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..core.universe</span><span class="w"> </span><span class="kn">import</span> <span class="n">Universe</span>
 
         <span class="k">if</span> <span class="n">angles</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="s2">&quot;angles&quot;</span><span class="p">):</span>
@@ -809,7 +809,7 @@
 
 <div class="viewcode-block" id="DefaultGuesser.guess_atom_charge">
 <a class="viewcode-back" href="../../../documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_atom_charge">[docs]</a>
-    <span class="k">def</span> <span class="nf">guess_atom_charge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">guess_atom_charge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Guess atom charge from the name.</span>
 
 <span class="sd">        .. Warning:: Not implemented; simply returns 0.</span>
@@ -820,7 +820,7 @@
 
 <div class="viewcode-block" id="DefaultGuesser.guess_aromaticities">
 <a class="viewcode-back" href="../../../documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_aromaticities">[docs]</a>
-    <span class="k">def</span> <span class="nf">guess_aromaticities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroup</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">guess_aromaticities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroup</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Guess aromaticity of atoms using RDKit</span>
 
 <span class="sd">        Returns</span>
@@ -838,7 +838,7 @@
 
 <div class="viewcode-block" id="DefaultGuesser.guess_gasteiger_charges">
 <a class="viewcode-back" href="../../../documentation_pages/guesser_modules/default_guesser.html#MDAnalysis.guesser.default_guesser.DefaultGuesser.guess_gasteiger_charges">[docs]</a>
-    <span class="k">def</span> <span class="nf">guess_gasteiger_charges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroup</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">guess_gasteiger_charges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroup</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Guess Gasteiger partial charges using RDKit</span>
 
 <span class="sd">        Parameters</span>
@@ -854,7 +854,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">mol</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">convert_to</span><span class="p">(</span><span class="s2">&quot;RDKIT&quot;</span><span class="p">)</span>
-        <span class="kn">from</span> <span class="nn">rdkit.Chem.rdPartialCharges</span> <span class="kn">import</span> <span class="n">ComputeGasteigerCharges</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">rdkit.Chem.rdPartialCharges</span><span class="w"> </span><span class="kn">import</span> <span class="n">ComputeGasteigerCharges</span>
 
         <span class="n">ComputeGasteigerCharges</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">throwOnParamFailure</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>

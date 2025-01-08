@@ -23,7 +23,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>7.20. AMBER trajectories — MDAnalysis.coordinates.TRJ &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/site.css" />
 
   
@@ -390,11 +390,11 @@ available but otherwise fall back to the slower <code class="xref py py-mod docu
 conda-based installation (as discussed in <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/506#issuecomment-225081416">Issue #506</a>) because of the way
 that AMBER itself handles netcdf: When the AMBER environment is loaded, the
 following can happen when trying to import netCDF4:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">netCDF4</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">netCDF4</span>
 <span class="gt">Traceback (most recent call last):</span>
   File <span class="nb">&quot;&lt;string&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
   File <span class="nb">&quot;/scratch2/miniconda/envs/py35/lib/python3.5/site-packages/netCDF4/__init__.py&quot;</span>, line <span class="m">3</span>, in <span class="n">&lt;module&gt;</span>
-<span class="w">    </span><span class="kn">from</span> <span class="nn">._netCDF4</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="w">    </span><span class="kn">from</span><span class="w"> </span><span class="nn">._netCDF4</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
 <span class="gr">ImportError</span>: <span class="n">/scratch2/miniconda/envs/py35/lib/python3.5/site-packages/netCDF4/_netCDF4.cpython-35m-x86_64-linux-gnu.so: undefined symbol: nc_inq_var_fletcher32</span>
 </pre></div>
 </div>

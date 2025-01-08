@@ -22,7 +22,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MDAnalysis.guesser.base &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/site.css" />
 
   
@@ -178,17 +178,17 @@
 <span class="sd">.. autofunction:: get_guesser</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">_GUESSERS</span><span class="p">,</span> <span class="n">_TOPOLOGY_ATTRS</span>
-<span class="kn">from</span> <span class="nn">..core.topologyattrs</span> <span class="kn">import</span> <span class="n">_Connection</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
-<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">_GUESSERS</span><span class="p">,</span> <span class="n">_TOPOLOGY_ATTRS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core.topologyattrs</span><span class="w"> </span><span class="kn">import</span> <span class="n">_Connection</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.guesser.base&quot;</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">_GuesserMeta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_GuesserMeta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Internal: guesser classes registration</span>
 
 <span class="sd">    When classes which inherit from GuesserBase are *defined*</span>
@@ -206,7 +206,7 @@
 <span class="sd">    .. versionadded:: 2.8.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">):</span>
         <span class="nb">type</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">)</span>
 
         <span class="n">_GUESSERS</span><span class="p">[</span><span class="n">classdict</span><span class="p">[</span><span class="s2">&quot;context&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span> <span class="o">=</span> <span class="bp">cls</span>
@@ -214,7 +214,7 @@
 
 <div class="viewcode-block" id="GuesserBase">
 <a class="viewcode-back" href="../../../documentation_pages/guesser_modules/base.html#MDAnalysis.guesser.base.GuesserBase">[docs]</a>
-<span class="k">class</span> <span class="nc">GuesserBase</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">_GuesserMeta</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">GuesserBase</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">_GuesserMeta</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for context-specific guessers to inherit from</span>
 
 <span class="sd">    Parameters</span>
@@ -236,16 +236,16 @@
     <span class="n">context</span> <span class="o">=</span> <span class="s2">&quot;base&quot;</span>
     <span class="n">_guesser_methods</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span> <span class="o">=</span> <span class="n">universe</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
 
-    <span class="k">def</span> <span class="nf">update_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
 
 <div class="viewcode-block" id="GuesserBase.copy">
 <a class="viewcode-back" href="../../../documentation_pages/guesser_modules/base.html#MDAnalysis.guesser.base.GuesserBase.copy">[docs]</a>
-    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a copy of this Guesser&quot;&quot;&quot;</span>
         <span class="n">kwargs</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">)</span>
         <span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">universe</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -254,7 +254,7 @@
 
 <div class="viewcode-block" id="GuesserBase.is_guessable">
 <a class="viewcode-back" href="../../../documentation_pages/guesser_modules/base.html#MDAnalysis.guesser.base.GuesserBase.is_guessable">[docs]</a>
-    <span class="k">def</span> <span class="nf">is_guessable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr_to_guess</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_guessable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr_to_guess</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;check if the passed atrribute can be guessed by the guesser class</span>
 
 <span class="sd">        Parameters</span>
@@ -274,7 +274,7 @@
 
 <div class="viewcode-block" id="GuesserBase.guess_attr">
 <a class="viewcode-back" href="../../../documentation_pages/guesser_modules/base.html#MDAnalysis.guesser.base.GuesserBase.guess_attr">[docs]</a>
-    <span class="k">def</span> <span class="nf">guess_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr_to_guess</span><span class="p">,</span> <span class="n">force_guess</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">guess_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr_to_guess</span><span class="p">,</span> <span class="n">force_guess</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;map the attribute to be guessed with the apporpiate guessing method</span>
 
 <span class="sd">        Parameters</span>
@@ -344,7 +344,7 @@
 
 <div class="viewcode-block" id="get_guesser">
 <a class="viewcode-back" href="../../../documentation_pages/guesser_modules/base.html#MDAnalysis.guesser.base.get_guesser">[docs]</a>
-<span class="k">def</span> <span class="nf">get_guesser</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_guesser</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">u</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;get an appropiate guesser to the Universe and pass</span>
 <span class="sd">       the Universe to the guesser</span>
 

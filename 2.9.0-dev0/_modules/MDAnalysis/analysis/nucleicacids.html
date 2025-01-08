@@ -22,7 +22,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MDAnalysis.analysis.nucleicacids &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/site.css" />
 
   
@@ -205,15 +205,15 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
-<span class="kn">from</span> <span class="nn">.distances</span> <span class="kn">import</span> <span class="n">calc_bonds</span>
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">AnalysisBase</span><span class="p">,</span> <span class="n">ResultsGroup</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.core.groups</span> <span class="kn">import</span> <span class="n">Residue</span><span class="p">,</span> <span class="n">ResidueGroup</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.distances</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_bonds</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnalysisBase</span><span class="p">,</span> <span class="n">ResultsGroup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.core.groups</span><span class="w"> </span><span class="kn">import</span> <span class="n">Residue</span><span class="p">,</span> <span class="n">ResidueGroup</span>
 
 
 <span class="c1"># Deprecation: In 3.0.0 change type to just</span>
@@ -227,7 +227,7 @@
 
 <div class="viewcode-block" id="NucPairDist">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/nucleicacids.html#MDAnalysis.analysis.nucleicacids.NucPairDist">[docs]</a>
-<span class="k">class</span> <span class="nc">NucPairDist</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">NucPairDist</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Atom pair distance calculation base class.</span>
 
 <span class="sd">    Takes two lists of :class:`~MDAnalysis.core.groups.AtomGroup` and</span>
@@ -315,7 +315,7 @@
 <div class="viewcode-block" id="NucPairDist.get_supported_backends">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/nucleicacids.html#MDAnalysis.analysis.nucleicacids.NucPairDist.get_supported_backends">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">get_supported_backends</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_supported_backends</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;serial&quot;</span><span class="p">,</span> <span class="s2">&quot;multiprocessing&quot;</span><span class="p">,</span> <span class="s2">&quot;dask&quot;</span><span class="p">)</span></div>
 
 
@@ -323,7 +323,7 @@
     <span class="n">_s2</span><span class="p">:</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span>
     <span class="n">_n_sel</span><span class="p">:</span> <span class="nb">int</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">selection1</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">],</span>
         <span class="n">selection2</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">],</span>
@@ -348,7 +348,7 @@
 <div class="viewcode-block" id="NucPairDist.select_strand_atoms">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/nucleicacids.html#MDAnalysis.analysis.nucleicacids.NucPairDist.select_strand_atoms">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">select_strand_atoms</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">select_strand_atoms</span><span class="p">(</span>
         <span class="n">strand1</span><span class="p">:</span> <span class="n">ResidueGroup</span><span class="p">,</span>
         <span class="n">strand2</span><span class="p">:</span> <span class="n">ResidueGroup</span><span class="p">,</span>
         <span class="n">a1_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -442,21 +442,21 @@
         <span class="k">return</span> <span class="p">(</span><span class="n">sel1</span><span class="p">,</span> <span class="n">sel2</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">distances</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
             <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_sel</span><span class="p">]</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">dist</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">calc_bonds</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s1</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">distances</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">dist</span>
 
-    <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s2">&quot;pair_distances&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s2">&quot;distances&quot;</span><span class="p">]</span>
         <span class="c1"># TODO: remove pair_distances in 3.0.0</span>
 
-    <span class="k">def</span> <span class="nf">_get_aggregator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_aggregator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span>
             <span class="n">lookup</span><span class="o">=</span><span class="p">{</span>
                 <span class="s2">&quot;distances&quot;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_vstack</span><span class="p">,</span>
@@ -467,7 +467,7 @@
 
 <div class="viewcode-block" id="WatsonCrickDist">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/nucleicacids.html#MDAnalysis.analysis.nucleicacids.WatsonCrickDist">[docs]</a>
-<span class="k">class</span> <span class="nc">WatsonCrickDist</span><span class="p">(</span><span class="n">NucPairDist</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">WatsonCrickDist</span><span class="p">(</span><span class="n">NucPairDist</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Watson-Crick base pair distance for selected</span>
 <span class="sd">    residues over a trajectory.</span>
@@ -586,7 +586,7 @@
 <span class="sd">        but it is **deprecated** and will be removed in release 3.0.0.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">strand1</span><span class="p">:</span> <span class="n">ResidueClass</span><span class="p">,</span>
         <span class="n">strand2</span><span class="p">:</span> <span class="n">ResidueClass</span><span class="p">,</span>
@@ -600,7 +600,7 @@
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
-        <span class="k">def</span> <span class="nf">verify_strand</span><span class="p">(</span><span class="n">strand</span><span class="p">:</span> <span class="n">ResidueClass</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResidueGroup</span><span class="p">:</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">verify_strand</span><span class="p">(</span><span class="n">strand</span><span class="p">:</span> <span class="n">ResidueClass</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResidueGroup</span><span class="p">:</span>
             <span class="c1"># Helper method to verify the strands</span>
 
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">strand</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>  <span class="c1"># Checking if a list is given</span>
@@ -646,7 +646,7 @@
 
 <div class="viewcode-block" id="MinorPairDist">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/nucleicacids.html#MDAnalysis.analysis.nucleicacids.MinorPairDist">[docs]</a>
-<span class="k">class</span> <span class="nc">MinorPairDist</span><span class="p">(</span><span class="n">NucPairDist</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MinorPairDist</span><span class="p">(</span><span class="n">NucPairDist</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Minor-Pair basepair distance for selected residues over a trajectory.</span>
 
 <span class="sd">    Takes two :class:`~MDAnalysis.core.groups.ResidueGroup` objects and</span>
@@ -709,7 +709,7 @@
 <span class="sd">    .. versionadded:: 2.7.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">strand1</span><span class="p">:</span> <span class="n">ResidueGroup</span><span class="p">,</span>
         <span class="n">strand2</span><span class="p">:</span> <span class="n">ResidueGroup</span><span class="p">,</span>
@@ -745,7 +745,7 @@
 
 <div class="viewcode-block" id="MajorPairDist">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/nucleicacids.html#MDAnalysis.analysis.nucleicacids.MajorPairDist">[docs]</a>
-<span class="k">class</span> <span class="nc">MajorPairDist</span><span class="p">(</span><span class="n">NucPairDist</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MajorPairDist</span><span class="p">(</span><span class="n">NucPairDist</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Minor-Pair base pair distance for</span>
 <span class="sd">    selected residues over a trajectory.</span>
 
@@ -810,7 +810,7 @@
 <span class="sd">    .. versionadded:: 2.7.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">strand1</span><span class="p">:</span> <span class="n">ResidueGroup</span><span class="p">,</span>
         <span class="n">strand2</span><span class="p">:</span> <span class="n">ResidueGroup</span><span class="p">,</span>

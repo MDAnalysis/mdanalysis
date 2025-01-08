@@ -23,7 +23,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.3.8. Bond-Angle-Torsion coordinates analysis — MDAnalysis.analysis.bat &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/site.css" />
 
   
@@ -229,16 +229,16 @@ coordinates based on the topology of an atom group and interconverts between
 Cartesian and BAT coordinate systems.</p>
 <p>For example, we can determine internal coordinates for residues 5-10
 of adenylate kinase (AdK). The trajectory is included within the test data files:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
-<span class="kn">from</span> <span class="nn">MDAnalysisTests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysisTests.datafiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
 
 <span class="c1"># selection of atomgroups</span>
 <span class="n">selected_residues</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;resid 5-10&quot;</span><span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.bat</span> <span class="kn">import</span> <span class="n">BAT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.bat</span><span class="w"> </span><span class="kn">import</span> <span class="n">BAT</span>
 <span class="n">R</span> <span class="o">=</span> <span class="n">BAT</span><span class="p">(</span><span class="n">selected_residues</span><span class="p">)</span>
 
 <span class="c1"># Calculate BAT coordinates for a trajectory</span>

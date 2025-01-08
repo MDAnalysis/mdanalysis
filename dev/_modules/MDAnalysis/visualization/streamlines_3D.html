@@ -22,7 +22,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MDAnalysis.visualization.streamlines_3D &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/site.css" />
 
   
@@ -188,17 +188,17 @@
 <span class="sd">.. autofunction:: generate_streamlines_3d</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">multiprocessing</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">multiprocessing</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">numpy.testing</span>
-<span class="kn">import</span> <span class="nn">scipy</span>
-<span class="kn">import</span> <span class="nn">scipy.spatial.distance</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy.testing</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.spatial.distance</span>
 
-<span class="kn">import</span> <span class="nn">MDAnalysis</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span>
 
 
-<span class="k">def</span> <span class="nf">determine_container_limits</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">determine_container_limits</span><span class="p">(</span>
     <span class="n">topology_file_path</span><span class="p">,</span> <span class="n">trajectory_file_path</span><span class="p">,</span> <span class="n">buffer_value</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate the extent of the atom coordinates + buffer.</span>
@@ -242,7 +242,7 @@
     <span class="k">return</span> <span class="n">tuple_of_limits</span>
 
 
-<span class="k">def</span> <span class="nf">produce_grid</span><span class="p">(</span><span class="n">tuple_of_limits</span><span class="p">,</span> <span class="n">grid_spacing</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">produce_grid</span><span class="p">(</span><span class="n">tuple_of_limits</span><span class="p">,</span> <span class="n">grid_spacing</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Produce a 3D grid for the simulation system.</span>
 
 <span class="sd">    The partitioning is based on the tuple of Cartesian Coordinate limits</span>
@@ -270,7 +270,7 @@
     <span class="k">return</span> <span class="n">grid</span>
 
 
-<span class="k">def</span> <span class="nf">split_grid</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">num_cores</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">split_grid</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">num_cores</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Split the grid into blocks of vertices.</span>
 
 <span class="sd">    Take the overall `grid` for the system and split it into lists of cube</span>
@@ -435,7 +435,7 @@
     <span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">per_core_work</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">per_core_work</span><span class="p">(</span>
     <span class="n">start_frame_coord_array</span><span class="p">,</span>
     <span class="n">end_frame_coord_array</span><span class="p">,</span>
     <span class="n">dictionary_cube_data_this_core</span><span class="p">,</span>
@@ -451,7 +451,7 @@
     <span class="n">list_previous_frame_indices</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="c1"># define some utility functions for trajectory iteration:</span>
 
-    <span class="k">def</span> <span class="nf">point_in_cube</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">point_in_cube</span><span class="p">(</span>
         <span class="n">array_point_coordinates</span><span class="p">,</span> <span class="n">list_cube_vertices</span><span class="p">,</span> <span class="n">cube_centroid</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine if an array of coordinates are within a cube.&quot;&quot;&quot;</span>
@@ -500,7 +500,7 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">overall_indices_points_in_current_cube</span>
 
-    <span class="k">def</span> <span class="nf">update_dictionary_point_in_cube_start_frame</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_dictionary_point_in_cube_start_frame</span><span class="p">(</span>
         <span class="n">array_simulation_particle_coordinates</span><span class="p">,</span> <span class="n">dictionary_cube_data_this_core</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Basically update the cube dictionary objects assigned to this core to contain a new key/value pair</span>
@@ -529,7 +529,7 @@
                 <span class="n">cube</span><span class="p">[</span><span class="s2">&quot;centroid_of_particles_first_frame&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">cube_counter</span> <span class="o">+=</span> <span class="mi">1</span>
 
-    <span class="k">def</span> <span class="nf">update_dictionary_end_frame</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_dictionary_end_frame</span><span class="p">(</span>
         <span class="n">array_simulation_particle_coordinates</span><span class="p">,</span> <span class="n">dictionary_cube_data_this_core</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the cube dictionary objects again as appropriate for the second and final frame.&quot;&quot;&quot;</span>
@@ -575,7 +575,7 @@
     <span class="k">return</span> <span class="n">dictionary_cube_data_this_core</span>
 
 
-<span class="k">def</span> <span class="nf">produce_coordinate_arrays_single_process</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">produce_coordinate_arrays_single_process</span><span class="p">(</span>
     <span class="n">topology_file_path</span><span class="p">,</span>
     <span class="n">trajectory_file_path</span><span class="p">,</span>
     <span class="n">MDA_selection</span><span class="p">,</span>
@@ -616,7 +616,7 @@
 
 <div class="viewcode-block" id="generate_streamlines_3d">
 <a class="viewcode-back" href="../../../documentation_pages/visualization/streamlines_3D.html#MDAnalysis.visualization.streamlines_3D.generate_streamlines_3d">[docs]</a>
-<span class="k">def</span> <span class="nf">generate_streamlines_3d</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_streamlines_3d</span><span class="p">(</span>
     <span class="n">topology_file_path</span><span class="p">,</span>
     <span class="n">trajectory_file_path</span><span class="p">,</span>
     <span class="n">grid_spacing</span><span class="p">,</span>
@@ -740,7 +740,7 @@
     <span class="n">np</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="nb">all</span><span class="o">=</span><span class="s2">&quot;warn&quot;</span><span class="p">,</span> <span class="n">over</span><span class="o">=</span><span class="s2">&quot;raise&quot;</span><span class="p">)</span>
     <span class="n">parent_cube_dictionary</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># collect all data from child processes here</span>
 
-    <span class="k">def</span> <span class="nf">log_result_to_parent</span><span class="p">(</span><span class="n">process_dict</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">log_result_to_parent</span><span class="p">(</span><span class="n">process_dict</span><span class="p">):</span>
         <span class="n">parent_cube_dictionary</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">process_dict</span><span class="p">)</span>
 
     <span class="c1"># step 1: produce tuple of cartesian coordinate limits for the first frame</span>

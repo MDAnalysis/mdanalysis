@@ -22,7 +22,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/site.css" />
 
   
@@ -179,17 +179,17 @@
 <span class="sd">   in MDAnalysis 3.0.0.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">..confdistmatrix</span> <span class="kn">import</span> <span class="n">get_distance_matrix</span>
-<span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">ParallelCalculation</span><span class="p">,</span> <span class="n">merge_universes</span>
-<span class="kn">from</span> <span class="nn">..dimensionality_reduction.DimensionalityReductionMethod</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..confdistmatrix</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_distance_matrix</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">ParallelCalculation</span><span class="p">,</span> <span class="n">merge_universes</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..dimensionality_reduction.DimensionalityReductionMethod</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">StochasticProximityEmbeddingNative</span><span class="p">,</span>
 <span class="p">)</span>
 
 
 <div class="viewcode-block" id="reduce_dimensionality">
 <a class="viewcode-back" href="../../../../../documentation_pages/analysis/encore/dimensionality_reduction.html#MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality.reduce_dimensionality">[docs]</a>
-<span class="k">def</span> <span class="nf">reduce_dimensionality</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">reduce_dimensionality</span><span class="p">(</span>
     <span class="n">ensembles</span><span class="p">,</span>
     <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>

@@ -22,7 +22,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MDAnalysis.topology.MinimalParser &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/site.css" />
 
   
@@ -182,14 +182,14 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">..core._get_readers</span> <span class="kn">import</span> <span class="n">get_reader_for</span>
-<span class="kn">from</span> <span class="nn">..core.topology</span> <span class="kn">import</span> <span class="n">Topology</span>
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">TopologyReaderBase</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core._get_readers</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_reader_for</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core.topology</span><span class="w"> </span><span class="kn">import</span> <span class="n">Topology</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">TopologyReaderBase</span>
 
 
 <div class="viewcode-block" id="MinimalParser">
 <a class="viewcode-back" href="../../../documentation_pages/topology/MinimalParser.html#MDAnalysis.topology.MinimalParser.MinimalParser">[docs]</a>
-<span class="k">class</span> <span class="nc">MinimalParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MinimalParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Produces a minimal topology from only the number of atoms.</span>
 
 <span class="sd">    This requires that the number of atoms be given in one of two ways:</span>
@@ -205,7 +205,7 @@
 
 <div class="viewcode-block" id="MinimalParser.parse">
 <a class="viewcode-back" href="../../../documentation_pages/topology/MinimalParser.html#MDAnalysis.topology.MinimalParser.MinimalParser.parse">[docs]</a>
-    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the minimal *Topology* object&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">n_atoms</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;n_atoms&quot;</span><span class="p">]</span>

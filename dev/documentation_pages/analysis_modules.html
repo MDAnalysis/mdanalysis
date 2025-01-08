@@ -23,7 +23,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4. Analysis modules &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/site.css" />
 
   
@@ -253,7 +253,7 @@ method, optionally for specific trajectory slices.</p></li>
 <li><p>Access the analysis from the
 <a class="reference internal" href="analysis/base.html#MDAnalysis.analysis.base.AnalysisBase.results" title="MDAnalysis.analysis.base.AnalysisBase.results"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results</span></code></a> attribute</p></li>
 </ol>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="kn">import</span> <span class="n">ExampleAnalysisModule</span>  <span class="c1"># (e.g. RMSD)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExampleAnalysisModule</span>  <span class="c1"># (e.g. RMSD)</span>
 
 <span class="n">analysis_obj</span> <span class="o">=</span> <span class="n">ExampleAnalysisModule</span><span class="o">.</span><span class="n">AnalysisClass</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
 <span class="n">analysis_obj</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">start_frame</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop_frame</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">)</span>
@@ -285,11 +285,11 @@ introduced to all subclasses that can support it.</p>
 <p>In order to use that feature, simply add <code class="docutils literal notranslate"><span class="pre">backend='multiprocessing'</span></code> to your
 run, and supply it with proper <code class="docutils literal notranslate"><span class="pre">n_workers</span></code> (use <code class="docutils literal notranslate"><span class="pre">multiprocessing.cpu_count()</span></code>
 for maximum available on your machine):</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">multiprocessing</span>
-<span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
-<span class="kn">from</span> <span class="nn">MDAnalysisTests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.rms</span> <span class="kn">import</span> <span class="n">RMSD</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.align</span> <span class="kn">import</span> <span class="n">AverageStructure</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">multiprocessing</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysisTests.datafiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.rms</span><span class="w"> </span><span class="kn">import</span> <span class="n">RMSD</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.align</span><span class="w"> </span><span class="kn">import</span> <span class="n">AverageStructure</span>
 
 <span class="c1"># initialize the universe</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>

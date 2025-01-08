@@ -23,7 +23,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.9.4. Dielectric — MDAnalysis.analysis.dielectric &mdash; MDAnalysis 2.9.0-dev0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/site.css" />
 
   
@@ -272,9 +272,9 @@ in <span class="math notranslate nohighlight">\((eÅ)^2\)</span></p>
 <p>Create a <a class="reference internal" href="#MDAnalysis.analysis.dielectric.DielectricConstant" title="MDAnalysis.analysis.dielectric.DielectricConstant"><code class="xref py py-class docutils literal notranslate"><span class="pre">DielectricConstant</span></code></a> instance by supplying an
 <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>,
 then use the <code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code> method:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.dielectric</span> <span class="kn">import</span> <span class="n">DielectricConstant</span>
-<span class="kn">from</span> <span class="nn">MDAnalysisTests.datafiles</span> <span class="kn">import</span> <span class="n">PSF_TRICLINIC</span><span class="p">,</span> <span class="n">DCD_TRICLINIC</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.dielectric</span><span class="w"> </span><span class="kn">import</span> <span class="n">DielectricConstant</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysisTests.datafiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">PSF_TRICLINIC</span><span class="p">,</span> <span class="n">DCD_TRICLINIC</span>
 
 <span class="c1"># Load a pure water system</span>
 <span class="n">universe</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF_TRICLINIC</span><span class="p">,</span> <span class="n">DCD_TRICLINIC</span><span class="p">)</span>
