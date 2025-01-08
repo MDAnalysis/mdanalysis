@@ -1002,9 +1002,9 @@ class _GromacsReader_offsets(object):
             with pytest.warns(UserWarning, match="Failed to load offsets"):
                 saved_offsets = XDR.read_numpy_offsets(filename)
 
-            # Check if the offsets are handled properly and match reference offsets
+            # Check if offsets are handled properly and match reference offsets
             assert_almost_equal(
-                saved_offsets, # Compare with reference offsets
+                saved_offsets,  # Compare with reference offsets
                 ref_offset,
                 err_msg="error loading frame offsets"
             )
@@ -1012,8 +1012,8 @@ class _GromacsReader_offsets(object):
         assert_equal(os.path.exists(XDR.offsets_filename(filename)), False)
         # check the lock file is not created as well.
         assert_equal(
-          os.path.exists(XDR.offsets_filename(filename, ending='.lock')),
-          False,
+            os.path.exists(XDR.offsets_filename(filename, ending='.lock')),
+            False,
         )
         # pre-teardown permission fix - leaving permission blocked dir
         # is problematic on py3.9 + Windows it seems. See issue
@@ -1032,10 +1032,10 @@ class _GromacsReader_offsets(object):
 
         # Acquire the lock
         lock.acquire()
-        time.sleep(5) # wait 5 seconds before checking if the file is locked
-        assert lock.is_locked # check if file is locked
+        time.sleep(5)  # wait 5 seconds before checking if the file is locked
+        assert lock.is_locked  # check if file is locked
         lock.release()
-        assert not lock.is_locked # check if file is unlocked
+        assert not lock.is_locked  # check if file is unlocked
 
 
 class TestXTCReader_offsets(_GromacsReader_offsets):
