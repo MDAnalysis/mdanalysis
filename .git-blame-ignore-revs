@@ -6,7 +6,7 @@
 #
 # --- Automated Formatting with `black` ---
 # MDAnalysis was automatically formatted with `black` (end of 2024, beginning of 2025).
-# Formatting PRs (should) contain "[fmt]" in the title (and so do the related commit).
+# Formatting PRs (should) contain "[fmt]" in the title (and so do the related commits).
 # See https://github.com/MDAnalysis/mdanalysis/issues/2450 for more details.
 # The following commits are squash commits that contain only formatting changes.
 #4725 
