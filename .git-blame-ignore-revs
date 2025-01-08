@@ -1,5 +1,5 @@
-##### git-blame show what revision and author last modified each line of a file
-##### .git-blame-ignore-revs file is used to ignore certain revisions from being
+##### git-blame shows what revision and author last modified each line of a file
+##### The ".git-blame-ignore-revs" file is used to ignore certain revisions from being
 ##### shown in the output of git blame (also on GitHub blame view).
 #
 # ~~~ Commits that only change the formatting of the code should be ignored. ~~~
