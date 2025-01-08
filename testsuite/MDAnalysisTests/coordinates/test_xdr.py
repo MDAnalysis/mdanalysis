@@ -994,18 +994,17 @@ class _GromacsReader_offsets(object):
 
         filename = str(tmpdir.join(os.path.basename(self.filename)))
         # try to write a offsets file, obtain Cannot write due to FileLock
-        ref_offset = XDR.read_numpy_offsets(self.filename)  # Assuming this is the reference you want to use
+        ref_offset = XDR.read_numpy_offsets(self.filename)  # Reference
         # Mock np.load to raise an error when trying to load offsets
         with patch.object(np, "load") as np_load_mock:
-            np_load_mock.side_effect = ValueError  # Simulate failure in loading offsets
-            
-            # Use pytest.warns to check for the expected warnings when loading offsets fails
+            np_load_mock.side_effect = ValueError  # Simulate failure
+            # Use pytest.warns to check for warnings
             with pytest.warns(UserWarning, match="Failed to load offsets"):
                 saved_offsets = XDR.read_numpy_offsets(filename)
 
-            # Check if the offsets are handled properly and match the expected reference offsets
+            # Check if the offsets are handled properly and match reference offsets
             assert_almost_equal(
-                saved_offsets,  # Compare the saved offsets with the reference offsets
+                saved_offsets, # Compare with reference offsets
                 ref_offset,
                 err_msg="error loading frame offsets"
             )
