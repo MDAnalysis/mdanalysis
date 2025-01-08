@@ -126,25 +126,6 @@ MDAnalysis = [
 [tool.black]
 line-length = 79
 target-version = ['py310', 'py311', 'py312', 'py313']
-include = '''
-(
-tables\.py
-| due\.py
-| setup\.py
-| MDAnalysis/auxiliary/.*\.py
-| MDAnalysis/visualization/.*\.py
-| MDAnalysis/lib/.*\.py^
-| MDAnalysis/transformations/.*\.py
-| MDAnalysis/topology/.*\.py
-| MDAnalysis/analysis/.*\.py
-| MDAnalysis/guesser/.*\.py
-| MDAnalysis/converters/.*\.py
-| MDAnalysis/coordinates/.*\.py
-| MDAnalysis/tests/.*\.py
-| MDAnalysis/selections/.*\.py
-| MDAnalysis/core/.*\.py
-)
-'''
 extend-exclude = '''
 (
 __pycache__ 
