@@ -1029,11 +1029,13 @@ class _GromacsReader_offsets(object):
     def test_offset_lock_created(self):
         lock_file_path = XDR.offsets_filename(self.filename, ending='lock')
         lock = FileLock(lock_file_path)
-
+        
         # Acquire the lock
         lock.acquire()
+        
         time.sleep(5)  # wait 5 seconds before checking if the file is locked
         assert lock.is_locked  # check if file is locked
+        
         lock.release()
         assert not lock.is_locked  # check if file is unlocked
 
