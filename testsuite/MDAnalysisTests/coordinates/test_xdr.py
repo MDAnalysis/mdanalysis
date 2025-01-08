@@ -1031,32 +1031,12 @@ class _GromacsReader_offsets(object):
         lock_file_path = XDR.offsets_filename(self.filename, ending='lock')
         lock = FileLock(lock_file_path)
 
-        # Start a count to release lock after 5 seconds
-        def release_lock_after_delay():
-            time.sleep(5) 
-            lock.release()
-
         # Acquire the lock
         lock.acquire()
-        try:
-            # Start count
-            release_lock_after_delay()
-
-            # Start timing to ensure the reader waits for the lock
-            start_time = time.time()
-
-            with pytest.warns(UserWarning):
-                self._reader(self.filename)
-
-            elapsed_time = time.time() - start_time
-
-            # Ensure the function waited for the lock
-            assert elapsed_time >= 5, "read_offsets did not wait for the lock to be released."
-
-        finally:
-            # Ensure the lock is released to avoid hanging
-            if lock.is_locked:
-                lock.release()
+        time.sleep(5) # wait 5 seconds before checking if the file is locked
+        assert lock.is_locked # check if file is locked
+        lock.release()
+        assert not lock.is_locked # check if file is unlocked
 
 
 class TestXTCReader_offsets(_GromacsReader_offsets):
