@@ -593,11 +593,6 @@ class InterRDF_s(AnalysisBase):
        The `universe` parameter is superflous.
     """
 
-    @classmethod
-    def get_supported_backends(cls):
-        return ('serial', 'multiprocessing', 'dask',)
-
-    _analysis_algorithm_is_parallelizable = True
     
     def __init__(
         self,
@@ -653,7 +648,6 @@ class InterRDF_s(AnalysisBase):
 
         if self.norm == "rdf":
             # Cumulative volume for rdf normalization
-            self.results.volume_cum = 0
             self.volume_cum = 0
         self._maxrange = self.rdf_settings["range"][1]
 
@@ -672,14 +666,7 @@ class InterRDF_s(AnalysisBase):
                 self.results.count[i][idx1, idx2, :] += count
 
         if self.norm == "rdf":
-            self.results.volume_cum += self._ts.volume
             self.volume_cum += self._ts.volume
-
-    def _get_aggregator(self):
-        return ResultsGroup(lookup={'count': ResultsGroup.ndarray_sum,
-                                    'volume_cum': ResultsGroup.ndarray_sum, 
-                                    'bins': ResultsGroup.ndarray_sum,
-                                    'edges': ResultsGroup.ndarray_sum})
 
     def _conclude(self):
         norm = self.n_frames
@@ -690,7 +677,6 @@ class InterRDF_s(AnalysisBase):
 
         if self.norm == "rdf":
             # Average number density
-            self.volume_cum = self.results.volume_cum
             norm *= 1 / (self.volume_cum / self.n_frames)
 
         # Empty lists to restore indices, RDF
