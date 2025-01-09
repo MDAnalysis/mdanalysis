@@ -1028,7 +1028,7 @@ class _GromacsReader_offsets(object):
 
     def test_offset_lock_created(self):
         assert os.path.exists(
-            XDR.offsets_filename(self.filename, ending="lock")
+            XDR.offsets_filename(self.filename)
         )
 
 
