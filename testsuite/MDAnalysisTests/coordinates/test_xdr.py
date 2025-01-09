@@ -1027,16 +1027,9 @@ class _GromacsReader_offsets(object):
         shutil.rmtree(tmpdir)
 
     def test_offset_lock_created(self):
-        lock_file_path = XDR.offsets_filename(self.filename, ending='lock')
-        lock = FileLock(lock_file_path)
-        
-        # Acquire the lock
-        lock.acquire()
-        
-        assert lock.is_locked  # check if file is locked
-        
-        lock.release()
-        assert not lock.is_locked  # check if file is unlocked
+        assert os.path.exists(
+            XDR.offsets_filename(self.filename, ending="lock")
+        )
 
 
 class TestXTCReader_offsets(_GromacsReader_offsets):
