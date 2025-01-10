@@ -979,7 +979,6 @@ class _GromacsReader_offsets(object):
             reader = self._reader(traj)
         reader[idx_frame]
 
-    @pytest.mark.skipif(get_userid() == 0, reason="cannot readonly as root")
     def test_persistent_offsets_readonly(self, tmpdir, traj):
         shutil.copy(self.filename, str(tmpdir))
 
@@ -1004,17 +1003,12 @@ class _GromacsReader_offsets(object):
             os.path.exists(XDR.offsets_filename(filename, ending=".lock")),
             False,
         )
-        # pre-teardown permission fix - leaving permission blocked dir
-        # is problematic on py3.9 + Windows it seems. See issue
-        # [4123](https://github.com/MDAnalysis/mdanalysis/issues/4123)
-        # for more details.
-        if os.name == "nt":
-            subprocess.call(f"icacls {tmpdir} /grant Users:W", shell=True)
-        else:
-            os.chmod(str(tmpdir), 0o777)
-
         shutil.rmtree(tmpdir)
 
+    @pytest.mark.skipif(
+        sys.platform.startswith("win"),
+        reason="The lock file only exists when it's locked in windows"
+    )
     def test_offset_lock_created(self, traj):
         assert os.path.exists(
             XDR.offsets_filename(traj, ending="lock")
