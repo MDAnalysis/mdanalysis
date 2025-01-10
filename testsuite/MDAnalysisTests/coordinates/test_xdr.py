@@ -980,25 +980,14 @@ class _GromacsReader_offsets(object):
         reader[idx_frame]
 
     @pytest.mark.skipif(get_userid() == 0, reason="cannot readonly as root")
-    # skip test in Windows Azure, due to different permission in Azure
-    def test_persistent_offsets_readonly(self, tmpdir):
+    def test_persistent_offsets_readonly(self, tmpdir, traj):
         shutil.copy(self.filename, str(tmpdir))
 
-        if os.name == "nt":
-            # Windows platform has a unique way to deny write access
-            subprocess.call(
-                "icacls {fname} /deny Users:W".format(fname=tmpdir), shell=True
-            )
-        else:
-            os.chmod(str(tmpdir), 0o555)
-
         filename = str(tmpdir.join(os.path.basename(self.filename)))
-        # try to write a offsets file, obtain Cannot write due to FileLock
-        ref_offset = XDR.read_numpy_offsets(self.filename)  # Reference
+        ref_offset = XDR.read_numpy_offsets(traj)  # Reference
         # Mock np.load to raise an error when trying to load offsets
         with patch.object(np, "load") as np_load_mock:
             np_load_mock.side_effect = ValueError  # Simulate failure
-            # Use pytest.warns to check for warnings
             with pytest.warns(UserWarning, match="Failed to load offsets"):
                 saved_offsets = XDR.read_numpy_offsets(filename)
 
