@@ -14,8 +14,8 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, ChiahsinChu, RMeli, tanishy7777, talagayev,
-         tylerjereddy
+??/??/?? IAlibay, ChiahsinChu, RMeli, tanishy7777, talagayev, tylerjereddy,
+         marinegor
 
  * 2.9.0
 
@@ -37,6 +37,7 @@ Enhancements
 
 Changes
  * Changed `fasteners` dependency to  `filelock` (Issue #4797, PR #4800)
+ * Codebase is now formatted with black (version `24`) (PR #4886)
 
 Deprecations
 
