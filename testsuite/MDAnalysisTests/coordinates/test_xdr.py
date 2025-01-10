@@ -25,6 +25,7 @@ from unittest.mock import patch
 
 import re
 import os
+import sys
 import shutil
 import subprocess
 import time
