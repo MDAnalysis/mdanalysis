@@ -1026,9 +1026,9 @@ class _GromacsReader_offsets(object):
 
         shutil.rmtree(tmpdir)
 
-    def test_offset_lock_created(self):
+    def test_offset_lock_created(self, traj):
         assert os.path.exists(
-            XDR.offsets_filename(self.filename, ending="lock")
+            XDR.offsets_filename(traj, ending="lock")
         )
 
 
