@@ -980,16 +980,17 @@ class _GromacsReader_offsets(object):
             reader = self._reader(traj)
         reader[idx_frame]
 
-    def test_persistent_offsets_readonly(self, tmpdir, traj):
+    def test_persistent_offsets_readonly(self, tmpdir, trajectory):
         shutil.copy(self.filename, str(tmpdir))
 
         filename = str(tmpdir.join(os.path.basename(self.filename)))
-        ref_offset = XDR.read_numpy_offsets(traj)  # Reference
-        # Mock np.load to raise an error when trying to load offsets
-        with patch.object(np, "load") as np_load_mock:
-            np_load_mock.side_effect = ValueError  # Simulate failure
-            with pytest.warns(UserWarning, match="Failed to load offsets"):
-                saved_offsets = XDR.read_numpy_offsets(filename)
+        print('filename', filename)
+        ref_offset = trajectory._xdr.offsets
+        # Mock filelock acquire to raise an error
+        with patch.object(FileLock, "acquire", side_effect=PermissionError):  # Simulate failure
+            with pytest.warns(UserWarning, match="Cannot write lock"):
+                reader = self._reader(filename)
+                saved_offsets = reader._xdr.offsets
 
             # Check if offsets are handled properly and match reference offsets
             assert_almost_equal(
@@ -1004,7 +1005,6 @@ class _GromacsReader_offsets(object):
             os.path.exists(XDR.offsets_filename(filename, ending=".lock")),
             False,
         )
-        shutil.rmtree(tmpdir)
 
     @pytest.mark.skipif(
         sys.platform.startswith("win"),
