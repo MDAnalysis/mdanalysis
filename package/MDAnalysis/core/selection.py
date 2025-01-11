@@ -1067,6 +1067,8 @@ class SugarSelection(Selection):
 
       * manually added aglycans 'ROH', 'OME', 'TBT'
         from GLYCAM-Web generated files.
+
+    .. versionadded:: 2.9.0
     """
     token = 'sugar'
 
