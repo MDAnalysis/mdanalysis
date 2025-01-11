@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -38,6 +38,7 @@ def universe():
 @pytest.fixture()
 def g(universe):
     return universe.atoms.segments
+
 
 def test_newSegmentGroup(universe):
     """test that slicing a SegmentGroup returns a new SegmentGroup (Issue 135)"""
@@ -74,40 +75,53 @@ def test_segids_dim(g):
 
 
 def test_set_segids(universe):
-    s = universe.select_atoms('all').segments
-    s.segids = 'ADK'
-    assert_equal(universe.segments.segids, ['ADK'],
-                 err_msg="failed to set_segid on segments")
+    s = universe.select_atoms("all").segments
+    s.segids = "ADK"
+    assert_equal(
+        universe.segments.segids,
+        ["ADK"],
+        err_msg="failed to set_segid on segments",
+    )
 
 
 def test_set_segid_updates_(universe):
     g = universe.select_atoms("resid 10:18").segments
-    g.segids = 'ADK'
-    assert_equal(g.segids, ['ADK'],
-                 err_msg="old selection was not changed in place after set_segid")
+    g.segids = "ADK"
+    assert_equal(
+        g.segids,
+        ["ADK"],
+        err_msg="old selection was not changed in place after set_segid",
+    )
 
 
 def test_set_segids_many():
-    u = mda.Universe.empty(n_atoms=6, n_residues=2, n_segments=2,
-                           atom_resindex=[0, 0, 0, 1, 1, 1], residue_segindex=[0,1])
-    u.add_TopologyAttr('segids', ['A', 'B'])
+    u = mda.Universe.empty(
+        n_atoms=6,
+        n_residues=2,
+        n_segments=2,
+        atom_resindex=[0, 0, 0, 1, 1, 1],
+        residue_segindex=[0, 1],
+    )
+    u.add_TopologyAttr("segids", ["A", "B"])
 
     # universe with 2 segments, A and B
 
-    u.segments.segids = ['X', 'Y']
+    u.segments.segids = ["X", "Y"]
 
-    assert u.segments[0].segid == 'X'
-    assert u.segments[1].segid == 'Y'
+    assert u.segments[0].segid == "X"
+    assert u.segments[1].segid == "Y"
 
-    assert len(u.select_atoms('segid A')) == 0
-    assert len(u.select_atoms('segid B')) == 0
-    assert len(u.select_atoms('segid X')) == 3
-    assert len(u.select_atoms('segid Y')) == 3
+    assert len(u.select_atoms("segid A")) == 0
+    assert len(u.select_atoms("segid B")) == 0
+    assert len(u.select_atoms("segid X")) == 3
+    assert len(u.select_atoms("segid Y")) == 3
 
 
 def test_atom_order(universe):
-    assert_equal(universe.segments.atoms.indices,
-                 sorted(universe.segments.atoms.indices))
+    assert_equal(
+        universe.segments.atoms.indices,
+        sorted(universe.segments.atoms.indices),
+    )
 
 
 def test_segmentgroup_pickle():

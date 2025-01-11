@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -75,7 +75,8 @@ class XYZParser(TopologyReaderBase):
         through universe.guess_TopologyAttrs() API).
 
     """
-    format = 'XYZ'
+
+    format = "XYZ"
 
     def parse(self, **kwargs):
         """Read the file and return the structure.
@@ -95,15 +96,15 @@ class XYZParser(TopologyReaderBase):
                 name = inf.readline().split()[0]
                 names[i] = name
 
+        attrs = [
+            Atomnames(names),
+            Atomids(np.arange(natoms) + 1),
+            Resids(np.array([1])),
+            Resnums(np.array([1])),
+            Segids(np.array(["SYSTEM"], dtype=object)),
+            Elements(names),
+        ]
 
-        attrs = [Atomnames(names),
-                 Atomids(np.arange(natoms) + 1),
-                 Resids(np.array([1])),
-                 Resnums(np.array([1])),
-                 Segids(np.array(['SYSTEM'], dtype=object)),
-                 Elements(names)]
-
-        top = Topology(natoms, 1, 1,
-                       attrs=attrs)
+        top = Topology(natoms, 1, 1, attrs=attrs)
 
         return top

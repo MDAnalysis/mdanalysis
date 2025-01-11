@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2020 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -26,7 +26,7 @@
 
 :Author: Lily Wang
 :Year: 2020
-:Copyright: GNU Public License v3
+:Copyright: Lesser GNU Public License v2.1+
 
 .. versionadded:: 1.0.0
 
@@ -40,8 +40,10 @@ from mdahole2.analysis.hole import hole, HoleAnalysis
 from mdahole2.analysis import utils, templates
 from mdahole2.analysis.utils import create_vmd_surface
 
-wmsg = ("Deprecated in version 2.8.0\n"
-        "MDAnalysis.analysis.hole2 is deprecated in favour of the "
-        "MDAKit madahole2 (https://www.mdanalysis.org/mdahole2/) "
-        "and will be removed in MDAnalysis version 3.0.0")
+wmsg = (
+    "Deprecated in version 2.8.0\n"
+    "MDAnalysis.analysis.hole2 is deprecated in favour of the "
+    "MDAKit madahole2 (https://www.mdanalysis.org/mdahole2/) "
+    "and will be removed in MDAnalysis version 3.0.0"
+)
 warnings.warn(wmsg, category=DeprecationWarning)

@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -47,9 +47,10 @@ class NullWriter(base.WriterBase):
     a Writer but ignores all input. It can be used in order to
     suppress output.
     """
-    format = 'NULL'
+
+    format = "NULL"
     multiframe = True
-    units = {'time': 'ps', 'length': 'Angstrom'}
+    units = {"time": "ps", "length": "Angstrom"}
 
     def __init__(self, filename, **kwargs):
         pass

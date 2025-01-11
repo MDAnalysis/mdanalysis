@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -32,6 +32,7 @@ import pytest
 from numpy.testing import assert_equal
 
 import MDAnalysis as mda
+
 mda_dirname = os.path.dirname(mda.__file__)
 
 
@@ -61,19 +62,26 @@ def init_files():
     for root, dirs, files in os.walk("."):
         if "__init__.py" in files:
             submodule = ".".join(PurePath(root).parts)
-            submodule = "."*(len(submodule) > 0) + submodule
+            submodule = "." * (len(submodule) > 0) + submodule
             yield submodule
 
 
-@pytest.mark.parametrize('submodule', init_files())
+@pytest.mark.parametrize("submodule", init_files())
 def test_all_import(submodule):
     module = importlib.import_module("MDAnalysis" + submodule)
     module_path = os.path.join(mda_dirname, *submodule.split("."))
     if hasattr(module, "__all__"):
-        missing = [name for name in module.__all__
-                if name not in module.__dict__.keys()
-                    and name not in [os.path.splitext(f)[0] for
-                                        f in os.listdir(module_path)]]
-        assert_equal(missing, [], err_msg="{}".format(submodule) +
-                                          " has errors in __all__ list: " +
-                     "missing = {}".format(missing))
+        missing = [
+            name
+            for name in module.__all__
+            if name not in module.__dict__.keys()
+            and name
+            not in [os.path.splitext(f)[0] for f in os.listdir(module_path)]
+        ]
+        assert_equal(
+            missing,
+            [],
+            err_msg="{}".format(submodule)
+            + " has errors in __all__ list: "
+            + "missing = {}".format(missing),
+        )

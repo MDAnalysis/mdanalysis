@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -35,7 +35,7 @@ from MDAnalysis.tests.datafiles import PSF, DCD
 class TestSegment(object):
     @pytest.fixture()
     def universe(self):
-        return make_Universe(('segids',))
+        return make_Universe(("segids",))
 
     @pytest.fixture()
     def sB(self, universe):
@@ -61,8 +61,10 @@ class TestSegment(object):
         assert isinstance(res, mda.core.groups.ResidueGroup)
 
     def test_atom_order(self, universe):
-        assert_equal(universe.segments[0].atoms.indices,
-                     sorted(universe.segments[0].atoms.indices))
+        assert_equal(
+            universe.segments[0].atoms.indices,
+            sorted(universe.segments[0].atoms.indices),
+        )
 
     @pytest.mark.parametrize("ix", (1, -1))
     def test_residue_pickle(self, universe, ix):

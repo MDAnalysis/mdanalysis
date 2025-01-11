@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -28,18 +28,22 @@ def test_coordinate_converterbase_warning():
     from MDAnalysis.coordinates.base import ConverterBase
     import MDAnalysis.converters.base
 
-    wmsg = ("ConverterBase moved from coordinates.base."
-            "ConverterBase to converters.base.ConverterBase "
-            "and will be removed from coordinates.base "
-            "in MDAnalysis release 3.0.0")
+    wmsg = (
+        "ConverterBase moved from coordinates.base."
+        "ConverterBase to converters.base.ConverterBase "
+        "and will be removed from coordinates.base "
+        "in MDAnalysis release 3.0.0"
+    )
 
     with pytest.warns(DeprecationWarning, match=wmsg):
+
         class DerivedConverter(ConverterBase):
             pass
 
     assert issubclass(DerivedConverter, ConverterBase)
-    assert not issubclass(DerivedConverter,
-                          MDAnalysis.converters.base.ConverterBase)
+    assert not issubclass(
+        DerivedConverter, MDAnalysis.converters.base.ConverterBase
+    )
 
 
 def test_converters_converterbase_no_warning():

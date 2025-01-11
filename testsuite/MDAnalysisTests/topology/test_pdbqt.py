@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -51,15 +51,16 @@ class TestPDBQT(ParserBase):
         "tempfactors",
     ]
 
-    guessed_attrs = ['masses']
+    guessed_attrs = ["masses"]
     expected_n_atoms = 1805
     expected_n_residues = 199  # resids go 2-102 then 2-99
     expected_n_segments = 2  # res2-102 are A, 2-99 are B
 
     def test_guessed_masses(self, filename):
         u = mda.Universe(filename)
-        assert_allclose(u.atoms.masses[:7], [14.007,  0.,
-                        0., 12.011, 12.011,  0., 12.011])
+        assert_allclose(
+            u.atoms.masses[:7], [14.007, 0.0, 0.0, 12.011, 12.011, 0.0, 12.011]
+        )
 
 
 def test_footnote():

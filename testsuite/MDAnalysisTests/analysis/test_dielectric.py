@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -41,7 +41,7 @@ class TestDielectric(object):
             ag.wrap()
 
         eps = DielectricConstant(ag, make_whole=False).run()
-        assert_allclose(eps.results['eps_mean'], 721.711, rtol=1e-03)
+        assert_allclose(eps.results["eps_mean"], 721.711, rtol=1e-03)
 
     def test_broken_repaired_molecules(self, ag):
         # cut molecules apart
@@ -50,21 +50,23 @@ class TestDielectric(object):
             ag.wrap()
 
         eps = DielectricConstant(ag, make_whole=True).run()
-        assert_allclose(eps.results['eps_mean'], 5.088, rtol=1e-03)
+        assert_allclose(eps.results["eps_mean"], 5.088, rtol=1e-03)
 
     def test_temperature(self, ag):
         eps = DielectricConstant(ag, temperature=100).run()
-        assert_allclose(eps.results['eps_mean'], 9.621, rtol=1e-03)
+        assert_allclose(eps.results["eps_mean"], 9.621, rtol=1e-03)
 
     def test_non_charges(self):
         u = mda.Universe(DCD_TRICLINIC, to_guess=())
-        with pytest.raises(NoDataError,
-                           match="No charges defined given atomgroup."):
+        with pytest.raises(
+            NoDataError, match="No charges defined given atomgroup."
+        ):
             DielectricConstant(u.atoms).run()
 
     def test_non_neutral(self, ag):
-        with pytest.raises(NotImplementedError,
-                           match="Analysis for non-neutral systems or"):
+        with pytest.raises(
+            NotImplementedError, match="Analysis for non-neutral systems or"
+        ):
             DielectricConstant(ag[:-1]).run()
 
     def test_free_charges(self, ag):

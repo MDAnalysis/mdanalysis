@@ -141,8 +141,8 @@ Source Code
 
 **Source code** is available from
 https://github.com/MDAnalysis/mdanalysis/ and is packaged under the
-`GNU Public Licence, version 3 or any later version`_. Individual components
-of the source code are provided under GPL compatible licenses, details can be
+`Lesser GNU Public Licence, version 3 or any later version`_. Individual components
+of the source code are provided under LGPL compatible licenses, details can be
 found in the `MDAnalysis license file`_. Obtain the sources with `git`_.
 
 .. code-block:: bash
@@ -153,8 +153,8 @@ found in the `MDAnalysis license file`_. Obtain the sources with `git`_.
 The `User Guide`_ provides more information on how to
 `install the development version`_ of MDAnalysis.
 
-.. _GNU Public Licence, version 3 or any later version:
-   https://www.gnu.org/licenses/gpl-3.0.en.html
+.. _Lesser GNU Public Licence, version 3 or any later version:
+   https://www.gnu.org/licenses/lgpl-3.0.en.html
 .. _MDAnalysis license file:
    https://github.com/MDAnalysis/mdanalysis/blob/develop/LICENSE
 .. _git: https://git-scm.com/

@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -24,9 +24,10 @@ import os
 
 
 def test_failure():
-    """Fail if the MDA_FAILURE_TEST environment variable is set.
-    """
-    if u'MDA_FAILURE_TEST' in os.environ:
+    """Fail if the MDA_FAILURE_TEST environment variable is set."""
+    if "MDA_FAILURE_TEST" in os.environ:
         # Have a file open to trigger an output from the open_files plugin.
-        f = open('./failure.txt', 'w')
-        raise AssertionError("the MDA_FAILURE_TEST environment variable is set")
+        f = open("./failure.txt", "w")
+        raise AssertionError(
+            "the MDA_FAILURE_TEST environment variable is set"
+        )

@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -33,10 +33,16 @@ from numpy.testing import assert_allclose
 class TestCRDParser(ParserBase):
     parser = mda.topology.CRDParser.CRDParser
     ref_filename = CRD
-    expected_attrs = ['ids', 'names', 'tempfactors',
-                      'resids', 'resnames', 'resnums',
-                      'segids']
-    guessed_attrs = ['masses', 'types']
+    expected_attrs = [
+        "ids",
+        "names",
+        "tempfactors",
+        "resids",
+        "resnames",
+        "resnums",
+        "segids",
+    ]
+    guessed_attrs = ["masses", "types"]
 
     expected_n_atoms = 3341
     expected_n_residues = 214
@@ -44,10 +50,10 @@ class TestCRDParser(ParserBase):
 
     def test_guessed_masses(self, filename):
         u = mda.Universe(filename)
-        expected = [14.007,  1.008,  1.008,  1.008, 12.011,  1.008, 12.011]
+        expected = [14.007, 1.008, 1.008, 1.008, 12.011, 1.008, 12.011]
         assert_allclose(u.atoms.masses[:7], expected)
 
     def test_guessed_types(self, filename):
         u = mda.Universe(filename)
-        expected = ['N', 'H', 'H', 'H', 'C', 'H', 'C']
+        expected = ["N", "H", "H", "H", "C", "H", "C"]
         assert (u.atoms.types[:7] == expected).all()

@@ -65,7 +65,10 @@ def _upsample(a: np.ndarray, window: int) -> np.ndarray:
 
 def _unfold(a: np.ndarray, window: int, axis: int):
     "Helper function for 2D array upsampling"
-    idx = np.arange(window)[:, None] + np.arange(a.shape[axis] - window + 1)[None, :]
+    idx = (
+        np.arange(window)[:, None]
+        + np.arange(a.shape[axis] - window + 1)[None, :]
+    )
     unfolded = np.take(a, idx, axis=axis)
     return np.moveaxis(unfolded, axis - 1, -1)
 
@@ -154,7 +157,9 @@ def get_hbond_map(
         h_1 = coord[1:, 4]
         coord = coord[:, :4]
     else:  # pragma: no cover
-        raise ValueError("Number of atoms should be 4 (N,CA,C,O) or 5 (N,CA,C,O,H)")
+        raise ValueError(
+            "Number of atoms should be 4 (N,CA,C,O) or 5 (N,CA,C,O,H)"
+        )
     # after this:
     # h.shape == (n_atoms, 3)
     # coord.shape == (n_atoms, 4, 3)
@@ -176,7 +181,9 @@ def get_hbond_map(
     # electrostatic interaction energy
     # e[i, j] = e(CO_i) - e(NH_j)
     e = np.pad(
-        CONST_Q1Q2 * (1.0 / d_on + 1.0 / d_ch - 1.0 / d_oh - 1.0 / d_cn) * CONST_F,
+        CONST_Q1Q2
+        * (1.0 / d_on + 1.0 / d_ch - 1.0 / d_oh - 1.0 / d_cn)
+        * CONST_F,
         [[1, 0], [0, 1]],
     )
 

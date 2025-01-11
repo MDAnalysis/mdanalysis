@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -23,9 +23,15 @@
 from numpy.testing import assert_equal
 import pytest
 
+
 def test_all_exports():
     from MDAnalysis.analysis.data import filenames
-    missing = [name for name in dir(filenames)
-               if
-               not name.startswith('_') and name not in filenames.__all__ and name != 'absolute_import']
+
+    missing = [
+        name
+        for name in dir(filenames)
+        if not name.startswith("_")
+        and name not in filenames.__all__
+        and name != "absolute_import"
+    ]
     assert_equal(missing, [], err_msg="Variables need to be added to __all__.")

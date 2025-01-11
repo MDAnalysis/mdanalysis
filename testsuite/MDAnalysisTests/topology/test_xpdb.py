@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -33,10 +33,19 @@ from numpy.testing import assert_equal, assert_allclose
 class TestXPDBParser(ParserBase):
     parser = mda.topology.ExtendedPDBParser.ExtendedPDBParser
     ref_filename = XPDB_small
-    expected_attrs = ['ids', 'names', 'record_types', 'resids',
-                      'resnames', 'altLocs', 'icodes', 'occupancies',
-                      'tempfactors', 'chainIDs']
-    guessed_attrs = ['masses', 'types']
+    expected_attrs = [
+        "ids",
+        "names",
+        "record_types",
+        "resids",
+        "resnames",
+        "altLocs",
+        "icodes",
+        "occupancies",
+        "tempfactors",
+        "chainIDs",
+    ]
+    guessed_attrs = ["masses", "types"]
     expected_n_atoms = 5
     expected_n_residues = 5
     expected_n_segments = 1
@@ -48,5 +57,5 @@ class TestXPDBParser(ParserBase):
 
     def test_guessed_types(self, filename):
         u = mda.Universe(filename)
-        expected = ['O', 'O', 'O', 'O', 'O']
+        expected = ["O", "O", "O", "O", "O"]
         assert_equal(u.atoms.types, expected)

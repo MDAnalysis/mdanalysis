@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -41,7 +41,7 @@ class _Convertermeta(type):
     def __init__(cls, name, bases, classdict):
         type.__init__(type, name, bases, classdict)
         try:
-            fmt = asiterable(classdict['lib'])
+            fmt = asiterable(classdict["lib"])
         except KeyError:
             pass
         else:
@@ -51,8 +51,7 @@ class _Convertermeta(type):
 
 
 class ConverterBase(IOBase, metaclass=_Convertermeta):
-    """Base class for converting to other libraries.
-    """
+    """Base class for converting to other libraries."""
 
     def __repr__(self):
         return "<{cls}>".format(cls=self.__class__.__name__)
