@@ -432,6 +432,7 @@ class AnalysisBase(object):
             :meth:`_compute` for each of the computation groups.
         """
         slicer = self._define_run_frames(trajectory, start, stop, step, frames)
+        self._global_slicer = slicer
         self._prepare_sliced_trajectory(slicer)
 
     def _single_frame(self):
@@ -517,6 +518,7 @@ class AnalysisBase(object):
                 verbose=verbose,
                 **progressbar_kwargs)):
             self._frame_index = idx  # accessed later by subclasses
+            self._global_frame_index = indexed_frames[idx, 0]
             self._ts = ts
             self.frames[idx] = ts.frame
             self.times[idx] = ts.time
