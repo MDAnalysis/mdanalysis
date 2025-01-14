@@ -778,7 +778,6 @@ class AnalysisBase(object):
             Introduced ``backend``, ``n_workers``, ``n_parts`` and
             ``unsupported_backend`` keywords, and refactored the method logic to
             support parallelizable execution.
-            
         """
         # default to serial execution
         backend = "serial" if backend is None else backend
