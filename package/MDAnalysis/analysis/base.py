@@ -430,6 +430,10 @@ class AnalysisBase(object):
             each of the workers and gets executed twice: one time in
             :meth:`_setup_frames` for the whole trajectory, second time in
             :meth:`_compute` for each of the computation groups.
+
+        .. versionchanged:: 2.9.0
+            Add `self._global_slicer` attribute to store the slicer for the
+            whole trajectory.
         """
         slicer = self._define_run_frames(trajectory, start, stop, step, frames)
         self._global_slicer = slicer
@@ -442,6 +446,9 @@ class AnalysisBase(object):
         Attributes accessible during your calculations:
 
           - ``self._frame_index``: index of the frame in results array
+          Note that this is not the same as the frame number in the trajectory
+          - ``self._global_frame_index``: index of the frame in the trajectory
+          This is useful for parallel runs, where you can't rely on the
           - ``self._ts`` -- Timestep instance
           - ``self._sliced_trajectory`` -- trajectory that you're iterating over
           - ``self.results`` -- :class:`MDAnalysis.analysis.results.Results` instance
@@ -771,6 +778,7 @@ class AnalysisBase(object):
             Introduced ``backend``, ``n_workers``, ``n_parts`` and
             ``unsupported_backend`` keywords, and refactored the method logic to
             support parallelizable execution.
+            
         """
         # default to serial execution
         backend = "serial" if backend is None else backend
