@@ -15,7 +15,7 @@ The rules for this file:
 
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, ChiahsinChu, RMeli, tanishy7777, talagayev, tylerjereddy,
-         marinegor
+         marinegor, yuxuanzhuang
 
  * 2.9.0
 
@@ -38,6 +38,11 @@ Enhancements
 Changes
  * Changed `fasteners` dependency to  `filelock` (Issue #4797, PR #4800)
  * Codebase is now formatted with black (version `24`) (PR #4886)
+ * Added _global_slicer to make it possible to retrieve information
+   of the full trajectory slice in AnalysisBase. (Issue #4891 PR #4892)
+ * Added _global_frame_index to to keep track of frame iteration
+   number for the full trajectory slice in `single_frame` in AnalysisBase
+   (Issue #4891 PR #4892)
 
 Deprecations
 
