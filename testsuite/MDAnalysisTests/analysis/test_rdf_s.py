@@ -30,23 +30,24 @@ from MDAnalysis.analysis.rdf import InterRDF_s, InterRDF
 from MDAnalysisTests.datafiles import GRO_MEMPROT, XTC_MEMPROT
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def u():
     return mda.Universe(GRO_MEMPROT, XTC_MEMPROT)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def sels(u):
-    s1 = u.select_atoms('name ZND and resid 289')
+    s1 = u.select_atoms("name ZND and resid 289")
     s2 = u.select_atoms(
-         '(name OD1 or name OD2) and resid 51 and sphzone 5.0 (resid 289)')
-    s3 = u.select_atoms('name ZND and (resid 291 or resid 292)')
-    s4 = u.select_atoms('(name OD1 or name OD2) and sphzone 5.0 (resid 291)')
+        "(name OD1 or name OD2) and resid 51 and sphzone 5.0 (resid 289)"
+    )
+    s3 = u.select_atoms("name ZND and (resid 291 or resid 292)")
+    s4 = u.select_atoms("(name OD1 or name OD2) and sphzone 5.0 (resid 291)")
     ags = [[s1, s2], [s3, s4]]
     return ags
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def rdf(u, sels):
     return InterRDF_s(u, sels).run()
 
@@ -100,22 +101,27 @@ def test_double_run(rdf):
 
 def test_cdf(rdf):
     rdf.get_cdf()
-    ref = rdf.results.count[0][0][0].sum()/rdf.n_frames
+    ref = rdf.results.count[0][0][0].sum() / rdf.n_frames
     assert rdf.results.cdf[0][0][0][-1] == ref
 
 
-@pytest.mark.parametrize("density, value", [
-    (None, 26551.55088100731),    # default, like False (no kwarg, see below)
-    (False, 26551.55088100731),
-    (True, 0.021915460340071267)])
+@pytest.mark.parametrize(
+    "density, value",
+    [
+        (None, 26551.55088100731),  # default, like False (no kwarg, see below)
+        (False, 26551.55088100731),
+        (True, 0.021915460340071267),
+    ],
+)
 def test_density(u, sels, density, value):
-    kwargs = {'density': density} if density is not None else {}
+    kwargs = {"density": density} if density is not None else {}
     rdf = InterRDF_s(u, sels, **kwargs).run()
     assert_almost_equal(max(rdf.results.rdf[0][0][0]), value)
     if not density:
-        s1 = u.select_atoms('name ZND and resid 289')
+        s1 = u.select_atoms("name ZND and resid 289")
         s2 = u.select_atoms(
-                'name OD1 and resid 51 and sphzone 5.0 (resid 289)')
+            "name OD1 and resid 51 and sphzone 5.0 (resid 289)"
+        )
         rdf_ref = InterRDF(s1, s2).run()
         assert_almost_equal(rdf_ref.results.rdf, rdf.results.rdf[0][0][0])
 
@@ -125,23 +131,29 @@ def test_overwrite_norm(u, sels):
     assert rdf.norm == "density"
 
 
-@pytest.mark.parametrize("norm, value", [
-    ("density", 0.021915460340071267),
-    ("rdf", 26551.55088100731),
-    ("none", 0.6)])
+@pytest.mark.parametrize(
+    "norm, value",
+    [
+        ("density", 0.021915460340071267),
+        ("rdf", 26551.55088100731),
+        ("none", 0.6),
+    ],
+)
 def test_norm(u, sels, norm, value):
     rdf = InterRDF_s(u, sels, norm=norm).run()
     assert_allclose(max(rdf.results.rdf[0][0][0]), value)
     if norm == "rdf":
-        s1 = u.select_atoms('name ZND and resid 289')
+        s1 = u.select_atoms("name ZND and resid 289")
         s2 = u.select_atoms(
-                'name OD1 and resid 51 and sphzone 5.0 (resid 289)')
+            "name OD1 and resid 51 and sphzone 5.0 (resid 289)"
+        )
         rdf_ref = InterRDF(s1, s2).run()
         assert_almost_equal(rdf_ref.results.rdf, rdf.results.rdf[0][0][0])
 
 
-@pytest.mark.parametrize("norm, norm_required", [
-    ("Density", "density"), (None, "none")])
+@pytest.mark.parametrize(
+    "norm, norm_required", [("Density", "density"), (None, "none")]
+)
 def test_norm_values(u, sels, norm, norm_required):
     rdf = InterRDF_s(u, sels, norm=norm).run()
     assert rdf.norm == norm_required

@@ -28,8 +28,15 @@ import pytest
 import copy
 
 import MDAnalysis as mda
-from MDAnalysisTests.datafiles import (PSF, DCD, mol2_comments_header, XYZ_mini,
-                                       BATArray, TPR, XTC)
+from MDAnalysisTests.datafiles import (
+    PSF,
+    DCD,
+    mol2_comments_header,
+    XYZ_mini,
+    BATArray,
+    TPR,
+    XTC,
+)
 from MDAnalysis.analysis.bat import BAT
 
 
@@ -48,7 +55,7 @@ class TestBAT(object):
 
     @pytest.fixture
     def bat_npz(self, tmpdir, selected_residues, client_BAT):
-        filename = str(tmpdir / 'test_bat_IO.npy')
+        filename = str(tmpdir / "test_bat_IO.npy")
         R = BAT(selected_residues)
         R.run(**client_BAT)
         R.save(filename)
@@ -56,13 +63,16 @@ class TestBAT(object):
 
     def test_bat_root_selection(self, selected_residues):
         R = BAT(selected_residues)
-        assert_equal(R._root.indices, [8, 2, 1],
-                     err_msg="error: incorrect root atoms selected")
+        assert_equal(
+            R._root.indices,
+            [8, 2, 1],
+            err_msg="error: incorrect root atoms selected",
+        )
 
     def test_bat_number_of_frames(self, bat):
-        assert_equal(len(bat),
-                     2,
-                     err_msg="error: list is not length of trajectory")
+        assert_equal(
+            len(bat), 2, err_msg="error: list is not length of trajectory"
+        )
 
     def test_bat_coordinates(self, bat):
         test_bat = np.load(BATArray)
@@ -71,24 +81,35 @@ class TestBAT(object):
             test_bat,
             rtol=0,
             atol=1.5e-5,
-            err_msg="error: BAT coordinates should match test values")
+            err_msg="error: BAT coordinates should match test values",
+        )
 
     def test_bat_coordinates_single_frame(self, selected_residues, client_BAT):
-        bat = BAT(selected_residues).run(start=1, stop=2, **client_BAT).results.bat
+        bat = (
+            BAT(selected_residues)
+            .run(start=1, stop=2, **client_BAT)
+            .results.bat
+        )
         test_bat = [np.load(BATArray)[1]]
         assert_allclose(
             bat,
             test_bat,
             rtol=0,
             atol=1.5e-5,
-            err_msg="error: BAT coordinates should match test values")
+            err_msg="error: BAT coordinates should match test values",
+        )
 
     def test_bat_reconstruction(self, selected_residues, bat):
         R = BAT(selected_residues)
         XYZ = R.Cartesian(bat[0])
-        assert_allclose(XYZ, selected_residues.positions, rtol=0, atol=1.5e-5,
-            err_msg="error: Reconstructed Cartesian coordinates " + \
-                    "don't match original")
+        assert_allclose(
+            XYZ,
+            selected_residues.positions,
+            rtol=0,
+            atol=1.5e-5,
+            err_msg="error: Reconstructed Cartesian coordinates "
+            + "don't match original",
+        )
 
     def test_bat_IO(self, bat_npz, selected_residues, bat):
         R2 = BAT(selected_residues, filename=bat_npz)
@@ -98,7 +119,8 @@ class TestBAT(object):
             test_bat,
             rtol=0,
             atol=1.5e-5,
-            err_msg="error: Loaded BAT coordinates should match test values")
+            err_msg="error: Loaded BAT coordinates should match test values",
+        )
 
     def test_bat_nobonds(self):
         u = mda.Universe(XYZ_mini)
@@ -107,28 +129,29 @@ class TestBAT(object):
             Z = BAT(u.atoms)
 
     def test_bat_bad_initial_atom(self, selected_residues):
-        errmsg = 'Initial atom is not a terminal atom'
+        errmsg = "Initial atom is not a terminal atom"
         with pytest.raises(ValueError, match=errmsg):
-            R = BAT(selected_residues, initial_atom = selected_residues[0])
+            R = BAT(selected_residues, initial_atom=selected_residues[0])
 
     def test_bat_disconnected_atom_group(self):
         u = mda.Universe(PSF, DCD)
-        selected_residues = u.select_atoms("resid 1-3") + \
-            u.select_atoms("resid 5-7")
-        errmsg = 'Additional torsions not found.'
+        selected_residues = u.select_atoms("resid 1-3") + u.select_atoms(
+            "resid 5-7"
+        )
+        errmsg = "Additional torsions not found."
         with pytest.raises(ValueError, match=errmsg):
             R = BAT(selected_residues)
 
     def test_bat_multifragments_atomgroup(self):
         u = mda.Universe(TPR, XTC)
-        errmsg = 'AtomGroup has more than one molecule'
+        errmsg = "AtomGroup has more than one molecule"
         with pytest.raises(ValueError, match=errmsg):
-            BAT(u.select_atoms('resname SOL'))
+            BAT(u.select_atoms("resname SOL"))
 
     def test_bat_incorrect_dims(self, bat_npz):
         u = mda.Universe(PSF, DCD)
         selected_residues = u.select_atoms("resid 1-3")
-        errmsg = 'Dimensions of array in loaded file'
+        errmsg = "Dimensions of array in loaded file"
         with pytest.raises(ValueError, match=errmsg):
             R = BAT(selected_residues, filename=bat_npz)
 
@@ -137,6 +160,9 @@ class TestBAT(object):
         pre_transformation = copy.deepcopy(bat[0])
         R.Cartesian(bat[0])
         assert_allclose(
-            pre_transformation, bat[0], rtol=0, atol=1.5e-7,
-            err_msg="BAT.Cartesian modified input data"
+            pre_transformation,
+            bat[0],
+            rtol=0,
+            atol=1.5e-7,
+            err_msg="BAT.Cartesian modified input data",
         )

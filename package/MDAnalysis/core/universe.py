@@ -1474,9 +1474,16 @@ class Universe(object):
         return fragdict
 
     @classmethod
-    def from_smiles(cls, smiles, sanitize=True, addHs=True,
-                    generate_coordinates=True, numConfs=1,
-                    rdkit_kwargs={}, **kwargs):
+    def from_smiles(
+        cls,
+        smiles,
+        sanitize=True,
+        addHs=True,
+        generate_coordinates=True,
+        numConfs=1,
+        rdkit_kwargs=None,
+        **kwargs,
+    ):
         """Create a Universe from a SMILES string with rdkit
 
         Parameters
@@ -1530,6 +1537,8 @@ class Universe(object):
         .. versionadded:: 2.0.0
 
         """
+        if rdkit_kwargs is None:
+            rdkit_kwargs = {}
         try:
             from rdkit import Chem
             from rdkit.Chem import AllChem

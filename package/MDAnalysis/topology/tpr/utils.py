@@ -481,6 +481,10 @@ def do_iparams(data, functypes, fver):
         elif i in [setting.F_RESTRANGLES]:
             data.unpack_real()  # harmonic.rA
             data.unpack_real()  # harmonic.krA
+            if fver >= 134:
+                data.unpack_real()  # harmonic.rB
+                data.unpack_real()  # harmonic.krB
+
         elif i in [setting.F_LINEAR_ANGLES]:
             data.unpack_real()  # linangle.klinA
             data.unpack_real()  # linangle.aA
@@ -598,6 +602,9 @@ def do_iparams(data, functypes, fver):
         elif i in [setting.F_RESTRDIHS]:
             data.unpack_real()  # pdihs.phiA
             data.unpack_real()  # pdihs.cpA
+            if fver >= 134:
+                data.unpack_real()  # pdihs.phiB
+                data.unpack_real()  # pdihs.cpB
         elif i in [setting.F_DISRES]:
             data.unpack_int()  # disres.label
             data.unpack_int()  # disres.type
@@ -640,6 +647,8 @@ def do_iparams(data, functypes, fver):
 
         elif i in [setting.F_CBTDIHS]:
             ndo_real(data, setting.NR_CBTDIHS)  # cbtdihs.cbtcA
+            if fver >= 134:
+                ndo_real(data, setting.NR_CBTDIHS)  # cbtdihs.cbtcB
 
         elif i in [setting.F_RBDIHS]:
             ndo_real(data, setting.NR_RBDIHS)  # iparams_rbdihs_rbcA

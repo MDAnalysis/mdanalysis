@@ -70,7 +70,7 @@ import numpy as np
 
 import MDAnalysis as mda
 from .distances import calc_bonds
-from .base import AnalysisBase, Results
+from .base import AnalysisBase, ResultsGroup
 from MDAnalysis.core.groups import Residue, ResidueGroup
 
 
@@ -159,21 +159,32 @@ class NucPairDist(AnalysisBase):
     .. versionchanged:: 2.7.0
         Added static method :attr:`select_strand_atoms` as a
         helper for selecting atom pairs for distance analysis.
+
+    .. versionchanged:: 2.9.0
+       Enabled **parallel execution** with the ``multiprocessing`` and ``dask``
+       backends; use the new method :meth:`get_supported_backends` to see all
+       supported backends.
     """
+
+    _analysis_algorithm_is_parallelizable = True
+
+    @classmethod
+    def get_supported_backends(cls):
+        return ("serial", "multiprocessing", "dask")
 
     _s1: mda.AtomGroup
     _s2: mda.AtomGroup
     _n_sel: int
-    _res_dict: Dict[int, List[float]]
 
-    def __init__(self, selection1: List[mda.AtomGroup],
-                 selection2: List[mda.AtomGroup],
-                 **kwargs) -> None:
-        super(
-            NucPairDist,
-            self).__init__(
-            selection1[0].universe.trajectory,
-            **kwargs)
+    def __init__(
+        self,
+        selection1: List[mda.AtomGroup],
+        selection2: List[mda.AtomGroup],
+        **kwargs,
+    ) -> None:
+        super(NucPairDist, self).__init__(
+            selection1[0].universe.trajectory, **kwargs
+        )
 
         if len(selection1) != len(selection2):
             raise ValueError("Selections must be same length")
@@ -189,10 +200,15 @@ class NucPairDist(AnalysisBase):
 
     @staticmethod
     def select_strand_atoms(
-        strand1: ResidueGroup, strand2: ResidueGroup,
-        a1_name: str, a2_name: str, g_name: str = 'G',
-        a_name: str = 'A', u_name: str = 'U',
-        t_name: str = 'T', c_name: str = 'C'
+        strand1: ResidueGroup,
+        strand2: ResidueGroup,
+        a1_name: str,
+        a2_name: str,
+        g_name: str = "G",
+        a_name: str = "A",
+        u_name: str = "U",
+        t_name: str = "T",
+        c_name: str = "C",
     ) -> Tuple[List[mda.AtomGroup], List[mda.AtomGroup]]:
         r"""
         A helper method for nucleic acid pair distance analyses.
@@ -256,17 +272,18 @@ class NucPairDist(AnalysisBase):
                     f"AtomGroup in {pair} is not a valid nucleic acid"
                 )
 
-            ag1 = pair[0].atoms.select_atoms(f'name {a1}')
-            ag2 = pair[1].atoms.select_atoms(f'name {a2}')
+            ag1 = pair[0].atoms.select_atoms(f"name {a1}")
+            ag2 = pair[1].atoms.select_atoms(f"name {a2}")
 
             if not all(len(ag) > 0 for ag in [ag1, ag2]):
-                err_info: Tuple[Residue, str] = (pair[0], a1) \
-                    if len(ag1) == 0 else (pair[1], a2)
+                err_info: Tuple[Residue, str] = (
+                    (pair[0], a1) if len(ag1) == 0 else (pair[1], a2)
+                )
 
                 raise ValueError(
                     (
                         f"{err_info[0]} returns an empty AtomGroup"
-                        "with selection string \"name {a2}\""
+                        'with selection string "name {a2}"'
                     )
                 )
 
@@ -276,21 +293,25 @@ class NucPairDist(AnalysisBase):
         return (sel1, sel2)
 
     def _prepare(self) -> None:
-        self._res_array: np.ndarray = np.zeros(
+        self.results.distances: np.ndarray = np.zeros(
             [self.n_frames, self._n_sel]
         )
 
     def _single_frame(self) -> None:
-        dist: np.ndarray = calc_bonds(
-            self._s1.positions, self._s2.positions
-        )
+        dist: np.ndarray = calc_bonds(self._s1.positions, self._s2.positions)
 
-        self._res_array[self._frame_index, :] = dist
+        self.results.distances[self._frame_index, :] = dist
 
     def _conclude(self) -> None:
-        self.results['distances'] = self._res_array
-        self.results['pair_distances'] = self.results['distances']
+        self.results["pair_distances"] = self.results["distances"]
         # TODO: remove pair_distances in 3.0.0
+
+    def _get_aggregator(self):
+        return ResultsGroup(
+            lookup={
+                "distances": ResultsGroup.ndarray_vstack,
+            }
+        )
 
 
 class WatsonCrickDist(NucPairDist):
@@ -412,11 +433,19 @@ class WatsonCrickDist(NucPairDist):
         but it is **deprecated** and will be removed in release 3.0.0.
     """
 
-    def __init__(self, strand1: ResidueClass, strand2: ResidueClass,
-                 n1_name: str = 'N1', n3_name: str = "N3",
-                 g_name: str = 'G', a_name: str = 'A', u_name: str = 'U',
-                 t_name: str = 'T', c_name: str = 'C',
-                 **kwargs) -> None:
+    def __init__(
+        self,
+        strand1: ResidueClass,
+        strand2: ResidueClass,
+        n1_name: str = "N1",
+        n3_name: str = "N3",
+        g_name: str = "G",
+        a_name: str = "A",
+        u_name: str = "U",
+        t_name: str = "T",
+        c_name: str = "C",
+        **kwargs,
+    ) -> None:
 
         def verify_strand(strand: ResidueClass) -> ResidueGroup:
             # Helper method to verify the strands
@@ -442,11 +471,18 @@ class WatsonCrickDist(NucPairDist):
         strand1: ResidueGroup = verify_strand(strand1)
         strand2: ResidueGroup = verify_strand(strand2)
 
-        strand_atomgroups: Tuple[List[mda.AtomGroup], List[mda.AtomGroup]] = \
+        strand_atomgroups: Tuple[List[mda.AtomGroup], List[mda.AtomGroup]] = (
             self.select_strand_atoms(
-                strand1, strand2, n1_name, n3_name,
-                g_name=g_name, a_name=a_name,
-                t_name=t_name, u_name=u_name, c_name=c_name
+                strand1,
+                strand2,
+                n1_name,
+                n3_name,
+                g_name=g_name,
+                a_name=a_name,
+                t_name=t_name,
+                u_name=u_name,
+                c_name=c_name,
+            )
         )
 
         super(WatsonCrickDist, self).__init__(
@@ -517,17 +553,32 @@ class MinorPairDist(NucPairDist):
     .. versionadded:: 2.7.0
     """
 
-    def __init__(self, strand1: ResidueGroup, strand2: ResidueGroup,
-                 o2_name: str = 'O2', c2_name: str = "C2",
-                 g_name: str = 'G', a_name: str = 'A', u_name: str = 'U',
-                 t_name: str = 'T', c_name: str = 'C',
-                 **kwargs) -> None:
+    def __init__(
+        self,
+        strand1: ResidueGroup,
+        strand2: ResidueGroup,
+        o2_name: str = "O2",
+        c2_name: str = "C2",
+        g_name: str = "G",
+        a_name: str = "A",
+        u_name: str = "U",
+        t_name: str = "T",
+        c_name: str = "C",
+        **kwargs,
+    ) -> None:
 
-        selections: Tuple[List[mda.AtomGroup], List[mda.AtomGroup]] = \
+        selections: Tuple[List[mda.AtomGroup], List[mda.AtomGroup]] = (
             self.select_strand_atoms(
-                strand1, strand2, c2_name, o2_name,
-                g_name=g_name, a_name=a_name,
-                t_name=t_name, u_name=u_name, c_name=c_name
+                strand1,
+                strand2,
+                c2_name,
+                o2_name,
+                g_name=g_name,
+                a_name=a_name,
+                t_name=t_name,
+                u_name=u_name,
+                c_name=c_name,
+            )
         )
 
         super(MinorPairDist, self).__init__(
@@ -600,17 +651,32 @@ class MajorPairDist(NucPairDist):
     .. versionadded:: 2.7.0
     """
 
-    def __init__(self, strand1: ResidueGroup, strand2: ResidueGroup,
-                 n4_name: str = 'N4', o6_name: str = "O6",
-                 g_name: str = 'G', a_name: str = 'A', u_name: str = 'U',
-                 t_name: str = 'T', c_name: str = 'C',
-                 **kwargs) -> None:
+    def __init__(
+        self,
+        strand1: ResidueGroup,
+        strand2: ResidueGroup,
+        n4_name: str = "N4",
+        o6_name: str = "O6",
+        g_name: str = "G",
+        a_name: str = "A",
+        u_name: str = "U",
+        t_name: str = "T",
+        c_name: str = "C",
+        **kwargs,
+    ) -> None:
 
-        selections: Tuple[List[mda.AtomGroup], List[mda.AtomGroup]] = \
+        selections: Tuple[List[mda.AtomGroup], List[mda.AtomGroup]] = (
             self.select_strand_atoms(
-                strand1, strand2, o6_name, n4_name, g_name=g_name,
-                a_name=a_name, t_name=t_name, u_name=u_name,
-                c_name=c_name
+                strand1,
+                strand2,
+                o6_name,
+                n4_name,
+                g_name=g_name,
+                a_name=a_name,
+                t_name=t_name,
+                u_name=u_name,
+                c_name=c_name,
+            )
         )
 
         super(MajorPairDist, self).__init__(

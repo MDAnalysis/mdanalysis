@@ -44,20 +44,23 @@ def ARC_PBC_U():
 
 
 def test_txyz_positions(TXYZ_U):
-    assert_almost_equal(TXYZ_U.atoms.positions[0],
-                        [-6.553398, -1.854369, 0.000000])
+    assert_almost_equal(
+        TXYZ_U.atoms.positions[0], [-6.553398, -1.854369, 0.000000]
+    )
 
 
 def test_arc_positions(ARC_U):
-    assert_almost_equal(ARC_U.atoms.positions[0],
-                        [-6.553398, -1.854369, 0.000000])
+    assert_almost_equal(
+        ARC_U.atoms.positions[0], [-6.553398, -1.854369, 0.000000]
+    )
 
 
 def test_arc_positions_frame_2(ARC_U):
     ARC_U.trajectory[1]
 
-    assert_almost_equal(ARC_U.atoms.positions[0],
-                        [-0.231579, -0.350841, -0.037475])
+    assert_almost_equal(
+        ARC_U.atoms.positions[0], [-0.231579, -0.350841, -0.037475]
+    )
 
 
 def test_arc_traj_length(ARC_U):
@@ -69,10 +72,11 @@ def test_arcpbc_traj_length(ARC_PBC_U):
 
 
 def test_pbc_boxsize(ARC_PBC_U):
-    ref_dimensions=[[ 38.860761,  38.860761,  38.860761,  90.000000,  90.000000,  90.000000],
-                    [ 39.860761,  39.860761,  39.860761,  90.000000,  90.000000,  90.000000],
-                    [ 40.860761,  40.860761,  40.860761,  90.000000,  90.000000,  90.000000]]
+    ref_dimensions = [
+        [38.860761, 38.860761, 38.860761, 90.000000, 90.000000, 90.000000],
+        [39.860761, 39.860761, 39.860761, 90.000000, 90.000000, 90.000000],
+        [40.860761, 40.860761, 40.860761, 90.000000, 90.000000, 90.000000],
+    ]
 
     for ref_box, ts in zip(ref_dimensions, ARC_PBC_U.trajectory):
         assert_almost_equal(ref_box, ts.dimensions, decimal=5)
-

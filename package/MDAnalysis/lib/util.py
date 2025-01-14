@@ -198,38 +198,38 @@ import sys
 __docformat__ = "restructuredtext en"
 
 
+import bz2
+import errno
+import functools
+import gzip
+import importlib
+import inspect
+import io
+import itertools
 import os
 import os.path
-import errno
-from contextlib import contextmanager
-import bz2
-import gzip
 import re
-import io
-import warnings
-import functools
-from functools import wraps
 import textwrap
+import warnings
 import weakref
-import importlib
-import itertools
+from contextlib import contextmanager
+from functools import wraps
 
 import mmtf
 import numpy as np
-
 from numpy.testing import assert_equal
-import inspect
 
-from .picklable_file_io import pickle_open, bz2_pickle_open, gzip_pickle_open
-
-from ..exceptions import StreamWarning, DuplicateWarning
+from ..exceptions import DuplicateWarning, StreamWarning
+from .picklable_file_io import bz2_pickle_open, gzip_pickle_open, pickle_open
 
 try:
     from ._cutil import unique_int_1d
 except ImportError:
-    raise ImportError("MDAnalysis not installed properly. "
-                      "This can happen if your C extensions "
-                      "have not been built.")
+    raise ImportError(
+        "MDAnalysis not installed properly. "
+        "This can happen if your C extensions "
+        "have not been built."
+    )
 
 
 def int_array_is_sorted(array):
@@ -280,7 +280,7 @@ def filename(name, ext=None, keep=False):
 
 
 @contextmanager
-def openany(datasource, mode='rt', reset=True):
+def openany(datasource, mode="rt", reset=True):
     """Context manager for :func:`anyopen`.
 
     Open the `datasource` and close it when the context of the :keyword:`with`
@@ -330,7 +330,7 @@ def openany(datasource, mode='rt', reset=True):
         stream.close()
 
 
-def anyopen(datasource, mode='rt', reset=True):
+def anyopen(datasource, mode="rt", reset=True):
     """Open datasource (gzipped, bzipped, uncompressed) and return a stream.
 
     `datasource` can be a filename or a stream (see :func:`isstream`). By
@@ -374,14 +374,14 @@ def anyopen(datasource, mode='rt', reset=True):
        :class:`MDAnalysis.lib.picklable_file_io`.
 
     """
-    read_handlers = {'bz2': bz2_pickle_open,
-                     'gz': gzip_pickle_open,
-                     '': pickle_open}
-    write_handlers = {'bz2': bz2.open,
-                      'gz': gzip.open,
-                      '': open}
+    read_handlers = {
+        "bz2": bz2_pickle_open,
+        "gz": gzip_pickle_open,
+        "": pickle_open,
+    }
+    write_handlers = {"bz2": bz2.open, "gz": gzip.open, "": open}
 
-    if mode.startswith('r'):
+    if mode.startswith("r"):
         if isstream(datasource):
             stream = datasource
             try:
@@ -395,20 +395,30 @@ def anyopen(datasource, mode='rt', reset=True):
                     try:
                         stream.seek(0)
                     except (AttributeError, IOError):
-                        warnings.warn("Stream {0}: not guaranteed to be at the beginning."
-                                      "".format(filename),
-                                      category=StreamWarning)
+                        warnings.warn(
+                            "Stream {0}: not guaranteed to be at the beginning."
+                            "".format(filename),
+                            category=StreamWarning,
+                        )
         else:
             stream = None
             filename = datasource
-            for ext in ('bz2', 'gz', ''):  # file == '' should be last
+            for ext in ("bz2", "gz", ""):  # file == '' should be last
                 openfunc = read_handlers[ext]
                 stream = _get_stream(datasource, openfunc, mode=mode)
                 if stream is not None:
                     break
             if stream is None:
-                raise IOError(errno.EIO, "Cannot open file or stream in mode={mode!r}.".format(**vars()), repr(filename))
-    elif mode.startswith('w') or mode.startswith('a'):  # append 'a' not tested...
+                raise IOError(
+                    errno.EIO,
+                    "Cannot open file or stream in mode={mode!r}.".format(
+                        **vars()
+                    ),
+                    repr(filename),
+                )
+    elif mode.startswith("w") or mode.startswith(
+        "a"
+    ):  # append 'a' not tested...
         if isstream(datasource):
             stream = datasource
             try:
@@ -419,16 +429,26 @@ def anyopen(datasource, mode='rt', reset=True):
             stream = None
             filename = datasource
             name, ext = os.path.splitext(filename)
-            if ext.startswith('.'):
+            if ext.startswith("."):
                 ext = ext[1:]
-            if not ext in ('bz2', 'gz'):
-                ext = ''  # anything else but bz2 or gz is just a normal file
+            if not ext in ("bz2", "gz"):
+                ext = ""  # anything else but bz2 or gz is just a normal file
             openfunc = write_handlers[ext]
             stream = openfunc(datasource, mode=mode)
             if stream is None:
-                raise IOError(errno.EIO, "Cannot open file or stream in mode={mode!r}.".format(**vars()), repr(filename))
+                raise IOError(
+                    errno.EIO,
+                    "Cannot open file or stream in mode={mode!r}.".format(
+                        **vars()
+                    ),
+                    repr(filename),
+                )
     else:
-        raise NotImplementedError("Sorry, mode={mode!r} is not implemented for {datasource!r}".format(**vars()))
+        raise NotImplementedError(
+            "Sorry, mode={mode!r} is not implemented for {datasource!r}".format(
+                **vars()
+            )
+        )
     try:
         stream.name = filename
     except (AttributeError, TypeError):
@@ -436,7 +456,7 @@ def anyopen(datasource, mode='rt', reset=True):
     return stream
 
 
-def _get_stream(filename, openfunction=open, mode='r'):
+def _get_stream(filename, openfunction=open, mode="r"):
     """Return open stream if *filename* can be opened with *openfunction* or else ``None``."""
     try:
         stream = openfunction(filename, mode=mode)
@@ -444,10 +464,10 @@ def _get_stream(filename, openfunction=open, mode='r'):
         # An exception might be raised due to two reasons, first the openfunction is unable to open the file, in this
         # case we have to ignore the error and return None. Second is when openfunction can't open the file because
         # either the file isn't there or the permissions don't allow access.
-        if errno.errorcode[err.errno] in ['ENOENT', 'EACCES']:
+        if errno.errorcode[err.errno] in ["ENOENT", "EACCES"]:
             raise sys.exc_info()[1] from err
         return None
-    if mode.startswith('r'):
+    if mode.startswith("r"):
         # additional check for reading (eg can we uncompress) --- is this needed?
         try:
             stream.readline()
@@ -490,7 +510,7 @@ def greedy_splitext(p):
 
     """
     path, root = os.path.split(p)
-    extension = ''
+    extension = ""
     while True:
         root, ext = os.path.splitext(root)
         extension = ext + extension
@@ -535,7 +555,8 @@ def isstream(obj):
     signature_methods = ("close",)
     alternative_methods = (
         ("read", "readline", "readlines"),
-        ("write", "writeline", "writelines"))
+        ("write", "writeline", "writelines"),
+    )
 
     # Must have ALL the signature methods
     for m in signature_methods:
@@ -544,7 +565,8 @@ def isstream(obj):
     # Must have at least one complete set of alternative_methods
     alternative_results = [
         np.all([hasmethod(obj, m) for m in alternatives])
-        for alternatives in alternative_methods]
+        for alternatives in alternative_methods
+    ]
     return np.any(alternative_results)
 
 
@@ -569,9 +591,11 @@ def which(program):
        Please use shutil.which instead.
     """
     # Can't use decorator because it's declared after this method
-    wmsg = ("This method is deprecated as of MDAnalysis version 2.7.0 "
-            "and will be removed in version 3.0.0. Please use shutil.which "
-            "instead.")
+    wmsg = (
+        "This method is deprecated as of MDAnalysis version 2.7.0 "
+        "and will be removed in version 3.0.0. Please use shutil.which "
+        "instead."
+    )
     warnings.warn(wmsg, DeprecationWarning)
 
     def is_exe(fpath):
@@ -681,8 +705,9 @@ class NamedStream(io.IOBase, os.PathLike):
         # on __del__ and super on python 3. Let's warn the user and ensure the
         # class works normally.
         if isinstance(stream, NamedStream):
-            warnings.warn("Constructed NamedStream from a NamedStream",
-                          RuntimeWarning)
+            warnings.warn(
+                "Constructed NamedStream from a NamedStream", RuntimeWarning
+            )
             stream = stream.stream
         self.stream = stream
         self.name = filename
@@ -699,9 +724,11 @@ class NamedStream(io.IOBase, os.PathLike):
             try:
                 self.stream.seek(0)  # typical file objects
             except (AttributeError, IOError):
-                warnings.warn("NamedStream {0}: not guaranteed to be at the beginning."
-                              "".format(self.name),
-                              category=StreamWarning)
+                warnings.warn(
+                    "NamedStream {0}: not guaranteed to be at the beginning."
+                    "".format(self.name),
+                    category=StreamWarning,
+                )
 
     # access the stream
     def __getattr__(self, x):
@@ -724,9 +751,9 @@ class NamedStream(io.IOBase, os.PathLike):
         # NOTE: By default (close=False) we only reset the stream and NOT close it; this makes
         #       it easier to use it as a drop-in replacement for a filename that might
         #       be opened repeatedly (at least in MDAnalysis)
-        #try:
+        # try:
         #    return self.stream.__exit__(*args)
-        #except AttributeError:
+        # except AttributeError:
         #    super(NamedStream, self).__exit__(*args)
         self.close()
 
@@ -932,7 +959,9 @@ def realpath(*args):
     """
     if None in args:
         return None
-    return os.path.realpath(os.path.expanduser(os.path.expandvars(os.path.join(*args))))
+    return os.path.realpath(
+        os.path.expanduser(os.path.expandvars(os.path.join(*args)))
+    )
 
 
 def get_ext(filename):
@@ -1008,9 +1037,11 @@ def format_from_filename_extension(filename):
     try:
         root, ext = get_ext(filename)
     except Exception:
-        errmsg = (f"Cannot determine file format for file '{filename}'.\n"
-                  f"           You can set the format explicitly with "
-                  f"'Universe(..., format=FORMAT)'.")
+        errmsg = (
+            f"Cannot determine file format for file '{filename}'.\n"
+            f"           You can set the format explicitly with "
+            f"'Universe(..., format=FORMAT)'."
+        )
         raise TypeError(errmsg) from None
     format = check_compressed_format(root, ext)
     return format
@@ -1049,16 +1080,21 @@ def guess_format(filename):
             format = format_from_filename_extension(filename.name)
         except AttributeError:
             # format is None so we need to complain:
-            errmsg = (f"guess_format requires an explicit format specifier "
-                      f"for stream {filename}")
+            errmsg = (
+                f"guess_format requires an explicit format specifier "
+                f"for stream {filename}"
+            )
             raise ValueError(errmsg) from None
     else:
         # iterator, list, filename: simple extension checking... something more
         # complicated is left for the ambitious.
         # Note: at the moment the upper-case extension *is* the format specifier
         # and list of filenames is handled by ChainReader
-        format = (format_from_filename_extension(filename)
-                  if not iterable(filename) else 'CHAIN')
+        format = (
+            format_from_filename_extension(filename)
+            if not iterable(filename)
+            else "CHAIN"
+        )
 
     return format.upper()
 
@@ -1069,7 +1105,7 @@ def iterable(obj):
     if isinstance(obj, (str, NamedStream)):
         return False  # avoid iterating over characters of a string
 
-    if hasattr(obj, 'next'):
+    if hasattr(obj, "next"):
         return True  # any iterator will do
     try:
         len(obj)  # anything else that might work
@@ -1098,8 +1134,10 @@ def asiterable(obj):
 #: ``(?P<repeat>\d?)(?P<format>[IFELAX])(?P<numfmt>(?P<length>\d+)(\.(?P<decimals>\d+))?)?``
 #:
 #: .. _FORTRAN edit descriptor: http://www.cs.mtu.edu/~shene/COURSES/cs201/NOTES/chap05/format.html
-FORTRAN_format_regex = (r"(?P<repeat>\d+?)(?P<format>[IFEAX])"
-                        r"(?P<numfmt>(?P<length>\d+)(\.(?P<decimals>\d+))?)?")
+FORTRAN_format_regex = (
+    r"(?P<repeat>\d+?)(?P<format>[IFEAX])"
+    r"(?P<numfmt>(?P<length>\d+)(\.(?P<decimals>\d+))?)?"
+)
 _FORTRAN_format_pattern = re.compile(FORTRAN_format_regex)
 
 
@@ -1114,7 +1152,8 @@ class FixedcolumnEntry(object):
     Reads from line[start:stop] and converts according to
     typespecifier.
     """
-    convertors = {'I': int, 'F': float, 'E': float, 'A': strip}
+
+    convertors = {"I": int, "F": float, "E": float, "A": strip}
 
     def __init__(self, start, stop, typespecifier):
         """
@@ -1138,10 +1177,12 @@ class FixedcolumnEntry(object):
     def read(self, line):
         """Read the entry from `line` and convert to appropriate type."""
         try:
-            return self.convertor(line[self.start:self.stop])
+            return self.convertor(line[self.start : self.stop])
         except ValueError:
-            errmsg = (f"{self}: Failed to read&convert "
-                      f"{line[self.start:self.stop]}")
+            errmsg = (
+                f"{self}: Failed to read&convert "
+                f"{line[self.start:self.stop]}"
+            )
             raise ValueError(errmsg) from None
 
     def __len__(self):
@@ -1149,7 +1190,9 @@ class FixedcolumnEntry(object):
         return self.stop - self.start
 
     def __repr__(self):
-        return "FixedcolumnEntry({0:d},{1:d},{2!r})".format(self.start, self.stop, self.typespecifier)
+        return "FixedcolumnEntry({0:d},{1:d},{2!r})".format(
+            self.start, self.stop, self.typespecifier
+        )
 
 
 class FORTRANReader(object):
@@ -1189,18 +1232,22 @@ class FORTRANReader(object):
                serial,TotRes,resName,name,x,y,z,chainID,resSeq,tempFactor = atomformat.read(line)
 
         """
-        self.fmt = fmt.split(',')
-        descriptors = [self.parse_FORTRAN_format(descriptor) for descriptor in self.fmt]
+        self.fmt = fmt.split(",")
+        descriptors = [
+            self.parse_FORTRAN_format(descriptor) for descriptor in self.fmt
+        ]
         start = 0
         self.entries = []
         for d in descriptors:
-            if d['format'] != 'X':
-                for x in range(d['repeat']):
-                    stop = start + d['length']
-                    self.entries.append(FixedcolumnEntry(start, stop, d['format']))
+            if d["format"] != "X":
+                for x in range(d["repeat"]):
+                    stop = start + d["length"]
+                    self.entries.append(
+                        FixedcolumnEntry(start, stop, d["format"])
+                    )
                     start = stop
             else:
-                start += d['totallength']
+                start += d["totallength"]
 
     def read(self, line):
         """Parse `line` according to the format string and return list of values.
@@ -1268,24 +1315,28 @@ class FORTRANReader(object):
         m = _FORTRAN_format_pattern.match(edit_descriptor.upper())
         if m is None:
             try:
-                m = _FORTRAN_format_pattern.match("1" + edit_descriptor.upper())
+                m = _FORTRAN_format_pattern.match(
+                    "1" + edit_descriptor.upper()
+                )
                 if m is None:
                     raise ValueError  # really no idea what the descriptor is supposed to mean
             except:
-                raise ValueError("unrecognized FORTRAN format {0!r}".format(edit_descriptor))
+                raise ValueError(
+                    "unrecognized FORTRAN format {0!r}".format(edit_descriptor)
+                )
         d = m.groupdict()
-        if d['repeat'] == '':
-            d['repeat'] = 1
-        if d['format'] == 'X':
-            d['length'] = 1
-        for k in ('repeat', 'length', 'decimals'):
+        if d["repeat"] == "":
+            d["repeat"] = 1
+        if d["format"] == "X":
+            d["length"] = 1
+        for k in ("repeat", "length", "decimals"):
             try:
                 d[k] = int(d[k])
             except ValueError:  # catches ''
                 d[k] = 0
             except TypeError:  # keep None
                 pass
-        d['totallength'] = d['repeat'] * d['length']
+        d["totallength"] = d["repeat"] * d["length"]
         return d
 
     def __len__(self):
@@ -1331,14 +1382,14 @@ def fixedwidth_bins(delta, xmin, xmax):
 
     """
     if not np.all(xmin < xmax):
-        raise ValueError('Boundaries are not sane: should be xmin < xmax.')
+        raise ValueError("Boundaries are not sane: should be xmin < xmax.")
     _delta = np.asarray(delta, dtype=np.float64)
     _xmin = np.asarray(xmin, dtype=np.float64)
     _xmax = np.asarray(xmax, dtype=np.float64)
     _length = _xmax - _xmin
     N = np.ceil(_length / _delta).astype(np.int_)  # number of bins
     dx = 0.5 * (N * _delta - _length)  # add half of the excess to each end
-    return {'Nbins': N, 'delta': _delta, 'min': _xmin - dx, 'max': _xmax + dx}
+    return {"Nbins": N, "delta": _delta, "min": _xmin - dx, "max": _xmax + dx}
 
 
 def get_weights(atoms, weights):
@@ -1382,16 +1433,20 @@ def get_weights(atoms, weights):
 
     if iterable(weights):
         if len(np.asarray(weights, dtype=object).shape) != 1:
-            raise ValueError("weights must be a 1D array, not with shape "
-                            "{0}".format(np.asarray(weights,
-                             dtype=object).shape))
+            raise ValueError(
+                "weights must be a 1D array, not with shape "
+                "{0}".format(np.asarray(weights, dtype=object).shape)
+            )
         elif len(weights) != len(atoms):
-            raise ValueError("weights (length {0}) must be of same length as "
-                             "the atoms ({1})".format(
-                                 len(weights), len(atoms)))
+            raise ValueError(
+                "weights (length {0}) must be of same length as "
+                "the atoms ({1})".format(len(weights), len(atoms))
+            )
     elif weights is not None:
-        raise ValueError("weights must be {'mass', None} or an iterable of the "
-                         "same size as the atomgroup.")
+        raise ValueError(
+            "weights must be {'mass', None} or an iterable of the "
+            "same size as the atomgroup."
+        )
 
     return weights
 
@@ -1402,25 +1457,45 @@ def get_weights(atoms, weights):
 #: translation table for 3-letter codes --> 1-letter codes
 #: .. SeeAlso:: :data:`alternative_inverse_aa_codes`
 canonical_inverse_aa_codes = {
-    'ALA': 'A', 'CYS': 'C', 'ASP': 'D', 'GLU': 'E',
-    'PHE': 'F', 'GLY': 'G', 'HIS': 'H', 'ILE': 'I',
-    'LYS': 'K', 'LEU': 'L', 'MET': 'M', 'ASN': 'N',
-    'PRO': 'P', 'GLN': 'Q', 'ARG': 'R', 'SER': 'S',
-    'THR': 'T', 'VAL': 'V', 'TRP': 'W', 'TYR': 'Y'}
+    "ALA": "A",
+    "CYS": "C",
+    "ASP": "D",
+    "GLU": "E",
+    "PHE": "F",
+    "GLY": "G",
+    "HIS": "H",
+    "ILE": "I",
+    "LYS": "K",
+    "LEU": "L",
+    "MET": "M",
+    "ASN": "N",
+    "PRO": "P",
+    "GLN": "Q",
+    "ARG": "R",
+    "SER": "S",
+    "THR": "T",
+    "VAL": "V",
+    "TRP": "W",
+    "TYR": "Y",
+}
 #: translation table for 1-letter codes --> *canonical* 3-letter codes.
 #: The table is used for :func:`convert_aa_code`.
-amino_acid_codes = {one: three for three,
-                    one in canonical_inverse_aa_codes.items()}
+amino_acid_codes = {
+    one: three for three, one in canonical_inverse_aa_codes.items()
+}
 #: non-default charge state amino acids or special charge state descriptions
 #: (Not fully synchronized with :class:`MDAnalysis.core.selection.ProteinSelection`.)
+# fmt: off
 alternative_inverse_aa_codes = {
-    'HISA': 'H', 'HISB': 'H', 'HSE': 'H', 'HSD': 'H', 'HID': 'H', 'HIE': 'H', 'HIS1': 'H',
-    'HIS2': 'H',
-    'ASPH': 'D', 'ASH': 'D',
-    'GLUH': 'E', 'GLH': 'E',
-    'LYSH': 'K', 'LYN': 'K',
-    'ARGN': 'R',
-    'CYSH': 'C', 'CYS1': 'C', 'CYS2': 'C'}
+    "HISA": "H", "HISB": "H", "HSE": "H", "HSD": "H", "HID": "H", "HIE": "H",
+    "HIS1": "H", "HIS2": "H",
+    "ASPH": "D", "ASH": "D",
+    "GLUH": "E", "GLH": "E",
+    "LYSH": "K", "LYN": "K",
+    "ARGN": "R",
+    "CYSH": "C", "CYS1": "C", "CYS2": "C",
+}
+# fmt: on
 #: lookup table from 3/4 letter resnames to 1-letter codes. Note that non-standard residue names
 #: for tautomers or different protonation states such as HSE are converted to canonical 1-letter codes ("H").
 #: The table is used for :func:`convert_aa_code`.
@@ -1460,14 +1535,17 @@ def convert_aa_code(x):
     try:
         return d[x.upper()]
     except KeyError:
-        errmsg = (f"No conversion for {x} found (1 letter -> 3 letter or 3/4 "
-                  f"letter -> 1 letter)")
+        errmsg = (
+            f"No conversion for {x} found (1 letter -> 3 letter or 3/4 "
+            f"letter -> 1 letter)"
+        )
         raise ValueError(errmsg) from None
 
 
 #: Regular expression to match and parse a residue-atom selection; will match
 #: "LYS300:HZ1" or "K300:HZ1" or "K300" or "4GB300:H6O" or "4GB300" or "YaA300".
-RESIDUE = re.compile(r"""
+RESIDUE = re.compile(
+    r"""
                  (?P<aa>([ACDEFGHIKLMNPQRSTVWY])   # 1-letter amino acid
                         |                          #   or
                         ([0-9A-Z][a-zA-Z][A-Z][A-Z]?)    # 3-letter or 4-letter residue name
@@ -1479,7 +1557,9 @@ RESIDUE = re.compile(r"""
                    \s*
                    (?P<atom>\w+)                   # atom name
                  )?                                # possibly one
-            """, re.VERBOSE | re.IGNORECASE)
+            """,
+    re.VERBOSE | re.IGNORECASE,
+)
 
 
 # from GromacsWrapper cbook.IndexBuilder
@@ -1514,14 +1594,18 @@ def parse_residue(residue):
     # XXX: use _translate_residue() ....
     m = RESIDUE.match(residue)
     if not m:
-        raise ValueError("Selection {residue!r} is not valid (only 1/3/4 letter resnames, resid required).".format(**vars()))
-    resid = int(m.group('resid'))
-    residue = m.group('aa')
+        raise ValueError(
+            "Selection {residue!r} is not valid (only 1/3/4 letter resnames, resid required).".format(
+                **vars()
+            )
+        )
+    resid = int(m.group("resid"))
+    residue = m.group("aa")
     if len(residue) == 1:
         resname = convert_aa_code(residue)  # only works for AA
     else:
         resname = residue  # use 3-letter for any resname
-    atomname = m.group('atom')
+    atomname = m.group("atom")
     return (resname, resid, atomname)
 
 
@@ -1592,7 +1676,7 @@ def cached(key, universe_validation=False):
         def wrapper(self, *args, **kwargs):
             try:
                 if universe_validation:  # Universe-level cache validation
-                    u_cache = self.universe._cache.setdefault('_valid', dict())
+                    u_cache = self.universe._cache.setdefault("_valid", dict())
                     # A WeakSet is used so that keys from out-of-scope/deleted
                     # objects don't clutter it.
                     valid_caches = u_cache.setdefault(key, weakref.WeakSet())
@@ -1661,20 +1745,21 @@ def unique_rows(arr, return_index=False):
     # This seems to fail if arr.flags['OWNDATA'] is False
     # this can occur when second dimension was created through broadcasting
     # eg: idx = np.array([1, 2])[None, :]
-    if not arr.flags['OWNDATA']:
+    if not arr.flags["OWNDATA"]:
         arr = arr.copy()
 
     m = arr.shape[1]
 
     if return_index:
-        u, r_idx = np.unique(arr.view(dtype=np.dtype([(str(i), arr.dtype)
-                                                      for i in range(m)])),
-                             return_index=True)
+        u, r_idx = np.unique(
+            arr.view(dtype=np.dtype([(str(i), arr.dtype) for i in range(m)])),
+            return_index=True,
+        )
         return u.view(arr.dtype).reshape(-1, m), r_idx
     else:
-        u = np.unique(arr.view(
-            dtype=np.dtype([(str(i), arr.dtype) for i in range(m)])
-        ))
+        u = np.unique(
+            arr.view(dtype=np.dtype([(str(i), arr.dtype) for i in range(m)]))
+        )
         return u.view(arr.dtype).reshape(-1, m)
 
 
@@ -1733,20 +1818,25 @@ def blocks_of(a, n, m):
     # based on:
     # http://stackoverflow.com/a/10862636
     # but generalised to handle non square blocks.
-    if not a.flags['C_CONTIGUOUS']:
+    if not a.flags["C_CONTIGUOUS"]:
         raise ValueError("Input array is not C contiguous.")
 
     nblocks = a.shape[0] // n
     nblocks2 = a.shape[1] // m
 
     if not nblocks == nblocks2:
-        raise ValueError("Must divide into same number of blocks in both"
-                         " directions.  Got {} by {}"
-                         "".format(nblocks, nblocks2))
+        raise ValueError(
+            "Must divide into same number of blocks in both"
+            " directions.  Got {} by {}"
+            "".format(nblocks, nblocks2)
+        )
 
     new_shape = (nblocks, n, m)
-    new_strides = (n * a.strides[0] + m * a.strides[1],
-                   a.strides[0], a.strides[1])
+    new_strides = (
+        n * a.strides[0] + m * a.strides[1],
+        a.strides[0],
+        a.strides[1],
+    )
 
     return np.lib.stride_tricks.as_strided(a, new_shape, new_strides)
 
@@ -1769,11 +1859,11 @@ def group_same_or_consecutive_integers(arr):
     >>> group_same_or_consecutive_integers(arr)
     [array([2, 3, 4]), array([ 7,  8,  9, 10, 11]), array([15, 16])]
     """
-    return np.split(arr, np.where(np.ediff1d(arr)-1 > 0)[0] + 1)
+    return np.split(arr, np.where(np.ediff1d(arr) - 1 > 0)[0] + 1)
 
 
 class Namespace(dict):
-    """Class to allow storing attributes in new namespace. """
+    """Class to allow storing attributes in new namespace."""
 
     def __getattr__(self, key):
         # a.this causes a __getattr__ call for key = 'this'
@@ -1850,7 +1940,7 @@ def flatten_dict(d, parent_key=tuple()):
     items = []
     for k, v in d.items():
         if type(k) != tuple:
-            new_key = parent_key + (k, )
+            new_key = parent_key + (k,)
         else:
             new_key = parent_key + k
         if isinstance(v, dict):
@@ -1886,10 +1976,12 @@ def static_variables(**kwargs):
 
     .. versionadded:: 0.19.0
     """
+
     def static_decorator(func):
         for kwarg in kwargs:
             setattr(func, kwarg, kwargs[kwarg])
         return func
+
     return static_decorator
 
 
@@ -1905,6 +1997,7 @@ def static_variables(**kwargs):
 # all such warnings that would potentially be raised in methods called by that
 # method. Of course, as it is generally the case with Python warnings, this is
 # *not threadsafe*.
+
 
 @static_variables(warned=False)
 def warn_if_not_unique(groupmethod):
@@ -1925,6 +2018,7 @@ def warn_if_not_unique(groupmethod):
 
     .. versionadded:: 0.19.0
     """
+
     @wraps(groupmethod)
     def wrapper(group, *args, **kwargs):
         # Proceed as usual if the calling group is unique or a DuplicateWarning
@@ -1933,7 +2027,8 @@ def warn_if_not_unique(groupmethod):
             return groupmethod(group, *args, **kwargs)
         # Otherwise, throw a DuplicateWarning and execute the method.
         method_name = ".".join(
-            (group.__class__.__name__, groupmethod.__name__))
+            (group.__class__.__name__, groupmethod.__name__)
+        )
         # Try to get the group's variable name(s):
         caller_locals = inspect.currentframe().f_back.f_locals.items()
         group_names = []
@@ -1950,8 +2045,10 @@ def warn_if_not_unique(groupmethod):
         else:
             group_name = " a.k.a. ".join(sorted(group_names))
         group_repr = repr(group)
-        msg = ("{}(): {} {} contains duplicates. Results might be biased!"
-               "".format(method_name, group_name, group_repr))
+        msg = (
+            "{}(): {} {} contains duplicates. Results might be biased!"
+            "".format(method_name, group_name, group_repr)
+        )
         warnings.warn(message=msg, category=DuplicateWarning, stacklevel=2)
         warn_if_not_unique.warned = True
         try:
@@ -1959,6 +2056,7 @@ def warn_if_not_unique(groupmethod):
         finally:
             warn_if_not_unique.warned = False
         return result
+
     return wrapper
 
 
@@ -2080,17 +2178,20 @@ def check_coords(*coord_names, **options):
        Can now accept an :class:`AtomGroup` as input, and added option
        allow_atomgroup with default False to retain old behaviour
     """
-    enforce_copy = options.get('enforce_copy', True)
-    enforce_dtype = options.get('enforce_dtype', True)
-    allow_single = options.get('allow_single', True)
-    convert_single = options.get('convert_single', True)
-    reduce_result_if_single = options.get('reduce_result_if_single', True)
-    check_lengths_match = options.get('check_lengths_match',
-                                      len(coord_names) > 1)
-    allow_atomgroup = options.get('allow_atomgroup', False)
+    enforce_copy = options.get("enforce_copy", True)
+    enforce_dtype = options.get("enforce_dtype", True)
+    allow_single = options.get("allow_single", True)
+    convert_single = options.get("convert_single", True)
+    reduce_result_if_single = options.get("reduce_result_if_single", True)
+    check_lengths_match = options.get(
+        "check_lengths_match", len(coord_names) > 1
+    )
+    allow_atomgroup = options.get("allow_atomgroup", False)
     if not coord_names:
-        raise ValueError("Decorator check_coords() cannot be used without "
-                         "positional arguments.")
+        raise ValueError(
+            "Decorator check_coords() cannot be used without "
+            "positional arguments."
+        )
 
     def check_coords_decorator(func):
         fname = func.__name__
@@ -2105,18 +2206,22 @@ def check_coords(*coord_names, **options):
         # arguments:
         for name in coord_names:
             if name not in posargnames:
-                raise ValueError("In decorator check_coords(): Name '{}' "
-                                 "doesn't correspond to any positional "
-                                 "argument of the decorated function {}()."
-                                 "".format(name, func.__name__))
+                raise ValueError(
+                    "In decorator check_coords(): Name '{}' "
+                    "doesn't correspond to any positional "
+                    "argument of the decorated function {}()."
+                    "".format(name, func.__name__)
+                )
 
         def _check_coords(coords, argname):
             is_single = False
             if isinstance(coords, np.ndarray):
                 if allow_single:
                     if (coords.ndim not in (1, 2)) or (coords.shape[-1] != 3):
-                        errmsg = (f"{fname}(): {argname}.shape must be (3,) or "
-                                  f"(n, 3), got {coords.shape}")
+                        errmsg = (
+                            f"{fname}(): {argname}.shape must be (3,) or "
+                            f"(n, 3), got {coords.shape}"
+                        )
                         raise ValueError(errmsg)
                     if coords.ndim == 1:
                         is_single = True
@@ -2124,17 +2229,22 @@ def check_coords(*coord_names, **options):
                             coords = coords[None, :]
                 else:
                     if (coords.ndim != 2) or (coords.shape[1] != 3):
-                        errmsg = (f"{fname}(): {argname}.shape must be (n, 3) "
-                                  f"got {coords.shape}")
+                        errmsg = (
+                            f"{fname}(): {argname}.shape must be (n, 3) "
+                            f"got {coords.shape}"
+                        )
                         raise ValueError(errmsg)
                 if enforce_dtype:
                     try:
                         coords = coords.astype(
-                            np.float32, order='C', copy=enforce_copy)
+                            np.float32, order="C", copy=enforce_copy
+                        )
                     except ValueError:
-                        errmsg = (f"{fname}(): {argname}.dtype must be"
-                                  f"convertible to float32, got"
-                                  f" {coords.dtype}.")
+                        errmsg = (
+                            f"{fname}(): {argname}.dtype must be"
+                            f"convertible to float32, got"
+                            f" {coords.dtype}."
+                        )
                         raise TypeError(errmsg) from None
                 # coordinates should now be the right shape
                 ncoord = coords.shape[0]
@@ -2143,15 +2253,19 @@ def check_coords(*coord_names, **options):
                     coords = coords.positions  # homogenise to a numpy array
                     ncoord = coords.shape[0]
                     if not allow_atomgroup:
-                        err = TypeError("AtomGroup or other class with a"
-                                        "`.positions` method supplied as an"
-                                        "argument, but allow_atomgroup is"
-                                        " False")
+                        err = TypeError(
+                            "AtomGroup or other class with a"
+                            "`.positions` method supplied as an"
+                            "argument, but allow_atomgroup is"
+                            " False"
+                        )
                         raise err
                 except AttributeError:
-                    raise TypeError(f"{fname}(): Parameter '{argname}' must be"
-                                    f" a numpy.ndarray or an AtomGroup,"
-                                    f" got {type(coords)}.")
+                    raise TypeError(
+                        f"{fname}(): Parameter '{argname}' must be"
+                        f" a numpy.ndarray or an AtomGroup,"
+                        f" got {type(coords)}."
+                    )
 
             return coords, is_single, ncoord
 
@@ -2164,11 +2278,11 @@ def check_coords(*coord_names, **options):
                 if len(args) > nargs:
                     # too many arguments, invoke call:
                     return func(*args, **kwargs)
-                for name in posargnames[:len(args)]:
+                for name in posargnames[: len(args)]:
                     if name in kwargs:
                         # duplicate argument, invoke call:
                         return func(*args, **kwargs)
-                for name in posargnames[len(args):]:
+                for name in posargnames[len(args) :]:
                     if name not in kwargs:
                         # missing argument, invoke call:
                         return func(*args, **kwargs)
@@ -2184,33 +2298,38 @@ def check_coords(*coord_names, **options):
             for name in coord_names:
                 idx = posargnames.index(name)
                 if idx < len(args):
-                    args[idx], is_single, ncoord = _check_coords(args[idx],
-                                                                 name)
+                    args[idx], is_single, ncoord = _check_coords(
+                        args[idx], name
+                    )
                     all_single &= is_single
                     ncoords.append(ncoord)
                 else:
-                    kwargs[name], is_single, ncoord = _check_coords(kwargs[name],
-                                                                    name)
+                    kwargs[name], is_single, ncoord = _check_coords(
+                        kwargs[name], name
+                    )
                     all_single &= is_single
                     ncoords.append(ncoord)
             if check_lengths_match and ncoords:
                 if ncoords.count(ncoords[0]) != len(ncoords):
-                    raise ValueError("{}(): {} must contain the same number of "
-                                     "coordinates, got {}."
-                                     "".format(fname, ", ".join(coord_names),
-                                               ncoords))
+                    raise ValueError(
+                        "{}(): {} must contain the same number of "
+                        "coordinates, got {}."
+                        "".format(fname, ", ".join(coord_names), ncoords)
+                    )
             # If all input coordinate arrays were 1-d, so should be the output:
             if all_single and reduce_result_if_single:
                 return func(*args, **kwargs)[0]
             return func(*args, **kwargs)
+
         return wrapper
+
     return check_coords_decorator
 
 
 def check_atomgroup_not_empty(groupmethod):
     """Decorator triggering a ``ValueError`` if the underlying group is empty.
 
-    Avoids downstream errors in computing properties of empty atomgroups. 
+    Avoids downstream errors in computing properties of empty atomgroups.
 
     Raises
     ------
@@ -2221,6 +2340,7 @@ def check_atomgroup_not_empty(groupmethod):
 
     .. versionadded:: 2.4.0
     """
+
     @wraps(groupmethod)
     def wrapper(group, *args, **kwargs):
         # Throw error if the group is empty.
@@ -2230,6 +2350,7 @@ def check_atomgroup_not_empty(groupmethod):
         else:
             result = groupmethod(group, *args, **kwargs)
         return result
+
     return wrapper
 
 
@@ -2240,6 +2361,7 @@ def check_atomgroup_not_empty(groupmethod):
 #
 # From numpy/lib/utils.py 1.14.5 (used under the BSD 3-clause licence,
 # https://www.numpy.org/license.html#license) and modified
+
 
 def _set_function_name(func, name):
     func.__name__ = name
@@ -2260,13 +2382,21 @@ class _Deprecate(object):
     .. versionadded:: 0.19.0
     """
 
-    def __init__(self, old_name=None, new_name=None,
-                 release=None, remove=None, message=None):
+    def __init__(
+        self,
+        old_name=None,
+        new_name=None,
+        release=None,
+        remove=None,
+        message=None,
+    ):
         self.old_name = old_name
         self.new_name = new_name
         if release is None:
-            raise ValueError("deprecate: provide release in which "
-                             "feature was deprecated.")
+            raise ValueError(
+                "deprecate: provide release in which "
+                "feature was deprecated."
+            )
         self.release = str(release)
         self.remove = str(remove) if remove is not None else remove
         self.message = message
@@ -2291,14 +2421,16 @@ class _Deprecate(object):
             depdoc = "`{0}` is deprecated!".format(old_name)
         else:
             depdoc = "`{0}` is deprecated, use `{1}` instead!".format(
-                old_name, new_name)
+                old_name, new_name
+            )
 
         warn_message = depdoc
 
         remove_text = ""
         if remove is not None:
             remove_text = "`{0}` will be removed in release {1}.".format(
-                old_name, remove)
+                old_name, remove
+            )
             warn_message += "\n" + remove_text
         if message is not None:
             warn_message += "\n" + message
@@ -2322,13 +2454,15 @@ class _Deprecate(object):
         except TypeError:
             doc = ""
 
-        deprecation_text = dedent_docstring("""\n\n
+        deprecation_text = dedent_docstring(
+            """\n\n
         .. deprecated:: {0}
            {1}
            {2}
-        """.format(release,
-                   message if message else depdoc,
-                   remove_text))
+        """.format(
+                release, message if message else depdoc, remove_text
+            )
+        )
 
         doc = "{0}\n\n{1}\n{2}\n".format(depdoc, doc, deprecation_text)
 
@@ -2435,6 +2569,8 @@ def deprecate(*args, **kwargs):
         return _Deprecate(*args, **kwargs)(fn)
     else:
         return _Deprecate(*args, **kwargs)
+
+
 #
 # ------------------------------------------------------------------
 
@@ -2515,13 +2651,16 @@ def check_box(box):
     if box is None:
         raise ValueError("Box is None")
     from .mdamath import triclinic_vectors  # avoid circular import
-    box = np.asarray(box, dtype=np.float32, order='C')
+
+    box = np.asarray(box, dtype=np.float32, order="C")
     if box.shape != (6,):
-        raise ValueError("Invalid box information. Must be of the form "
-                         "[lx, ly, lz, alpha, beta, gamma].")
-    if np.all(box[3:] == 90.):
-        return 'ortho', box[:3]
-    return 'tri_vecs', triclinic_vectors(box)
+        raise ValueError(
+            "Invalid box information. Must be of the form "
+            "[lx, ly, lz, alpha, beta, gamma]."
+        )
+    if np.all(box[3:] == 90.0):
+        return "ortho", box[:3]
+    return "tri_vecs", triclinic_vectors(box)
 
 
 def store_init_arguments(func):
@@ -2560,6 +2699,7 @@ def store_init_arguments(func):
                     else:
                         self._kwargs[key] = arg
         return func(self, *args, **kwargs)
+
     return wrapper
 
 
@@ -2592,12 +2732,12 @@ def atoi(s: str) -> int:
     34
     >>> atoi('foo')
     0
- 
+
 
     .. versionadded:: 2.8.0
     """
     try:
-        return int(''.join(itertools.takewhile(str.isdigit, s.strip())))
+        return int("".join(itertools.takewhile(str.isdigit, s.strip())))
     except ValueError:
         return 0
 
@@ -2609,8 +2749,8 @@ def is_installed(modulename: str):
     ----------
     modulename : str
         name of the module to be tested
-        
-     
+
+
     .. versionadded:: 2.8.0
     """
-    return importlib.util.find_spec(modulename) is not None      
+    return importlib.util.find_spec(modulename) is not None

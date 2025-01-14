@@ -24,10 +24,7 @@ import pytest
 import pickle
 
 import MDAnalysis as mda
-from numpy.testing import (
-    TestCase,
-    assert_equal
-)
+from numpy.testing import TestCase, assert_equal
 
 import gc
 
@@ -89,24 +86,22 @@ class TestAtomGroupPickle(object):
 
     def test_unpickle_two_ag(self, pickle_str_two_ag):
         newag, newag2 = pickle.loads(pickle_str_two_ag)
-        assert newag.universe is newag2.universe, (
-            "Two AtomGroups are unpickled to two different Universes"
-        )
+        assert (
+            newag.universe is newag2.universe
+        ), "Two AtomGroups are unpickled to two different Universes"
 
-    def test_unpickle_ag_with_universe_f(self,
-                                         pickle_str_ag_with_universe_f):
+    def test_unpickle_ag_with_universe_f(self, pickle_str_ag_with_universe_f):
         newu, newag = pickle.loads(pickle_str_ag_with_universe_f)
         assert newag.universe is newu, (
             "AtomGroup is not unpickled to the bound Universe"
             "when Universe is pickled first"
         )
 
-    def test_unpickle_ag_with_universe(self,
-                                       pickle_str_ag_with_universe):
+    def test_unpickle_ag_with_universe(self, pickle_str_ag_with_universe):
         newag, newu = pickle.loads(pickle_str_ag_with_universe)
         assert newag.universe is newu, (
-                "AtomGroup is not unpickled to the bound Universe"
-                "when AtomGroup is pickled first"
+            "AtomGroup is not unpickled to the bound Universe"
+            "when AtomGroup is pickled first"
         )
 
 
@@ -119,15 +114,15 @@ class TestPicklingUpdatingAtomGroups(object):
 
     def test_pickling_uag(self, u):
         ag = u.atoms[:100]
-        uag = ag.select_atoms('name C', updating=True)
+        uag = ag.select_atoms("name C", updating=True)
         pickle_str = pickle.dumps(uag, protocol=pickle.HIGHEST_PROTOCOL)
         new_uag = pickle.loads(pickle_str)
 
         assert_equal(uag.indices, new_uag.indices)
 
     def test_pickling_uag_of_uag(self, u):
-        uag1 = u.select_atoms('name C or name H', updating=True)
-        uag2 = uag1.select_atoms('name C', updating=True)
+        uag1 = u.select_atoms("name C or name H", updating=True)
+        uag2 = uag1.select_atoms("name C", updating=True)
         pickle_str = pickle.dumps(uag2, protocol=pickle.HIGHEST_PROTOCOL)
         new_uag2 = pickle.loads(pickle_str)
 

@@ -34,10 +34,18 @@ from MDAnalysisTests.datafiles import (
 class TestPQRParser(ParserBase):
     parser = mda.topology.PQRParser.PQRParser
     ref_filename = PQR
-    expected_attrs = ['ids', 'names', 'charges', 'radii', 'record_types',
-                      'resids', 'resnames', 'icodes',
-                      'segids']
-    guessed_attrs = ['masses', 'types']
+    expected_attrs = [
+        "ids",
+        "names",
+        "charges",
+        "radii",
+        "record_types",
+        "resids",
+        "resnames",
+        "icodes",
+        "segids",
+    ]
+    guessed_attrs = ["masses", "types"]
     expected_n_atoms = 3341
     expected_n_residues = 214
     expected_n_segments = 1
@@ -51,8 +59,8 @@ class TestPQRParser(ParserBase):
         assert len(top.resnames) == top.n_residues
         assert len(top.segids) == top.n_segments
 
-    expected_masses = [14.007,  1.008,  1.008,  1.008, 12.011,  1.008, 12.011]
-    expected_types = ['N', 'H', 'H', 'H', 'C', 'H', 'C']
+    expected_masses = [14.007, 1.008, 1.008, 1.008, 12.011, 1.008, 12.011]
+    expected_types = ["N", "H", "H", "H", "C", "H", "C"]
 
     def test_guessed_masses(self, filename):
         u = mda.Universe(filename)
@@ -69,20 +77,20 @@ class TestPQRParser2(TestPQRParser):
     expected_n_residues = 474
 
     expected_masses = [14.007, 12.011, 12.011, 15.999, 12.011, 12.011, 12.011]
-    expected_types = ['N', 'C', 'C', 'O', 'C', 'C', 'C']
+    expected_types = ["N", "C", "C", "O", "C", "C", "C"]
 
 
 def test_record_types():
     u = mda.Universe(PQR_icodes)
 
-    assert u.atoms[4052].record_type == 'ATOM'
-    assert u.atoms[4053].record_type == 'HETATM'
+    assert u.atoms[4052].record_type == "ATOM"
+    assert u.atoms[4053].record_type == "HETATM"
 
-    assert_equal(u.atoms[:10].record_types, 'ATOM')
-    assert_equal(u.atoms[4060:4070].record_types, 'HETATM')
+    assert_equal(u.atoms[:10].record_types, "ATOM")
+    assert_equal(u.atoms[4060:4070].record_types, "HETATM")
 
 
-GROMACS_PQR = '''
+GROMACS_PQR = """
 REMARK    The B-factors in this file hold atomic radii
 REMARK    The occupancy in this file hold atomic charges
 TITLE     system
@@ -92,17 +100,19 @@ MODEL        1
 ATOM      1  O    ZR     1      15.710  17.670  23.340 -0.67  1.48           O
 TER
 ENDMDL
-'''
+"""
 
 
 def test_gromacs_flavour():
-    u = mda.Universe(StringIO(GROMACS_PQR), format='PQR')
+    u = mda.Universe(StringIO(GROMACS_PQR), format="PQR")
 
     assert len(u.atoms) == 1
     # topology things
-    assert u.atoms[0].type == 'O'
-    assert u.atoms[0].segid == 'SYSTEM'
+    assert u.atoms[0].type == "O"
+    assert u.atoms[0].segid == "SYSTEM"
     assert_almost_equal(u.atoms[0].radius, 1.48, decimal=5)
     assert_almost_equal(u.atoms[0].charge, -0.67, decimal=5)
     # coordinatey things
-    assert_almost_equal(u.atoms[0].position, [15.710, 17.670, 23.340], decimal=4)
+    assert_almost_equal(
+        u.atoms[0].position, [15.710, 17.670, 23.340], decimal=4
+    )

@@ -20,37 +20,48 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-import sys
 import platform
+import sys
 import warnings
+
 import MDAnalysis as mda
-import pytest
 import numpy as np
+import pytest
 from numpy.testing import assert_equal
-from MDAnalysisTests.topology.base import ParserBase
+
+from MDAnalysisTests.datafiles import PRM  # ache.prmtop
+from MDAnalysisTests.datafiles import PRM7  # tz2.truncoct.parm7.bz2
+from MDAnalysisTests.datafiles import PRM12  # anti.top
+from MDAnalysisTests.datafiles import PRM_chainid_bz2  # multi_anche.prmtop.bz2
 from MDAnalysisTests.datafiles import (
-    PRM,  # ache.prmtop
-    PRM_chainid_bz2,  # multi_anche.prmtop.bz2
-    PRM12,  # anti.top
-    PRM7,  # tz2.truncoct.parm7.bz2
-    PRMpbc,
+    PRM19SBOPC,
     PRMNCRST,
     PRMNEGATIVE,
+    PRM_UreyBradley,
     PRMErr1,
     PRMErr2,
     PRMErr3,
     PRMErr4,
     PRMErr5,
-    PRM_UreyBradley,
-    PRM19SBOPC,
+    PRMpbc,
 )
+from MDAnalysisTests.topology.base import ParserBase
 
 
 class TOPBase(ParserBase):
     parser = mda.topology.TOPParser.TOPParser
     expected_attrs = [
-        "names", "types", "type_indices", "charges", "masses", "resnames",
-        "bonds", "angles", "dihedrals", "impropers", "elements"
+        "names",
+        "types",
+        "type_indices",
+        "charges",
+        "masses",
+        "resnames",
+        "bonds",
+        "angles",
+        "dihedrals",
+        "impropers",
+        "elements",
     ]
     expected_n_segments = 1
 
@@ -79,14 +90,18 @@ class TOPBase(ParserBase):
     def test_dihedrals_atom_counts(self, filename):
         u = mda.Universe(filename)
         assert len(u.atoms[[0]].dihedrals) == self.expected_n_zero_dihedrals
-        assert len(u.atoms[[self.atom_i]].dihedrals) == \
-            self.expected_n_i_dihedrals
+        assert (
+            len(u.atoms[[self.atom_i]].dihedrals)
+            == self.expected_n_i_dihedrals
+        )
 
     def test_impropers_atom_counts(self, filename):
         u = mda.Universe(filename)
         assert len(u.atoms[[0]].impropers) == self.expected_n_zero_impropers
-        assert len(u.atoms[[self.atom_i]].impropers) == \
-            self.expected_n_i_impropers
+        assert (
+            len(u.atoms[[self.atom_i]].impropers)
+            == self.expected_n_i_impropers
+        )
 
     def test_bonds_identity(self, top):
         vals = top.bonds.values
@@ -134,8 +149,12 @@ class TOPBase(ParserBase):
             forward = ((imp[0], imp[2]), (imp[1], imp[2]), (imp[2], imp[3]))
             backward = ((imp[0], imp[1]), (imp[1], imp[2]), (imp[1], imp[3]))
             for a, b in zip(forward, backward):
-                assert ((b in vals) or (b[::-1] in vals) or
-                        (a in vals) or (a[::-1] in vals))
+                assert (
+                    (b in vals)
+                    or (b[::-1] in vals)
+                    or (a in vals)
+                    or (a[::-1] in vals)
+                )
 
     def test_elements(self, top):
         """Tests elements attribute.
@@ -147,18 +166,29 @@ class TOPBase(ParserBase):
 
         if self.expected_elems:
             for erange, evals in zip(self.elems_ranges, self.expected_elems):
-                assert_equal(top.elements.values[erange[0]:erange[1]], evals,
-                             "unexpected element match")
+                assert_equal(
+                    top.elements.values[erange[0] : erange[1]],
+                    evals,
+                    "unexpected element match",
+                )
         else:
-            assert not hasattr(top, 'elements'), 'Unexpected elements attr'
+            assert not hasattr(top, "elements"), "Unexpected elements attr"
 
 
 class TestPRMParser(TOPBase):
     ref_filename = PRM
     # Does not contain an ATOMIC_NUMBER record, so no elements
     expected_attrs = [
-        "names", "types", "type_indices", "charges", "masses", "resnames",
-        "bonds", "angles", "dihedrals", "impropers"
+        "names",
+        "types",
+        "type_indices",
+        "charges",
+        "masses",
+        "resnames",
+        "bonds",
+        "angles",
+        "dihedrals",
+        "impropers",
     ]
     expected_n_atoms = 252
     expected_n_residues = 14
@@ -177,30 +207,68 @@ class TestPRMParser(TOPBase):
     expected_n_i_impropers = 4
     atom_zero_bond_values = ((0, 4), (0, 1), (0, 2), (0, 3))
     atom_i_bond_values = ((79, 80), (79, 83), (77, 79))
-    atom_zero_angle_values = ((0, 4, 6), (0, 4, 10), (3, 0, 4),
-                              (2, 0, 3), (2, 0, 4), (1, 0, 2),
-                              (1, 0, 3), (1, 0, 4), (0, 4, 5))
-    atom_i_angle_values = ((80, 79, 83), (77, 79, 80), (77, 79, 83),
-                           (74, 77, 79), (79, 80, 81), (79, 80, 82),
-                           (79, 83, 84), (79, 83, 85), (78, 77, 79))
-    atom_zero_dihedral_values = ((0, 4, 10, 11), (0, 4, 10, 12),
-                                 (3, 0, 4, 5), (3, 0, 4, 6),
-                                 (3, 0, 4, 10), (2, 0, 4, 5),
-                                 (2, 0, 4, 6), (2, 0, 4, 10),
-                                 (1, 0, 4, 5), (1, 0, 4, 6),
-                                 (1, 0, 4, 10), (0, 4, 6, 7),
-                                 (0, 4, 6, 8), (0, 4, 6, 9))
-    atom_i_dihedral_values = ((71, 74, 77, 79), (74, 77, 79, 80),
-                              (74, 77, 79, 83), (75, 74, 77, 79),
-                              (76, 74, 77, 79), (77, 79, 80, 81),
-                              (77, 79, 80, 82), (77, 79, 83, 84),
-                              (77, 79, 83, 85), (78, 77, 79, 80),
-                              (78, 77, 79, 83), (80, 79, 83, 84),
-                              (80, 79, 83, 85), (81, 80, 79, 83),
-                              (82, 80, 79, 83))
+    atom_zero_angle_values = (
+        (0, 4, 6),
+        (0, 4, 10),
+        (3, 0, 4),
+        (2, 0, 3),
+        (2, 0, 4),
+        (1, 0, 2),
+        (1, 0, 3),
+        (1, 0, 4),
+        (0, 4, 5),
+    )
+    atom_i_angle_values = (
+        (80, 79, 83),
+        (77, 79, 80),
+        (77, 79, 83),
+        (74, 77, 79),
+        (79, 80, 81),
+        (79, 80, 82),
+        (79, 83, 84),
+        (79, 83, 85),
+        (78, 77, 79),
+    )
+    atom_zero_dihedral_values = (
+        (0, 4, 10, 11),
+        (0, 4, 10, 12),
+        (3, 0, 4, 5),
+        (3, 0, 4, 6),
+        (3, 0, 4, 10),
+        (2, 0, 4, 5),
+        (2, 0, 4, 6),
+        (2, 0, 4, 10),
+        (1, 0, 4, 5),
+        (1, 0, 4, 6),
+        (1, 0, 4, 10),
+        (0, 4, 6, 7),
+        (0, 4, 6, 8),
+        (0, 4, 6, 9),
+    )
+    atom_i_dihedral_values = (
+        (71, 74, 77, 79),
+        (74, 77, 79, 80),
+        (74, 77, 79, 83),
+        (75, 74, 77, 79),
+        (76, 74, 77, 79),
+        (77, 79, 80, 81),
+        (77, 79, 80, 82),
+        (77, 79, 83, 84),
+        (77, 79, 83, 85),
+        (78, 77, 79, 80),
+        (78, 77, 79, 83),
+        (80, 79, 83, 84),
+        (80, 79, 83, 85),
+        (81, 80, 79, 83),
+        (82, 80, 79, 83),
+    )
     atom_zero_improper_values = ()
-    atom_i_improper_values = ((74, 79, 77, 78), (77, 80, 79, 83),
-                              (79, 81, 80, 82), (79, 84, 83, 85))
+    atom_i_improper_values = (
+        (74, 79, 77, 78),
+        (77, 80, 79, 83),
+        (79, 81, 80, 82),
+        (79, 84, 83, 85),
+    )
     expected_elems = None
 
 
@@ -305,76 +373,25 @@ class TestPRMChainidParser(TOPBase):
 
     expected_elems = [
         np.array(
-            [
-                "N",
-                "H",
-                "H",
-                "H",
-                "C",
-                "H",
-                "C",
-                "H",
-                "H",
-            ],
+            ["N", "H", "H", "H", "C", "H", "C", "H", "H"],
             dtype=object,
         ),
         np.array(
-            [
-                "O",
-                "O",
-                "N",
-                "H",
-                "H",
-                "H",
-                "C",
-            ],
+            ["O", "O", "N", "H", "H", "H", "C"],
             dtype=object,
         ),
         np.array(["H", "C", "O", "O", "N", "H", "H", "H"], dtype=object),
     ]
 
+    # fmt: off
     expected_chainIDs = np.array(
         [
-            "A",
-            "A",
-            "A",
-            "A",
-            "A",
-            "A",
-            "A",
-            "A",
-            "A",
-            "A",
-            "A",
-            "A",
-            "A",
-            "A",
-            "B",
-            "B",
-            "B",
-            "B",
-            "B",
-            "B",
-            "B",
-            "B",
-            "B",
-            "B",
-            "B",
-            "B",
-            "B",
-            "B",
-            "C",
-            "C",
-            "C",
-            "C",
-            "C",
-            "C",
-            "C",
-            "C",
-            "C",
-            "C",
+            "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A",
+            "B", "B", "B", "B", "B", "B", "B", "B", "B", "B", "B", "B", "B", "B",
+            "C", "C", "C", "C", "C", "C", "C", "C", "C", "C",
         ]
     )
+    # fmt: on
 
     def test_chainIDs(self, filename):
         """Tests chainIDs attribute.
@@ -386,7 +403,9 @@ class TestPRMChainidParser(TOPBase):
 
         u = mda.Universe(filename)
         if hasattr(self, "expected_chainIDs"):
-            reschainIDs = [atomchainIDs[0] for atomchainIDs in u.residues.chainIDs]
+            reschainIDs = [
+                atomchainIDs[0] for atomchainIDs in u.residues.chainIDs
+            ]
             assert_equal(
                 reschainIDs, self.expected_chainIDs, "unexpected element match"
             )
@@ -413,54 +432,94 @@ class TestPRM12Parser(TOPBase):
     atom_i = 335
     ref_proteinatoms = 0
     atom_zero_bond_values = ((0, 1),)
-    atom_i_bond_values = ((335, 337), (335, 354),
-                          (334, 335), (335, 336))
+    atom_i_bond_values = ((335, 337), (335, 354), (334, 335), (335, 336))
     atom_zero_angle_values = ((0, 1, 2),)
-    atom_i_angle_values = ((337, 335, 354), (335, 337, 338),
-                           (335, 337, 351), (335, 354, 352),
-                           (334, 335, 337), (334, 335, 354),
-                           (332, 334, 335), (336, 335, 337),
-                           (336, 335, 354), (335, 354, 355),
-                           (335, 354, 356), (334, 335, 336))
-    atom_zero_dihedral_values = ((0, 1, 2, 3), (0, 1, 2, 4),
-                                 (0, 1, 2, 5))
-    atom_i_dihedral_values = ((329, 332, 334, 335), (332, 334, 335, 336),
-                              (332, 334, 335, 337), (332, 334, 335, 354),
-                              (332, 352, 354, 335), (333, 332, 334, 335),
-                              (334, 335, 337, 338), (334, 335, 337, 351),
-                              (334, 335, 354, 352), (334, 335, 354, 355),
-                              (334, 335, 354, 356), (335, 334, 332, 352),
-                              (335, 337, 338, 339), (335, 337, 338, 340),
-                              (335, 337, 351, 341), (335, 337, 351, 350),
-                              (335, 354, 352, 353), (335, 354, 352, 357),
-                              (336, 335, 337, 338), (336, 335, 337, 351),
-                              (336, 335, 354, 352), (336, 335, 354, 355),
-                              (336, 335, 354, 356), (337, 335, 354, 352),
-                              (337, 335, 354, 355), (337, 335, 354, 356),
-                              (338, 337, 335, 354), (351, 337, 335, 354))
+    atom_i_angle_values = (
+        (337, 335, 354),
+        (335, 337, 338),
+        (335, 337, 351),
+        (335, 354, 352),
+        (334, 335, 337),
+        (334, 335, 354),
+        (332, 334, 335),
+        (336, 335, 337),
+        (336, 335, 354),
+        (335, 354, 355),
+        (335, 354, 356),
+        (334, 335, 336),
+    )
+    atom_zero_dihedral_values = ((0, 1, 2, 3), (0, 1, 2, 4), (0, 1, 2, 5))
+    atom_i_dihedral_values = (
+        (329, 332, 334, 335),
+        (332, 334, 335, 336),
+        (332, 334, 335, 337),
+        (332, 334, 335, 354),
+        (332, 352, 354, 335),
+        (333, 332, 334, 335),
+        (334, 335, 337, 338),
+        (334, 335, 337, 351),
+        (334, 335, 354, 352),
+        (334, 335, 354, 355),
+        (334, 335, 354, 356),
+        (335, 334, 332, 352),
+        (335, 337, 338, 339),
+        (335, 337, 338, 340),
+        (335, 337, 351, 341),
+        (335, 337, 351, 350),
+        (335, 354, 352, 353),
+        (335, 354, 352, 357),
+        (336, 335, 337, 338),
+        (336, 335, 337, 351),
+        (336, 335, 354, 352),
+        (336, 335, 354, 355),
+        (336, 335, 354, 356),
+        (337, 335, 354, 352),
+        (337, 335, 354, 355),
+        (337, 335, 354, 356),
+        (338, 337, 335, 354),
+        (351, 337, 335, 354),
+    )
     atom_zero_improper_values = ()
     atom_i_improper_values = ((335, 337, 338, 351),)
     elems_ranges = [[0, 36], [351, 403]]
-    expected_elems = [np.array(["H", "O", "C", "H", "H", "C", "H", "O", "C",
-                                "H", "N", "C", "H", "N", "C", "C", "O", "N",
-                                "H", "C", "N", "H", "H", "N", "C", "C", "H",
-                                "C", "H", "H", "O", "P", "O", "O", "O", "C"],
-                      dtype=object),
-                      np.array(["C", "C", "H", "C", "H", "H", "O", "P", "O",
-                                "O", "O", "C", "H", "H", "C", "H", "O", "C",
-                                "H", "N", "C", "H", "N", "C", "C", "O", "N",
-                                "H", "C", "N", "H", "H", "N", "C", "C", "H",
-                                "C", "H", "H", "O", "H", "Na", "Na", "Na",
-                                "Na", "Na", "Na", "Na", "Na", "O", "H", "H"],
-                      dtype=object)]
+    # fmt: off
+    expected_elems = [
+        np.array(
+            [
+                "H", "O", "C", "H", "H", "C", "H", "O", "C", "H", "N", "C",
+                "H", "N", "C", "C", "O", "N", "H", "C", "N", "H", "H", "N",
+                "C", "C", "H", "C", "H", "H", "O", "P", "O", "O", "O","C",
+            ],
+            dtype=object,
+        ),
+        np.array(
+            [
+                "C", "C", "H", "C", "H", "H", "O", "P", "O", "O", "O", "C",
+                "H", "H", "C", "H", "O", "C", "H", "N", "C", "H", "N", "C",
+                "C", "O", "N", "H", "C", "N", "H", "H", "N", "C", "C", "H",
+                "C", "H", "H", "O", "H", "Na", "Na", "Na", "Na", "Na", "Na",
+                "Na", "Na", "O", "H", "H",
+            ],
+            dtype=object,
+        ),
+    ]
+    # fmt: on
 
 
 class TestParm7Parser(TOPBase):
     ref_filename = PRM7
     # Does not contain an ATOMIC_NUMBER record, so no elements
     expected_attrs = [
-        "names", "types", "type_indices", "charges", "masses", "resnames",
-        "bonds", "angles", "dihedrals", "impropers"
+        "names",
+        "types",
+        "type_indices",
+        "charges",
+        "masses",
+        "resnames",
+        "bonds",
+        "angles",
+        "dihedrals",
+        "impropers",
     ]
     expected_n_atoms = 5827
     expected_n_residues = 1882
@@ -478,39 +537,78 @@ class TestParm7Parser(TOPBase):
     expected_n_zero_impropers = 0
     expected_n_i_impropers = 2
     atom_zero_bond_values = ((0, 4), (0, 1), (0, 2), (0, 3))
-    atom_i_bond_values = ((135, 137), (135, 155), (133, 135),
-                          (135, 136))
-    atom_zero_angle_values = ((0, 4, 6), (0, 4, 11), (3, 0, 4),
-                              (2, 0, 3), (2, 0, 4), (1, 0, 2),
-                              (1, 0, 3), (1, 0, 4), (0, 4, 5))
-    atom_i_angle_values = ((131, 133, 135), (137, 135, 155),
-                           (135, 137, 140), (135, 155, 156),
-                           (135, 155, 157), (133, 135, 137),
-                           (133, 135, 155), (136, 135, 137),
-                           (136, 135, 155), (135, 137, 138),
-                           (135, 137, 139), (134, 133, 135),
-                           (133, 135, 136))
-    atom_zero_dihedral_values = ((0, 4, 6, 7), (0, 4, 6, 8),
-                                 (0, 4, 6, 9), (0, 4, 11, 12),
-                                 (0, 4, 11, 13), (1, 0, 4, 5),
-                                 (1, 0, 4, 6), (1, 0, 4, 11),
-                                 (2, 0, 4, 5), (2, 0, 4, 6),
-                                 (2, 0, 4, 11), (3, 0, 4, 5),
-                                 (3, 0, 4, 6), (3, 0, 4, 11))
-    atom_i_dihedral_values = ((113, 131, 133, 135), (131, 133, 135, 136),
-                              (131, 133, 135, 137), (131, 133, 135, 155),
-                              (132, 131, 133, 135), (133, 135, 137, 138),
-                              (133, 135, 137, 139), (133, 135, 137, 140),
-                              (133, 135, 155, 156), (133, 135, 155, 157),
-                              (134, 133, 135, 136), (134, 133, 135, 137),
-                              (134, 133, 135, 155), (135, 137, 140, 141),
-                              (135, 137, 140, 154), (135, 155, 157, 158),
-                              (135, 155, 157, 159), (136, 135, 137, 138),
-                              (136, 135, 137, 139), (136, 135, 137, 140),
-                              (136, 135, 155, 156), (136, 135, 155, 157),
-                              (137, 135, 155, 156), (137, 135, 155, 157),
-                              (138, 137, 135, 155), (139, 137, 135, 155),
-                              (140, 137, 135, 155))
+    atom_i_bond_values = ((135, 137), (135, 155), (133, 135), (135, 136))
+    atom_zero_angle_values = (
+        (0, 4, 6),
+        (0, 4, 11),
+        (3, 0, 4),
+        (2, 0, 3),
+        (2, 0, 4),
+        (1, 0, 2),
+        (1, 0, 3),
+        (1, 0, 4),
+        (0, 4, 5),
+    )
+    atom_i_angle_values = (
+        (131, 133, 135),
+        (137, 135, 155),
+        (135, 137, 140),
+        (135, 155, 156),
+        (135, 155, 157),
+        (133, 135, 137),
+        (133, 135, 155),
+        (136, 135, 137),
+        (136, 135, 155),
+        (135, 137, 138),
+        (135, 137, 139),
+        (134, 133, 135),
+        (133, 135, 136),
+    )
+    atom_zero_dihedral_values = (
+        (0, 4, 6, 7),
+        (0, 4, 6, 8),
+        (0, 4, 6, 9),
+        (0, 4, 11, 12),
+        (0, 4, 11, 13),
+        (1, 0, 4, 5),
+        (1, 0, 4, 6),
+        (1, 0, 4, 11),
+        (2, 0, 4, 5),
+        (2, 0, 4, 6),
+        (2, 0, 4, 11),
+        (3, 0, 4, 5),
+        (3, 0, 4, 6),
+        (3, 0, 4, 11),
+    )
+    atom_i_dihedral_values = (
+        (113, 131, 133, 135),
+        (131, 133, 135, 136),
+        (131, 133, 135, 137),
+        (131, 133, 135, 155),
+        (132, 131, 133, 135),
+        (133, 135, 137, 138),
+        (133, 135, 137, 139),
+        (133, 135, 137, 140),
+        (133, 135, 155, 156),
+        (133, 135, 155, 157),
+        (134, 133, 135, 136),
+        (134, 133, 135, 137),
+        (134, 133, 135, 155),
+        (135, 137, 140, 141),
+        (135, 137, 140, 154),
+        (135, 155, 157, 158),
+        (135, 155, 157, 159),
+        (136, 135, 137, 138),
+        (136, 135, 137, 139),
+        (136, 135, 137, 140),
+        (136, 135, 155, 156),
+        (136, 135, 155, 157),
+        (137, 135, 155, 156),
+        (137, 135, 155, 157),
+        (138, 137, 135, 155),
+        (139, 137, 135, 155),
+        (140, 137, 135, 155),
+    )
     atom_zero_improper_values = ()
     atom_i_improper_values = ((131, 135, 133, 134), (135, 157, 155, 156))
     expected_elems = None
@@ -520,8 +618,16 @@ class TestPRM2(TOPBase):
     ref_filename = PRMpbc
     # Does not contain an ATOMIC_NUMBER record, so no elements
     expected_attrs = [
-        "names", "types", "type_indices", "charges", "masses", "resnames",
-        "bonds", "angles", "dihedrals", "impropers"
+        "names",
+        "types",
+        "type_indices",
+        "charges",
+        "masses",
+        "resnames",
+        "bonds",
+        "angles",
+        "dihedrals",
+        "impropers",
     ]
     expected_n_atoms = 5071
     expected_n_residues = 1686
@@ -542,19 +648,37 @@ class TestPRM2(TOPBase):
     atom_zero_bond_values = ((0, 1),)
     atom_i_bond_values = ((14, 15), (14, 16), (8, 14))
     atom_zero_angle_values = ((0, 1, 2), (0, 1, 3), (0, 1, 4))
-    atom_i_angle_values = ((15, 14, 16), (14, 16, 18), (10,  8, 14),
-                           (8, 14, 15), (8, 14, 16), (6,  8, 14),
-                           (14, 16, 17), (9,  8, 14))
+    atom_i_angle_values = (
+        (15, 14, 16),
+        (14, 16, 18),
+        (10, 8, 14),
+        (8, 14, 15),
+        (8, 14, 16),
+        (6, 8, 14),
+        (14, 16, 17),
+        (9, 8, 14),
+    )
     atom_zero_dihedral_values = ((0, 1, 4, 5), (0, 1, 4, 6))
-    atom_i_dihedral_values = ((4, 6, 8, 14), (6, 8, 14, 15),
-                              (6, 8, 14, 16), (7, 6, 8, 14),
-                              (8, 14, 16, 17), (8, 14, 16, 18),
-                              (9, 8, 14, 15), (9, 8, 14, 16),
-                              (10, 8, 14, 15), (10, 8, 14, 16),
-                              (11, 10, 8, 14), (12, 10, 8, 14),
-                              (13, 10, 8, 14), (14, 16, 18, 19),
-                              (14, 16, 18, 20), (14, 16, 18, 21),
-                              (15, 14, 16, 17), (15, 14, 16, 18))
+    atom_i_dihedral_values = (
+        (4, 6, 8, 14),
+        (6, 8, 14, 15),
+        (6, 8, 14, 16),
+        (7, 6, 8, 14),
+        (8, 14, 16, 17),
+        (8, 14, 16, 18),
+        (9, 8, 14, 15),
+        (9, 8, 14, 16),
+        (10, 8, 14, 15),
+        (10, 8, 14, 16),
+        (11, 10, 8, 14),
+        (12, 10, 8, 14),
+        (13, 10, 8, 14),
+        (14, 16, 18, 19),
+        (14, 16, 18, 20),
+        (14, 16, 18, 21),
+        (15, 14, 16, 17),
+        (15, 14, 16, 18),
+    )
     atom_zero_improper_values = ()
     atom_i_improper_values = ((8, 16, 14, 15), (14, 18, 16, 17))
     expected_elems = None
@@ -587,8 +711,12 @@ class TestPRMNCRST(TOPBase):
     atom_i_dihedral_values = ((0, 1, 4, 5), (2, 1, 4, 5), (3, 1, 4, 5))
     atom_zero_improper_values = ()
     atom_i_improper_values = ()
-    elems_ranges = [[0, 6], ]
-    expected_elems = [np.array(["H", "C", "H", "H", "C", "O"], dtype=object), ]
+    elems_ranges = [
+        [0, 6],
+    ]
+    expected_elems = [
+        np.array(["H", "C", "H", "H", "C", "O"], dtype=object),
+    ]
 
 
 class TestPRMNCRST_negative(TOPBase):
@@ -618,8 +746,12 @@ class TestPRMNCRST_negative(TOPBase):
     atom_i_dihedral_values = ((0, 1, 4, 5), (2, 1, 4, 5), (3, 1, 4, 5))
     atom_zero_improper_values = ()
     atom_i_improper_values = ()
-    elems_ranges = [[0, 6], ]
-    expected_elems = [np.array(["H", "", "H", "H", "C", ""], dtype=object), ]
+    elems_ranges = [
+        [0, 6],
+    ]
+    expected_elems = [
+        np.array(["H", "", "H", "H", "C", ""], dtype=object),
+    ]
 
 
 class TestPRMEP(TOPBase):
@@ -650,17 +782,15 @@ class TestPRMEP(TOPBase):
     atom_zero_improper_values = ()
     atom_i_improper_values = ()
     elems_ranges = [[0, 8], [20, 28]]
-    expected_elems = [np.array(["H", "C", "H", "H", "C", "O", "N", "H"],
-                      dtype=object),
-                      np.array(["H", "H", "O", "H", "H", "", "O", "H"],
-                      dtype=object)]
+    expected_elems = [
+        np.array(["H", "C", "H", "H", "C", "O", "N", "H"], dtype=object),
+        np.array(["H", "H", "O", "H", "H", "", "O", "H"], dtype=object),
+    ]
 
 
 class TestErrorsAndWarnings(object):
 
-    ATOMIC_NUMBER_MSG = (
-        "ATOMIC_NUMBER record not found, elements attribute will not be populated"
-    )
+    ATOMIC_NUMBER_MSG = "ATOMIC_NUMBER record not found, elements attribute will not be populated"
     MISSING_ELEM_MSG = (
         "Unknown ATOMIC_NUMBER value found for some atoms, "
         "these have been given an empty element record"

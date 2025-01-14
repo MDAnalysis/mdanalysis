@@ -63,10 +63,11 @@ class _GuesserMeta(type):
 
     .. versionadded:: 2.8.0
     """
+
     def __init__(cls, name, bases, classdict):
         type.__init__(type, name, bases, classdict)
 
-        _GUESSERS[classdict['context'].upper()] = cls
+        _GUESSERS[classdict["context"].upper()] = cls
 
 
 class GuesserBase(metaclass=_GuesserMeta):
@@ -87,7 +88,8 @@ class GuesserBase(metaclass=_GuesserMeta):
     .. versionadded:: 2.8.0
 
     """
-    context = 'base'
+
+    context = "base"
     _guesser_methods: Dict = {}
 
     def __init__(self, universe=None, **kwargs):
@@ -149,8 +151,10 @@ class GuesserBase(metaclass=_GuesserMeta):
         try:
             guesser_method = self._guesser_methods[attr_to_guess]
         except KeyError:
-            raise ValueError(f'{type(self).__name__} cannot guess this '
-                             f'attribute: {attr_to_guess}')
+            raise ValueError(
+                f"{type(self).__name__} cannot guess this "
+                f"attribute: {attr_to_guess}"
+            )
 
         # Connection attributes should be just returned as they are always
         # appended to the Universe. ``force_guess`` handling should happen
@@ -161,7 +165,8 @@ class GuesserBase(metaclass=_GuesserMeta):
         # check if the topology already has the attribute to partially guess it
         if hasattr(self._universe.atoms, attr_to_guess) and not force_guess:
             attr_values = np.array(
-                getattr(self._universe.atoms, attr_to_guess, None))
+                getattr(self._universe.atoms, attr_to_guess, None)
+            )
 
             empty_values = top_attr.are_values_missing(attr_values)
 
@@ -175,8 +180,9 @@ class GuesserBase(metaclass=_GuesserMeta):
 
             else:
                 logger.info(
-                    f'There is no empty {attr_to_guess} values. Guesser did '
-                    f'not guess any new values for {attr_to_guess} attribute')
+                    f"There is no empty {attr_to_guess} values. Guesser did "
+                    f"not guess any new values for {attr_to_guess} attribute"
+                )
                 return None
         else:
             return np.array(guesser_method())

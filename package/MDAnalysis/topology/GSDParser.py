@@ -104,13 +104,16 @@ class GSDParser(TopologyReaderBase):
     GSD file.
 
     """
-    format = 'GSD'
+
+    format = "GSD"
 
     def __init__(self, filename):
 
         if not HAS_GSD:
-            errmsg = ("GSDParser: To read a Topology from a Hoomd GSD "
-                      "file, please install gsd")
+            errmsg = (
+                "GSDParser: To read a Topology from a Hoomd GSD "
+                "file, please install gsd"
+            )
             raise ImportError(errmsg)
         super(GSDParser, self).__init__(filename)
 
@@ -121,35 +124,39 @@ class GSDParser(TopologyReaderBase):
         """
         attrs = {}
 
-        with gsd.hoomd.open(self.filename, mode='r') as t :
+        with gsd.hoomd.open(self.filename, mode="r") as t:
             # Here it is assumed that the particle data does not change in the
             # trajectory.
             snap = t[0]
 
             natoms = snap.particles.N
 
-
             ptypes = snap.particles.types
             atypes = [ptypes[idx] for idx in snap.particles.typeid]
             if len(atypes) != natoms:
                 raise IOError("Number of types does not equal natoms.")
-            attrs['types'] = Atomtypes(np.array(atypes, dtype=object))
+            attrs["types"] = Atomtypes(np.array(atypes, dtype=object))
 
             # set radii, masses, charges
             p = snap.particles
-            attrs['diameter'] = Radii(np.array(p.diameter / 2.,dtype=np.float32))
-            attrs['mass'] = Masses(np.array(p.mass,dtype=np.float64))
-            attrs['charge'] = Charges(np.array(p.charge,dtype=np.float32))
+            attrs["diameter"] = Radii(
+                np.array(p.diameter / 2.0, dtype=np.float32)
+            )
+            attrs["mass"] = Masses(np.array(p.mass, dtype=np.float64))
+            attrs["charge"] = Charges(np.array(p.charge, dtype=np.float32))
 
             # set bonds, angles, dihedrals, impropers
-            for attrname, attr, in (
-                    ('bonds', Bonds),
-                    ('angles', Angles),
-                    ('dihedrals', Dihedrals),
-                    ('impropers', Impropers),
+            for (
+                attrname,
+                attr,
+            ) in (
+                ("bonds", Bonds),
+                ("angles", Angles),
+                ("dihedrals", Dihedrals),
+                ("impropers", Impropers),
             ):
                 try:
-                    val = getattr(snap,attrname)
+                    val = getattr(snap, attrname)
                     vals = [tuple(b_instance) for b_instance in val.group]
                 except:
                     vals = []
@@ -160,7 +167,7 @@ class GSDParser(TopologyReaderBase):
             bodies = np.unique(blist).astype(np.int32)
             # this fixes the fact that the Topology constructor gets stuck in an
             # infinite loop if any resid is negative.
-            if (blist<0).any() :
+            if (blist < 0).any():
                 m = blist.min()
                 blist += abs(m)
             bodies = np.unique(blist).astype(np.int32)
@@ -172,9 +179,8 @@ class GSDParser(TopologyReaderBase):
         attrs.append(Resids(bodies))
         attrs.append(Resnums(bodies))
         attrs.append(Resnames(bodies))
-        attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
+        attrs.append(Segids(np.array(["SYSTEM"], dtype=object)))
 
-        top = Topology(natoms, nbodies, 1,
-                       attrs=attrs, atom_resindex=blist)
+        top = Topology(natoms, nbodies, 1, attrs=attrs, atom_resindex=blist)
 
         return top

@@ -33,7 +33,7 @@ from numpy.testing import assert_allclose
 @pytest.fixture()
 def u():
     u = mda.Universe(two_water_gro, in_memory=True)
-    u.add_TopologyAttr('chainIDs', u.atoms.resids)
+    u.add_TopologyAttr("chainIDs", u.atoms.resids)
     return u
 
 
@@ -43,8 +43,8 @@ def sels(u):
     # (NOTE: requires in-memory coordinates to make them permanent)
     for at, (x, y) in zip(u.atoms, zip([1] * 3 + [2] * 3, [2, 1, 3] * 2)):
         at.position = x, y, 0.0
-    s1 = u.select_atoms('name OW')
-    s2 = u.select_atoms('name HW1 HW2')
+    s1 = u.select_atoms("name OW")
+    s2 = u.select_atoms("name HW1 HW2")
     return s1, s2
 
 
@@ -96,10 +96,9 @@ def test_exclusion(sels):
     assert rdf.results.count.sum() == 4
 
 
-@pytest.mark.parametrize("attr, count", [
-    ("residue", 8),
-    ("segment", 0),
-    ("chain", 8)])
+@pytest.mark.parametrize(
+    "attr, count", [("residue", 8), ("segment", 0), ("chain", 8)]
+)
 def test_ignore_same_residues(sels, attr, count):
     # should see two distances with 4 counts each
     s1, s2 = sels
@@ -110,13 +109,18 @@ def test_ignore_same_residues(sels, attr, count):
 
 def test_ignore_same_residues_fails(sels):
     s1, s2 = sels
-    with pytest.raises(ValueError, match="The exclude_same argument to InterRDF must be"):
+    with pytest.raises(
+        ValueError, match="The exclude_same argument to InterRDF must be"
+    ):
         InterRDF(s2, s2, exclude_same="unsupported").run()
 
-    with pytest.raises(ValueError, match="The exclude_same argument to InterRDF cannot be used with"):
+    with pytest.raises(
+        ValueError,
+        match="The exclude_same argument to InterRDF cannot be used with",
+    ):
         InterRDF(s2, s2, exclude_same="residue", exclusion_block=tuple()).run()
-        
-        
+
+
 @pytest.mark.parametrize("attr", ("rdf", "bins", "edges", "count"))
 def test_rdf_attr_warning(sels, attr):
     s1, s2 = sels
@@ -126,18 +130,18 @@ def test_rdf_attr_warning(sels, attr):
         getattr(rdf, attr) is rdf.results[attr]
 
 
-@pytest.mark.parametrize("norm, value", [
-    ("density", 1.956823),
-    ("rdf", 244602.88385),
-    ("none", 4)])
+@pytest.mark.parametrize(
+    "norm, value", [("density", 1.956823), ("rdf", 244602.88385), ("none", 4)]
+)
 def test_norm(sels, norm, value):
     s1, s2 = sels
     rdf = InterRDF(s1, s2, norm=norm).run()
     assert_allclose(max(rdf.results.rdf), value)
 
 
-@pytest.mark.parametrize("norm, norm_required", [
-    ("Density", "density"), (None, "none")])
+@pytest.mark.parametrize(
+    "norm, norm_required", [("Density", "density"), (None, "none")]
+)
 def test_norm_values(sels, norm, norm_required):
     s1, s2 = sels
     rdf = InterRDF(s1, s2, norm=norm).run()

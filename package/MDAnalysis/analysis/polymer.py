@@ -45,7 +45,7 @@ from .base import AnalysisBase
 logger = logging.getLogger(__name__)
 
 
-@requires('bonds')
+@requires("bonds")
 def sort_backbone(backbone):
     """Rearrange a linear AtomGroup into backbone order
 
@@ -68,25 +68,30 @@ def sort_backbone(backbone):
     .. versionadded:: 0.20.0
     """
     if not backbone.n_fragments == 1:
-        raise ValueError("{} fragments found in backbone.  "
-                         "backbone must be a single contiguous AtomGroup"
-                         "".format(backbone.n_fragments))
+        raise ValueError(
+            "{} fragments found in backbone.  "
+            "backbone must be a single contiguous AtomGroup"
+            "".format(backbone.n_fragments)
+        )
 
-    branches = [at for at in backbone
-                if len(at.bonded_atoms & backbone) > 2]
+    branches = [at for at in backbone if len(at.bonded_atoms & backbone) > 2]
     if branches:
         # find which atom has too many bonds for easier debug
         raise ValueError(
             "Backbone is not linear.  "
             "The following atoms have more than two bonds in backbone: {}."
-            "".format(','.join(str(a) for a in branches)))
+            "".format(",".join(str(a) for a in branches))
+        )
 
-    caps = [atom for atom in backbone
-           if len(atom.bonded_atoms & backbone) == 1]
+    caps = [
+        atom for atom in backbone if len(atom.bonded_atoms & backbone) == 1
+    ]
     if not caps:
         # cyclical structure
-        raise ValueError("Could not find starting point of backbone, "
-                         "is the backbone cyclical?")
+        raise ValueError(
+            "Could not find starting point of backbone, "
+            "is the backbone cyclical?"
+        )
 
     # arbitrarily choose one of the capping atoms to be the startpoint
     sorted_backbone = AtomGroup([caps[0]])
@@ -229,9 +234,11 @@ class PersistenceLength(AnalysisBase):
        :attr:`lb`, :attr:`lp`, :attr:`fit` are now stored in a
        :class:`MDAnalysis.analysis.base.Results` instance.
     """
+
     def __init__(self, atomgroups, **kwargs):
         super(PersistenceLength, self).__init__(
-            atomgroups[0].universe.trajectory, **kwargs)
+            atomgroups[0].universe.trajectory, **kwargs
+        )
         self._atomgroups = atomgroups
 
         # Check that all chains are the same length
@@ -256,30 +263,36 @@ class PersistenceLength(AnalysisBase):
             vecs /= np.sqrt((vecs * vecs).sum(axis=1))[:, None]
 
             inner_pr = np.inner(vecs, vecs)
-            for i in range(n-1):
-                self._results[:(n-1)-i] += inner_pr[i, i:]
+            for i in range(n - 1):
+                self._results[: (n - 1) - i] += inner_pr[i, i:]
 
     @property
     def lb(self):
-        wmsg = ("The `lb` attribute was deprecated in "
-                "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
-                "Please use `results.variance` instead.")
+        wmsg = (
+            "The `lb` attribute was deprecated in "
+            "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
+            "Please use `results.variance` instead."
+        )
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.lb
 
     @property
     def lp(self):
-        wmsg = ("The `lp` attribute was deprecated in "
-                "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
-                "Please use `results.variance` instead.")
+        wmsg = (
+            "The `lp` attribute was deprecated in "
+            "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
+            "Please use `results.variance` instead."
+        )
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.lp
 
     @property
     def fit(self):
-        wmsg = ("The `fit` attribute was deprecated in "
-                "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
-                "Please use `results.variance` instead.")
+        wmsg = (
+            "The `fit` attribute was deprecated in "
+            "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
+            "Please use `results.variance` instead."
+        )
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.fit
 
@@ -309,13 +322,15 @@ class PersistenceLength(AnalysisBase):
             self.results.bond_autocorrelation
         except AttributeError:
             raise NoDataError("Use the run method first") from None
-        self.results.x = self.results.lb *\
-                            np.arange(len(self.results.bond_autocorrelation))
+        self.results.x = self.results.lb * np.arange(
+            len(self.results.bond_autocorrelation)
+        )
 
-        self.results.lp = fit_exponential_decay(self.results.x,
-                                                self.results.bond_autocorrelation)
+        self.results.lp = fit_exponential_decay(
+            self.results.x, self.results.bond_autocorrelation
+        )
 
-        self.results.fit = np.exp(-self.results.x/self.results.lp)
+        self.results.fit = np.exp(-self.results.x / self.results.lp)
 
     def plot(self, ax=None):
         """Visualize the results and fit
@@ -330,20 +345,21 @@ class PersistenceLength(AnalysisBase):
         ax : the axis that the graph was plotted on
         """
         import matplotlib.pyplot as plt
+
         if ax is None:
             fig, ax = plt.subplots()
-        ax.plot(self.results.x,
-                self.results.bond_autocorrelation,
-                'ro',
-                label='Result')
-        ax.plot(self.results.x,
-                self.results.fit,
-                label='Fit')
-        ax.set_xlabel(r'x')
-        ax.set_ylabel(r'$C(x)$')
+        ax.plot(
+            self.results.x,
+            self.results.bond_autocorrelation,
+            "ro",
+            label="Result",
+        )
+        ax.plot(self.results.x, self.results.fit, label="Fit")
+        ax.set_xlabel(r"x")
+        ax.set_ylabel(r"$C(x)$")
         ax.set_xlim(0.0, 40 * self.results.lb)
 
-        ax.legend(loc='best')
+        ax.legend(loc="best")
 
         return ax
 
@@ -368,8 +384,9 @@ def fit_exponential_decay(x, y):
     This function assumes that data starts at 1.0 and decays to 0.0
 
     """
+
     def expfunc(x, a):
-        return np.exp(-x/a)
+        return np.exp(-x / a)
 
     a = scipy.optimize.curve_fit(expfunc, x, y)[0][0]
 

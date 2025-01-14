@@ -28,12 +28,16 @@ import pytest
 
 
 def test_get_auxreader_for_none():
-    with pytest.raises(ValueError, match="Must provide either auxdata or format"):
+    with pytest.raises(
+        ValueError, match="Must provide either auxdata or format"
+    ):
         mda.auxiliary.core.get_auxreader_for()
 
 
 def test_get_auxreader_for_wrong_auxdata():
-    with pytest.raises(ValueError, match="Unknown auxiliary data format for auxdata:"):
+    with pytest.raises(
+        ValueError, match="Unknown auxiliary data format for auxdata:"
+    ):
         mda.auxiliary.core.get_auxreader_for(auxdata="test.none")
 
 
@@ -43,8 +47,9 @@ def test_get_auxreader_for_wrong_format():
 
 
 def test_notimplemented_read_next_timestep():
-    with pytest.raises(NotImplementedError, match="BUG: Override "
-                       "_read_next_step()"):
+    with pytest.raises(
+        NotImplementedError, match="BUG: Override " "_read_next_step()"
+    ):
         reader = mda.auxiliary.base.AuxReader()
 
 
@@ -54,7 +59,8 @@ class No_Memory_Usage(AuxReader):
 
 
 def test_notimplemented_memory_usage():
-    with pytest.raises(NotImplementedError, match="BUG: Override "
-                       "_memory_usage()"):
+    with pytest.raises(
+        NotImplementedError, match="BUG: Override " "_memory_usage()"
+    ):
         reader = No_Memory_Usage()
         reader._memory_usage()

@@ -48,6 +48,7 @@ multiple workers, initialized during a parallel run:
     assert r.masses == list((*r1.masses, *r2.masses))
     assert (r.vectors == np.vstack([r1.vectors, r2.vectors])).all()
 """
+
 from collections import UserDict
 import numpy as np
 from typing import Callable, Sequence
@@ -100,7 +101,9 @@ class Results(UserDict):
 
     def _validate_key(self, key):
         if key in dir(self):
-            raise AttributeError(f"'{key}' is a protected dictionary attribute")
+            raise AttributeError(
+                f"'{key}' is a protected dictionary attribute"
+            )
         elif isinstance(key, str) and not key.isidentifier():
             raise ValueError(f"'{key}' is not a valid attribute")
 
@@ -125,13 +128,17 @@ class Results(UserDict):
         try:
             return self[attr]
         except KeyError as err:
-            raise AttributeError(f"'Results' object has no attribute '{attr}'") from err
+            raise AttributeError(
+                f"'Results' object has no attribute '{attr}'"
+            ) from err
 
     def __delattr__(self, attr):
         try:
             del self[attr]
         except KeyError as err:
-            raise AttributeError(f"'Results' object has no attribute '{attr}'") from err
+            raise AttributeError(
+                f"'Results' object has no attribute '{attr}'"
+            ) from err
 
     def __getstate__(self):
         return self.data
@@ -166,7 +173,7 @@ class ResultsGroup:
         obj1 = Results(mass=1)
         obj2 = Results(mass=3)
         assert {'mass': 2.0} == group.merge([obj1, obj2])
-    
+
 
     .. code-block:: python
 
@@ -182,10 +189,12 @@ class ResultsGroup:
     def __init__(self, lookup: dict[str, Callable] = None):
         self._lookup = lookup
 
-    def merge(self, objects: Sequence[Results], require_all_aggregators: bool = True) -> Results:
-        """Merge multiple Results into a single Results instance. 
+    def merge(
+        self, objects: Sequence[Results], require_all_aggregators: bool = True
+    ) -> Results:
+        """Merge multiple Results into a single Results instance.
 
-        Merge multiple :class:`Results` instances into a single one, using the 
+        Merge multiple :class:`Results` instances into a single one, using the
         `lookup` dictionary to determine the appropriate aggregator functions for
         each named results attribute. If the resulting object only contains a single
         element, it just returns it without using any aggregators.
@@ -213,7 +222,7 @@ class ResultsGroup:
         if len(objects) == 1:
             merged_results = objects[0]
             return merged_results
-        
+
         merged_results = Results()
         for key in objects[0].keys():
             agg_function = self._lookup.get(key, None)
