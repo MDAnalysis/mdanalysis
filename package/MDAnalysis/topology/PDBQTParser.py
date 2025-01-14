@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -32,10 +32,16 @@ partial charges (:attr:`Atom.charge`).
 * Reads a PDBQT file line by line and does not require sequential atom numbering.
 * Multi-model PDBQT files are not supported.
 
+.. note::
+
+    By default, masses will be guessed on Universe creation.
+    This may change in release 3.0.
+    See :ref:`Guessers` for more information.
+
 Notes
 -----
 Only reads atoms and their names; connectivity is not
-deduced. Masses are guessed and set to 0 if unknown.
+deduced.
 
 
 See Also
@@ -57,7 +63,6 @@ Classes
 """
 import numpy as np
 
-from . import guessers
 from ..lib import util
 from .base import TopologyReaderBase, change_squash
 from ..core.topology import Topology
@@ -68,7 +73,6 @@ from ..core.topologyattrs import (
     Atomtypes,
     Charges,
     ICodes,
-    Masses,
     Occupancies,
     RecordTypes,
     Resids,
@@ -97,19 +101,21 @@ class PDBQTParser(TopologyReaderBase):
      - tempfactors
      - charges
 
-    Guesses the following:
-     - masses
 
     .. versionchanged:: 0.18.0
        Added parsing of Record types
     .. versionchanged:: 2.7.0
        Columns 67 - 70 in ATOM records, corresponding to the field *footnote*,
        are now ignored. See Autodock's `reference`_.
+    .. versionchanged:: 2.8.0
+        Removed mass guessing (attributes guessing takes place now
+        through universe.guess_TopologyAttrs() API).
 
-       .. _reference: 
+       .. _reference:
           https://autodock.scripps.edu/wp-content/uploads/sites/56/2021/10/AutoDock4.2.6_UserGuide.pdf
     """
-    format = 'PDBQT'
+
+    format = "PDBQT"
 
     def parse(self, **kwargs):
         """Parse atom information from PDBQT file *filename*.
@@ -134,7 +140,7 @@ class PDBQTParser(TopologyReaderBase):
         with util.openany(self.filename) as f:
             for line in f:
                 line = line.strip()
-                if not line.startswith(('ATOM', 'HETATM')):
+                if not line.startswith(("ATOM", "HETATM")):
                     continue
                 record_types.append(line[:6].strip())
                 serials.append(int(line[6:11]))
@@ -151,21 +157,18 @@ class PDBQTParser(TopologyReaderBase):
 
         n_atoms = len(serials)
 
-        masses = guessers.guess_masses(atomtypes)
-
         attrs = []
         for attrlist, Attr, dtype in (
-                (record_types, RecordTypes, object),
-                (serials, Atomids, np.int32),
-                (names, Atomnames, object),
-                (altlocs, AltLocs, object),
-                (occupancies, Occupancies, np.float32),
-                (tempfactors, Tempfactors, np.float32),
-                (charges, Charges, np.float32),
-                (atomtypes, Atomtypes, object),
+            (record_types, RecordTypes, object),
+            (serials, Atomids, np.int32),
+            (names, Atomnames, object),
+            (altlocs, AltLocs, object),
+            (occupancies, Occupancies, np.float32),
+            (tempfactors, Tempfactors, np.float32),
+            (charges, Charges, np.float32),
+            (atomtypes, Atomtypes, object),
         ):
             attrs.append(Attr(np.array(attrlist, dtype=dtype)))
-        attrs.append(Masses(masses, guessed=True))
 
         resids = np.array(resids, dtype=np.int32)
         icodes = np.array(icodes, dtype=object)
@@ -175,7 +178,8 @@ class PDBQTParser(TopologyReaderBase):
         attrs.append(ChainIDs(chainids))
 
         residx, (resids, icodes, resnames, chainids) = change_squash(
-            (resids, icodes), (resids, icodes, resnames, chainids))
+            (resids, icodes), (resids, icodes, resnames, chainids)
+        )
         n_residues = len(resids)
         attrs.append(Resids(resids))
         attrs.append(Resnums(resids.copy()))
@@ -186,9 +190,13 @@ class PDBQTParser(TopologyReaderBase):
         n_segments = len(segids)
         attrs.append(Segids(segids))
 
-        top = Topology(n_atoms, n_residues, n_segments,
-                       attrs=attrs,
-                       atom_resindex=residx,
-                       residue_segindex=segidx)
+        top = Topology(
+            n_atoms,
+            n_residues,
+            n_segments,
+            attrs=attrs,
+            atom_resindex=residx,
+            residue_segindex=segidx,
+        )
 
         return top

@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -26,7 +26,7 @@
 
 :Author: Oliver Beckstein, Joshua Adelman
 :Year: 2010--2013
-:Copyright: GNU Public License v3
+:Copyright: Lesser GNU Public License v2.1+
 
 The module contains functions to fit a target structure to a reference
 structure. They use the fast QCP algorithm to calculate the root mean
@@ -1592,9 +1592,12 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False, match_atoms=True):
         rsize_mismatches = np.absolute(rsize1 - rsize2)
         mismatch_mask = (rsize_mismatches > 0)
         if np.any(mismatch_mask):
-            def get_atoms_byres(g, match_mask=np.logical_not(mismatch_mask)):
+
+            def get_atoms_byres(g, match_mask=None):
                 # not pretty... but need to do things on a per-atom basis in
                 # order to preserve original selection
+                if match_mask is None:
+                    match_mask = np.logical_not(mismatch_mask)
                 ag = g.atoms
                 good = ag.residues.resids[match_mask]  # resid for each residue
                 resids = ag.resids                     # resid for each atom

@@ -21,8 +21,8 @@ inputs:
     default: 'codecov'
   cython:
     default: 'cython'
-  fasteners:
-    default: 'fasteners'
+  filelock:
+    default: 'filelock'
   griddataformats:
     default: 'griddataformats'
   gsd:
@@ -59,7 +59,7 @@ inputs:
   dask:
     default: 'dask'
   distopia:
-    default: 'distopia>=0.2.0'
+    default: 'distopia>=0.2.0,<0.3.0'
   h5py:
     default: 'h5py>=2.10'
   hole2:
@@ -110,7 +110,7 @@ runs:
         CONDA_MIN_DEPS: |
           ${{ inputs.codecov }}
           ${{ inputs.cython }}
-          ${{ inputs.fasteners }}
+          ${{ inputs.filelock }}
           ${{ inputs.griddataformats }}
           ${{ inputs.hypothesis }}
           ${{ inputs.matplotlib }}

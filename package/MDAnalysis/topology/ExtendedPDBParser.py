@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -60,31 +60,36 @@ from . import PDBParser
 class ExtendedPDBParser(PDBParser.PDBParser):
     """Parser that handles non-standard "extended" PDB file.
 
-    Extended PDB files (MDAnalysis format specifier *XPDB*) may contain residue
-    sequence numbers up to 99,999 by utilizing the insertion character field of
-    the PDB standard.
+     Extended PDB files (MDAnalysis format specifier *XPDB*) may contain residue
+     sequence numbers up to 99,999 by utilizing the insertion character field of
+     the PDB standard.
 
-    Creates a Topology with the following Attributes (if present):
-     - serials
-     - names
-     - altLocs
-     - chainids
-     - tempfactors
-     - occupancies
-     - resids
-     - resnames
-     - segids
-     - elements
-     - bonds
-     - formalcharges
+     Creates a Topology with the following Attributes (if present):
+      - serials
+      - names
+      - altLocs
+      - chainids
+      - tempfactors
+      - occupancies
+      - resids
+      - resnames
+      - segids
+      - elements
+      - bonds
+      - formalcharges
 
-    Guesses the following Attributes:
-     - masses
+    .. note::
 
-    See Also
-    --------
-    :class:`MDAnalysis.coordinates.PDB.ExtendedPDBReader`
+       By default, atomtypes and masses will be guessed on Universe creation.
+       This may change in release 3.0.
+       See :ref:`Guessers` for more information.
 
-    .. versionadded:: 0.8
+
+     See Also
+     --------
+     :class:`MDAnalysis.coordinates.PDB.ExtendedPDBReader`
+
+     .. versionadded:: 0.8
     """
-    format = 'XPDB'
+
+    format = "XPDB"

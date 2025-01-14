@@ -14,15 +14,55 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, HeetVekariya, marinegor, lilyminium, RMeli,
+??/??/?? IAlibay, ChiahsinChu, RMeli, tanishy7777, talagayev, tylerjereddy,
+         marinegor
+
+ * 2.9.0
+
+Fixes
+ * Add support for TPR files produced by GROMACS 2024.4
+ * Fixes invalid default unit from Angstrom to Angstrom^{-3} for convert_density() function. (Issue #4829)
+ * Fixes deprecation warning Array to scalar convertion. Replaced atan2() with np.arctan2() (Issue #4339)
+ * Replaced mutable defaults with None and initialized them within
+   the function to prevent shared state. (Issue #4655)
+
+Enhancements
+ * Addition of 'water' token for water selection (Issue #4839)
+ * Enables parallelization for analysis.density.DensityAnalysis (Issue #4677, PR #4729)
+ * Enables parallelization for analysis.contacts.Contacts (Issue #4660)
+ * Enable parallelization for analysis.nucleicacids.NucPairDist (Issue #4670)
+ * Add check and warning for empty (all zero) coordinates in RDKit converter (PR #4824)
+ * Added `precision` for XYZWriter (Issue #4775, PR #4771)
+
+
+Changes
+ * Changed `fasteners` dependency to  `filelock` (Issue #4797, PR #4800)
+ * Codebase is now formatted with black (version `24`) (PR #4886)
+
+Deprecations
+
+
+11/11/24 IAlibay, HeetVekariya, marinegor, lilyminium, RMeli,
          ljwoods2, aditya292002, pstaerk, PicoCentauri, BFedder,
-         tyler.je.reddy, SampurnaM, leonwehrhan, kainszs, orionarcher,
+         tyler.je.reddy, SampurnaM, leonwehrhan, kainszs, orionarcher, 
          yuxuanzhuang, PythonFZ, laksh-krishna-sharma, orbeckst, MattTDavies,
-         talagayev
+         talagayev, aya9aladdin
 
  * 2.8.0
 
 Fixes
+ * Allows bond/angle/dihedral connectivity to be guessed additively with
+   `to_guess`, and as a replacement of existing values with `force_guess`.
+   Also updates cached bond attributes when updating bonds. (Issue #4759, PR #4761)
+ * Fixes bug where deleting connections by index would only delete
+   one of multiple, if multiple are present (Issue #4762, PR #4763)
+ * Changes error to warning on Universe creation if guessing fails
+   due to missing information (Issue #4750, PR #4754)
+ * Adds guessed attributes documentation back to each parser page
+   and updates overall guesser docs (Issue #4696)
+ * Fix Bohrium (Bh) atomic mass in tables.py (PR #3753)
+ * set `n_parts` to the total number of frames being analyzed if
+   `n_parts` is bigger. (Issue #4685)
  * Catch higher dimensional indexing in GroupBase & ComponentBase (Issue #4647)
  * Do not raise an Error reading H5MD files with datasets like
    `observables/<particle>/<property>` (part of Issue #4598, PR #4615)
@@ -36,14 +76,14 @@ Fixes
  * Fix `MDAnalysis.analysis.align.AlignTraj` not accepting writer kwargs
    (Issue #4564, PR #4565)
  * Fix #4259 via removing argument `parallelizable` of `NoJump` transformation.
- * Fix doctest errors of analysis/pca.py related to rounding issues 
+ * Fix doctest errors of analysis/pca.py related to rounding issues
    (Issue #3925, PR #4377)
  * Convert openmm Quantity to raw value for KE and PE in OpenMMSimulationReader.
  * Atomname methods can handle empty groups (Issue #2879, PR #4529)
  * Add support for TPR files produced by Gromacs 2024.1 (PR #4523)
  * Remove mutable data from ``progressbar_kwargs`` argument in ``AnalysisBase.run()``
    (PR #4459)
- * Fix ChainReader `__repr__()` method when sub-reader is MemoryReader 
+ * Fix ChainReader `__repr__()` method when sub-reader is MemoryReader
    (Issue #3349, PR #4407)
  * Fix bug in PCA preventing use of `frames=...` syntax (PR #4423)
  * Fix `analysis/diffusionmap.py` iteration through trajectory to iteration
@@ -54,22 +94,40 @@ Fixes
  * Fix groups.py doctests using sphinx directives (Issue #3925, PR #4374)
 
 Enhancements
+ * Removed type and mass guessing from all topology parsers (PR #3753)
+ * Added guess_TopologyAttrs() API to the Universe to handle attribute
+   guessing (PR #3753)
+ * Added the DefaultGuesser class, which is a general-purpose guesser with
+   the same functionalities as the existing guesser.py methods (PR #3753)
+ * Added is_value_missing() to `TopologyAttrs` to check for missing
+   values (PR #3753)
+ * Added guessed `Element` attribute to the ITPParser to preserve old mass
+   partial guessing behavior from being broken (PR #3753)
+ * MDAnalysis now supports Python 3.13 (PR #4732)
  * Introduce parallelization API to `AnalysisBase` and to `analysis.rms.RMSD` class
    (Issue #4158, PR #4304)
  * Enables parallelization for analysis.gnm.GNMAnalysis (Issue #4672)
- * explicitly mark `analysis.pca.PCA` as not parallelizable (Issue #4680)
+ * Explicitly mark `analysis.pca.PCA` as not parallelizable (Issue #4680)
+ * Enables parallelization for analysis.bat.BAT (Issue #4663)
+ * Enable parallelization for analysis.dihedrals.{Dihedral,Ramachandran,Janin}
+   (Issue #4673) 
+ * Enables parallelization for analysis.dssp.dssp.DSSP (Issue #4674)
+ * Enables parallelization for analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis (Issue #4664)
  * Improve error message for `AtomGroup.unwrap()` when bonds are not present.(Issue #4436, PR #4642)
  * Add `analysis.DSSP` module for protein secondary structure assignment, based on [pydssp](https://github.com/ShintaroMinami/PyDSSP)
  * Added a tqdm progress bar for `MDAnalysis.analysis.pca.PCA.transform()`
    (PR #4531)
  * Improved performance of PDBWriter (Issue #2785, PR #4472)
  * Added parsing of arbitrary columns of the LAMMPS dump parser. (Issue #3504)
- * Documented the r0 attribute in the `Contacts` class and added the 
+ * Documented the r0 attribute in the `Contacts` class and added the
    `n_initial_contacts` attribute, with documentation. (Issue #2604, PR #4415)
- * Implement average structures with iterative algorithm from 
+ * Implement average structures with iterative algorithm from
    DOI 10.1021/acs.jpcb.7b11988. (Issue #2039, PR #4524)
 
 Changes
+ * Relicense code contributions from GPLv2+ to LGPLv2.1+
+   and the package from GPLv3+ to LGPLv3+ (PR #4794)
+ * only use distopia < 0.3.0 due to API changes (Issue #4739)
  * The `fetch_mmtf` method has been removed as the REST API service
    for MMTF files has ceased to exist (Issue #4634)
  * MDAnalysis now builds against numpy 2.0 rather than the
@@ -91,6 +149,25 @@ Changes
    numpy.testing.assert_allclose #4438)
 
 Deprecations
+ * The `guess_bonds`, `vdwradii`, `fudge_factor`, and `lower_bound` kwargs
+   are deprecated for bond guessing during Universe creation. Instead,
+   pass `("bonds", "angles", "dihedrals")` into `to_guess` or `force_guess`
+   during Universe creation, and the associated `vdwradii`, `fudge_factor`,
+   and `lower_bound` kwargs into `Guesser` creation. Alternatively, if
+   `vdwradii`, `fudge_factor`, and `lower_bound` are passed into
+   `Universe.guess_TopologyAttrs`, they will override the previous values
+   of those kwargs. (Issue #4756, PR #4757)
+ * MDAnalysis.topology.guessers is deprecated in favour of the new
+   Guessers API and will be removed in version 3.0 (PR #4752)
+ * MDAnalysis.topology.tables is deprecated in favour of
+   MDAnalysis.guesser.tables and will be removed in version 3.0 (PR #4752)
+ * Element guessing in the ITPParser is deprecated and will be removed in version 3.0
+   (Issue #4698)
+ * Unknown masses are set to 0.0 for current version, this will be depracated
+   in version 3.0.0 and replaced by :class:`Masses`' no_value_label attribute(np.nan)
+   (PR #3753)
+ * The MDAnalysis.anaylsis.encore module has been deprecated in favour of the
+   mdaencore MDAKit and will be removed in version 3.0.0 (PR #4737)
  * The MMTF Reader is deprecated and will be removed in version 3.0
    as the MMTF format is no longer supported (Issue #4634)
  * The MDAnalysis.analysis.waterdynamics module has been deprecated in favour

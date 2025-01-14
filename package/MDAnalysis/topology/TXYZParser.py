@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -47,17 +47,16 @@ import itertools
 import numpy as np
 import warnings
 
-from . import guessers
-from .tables import SYMB2Z
+from ..guesser.tables import SYMB2Z
 from ..lib.util import openany
 from .base import TopologyReaderBase
 from ..core.topology import Topology
+from ..guesser.tables import SYMB2Z
 from ..core.topologyattrs import (
     Atomnames,
     Atomids,
     Atomtypes,
     Bonds,
-    Masses,
     Resids,
     Resnums,
     Segids,
@@ -74,11 +73,22 @@ class TXYZParser(TopologyReaderBase):
     - Atomtypes
     - Elements (if all atom names are element symbols)
 
+    .. note::
+
+        By default, masses will be guessed on Universe creation.
+        This may change in release 3.0.
+        See :ref:`Guessers` for more information.
+
     .. versionadded:: 0.17.0
     .. versionchanged:: 2.4.0
        Adding the `Element` attribute if all names are valid element symbols.
+    .. versionchanged:: 2.8.0
+       Removed mass guessing (attributes guessing takes place now
+       through universe.guess_TopologyAttrs() API).
+
     """
-    format = ['TXYZ', 'ARC']
+
+    format = ["TXYZ", "ARC"]
 
     def parse(self, **kwargs):
         """Read the file and return the structure.
@@ -88,13 +98,14 @@ class TXYZParser(TopologyReaderBase):
         MDAnalysis Topology object
         """
         with openany(self.filename) as inf:
-            #header
+            # header
             natoms = int(inf.readline().split()[0])
 
             atomids = np.zeros(natoms, dtype=int)
             names = np.zeros(natoms, dtype=object)
             types = np.zeros(natoms, dtype=object)
             bonds = []
+
             # Find first atom line, maybe there's box information
             fline = inf.readline()
             try:
@@ -111,7 +122,7 @@ class TXYZParser(TopologyReaderBase):
             # Can't infinitely read as XYZ files can be multiframe
             for i, line in zip(range(natoms), itertools.chain([fline], inf)):
                 line = line.split()
-                atomids[i]= line[0]
+                atomids[i] = line[0]
                 names[i] = line[1]
                 types[i] = line[5]
                 bonded_atoms = line[6:]
@@ -120,27 +131,26 @@ class TXYZParser(TopologyReaderBase):
                     if i < other_atom:
                         bonds.append((i, other_atom))
 
-        # Guessing time
-        masses = guessers.guess_masses(names)
-
-        attrs = [Atomnames(names),
-                 Atomids(atomids),
-                 Atomtypes(types),
-                 Bonds(tuple(bonds)),
-                 Masses(masses, guessed=True),
-                 Resids(np.array([1])),
-                 Resnums(np.array([1])),
-                 Segids(np.array(['SYSTEM'], dtype=object)),
-                 ]
+        attrs = [
+            Atomnames(names),
+            Atomids(atomids),
+            Atomtypes(types),
+            Bonds(tuple(bonds)),
+            Resids(np.array([1])),
+            Resnums(np.array([1])),
+            Segids(np.array(["SYSTEM"], dtype=object)),
+        ]
         if all(n.capitalize() in SYMB2Z for n in names):
             attrs.append(Elements(np.array(names, dtype=object)))
-            
+
         else:
-            warnings.warn("Element information is missing, elements attribute "
-                          "will not be populated. If needed these can be "
-                          "guessed using MDAnalysis.topology.guessers.")
- 
-        top = Topology(natoms, 1, 1,
-                       attrs=attrs)
+            warnings.warn(
+                "Element information is missing, elements attribute "
+                "will not be populated. If needed these can be "
+                "guessed using universe.guess_TopologyAttrs("
+                "to_guess=['elements'])."
+            )
+
+        top = Topology(natoms, 1, 1, attrs=attrs)
 
         return top

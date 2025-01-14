@@ -1,8 +1,9 @@
+import MDAnalysis as mda
 import numpy as np
 from MDAnalysis.coordinates.GRO import GROReader
 from MDAnalysis.topology.GROParser import GROParser
 from MDAnalysisTests.datafiles import GRO
-import MDAnalysis as mda
+
 
 class GROReadBench(object):
     def time_read_GRO_coordinates(self):

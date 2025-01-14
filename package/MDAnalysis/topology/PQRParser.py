@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -49,7 +49,6 @@ Classes
 """
 import numpy as np
 
-from . import guessers
 from ..lib.util import openany
 from ..core.topologyattrs import (
     Atomids,
@@ -57,7 +56,6 @@ from ..core.topologyattrs import (
     Atomtypes,
     Charges,
     ICodes,
-    Masses,
     Radii,
     RecordTypes,
     Resids,
@@ -82,9 +80,14 @@ class PQRParser(TopologyReaderBase):
      - Resnames
      - Segids
 
-    Guesses the following:
-     - atomtypes (if not present, Gromacs generated PQR files have these)
-     - masses
+     .. note::
+
+        Atomtypes will be read from the input file if they are present
+        (e.g. GROMACS PQR files). Otherwise, they will be guessed on Universe
+        creation. By default, masses will also be guessed on Universe creation.
+        This may change in release 3.0.
+        See :ref:`Guessers` for more information.
+
 
     .. versionchanged:: 0.9.0
        Read chainID from a PQR file and use it as segid (before we always used
@@ -95,8 +98,13 @@ class PQRParser(TopologyReaderBase):
        Added parsing of Record types
        Can now read PQR files from Gromacs, these provide atom type as last column
        but don't have segids
+    .. versionchanged:: 2.8.0
+        Removed type and mass guessing (attributes guessing takes place now
+        through universe.guess_TopologyAttrs() API).
+
     """
-    format = 'PQR'
+
+    format = "PQR"
 
     @staticmethod
     def guess_flavour(line):
@@ -119,11 +127,11 @@ class PQRParser(TopologyReaderBase):
             try:
                 float(fields[-1])
             except ValueError:
-                flavour = 'GROMACS'
+                flavour = "GROMACS"
             else:
-                flavour = 'ORIGINAL'
+                flavour = "ORIGINAL"
         else:
-            flavour = 'NO_CHAINID'
+            flavour = "NO_CHAINID"
         return flavour
 
     def parse(self, **kwargs):
@@ -154,20 +162,50 @@ class PQRParser(TopologyReaderBase):
 
                 if flavour is None:
                     flavour = self.guess_flavour(line)
-                if flavour == 'ORIGINAL':
-                    (recordName, serial, name, resName,
-                     chainID, resSeq, x, y, z, charge,
-                     radius) = fields
-                elif flavour == 'GROMACS':
-                    (recordName, serial, name, resName,
-                     resSeq, x, y, z, charge,
-                     radius, element) = fields
+                if flavour == "ORIGINAL":
+                    (
+                        recordName,
+                        serial,
+                        name,
+                        resName,
+                        chainID,
+                        resSeq,
+                        x,
+                        y,
+                        z,
+                        charge,
+                        radius,
+                    ) = fields
+                elif flavour == "GROMACS":
+                    (
+                        recordName,
+                        serial,
+                        name,
+                        resName,
+                        resSeq,
+                        x,
+                        y,
+                        z,
+                        charge,
+                        radius,
+                        element,
+                    ) = fields
                     chainID = "SYSTEM"
                     elements.append(element)
-                elif flavour == 'NO_CHAINID':
+                elif flavour == "NO_CHAINID":
                     # files without the chainID
-                    (recordName, serial, name, resName,
-                     resSeq, x, y, z, charge, radius) = fields
+                    (
+                        recordName,
+                        serial,
+                        name,
+                        resName,
+                        resSeq,
+                        x,
+                        y,
+                        z,
+                        charge,
+                        radius,
+                    ) = fields
                     chainID = "SYSTEM"
 
                 try:
@@ -177,7 +215,7 @@ class PQRParser(TopologyReaderBase):
                     resid = int(resSeq[:-1])
                     icode = resSeq[-1]
                 else:
-                    icode = ''
+                    icode = ""
 
                 record_types.append(recordName)
                 serials.append(serial)
@@ -191,20 +229,14 @@ class PQRParser(TopologyReaderBase):
 
         n_atoms = len(serials)
 
-        if not elements:
-            atomtypes = guessers.guess_types(names)
-            guessed_types = True
-        else:
-            atomtypes = elements
-            guessed_types = False
-        masses = guessers.guess_masses(atomtypes)
-
         attrs = []
+        if elements:
+            atomtypes = elements
+            attrs.append(Atomtypes(atomtypes, False))
+
         attrs.append(Atomids(np.array(serials, dtype=np.int32)))
         attrs.append(Atomnames(np.array(names, dtype=object)))
         attrs.append(Charges(np.array(charges, dtype=np.float32)))
-        attrs.append(Atomtypes(atomtypes, guessed=guessed_types))
-        attrs.append(Masses(masses, guessed=True))
         attrs.append(RecordTypes(np.array(record_types, dtype=object)))
         attrs.append(Radii(np.array(radii, dtype=np.float32)))
 
@@ -215,7 +247,8 @@ class PQRParser(TopologyReaderBase):
 
         residx, (resids, resnames, icodes, chainIDs) = change_squash(
             (resids, resnames, icodes, chainIDs),
-            (resids, resnames, icodes, chainIDs))
+            (resids, resnames, icodes, chainIDs),
+        )
 
         n_residues = len(resids)
         attrs.append(Resids(resids))
@@ -228,9 +261,13 @@ class PQRParser(TopologyReaderBase):
         n_segments = len(chainIDs)
         attrs.append(Segids(chainIDs))
 
-        top = Topology(n_atoms, n_residues, n_segments,
-                       attrs=attrs,
-                       atom_resindex=residx,
-                       residue_segindex=segidx)
+        top = Topology(
+            n_atoms,
+            n_residues,
+            n_segments,
+            attrs=attrs,
+            atom_resindex=residx,
+            residue_segindex=segidx,
+        )
 
         return top

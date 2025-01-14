@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -30,8 +30,15 @@ an ensemble of structures.
 :Author: Matteo Tiberti, Wouter Boomsma, Tone Bengtsen
 
 .. versionadded:: 0.16.0
+
+.. deprecated:: 2.8.0
+   This module is deprecated in favour of the 
+   MDAKit `mdaencore <https://mdanalysis.org/mdaencore/>`_ and will be removed
+   in MDAnalysis 3.0.0.
+
 """
 import numpy as np
+
 
 def ml_covariance_estimator(coordinates, reference_coordinates=None):
     """
@@ -64,17 +71,17 @@ def ml_covariance_estimator(coordinates, reference_coordinates=None):
         coordinates_offset = coordinates - np.average(coordinates, axis=0)
 
     # Calculate covariance manually
-    coordinates_cov = np.zeros((coordinates.shape[1],
-                                coordinates.shape[1]))
+    coordinates_cov = np.zeros((coordinates.shape[1], coordinates.shape[1]))
     for frame in coordinates_offset:
         coordinates_cov += np.outer(frame, frame)
     coordinates_cov /= coordinates.shape[0]
 
     return coordinates_cov
 
-def shrinkage_covariance_estimator( coordinates,
-                                    reference_coordinates=None,
-                                    shrinkage_parameter=None):
+
+def shrinkage_covariance_estimator(
+    coordinates, reference_coordinates=None, shrinkage_parameter=None
+):
     """
     Shrinkage estimator of the covariance matrix using the method described in
 
@@ -119,8 +126,11 @@ def shrinkage_covariance_estimator( coordinates,
     xmkt = np.average(x, axis=1)
 
     # Call maximum likelihood estimator (note the additional column)
-    sample = ml_covariance_estimator(np.hstack([x, xmkt[:, np.newaxis]]), 0)\
-        * (t-1)/float(t)
+    sample = (
+        ml_covariance_estimator(np.hstack([x, xmkt[:, np.newaxis]]), 0)
+        * (t - 1)
+        / float(t)
+    )
 
     # Split covariance matrix into components
     covmkt = sample[0:n, n]
@@ -128,53 +138,59 @@ def shrinkage_covariance_estimator( coordinates,
     sample = sample[:n, :n]
 
     # Prior
-    prior = np.outer(covmkt, covmkt)/varmkt
+    prior = np.outer(covmkt, covmkt) / varmkt
     prior[np.ma.make_mask(np.eye(n))] = np.diag(sample)
 
     # If shrinkage parameter is not set, estimate it
     if shrinkage_parameter is None:
 
         # Frobenius norm
-        c = np.linalg.norm(sample - prior, ord='fro')**2
+        c = np.linalg.norm(sample - prior, ord="fro") ** 2
 
         y = x**2
-        p = 1/float(t)*np.sum(np.dot(np.transpose(y), y))\
-            - np.sum(np.sum(sample**2))
-        rdiag = 1/float(t)*np.sum(np.sum(y**2))\
-            - np.sum(np.diag(sample)**2)
+        p = 1 / float(t) * np.sum(np.dot(np.transpose(y), y)) - np.sum(
+            np.sum(sample**2)
+        )
+        rdiag = 1 / float(t) * np.sum(np.sum(y**2)) - np.sum(
+            np.diag(sample) ** 2
+        )
         z = x * np.repeat(xmkt[:, np.newaxis], n, axis=1)
-        v1 = 1/float(t) * np.dot(np.transpose(y), z) \
-            - np.repeat(covmkt[:, np.newaxis], n, axis=1)*sample
-        roff1 = (np.sum(
-            v1*np.transpose(
-                np.repeat(
-                    covmkt[:, np.newaxis], n, axis=1)
-                )
-            )/varmkt -
-                 np.sum(np.diag(v1)*covmkt)/varmkt)
-        v3 = 1/float(t)*np.dot(np.transpose(z), z) - varmkt*sample
-        roff3 = (np.sum(v3*np.outer(covmkt, covmkt))/varmkt**2 -
-                 np.sum(np.diag(v3)*covmkt**2)/varmkt**2)
-        roff = 2*roff1-roff3
-        r = rdiag+roff
+        v1 = (
+            1 / float(t) * np.dot(np.transpose(y), z)
+            - np.repeat(covmkt[:, np.newaxis], n, axis=1) * sample
+        )
+        roff1 = (
+            np.sum(
+                v1 * np.transpose(np.repeat(covmkt[:, np.newaxis], n, axis=1))
+            )
+            / varmkt
+            - np.sum(np.diag(v1) * covmkt) / varmkt
+        )
+        v3 = 1 / float(t) * np.dot(np.transpose(z), z) - varmkt * sample
+        roff3 = (
+            np.sum(v3 * np.outer(covmkt, covmkt)) / varmkt**2
+            - np.sum(np.diag(v3) * covmkt**2) / varmkt**2
+        )
+        roff = 2 * roff1 - roff3
+        r = rdiag + roff
 
         # Shrinkage constant
-        k = (p-r)/c
-        shrinkage_parameter = max(0, min(1, k/float(t)))
+        k = (p - r) / c
+        shrinkage_parameter = max(0, min(1, k / float(t)))
 
     # calculate covariance matrix
-    sigma = shrinkage_parameter*prior+(1-shrinkage_parameter)*sample
+    sigma = shrinkage_parameter * prior + (1 - shrinkage_parameter) * sample
 
     return sigma
 
 
-
-
-def covariance_matrix(ensemble,
-                      select="name CA",
-                      estimator=shrinkage_covariance_estimator,
-                      weights='mass',
-                      reference=None):
+def covariance_matrix(
+    ensemble,
+    select="name CA",
+    estimator=shrinkage_covariance_estimator,
+    weights="mass",
+    reference=None,
+):
     """
     Calculates (optionally mass weighted) covariance matrix
 
@@ -203,8 +219,8 @@ def covariance_matrix(ensemble,
     """
     # Extract coordinates from ensemble
     coordinates = ensemble.trajectory.timeseries(
-        ensemble.select_atoms(select),
-        order='fac')
+        ensemble.select_atoms(select), order="fac"
+    )
 
     # Flatten coordinate matrix into n_frame x n_coordinates
     coordinates = np.reshape(coordinates, (coordinates.shape[0], -1))
@@ -224,7 +240,10 @@ def covariance_matrix(ensemble,
     # Optionally correct with weights
     if weights is not None:
         # Calculate mass-weighted covariance matrix
-        if not isinstance(weights, (list, tuple, np.ndarray)) and weights == 'mass':
+        if (
+            not isinstance(weights, (list, tuple, np.ndarray))
+            and weights == "mass"
+        ):
             if select:
                 weights = ensemble.select_atoms(select).masses
             else:
@@ -235,13 +254,15 @@ def covariance_matrix(ensemble,
             else:
                 req_len = ensemble.atoms.n_atoms
             if req_len != len(weights):
-                raise ValueError("number of weights is unequal to number of "
-                                 "atoms in ensemble")
+                raise ValueError(
+                    "number of weights is unequal to number of "
+                    "atoms in ensemble"
+                )
 
         # broadcast to a (len(weights), 3) array
         weights = np.repeat(weights, 3)
 
-        weight_matrix = np.sqrt(np.identity(len(weights))*weights)
+        weight_matrix = np.sqrt(np.identity(len(weights)) * weights)
         sigma = np.dot(weight_matrix, np.dot(sigma, weight_matrix))
 
     return sigma

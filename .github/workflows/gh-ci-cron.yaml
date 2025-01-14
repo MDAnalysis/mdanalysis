@@ -40,9 +40,7 @@ jobs:
       with:
         os-type: "ubuntu"
 
-    - uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
+    - uses: actions/setup-python@v5
 
     # minimally install nightly wheels & core deps
     - name: nightly_wheels
@@ -106,7 +104,7 @@ jobs:
         os-type: "ubuntu"
 
     - name: setup_micromamba
-      uses: mamba-org/setup-micromamba@v1
+      uses: mamba-org/setup-micromamba@v2
       with:
         environment-name: mda
         create-args: >-
@@ -148,7 +146,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, macos-12]
+        os: [ubuntu-20.04, macos-13]
 
     steps:
     - uses: actions/checkout@v4
@@ -159,7 +157,7 @@ jobs:
         os-type: ${{ matrix.os }}
 
     - name: setup_micromamba
-      uses: mamba-org/setup-micromamba@v1
+      uses: mamba-org/setup-micromamba@v2
       with:
         environment-name: mda
         create-args: >-
@@ -197,7 +195,7 @@ jobs:
     strategy:
         fail-fast: false
         matrix:
-          python-version: ["3.10", "3.11", "3.12"]
+          python-version: ["3.10", "3.11", "3.12", "3.13"]
     steps:
     - uses: actions/checkout@v4
 
@@ -239,9 +237,11 @@ jobs:
         fail-fast: false
         matrix:
           # Stick to macos-13 because some of our
-          # optional depss don't support arm64 (i.e. macos-14)
+          # optional deps don't support arm64 (i.e. macos-14)
+          #
+          # add "3.13" once conda-forge packages are available (see #4805)
           os: [ubuntu-latest, macos-13]
-          python-version: ["3.9", "3.10", "3.11", "3.12"]
+          python-version: ["3.10", "3.11", "3.12"]
     steps:
     - uses: actions/checkout@v4
 
@@ -251,7 +251,7 @@ jobs:
         os-type: ${{ matrix.os }}
 
     - name: setup_micromamba
-      uses: mamba-org/setup-micromamba@v1
+      uses: mamba-org/setup-micromamba@v2
       with:
         environment-name: mda
         create-args: >-
@@ -287,11 +287,8 @@ jobs:
         fail-fast: false
         matrix:
           os: [ubuntu-latest, macos-latest, macos-14, windows-latest]
-          python-version: ["3.9", "3.10", "3.11", "3.12"]
+          python-version: ["3.10", "3.11", "3.12", "3.13"]
           wheels: ['true', 'false']
-          exclude:
-          - os: "macos-14"
-            python-version: "3.9"
     steps:
       # Checkout to have access to local actions (i.e. setup-os)
     - uses: actions/checkout@v4

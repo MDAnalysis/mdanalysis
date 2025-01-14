@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -68,5 +68,8 @@ def buffer():
 
 
 def _assert_in(output, string):
-    assert string in output, "Output '{0}' does not match required format '{1}'.".format(output.replace('\r', '\\r'), string.replace('\r', '\\r'))
-
+    assert (
+        string in output
+    ), "Output '{0}' does not match required format '{1}'.".format(
+        output.replace("\r", "\\r"), string.replace("\r", "\\r")
+    )
