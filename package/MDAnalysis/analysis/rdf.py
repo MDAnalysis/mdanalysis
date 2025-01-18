@@ -592,6 +592,22 @@ class InterRDF_s(AnalysisBase):
     .. deprecated:: 2.3.0
        The `universe` parameter is superflous.
     """
+    @classmethod
+    def get_supported_backends(cls):
+        return ('serial', 'multiprocessing', 'dask',)
+
+    _analysis_algorithm_is_parallelizable = True
+
+    
+    def _get_aggregator(self):
+        return ResultsGroup(
+            lookup={
+                'count': self._flattened_ndarray_sum,
+                'volume_cum': ResultsGroup.ndarray_sum,
+                'bins': ResultsGroup.ndarray_sum,
+                'edges': ResultsGroup.ndarray_sum,
+            }
+        )
 
     
     def __init__(
@@ -648,6 +664,7 @@ class InterRDF_s(AnalysisBase):
 
         if self.norm == "rdf":
             # Cumulative volume for rdf normalization
+            self.results.volume_cum = 0
             self.volume_cum = 0
         self._maxrange = self.rdf_settings["range"][1]
 
@@ -666,7 +683,87 @@ class InterRDF_s(AnalysisBase):
                 self.results.count[i][idx1, idx2, :] += count
 
         if self.norm == "rdf":
+            self.results.volume_cum += self._ts.volume
             self.volume_cum += self._ts.volume
+
+    @staticmethod
+    def arr_resize(arr):
+        if arr.ndim == 2:  # If shape is (x, y)
+            return arr[np.newaxis, ...]  # Add a new axis at the beginning
+        elif arr.ndim == 3 and arr.shape[0] == 1:  # If shape is already (1, x, y)
+            return arr
+        else:
+            raise ValueError("Array has an invalid shape")
+
+    # @staticmethod
+    # def custom_aggregate(combined_arr):
+    #     arr1 = combined_arr[0][0]
+    #     arr2 = combined_arr[1][0]
+    #     arr3 = combined_arr[1][1][0]
+    #     arr4 = combined_arr[1][1][1]
+
+    #     arr1 = InterRDF_s.arr_resize(arr1)
+    #     arr2 = InterRDF_s.arr_resize(arr2)
+    #     arr3 = InterRDF_s.arr_resize(arr3)
+    #     arr4 = InterRDF_s.arr_resize(arr4)
+        
+
+    #     print(arr1.shape, arr2.shape, arr3.shape, arr4.shape)
+
+
+
+    #     arr01 = arr1 + arr2
+    #     arr02 = np.vstack((arr3, arr4))
+    #     print("New shape", arr01.shape, arr02.shape)
+
+    #     arr = [arr01, arr02]
+    #     # arr should be [(1,2,75), (2,2,75)]
+    #     return arr
+    
+ 
+    # #TODO: check shapes without parallelization then emulate that in custom_aggregate
+
+    # def _get_aggregator(self):
+    #     return ResultsGroup(lookup={'count': self.custom_aggregate,
+    #                                 'volume_cum': ResultsGroup.ndarray_sum, 
+    #                                 'bins': ResultsGroup.ndarray_sum,
+    #                                 'edges': ResultsGroup.ndarray_sum})
+
+    @staticmethod 
+    def _flattened_ndarray_sum(arrs):
+        """Custom aggregator for nested count arrays
+        
+        Parameters
+        ----------
+        arrs : list
+            List of arrays or nested lists of arrays to sum
+            
+        Returns
+        -------
+        ndarray
+            Sum of all arrays after flattening nested structure
+        """
+        # Handle nested list/array structures
+        def flatten(arr):
+            if isinstance(arr, (list, tuple)):
+                return [item for sublist in arr for item in flatten(sublist)]
+            return [arr]
+            
+        # Flatten and sum arrays
+        flat = flatten(arrs)
+        if not flat:
+            return None
+
+        f1 = np.zeros_like(flat[0])
+        f2 = np.zeros_like(flat[1])
+        # print(flat, "SIZE:", len(flat))
+        for i in range(len(flat)//2):
+            f1 += flat[2*i]
+            f2 += flat[2*i+1]
+        array1 = [f1, f2]
+        # print("ARRAY", array1)
+        return array1
+
 
     def _conclude(self):
         norm = self.n_frames
@@ -677,6 +774,7 @@ class InterRDF_s(AnalysisBase):
 
         if self.norm == "rdf":
             # Average number density
+            self.volume_cum = self.results.volume_cum
             norm *= 1 / (self.volume_cum / self.n_frames)
 
         # Empty lists to restore indices, RDF
