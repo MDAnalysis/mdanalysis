@@ -221,6 +221,11 @@ class InterRDF(AnalysisBase):
        Store results as attributes `bins`, `edges`, `rdf` and `count`
        of the `results` attribute of
        :class:`~MDAnalysis.analysis.AnalysisBase`.
+
+    .. versionchanged:: 2.9.0
+       Enabled **parallel execution** with the ``multiprocessing`` and ``dask``
+       backends; use the new method :meth:`get_supported_backends` to see all
+       supported backends.
     """
 
     @classmethod
@@ -599,6 +604,11 @@ class InterRDF_s(AnalysisBase):
        Instead of `density=True` use `norm='density'`
     .. deprecated:: 2.3.0
        The `universe` parameter is superflous.
+    
+    .. versionchanged:: 2.9.0
+       Enabled **parallel execution** with the ``multiprocessing`` and ``dask``
+       backends; use the new method :meth:`get_supported_backends` to see all
+       supported backends.
     """
 
     @classmethod

@@ -174,3 +174,25 @@ def test_rdf_attr_warning(rdf, attr):
     wmsg = f"The `{attr}` attribute was deprecated in MDAnalysis 2.0.0"
     with pytest.warns(DeprecationWarning, match=wmsg):
         getattr(rdf, attr) is rdf.results[attr]
+
+# tests for parallelization
+
+@pytest.mark.parametrize(
+    "classname,is_parallelizable",
+    [
+        (mda.analysis.rdf.InterRDF_s, True),
+    ]
+)
+def test_class_is_parallelizable(classname, is_parallelizable):
+    assert classname._analysis_algorithm_is_parallelizable == is_parallelizable
+
+
+@pytest.mark.parametrize(
+    "classname,backends",
+    [
+        (mda.analysis.rdf.InterRDF_s,
+         ('serial', 'multiprocessing', 'dask',)),
+    ]
+)
+def test_supported_backends(classname, backends):
+    assert classname.get_supported_backends() == backends
