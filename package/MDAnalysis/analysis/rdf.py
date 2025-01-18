@@ -325,7 +325,7 @@ class InterRDF(AnalysisBase):
         return ResultsGroup(lookup={'count': ResultsGroup.ndarray_sum,
                                     'volume_cum': ResultsGroup.ndarray_sum, 
                                     'bins': ResultsGroup.ndarray_sum,
-                                    'edges': ResultsGroup.ndarray_sum})
+                                    'edges': ResultsGroup.ndarray_mean})
 
     def _conclude(self):
         norm = self.n_frames
@@ -598,17 +598,42 @@ class InterRDF_s(AnalysisBase):
 
     _analysis_algorithm_is_parallelizable = True
 
-    
+    @staticmethod
+    def func(arrs):
+        r"""Custom aggregator for nested arrays
+        
+        Parameters
+        ----------
+        arrs : list
+            List of arrays or nested lists of arrays
+            
+        Returns
+        -------
+        ndarray
+            Sums flattened arrays at alternate index 
+            in the list and returns a list of two arrays
+        """
+        def flatten(arr):
+            if isinstance(arr, (list, tuple)):
+                return [item for sublist in arr for item in flatten(sublist)]
+            return [arr]
+        
+        flat = flatten(arrs)
+        aggregated_arr = [np.zeros_like(flat[0]), np.zeros_like(flat[1])]
+        for i in range(len(flat)//2):
+            aggregated_arr[0] += flat[2*i] # 0, 2, 4, ...
+            aggregated_arr[1] += flat[2*i+1] # 1, 3, 5, ...
+        return aggregated_arr
+
     def _get_aggregator(self):
         return ResultsGroup(
             lookup={
-                'count': self._flattened_ndarray_sum,
+                'count': self.func,
                 'volume_cum': ResultsGroup.ndarray_sum,
-                'bins': ResultsGroup.ndarray_sum,
+                'bins': ResultsGroup.ndarray_mean,
                 'edges': ResultsGroup.ndarray_mean,
             }
         )
-
     
     def __init__(
         self,
@@ -695,74 +720,6 @@ class InterRDF_s(AnalysisBase):
         else:
             raise ValueError("Array has an invalid shape")
 
-    # @staticmethod
-    # def custom_aggregate(combined_arr):
-    #     arr1 = combined_arr[0][0]
-    #     arr2 = combined_arr[1][0]
-    #     arr3 = combined_arr[1][1][0]
-    #     arr4 = combined_arr[1][1][1]
-
-    #     arr1 = InterRDF_s.arr_resize(arr1)
-    #     arr2 = InterRDF_s.arr_resize(arr2)
-    #     arr3 = InterRDF_s.arr_resize(arr3)
-    #     arr4 = InterRDF_s.arr_resize(arr4)
-        
-
-    #     print(arr1.shape, arr2.shape, arr3.shape, arr4.shape)
-
-
-
-    #     arr01 = arr1 + arr2
-    #     arr02 = np.vstack((arr3, arr4))
-    #     print("New shape", arr01.shape, arr02.shape)
-
-    #     arr = [arr01, arr02]
-    #     # arr should be [(1,2,75), (2,2,75)]
-    #     return arr
-    
- 
-    # #TODO: check shapes without parallelization then emulate that in custom_aggregate
-
-    # def _get_aggregator(self):
-    #     return ResultsGroup(lookup={'count': self.custom_aggregate,
-    #                                 'volume_cum': ResultsGroup.ndarray_sum, 
-    #                                 'bins': ResultsGroup.ndarray_sum,
-    #                                 'edges': ResultsGroup.ndarray_sum})
-
-    @staticmethod 
-    def _flattened_ndarray_sum(arrs):
-        """Custom aggregator for nested count arrays
-        
-        Parameters
-        ----------
-        arrs : list
-            List of arrays or nested lists of arrays to sum
-            
-        Returns
-        -------
-        ndarray
-            Sum of all arrays after flattening nested structure
-        """
-        # Handle nested list/array structures
-        def flatten(arr):
-            if isinstance(arr, (list, tuple)):
-                return [item for sublist in arr for item in flatten(sublist)]
-            return [arr]
-            
-        # Flatten and sum arrays
-        flat = flatten(arrs)
-        if not flat:
-            return None
-
-        f1 = np.zeros_like(flat[0])
-        f2 = np.zeros_like(flat[1])
-        # print(flat, "SIZE:", len(flat))
-        for i in range(len(flat)//2):
-            f1 += flat[2*i]
-            f2 += flat[2*i+1]
-        array1 = [f1, f2]
-        # print("ARRAY", array1)
-        return array1
 
 
     def _conclude(self):

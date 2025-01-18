@@ -49,19 +49,19 @@ def sels(u):
 
 
 @pytest.fixture(scope="module")
-def rdf(u, sels):
-    return InterRDF_s(u, sels).run()
+def rdf(u, sels, client_InterRDF_s):
+    r = InterRDF_s(u, sels).run(**client_InterRDF_s)
+    return r
 
 
-def test_nbins(u, sels):
-    rdf = InterRDF_s(u, sels, nbins=412).run()
+def test_nbins(u, sels, client_InterRDF_s):
+    rdf = InterRDF_s(u, sels, nbins=412).run(**client_InterRDF_s)
 
     assert len(rdf.results.bins) == 412
 
-
-def test_range(u, sels):
+def test_range(u, sels, client_InterRDF_s):
     rmin, rmax = 1.0, 13.0
-    rdf = InterRDF_s(u, sels, range=(rmin, rmax)).run()
+    rdf = InterRDF_s(u, sels, range=(rmin, rmax)).run(**client_InterRDF_s)
 
     assert rdf.results.edges[0] == rmin
     assert rdf.results.edges[-1] == rmax
@@ -114,18 +114,18 @@ def test_cdf(rdf):
         (True, 0.021915460340071267),
     ],
 )
-def test_density(u, sels, density, value):
+def test_density(u, sels, density, value, client_InterRDF_s):
     kwargs = {"density": density} if density is not None else {}
-    rdf = InterRDF_s(u, sels, **kwargs).run()
+    rdf = InterRDF_s(u, sels, **kwargs).run(**client_InterRDF_s)
+    print(rdf.results.rdf[0][0][0], "RDF")
     assert_almost_equal(max(rdf.results.rdf[0][0][0]), value)
     if not density:
         s1 = u.select_atoms("name ZND and resid 289")
         s2 = u.select_atoms(
             "name OD1 and resid 51 and sphzone 5.0 (resid 289)"
         )
-        rdf_ref = InterRDF(s1, s2).run()
+        rdf_ref = InterRDF(s1, s2).run(**client_InterRDF_s)
         assert_almost_equal(rdf_ref.results.rdf, rdf.results.rdf[0][0][0])
-
 
 def test_overwrite_norm(u, sels):
     rdf = InterRDF_s(u, sels, norm="rdf", density=True)
@@ -140,23 +140,23 @@ def test_overwrite_norm(u, sels):
         ("none", 0.6),
     ],
 )
-def test_norm(u, sels, norm, value):
-    rdf = InterRDF_s(u, sels, norm=norm).run()
+def test_norm(u, sels, norm, value, client_InterRDF_s):
+    rdf = InterRDF_s(u, sels, norm=norm).run(**client_InterRDF_s)
     assert_allclose(max(rdf.results.rdf[0][0][0]), value)
     if norm == "rdf":
         s1 = u.select_atoms("name ZND and resid 289")
         s2 = u.select_atoms(
             "name OD1 and resid 51 and sphzone 5.0 (resid 289)"
         )
-        rdf_ref = InterRDF(s1, s2).run()
+        rdf_ref = InterRDF(s1, s2).run(**client_InterRDF_s)
         assert_almost_equal(rdf_ref.results.rdf, rdf.results.rdf[0][0][0])
 
 
 @pytest.mark.parametrize(
     "norm, norm_required", [("Density", "density"), (None, "none")]
 )
-def test_norm_values(u, sels, norm, norm_required):
-    rdf = InterRDF_s(u, sels, norm=norm).run()
+def test_norm_values(u, sels, norm, norm_required, client_InterRDF_s):
+    rdf = InterRDF_s(u, sels, norm=norm).run(**client_InterRDF_s)
     assert rdf.norm == norm_required
 
 
@@ -172,21 +172,3 @@ def test_rdf_attr_warning(rdf, attr):
     wmsg = f"The `{attr}` attribute was deprecated in MDAnalysis 2.0.0"
     with pytest.warns(DeprecationWarning, match=wmsg):
         getattr(rdf, attr) is rdf.results[attr]
-
-@pytest.mark.parametrize(
-    "classname,is_parallelizable",
-    [
-        (mda.analysis.rdf, False),
-    ]
-)
-def test_class_is_parallelizable(classname, is_parallelizable):
-    assert classname.InterRDF_s._analysis_algorithm_is_parallelizable == is_parallelizable
-
-@pytest.mark.parametrize(
-    "classname,backends",
-    [
-        (mda.analysis.rdf,  ('serial',)),
-    ]
-)
-def test_supported_backends(classname, backends):
-    assert classname.InterRDF_s.get_supported_backends() == backends
