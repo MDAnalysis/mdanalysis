@@ -605,7 +605,7 @@ class InterRDF_s(AnalysisBase):
                 'count': self._flattened_ndarray_sum,
                 'volume_cum': ResultsGroup.ndarray_sum,
                 'bins': ResultsGroup.ndarray_sum,
-                'edges': ResultsGroup.ndarray_sum,
+                'edges': ResultsGroup.ndarray_mean,
             }
         )
 
