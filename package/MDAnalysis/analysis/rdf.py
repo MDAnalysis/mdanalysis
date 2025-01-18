@@ -225,7 +225,11 @@ class InterRDF(AnalysisBase):
 
     @classmethod
     def get_supported_backends(cls):
-        return ('serial', 'multiprocessing', 'dask',)
+        return (
+            "serial",
+            "multiprocessing",
+            "dask",
+        )
 
     _analysis_algorithm_is_parallelizable = True
 
@@ -322,10 +326,14 @@ class InterRDF(AnalysisBase):
             self.volume_cum += self._ts.volume
 
     def _get_aggregator(self):
-        return ResultsGroup(lookup={'count': ResultsGroup.ndarray_sum,
-                                    'volume_cum': ResultsGroup.ndarray_sum, 
-                                    'bins': ResultsGroup.ndarray_sum,
-                                    'edges': ResultsGroup.ndarray_mean})
+        return ResultsGroup(
+            lookup={
+                "count": ResultsGroup.ndarray_sum,
+                "volume_cum": ResultsGroup.ndarray_sum,
+                "bins": ResultsGroup.ndarray_sum,
+                "edges": ResultsGroup.ndarray_mean,
+            }
+        )
 
     def _conclude(self):
         norm = self.n_frames
@@ -592,49 +600,55 @@ class InterRDF_s(AnalysisBase):
     .. deprecated:: 2.3.0
        The `universe` parameter is superflous.
     """
+
     @classmethod
     def get_supported_backends(cls):
-        return ('serial', 'multiprocessing', 'dask',)
+        return (
+            "serial",
+            "multiprocessing",
+            "dask",
+        )
 
     _analysis_algorithm_is_parallelizable = True
 
     @staticmethod
     def func(arrs):
         r"""Custom aggregator for nested arrays
-        
+
         Parameters
         ----------
         arrs : list
             List of arrays or nested lists of arrays
-            
+
         Returns
         -------
         ndarray
-            Sums flattened arrays at alternate index 
+            Sums flattened arrays at alternate index
             in the list and returns a list of two arrays
         """
+
         def flatten(arr):
             if isinstance(arr, (list, tuple)):
                 return [item for sublist in arr for item in flatten(sublist)]
             return [arr]
-        
+
         flat = flatten(arrs)
         aggregated_arr = [np.zeros_like(flat[0]), np.zeros_like(flat[1])]
-        for i in range(len(flat)//2):
-            aggregated_arr[0] += flat[2*i] # 0, 2, 4, ...
-            aggregated_arr[1] += flat[2*i+1] # 1, 3, 5, ...
+        for i in range(len(flat) // 2):
+            aggregated_arr[0] += flat[2 * i]  # 0, 2, 4, ...
+            aggregated_arr[1] += flat[2 * i + 1]  # 1, 3, 5, ...
         return aggregated_arr
 
     def _get_aggregator(self):
         return ResultsGroup(
             lookup={
-                'count': self.func,
-                'volume_cum': ResultsGroup.ndarray_sum,
-                'bins': ResultsGroup.ndarray_mean,
-                'edges': ResultsGroup.ndarray_mean,
+                "count": self.func,
+                "volume_cum": ResultsGroup.ndarray_sum,
+                "bins": ResultsGroup.ndarray_mean,
+                "edges": ResultsGroup.ndarray_mean,
             }
         )
-    
+
     def __init__(
         self,
         u,
@@ -710,17 +724,6 @@ class InterRDF_s(AnalysisBase):
         if self.norm == "rdf":
             self.results.volume_cum += self._ts.volume
             self.volume_cum += self._ts.volume
-
-    @staticmethod
-    def arr_resize(arr):
-        if arr.ndim == 2:  # If shape is (x, y)
-            return arr[np.newaxis, ...]  # Add a new axis at the beginning
-        elif arr.ndim == 3 and arr.shape[0] == 1:  # If shape is already (1, x, y)
-            return arr
-        else:
-            raise ValueError("Array has an invalid shape")
-
-
 
     def _conclude(self):
         norm = self.n_frames
