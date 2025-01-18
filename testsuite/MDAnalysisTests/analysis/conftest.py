@@ -178,9 +178,11 @@ def client_Contacts(request):
 def client_DensityAnalysis(request):
     return request.param
 
+
 @pytest.fixture(scope="module", params=params_for_cls(InterRDF))
 def client_InterRDF(request):
     return request.param
+
 
 @pytest.fixture(scope="module", params=params_for_cls(InterRDF_s))
 def client_InterRDF_s(request):

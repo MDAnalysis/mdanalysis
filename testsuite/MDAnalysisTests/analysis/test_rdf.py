@@ -119,7 +119,9 @@ def test_ignore_same_residues_fails(sels, client_InterRDF):
         ValueError,
         match="The exclude_same argument to InterRDF cannot be used with",
     ):
-        InterRDF(s2, s2, exclude_same="residue", exclusion_block=tuple()).run(**client_InterRDF)
+        InterRDF(s2, s2, exclude_same="residue", exclusion_block=tuple()).run(
+            **client_InterRDF
+        )
 
 
 @pytest.mark.parametrize("attr", ("rdf", "bins", "edges", "count"))
@@ -153,4 +155,3 @@ def test_unknown_norm(sels):
     s1, s2 = sels
     with pytest.raises(ValueError, match="invalid norm"):
         InterRDF(s1, s2, sels, norm="foo")
-
