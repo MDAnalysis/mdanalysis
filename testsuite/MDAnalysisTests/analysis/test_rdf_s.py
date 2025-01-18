@@ -59,6 +59,7 @@ def test_nbins(u, sels, client_InterRDF_s):
 
     assert len(rdf.results.bins) == 412
 
+
 def test_range(u, sels, client_InterRDF_s):
     rmin, rmax = 1.0, 13.0
     rdf = InterRDF_s(u, sels, range=(rmin, rmax)).run(**client_InterRDF_s)
@@ -126,6 +127,7 @@ def test_density(u, sels, density, value, client_InterRDF_s):
         )
         rdf_ref = InterRDF(s1, s2).run(**client_InterRDF_s)
         assert_almost_equal(rdf_ref.results.rdf, rdf.results.rdf[0][0][0])
+
 
 def test_overwrite_norm(u, sels):
     rdf = InterRDF_s(u, sels, norm="rdf", density=True)
