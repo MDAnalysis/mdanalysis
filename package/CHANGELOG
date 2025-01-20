@@ -121,7 +121,7 @@ Enhancements
  * Enable parallelization for analysis.nucleicacids.NucPairDist (Issue #4670)
  * Add check and warning for empty (all zero) coordinates in RDKit converter (PR #4824)
  * Added `precision` for XYZWriter (Issue #4775, PR #4771)
- * explicitly mark `analysis.rdf.InterRDF` and `analysis.rdf.InterRDF` as not parallelizable (Issue #4675)
+ * Parallelize `analysis.rdf.InterRDF` and `analysis.rdf.InterRDF` (Issue #4675)
 
 
 Changes
