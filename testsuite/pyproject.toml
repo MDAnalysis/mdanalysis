@@ -161,7 +161,6 @@ extend-exclude = '''
 __pycache__
 | testsuite/MDAnalysisTests/core/test_atomselections\.py
 | testsuite/MDAnalysisTests/analysis/test_atomicdistances\.py
-| testsuite/MDAnalysisTests/coordinates/test_xdr\.py
 | testsuite/MDAnalysisTests/core/test_atomselections\.py
 | testsuite/MDAnalysisTests/datafiles\.py
 | testsuite/MDAnalysisTests/analysis/conftest\.py

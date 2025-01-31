@@ -56,6 +56,7 @@ __all__ = [
     "PSF_cmap",  # ala3 PSF from ParmEd test files with cmap
     "PSF_inscode",  # PSF file with insertion codes
     "PDB_small",  # PDB
+    "PDB_xsmall",  # The first 10 residues of PDB_small
     "PDB_closed",
     "PDB_multiframe",
     "PDB_helix",
@@ -453,6 +454,7 @@ PSF_inscode = (_data_ref / "1a2c_ins_code.psf").as_posix()
 
 PDB_varying = (_data_ref / "varying_occ_tmp.pdb").as_posix()
 PDB_small = (_data_ref / "adk_open.pdb").as_posix()
+PDB_xsmall = (_data_ref / "adk_open_10res.pdb").as_posix()
 PDB_closed = (_data_ref / "adk_closed.pdb").as_posix()
 
 ALIGN = (_data_ref / "align.pdb").as_posix()

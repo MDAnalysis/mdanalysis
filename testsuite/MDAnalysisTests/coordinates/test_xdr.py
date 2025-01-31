@@ -984,10 +984,12 @@ class _GromacsReader_offsets(object):
         shutil.copy(self.filename, str(tmpdir))
 
         filename = str(tmpdir.join(os.path.basename(self.filename)))
-        print('filename', filename)
+        print("filename", filename)
         ref_offset = trajectory._xdr.offsets
         # Mock filelock acquire to raise an error
-        with patch.object(FileLock, "acquire", side_effect=PermissionError):  # Simulate failure
+        with patch.object(
+            FileLock, "acquire", side_effect=PermissionError
+        ):  # Simulate failure
             with pytest.warns(UserWarning, match="Cannot write lock"):
                 reader = self._reader(filename)
                 saved_offsets = reader._xdr.offsets
@@ -1008,12 +1010,10 @@ class _GromacsReader_offsets(object):
 
     @pytest.mark.skipif(
         sys.platform.startswith("win"),
-        reason="The lock file only exists when it's locked in windows"
+        reason="The lock file only exists when it's locked in windows",
     )
     def test_offset_lock_created(self, traj):
-        assert os.path.exists(
-            XDR.offsets_filename(traj, ending="lock")
-        )
+        assert os.path.exists(XDR.offsets_filename(traj, ending="lock"))
 
 
 class TestXTCReader_offsets(_GromacsReader_offsets):
