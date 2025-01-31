@@ -71,11 +71,13 @@ class FrameAnalysis(base.AnalysisBase):
 
     def _get_aggregator(self):
         return base.ResultsGroup(
-            {"found_frames": base.ResultsGroup.ndarray_hstack,
-             "frame_index": base.ResultsGroup.ndarray_hstack,
-             "global_frame_index": base.ResultsGroup.ndarray_hstack,
-             "n_frames": base.ResultsGroup.ndarray_hstack,
-             "global_n_frames": base.ResultsGroup.ndarray_hstack}
+            {
+                "found_frames": base.ResultsGroup.ndarray_hstack,
+                "frame_index": base.ResultsGroup.ndarray_hstack,
+                "global_frame_index": base.ResultsGroup.ndarray_hstack,
+                "n_frames": base.ResultsGroup.ndarray_hstack,
+                "global_n_frames": base.ResultsGroup.ndarray_hstack,
+            }
         )
 
 
