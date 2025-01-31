@@ -133,7 +133,6 @@ __pycache__
 | MDAnalysis/analysis/atomicdistances\.py
 | MDAnalysis/topology/CMSParser\.py
 | MDAnalysis/topology/__init__\.py
-| MDAnalysis/coordinates/XDR\.py
 | MDAnalysis/core/selection\.py
 | MDAnalysis/analysis/diffusionmap\.py
 | MDAnalysis/analysis/align\.py
