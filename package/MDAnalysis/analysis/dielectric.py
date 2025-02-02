@@ -37,10 +37,12 @@ from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.due import due, Doi
 from MDAnalysis.exceptions import NoDataError
 
-due.cite(Doi("10.1080/00268978300102721"),
-         description="Dielectric analysis",
-         path="MDAnalysis.analysis.dielectric",
-         cite_module=True)
+due.cite(
+    Doi("10.1080/00268978300102721"),
+    description="Dielectric analysis",
+    path="MDAnalysis.analysis.dielectric",
+    cite_module=True,
+)
 del Doi
 
 
@@ -121,9 +123,11 @@ class DielectricConstant(AnalysisBase):
 
     .. versionadded:: 2.1.0
     """
+
     def __init__(self, atomgroup, temperature=300, make_whole=True, **kwargs):
-        super(DielectricConstant, self).__init__(atomgroup.universe.trajectory,
-                                                 **kwargs)
+        super(DielectricConstant, self).__init__(
+            atomgroup.universe.trajectory, **kwargs
+        )
         self.atomgroup = atomgroup
         self.temperature = temperature
         self.make_whole = make_whole
@@ -132,11 +136,14 @@ class DielectricConstant(AnalysisBase):
         if not hasattr(self.atomgroup, "charges"):
             raise NoDataError("No charges defined given atomgroup.")
 
-        if not np.allclose(self.atomgroup.total_charge(compound='fragments'),
-                           0.0, atol=1E-5):
-            raise NotImplementedError("Analysis for non-neutral systems or"
-                                      " systems with free charges are not"
-                                      " available.")
+        if not np.allclose(
+            self.atomgroup.total_charge(compound="fragments"), 0.0, atol=1e-5
+        ):
+            raise NotImplementedError(
+                "Analysis for non-neutral systems or"
+                " systems with free charges are not"
+                " available."
+            )
 
         self.volume = 0
         self.results.M = np.zeros(3)
@@ -163,8 +170,11 @@ class DielectricConstant(AnalysisBase):
         self.results.fluct = self.results.M2 - self.results.M * self.results.M
 
         self.results.eps = self.results.fluct / (
-              convert(constants["Boltzmann_constant"], "kJ/mol", "eV") *
-              self.temperature * self.volume * constants["electric_constant"])
+            convert(constants["Boltzmann_constant"], "kJ/mol", "eV")
+            * self.temperature
+            * self.volume
+            * constants["electric_constant"]
+        )
 
         self.results.eps_mean = self.results.eps.mean()
 

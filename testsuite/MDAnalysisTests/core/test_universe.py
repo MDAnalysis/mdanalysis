@@ -40,15 +40,21 @@ import pytest
 
 from MDAnalysisTests import make_Universe
 from MDAnalysisTests.datafiles import (
-    PSF, DCD,
+    PSF,
+    DCD,
     PSF_BAD,
     PDB_small,
     PDB_chainidrepeat,
-    GRO, TRR,
-    two_water_gro, two_water_gro_nonames,
-    TRZ, TRZ_psf,
-    PDB, MMTF, CONECT,
-    PDB_conect
+    GRO,
+    TRR,
+    two_water_gro,
+    two_water_gro_nonames,
+    TRZ,
+    TRZ_psf,
+    PDB,
+    MMTF,
+    CONECT,
+    PDB_conect,
 )
 
 import MDAnalysis as mda
@@ -64,6 +70,7 @@ from MDAnalysisTests.util import get_userid
 class IOErrorParser(TopologyReaderBase):
     def parse(self, **kwargs):
         raise IOError("Useful information")
+
 
 # This string is not in the `TestUniverseCreation` class or its method because of problems
 # with whitespace. Extra indentations make the string unreadable.
@@ -81,6 +88,7 @@ Single cholesterol molecule
 10 10 10
 """
 
+
 class TestUniverseCreation(object):
     # tests concerning Universe creation and errors encountered
     def test_load(self):
@@ -89,13 +97,25 @@ class TestUniverseCreation(object):
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
 
     def test_load_topology_stringio(self):
-        u = mda.Universe(StringIO(CHOL_GRO), format='GRO')
-        assert_equal(len(u.atoms), 8, "Loading universe from StringIO failed somehow")
-        assert_equal(u.trajectory.ts.positions[0], np.array([65.580002, 29.360001, 40.050003], dtype=np.float32))
+        u = mda.Universe(StringIO(CHOL_GRO), format="GRO")
+        assert_equal(
+            len(u.atoms), 8, "Loading universe from StringIO failed somehow"
+        )
+        assert_equal(
+            u.trajectory.ts.positions[0],
+            np.array([65.580002, 29.360001, 40.050003], dtype=np.float32),
+        )
 
     def test_load_trajectory_stringio(self):
-        u = mda.Universe(StringIO(CHOL_GRO), StringIO(CHOL_GRO),  format='GRO', topology_format='GRO')
-        assert_equal(len(u.atoms), 8, "Loading universe from StringIO failed somehow")
+        u = mda.Universe(
+            StringIO(CHOL_GRO),
+            StringIO(CHOL_GRO),
+            format="GRO",
+            topology_format="GRO",
+        )
+        assert_equal(
+            len(u.atoms), 8, "Loading universe from StringIO failed somehow"
+        )
 
     def test_make_universe_stringio_no_format(self):
         # Loading from StringIO without format arg should raise TypeError
@@ -106,92 +126,104 @@ class TestUniverseCreation(object):
         # querying trajectory without a trajectory loaded (only topology)
         u = make_Universe()
         with pytest.raises(AttributeError):
-            getattr(u, 'trajectory')
+            getattr(u, "trajectory")
 
     def test_Universe_topology_unrecognizedformat_VE(self):
         with pytest.raises(ValueError):
-            mda.Universe('some.file.without.parser_or_coordinate_extension')
+            mda.Universe("some.file.without.parser_or_coordinate_extension")
 
     def test_Universe_topology_unrecognizedformat_VE_msg(self):
         try:
-            mda.Universe('some.file.without.parser_or_coordinate_extension')
+            mda.Universe("some.file.without.parser_or_coordinate_extension")
         except ValueError as e:
-            assert 'isn\'t a valid topology format' in e.args[0]
+            assert "isn't a valid topology format" in e.args[0]
         else:
             raise AssertionError
 
     def test_Universe_topology_IE(self):
         with pytest.raises(IOError):
-            mda.Universe('thisfile', topology_format = IOErrorParser)
+            mda.Universe("thisfile", topology_format=IOErrorParser)
 
     def test_Universe_topology_IE_msg(self):
         # should get the original error, as well as Universe error
         try:
-            mda.Universe('thisfile', topology_format=IOErrorParser)
+            mda.Universe("thisfile", topology_format=IOErrorParser)
         except IOError as e:
-            assert 'Failed to load from the topology file' in e.args[0]
-            assert 'Useful information' in e.args[0]
+            assert "Failed to load from the topology file" in e.args[0]
+            assert "Useful information" in e.args[0]
         else:
             raise AssertionError
 
     def test_Universe_filename_IE_msg(self):
         # check for non existent file
         try:
-            mda.Universe('thisfile.xml')
+            mda.Universe("thisfile.xml")
         except IOError as e:
-            assert_equal('No such file or directory', e.strerror)
+            assert_equal("No such file or directory", e.strerror)
         else:
             raise AssertionError
 
     def test_Universe_invalidfile_IE_msg(self, tmpdir):
         # check for invalid file (something with the wrong content)
         with tmpdir.as_cwd():
-            with open('invalid.file.tpr', 'w') as temp_file:
-                temp_file.write('plop')
+            with open("invalid.file.tpr", "w") as temp_file:
+                temp_file.write("plop")
             try:
-                mda.Universe('invalid.file.tpr')
+                mda.Universe("invalid.file.tpr")
             except IOError as e:
-                assert 'file or cannot be recognized' in e.args[0]
+                assert "file or cannot be recognized" in e.args[0]
             else:
                 raise AssertionError
 
-    @pytest.mark.skipif(get_userid() == 0,
-                        reason="cannot permisssionerror as root")
+    @pytest.mark.skipif(
+        get_userid() == 0, reason="cannot permisssionerror as root"
+    )
     def test_Universe_invalidpermissionfile_IE_msg(self, tmpdir):
         # check for file with invalid permissions (eg. no read access)
         with tmpdir.as_cwd():
-            temp_file = 'permission.denied.tpr'
-            with open(temp_file, 'w'):
+            temp_file = "permission.denied.tpr"
+            with open(temp_file, "w"):
                 pass
 
-            if os.name == 'nt':
-                subprocess.call("icacls {filename} /deny Users:RX".format(filename=temp_file),
-                                shell=True)
+            if os.name == "nt":
+                subprocess.call(
+                    "icacls {filename} /deny Users:RX".format(
+                        filename=temp_file
+                    ),
+                    shell=True,
+                )
             else:
                 os.chmod(temp_file, 0o200)
 
             # Issue #3221 match by PermissionError and error number instead
             with pytest.raises(PermissionError, match=f"Errno {errno.EACCES}"):
-                mda.Universe('permission.denied.tpr')
+                mda.Universe("permission.denied.tpr")
 
     def test_load_new_VE(self):
         u = mda.Universe.empty(0)
 
         with pytest.raises(TypeError):
-            u.load_new('thisfile', format = 'soup')
+            u.load_new("thisfile", format="soup")
 
     def test_load_new_memory_reader_success(self):
         u = mda.Universe(GRO)
-        prot = u.select_atoms('protein')
+        prot = u.select_atoms("protein")
         u2 = mda.Merge(prot)
-        assert u2.load_new( [ prot.positions ], format=mda.coordinates.memory.MemoryReader) is u2
+        assert (
+            u2.load_new(
+                [prot.positions], format=mda.coordinates.memory.MemoryReader
+            )
+            is u2
+        )
 
     def test_load_new_memory_reader_fails(self):
         def load():
             u = mda.Universe(GRO)
-            prot = u.select_atoms('protein')
+            prot = u.select_atoms("protein")
             u2 = mda.Merge(prot)
-            u2.load_new( [[ prot.positions ]], format=mda.coordinates.memory.MemoryReader)
+            u2.load_new(
+                [[prot.positions]], format=mda.coordinates.memory.MemoryReader
+            )
 
         with pytest.raises(TypeError):
             load()
@@ -200,13 +232,12 @@ class TestUniverseCreation(object):
         u = mda.Universe(PSF, PDB_small, fake_kwarg=True)
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
 
-        assert u.kwargs['fake_kwarg']
+        assert u.kwargs["fake_kwarg"]
 
         # initialize new universe from pieces of existing one
-        u2 = mda.Universe(u.filename, u.trajectory.filename,
-                          **u.kwargs)
+        u2 = mda.Universe(u.filename, u.trajectory.filename, **u.kwargs)
 
-        assert u2.kwargs['fake_kwarg']
+        assert u2.kwargs["fake_kwarg"]
         assert_equal(u.kwargs, u2.kwargs)
 
     def test_universe_topology_class_with_coords(self):
@@ -229,35 +260,37 @@ class TestUniverseFromSmiles(object):
 
     def test_default(self):
         smi = "CN1C=NC2=C1C(=O)N(C(=O)N2C)C"
-        u = mda.Universe.from_smiles(smi, format='RDKIT')
+        u = mda.Universe.from_smiles(smi, format="RDKIT")
         assert u.atoms.n_atoms == 24
         assert len(u.bonds.indices) == 25
 
     def test_from_bad_smiles(self):
         with pytest.raises(SyntaxError) as e:
-            u = mda.Universe.from_smiles("J", format='RDKIT')
+            u = mda.Universe.from_smiles("J", format="RDKIT")
             assert "Error while parsing SMILES" in str(e.value)
 
     def test_no_Hs(self):
         smi = "CN1C=NC2=C1C(=O)N(C(=O)N2C)C"
-        u = mda.Universe.from_smiles(smi, addHs=False,
-            generate_coordinates=False, format='RDKIT')
+        u = mda.Universe.from_smiles(
+            smi, addHs=False, generate_coordinates=False, format="RDKIT"
+        )
         assert u.atoms.n_atoms == 14
         assert len(u.bonds.indices) == 15
 
     def test_gencoords_without_Hs_error(self):
         with pytest.raises(ValueError) as e:
-            u = mda.Universe.from_smiles("CCO", addHs=False,
-                generate_coordinates=True, format='RDKIT')
-            assert "requires adding hydrogens" in str (e.value)
+            u = mda.Universe.from_smiles(
+                "CCO", addHs=False, generate_coordinates=True, format="RDKIT"
+            )
+            assert "requires adding hydrogens" in str(e.value)
 
     def test_generate_coordinates_numConfs(self):
         with pytest.raises(SyntaxError) as e:
-            u = mda.Universe.from_smiles("CCO", numConfs=0, format='RDKIT')
-            assert "non-zero positive integer" in str (e.value)
+            u = mda.Universe.from_smiles("CCO", numConfs=0, format="RDKIT")
+            assert "non-zero positive integer" in str(e.value)
         with pytest.raises(SyntaxError) as e:
-            u = mda.Universe.from_smiles("CCO", numConfs=2.1, format='RDKIT')
-            assert "non-zero positive integer" in str (e.value)
+            u = mda.Universe.from_smiles("CCO", numConfs=2.1, format="RDKIT")
+            assert "non-zero positive integer" in str(e.value)
 
     def test_rdkit_kwargs(self):
         # test for bad kwarg:
@@ -269,16 +302,17 @@ class TestUniverseFromSmiles(object):
         except Exception as e:
             assert "did not match C++ signature" in str(e)
         else:
-            raise AssertionError("RDKit should have raised an ArgumentError "
-                                 "from Boost")
+            raise AssertionError(
+                "RDKit should have raised an ArgumentError " "from Boost"
+            )
         # good kwarg
         u1 = mda.Universe.from_smiles("C", rdkit_kwargs=dict(randomSeed=42))
         u2 = mda.Universe.from_smiles("C", rdkit_kwargs=dict(randomSeed=51))
         with pytest.raises(AssertionError) as e:
-            assert_equal(u1.trajectory.coordinate_array,
-                         u2.trajectory.coordinate_array)
+            assert_equal(
+                u1.trajectory.coordinate_array, u2.trajectory.coordinate_array
+            )
             assert "Mismatched elements: 15 / 15 (100%)" in str(e.value)
-
 
     def test_coordinates(self):
         # We manually create the molecule to compare coordinates
@@ -287,14 +321,16 @@ class TestUniverseFromSmiles(object):
         # coordinates against. See PR #4640
         from rdkit import Chem
         from rdkit.Chem import AllChem
-        mol = Chem.MolFromSmiles('C', sanitize=True)
+
+        mol = Chem.MolFromSmiles("C", sanitize=True)
         mol = Chem.AddHs(mol)
         AllChem.EmbedMultipleConfs(mol, numConfs=2, randomSeed=42)
         expected = [c.GetPositions() for c in mol.GetConformers()]
 
         # now the mda way
-        u = mda.Universe.from_smiles("C", numConfs=2, 
-                                     rdkit_kwargs=dict(randomSeed=42))
+        u = mda.Universe.from_smiles(
+            "C", numConfs=2, rdkit_kwargs=dict(randomSeed=42)
+        )
         assert u.trajectory.n_frames == 2
         assert_allclose(u.trajectory.coordinate_array, expected, rtol=1e-7)
 
@@ -328,7 +364,7 @@ class TestUniverse(object):
         u = mda.Universe(PSF, DCD)
 
         def bad_load(uni):
-            return uni.load_new('filename.notarealextension')
+            return uni.load_new("filename.notarealextension")
 
         with pytest.raises(TypeError):
             bad_load(u)
@@ -360,8 +396,7 @@ class TestUniverse(object):
         new_u = pickle.loads(s)
         assert_equal(u.atoms.names, new_u.atoms.names)
 
-
-    @pytest.mark.parametrize('dtype', (int, np.float32, np.float64))
+    @pytest.mark.parametrize("dtype", (int, np.float32, np.float64))
     def test_set_dimensions(self, dtype):
         u = mda.Universe(PSF, DCD)
         box = np.array([10, 11, 12, 90, 90, 90], dtype=dtype)
@@ -371,19 +406,19 @@ class TestUniverse(object):
 
 
 class TestTransformations(object):
-    """Tests the transformations keyword
-    """
+    """Tests the transformations keyword"""
+
     def test_callable(self):
-        u = mda.Universe(PSF,DCD, transformations=translate([10,10,10]))
-        uref = mda.Universe(PSF,DCD)
-        ref = translate([10,10,10])(uref.trajectory.ts)
+        u = mda.Universe(PSF, DCD, transformations=translate([10, 10, 10]))
+        uref = mda.Universe(PSF, DCD)
+        ref = translate([10, 10, 10])(uref.trajectory.ts)
         assert_almost_equal(u.trajectory.ts.positions, ref, decimal=6)
 
     def test_list(self):
-        workflow = [translate([10,10,0]), translate([0,0,10])]
-        u = mda.Universe(PSF,DCD, transformations=workflow)
-        uref = mda.Universe(PSF,DCD)
-        ref = translate([10,10,10])(uref.trajectory.ts)
+        workflow = [translate([10, 10, 0]), translate([0, 0, 10])]
+        u = mda.Universe(PSF, DCD, transformations=workflow)
+        uref = mda.Universe(PSF, DCD)
+        ref = translate([10, 10, 10])(uref.trajectory.ts)
         assert_almost_equal(u.trajectory.ts.positions, ref, decimal=6)
 
 
@@ -395,35 +430,35 @@ class TestGuessTopologyAttrs(object):
 
     def test_no_type_and_mass_guessing(self):
         u = mda.Universe(PDB_small, to_guess=())
-        assert not hasattr(u.atoms, 'masses')
-        assert not hasattr(u.atoms, 'types')
+        assert not hasattr(u.atoms, "masses")
+        assert not hasattr(u.atoms, "types")
 
     def test_invalid_context(self):
         u = mda.Universe(PDB_small)
         with pytest.raises(KeyError):
-            u.guess_TopologyAttrs(context='trash', to_guess=['masses'])
+            u.guess_TopologyAttrs(context="trash", to_guess=["masses"])
 
     def test_invalid_attributes(self):
         u = mda.Universe(PDB_small)
         with pytest.raises(ValueError):
-            u.guess_TopologyAttrs(to_guess=['trash'])
+            u.guess_TopologyAttrs(to_guess=["trash"])
 
     def test_guess_masses_before_types(self):
-        u = mda.Universe(PDB_small, to_guess=('masses', 'types'))
+        u = mda.Universe(PDB_small, to_guess=("masses", "types"))
         assert_equal(len(u.atoms.masses), 3341)
         assert_equal(len(u.atoms.types), 3341)
 
     def test_guessing_read_attributes(self):
         u = mda.Universe(PSF)
         old_types = u.atoms.types
-        u.guess_TopologyAttrs(force_guess=['types'])
+        u.guess_TopologyAttrs(force_guess=["types"])
         with pytest.raises(AssertionError):
             assert_equal(old_types, u.atoms.types)
 
 
 class TestGuessMasses(object):
-    """Tests the Mass Guesser in topology.guessers
-    """
+    """Tests the Mass Guesser in topology.guessers"""
+
     def test_universe_loading_no_warning(self):
         assert_nowarns(UserWarning, lambda x: mda.Universe(x), GRO)
 
@@ -438,9 +473,10 @@ class TestGuessBonds(object):
      - fail properly if not
      - work again if vdwradii are passed.
     """
-    @pytest.fixture(scope='module')
+
+    @pytest.fixture(scope="module")
     def vdw(self):
-        return {'A': 1.4, 'B': 0.5}
+        return {"A": 1.4, "B": 0.5}
 
     def _check_universe(self, u):
         """Verify that the Universe is created correctly"""
@@ -453,13 +489,13 @@ class TestGuessBonds(object):
         assert_equal(len(u.atoms[3].bonds), 2)
         assert_equal(len(u.atoms[4].bonds), 1)
         assert_equal(len(u.atoms[5].bonds), 1)
-        assert 'guess_bonds' in u.kwargs
+        assert "guess_bonds" in u.kwargs
 
     def test_universe_guess_bonds(self):
         """Test that making a Universe with guess_bonds works"""
         u = mda.Universe(two_water_gro, guess_bonds=True)
         self._check_universe(u)
-        assert u.kwargs['guess_bonds']
+        assert u.kwargs["guess_bonds"]
 
     def test_universe_guess_bonds_no_vdwradii(self):
         """Make a Universe that has atoms with unknown vdwradii."""
@@ -468,18 +504,17 @@ class TestGuessBonds(object):
 
     def test_universe_guess_bonds_with_vdwradii(self, vdw):
         """Unknown atom types, but with vdw radii here to save the day"""
-        u = mda.Universe(two_water_gro_nonames, guess_bonds=True,
-                         vdwradii=vdw)
+        u = mda.Universe(two_water_gro_nonames, guess_bonds=True, vdwradii=vdw)
         self._check_universe(u)
-        assert u.kwargs['guess_bonds']
-        assert_equal(vdw, u.kwargs['vdwradii'])
+        assert u.kwargs["guess_bonds"]
+        assert_equal(vdw, u.kwargs["vdwradii"])
 
     def test_universe_guess_bonds_off(self):
         u = mda.Universe(two_water_gro_nonames, guess_bonds=False)
 
-        for attr in ('bonds', 'angles', 'dihedrals'):
+        for attr in ("bonds", "angles", "dihedrals"):
             assert not hasattr(u, attr)
-        assert not u.kwargs['guess_bonds']
+        assert not u.kwargs["guess_bonds"]
 
     def test_universe_guess_bonds_arguments(self):
         """Test if 'fudge_factor', and 'lower_bound' parameters
@@ -510,11 +545,8 @@ class TestGuessBonds(object):
         assert_equal(len(u.atoms[5].bonds), 0)
 
     @pytest.mark.parametrize(
-        'ff, lb, nbonds',
-        [
-            (0.55, 0.1, 2), (0.9, 1.6, 1),
-            (0.5, 0.2, 2), (0.1, 0.1, 0)
-        ]
+        "ff, lb, nbonds",
+        [(0.55, 0.1, 2), (0.9, 1.6, 1), (0.5, 0.2, 2), (0.1, 0.1, 0)],
     )
     def test_atomgroup_guess_bonds(self, ff, lb, nbonds):
         """Test an atomgroup doing guess bonds"""
@@ -554,8 +586,8 @@ class TestGuessBonds(object):
 
     def guess_bonds_with_to_guess(self):
         u = mda.Universe(two_water_gro)
-        has_bonds = hasattr(u.atoms, 'bonds')
-        u.guess_TopologyAttrs(to_guess=['bonds'])
+        has_bonds = hasattr(u.atoms, "bonds")
+        u.guess_TopologyAttrs(to_guess=["bonds"])
         assert not has_bonds
         assert u.atoms.bonds
 
@@ -567,157 +599,194 @@ class TestGuessBonds(object):
 class TestInMemoryUniverse(object):
     def test_reader_w_timeseries(self):
         universe = mda.Universe(PSF, DCD, in_memory=True)
-        assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
-                     (3341, 98, 3),
-                     err_msg="Unexpected shape of trajectory timeseries")
+        assert_equal(
+            universe.trajectory.timeseries(universe.atoms).shape,
+            (3341, 98, 3),
+            err_msg="Unexpected shape of trajectory timeseries",
+        )
 
     def test_reader_wo_timeseries(self):
         universe = mda.Universe(GRO, TRR, in_memory=True)
-        assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
-                     (47681, 10, 3),
-                     err_msg="Unexpected shape of trajectory timeseries")
+        assert_equal(
+            universe.trajectory.timeseries(universe.atoms).shape,
+            (47681, 10, 3),
+            err_msg="Unexpected shape of trajectory timeseries",
+        )
 
     def test_reader_w_timeseries_frame_interval(self):
-        universe = mda.Universe(PSF, DCD, in_memory=True,
-                                       in_memory_step=10)
-        assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
-                     (3341, 10, 3),
-                     err_msg="Unexpected shape of trajectory timeseries")
+        universe = mda.Universe(PSF, DCD, in_memory=True, in_memory_step=10)
+        assert_equal(
+            universe.trajectory.timeseries(universe.atoms).shape,
+            (3341, 10, 3),
+            err_msg="Unexpected shape of trajectory timeseries",
+        )
 
     def test_reader_wo_timeseries_frame_interval(self):
-        universe = mda.Universe(GRO, TRR, in_memory=True,
-                                       in_memory_step=3)
-        assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
-                     (47681, 4, 3),
-                     err_msg="Unexpected shape of trajectory timeseries")
+        universe = mda.Universe(GRO, TRR, in_memory=True, in_memory_step=3)
+        assert_equal(
+            universe.trajectory.timeseries(universe.atoms).shape,
+            (47681, 4, 3),
+            err_msg="Unexpected shape of trajectory timeseries",
+        )
 
     def test_existing_universe(self):
         universe = mda.Universe(PDB_small, DCD)
         universe.transfer_to_memory()
-        assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
-                     (3341, 98, 3),
-                     err_msg="Unexpected shape of trajectory timeseries")
+        assert_equal(
+            universe.trajectory.timeseries(universe.atoms).shape,
+            (3341, 98, 3),
+            err_msg="Unexpected shape of trajectory timeseries",
+        )
 
     def test_frame_interval_convention(self):
         universe1 = mda.Universe(PSF, DCD)
         array1 = universe1.trajectory.timeseries(step=10)
-        universe2 = mda.Universe(PSF, DCD, in_memory=True,
-                                 in_memory_step=10)
+        universe2 = mda.Universe(PSF, DCD, in_memory=True, in_memory_step=10)
         array2 = universe2.trajectory.timeseries()
-        assert_equal(array1, array2,
-                     err_msg="Unexpected differences between arrays.")
+        assert_equal(
+            array1, array2, err_msg="Unexpected differences between arrays."
+        )
 
     def test_slicing_with_start_stop(self):
         universe = MDAnalysis.Universe(PDB_small, DCD)
         # Skip only the last frame
         universe.transfer_to_memory(start=10, stop=20)
-        assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
-                     (3341, 10, 3),
-                     err_msg="Unexpected shape of trajectory timeseries")
+        assert_equal(
+            universe.trajectory.timeseries(universe.atoms).shape,
+            (3341, 10, 3),
+            err_msg="Unexpected shape of trajectory timeseries",
+        )
 
     def test_slicing_without_start(self):
         universe = MDAnalysis.Universe(PDB_small, DCD)
         # Skip only the last frame
         universe.transfer_to_memory(stop=10)
-        assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
-                     (3341, 10, 3),
-                     err_msg="Unexpected shape of trajectory timeseries")
+        assert_equal(
+            universe.trajectory.timeseries(universe.atoms).shape,
+            (3341, 10, 3),
+            err_msg="Unexpected shape of trajectory timeseries",
+        )
 
     def test_slicing_without_stop(self):
         universe = MDAnalysis.Universe(PDB_small, DCD)
         # Skip only the last frame
         universe.transfer_to_memory(start=10)
         print(universe.trajectory.timeseries(universe.atoms).shape)
-        assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
-                     (3341, 88, 3),
-                     err_msg="Unexpected shape of trajectory timeseries")
+        assert_equal(
+            universe.trajectory.timeseries(universe.atoms).shape,
+            (3341, 88, 3),
+            err_msg="Unexpected shape of trajectory timeseries",
+        )
 
     def test_slicing_step_without_start_stop(self):
         universe = MDAnalysis.Universe(PDB_small, DCD)
         # Skip only the last frame
         universe.transfer_to_memory(step=2)
         print(universe.trajectory.timeseries(universe.atoms).shape)
-        assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
-                     (3341, 49, 3),
-                     err_msg="Unexpected shape of trajectory timeseries")
+        assert_equal(
+            universe.trajectory.timeseries(universe.atoms).shape,
+            (3341, 49, 3),
+            err_msg="Unexpected shape of trajectory timeseries",
+        )
 
     def test_slicing_step_with_start_stop(self):
         universe = MDAnalysis.Universe(PDB_small, DCD)
         # Skip only the last frame
         universe.transfer_to_memory(start=10, stop=30, step=2)
         print(universe.trajectory.timeseries(universe.atoms).shape)
-        assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
-                     (3341, 10, 3),
-                     err_msg="Unexpected shape of trajectory timeseries")
+        assert_equal(
+            universe.trajectory.timeseries(universe.atoms).shape,
+            (3341, 10, 3),
+            err_msg="Unexpected shape of trajectory timeseries",
+        )
 
     def test_slicing_step_dt(self):
         universe = MDAnalysis.Universe(PDB_small, DCD)
         dt = universe.trajectory.dt
         universe.transfer_to_memory(step=2)
-        assert_almost_equal(dt * 2, universe.trajectory.dt,
-                            err_msg="Unexpected in-memory timestep: "
-                            + "dt not updated with step information")
+        assert_almost_equal(
+            dt * 2,
+            universe.trajectory.dt,
+            err_msg="Unexpected in-memory timestep: "
+            + "dt not updated with step information",
+        )
 
     def test_slicing_negative_start(self):
         universe = MDAnalysis.Universe(PDB_small, DCD)
         # Skip only the last frame
         universe.transfer_to_memory(start=-10)
         print(universe.trajectory.timeseries(universe.atoms).shape)
-        assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
-                     (3341, 10, 3),
-                     err_msg="Unexpected shape of trajectory timeseries")
+        assert_equal(
+            universe.trajectory.timeseries(universe.atoms).shape,
+            (3341, 10, 3),
+            err_msg="Unexpected shape of trajectory timeseries",
+        )
 
     def test_slicing_negative_stop(self):
         universe = MDAnalysis.Universe(PDB_small, DCD)
         # Skip only the last frame
         universe.transfer_to_memory(stop=-20)
         print(universe.trajectory.timeseries(universe.atoms).shape)
-        assert_equal(universe.trajectory.timeseries(universe.atoms).shape,
-                     (3341, 78, 3),
-                     err_msg="Unexpected shape of trajectory timeseries")
+        assert_equal(
+            universe.trajectory.timeseries(universe.atoms).shape,
+            (3341, 78, 3),
+            err_msg="Unexpected shape of trajectory timeseries",
+        )
 
     def test_transfer_to_memory_kwargs(self):
         u = mda.Universe(PSF, DCD)
         u.transfer_to_memory(example_kwarg=True)
-        assert(u.trajectory._kwargs['example_kwarg'])
+        assert u.trajectory._kwargs["example_kwarg"]
 
     def test_in_memory_kwargs(self):
         u = mda.Universe(PSF, DCD, in_memory=True, example_kwarg=True)
-        assert(u.trajectory._kwargs['example_kwarg'])
+        assert u.trajectory._kwargs["example_kwarg"]
+
 
 class TestCustomReaders(object):
     """
     Can pass a reader as kwarg on Universe creation
     """
+
     def test_custom_reader(self):
         # check that reader passing works
-        u = mda.Universe(TRZ_psf, TRZ, format=MDAnalysis.coordinates.TRZ.TRZReader)
+        u = mda.Universe(
+            TRZ_psf, TRZ, format=MDAnalysis.coordinates.TRZ.TRZReader
+        )
         assert_equal(len(u.atoms), 8184)
 
     def test_custom_reader_singleframe(self):
         T = MDAnalysis.topology.GROParser.GROParser
         R = MDAnalysis.coordinates.GRO.GROReader
-        u = mda.Universe(two_water_gro, two_water_gro,
-                                topology_format=T, format=R)
+        u = mda.Universe(
+            two_water_gro, two_water_gro, topology_format=T, format=R
+        )
         assert_equal(len(u.atoms), 6)
 
     def test_custom_reader_singleframe_2(self):
         # Same as before, but only one argument to Universe
         T = MDAnalysis.topology.GROParser.GROParser
         R = MDAnalysis.coordinates.GRO.GROReader
-        u = mda.Universe(two_water_gro,
-                                topology_format=T, format=R)
+        u = mda.Universe(two_water_gro, topology_format=T, format=R)
         assert_equal(len(u.atoms), 6)
 
     def test_custom_parser(self):
         # topology reader passing works
-        u = mda.Universe(TRZ_psf, TRZ, topology_format=MDAnalysis.topology.PSFParser.PSFParser)
+        u = mda.Universe(
+            TRZ_psf,
+            TRZ,
+            topology_format=MDAnalysis.topology.PSFParser.PSFParser,
+        )
         assert_equal(len(u.atoms), 8184)
 
     def test_custom_both(self):
         # use custom for both
-        u = mda.Universe(TRZ_psf, TRZ, format=MDAnalysis.coordinates.TRZ.TRZReader,
-                         topology_format=MDAnalysis.topology.PSFParser.PSFParser)
+        u = mda.Universe(
+            TRZ_psf,
+            TRZ,
+            format=MDAnalysis.coordinates.TRZ.TRZReader,
+            topology_format=MDAnalysis.topology.PSFParser.PSFParser,
+        )
         assert_equal(len(u.atoms), 8184)
 
 
@@ -728,34 +797,50 @@ class TestAddTopologyAttr(object):
 
     def test_add_TA_fail(self, universe):
         with pytest.raises(ValueError):
-            universe.add_TopologyAttr('silly')
+            universe.add_TopologyAttr("silly")
 
     def test_nodefault_fail(self, universe):
         with pytest.raises(NotImplementedError):
-            universe.add_TopologyAttr('bonds')
+            universe.add_TopologyAttr("bonds")
 
     @pytest.mark.parametrize(
-        'toadd,attrname,default', (
-            ['charge', 'charges', 0.0], ['charges', 'charges', 0.0],
-            ['name', 'names', ''], ['names', 'names', ''],
-            ['type', 'types', ''], ['types', 'types', ''],
-            ['element', 'elements', ''], ['elements', 'elements', ''],
-            ['radius', 'radii', 0.0], ['radii', 'radii', 0.0],
-            ['chainID', 'chainIDs', ''], ['chainIDs', 'chainIDs', ''],
-            ['tempfactor', 'tempfactors', 0.0],
-            ['tempfactors', 'tempfactors', 0.0],
-            ['mass', 'masses', 0.0], ['masses', 'masses', 0.0],
-            ['charge', 'charges', 0.0], ['charges', 'charges', 0.0],
-            ['bfactor', 'bfactors', 0.0], ['bfactors', 'bfactors', 0.0],
-            ['occupancy', 'occupancies', 0.0],
-            ['occupancies', 'occupancies', 0.0],
-            ['altLoc', 'altLocs', ''], ['altLocs', 'altLocs', ''],
-            ['resid', 'resids', 1], ['resids', 'resids', 1],
-            ['resname', 'resnames', ''], ['resnames', 'resnames', ''],
-            ['resnum', 'resnums', 1], ['resnums', 'resnums', 1],
-            ['icode', 'icodes', ''], ['icodes', 'icodes', ''],
-            ['segid', 'segids', ''], ['segids', 'segids', ''],
-        )
+        "toadd,attrname,default",
+        (
+            ["charge", "charges", 0.0],
+            ["charges", "charges", 0.0],
+            ["name", "names", ""],
+            ["names", "names", ""],
+            ["type", "types", ""],
+            ["types", "types", ""],
+            ["element", "elements", ""],
+            ["elements", "elements", ""],
+            ["radius", "radii", 0.0],
+            ["radii", "radii", 0.0],
+            ["chainID", "chainIDs", ""],
+            ["chainIDs", "chainIDs", ""],
+            ["tempfactor", "tempfactors", 0.0],
+            ["tempfactors", "tempfactors", 0.0],
+            ["mass", "masses", 0.0],
+            ["masses", "masses", 0.0],
+            ["charge", "charges", 0.0],
+            ["charges", "charges", 0.0],
+            ["bfactor", "bfactors", 0.0],
+            ["bfactors", "bfactors", 0.0],
+            ["occupancy", "occupancies", 0.0],
+            ["occupancies", "occupancies", 0.0],
+            ["altLoc", "altLocs", ""],
+            ["altLocs", "altLocs", ""],
+            ["resid", "resids", 1],
+            ["resids", "resids", 1],
+            ["resname", "resnames", ""],
+            ["resnames", "resnames", ""],
+            ["resnum", "resnums", 1],
+            ["resnums", "resnums", 1],
+            ["icode", "icodes", ""],
+            ["icodes", "icodes", ""],
+            ["segid", "segids", ""],
+            ["segids", "segids", ""],
+        ),
     )
     def test_add_charges(self, universe, toadd, attrname, default):
         universe.add_TopologyAttr(toadd)
@@ -764,14 +849,15 @@ class TestAddTopologyAttr(object):
         assert getattr(universe.atoms, attrname)[0] == default
 
     @pytest.mark.parametrize(
-        'attr,values', (
-            ('bonds', [(1, 0), (1, 2)]),
-            ('bonds', [[1, 0], [1, 2]]),
-            ('bonds', set([(1, 0), (1, 2)])),
-            ('angles', [(1, 0, 2), (1, 2, 3), (2, 1, 4)]),
-            ('dihedrals', [[1, 2, 3, 1], (3, 1, 5, 2)]),
-            ('impropers', [[1, 2, 3, 1], (3, 1, 5, 2)]),
-        )
+        "attr,values",
+        (
+            ("bonds", [(1, 0), (1, 2)]),
+            ("bonds", [[1, 0], [1, 2]]),
+            ("bonds", set([(1, 0), (1, 2)])),
+            ("angles", [(1, 0, 2), (1, 2, 3), (2, 1, 4)]),
+            ("dihedrals", [[1, 2, 3, 1], (3, 1, 5, 2)]),
+            ("impropers", [[1, 2, 3, 1], (3, 1, 5, 2)]),
+        ),
     )
     def test_add_connection(self, universe, attr, values):
         universe.add_TopologyAttr(attr, values)
@@ -783,16 +869,17 @@ class TestAddTopologyAttr(object):
             assert ix[0] <= ix[-1]
 
     @pytest.mark.parametrize(
-        'attr,values', (
-            ('bonds', [(1, 0, 0), (1, 2)]),
-            ('bonds', [['x', 'y'], [1, 2]]),
-            ('bonds', 'rubbish'),
-            ('bonds', [[1.01, 2.0]]),
-            ('angles', [(1, 0), (1, 2)]),
-            ('angles', 'rubbish'),
-            ('dihedrals', [[1, 1, 1, 0.1]]),
-            ('impropers', [(1, 2, 3)]),
-        )
+        "attr,values",
+        (
+            ("bonds", [(1, 0, 0), (1, 2)]),
+            ("bonds", [["x", "y"], [1, 2]]),
+            ("bonds", "rubbish"),
+            ("bonds", [[1.01, 2.0]]),
+            ("angles", [(1, 0), (1, 2)]),
+            ("angles", "rubbish"),
+            ("dihedrals", [[1, 1, 1, 0.1]]),
+            ("impropers", [(1, 2, 3)]),
+        ),
     )
     def test_add_connection_error(self, universe, attr, values):
         with pytest.raises(ValueError):
@@ -800,7 +887,9 @@ class TestAddTopologyAttr(object):
 
     def test_add_attr_length_error(self, universe):
         with pytest.raises(ValueError):
-            universe.add_TopologyAttr('masses', np.array([1, 2, 3], dtype=np.float64))
+            universe.add_TopologyAttr(
+                "masses", np.array([1, 2, 3], dtype=np.float64)
+            )
 
 
 class TestDelTopologyAttr(object):
@@ -812,7 +901,7 @@ class TestDelTopologyAttr(object):
 
     def test_del_TA_fail(self, universe):
         with pytest.raises(ValueError, match="Unrecognised"):
-            universe.del_TopologyAttr('silly')
+            universe.del_TopologyAttr("silly")
 
     def test_absent_fail(self, universe):
         with pytest.raises(ValueError, match="not in Universe"):
@@ -823,11 +912,12 @@ class TestDelTopologyAttr(object):
             universe.del_TopologyAttr(list)
 
     @pytest.mark.parametrize(
-        'todel,attrname', [
+        "todel,attrname",
+        [
             ("charge", "charges"),
             ("charges", "charges"),
             ("bonds", "bonds"),
-        ]
+        ],
     )
     def test_del_str(self, universe, todel, attrname):
         assert hasattr(universe.atoms, attrname)
@@ -873,8 +963,7 @@ class TestDelTopologyAttr(object):
             transplants = defaultdict(list)
 
             def potatoes(self):
-                """🥔
-                """
+                """🥔"""
                 return "potoooooooo"
 
             transplants["Universe"].append(("potatoes", potatoes))
@@ -890,22 +979,23 @@ def _a_or_reversed_in_b(a, b):
     """
     Check if smaller array ``a`` or ``a[::-1]`` is in b
     """
-    return (a==b).all(1).any() or (a[::-1]==b).all(1).any()
+    return (a == b).all(1).any() or (a[::-1] == b).all(1).any()
+
 
 class TestAddTopologyObjects(object):
 
     small_atom_indices = (
-        ('bonds', [[0, 1], [2, 3]]),
-        ('angles', [[0, 1, 2], [3, 4, 5]]),
-        ('dihedrals', [[8, 22, 1, 3], [4, 5, 6, 7], [11, 2, 3, 13]]),
-        ('impropers', [[1, 6, 7, 2], [5, 3, 4, 2]]),
+        ("bonds", [[0, 1], [2, 3]]),
+        ("angles", [[0, 1, 2], [3, 4, 5]]),
+        ("dihedrals", [[8, 22, 1, 3], [4, 5, 6, 7], [11, 2, 3, 13]]),
+        ("impropers", [[1, 6, 7, 2], [5, 3, 4, 2]]),
     )
 
     large_atom_indices = (
-        ('bonds', [[0, 111], [22, 3]]),
-        ('angles', [[0, 111, 2], [3, 44, 5]]),
-        ('dihedrals', [[8, 222, 1, 3], [44, 5, 6, 7], [111, 2, 3, 13]]),
-        ('impropers', [[1, 6, 771, 2], [5, 3, 433, 2]]),
+        ("bonds", [[0, 111], [22, 3]]),
+        ("angles", [[0, 111, 2], [3, 44, 5]]),
+        ("dihedrals", [[8, 222, 1, 3], [44, 5, 6, 7], [111, 2, 3, 13]]),
+        ("impropers", [[1, 6, 771, 2], [5, 3, 433, 2]]),
     )
 
     @pytest.fixture()
@@ -918,189 +1008,203 @@ class TestAddTopologyObjects(object):
 
     def _check_valid_added_to_empty(self, u, attr, values, to_add):
         assert not hasattr(u, attr)
-        _add_func = getattr(u, 'add_'+attr)
+        _add_func = getattr(u, "add_" + attr)
         _add_func(to_add)
         u_attr = getattr(u, attr)
         assert len(u_attr) == len(values)
-        assert all(_a_or_reversed_in_b(x, u_attr.indices)
-                   for x in values)
+        assert all(_a_or_reversed_in_b(x, u_attr.indices) for x in values)
 
     def _check_valid_added_to_populated(self, u, attr, values, to_add):
         assert hasattr(u, attr)
         u_attr = getattr(u, attr)
         original_length = len(u_attr)
 
-        _add_func = getattr(u, 'add_'+attr)
+        _add_func = getattr(u, "add_" + attr)
         _add_func(to_add)
         u_attr = getattr(u, attr)
         assert len(u_attr) == len(values) + original_length
-        assert all(_a_or_reversed_in_b(x, u_attr.indices)
-                   for x in values)
+        assert all(_a_or_reversed_in_b(x, u_attr.indices) for x in values)
 
     def _check_invalid_addition(self, u, attr, to_add, err_msg):
-        _add_func = getattr(u, 'add_'+attr)
+        _add_func = getattr(u, "add_" + attr)
         with pytest.raises(ValueError) as excinfo:
             _add_func(to_add)
         assert err_msg in str(excinfo.value)
 
-    @pytest.mark.parametrize(
-        'attr,values', small_atom_indices
-    )
+    @pytest.mark.parametrize("attr,values", small_atom_indices)
     def test_add_indices_to_empty(self, empty, attr, values):
         self._check_valid_added_to_empty(empty, attr, values, values)
 
     def test_add_reversed_duplicates(self, empty):
-        assert not hasattr(empty, 'bonds')
+        assert not hasattr(empty, "bonds")
         empty.add_bonds([[0, 1], [1, 0]])
         assert len(empty.bonds) == 1
         assert_array_equal(empty.bonds.indices, np.array([[0, 1]]))
 
-    @pytest.mark.parametrize(
-        'attr,values', large_atom_indices
-    )
+    @pytest.mark.parametrize("attr,values", large_atom_indices)
     def test_add_indices_to_populated(self, universe, attr, values):
         self._check_valid_added_to_populated(universe, attr, values, values)
 
-    @pytest.mark.parametrize(
-        'attr,values', small_atom_indices
-    )
+    @pytest.mark.parametrize("attr,values", small_atom_indices)
     def test_add_atomgroup_to_empty(self, empty, attr, values):
         ag = [empty.atoms[x] for x in values]
         self._check_valid_added_to_empty(empty, attr, values, ag)
 
-    @pytest.mark.parametrize(
-        'attr,values', large_atom_indices
-    )
+    @pytest.mark.parametrize("attr,values", large_atom_indices)
     def test_add_atomgroup_to_populated(self, universe, attr, values):
         ag = [universe.atoms[x] for x in values]
         self._check_valid_added_to_populated(universe, attr, values, ag)
 
-    @pytest.mark.parametrize(
-        'attr,values', small_atom_indices
-    )
-    def test_add_atomgroup_wrong_universe_error(self, universe, empty, attr, values):
+    @pytest.mark.parametrize("attr,values", small_atom_indices)
+    def test_add_atomgroup_wrong_universe_error(
+        self, universe, empty, attr, values
+    ):
         ag = [empty.atoms[x] for x in values]
-        self._check_invalid_addition(universe, attr, ag, 'different Universes')
+        self._check_invalid_addition(universe, attr, ag, "different Universes")
 
-    @pytest.mark.parametrize(
-        'attr,values', large_atom_indices
-    )
+    @pytest.mark.parametrize("attr,values", large_atom_indices)
     def test_add_topologyobjects_to_populated(self, universe, attr, values):
-        topologyobjects = [getattr(universe.atoms[x], attr[:-1]) for x in values]
-        self._check_valid_added_to_populated(universe, attr, values, topologyobjects)
+        topologyobjects = [
+            getattr(universe.atoms[x], attr[:-1]) for x in values
+        ]
+        self._check_valid_added_to_populated(
+            universe, attr, values, topologyobjects
+        )
 
-    @pytest.mark.parametrize(
-        'attr,values', small_atom_indices
-    )
-    def test_add_topologyobjects_wrong_universe_error(self, universe, empty, attr, values):
+    @pytest.mark.parametrize("attr,values", small_atom_indices)
+    def test_add_topologyobjects_wrong_universe_error(
+        self, universe, empty, attr, values
+    ):
         tobj = [getattr(universe.atoms[x], attr[:-1]) for x in values]
-        self._check_invalid_addition(empty, attr, tobj, 'different Universes')
+        self._check_invalid_addition(empty, attr, tobj, "different Universes")
 
-    @pytest.mark.parametrize(
-        'attr,values', large_atom_indices
-    )
+    @pytest.mark.parametrize("attr,values", large_atom_indices)
     def test_add_topologygroups_to_populated(self, universe, attr, values):
-        topologygroup = mda.core.topologyobjects.TopologyGroup(np.array(values),
-                                                               universe)
-        self._check_valid_added_to_populated(universe, attr, values, topologygroup)
+        topologygroup = mda.core.topologyobjects.TopologyGroup(
+            np.array(values), universe
+        )
+        self._check_valid_added_to_populated(
+            universe, attr, values, topologygroup
+        )
 
-    @pytest.mark.parametrize(
-        'attr,values', small_atom_indices
-    )
-    def test_add_topologygroup_wrong_universe_error(self, universe, empty, attr, values):
-        tg = mda.core.topologyobjects.TopologyGroup(np.array(values),
-                                                    universe)
-        self._check_invalid_addition(empty, attr, tg, 'different Universes')
+    @pytest.mark.parametrize("attr,values", small_atom_indices)
+    def test_add_topologygroup_wrong_universe_error(
+        self, universe, empty, attr, values
+    ):
+        tg = mda.core.topologyobjects.TopologyGroup(np.array(values), universe)
+        self._check_invalid_addition(empty, attr, tg, "different Universes")
 
-    @pytest.mark.parametrize(
-        'attr,values', small_atom_indices
-    )
-    def test_add_topologygroup_different_universe(self, universe, empty, attr, values):
-        tg = mda.core.topologyobjects.TopologyGroup(np.array(values),
-                                                               universe)
+    @pytest.mark.parametrize("attr,values", small_atom_indices)
+    def test_add_topologygroup_different_universe(
+        self, universe, empty, attr, values
+    ):
+        tg = mda.core.topologyobjects.TopologyGroup(np.array(values), universe)
         self._check_valid_added_to_empty(empty, attr, values, tg.to_indices())
 
     @pytest.mark.parametrize(
-        'attr,values', (
-            ('impropers', [[0, 111], [22, 3]]),
-            ('dihedrals', [[0, 111, 2], [3, 44, 5]]),
-            ('angles', [[8, 222, 1, 3], [44, 5, 6, 7], [111, 2, 3, 13]]),
-            ('bonds', [[1, 6, 771, 2], [5, 3, 433, 2]]),
-        )
+        "attr,values",
+        (
+            ("impropers", [[0, 111], [22, 3]]),
+            ("dihedrals", [[0, 111, 2], [3, 44, 5]]),
+            ("angles", [[8, 222, 1, 3], [44, 5, 6, 7], [111, 2, 3, 13]]),
+            ("bonds", [[1, 6, 771, 2], [5, 3, 433, 2]]),
+        ),
     )
     def test_add_wrong_topologygroup_error(self, universe, attr, values):
         arr = np.array(values)
         tg = mda.core.topologyobjects.TopologyGroup(arr, universe)
-        self._check_invalid_addition(universe, attr, tg, 'iterable of tuples with')
+        self._check_invalid_addition(
+            universe, attr, tg, "iterable of tuples with"
+        )
 
     @pytest.mark.parametrize(
-        'attr,values', (
-            ('bonds', [[0, -111], [22, 3]]),
-            ('angles', [[0, 11111, 2], [3, 44, 5]]),
-            ('dihedrals', [[8, 222, 28888, 3], [44, 5, 6, 7], [111, 2, 3, 13]]),
-            ('impropers', [[1, 6, 77133, 2], [5, 3, 433, 2]]),
-        )
+        "attr,values",
+        (
+            ("bonds", [[0, -111], [22, 3]]),
+            ("angles", [[0, 11111, 2], [3, 44, 5]]),
+            (
+                "dihedrals",
+                [[8, 222, 28888, 3], [44, 5, 6, 7], [111, 2, 3, 13]],
+            ),
+            ("impropers", [[1, 6, 77133, 2], [5, 3, 433, 2]]),
+        ),
     )
     def test_add_nonexistent_indices_error(self, universe, attr, values):
-        self._check_invalid_addition(universe, attr, values, 'nonexistent atom indices')
+        self._check_invalid_addition(
+            universe, attr, values, "nonexistent atom indices"
+        )
 
     @pytest.mark.parametrize(
-        'attr,n', (
-            ('bonds', 2),
-            ('angles', 3),
-            ('dihedrals', 4),
-            ('impropers', 4),
-        )
+        "attr,n",
+        (
+            ("bonds", 2),
+            ("angles", 3),
+            ("dihedrals", 4),
+            ("impropers", 4),
+        ),
     )
     def test_add_wrong_number_of_atoms_error(self, universe, attr, n):
-        errmsg = ('{} must be an iterable of '
-                  'tuples with {} atom indices').format(attr, n)
+        errmsg = (
+            "{} must be an iterable of " "tuples with {} atom indices"
+        ).format(attr, n)
         idx = [(0, 1), (0, 1, 2), (8, 22, 1, 3), (5, 3, 4, 2)]
         self._check_invalid_addition(universe, attr, idx, errmsg)
 
     def test_add_bonds_refresh_fragments(self, empty):
         with pytest.raises(NoDataError):
-            getattr(empty.atoms, 'fragments')
+            getattr(empty.atoms, "fragments")
 
         empty.add_bonds([empty.atoms[:2]])
-        assert len(empty.atoms.fragments) == len(empty.atoms)-1
+        assert len(empty.atoms.fragments) == len(empty.atoms) - 1
 
         empty.add_bonds([empty.atoms[2:4]])
-        assert len(empty.atoms.fragments) == len(empty.atoms)-2
+        assert len(empty.atoms.fragments) == len(empty.atoms) - 2
 
-    @pytest.mark.parametrize(
-        'attr,values', small_atom_indices
-    )
+    @pytest.mark.parametrize("attr,values", small_atom_indices)
     def test_roundtrip(self, empty, attr, values):
-        _add_func = getattr(empty, 'add_'+attr)
+        _add_func = getattr(empty, "add_" + attr)
         _add_func(values)
         u_attr = getattr(empty, attr)
         assert len(u_attr) == len(values)
 
-        _delete_func = getattr(empty, 'delete_'+attr)
+        _delete_func = getattr(empty, "delete_" + attr)
         _delete_func(values)
         u_attr = getattr(empty, attr)
         assert len(u_attr) == 0
 
+
 class TestDeleteTopologyObjects(object):
 
-    TOP = {'bonds': [(0, 1), (2, 3), (3, 4), (4, 5), (7, 8)],
-           'angles': [(0, 1, 2), (3, 4, 5), (8, 2, 4)],
-           'dihedrals': [(9, 2, 3, 4), (1, 3, 4, 2), (8, 22, 1, 3), (4, 5, 6, 7), (11, 2, 3, 13)],
-           'impropers': [(1, 3, 5, 2), (1, 6, 7, 2), (5, 3, 4, 2)]}
+    TOP = {
+        "bonds": [(0, 1), (2, 3), (3, 4), (4, 5), (7, 8)],
+        "angles": [(0, 1, 2), (3, 4, 5), (8, 2, 4)],
+        "dihedrals": [
+            (9, 2, 3, 4),
+            (1, 3, 4, 2),
+            (8, 22, 1, 3),
+            (4, 5, 6, 7),
+            (11, 2, 3, 13),
+        ],
+        "impropers": [(1, 3, 5, 2), (1, 6, 7, 2), (5, 3, 4, 2)],
+    }
 
     existing_atom_indices = (
-            ('bonds', [[0, 1], [2, 3]]),
-            ('angles', [[0, 1, 2], [3, 4, 5]]),
-            ('dihedrals', [[8, 22, 1, 3], [4, 5, 6, 7], [11, 2, 3, 13]]),
-            ('impropers', [[1, 6, 7, 2], [5, 3, 4, 2]]),
-        )
+        ("bonds", [[0, 1], [2, 3]]),
+        ("angles", [[0, 1, 2], [3, 4, 5]]),
+        ("dihedrals", [[8, 22, 1, 3], [4, 5, 6, 7], [11, 2, 3, 13]]),
+        ("impropers", [[1, 6, 7, 2], [5, 3, 4, 2]]),
+    )
     nonexisting_atom_indices = (
-            ('bonds', [[2, 3], [7, 8], [0, 4]]),
-            ('angles', [[0, 1, 2], [8, 2, 8], [1, 1, 1]]),
-            ('dihedrals', [[0, 0, 0, 0], [1, 1, 1, 1]]),
-            ('impropers', [[8, 22, 1, 3],]),
-        )
+        ("bonds", [[2, 3], [7, 8], [0, 4]]),
+        ("angles", [[0, 1, 2], [8, 2, 8], [1, 1, 1]]),
+        ("dihedrals", [[0, 0, 0, 0], [1, 1, 1, 1]]),
+        (
+            "impropers",
+            [
+                [8, 22, 1, 3],
+            ],
+        ),
+    )
 
     @pytest.fixture()
     def universe(self):
@@ -1121,124 +1225,120 @@ class TestDeleteTopologyObjects(object):
         original_length = len(self.TOP[attr])
         assert len(u_attr) == original_length
 
-        _delete_func = getattr(u, 'delete_'+attr)
+        _delete_func = getattr(u, "delete_" + attr)
         _delete_func(to_delete)
         u_attr = getattr(u, attr)
-        assert len(u_attr) == original_length-len(values)
+        assert len(u_attr) == original_length - len(values)
 
         not_deleted = [x for x in self.TOP[attr] if list(x) not in values]
-        assert all([x in u_attr.indices or x[::-1] in u_attr.indices
-                   for x in not_deleted])
+        assert all(
+            [
+                x in u_attr.indices or x[::-1] in u_attr.indices
+                for x in not_deleted
+            ]
+        )
 
     def _check_invalid_deleted(self, u, attr, to_delete, err_msg):
         u_attr = getattr(u, attr)
         original_length = len(self.TOP[attr])
         assert len(u_attr) == original_length
-        _delete_func = getattr(u, 'delete_'+attr)
+        _delete_func = getattr(u, "delete_" + attr)
         with pytest.raises(ValueError) as excinfo:
             _delete_func(to_delete)
         assert err_msg in str(excinfo.value)
 
-    @pytest.mark.parametrize(
-        'attr,values', existing_atom_indices
-    )
+    @pytest.mark.parametrize("attr,values", existing_atom_indices)
     def test_delete_valid_indices(self, universe, attr, values):
         self._check_valid_deleted(universe, attr, values, values)
 
-    @pytest.mark.parametrize(
-        'attr,values', nonexisting_atom_indices
-    )
+    @pytest.mark.parametrize("attr,values", nonexisting_atom_indices)
     def test_delete_missing_indices(self, universe, attr, values):
-        self._check_invalid_deleted(universe, attr, values, 'Cannot delete nonexistent')
+        self._check_invalid_deleted(
+            universe, attr, values, "Cannot delete nonexistent"
+        )
 
-    @pytest.mark.parametrize(
-        'attr,values', existing_atom_indices
-    )
+    @pytest.mark.parametrize("attr,values", existing_atom_indices)
     def test_delete_valid_atomgroup(self, universe, attr, values):
         ag = [universe.atoms[x] for x in values]
         self._check_valid_deleted(universe, attr, values, ag)
 
-    @pytest.mark.parametrize(
-        'attr,values', existing_atom_indices
-    )
-    def test_delete_atomgroup_wrong_universe_error(self, universe, universe2, attr, values):
+    @pytest.mark.parametrize("attr,values", existing_atom_indices)
+    def test_delete_atomgroup_wrong_universe_error(
+        self, universe, universe2, attr, values
+    ):
         ag = [universe.atoms[x] for x in values]
-        self._check_invalid_deleted(universe2, attr, ag, 'different Universes')
+        self._check_invalid_deleted(universe2, attr, ag, "different Universes")
 
-    @pytest.mark.parametrize(
-        'attr,values', nonexisting_atom_indices
-    )
+    @pytest.mark.parametrize("attr,values", nonexisting_atom_indices)
     def test_delete_missing_atomgroup(self, universe, attr, values):
         ag = [universe.atoms[x] for x in values]
-        self._check_invalid_deleted(universe, attr, ag, 'Cannot delete nonexistent')
+        self._check_invalid_deleted(
+            universe, attr, ag, "Cannot delete nonexistent"
+        )
 
-    @pytest.mark.parametrize(
-        'attr,values', existing_atom_indices
-    )
+    @pytest.mark.parametrize("attr,values", existing_atom_indices)
     def test_delete_mixed_type(self, universe, attr, values):
         mixed = [universe.atoms[values[0]]] + values[1:]
         self._check_valid_deleted(universe, attr, values, mixed)
 
-    @pytest.mark.parametrize(
-        'attr,values', existing_atom_indices
-    )
+    @pytest.mark.parametrize("attr,values", existing_atom_indices)
     def test_delete_valid_topologyobjects(self, universe, attr, values):
         to = [getattr(universe.atoms[x], attr[:-1]) for x in values]
         self._check_valid_deleted(universe, attr, values, to)
 
-    @pytest.mark.parametrize(
-        'attr,values', existing_atom_indices
-    )
-    def test_delete_topologyobjects_wrong_universe(self, universe, universe2, attr, values):
+    @pytest.mark.parametrize("attr,values", existing_atom_indices)
+    def test_delete_topologyobjects_wrong_universe(
+        self, universe, universe2, attr, values
+    ):
         u1 = [getattr(universe.atoms[x], attr[:-1]) for x in values[:-1]]
         u2 = [getattr(universe2.atoms[values[-1]], attr[:-1])]
-        self._check_invalid_deleted(universe, attr, u1+u2, 'different Universes')
+        self._check_invalid_deleted(
+            universe, attr, u1 + u2, "different Universes"
+        )
 
-    @pytest.mark.parametrize(
-        'attr,values', existing_atom_indices
-    )
+    @pytest.mark.parametrize("attr,values", existing_atom_indices)
     def test_delete_valid_topologygroup(self, universe, attr, values):
         arr = np.array(values)
         tg = mda.core.topologyobjects.TopologyGroup(arr, universe)
         self._check_valid_deleted(universe, attr, values, tg)
 
-    @pytest.mark.parametrize(
-        'attr,values', existing_atom_indices
-    )
-    def test_delete_topologygroup_wrong_universe_error(self, universe, universe2, attr, values):
+    @pytest.mark.parametrize("attr,values", existing_atom_indices)
+    def test_delete_topologygroup_wrong_universe_error(
+        self, universe, universe2, attr, values
+    ):
         arr = np.array(values)
         tg = mda.core.topologyobjects.TopologyGroup(arr, universe2)
-        self._check_invalid_deleted(universe, attr, tg, 'different Universes')
+        self._check_invalid_deleted(universe, attr, tg, "different Universes")
 
-    @pytest.mark.parametrize(
-        'attr,values', existing_atom_indices
-    )
-    def test_delete_topologygroup_different_universe(self, universe, universe2, attr, values):
+    @pytest.mark.parametrize("attr,values", existing_atom_indices)
+    def test_delete_topologygroup_different_universe(
+        self, universe, universe2, attr, values
+    ):
         arr = np.array(values)
         tg = mda.core.topologyobjects.TopologyGroup(arr, universe2)
         self._check_valid_deleted(universe, attr, values, tg.to_indices())
 
     @pytest.mark.parametrize(
-        'attr,n', (
-            ('bonds', 2),
-            ('angles', 3),
-            ('dihedrals', 4),
-            ('impropers', 4),
-        )
+        "attr,n",
+        (
+            ("bonds", 2),
+            ("angles", 3),
+            ("dihedrals", 4),
+            ("impropers", 4),
+        ),
     )
     def test_delete_wrong_number_of_atoms_error(self, universe, attr, n):
         idx = [(0, 1), (0, 1, 2), (8, 22, 1, 3), (5, 3, 4, 2)]
-        errmsg = ('{} must be an iterable of '
-                  'tuples with {} atom indices').format(attr, n)
+        errmsg = (
+            "{} must be an iterable of " "tuples with {} atom indices"
+        ).format(attr, n)
         self._check_invalid_deleted(universe, attr, idx, errmsg)
 
-    @pytest.mark.parametrize(
-        'attr,values', existing_atom_indices
-    )
+    @pytest.mark.parametrize("attr,values", existing_atom_indices)
     def test_delete_missing_attr(self, attr, values):
         u = make_Universe()
         assert not hasattr(u, attr)
-        _delete_func = getattr(u, 'delete_'+attr)
+        _delete_func = getattr(u, "delete_" + attr)
         with pytest.raises(ValueError) as excinfo:
             _delete_func(values)
         assert "There are no" in str(excinfo.value)
@@ -1248,30 +1348,27 @@ class TestDeleteTopologyObjects(object):
         universe.delete_bonds([universe.atoms[[2, 3]]])
         assert len(universe.atoms.fragments) == n_fragments + 1
 
-    @pytest.mark.parametrize("filename, n_bonds", [
-        (CONECT, 72),
-        (PDB_conect, 8)
-    ])
+    @pytest.mark.parametrize(
+        "filename, n_bonds", [(CONECT, 72), (PDB_conect, 8)]
+    )
     def test_delete_all_bonds(self, filename, n_bonds):
         u = mda.Universe(filename)
         assert len(u.bonds) == n_bonds
         u.delete_bonds(u.bonds)
         assert len(u.bonds) == 0
 
-    @pytest.mark.parametrize(
-        'attr,values', existing_atom_indices
-    )
+    @pytest.mark.parametrize("attr,values", existing_atom_indices)
     def test_roundtrip(self, universe, attr, values):
         u_attr = getattr(universe, attr)
         original_length = len(self.TOP[attr])
         assert len(u_attr) == original_length
 
-        _delete_func = getattr(universe, 'delete_'+attr)
+        _delete_func = getattr(universe, "delete_" + attr)
         _delete_func(values)
         nu_attr = getattr(universe, attr)
-        assert len(nu_attr) == original_length-len(values)
+        assert len(nu_attr) == original_length - len(values)
 
-        _add_func = getattr(universe, 'add_'+attr)
+        _add_func = getattr(universe, "add_" + attr)
         _add_func(values)
         nu_attr = getattr(universe, attr)
         assert len(nu_attr) == original_length
@@ -1280,36 +1377,39 @@ class TestDeleteTopologyObjects(object):
 
 
 class TestAllCoordinatesKwarg(object):
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def u_GRO_TRR(self):
         return mda.Universe(GRO, TRR)
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def u_GRO_TRR_allcoords(self):
         return mda.Universe(GRO, TRR, all_coordinates=True)
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def u_GRO(self):
         return mda.Universe(GRO)
 
     def test_all_coordinates_length(self, u_GRO_TRR, u_GRO_TRR_allcoords):
         # length with all_coords should be +1
-        assert (len(u_GRO_TRR.trajectory) + 1 ==
-                len(u_GRO_TRR_allcoords.trajectory))
+        assert len(u_GRO_TRR.trajectory) + 1 == len(
+            u_GRO_TRR_allcoords.trajectory
+        )
 
     def test_all_coordinates_frame(self, u_GRO_TRR_allcoords, u_GRO):
         # check that first frame in u(GRO, TRR, allcords)
         # are the coordinates from GRO
-        assert_array_equal(u_GRO_TRR_allcoords.atoms.positions,
-                           u_GRO.atoms.positions)
+        assert_array_equal(
+            u_GRO_TRR_allcoords.atoms.positions, u_GRO.atoms.positions
+        )
 
     def test_second_frame(self, u_GRO_TRR_allcoords, u_GRO_TRR):
         # check that second frame in u(GRO, TRR, allcoords)
         # are the coordinates from TRR[0]
         u_GRO_TRR_allcoords.trajectory[1]
 
-        assert_array_equal(u_GRO_TRR_allcoords.atoms.positions,
-                           u_GRO_TRR.atoms.positions)
+        assert_array_equal(
+            u_GRO_TRR_allcoords.atoms.positions, u_GRO_TRR.atoms.positions
+        )
 
 
 class TestEmpty(object):
@@ -1322,10 +1422,10 @@ class TestEmpty(object):
 
     def test_empty_extra(self):
         u = mda.Universe.empty(
-            n_atoms=12, n_residues=3, n_segments=2,
-            atom_resindex=np.array([0, 0, 0, 0, 0,
-                                    1, 1, 1, 1, 1,
-                                    2, 2]),
+            n_atoms=12,
+            n_residues=3,
+            n_segments=2,
+            atom_resindex=np.array([0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2]),
             residue_segindex=np.array([0, 0, 1]),
         )
 
@@ -1345,12 +1445,12 @@ class TestEmpty(object):
             u = mda.Universe.empty(n_atoms=10, n_residues=2, n_segments=1)
 
     def test_no_segindex_warning(self):
-        res = np.array([0, 0, 0, 0, 0,
-                        1, 1, 1, 1, 1])
+        res = np.array([0, 0, 0, 0, 0, 1, 1, 1, 1, 1])
 
         with pytest.warns(UserWarning):
-            u = mda.Universe.empty(n_atoms=10, n_residues=2, n_segments=2,
-                                   atom_resindex=res)
+            u = mda.Universe.empty(
+                n_atoms=10, n_residues=2, n_segments=2, atom_resindex=res
+            )
 
     def test_no_trivial_warning(self):
         """
@@ -1376,7 +1476,7 @@ class TestEmpty(object):
         u = mda.Universe.empty(10, trajectory=True)
 
         assert len(u.trajectory) == 1
-        timesteps =[]
+        timesteps = []
         for ts in u.trajectory:
             timesteps.append(ts.frame)
         assert len(timesteps) == 1
@@ -1402,7 +1502,7 @@ class TestEmpty(object):
     def test_empty_creation_raises_error(self):
         with pytest.raises(TypeError) as exc:
             u = mda.Universe()
-        assert 'Universe.empty' in str(exc.value)
+        assert "Universe.empty" in str(exc.value)
 
 
 def test_deprecate_b_tempfactors():
@@ -1419,7 +1519,7 @@ class Thingy:
 
 
 class ThingyParser(TopologyReaderBase):
-    format='THINGY'
+    format = "THINGY"
 
     @staticmethod
     def _format_hint(thing):
@@ -1434,8 +1534,7 @@ class TestOnlyTopology:
         # issue 3443
         t = Thingy(20)
 
-        with pytest.warns(UserWarning,
-                          match="No coordinate reader found for"):
+        with pytest.warns(UserWarning, match="No coordinate reader found for"):
             u = mda.Universe(t, to_guess=())
 
         assert len(u.atoms) == 10

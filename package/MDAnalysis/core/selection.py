@@ -1094,6 +1094,37 @@ class NucleicSelection(Selection):
         return group[mask]
 
 
+class WaterSelection(Selection):
+    """All atoms in water residues with recognized water residue names.
+
+    Recognized residue names:
+
+    * recognized 3 Letter resnames: 'H2O', 'HOH', 'OH2', 'HHO', 'OHH'
+        'TIP', 'T3P', 'T4P', 'T5P', 'SOL', 'WAT'
+
+    * recognized 4 Letter resnames: 'TIP2', 'TIP3', 'TIP4'
+
+    .. versionadded:: 2.9.0
+    """
+    token = 'water'
+
+    # Recognized water resnames
+    water_res = {
+        'H2O', 'HOH', 'OH2', 'HHO', 'OHH',
+        'T3P', 'T4P', 'T5P', 'SOL', 'WAT',
+        'TIP', 'TIP2', 'TIP3', 'TIP4'
+    }
+
+    def _apply(self, group):
+        resnames = group.universe._topology.resnames
+        nmidx = resnames.nmidx[group.resindices]
+
+        matches = [ix for (nm, ix) in resnames.namedict.items()
+                   if nm in self.water_res]
+        mask = np.isin(nmidx, matches)
+
+        return group[mask]
+
 class BackboneSelection(ProteinSelection):
     """A BackboneSelection contains all atoms with name 'N', 'CA', 'C', 'O'.
 

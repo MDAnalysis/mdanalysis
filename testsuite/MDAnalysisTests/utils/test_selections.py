@@ -42,7 +42,9 @@ from MDAnalysis.lib.util import NamedStream
 class _SelectionWriter(object):
 
     filename = None
-    max_number = 357  # to keep fixtures smallish, only select CAs up to number 357
+    max_number = (
+        357  # to keep fixtures smallish, only select CAs up to number 357
+    )
 
     @staticmethod
     @pytest.fixture()
@@ -54,7 +56,9 @@ class _SelectionWriter(object):
         return NamedStream(StringIO(), self.filename)
 
     def _selection(self, universe):
-        return universe.select_atoms("protein and name CA and bynum 1-{0}".format(self.max_number))
+        return universe.select_atoms(
+            "protein and name CA and bynum 1-{0}".format(self.max_number)
+        )
 
     def _write(self, universe, namedfile, **kwargs):
         g = self._selection(universe)
@@ -72,9 +76,13 @@ class _SelectionWriter(object):
             outfile.write(g)
         return g
 
-    def test_write_bad_mode(self, universe, namedfile,):
+    def test_write_bad_mode(
+        self,
+        universe,
+        namedfile,
+    ):
         with pytest.raises(ValueError):
-            self._write(universe, namedfile, name=self.ref_name, mode='a+')
+            self._write(universe, namedfile, name=self.ref_name, mode="a+")
 
     def test_write(self, universe, namedfile):
         self._write(universe, namedfile, name=self.ref_name)
@@ -105,18 +113,25 @@ class TestSelectionWriter_Gromacs(_SelectionWriter):
     filename = "CA.ndx"
     ref_name = "CA_selection"
     ref_indices = ndx2array(
-        [ '5 22 46 65 84 103 122 129 141 153 160 170 \n',
-          '177 199 206 220 237 247 264 284 303 320 335 357 \n',
-          ]
-        )
+        [
+            "5 22 46 65 84 103 122 129 141 153 160 170 \n",
+            "177 199 206 220 237 247 264 284 303 320 335 357 \n",
+        ]
+    )
 
     def _assert_selectionstring(self, namedfile):
         header = namedfile.readline().strip()
-        assert_equal(header, "[ {0} ]".format(self.ref_name),
-                     err_msg="NDX file has wrong selection name")
+        assert_equal(
+            header,
+            "[ {0} ]".format(self.ref_name),
+            err_msg="NDX file has wrong selection name",
+        )
         indices = ndx2array(namedfile.readlines())
-        assert_array_equal(indices, self.ref_indices,
-                           err_msg="indices were not written correctly")
+        assert_array_equal(
+            indices,
+            self.ref_indices,
+            err_msg="indices were not written correctly",
+        )
 
 
 class TestSelectionWriter_Charmm(_SelectionWriter):
@@ -124,8 +139,9 @@ class TestSelectionWriter_Charmm(_SelectionWriter):
     writer = MDAnalysis.selections.charmm.SelectionWriter
     filename = "CA.str"
     ref_name = "CA_selection"
-    ref_selectionstring = lines2one([
-        """! MDAnalysis CHARMM selection
+    ref_selectionstring = lines2one(
+        [
+            """! MDAnalysis CHARMM selection
            DEFINE CA_selection SELECT -
            BYNUM 5 .or. BYNUM 22 .or. BYNUM 46 .or. BYNUM 65 .or. -
            BYNUM 84 .or. BYNUM 103 .or. BYNUM 122 .or. BYNUM 129 .or. -
@@ -133,12 +149,17 @@ class TestSelectionWriter_Charmm(_SelectionWriter):
            BYNUM 177 .or. BYNUM 199 .or. BYNUM 206 .or. BYNUM 220 .or. -
            BYNUM 237 .or. BYNUM 247 .or. BYNUM 264 .or. BYNUM 284 .or. -
            BYNUM 303 .or. BYNUM 320 .or. BYNUM 335 .or. BYNUM 357 END
-        """])
+        """
+        ]
+    )
 
     def _assert_selectionstring(self, namedfile):
         selectionstring = lines2one(namedfile.readlines())
-        assert_equal(selectionstring, self.ref_selectionstring,
-                     err_msg="Charmm selection was not written correctly")
+        assert_equal(
+            selectionstring,
+            self.ref_selectionstring,
+            err_msg="Charmm selection was not written correctly",
+        )
 
 
 class TestSelectionWriter_PyMOL(_SelectionWriter):
@@ -146,18 +167,24 @@ class TestSelectionWriter_PyMOL(_SelectionWriter):
     writer = MDAnalysis.selections.pymol.SelectionWriter
     filename = "CA.pml"
     ref_name = "CA_selection"
-    ref_selectionstring = lines2one([
-        """# MDAnalysis PyMol selection\n select CA_selection, \\
+    ref_selectionstring = lines2one(
+        [
+            """# MDAnalysis PyMol selection\n select CA_selection, \\
            index 5 | index 22 | index 46 | index 65 | index 84 | index 103 | \\
            index 122 | index 129 | index 141 | index 153 | index 160 | index 170 | \\
            index 177 | index 199 | index 206 | index 220 | index 237 | index 247 | \\
            index 264 | index 284 | index 303 | index 320 | index 335 | index 357
-        """])
+        """
+        ]
+    )
 
     def _assert_selectionstring(self, namedfile):
         selectionstring = lines2one(namedfile.readlines())
-        assert_equal(selectionstring, self.ref_selectionstring,
-                     err_msg="PyMOL selection was not written correctly")
+        assert_equal(
+            selectionstring,
+            self.ref_selectionstring,
+            err_msg="PyMOL selection was not written correctly",
+        )
 
 
 class TestSelectionWriter_VMD(_SelectionWriter):
@@ -165,21 +192,27 @@ class TestSelectionWriter_VMD(_SelectionWriter):
     writer = MDAnalysis.selections.vmd.SelectionWriter
     filename = "CA.vmd"
     ref_name = "CA_selection"
-    ref_selectionstring = lines2one([
-        """# MDAnalysis VMD selection atomselect macro CA_selection {index 4 21 45 64 83 102 121 128 \\
+    ref_selectionstring = lines2one(
+        [
+            """# MDAnalysis VMD selection atomselect macro CA_selection {index 4 21 45 64 83 102 121 128 \\
            140 152 159 169 176 198 205 219 \\
            236 246 263 283 302 319 334 356 }
-        """])
+        """
+        ]
+    )
 
     def _assert_selectionstring(self, namedfile):
         selectionstring = lines2one(namedfile.readlines())
-        assert_equal(selectionstring, self.ref_selectionstring,
-                     err_msg="PyMOL selection was not written correctly")
+        assert_equal(
+            selectionstring,
+            self.ref_selectionstring,
+            err_msg="PyMOL selection was not written correctly",
+        )
 
 
 def spt2array(line):
     """Get name of and convert Jmol SPT definition to integer array"""
-    match = re.search(r'\@~(\w+) \(\{([\d\s]*)\}\)', line)
+    match = re.search(r"\@~(\w+) \(\{([\d\s]*)\}\)", line)
     return match.group(1), np.array(match.group(2).split(), dtype=int)
 
 
@@ -188,16 +221,22 @@ class TestSelectionWriter_Jmol(_SelectionWriter):
     writer = MDAnalysis.selections.jmol.SelectionWriter
     filename = "CA.spt"
     ref_name, ref_indices = spt2array(
-        ( '@~ca ({4 21 45 64 83 102 121 128 140 152 159 169 176 198 205 219 236'
-          ' 246 263 283 302 319 334 356});')
+        (
+            "@~ca ({4 21 45 64 83 102 121 128 140 152 159 169 176 198 205 219 236"
+            " 246 263 283 302 319 334 356});"
         )
+    )
 
     def _assert_selectionstring(self, namedfile):
         header, indices = spt2array(namedfile.readline())
-        assert_equal(header, self.ref_name,
-                     err_msg="SPT file has wrong selection name")
-        assert_array_equal(indices, self.ref_indices,
-                           err_msg="SPT indices were not written correctly")
+        assert_equal(
+            header, self.ref_name, err_msg="SPT file has wrong selection name"
+        )
+        assert_array_equal(
+            indices,
+            self.ref_indices,
+            err_msg="SPT indices were not written correctly",
+        )
 
 
 class TestSelections:

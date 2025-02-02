@@ -156,21 +156,11 @@ filterwarnings = [
 [tool.black]
 line-length = 79
 target-version = ['py310', 'py311', 'py312', 'py313']
-include = '''
-(
-setup\.py
-| MDAnalysisTests/auxiliary/.*\.py
-| MDAnalysisTests/lib/.*\.py
-| MDAnalysisTests/transformations/.*\.py
-| MDAnalysisTests/converters/.*\.py
-)
-'''
 extend-exclude = '''
 (
 __pycache__
 | testsuite/MDAnalysisTests/core/test_atomselections\.py
 | testsuite/MDAnalysisTests/analysis/test_atomicdistances\.py
-| testsuite/MDAnalysisTests/coordinates/test_xdr\.py
 | testsuite/MDAnalysisTests/core/test_atomselections\.py
 | testsuite/MDAnalysisTests/datafiles\.py
 | testsuite/MDAnalysisTests/analysis/conftest\.py

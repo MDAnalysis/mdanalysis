@@ -14,17 +14,20 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, ChiahsinChu, RMeli, tanishy7777, talagayev
+??/??/?? IAlibay, ChiahsinChu, RMeli, tanishy7777, talagayev, tylerjereddy,
+         marinegor
 
  * 2.9.0
 
 Fixes
+ * Add support for TPR files produced by GROMACS 2024.4
  * Fixes invalid default unit from Angstrom to Angstrom^{-3} for convert_density() function. (Issue #4829)
  * Fixes deprecation warning Array to scalar convertion. Replaced atan2() with np.arctan2() (Issue #4339)
  * Replaced mutable defaults with None and initialized them within
    the function to prevent shared state. (Issue #4655)
 
 Enhancements
+ * Addition of 'water' token for water selection (Issue #4839)
  * Enables parallelization for analysis.density.DensityAnalysis (Issue #4677, PR #4729)
  * Enables parallelization for analysis.contacts.Contacts (Issue #4660)
  * Enable parallelization for analysis.nucleicacids.NucPairDist (Issue #4670)
@@ -33,6 +36,8 @@ Enhancements
 
 
 Changes
+ * Changed `fasteners` dependency to  `filelock` (Issue #4797, PR #4800)
+ * Codebase is now formatted with black (version `24`) (PR #4886)
 
 Deprecations
 

@@ -172,7 +172,7 @@ from ..exceptions import SelectionError
 from ..lib.util import asiterable, iterable, get_weights
 
 
-logger = logging.getLogger('MDAnalysis.analysis.rmsd')
+logger = logging.getLogger("MDAnalysis.analysis.rmsd")
 
 
 def rmsd(a, b, weights=None, center=False, superposition=False):
@@ -258,7 +258,7 @@ def rmsd(a, b, weights=None, center=False, superposition=False):
     b = np.asarray(b, dtype=np.float64)
     N = b.shape[0]
     if a.shape != b.shape:
-        raise ValueError('a and b must have same shape')
+        raise ValueError("a and b must have same shape")
 
     # superposition only works if structures are centered
     if center or superposition:
@@ -269,7 +269,7 @@ def rmsd(a, b, weights=None, center=False, superposition=False):
 
     if weights is not None:
         if len(weights) != len(a):
-            raise ValueError('weights must have same length as a and b')
+            raise ValueError("weights must have same length as a and b")
         # weights are constructed as relative to the mean
         weights = np.asarray(weights, dtype=np.float64) / np.mean(weights)
 
@@ -277,8 +277,7 @@ def rmsd(a, b, weights=None, center=False, superposition=False):
         return qcp.CalcRMSDRotationalMatrix(a, b, N, None, weights)
     else:
         if weights is not None:
-            return np.sqrt(np.sum(weights[:, np.newaxis]
-                                  * ((a - b) ** 2)) / N)
+            return np.sqrt(np.sum(weights[:, np.newaxis] * ((a - b) ** 2)) / N)
         else:
             return np.sqrt(np.sum((a - b) ** 2) / N)
 
@@ -307,28 +306,29 @@ def process_selection(select):
     """
 
     if isinstance(select, str):
-        select = {'reference': str(select), 'mobile': str(select)}
+        select = {"reference": str(select), "mobile": str(select)}
     elif type(select) is tuple:
         try:
-            select = {'mobile': select[0], 'reference': select[1]}
+            select = {"mobile": select[0], "reference": select[1]}
         except IndexError:
             raise IndexError(
                 "select must contain two selection strings "
-                "(reference, mobile)") from None
+                "(reference, mobile)"
+            ) from None
     elif type(select) is dict:
         # compatability hack to use new nomenclature
         try:
-            select['mobile']
-            select['reference']
+            select["mobile"]
+            select["reference"]
         except KeyError:
             raise KeyError(
-                    "select dictionary must contain entries for keys "
-                    "'mobile' and 'reference'."
-                    ) from None
+                "select dictionary must contain entries for keys "
+                "'mobile' and 'reference'."
+            ) from None
     else:
         raise TypeError("'select' must be either a string, 2-tuple, or dict")
-    select['mobile'] = asiterable(select['mobile'])
-    select['reference'] = asiterable(select['reference'])
+    select["mobile"] = asiterable(select["mobile"])
+    select["reference"] = asiterable(select["reference"])
     return select
 
 
@@ -362,16 +362,29 @@ class RMSD(AnalysisBase):
        introduced :meth:`get_supported_backends` allowing for parallel
        execution on ``multiprocessing`` and ``dask`` backends.
     """
+
     _analysis_algorithm_is_parallelizable = True
 
     @classmethod
     def get_supported_backends(cls):
-        return ('serial', 'multiprocessing', 'dask',)
+        return (
+            "serial",
+            "multiprocessing",
+            "dask",
+        )
 
-
-    def __init__(self, atomgroup, reference=None, select='all',
-                 groupselections=None, weights=None, weights_groupselections=False,
-                 tol_mass=0.1, ref_frame=0, **kwargs):
+    def __init__(
+        self,
+        atomgroup,
+        reference=None,
+        select="all",
+        groupselections=None,
+        weights=None,
+        weights_groupselections=False,
+        tol_mass=0.1,
+        ref_frame=0,
+        **kwargs,
+    ):
         r"""Parameters
         ----------
         atomgroup : AtomGroup or Universe
@@ -512,49 +525,67 @@ class RMSD(AnalysisBase):
            `filename` keyword was removed.
 
         """
-        super(RMSD, self).__init__(atomgroup.universe.trajectory,
-                                   **kwargs)
+        super(RMSD, self).__init__(atomgroup.universe.trajectory, **kwargs)
         self.atomgroup = atomgroup
         self.reference = reference if reference is not None else self.atomgroup
 
         select = process_selection(select)
-        self.groupselections = ([process_selection(s) for s in groupselections]
-                                if groupselections is not None else [])
+        self.groupselections = (
+            [process_selection(s) for s in groupselections]
+            if groupselections is not None
+            else []
+        )
         self.weights = weights
         self.tol_mass = tol_mass
         self.ref_frame = ref_frame
         self.weights_groupselections = weights_groupselections
-        self.ref_atoms = self.reference.select_atoms(*select['reference'])
-        self.mobile_atoms = self.atomgroup.select_atoms(*select['mobile'])
+        self.ref_atoms = self.reference.select_atoms(*select["reference"])
+        self.mobile_atoms = self.atomgroup.select_atoms(*select["mobile"])
 
         if len(self.ref_atoms) != len(self.mobile_atoms):
-            err = ("Reference and trajectory atom selections do "
-                   "not contain the same number of atoms: "
-                   "N_ref={0:d}, N_traj={1:d}".format(self.ref_atoms.n_atoms,
-                                                      self.mobile_atoms.n_atoms))
+            err = (
+                "Reference and trajectory atom selections do "
+                "not contain the same number of atoms: "
+                "N_ref={0:d}, N_traj={1:d}".format(
+                    self.ref_atoms.n_atoms, self.mobile_atoms.n_atoms
+                )
+            )
             logger.exception(err)
             raise SelectionError(err)
-        logger.info("RMS calculation "
-                    "for {0:d} atoms.".format(len(self.ref_atoms)))
-        mass_mismatches = (np.absolute((self.ref_atoms.masses -
-                                        self.mobile_atoms.masses)) >
-                           self.tol_mass)
+        logger.info(
+            "RMS calculation " "for {0:d} atoms.".format(len(self.ref_atoms))
+        )
+        mass_mismatches = (
+            np.absolute((self.ref_atoms.masses - self.mobile_atoms.masses))
+            > self.tol_mass
+        )
 
         if np.any(mass_mismatches):
             # diagnostic output:
             logger.error("Atoms: reference | mobile")
             for ar, at in zip(self.ref_atoms, self.mobile_atoms):
                 if ar.name != at.name:
-                    logger.error("{0!s:>4} {1:3d} {2!s:>3} {3!s:>3} {4:6.3f}"
-                                 "|  {5!s:>4} {6:3d} {7!s:>3} {8!s:>3}"
-                                 "{9:6.3f}".format(ar.segid, ar.resid,
-                                                   ar.resname, ar.name,
-                                                   ar.mass, at.segid, at.resid,
-                                                   at.resname, at.name,
-                                                   at.mass))
-            errmsg = ("Inconsistent selections, masses differ by more than"
-                      "{0:f}; mis-matching atoms"
-                      "are shown above.".format(self.tol_mass))
+                    logger.error(
+                        "{0!s:>4} {1:3d} {2!s:>3} {3!s:>3} {4:6.3f}"
+                        "|  {5!s:>4} {6:3d} {7!s:>3} {8!s:>3}"
+                        "{9:6.3f}".format(
+                            ar.segid,
+                            ar.resid,
+                            ar.resname,
+                            ar.name,
+                            ar.mass,
+                            at.segid,
+                            at.resid,
+                            at.resname,
+                            at.name,
+                            at.mass,
+                        )
+                    )
+            errmsg = (
+                "Inconsistent selections, masses differ by more than"
+                "{0:f}; mis-matching atoms"
+                "are shown above.".format(self.tol_mass)
+            )
             logger.error(errmsg)
             raise SelectionError(errmsg)
         del mass_mismatches
@@ -565,27 +596,38 @@ class RMSD(AnalysisBase):
         #   *groupselections* groups each a dict with reference/mobile
         self._groupselections_atoms = [
             {
-                'reference': self.reference.universe.select_atoms(*s['reference']),
-                'mobile': self.atomgroup.universe.select_atoms(*s['mobile']),
+                "reference": self.reference.universe.select_atoms(
+                    *s["reference"]
+                ),
+                "mobile": self.atomgroup.universe.select_atoms(*s["mobile"]),
             }
-            for s in self.groupselections]
+            for s in self.groupselections
+        ]
         # sanity check
-        for igroup, (sel, atoms) in enumerate(zip(self.groupselections,
-                                                  self._groupselections_atoms)):
-            if len(atoms['mobile']) != len(atoms['reference']):
-                logger.exception('SelectionError: Group Selection')
+        for igroup, (sel, atoms) in enumerate(
+            zip(self.groupselections, self._groupselections_atoms)
+        ):
+            if len(atoms["mobile"]) != len(atoms["reference"]):
+                logger.exception("SelectionError: Group Selection")
                 raise SelectionError(
                     "Group selection {0}: {1} | {2}: Reference and trajectory "
                     "atom selections do not contain the same number of atoms: "
                     "N_ref={3}, N_traj={4}".format(
-                        igroup, sel['reference'], sel['mobile'],
-                        len(atoms['reference']), len(atoms['mobile'])))
+                        igroup,
+                        sel["reference"],
+                        sel["mobile"],
+                        len(atoms["reference"]),
+                        len(atoms["mobile"]),
+                    )
+                )
 
         # check weights type
-        acceptable_dtypes = (np.dtype('float64'), np.dtype('int64'))
-        msg = ("weights should only be 'mass', None or 1D float array."
-              "For weights on groupselections, "
-              "use **weight_groupselections**")
+        acceptable_dtypes = (np.dtype("float64"), np.dtype("int64"))
+        msg = (
+            "weights should only be 'mass', None or 1D float array."
+            "For weights on groupselections, "
+            "use **weight_groupselections**"
+        )
 
         if iterable(self.weights):
             element_lens = []
@@ -605,42 +647,57 @@ class RMSD(AnalysisBase):
 
         if self.weights_groupselections:
             if len(self.weights_groupselections) != len(self.groupselections):
-                raise ValueError("Length of weights_groupselections is not equal to "
-                                 "length of groupselections ")
-            for weights, atoms, selection in zip(self.weights_groupselections,
-                                                 self._groupselections_atoms,
-                                                 self.groupselections):
+                raise ValueError(
+                    "Length of weights_groupselections is not equal to "
+                    "length of groupselections "
+                )
+            for weights, atoms, selection in zip(
+                self.weights_groupselections,
+                self._groupselections_atoms,
+                self.groupselections,
+            ):
                 try:
                     if iterable(weights) or weights != "mass":
-                        get_weights(atoms['mobile'], weights)
+                        get_weights(atoms["mobile"], weights)
                 except Exception as e:
-                    raise type(e)(str(e) + ' happens in selection %s' % selection['mobile'])
-
+                    raise type(e)(
+                        str(e)
+                        + " happens in selection %s" % selection["mobile"]
+                    )
 
     def _prepare(self):
         self._n_atoms = self.mobile_atoms.n_atoms
         if not self.weights_groupselections:
-            if not iterable(self.weights):         # apply 'mass' or 'None' to groupselections
-                self.weights_groupselections = [self.weights] * len(self.groupselections)
+            if not iterable(
+                self.weights
+            ):  # apply 'mass' or 'None' to groupselections
+                self.weights_groupselections = [self.weights] * len(
+                    self.groupselections
+                )
             else:
-                self.weights_groupselections = [None] * len(self.groupselections)
+                self.weights_groupselections = [None] * len(
+                    self.groupselections
+                )
 
-        for igroup, (weights, atoms) in enumerate(zip(self.weights_groupselections,
-                                                      self._groupselections_atoms)):
-            if str(weights) == 'mass':
-                self.weights_groupselections[igroup] = atoms['mobile'].masses
+        for igroup, (weights, atoms) in enumerate(
+            zip(self.weights_groupselections, self._groupselections_atoms)
+        ):
+            if str(weights) == "mass":
+                self.weights_groupselections[igroup] = atoms["mobile"].masses
             if weights is not None:
-                self.weights_groupselections[igroup] = np.asarray(self.weights_groupselections[igroup],
-                                                                  dtype=np.float64) /  \
-                                             np.mean(self.weights_groupselections[igroup])
+                self.weights_groupselections[igroup] = np.asarray(
+                    self.weights_groupselections[igroup], dtype=np.float64
+                ) / np.mean(self.weights_groupselections[igroup])
         # add the array of weights to weights_select
         self.weights_select = get_weights(self.mobile_atoms, self.weights)
         self.weights_ref = get_weights(self.ref_atoms, self.weights)
         if self.weights_select is not None:
-            self.weights_select = np.asarray(self.weights_select, dtype=np.float64) /  \
-                                  np.mean(self.weights_select)
-            self.weights_ref = np.asarray(self.weights_ref, dtype=np.float64) / \
-                               np.mean(self.weights_ref)
+            self.weights_select = np.asarray(
+                self.weights_select, dtype=np.float64
+            ) / np.mean(self.weights_select)
+            self.weights_ref = np.asarray(
+                self.weights_ref, dtype=np.float64
+            ) / np.mean(self.weights_ref)
 
         current_frame = self.reference.universe.trajectory.ts.frame
 
@@ -653,10 +710,14 @@ class RMSD(AnalysisBase):
             # makes a copy
             self._ref_coordinates = self.ref_atoms.positions - self._ref_com
             if self._groupselections_atoms:
-                self._groupselections_ref_coords64 = [(self.reference.
-                                                       select_atoms(*s['reference']).
-                                                       positions.astype(np.float64)) for s in
-                                                     self.groupselections]
+                self._groupselections_ref_coords64 = [
+                    (
+                        self.reference.select_atoms(
+                            *s["reference"]
+                        ).positions.astype(np.float64)
+                    )
+                    for s in self.groupselections
+                ]
         finally:
             # Move back to the original frame
             self.reference.universe.trajectory[current_frame]
@@ -674,20 +735,28 @@ class RMSD(AnalysisBase):
         else:
             self._rot = None
 
-        self.results.rmsd = np.zeros((self.n_frames,
-                                      3 + len(self._groupselections_atoms)))
+        self.results.rmsd = np.zeros(
+            (self.n_frames, 3 + len(self._groupselections_atoms))
+        )
 
-        self._mobile_coordinates64 = self.mobile_atoms.positions.copy().astype(np.float64)
+        self._mobile_coordinates64 = self.mobile_atoms.positions.copy().astype(
+            np.float64
+        )
 
     def _get_aggregator(self):
-        return ResultsGroup(lookup={'rmsd': ResultsGroup.ndarray_vstack})
+        return ResultsGroup(lookup={"rmsd": ResultsGroup.ndarray_vstack})
 
     def _single_frame(self):
-        mobile_com = self.mobile_atoms.center(self.weights_select).astype(np.float64)
+        mobile_com = self.mobile_atoms.center(self.weights_select).astype(
+            np.float64
+        )
         self._mobile_coordinates64[:] = self.mobile_atoms.positions
         self._mobile_coordinates64 -= mobile_com
 
-        self.results.rmsd[self._frame_index, :2] = self._ts.frame, self._trajectory.time
+        self.results.rmsd[self._frame_index, :2] = (
+            self._ts.frame,
+            self._trajectory.time,
+        )
 
         if self._groupselections_atoms:
             # superimpose structures: MDAnalysis qcprot needs Nx3 coordinate
@@ -696,9 +765,15 @@ class RMSD(AnalysisBase):
             # left** so that we can easily use broadcasting and save one
             # expensive numpy transposition.
 
-            self.results.rmsd[self._frame_index, 2] = qcp.CalcRMSDRotationalMatrix(
-                self._ref_coordinates64, self._mobile_coordinates64,
-                self._n_atoms, self._rot, self.weights_select)
+            self.results.rmsd[self._frame_index, 2] = (
+                qcp.CalcRMSDRotationalMatrix(
+                    self._ref_coordinates64,
+                    self._mobile_coordinates64,
+                    self._n_atoms,
+                    self._rot,
+                    self.weights_select,
+                )
+            )
 
             self._R[:, :] = self._rot.reshape(3, 3)
             # Transform each atom in the trajectory (use inplace ops to
@@ -713,24 +788,39 @@ class RMSD(AnalysisBase):
             # 2) calculate secondary RMSDs (without any further
             #    superposition)
             for igroup, (refpos, atoms) in enumerate(
-                    zip(self._groupselections_ref_coords64,
-                        self._groupselections_atoms), 3):
+                zip(
+                    self._groupselections_ref_coords64,
+                    self._groupselections_atoms,
+                ),
+                3,
+            ):
                 self.results.rmsd[self._frame_index, igroup] = rmsd(
-                    refpos, atoms['mobile'].positions,
-                    weights=self.weights_groupselections[igroup-3],
-                    center=False, superposition=False)
+                    refpos,
+                    atoms["mobile"].positions,
+                    weights=self.weights_groupselections[igroup - 3],
+                    center=False,
+                    superposition=False,
+                )
         else:
             # only calculate RMSD by setting the Rmatrix to None (no need
             # to carry out the rotation as we already get the optimum RMSD)
-            self.results.rmsd[self._frame_index, 2] = qcp.CalcRMSDRotationalMatrix(
-                self._ref_coordinates64, self._mobile_coordinates64,
-                self._n_atoms, None, self.weights_select)
+            self.results.rmsd[self._frame_index, 2] = (
+                qcp.CalcRMSDRotationalMatrix(
+                    self._ref_coordinates64,
+                    self._mobile_coordinates64,
+                    self._n_atoms,
+                    None,
+                    self.weights_select,
+                )
+            )
 
     @property
     def rmsd(self):
-        wmsg = ("The `rmsd` attribute was deprecated in MDAnalysis 2.0.0 and "
-                "will be removed in MDAnalysis 3.0.0. Please use "
-                "`results.rmsd` instead.")
+        wmsg = (
+            "The `rmsd` attribute was deprecated in MDAnalysis 2.0.0 and "
+            "will be removed in MDAnalysis 3.0.0. Please use "
+            "`results.rmsd` instead."
+        )
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.rmsd
 
@@ -754,7 +844,7 @@ class RMSF(AnalysisBase):
 
     @classmethod
     def get_supported_backends(cls):
-        return ('serial',)
+        return ("serial",)
 
     def __init__(self, atomgroup, **kwargs):
         r"""Parameters
@@ -885,7 +975,9 @@ class RMSF(AnalysisBase):
 
     def _single_frame(self):
         k = self._frame_index
-        self.sumsquares += (k / (k+1.0)) * (self.atomgroup.positions - self.mean) ** 2
+        self.sumsquares += (k / (k + 1.0)) * (
+            self.atomgroup.positions - self.mean
+        ) ** 2
         self.mean = (k * self.mean + self.atomgroup.positions) / (k + 1)
 
     def _conclude(self):
@@ -893,13 +985,17 @@ class RMSF(AnalysisBase):
         self.results.rmsf = np.sqrt(self.sumsquares.sum(axis=1) / (k + 1))
 
         if not (self.results.rmsf >= 0).all():
-            raise ValueError("Some RMSF values negative; overflow " +
-                             "or underflow occurred")
+            raise ValueError(
+                "Some RMSF values negative; overflow "
+                + "or underflow occurred"
+            )
 
     @property
     def rmsf(self):
-        wmsg = ("The `rmsf` attribute was deprecated in MDAnalysis 2.0.0 and "
-                "will be removed in MDAnalysis 3.0.0. Please use "
-                "`results.rmsd` instead.")
+        wmsg = (
+            "The `rmsf` attribute was deprecated in MDAnalysis 2.0.0 and "
+            "will be removed in MDAnalysis 3.0.0. Please use "
+            "`results.rmsd` instead."
+        )
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.rmsf

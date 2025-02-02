@@ -37,34 +37,45 @@ from MDAnalysisTests.datafiles import (
     XYZ,
 )
 
+
 class PSFBase(ParserBase):
     parser = mda.topology.PSFParser.PSFParser
-    expected_attrs = ['ids', 'names', 'types', 'masses',
-                      'charges',
-                      'resids', 'resnames',
-                      'segids',
-                      'bonds', 'angles', 'dihedrals', 'impropers']
+    expected_attrs = [
+        "ids",
+        "names",
+        "types",
+        "masses",
+        "charges",
+        "resids",
+        "resnames",
+        "segids",
+        "bonds",
+        "angles",
+        "dihedrals",
+        "impropers",
+    ]
 
 
 class TestPSFParser(PSFBase):
     """
     Based on small PDB with AdK (:data:`PDB_small`).
     """
+
     ref_filename = PSF
     expected_n_atoms = 3341
     expected_n_residues = 214
     expected_n_segments = 1
 
-    @pytest.fixture(params=['uncompressed', 'bz2'])
+    @pytest.fixture(params=["uncompressed", "bz2"])
     def filename(self, request, tmpdir):
-        if request.param == 'uncompressed':
+        if request.param == "uncompressed":
             return self.ref_filename
         else:
-            fn = str(tmpdir.join('file.psf.bz2'))
-            with open(self.ref_filename, 'rb') as f:
+            fn = str(tmpdir.join("file.psf.bz2"))
+            with open(self.ref_filename, "rb") as f:
                 stuff = f.read()
             buf = bz2.compress(stuff)
-            with open(fn, 'wb') as out:
+            with open(fn, "wb") as out:
                 out.write(buf)
             return fn
 
@@ -114,6 +125,7 @@ class TestNAMDPSFParser(PSFBase):
 
     https://github.com/MDAnalysis/mdanalysis/issues/107
     """
+
     ref_filename = PSF_NAMD
     expected_n_atoms = 130
     expected_n_residues = 6
@@ -134,6 +146,7 @@ class TestPSFParser2(PSFBase):
         for seg in u.segments:
             assert_equal(seg.residues.resids[:4], [380, 381, 382, 383])
 
+
 class TestPSFParserNoTop(PSFBase):
     ref_filename = PSF_notop
     expected_n_atoms = 3341
@@ -152,12 +165,14 @@ class TestPSFParserNoTop(PSFBase):
     def test_impropers_total_counts(self, top):
         assert len(top.impropers.values) == 0
 
+
 def test_psf_nosegid():
     """Issue #121"""
     u = mda.Universe(PSF_nosegid)
     assert isinstance(u, mda.Universe)
     assert u.atoms.n_atoms == 98
     assert_equal(u.segments.segids, ["SYSTEM"])
+
 
 def test_psf_inscode():
     """Issue #2053 and #4189"""

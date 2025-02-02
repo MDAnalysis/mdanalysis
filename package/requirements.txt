@@ -1,7 +1,7 @@
 biopython>=1.80
 codecov
 cython
-fasteners
+filelock
 griddataformats
 gsd
 hypothesis

@@ -123,14 +123,16 @@ class TriangularMatrix(object):
         """
         loaded = np.load(fname, allow_pickle=True)
 
-        if loaded['metadata'].shape != ():
-            if loaded['metadata']['number of frames'] != self.size:
+        if loaded["metadata"].shape != ():
+            if loaded["metadata"]["number of frames"] != self.size:
                 raise TypeError
-            self.metadata = loaded['metadata']
+            self.metadata = loaded["metadata"]
         else:
-            if self.size*(self.size-1)/2+self.size != len(loaded['elements']):
+            if self.size * (self.size - 1) / 2 + self.size != len(
+                loaded["elements"]
+            ):
                 raise TypeError
-        self._elements = loaded['elements']
+        self._elements = loaded["elements"]
 
     def __add__(self, scalar):
         """Add scalar to matrix elements.
@@ -142,7 +144,7 @@ class TriangularMatrix(object):
             Scalar to be added.
         """
         newMatrix = self.__class__(self.size)
-        newMatrix._elements = self._elements + scalar;
+        newMatrix._elements = self._elements + scalar
         return newMatrix
 
     def __iadd__(self, scalar):
@@ -157,7 +159,6 @@ class TriangularMatrix(object):
         self._elements += scalar
         return self
 
-
     def __mul__(self, scalar):
         """Multiply with scalar.
 
@@ -168,7 +169,7 @@ class TriangularMatrix(object):
             Scalar to multiply with.
         """
         newMatrix = self.__class__(self.size)
-        newMatrix._elements = self._elements * scalar;
+        newMatrix._elements = self._elements * scalar
         return newMatrix
 
     def __imul__(self, scalar):
@@ -237,10 +238,12 @@ class ParallelCalculation(object):
             self.n_jobs = cpu_count()
 
         self.functions = function
-        if not hasattr(self.functions, '__iter__'):
+        if not hasattr(self.functions, "__iter__"):
             self.functions = [self.functions] * len(args)
         if len(self.functions) != len(args):
-            self.functions = self.functions[:] * (len(args) // len(self.functions))
+            self.functions = self.functions[:] * (
+                len(args) // len(self.functions)
+            )
 
         # Arguments should be present
         if args is None:
@@ -273,10 +276,12 @@ class ParallelCalculation(object):
         """
         while True:
             i = q.get()
-            if i == 'STOP':
+            if i == "STOP":
                 return
 
-            results.put((i, self.functions[i](*self.args[i], **self.kwargs[i])))
+            results.put(
+                (i, self.functions[i](*self.args[i], **self.kwargs[i]))
+            )
 
     def run(self):
         r"""
@@ -294,20 +299,23 @@ class ParallelCalculation(object):
         results_list = []
         if self.n_jobs == 1:
             for i in range(self.nruns):
-                results_list.append((i, self.functions[i](*self.args[i],
-                                                          **self.kwargs[i])))
+                results_list.append(
+                    (i, self.functions[i](*self.args[i], **self.kwargs[i]))
+                )
         else:
             manager = Manager()
             q = manager.Queue()
             results = manager.Queue()
 
-            workers = [Process(target=self.worker, args=(q, results)) for i in
-                       range(self.n_jobs)]
+            workers = [
+                Process(target=self.worker, args=(q, results))
+                for i in range(self.n_jobs)
+            ]
 
             for i in range(self.nruns):
                 q.put(i)
             for w in workers:
-                q.put('STOP')
+                q.put("STOP")
 
             for w in workers:
                 w.start()
@@ -315,8 +323,8 @@ class ParallelCalculation(object):
             for w in workers:
                 w.join()
 
-            results.put('STOP')
-            for i in iter(results.get, 'STOP'):
+            results.put("STOP")
+            for i in iter(results.get, "STOP"):
                 results_list.append(i)
 
         return tuple(sorted(results_list, key=lambda x: x[0]))
@@ -361,7 +369,7 @@ def trm_indices_nodiag(n):
 
     n : int
         Matrix size
-"""
+    """
 
     for i in range(1, n):
         for j in range(i):
@@ -377,7 +385,7 @@ def trm_indices_diag(n):
 
     n : int
         Matrix size
-"""
+    """
 
     for i in range(0, n):
         for j in range(i + 1):
@@ -403,6 +411,9 @@ def merge_universes(universes):
 
     return mda.Universe(
         universes[0].filename,
-        np.concatenate(tuple([e.trajectory.timeseries(order='fac') for e in universes]),
-                       axis=0),
-        format=MemoryReader)
+        np.concatenate(
+            tuple([e.trajectory.timeseries(order="fac") for e in universes]),
+            axis=0,
+        ),
+        format=MemoryReader,
+    )

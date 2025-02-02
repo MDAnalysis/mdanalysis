@@ -75,8 +75,7 @@ def test_atomgroup_segment_upshift(u):
 
 def test_residuegroup_atom_downshift(u):
     # downshift arrays are a list (one for each residue)
-    assert all((arr.dtype == np.intp)
-               for arr in u.residues.indices)
+    assert all((arr.dtype == np.intp) for arr in u.residues.indices)
 
 
 def test_residuegroup_resindices(u):
@@ -88,13 +87,11 @@ def test_residuegroup_segment_upshift(u):
 
 
 def test_segmentgroup_atom_downshift(u):
-    assert all((arr.dtype == np.intp)
-               for arr in u.segments.indices)
+    assert all((arr.dtype == np.intp) for arr in u.segments.indices)
 
 
 def test_segmentgroup_residue_downshift(u):
-    assert all((arr.dtype == np.intp)
-               for arr in u.segments.resindices)
+    assert all((arr.dtype == np.intp) for arr in u.segments.resindices)
 
 
 def test_segmentgroup_segindices(u):

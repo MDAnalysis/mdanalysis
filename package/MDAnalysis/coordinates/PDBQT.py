@@ -141,8 +141,9 @@ class PDBQTReader(base.SingleFrameReaderBase):
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
     """
-    format = 'PDBQT'
-    units = {'time': None, 'length': 'Angstrom'}
+
+    format = "PDBQT"
+    units = {"time": None, "length": "Angstrom"}
 
     def _read_first_frame(self):
         coords = []
@@ -152,21 +153,23 @@ class PDBQTReader(base.SingleFrameReaderBase):
                 # Should only break at the 'END' of a model definition
                 # and prevent premature exit for a torsion termination
                 # , eg, ENDBRANCH
-                if line.startswith('END\n'):
+                if line.startswith("END\n"):
                     break
-                if line.startswith('CRYST1'):
+                if line.startswith("CRYST1"):
                     # lengths
-                    x, y, z = np.float32((line[6:15], line[15:24], line[24:33]))
+                    x, y, z = np.float32(
+                        (line[6:15], line[15:24], line[24:33])
+                    )
                     # angles
-                    A, B, G = np.float32((line[33:40], line[40:47], line[47:54]))
+                    A, B, G = np.float32(
+                        (line[33:40], line[40:47], line[47:54])
+                    )
                     unitcell[:] = x, y, z, A, B, G
-                if line.startswith(('ATOM', 'HETATM')):
+                if line.startswith(("ATOM", "HETATM")):
                     # convert all entries at the end once for optimal speed
                     coords.append([line[30:38], line[38:46], line[46:54]])
         self.n_atoms = len(coords)
-        self.ts = self._Timestep.from_coordinates(
-            coords,
-            **self._ts_kwargs)
+        self.ts = self._Timestep.from_coordinates(coords, **self._ts_kwargs)
         self.ts.dimensions = unitcell
         self.ts.frame = 0  # 0-based frame number
         if self.convert_units:
@@ -204,23 +207,27 @@ class PDBQTWriter(base.WriterBase):
     """
 
     fmt = {
-        'ATOM': ("ATOM  {serial:5d} {name:<4.4s} {resName:<4.4s}"
-                 "{chainID:1.1s}{resSeq:4d}{iCode:1.1s}"
-                 "   {pos[0]:8.3f}{pos[1]:8.3f}{pos[2]:8.3f}{occupancy:6.2f}"
-                 "{tempFactor:6.2f}    {charge:< 1.3f} {element:<2.2s}\n"),
-        'REMARK': "REMARK     {0}\n",
-        'TITLE': "TITLE     {0}\n",
-        'CRYST1': ("CRYST1{box[0]:9.3f}{box[1]:9.3f}{box[2]:9.3f}"
-                   "{ang[0]:7.2f}{ang[1]:7.2f}{ang[2]:7.2f} "
-                   "{spacegroup:<11s}{zvalue:4d}\n"),
+        "ATOM": (
+            "ATOM  {serial:5d} {name:<4.4s} {resName:<4.4s}"
+            "{chainID:1.1s}{resSeq:4d}{iCode:1.1s}"
+            "   {pos[0]:8.3f}{pos[1]:8.3f}{pos[2]:8.3f}{occupancy:6.2f}"
+            "{tempFactor:6.2f}    {charge:< 1.3f} {element:<2.2s}\n"
+        ),
+        "REMARK": "REMARK     {0}\n",
+        "TITLE": "TITLE     {0}\n",
+        "CRYST1": (
+            "CRYST1{box[0]:9.3f}{box[1]:9.3f}{box[2]:9.3f}"
+            "{ang[0]:7.2f}{ang[1]:7.2f}{ang[2]:7.2f} "
+            "{spacegroup:<11s}{zvalue:4d}\n"
+        ),
     }
-    format = 'PDBQT'
-    units = {'time': None, 'length': 'Angstrom'}
+    format = "PDBQT"
+    units = {"time": None, "length": "Angstrom"}
     pdb_coor_limits = {"min": -999.9995, "max": 9999.9995}
 
     def __init__(self, filename, **kwargs):
-        self.filename = util.filename(filename, ext='pdbqt', keep=True)
-        self.pdb = util.anyopen(self.filename, 'wt')
+        self.filename = util.filename(filename, ext="pdbqt", keep=True)
+        self.pdb = util.anyopen(self.filename, "wt")
 
     def close(self):
         self.pdb.close()
@@ -262,21 +269,23 @@ class PDBQTWriter(base.WriterBase):
                 frame = 0  # should catch cases when we are analyzing a single PDB (?)
 
         atoms = selection.atoms  # make sure to use atoms (Issue 46)
-        coor = atoms.positions  # can write from selection == Universe (Issue 49)
+        coor = (
+            atoms.positions
+        )  # can write from selection == Universe (Issue 49)
 
         # Check attributes
         attrs = {}
         missing_topology = []
         for attr, dflt in (
-                ('altLocs', ' '),
-                ('charges', 0.0),
-                ('icodes', ' '),
-                ('names', 'X'),
-                ('occupancies', 1.0),
-                ('resids', 1),
-                ('resnames', 'UNK'),
-                ('tempfactors', 0.0),
-                ('types', '  '),
+            ("altLocs", " "),
+            ("charges", 0.0),
+            ("icodes", " "),
+            ("names", "X"),
+            ("occupancies", 1.0),
+            ("resids", 1),
+            ("resnames", "UNK"),
+            ("tempfactors", 0.0),
+            ("types", "  "),
         ):
             try:
                 attrs[attr] = getattr(atoms, attr)
@@ -285,18 +294,19 @@ class PDBQTWriter(base.WriterBase):
                 missing_topology.append(attr)
         # Order of preference: chainids -> segids -> blank string
         try:
-            attrs['chainids'] = atoms.chainids
+            attrs["chainids"] = atoms.chainids
         except AttributeError:
             try:
-                attrs['chainids'] = atoms.segids
+                attrs["chainids"] = atoms.segids
             except AttributeError:
-                attrs['chainids'] = itertools.cycle((' ',))
-                missing_topology.append('chainids')
+                attrs["chainids"] = itertools.cycle((" ",))
+                missing_topology.append("chainids")
         if missing_topology:
             warnings.warn(
                 "Supplied AtomGroup was missing the following attributes: "
                 "{miss}. These will be written with default values. "
-                "".format(miss=', '.join(missing_topology)))
+                "".format(miss=", ".join(missing_topology))
+            )
 
         # check if any coordinates are illegal (coordinates are already
         # in Angstroem per package default)
@@ -310,28 +320,53 @@ class PDBQTWriter(base.WriterBase):
             raise ValueError(
                 "PDB files must have coordinate values between {0:.3f}"
                 " and {1:.3f} Angstroem: No file was written."
-                "".format(self.pdb_coor_limits["min"],
-                          self.pdb_coor_limits["max"]))
+                "".format(
+                    self.pdb_coor_limits["min"], self.pdb_coor_limits["max"]
+                )
+            )
 
         # Write title record
         # http://www.wwpdb.org/documentation/file-format-content/format32/sect2.html
         line = "FRAME " + str(frame) + " FROM " + str(u.trajectory.filename)
-        self.pdb.write(self.fmt['TITLE'].format(line))
+        self.pdb.write(self.fmt["TITLE"].format(line))
 
         # Write CRYST1 record
         # http://www.wwpdb.org/documentation/file-format-content/format32/sect8.html
         box = self.convert_dimensions_to_unitcell(u.trajectory.ts)
-        self.pdb.write(self.fmt['CRYST1'].format(box=box[:3], ang=box[3:],
-                                                 spacegroup='P 1', zvalue=1))
+        self.pdb.write(
+            self.fmt["CRYST1"].format(
+                box=box[:3], ang=box[3:], spacegroup="P 1", zvalue=1
+            )
+        )
 
         # Write atom records
         # http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html
-        for serial, (pos, name, resname, chainid, resid, icode,
-                     occupancy, tempfactor, charge, element) in enumerate(
-                zip(coor, attrs['names'], attrs['resnames'], attrs['chainids'],
-                    attrs['resids'], attrs['icodes'], attrs['occupancies'],
-                    attrs['tempfactors'], attrs['charges'], attrs['types']),
-                         start=1):
+        for serial, (
+            pos,
+            name,
+            resname,
+            chainid,
+            resid,
+            icode,
+            occupancy,
+            tempfactor,
+            charge,
+            element,
+        ) in enumerate(
+            zip(
+                coor,
+                attrs["names"],
+                attrs["resnames"],
+                attrs["chainids"],
+                attrs["resids"],
+                attrs["icodes"],
+                attrs["occupancies"],
+                attrs["tempfactors"],
+                attrs["charges"],
+                attrs["types"],
+            ),
+            start=1,
+        ):
             serial = util.ltruncate_int(serial, 5)  # check for overflow here?
             resid = util.ltruncate_int(resid, 4)
             name = name[:4]
@@ -339,18 +374,20 @@ class PDBQTWriter(base.WriterBase):
                 name = " " + name  # customary to start in column 14
             chainid = chainid.strip()[-1:]  # take the last character
 
-            self.pdb.write(self.fmt['ATOM'].format(
-                serial=serial,
-                name=name,
-                resName=resname,
-                chainID=chainid,
-                resSeq=resid,
-                iCode=icode,
-                pos=pos,
-                occupancy=occupancy,
-                tempFactor=tempfactor,
-                charge=charge,
-                element=element,
-            ))
+            self.pdb.write(
+                self.fmt["ATOM"].format(
+                    serial=serial,
+                    name=name,
+                    resName=resname,
+                    chainID=chainid,
+                    resSeq=resid,
+                    iCode=icode,
+                    pos=pos,
+                    occupancy=occupancy,
+                    tempFactor=tempfactor,
+                    charge=charge,
+                    element=element,
+                )
+            )
 
         self.close()

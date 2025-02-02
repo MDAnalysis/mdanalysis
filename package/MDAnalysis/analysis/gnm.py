@@ -21,9 +21,9 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-#Analyse a trajectory using elastic network models, following the approach of Hall et al (JACS 2007)
-#Ben Hall (benjamin.a.hall@ucl.ac.uk) is to blame
-#Copyright 2011; Consider under GPL v2 or later
+# Analyse a trajectory using elastic network models, following the approach of Hall et al (JACS 2007)
+# Ben Hall (benjamin.a.hall@ucl.ac.uk) is to blame
+# Copyright 2011; Consider under GPL v2 or later
 r"""
 Elastic network analysis of MD trajectories --- :mod:`MDAnalysis.analysis.gnm`
 ==============================================================================
@@ -97,11 +97,11 @@ from .base import AnalysisBase, ResultsGroup
 
 from MDAnalysis.analysis.base import Results
 
-logger = logging.getLogger('MDAnalysis.analysis.GNM')
+logger = logging.getLogger("MDAnalysis.analysis.GNM")
 
 
 def _dsq(a, b):
-    diff = (a - b)
+    diff = a - b
     return np.dot(diff, diff)
 
 
@@ -133,10 +133,14 @@ def generate_grid(positions, cutoff):
     low_x = x.min()
     low_y = y.min()
     low_z = z.min()
-    #Ok now generate a list with 3 dimensions representing boxes in x, y and z
-    grid = [[[[] for i in range(int((high_z - low_z) / cutoff) + 1)]
-             for j in range(int((high_y - low_y) / cutoff) + 1)]
-            for k in range(int((high_x - low_x) / cutoff) + 1)]
+    # Ok now generate a list with 3 dimensions representing boxes in x, y and z
+    grid = [
+        [
+            [[] for i in range(int((high_z - low_z) / cutoff) + 1)]
+            for j in range(int((high_y - low_y) / cutoff) + 1)
+        ]
+        for k in range(int((high_x - low_x) / cutoff) + 1)
+    ]
     for i, pos in enumerate(positions):
         x_pos = int((pos[0] - low_x) / cutoff)
         y_pos = int((pos[1] - low_y) / cutoff)
@@ -166,7 +170,8 @@ def neighbour_generator(positions, cutoff):
     n_y = len(grid[0])
     n_z = len(grid[0][0])
     for cell_x, cell_y, cell_z in itertools.product(
-            range(n_x), range(n_y), range(n_z)):
+        range(n_x), range(n_y), range(n_z)
+    ):
         atoms = grid[cell_x][cell_y][cell_z]
         # collect all atoms in own cell and neighboring cell
         all_atoms = []
@@ -247,8 +252,8 @@ class GNMAnalysis(AnalysisBase):
        ``eigenvectors`` of the ``results`` attribute.
 
     .. versionchanged:: 2.8.0
-       Enabled **parallel execution** with the ``multiprocessing`` and ``dask`` 
-       backends; use the new method :meth:`get_supported_backends` to see all 
+       Enabled **parallel execution** with the ``multiprocessing`` and ``dask``
+       backends; use the new method :meth:`get_supported_backends` to see all
        supported backends.
     """
 
@@ -257,13 +262,15 @@ class GNMAnalysis(AnalysisBase):
     @classmethod
     def get_supported_backends(cls):
         return ("serial", "multiprocessing", "dask")
-    
-    def __init__(self,
-                 universe,
-                 select='protein and name CA',
-                 cutoff=7.0,
-                 ReportVector=None,
-                 Bonus_groups=None):
+
+    def __init__(
+        self,
+        universe,
+        select="protein and name CA",
+        cutoff=7.0,
+        ReportVector=None,
+        Bonus_groups=None,
+    ):
         super(GNMAnalysis, self).__init__(universe.trajectory)
         self.u = universe
         self.select = select
@@ -273,12 +280,16 @@ class GNMAnalysis(AnalysisBase):
         self.results.eigenvectors = []
         self._timesteps = None  # time for each frame
         self.ReportVector = ReportVector
-        self.Bonus_groups = [self.u.select_atoms(item) for item in Bonus_groups] \
-                            if Bonus_groups else []
+        self.Bonus_groups = (
+            [self.u.select_atoms(item) for item in Bonus_groups]
+            if Bonus_groups
+            else []
+        )
         self.ca = self.u.select_atoms(self.select)
 
-    def _generate_output(self, w, v, outputobject,
-                         ReportVector=None, counter=0):
+    def _generate_output(
+        self, w, v, outputobject, ReportVector=None, counter=0
+    ):
         """Appends time, eigenvalues and eigenvectors to results.
 
         This generates the output by adding eigenvalue and
@@ -297,7 +308,8 @@ class GNMAnalysis(AnalysisBase):
                         item[0] + 1,
                         w[list_map[1]],
                         item[1],
-                        file=oup)
+                        file=oup,
+                    )
 
         outputobject.eigenvalues.append(w[list_map[1]])
         outputobject.eigenvectors.append(v[list_map[1]])
@@ -316,9 +328,9 @@ class GNMAnalysis(AnalysisBase):
         """
         positions = self.ca.positions
 
-        #add the com from each bonus group to the ca_positions list
+        # add the com from each bonus group to the ca_positions list
         for item in self.Bonus_groups:
-            #bonus = self.u.select_atoms(item)
+            # bonus = self.u.select_atoms(item)
             positions = np.vstack((positions, item.center_of_mass()))
 
         natoms = len(positions)
@@ -327,8 +339,10 @@ class GNMAnalysis(AnalysisBase):
         cutoffsq = self.cutoff**2
 
         for i_atom, j_atom in neighbour_generator(positions, self.cutoff):
-            if j_atom > i_atom and _dsq(positions[i_atom],
-                                        positions[j_atom]) < cutoffsq:
+            if (
+                j_atom > i_atom
+                and _dsq(positions[i_atom], positions[j_atom]) < cutoffsq
+            ):
                 matrix[i_atom][j_atom] = -1.0
                 matrix[j_atom][i_atom] = -1.0
                 matrix[i_atom][i_atom] = matrix[i_atom][i_atom] + 1
@@ -352,7 +366,8 @@ class GNMAnalysis(AnalysisBase):
             v,
             self.results,
             ReportVector=self.ReportVector,
-            counter=self._ts.frame)
+            counter=self._ts.frame,
+        )
 
     def _conclude(self):
         self.results.times = self.times
@@ -427,16 +442,17 @@ class closeContactGNMAnalysis(GNMAnalysis):
        ``eigenvectors`` of the `results` attribute.
     """
 
-    def __init__(self,
-                 universe,
-                 select='protein',
-                 cutoff=4.5,
-                 ReportVector=None,
-                 weights="size"):
-        super(closeContactGNMAnalysis, self).__init__(universe,
-                                                      select,
-                                                      cutoff,
-                                                      ReportVector)
+    def __init__(
+        self,
+        universe,
+        select="protein",
+        cutoff=4.5,
+        ReportVector=None,
+        weights="size",
+    ):
+        super(closeContactGNMAnalysis, self).__init__(
+            universe, select, cutoff, ReportVector
+        )
         self.weights = weights
 
     def generate_kirchoff(self):
@@ -452,17 +468,21 @@ class closeContactGNMAnalysis(GNMAnalysis):
 
         # cache sqrt of residue sizes (slow) so that sr[i]*sr[j] == sqrt(r[i]*r[j])
         inv_sqrt_res_sizes = np.ones(len(self.ca.residues))
-        if self.weights == 'size':
+        if self.weights == "size":
             inv_sqrt_res_sizes = 1 / np.sqrt(
-                [r.atoms.n_atoms for r in self.ca.residues])
+                [r.atoms.n_atoms for r in self.ca.residues]
+            )
 
         for i_atom, j_atom in neighbour_generator(positions, self.cutoff):
-            if j_atom > i_atom and _dsq(positions[i_atom],
-                                        positions[j_atom]) < cutoffsq:
+            if (
+                j_atom > i_atom
+                and _dsq(positions[i_atom], positions[j_atom]) < cutoffsq
+            ):
                 iresidue = residue_index_map[i_atom]
                 jresidue = residue_index_map[j_atom]
-                contact = (inv_sqrt_res_sizes[iresidue] *
-                           inv_sqrt_res_sizes[jresidue])
+                contact = (
+                    inv_sqrt_res_sizes[iresidue] * inv_sqrt_res_sizes[jresidue]
+                )
                 matrix[iresidue][jresidue] -= contact
                 matrix[jresidue][iresidue] -= contact
                 matrix[iresidue][iresidue] += contact

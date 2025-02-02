@@ -25,7 +25,7 @@
 from MDAnalysis.analysis.msd import EinsteinMSD as MSD
 import MDAnalysis as mda
 
-from numpy.testing import (assert_almost_equal, assert_equal)
+from numpy.testing import assert_almost_equal, assert_equal
 import numpy as np
 
 from MDAnalysisTests.datafiles import PSF, DCD, RANDOM_WALK, RANDOM_WALK_TOPO
@@ -34,38 +34,38 @@ from MDAnalysisTests.util import block_import, import_not_available
 import pytest
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def SELECTION():
-    selection = 'backbone and name CA and resid 1-10'
+    selection = "backbone and name CA and resid 1-10"
     return selection
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def u():
     return mda.Universe(PSF, DCD)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def NSTEP():
     nstep = 5000
     return nstep
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def random_walk_u():
     # 100x100
     return mda.Universe(RANDOM_WALK_TOPO, RANDOM_WALK)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def msd(u, SELECTION):
     # non fft msd
-    m = MSD(u, SELECTION, msd_type='xyz', fft=False)
+    m = MSD(u, SELECTION, msd_type="xyz", fft=False)
     m.run()
     return m
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def step_traj(NSTEP):  # constant velocity
     x = np.arange(NSTEP)
     traj = np.vstack([x, x, x]).T
@@ -75,7 +75,7 @@ def step_traj(NSTEP):  # constant velocity
     return u
 
 
-@block_import('tidynamics')
+@block_import("tidynamics")
 def test_notidynamics(u, SELECTION):
     with pytest.raises(ImportError, match="tidynamics was not found"):
         u = mda.Universe(PSF, DCD)
@@ -86,7 +86,7 @@ def test_notidynamics(u, SELECTION):
 def characteristic_poly(n, d):
     # polynomial that describes unit step traj MSD
     x = np.arange(0, n)
-    y = d*x*x
+    y = d * x * x
     return y
 
 
@@ -98,65 +98,86 @@ class TestMSDSimple(object):
 
     def test_ag_accepted(self, u):
         ag = u.select_atoms("resid 1")
-        m = MSD(ag, msd_type='xyz', fft=False)
+        m = MSD(ag, msd_type="xyz", fft=False)
 
     def test_updating_ag_rejected(self, u):
         updating_ag = u.select_atoms("around 3.5 resid 1", updating=True)
         errmsg = "UpdatingAtomGroups are not valid"
         with pytest.raises(TypeError, match=errmsg):
-            m = MSD(updating_ag, msd_type='xyz', fft=False)
+            m = MSD(updating_ag, msd_type="xyz", fft=False)
 
-    @pytest.mark.parametrize('msdtype', ['foo', 'bar', 'yx', 'zyx'])
+    @pytest.mark.parametrize("msdtype", ["foo", "bar", "yx", "zyx"])
     def test_msdtype_error(self, u, SELECTION, msdtype):
         errmsg = f"invalid msd_type: {msdtype}"
         with pytest.raises(ValueError, match=errmsg):
             m = MSD(u, SELECTION, msd_type=msdtype)
 
-    @pytest.mark.parametrize("dim, dim_factor", [
-        ('xyz', 3), ('xy', 2), ('xz', 2), ('yz', 2), ('x', 1), ('y', 1),
-        ('z', 1)
-    ])
-    def test_simple_step_traj_all_dims(self, step_traj, NSTEP, dim,
-                                       dim_factor):
+    @pytest.mark.parametrize(
+        "dim, dim_factor",
+        [
+            ("xyz", 3),
+            ("xy", 2),
+            ("xz", 2),
+            ("yz", 2),
+            ("x", 1),
+            ("y", 1),
+            ("z", 1),
+        ],
+    )
+    def test_simple_step_traj_all_dims(
+        self, step_traj, NSTEP, dim, dim_factor
+    ):
         # testing the "simple" algorithm on constant velocity trajectory
         # should fit the polynomial y=dim_factor*x**2
-        m_simple = MSD(step_traj, 'all', msd_type=dim, fft=False)
+        m_simple = MSD(step_traj, "all", msd_type=dim, fft=False)
         m_simple.run()
         poly = characteristic_poly(NSTEP, dim_factor)
         assert_almost_equal(m_simple.results.timeseries, poly, decimal=4)
 
-    @pytest.mark.parametrize("dim, dim_factor", [
-        ('xyz', 3), ('xy', 2), ('xz', 2), ('yz', 2), ('x', 1), ('y', 1),
-        ('z', 1)
-    ])
-    def test_simple_start_stop_step_all_dims(self, step_traj, NSTEP, dim,
-                                             dim_factor):
+    @pytest.mark.parametrize(
+        "dim, dim_factor",
+        [
+            ("xyz", 3),
+            ("xy", 2),
+            ("xz", 2),
+            ("yz", 2),
+            ("x", 1),
+            ("y", 1),
+            ("z", 1),
+        ],
+    )
+    def test_simple_start_stop_step_all_dims(
+        self, step_traj, NSTEP, dim, dim_factor
+    ):
         # testing the "simple" algorithm on constant velocity trajectory
         # test start stop step is working correctly
-        m_simple = MSD(step_traj, 'all', msd_type=dim, fft=False)
+        m_simple = MSD(step_traj, "all", msd_type=dim, fft=False)
         m_simple.run(start=10, stop=1000, step=10)
         poly = characteristic_poly(NSTEP, dim_factor)
         # polynomial must take offset start into account
-        assert_almost_equal(m_simple.results.timeseries, poly[0:990:10],
-                            decimal=4)
+        assert_almost_equal(
+            m_simple.results.timeseries, poly[0:990:10], decimal=4
+        )
 
     def test_random_walk_u_simple(self, random_walk_u):
         # regress against random_walk test data
-        msd_rw = MSD(random_walk_u, 'all', msd_type='xyz', fft=False)
+        msd_rw = MSD(random_walk_u, "all", msd_type="xyz", fft=False)
         msd_rw.run()
         norm = np.linalg.norm(msd_rw.results.timeseries)
         val = 3932.39927487146
         assert_almost_equal(norm, val, decimal=5)
 
 
-@pytest.mark.skipif(import_not_available("tidynamics"),
-                    reason="Test skipped because tidynamics not found")
+@pytest.mark.skipif(
+    import_not_available("tidynamics"),
+    reason="Test skipped because tidynamics not found",
+)
 class TestMSDFFT(object):
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def msd_fft(self, u, SELECTION):
         # fft msd
-        m = MSD(u, SELECTION, msd_type='xyz', fft=True)
+        m = MSD(u, SELECTION, msd_type="xyz", fft=True)
         m.run()
         return m
 
@@ -172,7 +193,7 @@ class TestMSDFFT(object):
         per_particle_fft = msd_fft.results.msds_by_particle
         assert_almost_equal(per_particle_simple, per_particle_fft, decimal=4)
 
-    @pytest.mark.parametrize("dim", ['xyz', 'xy', 'xz', 'yz', 'x', 'y', 'z'])
+    @pytest.mark.parametrize("dim", ["xyz", "xy", "xz", "yz", "x", "y", "z"])
     def test_fft_vs_simple_all_dims(self, u, SELECTION, dim):
         # check fft and simple give same result for each dimensionality
         m_simple = MSD(u, SELECTION, msd_type=dim, fft=False)
@@ -183,7 +204,7 @@ class TestMSDFFT(object):
         timeseries_fft = m_fft.results.timeseries
         assert_almost_equal(timeseries_simple, timeseries_fft, decimal=4)
 
-    @pytest.mark.parametrize("dim", ['xyz', 'xy', 'xz', 'yz', 'x', 'y', 'z'])
+    @pytest.mark.parametrize("dim", ["xyz", "xy", "xz", "yz", "x", "y", "z"])
     def test_fft_vs_simple_all_dims_per_particle(self, u, SELECTION, dim):
         # check fft and simple give same result for each particle in each
         # dimension
@@ -195,40 +216,58 @@ class TestMSDFFT(object):
         per_particle_fft = m_fft.results.msds_by_particle
         assert_almost_equal(per_particle_simple, per_particle_fft, decimal=4)
 
-    @pytest.mark.parametrize("dim, dim_factor", [
-        ('xyz', 3), ('xy', 2), ('xz', 2), ('yz', 2), ('x', 1), ('y', 1),
-        ('z', 1)
-    ])
+    @pytest.mark.parametrize(
+        "dim, dim_factor",
+        [
+            ("xyz", 3),
+            ("xy", 2),
+            ("xz", 2),
+            ("yz", 2),
+            ("x", 1),
+            ("y", 1),
+            ("z", 1),
+        ],
+    )
     def test_fft_step_traj_all_dims(self, step_traj, NSTEP, dim, dim_factor):
         # testing the fft algorithm on constant velocity trajectory
         # this should fit the polynomial y=dim_factor*x**2
         # fft based tests require a slight decrease in expected prescision
         # primarily due to roundoff in fft(ifft()) calls.
         # relative accuracy expected to be around ~1e-12
-        m_simple = MSD(step_traj, 'all', msd_type=dim, fft=True)
+        m_simple = MSD(step_traj, "all", msd_type=dim, fft=True)
         m_simple.run()
         poly = characteristic_poly(NSTEP, dim_factor)
         # this was relaxed from decimal=4 for numpy=1.13 test
         assert_almost_equal(m_simple.results.timeseries, poly, decimal=3)
 
-    @pytest.mark.parametrize("dim, dim_factor", [(
-        'xyz', 3), ('xy', 2), ('xz', 2), ('yz', 2), ('x', 1), ('y', 1),
-        ('z', 1)
-    ])
-    def test_fft_start_stop_step_all_dims(self, step_traj, NSTEP, dim,
-                                          dim_factor):
+    @pytest.mark.parametrize(
+        "dim, dim_factor",
+        [
+            ("xyz", 3),
+            ("xy", 2),
+            ("xz", 2),
+            ("yz", 2),
+            ("x", 1),
+            ("y", 1),
+            ("z", 1),
+        ],
+    )
+    def test_fft_start_stop_step_all_dims(
+        self, step_traj, NSTEP, dim, dim_factor
+    ):
         # testing the fft algorithm on constant velocity trajectory
         # test start stop step is working correctly
-        m_simple = MSD(step_traj, 'all', msd_type=dim, fft=True)
+        m_simple = MSD(step_traj, "all", msd_type=dim, fft=True)
         m_simple.run(start=10, stop=1000, step=10)
         poly = characteristic_poly(NSTEP, dim_factor)
         # polynomial must take offset start into account
-        assert_almost_equal(m_simple.results.timeseries, poly[0:990:10],
-                            decimal=3)
+        assert_almost_equal(
+            m_simple.results.timeseries, poly[0:990:10], decimal=3
+        )
 
     def test_random_walk_u_fft(self, random_walk_u):
         # regress against random_walk test data
-        msd_rw = MSD(random_walk_u, 'all', msd_type='xyz', fft=True)
+        msd_rw = MSD(random_walk_u, "all", msd_type="xyz", fft=True)
         msd_rw.run()
         norm = np.linalg.norm(msd_rw.results.timeseries)
         val = 3932.39927487146

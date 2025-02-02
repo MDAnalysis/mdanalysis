@@ -21,32 +21,28 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import warnings
+
 import MDAnalysis as mda
+import numpy as np
 import pytest
 from MDAnalysis.analysis import contacts
 from MDAnalysis.analysis.distances import distance_array
-
-from numpy.testing import (
-    assert_equal,
-    assert_array_equal,
-    assert_allclose,
-)
-import numpy as np
+from numpy.testing import assert_allclose, assert_array_equal, assert_equal
 
 from MDAnalysisTests.datafiles import (
-    PSF,
     DCD,
+    PSF,
     TPR,
     XTC,
+    contacts_file,
     contacts_villin_folded,
     contacts_villin_unfolded,
-    contacts_file
 )
 
 
 def test_soft_cut_q():
     # just check some of the extremal points
-    assert contacts.soft_cut_q([0], [0]) == .5
+    assert contacts.soft_cut_q([0], [0]) == 0.5
     assert_allclose(contacts.soft_cut_q([100], [0]), 0, rtol=0, atol=1.5e-7)
     assert_allclose(contacts.soft_cut_q([-100], [0]), 1, rtol=0, atol=1.5e-7)
 
@@ -58,8 +54,10 @@ def test_soft_cut_q_folded():
     # indices have been stored 1 indexed
     indices = contacts_data[:, :2].astype(int) - 1
 
-    r = np.linalg.norm(u.atoms.positions[indices[:, 0]] -
-                       u.atoms.positions[indices[:, 1]], axis=1)
+    r = np.linalg.norm(
+        u.atoms.positions[indices[:, 0]] - u.atoms.positions[indices[:, 1]],
+        axis=1,
+    )
     r0 = contacts_data[:, 2]
 
     beta = 5.0
@@ -76,8 +74,10 @@ def test_soft_cut_q_unfolded():
     # indices have been stored 1 indexed
     indices = contacts_data[:, :2].astype(int) - 1
 
-    r = np.linalg.norm(u.atoms.positions[indices[:, 0]] -
-                       u.atoms.positions[indices[:, 1]], axis=1)
+    r = np.linalg.norm(
+        u.atoms.positions[indices[:, 0]] - u.atoms.positions[indices[:, 1]],
+        axis=1,
+    )
     r0 = contacts_data[:, 2]
 
     beta = 5.0
@@ -87,25 +87,25 @@ def test_soft_cut_q_unfolded():
     assert_allclose(Q.mean(), 0.0, rtol=0, atol=1.5e-1)
 
 
-@pytest.mark.parametrize('r, cutoff, expected_value', [
-    ([1], 2, 1),
-    ([2], 1, 0),
-    ([2, 0.5], 1, 0.5),
-    ([2, 3], [3, 4], 1),
-    ([4, 5], [3, 4], 0)
-
-])
+@pytest.mark.parametrize(
+    "r, cutoff, expected_value",
+    [
+        ([1], 2, 1),
+        ([2], 1, 0),
+        ([2, 0.5], 1, 0.5),
+        ([2, 3], [3, 4], 1),
+        ([4, 5], [3, 4], 0),
+    ],
+)
 def test_hard_cut_q(r, cutoff, expected_value):
     # just check some extremal points
     assert contacts.hard_cut_q(r, cutoff) == expected_value
 
 
-@pytest.mark.parametrize('r, r0, radius, expected_value', [
-    ([1], None, 2, 1),
-    ([2], None, 1, 0),
-    ([2, 0.5], None, 1, 0.5)
-
-])
+@pytest.mark.parametrize(
+    "r, r0, radius, expected_value",
+    [([1], None, 2, 1), ([2], None, 1, 0), ([2, 0.5], None, 1, 0.5)],
+)
 def test_radius_cut_q(r, r0, radius, expected_value):
     # check some extremal points
     assert contacts.radius_cut_q(r, r0, radius) == expected_value
@@ -126,7 +126,7 @@ def test_contact_matrix():
 
 def test_new_selection():
     u = mda.Universe(PSF, DCD)
-    selections = ('all', )
+    selections = ("all",)
     sel = contacts._new_selections(u, selections, -1)[0]
     u.trajectory[-1]
     assert_array_equal(sel.positions, u.atoms.positions)
@@ -134,7 +134,7 @@ def test_new_selection():
 
 def soft_cut(ref, u, selA, selB, radius=4.5, beta=5.0, lambda_constant=1.8):
     """
-        Reference implementation for testing
+    Reference implementation for testing
     """
     # reference groups A and B from selection strings
     refA, refB = ref.select_atoms(selA), ref.select_atoms(selB)
@@ -171,8 +171,13 @@ class TestContacts(object):
         return mda.Universe(PSF, DCD)
 
     def _run_Contacts(
-        self, universe, client_Contacts, start=None,
-        stop=None, step=None, **kwargs
+        self,
+        universe,
+        client_Contacts,
+        start=None,
+        stop=None,
+        step=None,
+        **kwargs,
     ):
         acidic = universe.select_atoms(self.sel_acidic)
         basic = universe.select_atoms(self.sel_basic)
@@ -181,13 +186,13 @@ class TestContacts(object):
             select=(self.sel_acidic, self.sel_basic),
             refgroup=(acidic, basic),
             radius=6.0,
-            **kwargs
+            **kwargs,
         ).run(**client_Contacts, start=start, stop=stop, step=step)
 
     @pytest.mark.parametrize("seltxt", [sel_acidic, sel_basic])
     def test_select_valid_types(self, universe, seltxt):
         """Test if Contacts._get_atomgroup() can take both string and AtomGroup
-         as selections.
+        as selections.
         """
         ag = universe.select_atoms(seltxt)
 
@@ -197,8 +202,7 @@ class TestContacts(object):
         assert ag_from_string == ag_from_ag
 
     def test_contacts_selections(self, universe, client_Contacts):
-        """Test if Contacts can take both string and AtomGroup as selections.
-        """
+        """Test if Contacts can take both string and AtomGroup as selections."""
         aga = universe.select_atoms(self.sel_acidic)
         agb = universe.select_atoms(self.sel_basic)
 
@@ -207,8 +211,9 @@ class TestContacts(object):
         )
 
         csel = contacts.Contacts(
-            universe, select=(self.sel_acidic, self.sel_basic),
-            refgroup=(aga, agb)
+            universe,
+            select=(self.sel_acidic, self.sel_basic),
+            refgroup=(aga, agb),
         )
 
         cag.run(**client_Contacts)
@@ -247,8 +252,11 @@ class TestContacts(object):
     def test_slicing(self, universe, client_Contacts):
         start, stop, step = 10, 30, 5
         CA1 = self._run_Contacts(
-            universe, client_Contacts=client_Contacts,
-            start=start, stop=stop, step=step
+            universe,
+            client_Contacts=client_Contacts,
+            start=start,
+            stop=stop,
+            step=step,
         )
         frames = np.arange(universe.trajectory.n_frames)[start:stop:step]
         assert len(CA1.results.timeseries) == len(frames)
@@ -261,14 +269,15 @@ class TestContacts(object):
 
         grF = f.select_atoms(sel)
 
-        q = contacts.Contacts(u,
-                              select=(sel, sel),
-                              refgroup=(grF, grF),
-                              method="soft_cut")
+        q = contacts.Contacts(
+            u, select=(sel, sel), refgroup=(grF, grF), method="soft_cut"
+        )
         q.run(**client_Contacts)
 
         results = soft_cut(f, u, sel, sel)
-        assert_allclose(q.results.timeseries[:, 1], results[:, 1], rtol=0, atol=1.5e-7)
+        assert_allclose(
+            q.results.timeseries[:, 1], results[:, 1], rtol=0, atol=1.5e-7
+        )
 
     def test_villin_unfolded(self, client_Contacts):
         # both folded
@@ -278,39 +287,46 @@ class TestContacts(object):
 
         grF = f.select_atoms(sel)
 
-        q = contacts.Contacts(u,
-                              select=(sel, sel),
-                              refgroup=(grF, grF),
-                              method="soft_cut")
+        q = contacts.Contacts(
+            u, select=(sel, sel), refgroup=(grF, grF), method="soft_cut"
+        )
         q.run(**client_Contacts)
 
         results = soft_cut(f, u, sel, sel)
-        assert_allclose(q.results.timeseries[:, 1], results[:, 1], rtol=0, atol=1.5e-7)
+        assert_allclose(
+            q.results.timeseries[:, 1], results[:, 1], rtol=0, atol=1.5e-7
+        )
 
     def test_hard_cut_method(self, universe, client_Contacts):
         ca = self._run_Contacts(universe, client_Contacts=client_Contacts)
-        expected = [1., 0.58252427, 0.52427184, 0.55339806, 0.54368932,
-                    0.54368932, 0.51456311, 0.46601942, 0.48543689, 0.52427184,
-                    0.46601942, 0.58252427, 0.51456311, 0.48543689, 0.48543689,
-                    0.48543689, 0.46601942, 0.51456311, 0.49514563, 0.49514563,
-                    0.45631068, 0.47572816, 0.49514563, 0.50485437, 0.53398058,
-                    0.50485437, 0.51456311, 0.51456311, 0.49514563, 0.49514563,
-                    0.54368932, 0.50485437, 0.48543689, 0.55339806, 0.45631068,
-                    0.46601942, 0.53398058, 0.53398058, 0.46601942, 0.52427184,
-                    0.45631068, 0.46601942, 0.47572816, 0.46601942, 0.45631068,
-                    0.47572816, 0.45631068, 0.48543689, 0.4368932, 0.4368932,
-                    0.45631068, 0.50485437, 0.41747573, 0.4368932, 0.51456311,
-                    0.47572816, 0.46601942, 0.46601942, 0.47572816, 0.47572816,
-                    0.46601942, 0.45631068, 0.44660194, 0.47572816, 0.48543689,
-                    0.47572816, 0.42718447, 0.40776699, 0.37864078, 0.42718447,
-                    0.45631068, 0.4368932, 0.4368932, 0.45631068, 0.4368932,
-                    0.46601942, 0.45631068, 0.48543689, 0.44660194, 0.44660194,
-                    0.44660194, 0.42718447, 0.45631068, 0.44660194, 0.48543689,
-                    0.48543689, 0.44660194, 0.4368932, 0.40776699, 0.41747573,
-                    0.48543689, 0.45631068, 0.46601942, 0.47572816, 0.51456311,
-                    0.45631068, 0.37864078, 0.42718447]
+        # fmt: off
+        expected = [
+            1., 0.58252427, 0.52427184, 0.55339806, 0.54368932,
+            0.54368932, 0.51456311, 0.46601942, 0.48543689, 0.52427184,
+            0.46601942, 0.58252427, 0.51456311, 0.48543689, 0.48543689,
+            0.48543689, 0.46601942, 0.51456311, 0.49514563, 0.49514563,
+            0.45631068, 0.47572816, 0.49514563, 0.50485437, 0.53398058,
+            0.50485437, 0.51456311, 0.51456311, 0.49514563, 0.49514563,
+            0.54368932, 0.50485437, 0.48543689, 0.55339806, 0.45631068,
+            0.46601942, 0.53398058, 0.53398058, 0.46601942, 0.52427184,
+            0.45631068, 0.46601942, 0.47572816, 0.46601942, 0.45631068,
+            0.47572816, 0.45631068, 0.48543689, 0.4368932, 0.4368932,
+            0.45631068, 0.50485437, 0.41747573, 0.4368932, 0.51456311,
+            0.47572816, 0.46601942, 0.46601942, 0.47572816, 0.47572816,
+            0.46601942, 0.45631068, 0.44660194, 0.47572816, 0.48543689,
+            0.47572816, 0.42718447, 0.40776699, 0.37864078, 0.42718447,
+            0.45631068, 0.4368932, 0.4368932, 0.45631068, 0.4368932,
+            0.46601942, 0.45631068, 0.48543689, 0.44660194, 0.44660194,
+            0.44660194, 0.42718447, 0.45631068, 0.44660194, 0.48543689,
+            0.48543689, 0.44660194, 0.4368932, 0.40776699, 0.41747573,
+            0.48543689, 0.45631068, 0.46601942, 0.47572816, 0.51456311,
+            0.45631068, 0.37864078, 0.42718447,
+        ]
+        # fmt: on
         assert len(ca.results.timeseries) == len(expected)
-        assert_allclose(ca.results.timeseries[:, 1], expected, rtol=0, atol=1.5e-7)
+        assert_allclose(
+            ca.results.timeseries[:, 1], expected, rtol=0, atol=1.5e-7
+        )
 
     def test_radius_cut_method(self, universe, client_Contacts):
         acidic = universe.select_atoms(self.sel_acidic)
@@ -320,7 +336,9 @@ class TestContacts(object):
         expected = []
         for ts in universe.trajectory:
             r = contacts.distance_array(acidic.positions, basic.positions)
-            expected.append(contacts.radius_cut_q(r[initial_contacts], None, radius=6.0))
+            expected.append(
+                contacts.radius_cut_q(r[initial_contacts], None, radius=6.0)
+            )
 
         ca = self._run_Contacts(
             universe, client_Contacts=client_Contacts, method="radius_cut"
@@ -333,23 +351,27 @@ class TestContacts(object):
 
     def test_own_method(self, universe, client_Contacts):
         ca = self._run_Contacts(
-            universe, client_Contacts=client_Contacts,
-            method=self._is_any_closer
+            universe,
+            client_Contacts=client_Contacts,
+            method=self._is_any_closer,
         )
 
-        bound_expected = [1., 1., 0., 1., 1., 0., 0., 1., 0., 1., 1., 0., 0.,
-                          1., 0., 0., 0., 0., 1., 1., 0., 0., 0., 1., 0., 1.,
-                          0., 1., 1., 0., 1., 1., 1., 0., 0., 0., 0., 1., 0.,
-                          0., 1., 0., 1., 1., 1., 0., 1., 0., 0., 1., 1., 1.,
-                          0., 1., 0., 1., 1., 0., 0., 0., 1., 1., 1., 0., 0.,
-                          1., 0., 1., 1., 1., 1., 1., 1., 0., 1., 1., 0., 1.,
-                          0., 0., 1., 1., 0., 0., 1., 1., 1., 0., 1., 0., 0.,
-                          1., 0., 1., 1., 1., 1., 1.]
+        # fmt: off
+        bound_expected = [
+            1., 1., 0., 1., 1., 0., 0., 1., 0., 1., 1., 0., 0., 1., 0., 0.,
+            0., 0., 1., 1., 0., 0., 0., 1., 0., 1., 0., 1., 1., 0., 1., 1.,
+            1., 0., 0., 0., 0., 1., 0., 0., 1., 0., 1., 1., 1., 0., 1., 0.,
+            0., 1., 1., 1., 0., 1., 0., 1., 1., 0., 0., 0., 1., 1., 1., 0.,
+            0., 1., 0., 1., 1., 1., 1., 1., 1., 0., 1., 1., 0., 1., 0., 0.,
+            1., 1., 0., 0., 1., 1., 1., 0., 1., 0., 0., 1., 0., 1., 1., 1.,
+            1., 1.,
+        ]
+        # fmt: on
         assert_array_equal(ca.results.timeseries[:, 1], bound_expected)
 
     @staticmethod
     def _weird_own_method(r, r0):
-        return 'aaa'
+        return "aaa"
 
     def test_own_method_no_array_cast(self, universe, client_Contacts):
         with pytest.raises(ValueError):
@@ -366,23 +388,59 @@ class TestContacts(object):
                 universe, client_Contacts=client_Contacts, method=2, stop=2
             )
 
-    @pytest.mark.parametrize("pbc,expected", [
-    (True, [1., 0.43138152, 0.3989021, 0.43824337, 0.41948765,
-            0.42223239, 0.41354071, 0.43641354, 0.41216834, 0.38334858]),
-    (False, [1., 0.42327791, 0.39192399, 0.40950119, 0.40902613,
-             0.42470309, 0.41140143, 0.42897862, 0.41472684, 0.38574822])
-    ])
+    @pytest.mark.parametrize(
+        "pbc,expected",
+        [
+            (
+                True,
+                [
+                    1.0,
+                    0.43138152,
+                    0.3989021,
+                    0.43824337,
+                    0.41948765,
+                    0.42223239,
+                    0.41354071,
+                    0.43641354,
+                    0.41216834,
+                    0.38334858,
+                ],
+            ),
+            (
+                False,
+                [
+                    1.0,
+                    0.42327791,
+                    0.39192399,
+                    0.40950119,
+                    0.40902613,
+                    0.42470309,
+                    0.41140143,
+                    0.42897862,
+                    0.41472684,
+                    0.38574822,
+                ],
+            ),
+        ],
+    )
     def test_distance_box(self, pbc, expected, client_Contacts):
         u = mda.Universe(TPR, XTC)
         sel_basic = "(resname ARG LYS)"
         sel_acidic = "(resname ASP GLU)"
         acidic = u.select_atoms(sel_acidic)
         basic = u.select_atoms(sel_basic)
-        
-        r = contacts.Contacts(u, select=(sel_acidic, sel_basic),
-                        refgroup=(acidic, basic), radius=6.0, pbc=pbc)
+
+        r = contacts.Contacts(
+            u,
+            select=(sel_acidic, sel_basic),
+            refgroup=(acidic, basic),
+            radius=6.0,
+            pbc=pbc,
+        )
         r.run(**client_Contacts)
-        assert_allclose(r.results.timeseries[:, 1], expected,rtol=0, atol=1.5e-7)
+        assert_allclose(
+            r.results.timeseries[:, 1], expected, rtol=0, atol=1.5e-7
+        )
 
     def test_warn_deprecated_attr(self, universe, client_Contacts):
         """Test for warning message emitted on using deprecated `timeseries`
@@ -394,13 +452,14 @@ class TestContacts(object):
         with pytest.warns(DeprecationWarning, match=wmsg):
             assert_equal(CA1.timeseries, CA1.results.timeseries)
 
-    @pytest.mark.parametrize("datafiles, expected", [((PSF, DCD), 0),
-                                                     ([TPR, XTC], 41814)])
+    @pytest.mark.parametrize(
+        "datafiles, expected", [((PSF, DCD), 0), ([TPR, XTC], 41814)]
+    )
     def test_n_initial_contacts(self, datafiles, expected):
         """Test for n_initial_contacts attribute"""
         u = mda.Universe(*datafiles)
-        select = ('protein', 'not protein')
-        refgroup = (u.select_atoms('protein'), u.select_atoms('not protein'))
+        select = ("protein", "not protein")
+        refgroup = (u.select_atoms("protein"), u.select_atoms("not protein"))
 
         r = contacts.Contacts(u, select=select, refgroup=refgroup)
         assert_equal(r.n_initial_contacts, expected)
@@ -408,49 +467,61 @@ class TestContacts(object):
 
 def test_q1q2(client_Contacts):
     u = mda.Universe(PSF, DCD)
-    q1q2 = contacts.q1q2(u, 'name CA', radius=8)
+    q1q2 = contacts.q1q2(u, "name CA", radius=8)
     q1q2.run(**client_Contacts)
 
-    q1_expected = [1., 0.98092643, 0.97366031, 0.97275204, 0.97002725,
-                   0.97275204, 0.96276113, 0.96730245, 0.9582198, 0.96185286,
-                   0.95367847, 0.96276113, 0.9582198, 0.95186194, 0.95367847,
-                   0.95095368, 0.94187103, 0.95186194, 0.94277929, 0.94187103,
-                   0.9373297, 0.93642144, 0.93097184, 0.93914623, 0.93278837,
-                   0.93188011, 0.9373297, 0.93097184, 0.93188011, 0.92643052,
-                   0.92824705, 0.92915531, 0.92643052, 0.92461399, 0.92279746,
-                   0.92643052, 0.93278837, 0.93188011, 0.93369664, 0.9346049,
-                   0.9373297, 0.94096276, 0.9400545, 0.93642144, 0.9373297,
-                   0.9373297, 0.9400545, 0.93006358, 0.9400545, 0.93823797,
-                   0.93914623, 0.93278837, 0.93097184, 0.93097184, 0.92733878,
-                   0.92824705, 0.92279746, 0.92824705, 0.91825613, 0.92733878,
-                   0.92643052, 0.92733878, 0.93278837, 0.92733878, 0.92824705,
-                   0.93097184, 0.93278837, 0.93914623, 0.93097184, 0.9373297,
-                   0.92915531, 0.93188011, 0.93551317, 0.94096276, 0.93642144,
-                   0.93642144, 0.9346049, 0.93369664, 0.93369664, 0.93278837,
-                   0.93006358, 0.93278837, 0.93006358, 0.9346049, 0.92824705,
-                   0.93097184, 0.93006358, 0.93188011, 0.93278837, 0.93006358,
-                   0.92915531, 0.92824705, 0.92733878, 0.92643052, 0.93188011,
-                   0.93006358, 0.9346049, 0.93188011]
-    assert_allclose(q1q2.results.timeseries[:, 1], q1_expected, rtol=0, atol=1.5e-7)
+    # fmt: off
+    q1_expected = [
+        1.0, 0.98092643, 0.97366031, 0.97275204, 0.97002725,
+        0.97275204, 0.96276113, 0.96730245, 0.9582198, 0.96185286,
+        0.95367847, 0.96276113, 0.9582198, 0.95186194, 0.95367847,
+        0.95095368, 0.94187103, 0.95186194, 0.94277929, 0.94187103,
+        0.9373297, 0.93642144, 0.93097184, 0.93914623, 0.93278837,
+        0.93188011, 0.9373297, 0.93097184, 0.93188011, 0.92643052,
+        0.92824705, 0.92915531, 0.92643052, 0.92461399, 0.92279746,
+        0.92643052, 0.93278837, 0.93188011, 0.93369664, 0.9346049,
+        0.9373297, 0.94096276, 0.9400545, 0.93642144, 0.9373297,
+        0.9373297, 0.9400545, 0.93006358, 0.9400545, 0.93823797,
+        0.93914623, 0.93278837, 0.93097184, 0.93097184, 0.92733878,
+        0.92824705, 0.92279746, 0.92824705, 0.91825613, 0.92733878,
+        0.92643052, 0.92733878, 0.93278837, 0.92733878, 0.92824705,
+        0.93097184, 0.93278837, 0.93914623, 0.93097184, 0.9373297,
+        0.92915531, 0.93188011, 0.93551317, 0.94096276, 0.93642144,
+        0.93642144, 0.9346049, 0.93369664, 0.93369664, 0.93278837,
+        0.93006358, 0.93278837, 0.93006358, 0.9346049, 0.92824705,
+        0.93097184, 0.93006358, 0.93188011, 0.93278837, 0.93006358,
+        0.92915531, 0.92824705, 0.92733878, 0.92643052, 0.93188011,
+        0.93006358, 0.9346049, 0.93188011,
+    ]
+    # fmt: on
+    assert_allclose(
+        q1q2.results.timeseries[:, 1], q1_expected, rtol=0, atol=1.5e-7
+    )
 
-    q2_expected = [0.94649446, 0.94926199, 0.95295203, 0.95110701, 0.94833948,
-                   0.95479705, 0.94926199, 0.9501845, 0.94926199, 0.95387454,
-                   0.95202952, 0.95110701, 0.94649446, 0.94095941, 0.94649446,
-                   0.9400369, 0.94464945, 0.95202952, 0.94741697, 0.94649446,
-                   0.94188192, 0.94188192, 0.93911439, 0.94464945, 0.9400369,
-                   0.94095941, 0.94372694, 0.93726937, 0.93819188, 0.93357934,
-                   0.93726937, 0.93911439, 0.93911439, 0.93450185, 0.93357934,
-                   0.93265683, 0.93911439, 0.94372694, 0.93911439, 0.94649446,
-                   0.94833948, 0.95110701, 0.95110701, 0.95295203, 0.94926199,
-                   0.95110701, 0.94926199, 0.94741697, 0.95202952, 0.95202952,
-                   0.95202952, 0.94741697, 0.94741697, 0.94926199, 0.94280443,
-                   0.94741697, 0.94833948, 0.94833948, 0.9400369, 0.94649446,
-                   0.94741697, 0.94926199, 0.95295203, 0.94926199, 0.9501845,
-                   0.95664207, 0.95756458, 0.96309963, 0.95756458, 0.96217712,
-                   0.95756458, 0.96217712, 0.96586716, 0.96863469, 0.96494465,
-                   0.97232472, 0.97140221, 0.9695572, 0.97416974, 0.9695572,
-                   0.96217712, 0.96771218, 0.9704797, 0.96771218, 0.9695572,
-                   0.97140221, 0.97601476, 0.97693727, 0.98154982, 0.98431734,
-                   0.97601476, 0.9797048, 0.98154982, 0.98062731, 0.98431734,
-                   0.98616236, 0.9898524, 1.]
-    assert_allclose(q1q2.results.timeseries[:, 2], q2_expected, rtol=0, atol=1.5e-7)
+    # fmt: off
+    q2_expected = [
+        0.94649446, 0.94926199, 0.95295203, 0.95110701, 0.94833948,
+        0.95479705, 0.94926199, 0.9501845, 0.94926199, 0.95387454,
+        0.95202952, 0.95110701, 0.94649446, 0.94095941, 0.94649446,
+        0.9400369, 0.94464945, 0.95202952, 0.94741697, 0.94649446,
+        0.94188192, 0.94188192, 0.93911439, 0.94464945, 0.9400369,
+        0.94095941, 0.94372694, 0.93726937, 0.93819188, 0.93357934,
+        0.93726937, 0.93911439, 0.93911439, 0.93450185, 0.93357934,
+        0.93265683, 0.93911439, 0.94372694, 0.93911439, 0.94649446,
+        0.94833948, 0.95110701, 0.95110701, 0.95295203, 0.94926199,
+        0.95110701, 0.94926199, 0.94741697, 0.95202952, 0.95202952,
+        0.95202952, 0.94741697, 0.94741697, 0.94926199, 0.94280443,
+        0.94741697, 0.94833948, 0.94833948, 0.9400369, 0.94649446,
+        0.94741697, 0.94926199, 0.95295203, 0.94926199, 0.9501845,
+        0.95664207, 0.95756458, 0.96309963, 0.95756458, 0.96217712,
+        0.95756458, 0.96217712, 0.96586716, 0.96863469, 0.96494465,
+        0.97232472, 0.97140221, 0.9695572, 0.97416974, 0.9695572,
+        0.96217712, 0.96771218, 0.9704797, 0.96771218, 0.9695572,
+        0.97140221, 0.97601476, 0.97693727, 0.98154982, 0.98431734,
+        0.97601476, 0.9797048, 0.98154982, 0.98062731, 0.98431734,
+        0.98616236, 0.9898524, 1.0,
+    ]
+    # fmt: on
+    assert_allclose(
+        q1q2.results.timeseries[:, 2], q2_expected, rtol=0, atol=1.5e-7
+    )
