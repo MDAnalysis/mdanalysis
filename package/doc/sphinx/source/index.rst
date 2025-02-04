@@ -29,7 +29,7 @@ also be manipulated (for instance, fit to a reference structure) and
 written out in a range of formats.
 
 .. _`www.mdanalysis.org`: https://www.mdanalysis.org
-.. _NumPy: http://numpy.scipy.org
+.. _NumPy: https://numpy.org/
 .. _CHARMM:  http://www.charmm.org/
 .. _Amber:   http://ambermd.org/
 .. _LAMMPS:  http://lammps.sandia.gov/

@@ -25,8 +25,10 @@ from unittest.mock import patch
 
 import re
 import os
+import sys
 import shutil
 import subprocess
+import time
 from pathlib import Path
 
 import numpy as np
@@ -60,6 +62,7 @@ import MDAnalysis as mda
 from MDAnalysis.coordinates.base import Timestep
 from MDAnalysis.coordinates import XDR
 from MDAnalysisTests.util import get_userid
+from filelock import FileLock
 
 
 @pytest.mark.parametrize(
@@ -977,24 +980,27 @@ class _GromacsReader_offsets(object):
             reader = self._reader(traj)
         reader[idx_frame]
 
-    @pytest.mark.skipif(get_userid() == 0, reason="cannot readonly as root")
-    def test_persistent_offsets_readonly(self, tmpdir):
+    def test_persistent_offsets_readonly(self, tmpdir, trajectory):
         shutil.copy(self.filename, str(tmpdir))
 
-        if os.name == "nt":
-            # Windows platform has a unique way to deny write access
-            subprocess.call(
-                "icacls {fname} /deny Users:W".format(fname=tmpdir), shell=True
-            )
-        else:
-            os.chmod(str(tmpdir), 0o555)
-
         filename = str(tmpdir.join(os.path.basename(self.filename)))
-        # try to write a offsets file
-        with pytest.warns(
-            UserWarning, match="Couldn't save offsets"
-        ) and pytest.warns(UserWarning, match="Cannot write"):
-            self._reader(filename)
+        print("filename", filename)
+        ref_offset = trajectory._xdr.offsets
+        # Mock filelock acquire to raise an error
+        with patch.object(
+            FileLock, "acquire", side_effect=PermissionError
+        ):  # Simulate failure
+            with pytest.warns(UserWarning, match="Cannot write lock"):
+                reader = self._reader(filename)
+                saved_offsets = reader._xdr.offsets
+
+            # Check if offsets are handled properly and match reference offsets
+            assert_almost_equal(
+                saved_offsets,  # Compare with reference offsets
+                ref_offset,
+                err_msg="error loading frame offsets",
+            )
+
         assert_equal(os.path.exists(XDR.offsets_filename(filename)), False)
         # check the lock file is not created as well.
         assert_equal(
@@ -1002,21 +1008,12 @@ class _GromacsReader_offsets(object):
             False,
         )
 
-        # pre-teardown permission fix - leaving permission blocked dir
-        # is problematic on py3.9 + Windows it seems. See issue
-        # [4123](https://github.com/MDAnalysis/mdanalysis/issues/4123)
-        # for more details.
-        if os.name == "nt":
-            subprocess.call(f"icacls {tmpdir} /grant Users:W", shell=True)
-        else:
-            os.chmod(str(tmpdir), 0o777)
-
-        shutil.rmtree(tmpdir)
-
-    def test_offset_lock_created(self):
-        assert os.path.exists(
-            XDR.offsets_filename(self.filename, ending="lock")
-        )
+    @pytest.mark.skipif(
+        sys.platform.startswith("win"),
+        reason="The lock file only exists when it's locked in windows",
+    )
+    def test_offset_lock_created(self, traj):
+        assert os.path.exists(XDR.offsets_filename(traj, ending="lock"))
 
 
 class TestXTCReader_offsets(_GromacsReader_offsets):

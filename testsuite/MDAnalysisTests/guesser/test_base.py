@@ -61,7 +61,7 @@ class TestBaseGuesser:
             match="default guesser can not guess "
             "the following attribute: foo",
         ):
-            mda.Universe(datafiles.PDB, to_guess=["foo"])
+            mda.Universe(datafiles.PDB_xsmall, to_guess=["foo"])
 
     def test_guess_attribute_with_missing_parent_attr(self):
         names = Atomnames(np.array(["C", "HB", "HA", "O"], dtype=object))
@@ -173,23 +173,23 @@ class TestBaseGuesser:
 
     def test_guess_topology_objects_out_of_order_init(self):
         u = mda.Universe(
-            datafiles.PDB_small,
+            datafiles.PDB_xsmall,
             to_guess=["dihedrals", "angles", "bonds"],
             guess_bonds=False,
         )
-        assert len(u.atoms.angles) == 6123
-        assert len(u.atoms.dihedrals) == 8921
+        assert len(u.atoms.angles) == 290
+        assert len(u.atoms.dihedrals) == 411
 
     def test_guess_topology_objects_out_of_order_guess(self):
-        u = mda.Universe(datafiles.PDB_small)
+        u = mda.Universe(datafiles.PDB_xsmall)
         with pytest.raises(NoDataError):
             u.atoms.angles
 
         u.guess_TopologyAttrs(
             "default", to_guess=["dihedrals", "angles", "bonds"]
         )
-        assert len(u.atoms.angles) == 6123
-        assert len(u.atoms.dihedrals) == 8921
+        assert len(u.atoms.angles) == 290
+        assert len(u.atoms.dihedrals) == 411
 
     def test_force_guess_overwrites_existing_bonds(self):
         u = mda.Universe(datafiles.CONECT)
@@ -205,7 +205,7 @@ class TestBaseGuesser:
         assert len(u.atoms.bonds) == 0
 
     def test_guessing_angles_respects_bond_kwargs(self):
-        u = mda.Universe(datafiles.PDB)
+        u = mda.Universe(datafiles.PDB_xsmall)
         assert not hasattr(u.atoms, "angles")
 
         # This low radius should find no angles
@@ -217,7 +217,7 @@ class TestBaseGuesser:
         # set higher radii for lots of angles!
         vdw = dict.fromkeys(set(u.atoms.types), 1)
         u.guess_TopologyAttrs("default", force_guess=["angles"], vdwradii=vdw)
-        assert len(u.atoms.angles) == 89466
+        assert len(u.atoms.angles) == 7
 
     def test_guessing_dihedrals_respects_bond_kwargs(self):
         u = mda.Universe(datafiles.CONECT)
@@ -241,7 +241,7 @@ class TestBaseGuesser:
 
     def test_guess_singular(self):
         default_guesser = get_guesser("default")
-        u = mda.Universe(datafiles.PDB, to_guess=[])
+        u = mda.Universe(datafiles.PDB_xsmall, to_guess=[])
         assert not hasattr(u.atoms, "masses")
 
         default_guesser._universe = u
@@ -252,12 +252,12 @@ def test_Universe_guess_bonds_deprecated():
     with pytest.warns(
         DeprecationWarning, match="`guess_bonds` keyword is deprecated"
     ):
-        u = mda.Universe(datafiles.PDB_full, guess_bonds=True)
+        u = mda.Universe(datafiles.PDB_xsmall, guess_bonds=True)
 
 
 @pytest.mark.parametrize(
     "universe_input",
-    [datafiles.DCD, datafiles.XTC, np.random.rand(3, 3), datafiles.PDB],
+    [datafiles.DCD, datafiles.XTC, np.random.rand(3, 3), datafiles.PDB_xsmall],
 )
 def test_universe_creation_from_coordinates(universe_input):
     mda.Universe(universe_input)

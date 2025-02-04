@@ -21,8 +21,8 @@ inputs:
     default: 'codecov'
   cython:
     default: 'cython'
-  fasteners:
-    default: 'fasteners'
+  filelock:
+    default: 'filelock'
   griddataformats:
     default: 'griddataformats'
   gsd:
@@ -110,7 +110,7 @@ runs:
         CONDA_MIN_DEPS: |
           ${{ inputs.codecov }}
           ${{ inputs.cython }}
-          ${{ inputs.fasteners }}
+          ${{ inputs.filelock }}
           ${{ inputs.griddataformats }}
           ${{ inputs.hypothesis }}
           ${{ inputs.matplotlib }}

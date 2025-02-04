@@ -38,7 +38,7 @@ dependencies = [
     'tqdm>=4.43.0',
     'threadpoolctl',
     'packaging',
-    'fasteners',
+    'filelock',
     'mda-xdrlib',
     'waterdynamics',
     'pathsimanalysis',
@@ -126,24 +126,6 @@ MDAnalysis = [
 [tool.black]
 line-length = 79
 target-version = ['py310', 'py311', 'py312', 'py313']
-include = '''
-(
-tables\.py
-| due\.py
-| setup\.py
-| MDAnalysis/auxiliary/.*\.py
-| MDAnalysis/visualization/.*\.py
-| MDAnalysis/lib/.*\.py^
-| MDAnalysis/transformations/.*\.py
-| MDAnalysis/topology/.*\.py
-| MDAnalysis/analysis/.*\.py
-| MDAnalysis/guesser/.*\.py
-| MDAnalysis/converters/.*\.py
-| MDAnalysis/coordinates/.*\.py
-| MDAnalysis/tests/.*\.py
-| MDAnalysis/selections/.*\.py
-)
-'''
 extend-exclude = '''
 (
 __pycache__ 
@@ -151,7 +133,6 @@ __pycache__
 | MDAnalysis/analysis/atomicdistances\.py
 | MDAnalysis/topology/CMSParser\.py
 | MDAnalysis/topology/__init__\.py
-| MDAnalysis/coordinates/XDR\.py
 | MDAnalysis/core/selection\.py
 | MDAnalysis/analysis/diffusionmap\.py
 | MDAnalysis/analysis/align\.py

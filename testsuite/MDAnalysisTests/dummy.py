@@ -38,8 +38,9 @@ _ATOMS_PER_RES = _N_ATOMS // _N_RESIDUES
 _RESIDUES_PER_SEG = _N_RESIDUES // _N_SEGMENTS
 
 
-def make_Universe(extras=None, size=None,
-                  trajectory=False, velocities=False, forces=False):
+def make_Universe(
+    extras=None, size=None, trajectory=False, velocities=False, forces=False
+):
     """Make a dummy reference Universe
 
     Allows the construction of arbitrary-sized Universes. Suitable for
@@ -81,10 +82,10 @@ def make_Universe(extras=None, size=None,
         n_atoms=n_atoms,
         n_residues=n_residues,
         n_segments=n_segments,
-        atom_resindex=np.repeat(
-            np.arange(n_residues), n_atoms // n_residues),
+        atom_resindex=np.repeat(np.arange(n_residues), n_atoms // n_residues),
         residue_segindex=np.repeat(
-            np.arange(n_segments), n_residues // n_segments),
+            np.arange(n_segments), n_residues // n_segments
+        ),
         # trajectory things
         trajectory=trajectory,
         velocities=velocities,
@@ -106,12 +107,12 @@ def make_Universe(extras=None, size=None,
 
     return u
 
+
 def make_altLocs(size):
     """AltLocs cycling through A B C D E"""
     na, nr, ns = size
-    alts = itertools.cycle(('A', 'B', 'C', 'D', 'E'))
-    return np.array(['{}'.format(next(alts)) for _ in range(na)],
-                    dtype=object)
+    alts = itertools.cycle(("A", "B", "C", "D", "E"))
+    return np.array(["{}".format(next(alts)) for _ in range(na)], dtype=object)
 
 
 def make_bfactors(size):
@@ -130,45 +131,59 @@ def make_charges(size):
     charges = itertools.cycle([-1.5, -0.5, 0.0, 0.5, 1.5])
     return np.array([next(charges) for _ in range(na)])
 
+
 def make_resnames(size):
-    """Creates residues named RsA RsB ... """
+    """Creates residues named RsA RsB ..."""
     na, nr, ns = size
-    return np.array(['Rs{}'.format(string.ascii_uppercase[i])
-                     for i in range(nr)], dtype=object)
+    return np.array(
+        ["Rs{}".format(string.ascii_uppercase[i]) for i in range(nr)],
+        dtype=object,
+    )
+
 
 def make_segids(size):
     """Segids SegA -> SegY"""
     na, nr, ns = size
-    return np.array(['Seg{}'.format(string.ascii_uppercase[i])
-                     for i in range(ns)], dtype=object)
+    return np.array(
+        ["Seg{}".format(string.ascii_uppercase[i]) for i in range(ns)],
+        dtype=object,
+    )
+
 
 def make_types(size):
     """Atoms are given types TypeA -> TypeE on a loop"""
     na, nr, ns = size
     types = itertools.cycle(string.ascii_uppercase[:5])
-    return np.array(['Type{}'.format(next(types)) for _ in range(na)],
-                    dtype=object)
+    return np.array(
+        ["Type{}".format(next(types)) for _ in range(na)], dtype=object
+    )
+
 
 def make_names(size):
     """Atom names AAA -> ZZZ (all unique)"""
     na, nr, ns = size
     # produces, AAA, AAB, AAC, ABA etc
     names = itertools.product(*[string.ascii_uppercase] * 3)
-    return np.array(['{}'.format(''.join(next(names))) for _ in range(na)],
-                    dtype=object)
+    return np.array(
+        ["{}".format("".join(next(names))) for _ in range(na)], dtype=object
+    )
+
 
 def make_occupancies(size):
     na, nr, ns = size
     return np.tile(np.array([1.0, 2, 3, 4, 5]), nr)
 
+
 def make_radii(size):
     na, nr, ns = size
     return np.tile(np.array([1.0, 2, 3, 4, 5]), nr)
+
 
 def make_serials(size):
     """Serials go from 10 to size+10"""
     na, nr, ns = size
     return np.arange(na) + 10
+
 
 def make_masses(size):
     """Atom masses (5.1, 4.2, 3.3, 1.5, 0.5) repeated"""
@@ -176,10 +191,12 @@ def make_masses(size):
     masses = itertools.cycle([5.1, 4.2, 3.3, 1.5, 0.5])
     return np.array([next(masses) for _ in range(na)])
 
+
 def make_resnums(size):
     """Resnums 1 and upwards"""
     na, nr, ns = size
     return np.arange(nr, dtype=np.int64) + 1
+
 
 def make_resids(size):
     """Resids 1 and upwards"""
@@ -190,20 +207,20 @@ def make_resids(size):
 # Available extra TopologyAttrs to a dummy Universe
 _MENU = {
     # Atoms
-    'altLocs': make_altLocs,
-    'bfactors': make_bfactors,
-    'charges': make_charges,
-    'names': make_names,
-    'occupancies': make_occupancies,
-    'radii': make_radii,
-    'serials': make_serials,
-    'tempfactors': make_tempfactors,
-    'types': make_types,
-    'masses': make_masses,
+    "altLocs": make_altLocs,
+    "bfactors": make_bfactors,
+    "charges": make_charges,
+    "names": make_names,
+    "occupancies": make_occupancies,
+    "radii": make_radii,
+    "serials": make_serials,
+    "tempfactors": make_tempfactors,
+    "types": make_types,
+    "masses": make_masses,
     # Residues
-    'resnames': make_resnames,
-    'resnums': make_resnums,
-    'resids': make_resids,
+    "resnames": make_resnames,
+    "resnums": make_resnums,
+    "resids": make_resids,
     # Segments
-    'segids': make_segids,
+    "segids": make_segids,
 }
