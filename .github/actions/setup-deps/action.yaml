@@ -21,8 +21,10 @@ inputs:
     default: 'codecov'
   cython:
     default: 'cython'
-  filelock:
-    default: 'filelock'
+  fasteners:
+    default: 'fasteners'
+  gemmi:
+    default: 'gemmi'
   griddataformats:
     default: 'griddataformats'
   gsd:
@@ -130,6 +132,7 @@ runs:
           ${{ inputs.dask }}
           ${{ inputs.distopia }}
           ${{ inputs.gsd }}
+          ${{ inputs.gemmi }}
           ${{ inputs.h5py }}
           ${{ inputs.hole2 }}
           ${{ inputs.joblib }}

@@ -132,7 +132,6 @@ __all__ = [
     "TPR2022RC1",
     "TPR2023",
     "TPR2024",
-    "TPR2024_4",
     "TPR510_bonded",
     "TPR2016_bonded",
     "TPR2018_bonded",
@@ -146,7 +145,6 @@ __all__ = [
     "TPR334_bonded",
     "TPR2023_bonded",
     "TPR2024_bonded",
-    "TPR2024_4_bonded",
     "TPR_EXTRA_2021",
     "TPR_EXTRA_2020",
     "TPR_EXTRA_2018",
@@ -155,7 +153,6 @@ __all__ = [
     "TPR_EXTRA_2022RC1",
     "TPR_EXTRA_2023",
     "TPR_EXTRA_2024",
-    "TPR_EXTRA_2024_4",
     "PDB_sub_sol",
     "PDB_sub_dry",  # TRRReader sub selection
     "TRR_sub_sol",
@@ -317,6 +314,7 @@ __all__ = [
     "AUX_EDR_RAW",
     "AUX_EDR_SINGLE_FRAME",  # for testing .edr auxiliary reader
     "MMTF",
+    "MMCIF",
     "MMTF_gz",
     "MMTF_skinny",  # skinny - some optional fields stripped out
     "MMTF_skinny2",
@@ -387,9 +385,7 @@ import MDAnalysisTests.data
 
 _data_ref = resources.files("MDAnalysisTests.data")
 
-WIN_PDB_multiframe = (
-    _data_ref / "windows/WIN_nmr_neopetrosiamide.pdb"
-).as_posix()
+WIN_PDB_multiframe = (_data_ref / "windows/WIN_nmr_neopetrosiamide.pdb").as_posix()
 WIN_DLP_HISTORY = (_data_ref / "windows/WIN_HISTORY").as_posix()
 WIN_TRJ = (_data_ref / "windows/WIN_ache.mdcrd").as_posix()
 WIN_ARC = (_data_ref / "windows/WIN_test.arc").as_posix()
@@ -438,9 +434,7 @@ DCD2 = (_data_ref / "adk_dims2.dcd").as_posix()
 
 PSF_NAMD = (_data_ref / "namd_cgenff.psf").as_posix()
 PDB_NAMD = (_data_ref / "namd_cgenff.pdb").as_posix()
-PDB_multipole = (
-    _data_ref / "water_methane_acetic-acid_ammonia.pdb"
-).as_posix()
+PDB_multipole = (_data_ref / "water_methane_acetic-acid_ammonia.pdb").as_posix()
 PSF_NAMD_TRICLINIC = (_data_ref / "SiN_tric_namd.psf").as_posix()
 DCD_NAMD_TRICLINIC = (_data_ref / "SiN_tric_namd.dcd").as_posix()
 PSF_NAMD_GBIS = (_data_ref / "adk_closed_NAMD.psf").as_posix()
@@ -454,7 +448,6 @@ PSF_inscode = (_data_ref / "1a2c_ins_code.psf").as_posix()
 
 PDB_varying = (_data_ref / "varying_occ_tmp.pdb").as_posix()
 PDB_small = (_data_ref / "adk_open.pdb").as_posix()
-PDB_xsmall = (_data_ref / "adk_open_10res.pdb").as_posix()
 PDB_closed = (_data_ref / "adk_closed.pdb").as_posix()
 
 ALIGN = (_data_ref / "align.pdb").as_posix()
@@ -468,9 +461,7 @@ PDB_mc = (_data_ref / "model_then_cryst.pdb").as_posix()
 PDB_mc_gz = (_data_ref / "model_then_cryst.pdb.gz").as_posix()
 PDB_mc_bz2 = (_data_ref / "model_then_cryst.pdb.bz2").as_posix()
 PDB_chainidnewres = (_data_ref / "chainIDnewres.pdb.gz").as_posix()
-PDB_sameresid_diffresname = (
-    _data_ref / "sameresid_diffresname.pdb"
-).as_posix()
+PDB_sameresid_diffresname = (_data_ref / "sameresid_diffresname.pdb").as_posix()
 PDB_chainidrepeat = (_data_ref / "chainIDrepeat.pdb.gz").as_posix()
 PDB_multiframe = (_data_ref / "nmr_neopetrosiamide.pdb").as_posix()
 PDB_helix = (_data_ref / "A6PA6_alpha.pdb").as_posix()
@@ -488,9 +479,7 @@ GRO_incomplete_vels = (_data_ref / "grovels.gro").as_posix()
 GRO_large = (_data_ref / "bigbox.gro.bz2").as_posix()
 GRO_residwrap = (_data_ref / "residwrap.gro").as_posix()
 GRO_residwrap_0base = (_data_ref / "residwrap_0base.gro").as_posix()
-GRO_sameresid_diffresname = (
-    _data_ref / "sameresid_diffresname.gro"
-).as_posix()
+GRO_sameresid_diffresname = (_data_ref / "sameresid_diffresname.gro").as_posix()
 PDB = (_data_ref / "adk_oplsaa.pdb").as_posix()
 XTC = (_data_ref / "adk_oplsaa.xtc").as_posix()
 TRR = (_data_ref / "adk_oplsaa.trr").as_posix()
@@ -502,20 +491,12 @@ PDB_sub_sol = (_data_ref / "cobrotoxin.pdb").as_posix()
 PDB_xlserial = (_data_ref / "xl_serial.pdb").as_posix()
 GRO_MEMPROT = (_data_ref / "analysis/YiiP_lipids.gro.gz").as_posix()
 XTC_MEMPROT = (_data_ref / "analysis/YiiP_lipids.xtc").as_posix()
-XTC_multi_frame = (
-    _data_ref / "xtc_test_only_10_frame_10_atoms.xtc"
-).as_posix()
-TRR_multi_frame = (
-    _data_ref / "trr_test_only_10_frame_10_atoms.trr"
-).as_posix()
+XTC_multi_frame = (_data_ref / "xtc_test_only_10_frame_10_atoms.xtc").as_posix()
+TRR_multi_frame = (_data_ref / "trr_test_only_10_frame_10_atoms.trr").as_posix()
 TNG_traj = (_data_ref / "argon_npt_compressed.tng").as_posix()
 TNG_traj_gro = (_data_ref / "argon_npt_compressed.gro.gz").as_posix()
-TNG_traj_uneven_blocks = (
-    _data_ref / "argon_npt_compressed_uneven.tng"
-).as_posix()
-TNG_traj_vels_forces = (
-    _data_ref / "argon_npt_compressed_vels_forces.tng"
-).as_posix()
+TNG_traj_uneven_blocks = (_data_ref / "argon_npt_compressed_uneven.tng").as_posix()
+TNG_traj_vels_forces = (_data_ref / "argon_npt_compressed_vels_forces.tng").as_posix()
 PDB_xvf = (_data_ref / "cobrotoxin.pdb").as_posix()
 TPR_xvf = (_data_ref / "cobrotoxin.tpr").as_posix()
 TRR_xvf = (_data_ref / "cobrotoxin.trr").as_posix()
@@ -552,7 +533,6 @@ TPR2021 = (_data_ref / "tprs/2lyz_gmx_2021.tpr").as_posix()
 TPR2022RC1 = (_data_ref / "tprs/2lyz_gmx_2022-rc1.tpr").as_posix()
 TPR2023 = (_data_ref / "tprs/2lyz_gmx_2023.tpr").as_posix()
 TPR2024 = (_data_ref / "tprs/2lyz_gmx_2024.tpr").as_posix()
-TPR2024_4 = (_data_ref / "tprs/2lyz_gmx_2024_4.tpr").as_posix()
 # double precision
 TPR455Double = (_data_ref / "tprs/drew_gmx_4.5.5.double.tpr").as_posix()
 TPR460 = (_data_ref / "tprs/ab42_gmx_4.6.tpr").as_posix()
@@ -564,30 +544,16 @@ TPR334_bonded = (_data_ref / "tprs/all_bonded/dummy_3.3.4.tpr").as_posix()
 TPR510_bonded = (_data_ref / "tprs/all_bonded/dummy_5.1.tpr").as_posix()
 TPR2016_bonded = (_data_ref / "tprs/all_bonded/dummy_2016.tpr").as_posix()
 TPR2018_bonded = (_data_ref / "tprs/all_bonded/dummy_2018.tpr").as_posix()
-TPR2019B3_bonded = (
-    _data_ref / "tprs/all_bonded/dummy_2019-beta3.tpr"
-).as_posix()
-TPR2020B2_bonded = (
-    _data_ref / "tprs/all_bonded/dummy_2020-beta2.tpr"
-).as_posix()
+TPR2019B3_bonded = (_data_ref / "tprs/all_bonded/dummy_2019-beta3.tpr").as_posix()
+TPR2020B2_bonded = (_data_ref / "tprs/all_bonded/dummy_2020-beta2.tpr").as_posix()
 TPR2020_bonded = (_data_ref / "tprs/all_bonded/dummy_2020.tpr").as_posix()
-TPR2020_double_bonded = (
-    _data_ref / "tprs/all_bonded/dummy_2020_double.tpr"
-).as_posix()
+TPR2020_double_bonded = (_data_ref / "tprs/all_bonded/dummy_2020_double.tpr").as_posix()
 TPR2021_bonded = (_data_ref / "tprs/all_bonded/dummy_2021.tpr").as_posix()
-TPR2021_double_bonded = (
-    _data_ref / "tprs/all_bonded/dummy_2021_double.tpr"
-).as_posix()
-TPR2022RC1_bonded = (
-    _data_ref / "tprs/all_bonded/dummy_2022-rc1.tpr"
-).as_posix()
+TPR2021_double_bonded = (_data_ref / "tprs/all_bonded/dummy_2021_double.tpr").as_posix()
+TPR2022RC1_bonded = (_data_ref / "tprs/all_bonded/dummy_2022-rc1.tpr").as_posix()
 TPR2023_bonded = (_data_ref / "tprs/all_bonded/dummy_2023.tpr").as_posix()
 TPR2024_bonded = (_data_ref / "tprs/all_bonded/dummy_2024.tpr").as_posix()
-TPR2024_4_bonded = (_data_ref / "tprs/all_bonded/dummy_2024_4.tpr").as_posix()
 # all interactions
-TPR_EXTRA_2024_4 = (
-    _data_ref / "tprs/virtual_sites/extra-interactions-2024_4.tpr"
-).as_posix()
 TPR_EXTRA_2024 = (
     _data_ref / "tprs/virtual_sites/extra-interactions-2024.tpr"
 ).as_posix()
@@ -754,9 +720,7 @@ LAMMPS_image_vf = (_data_ref / "lammps/image_vf.data").as_posix()
 LAMMPSDUMP_chain1 = (_data_ref / "lammps/chain_dump_1.lammpstrj").as_posix()
 LAMMPSDUMP_chain2 = (_data_ref / "lammps/chain_dump_2.lammpstrj").as_posix()
 LAMMPS_chain = (_data_ref / "lammps/chain_initial.data").as_posix()
-LAMMPSdata_many_bonds = (
-    _data_ref / "lammps/a_lot_of_bond_types.data"
-).as_posix()
+LAMMPSdata_many_bonds = (_data_ref / "lammps/a_lot_of_bond_types.data").as_posix()
 LAMMPSdata_additional_columns = (
     _data_ref / "lammps/additional_columns.data"
 ).as_posix()
@@ -825,21 +789,11 @@ TRC_TRAJ1_VAC = (_data_ref / "gromos11/gromos11_traj_vac_1.trc.gz").as_posix()
 TRC_TRAJ2_VAC = (_data_ref / "gromos11/gromos11_traj_vac_2.trc.gz").as_posix()
 TRC_PDB_SOLV = (_data_ref / "gromos11/gromos11_traj_solv.pdb.gz").as_posix()
 TRC_TRAJ_SOLV = (_data_ref / "gromos11/gromos11_traj_solv.trc.gz").as_posix()
-TRC_CLUSTER_VAC = (
-    _data_ref / "gromos11/gromos11_cluster_vac.trj.gz"
-).as_posix()
-TRC_TRICLINIC_SOLV = (
-    _data_ref / "gromos11/gromos11_triclinic_solv.trc.gz"
-).as_posix()
-TRC_TRUNCOCT_VAC = (
-    _data_ref / "gromos11/gromos11_truncOcta_vac.trc.gz"
-).as_posix()
-TRC_GENBOX_ORIGIN = (
-    _data_ref / "gromos11/gromos11_genbox_origin.trc.gz"
-).as_posix()
-TRC_GENBOX_EULER = (
-    _data_ref / "gromos11/gromos11_genbox_euler.trc.gz"
-).as_posix()
+TRC_CLUSTER_VAC = (_data_ref / "gromos11/gromos11_cluster_vac.trj.gz").as_posix()
+TRC_TRICLINIC_SOLV = (_data_ref / "gromos11/gromos11_triclinic_solv.trc.gz").as_posix()
+TRC_TRUNCOCT_VAC = (_data_ref / "gromos11/gromos11_truncOcta_vac.trc.gz").as_posix()
+TRC_GENBOX_ORIGIN = (_data_ref / "gromos11/gromos11_genbox_origin.trc.gz").as_posix()
+TRC_GENBOX_EULER = (_data_ref / "gromos11/gromos11_genbox_euler.trc.gz").as_posix()
 TRC_EMPTY = (_data_ref / "gromos11/gromos11_empty.trc").as_posix()
 
 DihedralArray = (_data_ref / "adk_oplsaa_dihedral.npy").as_posix()
@@ -880,6 +834,9 @@ SURFACE_TRR = (_data_ref / "surface.trr").as_posix()
 
 # DSSP testing: from https://github.com/ShintaroMinami/PyDSSP
 DSSP = (_data_ref / "dssp").as_posix()
+
+# MMCIF testing -- valid structures from RCSB
+MMCIF = (_data_ref / "mmcif").as_posix()
 
 # This should be the last line: clean up namespace
 del resources

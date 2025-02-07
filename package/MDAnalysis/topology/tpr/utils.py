@@ -47,31 +47,43 @@ Then compose the stuffs in the format :class:`MDAnalysis.Universe` reads in.
 The module also contains the :func:`do_inputrec` to read the TPR header with.
 """
 
+from collections.abc import Callable
+from typing import Any
 import numpy as np
 from mda_xdrlib import xdrlib
 import struct
+from dataclasses import dataclass
 
 from . import obj
 from . import setting
 from ..base import squash_by
 from ...core.topology import Topology
 from ...core.topologyattrs import (
+    AltLocs,
     Atomids,
     Atomnames,
     Atomtypes,
     Masses,
     Charges,
     Elements,
+    Occupancies,
+    RecordTypes,
     Resids,
     Resnames,
     Moltypes,
     Molnums,
+    Resnums,
     Segids,
     ChainIDs,
     Bonds,
     Angles,
     Dihedrals,
     Impropers,
+    FormalCharges,
+    AtomAttr,
+    ResidueAttr,
+    SegmentAttr,
+    Tempfactors,
 )
 
 
