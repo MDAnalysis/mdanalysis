@@ -1467,10 +1467,16 @@ class TestCythonFunctions(object):
         dtype,
     ):
         N = 10
-        c0 = np.ones(3 * N, dtype=dtype).reshape(N, 3) * 2
-        c1 = np.ones(3 * N, dtype=dtype).reshape(N, 3) * 3
-        c2 = np.ones(3 * N, dtype=dtype).reshape(N, 3) * 4
-        c3 = np.ones(3 * N, dtype=dtype).reshape(N, 3) * 5
+        c0 = np.ones(3 * N, dtype=dtype).reshape(N, 3) * 0  # 0,0,0
+        c1 = np.ones(3 * N, dtype=dtype).reshape(N, 3) * 1  # 1,1,1
+        # now make a 90 degree angle, with 2,2,1
+        c2 = np.ones(3 * N, dtype=dtype).reshape(N, 3)
+        c2[:, 0] = 2
+        c2[:, 1] = 2
+        # now back to 0 on z axis
+        c3 = np.ones(3 * N, dtype=dtype).reshape(N, 3) * 0
+        c3[:, 0] = 3
+        c3[:, 1] = 3
 
         result = np.zeros(N, dtype=np.float64)
         distances.calc_dihedrals(
