@@ -52,7 +52,8 @@ else:
         warnings.warn(
             f"distopia version {distopia_version} is too old; "
             f"need at least {MIN_DISTOPIA_VERSION}, Your installed version of "
-            "distopia will NOT be used.", category=RuntimeWarning
+            "distopia will NOT be used.",
+            category=RuntimeWarning,
         )
         HAS_DISTOPIA = False
 
@@ -61,20 +62,18 @@ import numpy as np
 
 
 def calc_bond_distance_ortho(
-    coords1: np.ndarray, coords2: np.ndarray, box: np.ndarray, results: np.ndarray
+    coords1: np.ndarray,
+    coords2: np.ndarray,
+    box: np.ndarray,
+    results: np.ndarray,
 ) -> None:
-    distopia.calc_bonds_ortho(
-        coords1, coords2, box[:3], results=results
-    )
-
+    distopia.calc_bonds_ortho(coords1, coords2, box[:3], results=results)
 
 
 def calc_bond_distance(
     coords1: np.ndarray, coords2: np.ndarray, results: np.ndarray
 ) -> None:
-    distopia.calc_bonds_no_box(
-        coords1, coords2, results=results
-    )
+    distopia.calc_bonds_no_box(coords1, coords2, results=results)
 
 
 def calc_bond_distance_triclinic(
@@ -87,38 +86,76 @@ def calc_bond_distance_triclinic(
 
 
 def calc_angle(
-    coords1: np.ndarray, coords2: np.ndarray, coords3: np.ndarray, results: np.ndarray
+    coords1: np.ndarray,
+    coords2: np.ndarray,
+    coords3: np.ndarray,
+    results: np.ndarray,
 ) -> None:
     distopia.calc_angles_no_box(coords1, coords2, coords3, results=results)
 
 
 def calc_angle_ortho(
-    coords1: np.ndarray, coords2: np.ndarray, coords3: np.ndarray, box: np.ndarray, results: np.ndarray
+    coords1: np.ndarray,
+    coords2: np.ndarray,
+    coords3: np.ndarray,
+    box: np.ndarray,
+    results: np.ndarray,
 ) -> None:
-    distopia.calc_angles_ortho(coords1, coords2, coords3, box[:3], results=results)
+    distopia.calc_angles_ortho(
+        coords1, coords2, coords3, box[:3], results=results
+    )
 
 
 def calc_angle_triclinic(
-    coords1: np.ndarray, coords2: np.ndarray, coords3: np.ndarray, box: np.ndarray, results: np.ndarray
+    coords1: np.ndarray,
+    coords2: np.ndarray,
+    coords3: np.ndarray,
+    box: np.ndarray,
+    results: np.ndarray,
 ) -> None:
 
-    distopia.calc_angles_triclinic(coords1, coords2, coords3, box, results=results)
+    distopia.calc_angles_triclinic(
+        coords1, coords2, coords3, box, results=results
+    )
 
 
 def calc_dihedral(
-    coords1: np.ndarray, coords2: np.ndarray, coords3: np.ndarray, coords4: np.ndarray, results: np.ndarray
+    coords1: np.ndarray,
+    coords2: np.ndarray,
+    coords3: np.ndarray,
+    coords4: np.ndarray,
+    results: np.ndarray,
 ) -> None:
-    distopia.calc_dihedrals_no_box(coords1, coords2, coords3, coords4, results=results)
+    distopia.calc_dihedrals_no_box(
+        coords1, coords2, coords3, coords4, results=results
+    )
+
 
 def calc_dihedral_ortho(
-    coords1: np.ndarray, coords2: np.ndarray, coords3: np.ndarray, coords4: np.ndarray, box: np.ndarray, results: np.ndarray
+    coords1: np.ndarray,
+    coords2: np.ndarray,
+    coords3: np.ndarray,
+    coords4: np.ndarray,
+    box: np.ndarray,
+    results: np.ndarray,
 ) -> None:
-    distopia.calc_dihedrals_ortho(coords1, coords2, coords3, coords4, box[:3], results=results)
+    distopia.calc_dihedrals_ortho(
+        coords1, coords2, coords3, coords4, box[:3], results=results
+    )
+
 
 def calc_dihedral_triclinic(
-    coords1: np.ndarray, coords2: np.ndarray, coords3: np.ndarray, coords4: np.ndarray, box: np.ndarray, results: np.ndarray
+    coords1: np.ndarray,
+    coords2: np.ndarray,
+    coords3: np.ndarray,
+    coords4: np.ndarray,
+    box: np.ndarray,
+    results: np.ndarray,
 ) -> None:
-    distopia.calc_dihedrals_triclinic(coords1, coords2, coords3, coords4, box, results=results)
+    distopia.calc_dihedrals_triclinic(
+        coords1, coords2, coords3, coords4, box, results=results
+    )
+
 
 def calc_distance_array(
     coords1: np.ndarray, coords2: np.ndarray, results: np.ndarray
@@ -127,27 +164,38 @@ def calc_distance_array(
 
 
 def calc_distance_array_ortho(
-    coords1: np.ndarray, coords2: np.ndarray, box: np.ndarray, results: np.ndarray
+    coords1: np.ndarray,
+    coords2: np.ndarray,
+    box: np.ndarray,
+    results: np.ndarray,
 ) -> None:
-    distopia.calc_distance_array_ortho(coords1, coords2, box[:3], results=results)
+    distopia.calc_distance_array_ortho(
+        coords1, coords2, box[:3], results=results
+    )
+
 
 def calc_distance_array_triclinic(
-    coords1: np.ndarray, coords2: np.ndarray, box: np.ndarray, results: np.ndarray
+    coords1: np.ndarray,
+    coords2: np.ndarray,
+    box: np.ndarray,
+    results: np.ndarray,
 ) -> None:
-    distopia.calc_distance_array_triclinic(coords1, coords2, box, results=results)
+    distopia.calc_distance_array_triclinic(
+        coords1, coords2, box, results=results
+    )
 
-def calc_self_distance_array(
-    coords: np.ndarray, results: np.ndarray
-) -> None:
+
+def calc_self_distance_array(coords: np.ndarray, results: np.ndarray) -> None:
     distopia.calc_self_distance_array_no_box(coords, results=results)
+
 
 def calc_self_distance_array_ortho(
     coords: np.ndarray, box: np.ndarray, results: np.ndarray
 ) -> None:
     distopia.calc_self_distance_array_ortho(coords, box[:3], results=results)
 
+
 def calc_self_distance_array_triclinic(
     coords: np.ndarray, box: np.ndarray, results: np.ndarray
 ) -> None:
     distopia.calc_self_distance_array_triclinic(coords, box, results=results)
-
