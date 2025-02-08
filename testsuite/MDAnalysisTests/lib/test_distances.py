@@ -1379,7 +1379,7 @@ class TestCythonFunctions(object):
 
         result = np.zeros(N, dtype=np.float64)
         distances.calc_angles(c0, c1, c2, result=result, backend=backend)
-        expected = np.ones(N, dtype=dtype) * np.pi * 2
+        expected = np.ones(N, dtype=dtype) * np.pi
         # test the result array is updated in place
         assert_almost_equal(
             result, expected, self.prec, err_msg="calc_angles inplace failed"
