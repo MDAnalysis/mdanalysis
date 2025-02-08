@@ -935,6 +935,8 @@ class TestTriclinicDistances(object):
     @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_selfdist(self, S_mol, box, tri_vec_box, backend):
         S_mol1, S_mol2 = S_mol
+        # need to compare to serial here as transform_StoR does not have
+        # distopia backend support 
         R_coords = distances.transform_StoR(S_mol1, box, backend="serial")
         # Transform functions are tested elsewhere so taken as working here
         dists = distances.self_distance_array(
@@ -961,6 +963,8 @@ class TestTriclinicDistances(object):
         )
 
         # Do it again for input 2 (has wider separation in points)
+        # need to compare to serial here as transform_StoR does not have
+        # distopia backend support 
         R_coords = distances.transform_StoR(S_mol2, box, backend="serial")
         # Transform functions are tested elsewhere so taken as working here
         dists = distances.self_distance_array(
@@ -989,7 +993,8 @@ class TestTriclinicDistances(object):
     @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_distarray(self, S_mol, tri_vec_box, box, backend):
         S_mol1, S_mol2 = S_mol
-
+        # need to compare to serial here as transform_StoR does not have
+        # distopia backend support 
         R_mol1 = distances.transform_StoR(S_mol1, box, backend="serial")
         R_mol2 = distances.transform_StoR(S_mol2, box, backend="serial")
 
