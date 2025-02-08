@@ -936,7 +936,7 @@ class TestTriclinicDistances(object):
     def test_selfdist(self, S_mol, box, tri_vec_box, backend):
         S_mol1, S_mol2 = S_mol
         # need to compare to serial here as transform_StoR does not have
-        # distopia backend support 
+        # distopia backend support
         R_coords = distances.transform_StoR(S_mol1, box, backend="serial")
         # Transform functions are tested elsewhere so taken as working here
         dists = distances.self_distance_array(
@@ -964,7 +964,7 @@ class TestTriclinicDistances(object):
 
         # Do it again for input 2 (has wider separation in points)
         # need to compare to serial here as transform_StoR does not have
-        # distopia backend support 
+        # distopia backend support
         R_coords = distances.transform_StoR(S_mol2, box, backend="serial")
         # Transform functions are tested elsewhere so taken as working here
         dists = distances.self_distance_array(
@@ -994,7 +994,7 @@ class TestTriclinicDistances(object):
     def test_distarray(self, S_mol, tri_vec_box, box, backend):
         S_mol1, S_mol2 = S_mol
         # need to compare to serial here as transform_StoR does not have
-        # distopia backend support 
+        # distopia backend support
         R_mol1 = distances.transform_StoR(S_mol1, box, backend="serial")
         R_mol2 = distances.transform_StoR(S_mol2, box, backend="serial")
 
@@ -1097,23 +1097,23 @@ def test_HAS_DISTOPIA_distopia_too_old():
     module_name = "distopia"
     mocked_module = ModuleType(module_name)
     # too old version
-    mocked_module.__version__ =  "0.1.0"
+    mocked_module.__version__ = "0.1.0"
     sys.modules[module_name] = mocked_module
 
-
     import MDAnalysis.lib._distopia
+
     assert not MDAnalysis.lib._distopia.HAS_DISTOPIA
 
     sys.modules.pop("distopia", None)
     sys.modules.pop("MDAnalysis.lib._distopia", None)
 
     # new enough version
-    mocked_module.__version__ =  "0.4.0"
+    mocked_module.__version__ = "0.4.0"
     sys.modules[module_name] = mocked_module
 
     import MDAnalysis.lib._distopia
-    assert MDAnalysis.lib._distopia.HAS_DISTOPIA
 
+    assert MDAnalysis.lib._distopia.HAS_DISTOPIA
 
 
 class TestCythonFunctions(object):
@@ -1473,11 +1473,16 @@ class TestCythonFunctions(object):
         c3 = np.ones(3 * N, dtype=dtype).reshape(N, 3) * 5
 
         result = np.zeros(N, dtype=np.float64)
-        distances.calc_dihedrals(c0, c1, c2, c3, result=result, backend=backend)
+        distances.calc_dihedrals(
+            c0, c1, c2, c3, result=result, backend=backend
+        )
         expected = np.ones(N, dtype=dtype) * np.pi * 2
         # test the result array is updated in place
         assert_almost_equal(
-            result, expected, self.prec, err_msg="calc_dihedrals inplace failed"
+            result,
+            expected,
+            self.prec,
+            err_msg="calc_dihedrals inplace failed",
         )
 
     @pytest.mark.parametrize("backend", distopia_conditional_backend())
