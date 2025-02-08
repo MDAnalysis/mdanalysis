@@ -1252,7 +1252,7 @@ class TestCythonFunctions(object):
 
     @pytest.mark.parametrize("dtype", (np.float32, np.float64))
     @pytest.mark.parametrize("backend", distopia_conditional_backend())
-    def test_results_inplace_all_backends(
+    def test_calc_bonds_results_inplace_all_backends(
         self,
         backend,
         dtype,
@@ -1365,6 +1365,26 @@ class TestCythonFunctions(object):
             err_msg="Small angle failed in calc_angles",
         )
 
+    @pytest.mark.parametrize("dtype", (np.float32, np.float64))
+    @pytest.mark.parametrize("backend", distopia_conditional_backend())
+    def test_calc_angles_results_inplace_all_backends(
+        self,
+        backend,
+        dtype,
+    ):
+        N = 10
+        c0 = np.ones(3 * N, dtype=dtype).reshape(N, 3) * 2
+        c1 = np.ones(3 * N, dtype=dtype).reshape(N, 3) * 3
+        c2 = np.ones(3 * N, dtype=dtype).reshape(N, 3) * 4
+
+        result = np.zeros(N, dtype=np.float64)
+        distances.calc_angles(c0, c1, c2, result=result, backend=backend)
+        expected = np.ones(N, dtype=dtype) * np.pi * 2
+        # test the result array is updated in place
+        assert_almost_equal(
+            result, expected, self.prec, err_msg="calc_angles inplace failed"
+        )
+
     @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_angles_bad_result(self, positions, backend):
         a, b, c, d = positions
@@ -1437,6 +1457,27 @@ class TestCythonFunctions(object):
             -0.50714064,
             self.prec,
             err_msg="arbitrary dihedral angle failed",
+        )
+
+    @pytest.mark.parametrize("dtype", (np.float32, np.float64))
+    @pytest.mark.parametrize("backend", distopia_conditional_backend())
+    def test_calc_dihedrals_results_inplace_all_backends(
+        self,
+        backend,
+        dtype,
+    ):
+        N = 10
+        c0 = np.ones(3 * N, dtype=dtype).reshape(N, 3) * 2
+        c1 = np.ones(3 * N, dtype=dtype).reshape(N, 3) * 3
+        c2 = np.ones(3 * N, dtype=dtype).reshape(N, 3) * 4
+        c3 = np.ones(3 * N, dtype=dtype).reshape(N, 3) * 5
+
+        result = np.zeros(N, dtype=np.float64)
+        distances.calc(c0, c1, c2, c3 result=result, backend=backend)
+        expected = np.ones(N, dtype=dtype) * np.pi * 2
+        # test the result array is updated in place
+        assert_almost_equal(
+            result, expected, self.prec, err_msg="calc_dihedrals inplace failed"
         )
 
     @pytest.mark.parametrize("backend", distopia_conditional_backend())
