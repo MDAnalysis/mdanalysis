@@ -156,7 +156,7 @@ def calc_dihedral_triclinic(
 def calc_distance_array(
     coords1: np.ndarray, coords2: np.ndarray, results: np.ndarray
 ) -> None:
-    distopia.calc_distance_array_no_box(coords1, coords2, results=results)
+    distopia.distance_array_no_box(coords1, coords2, results=results)
 
 
 def calc_distance_array_ortho(
