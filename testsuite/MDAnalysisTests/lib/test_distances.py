@@ -1482,7 +1482,7 @@ class TestCythonFunctions(object):
         distances.calc_dihedrals(
             c0, c1, c2, c3, result=result, backend=backend
         )
-        expected = np.ones(N, dtype=dtype) * np.pi * 2
+        expected = np.ones(N, dtype=dtype) * 0
         # test the result array is updated in place
         assert_almost_equal(
             result,
