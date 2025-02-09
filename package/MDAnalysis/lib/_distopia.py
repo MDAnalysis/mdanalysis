@@ -101,9 +101,7 @@ def calc_angle_ortho(
     box: np.ndarray,
     results: np.ndarray,
 ) -> None:
-    distopia.angles_ortho(
-        coords1, coords2, coords3, box[:3], results=results
-    )
+    distopia.angles_ortho(coords1, coords2, coords3, box[:3], results=results)
 
 
 def calc_angle_triclinic(
@@ -114,9 +112,7 @@ def calc_angle_triclinic(
     results: np.ndarray,
 ) -> None:
 
-    distopia.angles_triclinic(
-        coords1, coords2, coords3, box, results=results
-    )
+    distopia.angles_triclinic(coords1, coords2, coords3, box, results=results)
 
 
 def calc_dihedral(
@@ -169,9 +165,7 @@ def calc_distance_array_ortho(
     box: np.ndarray,
     results: np.ndarray,
 ) -> None:
-    distopia.distance_array_ortho(
-        coords1, coords2, box[:3], results=results
-    )
+    distopia.distance_array_ortho(coords1, coords2, box[:3], results=results)
 
 
 def calc_distance_array_triclinic(
@@ -180,9 +174,7 @@ def calc_distance_array_triclinic(
     box: np.ndarray,
     results: np.ndarray,
 ) -> None:
-    distopia.distance_array_triclinic(
-        coords1, coords2, box, results=results
-    )
+    distopia.distance_array_triclinic(coords1, coords2, box, results=results)
 
 
 def calc_self_distance_array(coords: np.ndarray, results: np.ndarray) -> None:
