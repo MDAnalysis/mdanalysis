@@ -1,5 +1,5 @@
 """
-MMCIF Topology Parser # 
+MMCIF Topology Parser #
 ===================
 """
 
@@ -220,7 +220,7 @@ def get_Residueattrs(
     return attrs, segidx
 
 
-def get_Segmentattrs(model: "gemmi.Model") -> SegmentAttr:
+def get_Segmentattrs(model: "gemmi.Model") -> list[SegmentAttr]:
     """Extract all attributes that are subclasses of :class:`..core.topologyattrs.SegmentAttr` from a  ``gemmi.Model`` object.
 
     Parameters
