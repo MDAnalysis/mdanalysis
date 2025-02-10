@@ -125,6 +125,7 @@ class _GromacsReader(object):
         return mda.Universe(GRO, self.filename, convert_units=True)
 
     # fixture for testing #4905
+    @pytest.fixture(scope="class")
     def universe_with_dt_set(self):
         return mda.Universe(GRO, self.filename, convert_units=True, dt=2500)
 
