@@ -206,6 +206,10 @@ case-insensitive):</p>
 <td><p>parallel implementation in C/Cython
 with OpenMP</p></td>
 </tr>
+<tr class="row-even"><td><p>“distopia”</p></td>
+<td><p><cite>_distopia</cite></p></td>
+<td><p>SIMD-accelerated implementation</p></td>
+</tr>
 </tbody>
 </table>
 </section>
@@ -222,12 +226,18 @@ you wish to use is covered by distopia. For more information see the
 <caption><span class="caption-text">Functions available using the <a class="reference external" href="https://github.com/MDAnalysis/distopia">distopia</a> backend.</span><a class="headerlink" href="#id2" title="Link to this table"></a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>Functions</p></th>
-<th class="head"><p>Notes</p></th>
 </tr>
 </thead>
 <tbody>
 <tr class="row-even"><td><p>MDAnalysis.lib.distances.calc_bonds</p></td>
-<td><p>Doesn’t support triclinic boxes</p></td>
+</tr>
+<tr class="row-odd"><td><p>MDAnalysis.lib.distances.calc_angles</p></td>
+</tr>
+<tr class="row-even"><td><p>MDAnalysis.lib.distances.calc_dihedrals</p></td>
+</tr>
+<tr class="row-odd"><td><p>MDAnalysis.lib.distances.distance_array</p></td>
+</tr>
+<tr class="row-even"><td><p>MDAnalysis.lib.distances.self_distance_array</p></td>
 </tr>
 </tbody>
 </table>
@@ -235,17 +245,11 @@ you wish to use is covered by distopia. For more information see the
 ‘distopia’ for the <cite>backend</cite> keyword argument. If the distopia backend is
 selected the <cite>distopia</cite> library will be used to calculate the distances. Note
 that for functions listed in this table <strong>distopia is not the default backend
-if and must be selected.</strong></p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Distopia does not currently support triclinic simulation boxes. If you
-specify <cite>distopia</cite> as the backend and your simulation box is triclinic,
-the function will fall back to the default <cite>serial</cite> backend.</p>
-</div>
+and must be selected.</strong></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Due to the use of Instruction Set Architecture (<a class="reference external" href="https://en.wikipedia.org/wiki/Instruction_set_architecture">ISA</a>) specific SIMD
-intrinsics in distopia via <a class="reference external" href="https://github.com/vectorclass/version2">VCL2</a>, the precision of your results may
+intrinsics in distopia via <a class="reference external" href="https://github.com/google/highway">HWY</a>, the precision of your results may
 depend on the ISA available on your machine. However, in all tested cases
 distopia satisfied the accuracy thresholds used to the functions in this
 module. Please document any issues you encounter with distopia’s accuracy
@@ -260,6 +264,9 @@ in the <a class="reference external" href="https://github.com/MDAnalysis/mdanaly
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 2.5.0: </span>Interface to the <a class="reference external" href="https://github.com/MDAnalysis/distopia">distopia</a> package added.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.9.0: </span>Distopia support greatly expanded (with distopia ≥ 0.4.0).</p>
 </div>
 </section>
 <section id="functions">
@@ -294,7 +301,7 @@ triclinic and must be provided in the same format as returned by
 <code class="docutils literal notranslate"><span class="pre">numpy.float64</span></code>.
 Avoids creating the array which saves time when the function
 is called repeatedly.</p></li>
-<li><p><strong>backend</strong> (<em>{'serial'</em><em>, </em><em>'OpenMP'}</em><em>, </em><em>optional</em>) – Keyword selecting the type of acceleration.</p></li>
+<li><p><strong>backend</strong> (<em>{'serial'</em><em>, </em><em>'OpenMP'</em><em>, </em><em>'distopia'}</em><em>, </em><em>optional</em>) – Keyword selecting the type of acceleration.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -315,6 +322,9 @@ Now also accepts single coordinates as input.</p>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 2.3.0: </span>Can now accept an <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> as an
 argument in any position and checks inputs using type hinting.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.9.0: </span>Added support for the <cite>distopia</cite> backend.</p>
 </div>
 </dd></dl>
 
@@ -341,7 +351,7 @@ triclinic and must be provided in the same format as returned by
 <li><p><strong>result</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – Preallocated result array which must have the shape <code class="docutils literal notranslate"><span class="pre">(n*(n-1)/2,)</span></code> and
 dtype <code class="docutils literal notranslate"><span class="pre">numpy.float64</span></code>. Avoids creating the array which saves time when
 the function is called repeatedly.</p></li>
-<li><p><strong>backend</strong> (<em>{'serial'</em><em>, </em><em>'OpenMP'}</em><em>, </em><em>optional</em>) – Keyword selecting the type of acceleration.</p></li>
+<li><p><strong>backend</strong> (<em>{'serial'</em><em>, </em><em>'OpenMP'</em><em>, </em><em>'distopia'}</em><em>, </em><em>optional</em>) – Keyword selecting the type of acceleration.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -359,6 +369,7 @@ coordinates <code class="docutils literal notranslate"><span class="pre">i</span
 <li><p><em>.. versionchanged:: 0.19.0</em> – Internal dtype conversion of input coordinates to <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code>.</p></li>
 <li><p><em>.. versionchanged:: 2.3.0</em> – Can now accept an <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> as an
 argument in any position and checks inputs using type hinting.</p></li>
+<li><p><em>.. versionchanged:: 2.9.0</em> – Added support for the <cite>distopia</cite> backend.</p></li>
 </ul>
 </p>
 </dd>
@@ -636,7 +647,7 @@ triclinic and must be provided in the same format as returned by
 <li><p><strong>result</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – Preallocated result array of dtype <code class="docutils literal notranslate"><span class="pre">numpy.float64</span></code> and shape <code class="docutils literal notranslate"><span class="pre">(n,)</span></code>
 (for <code class="docutils literal notranslate"><span class="pre">n</span></code> coordinate triplets). Avoids recreating the array in repeated
 function calls.</p></li>
-<li><p><strong>backend</strong> (<em>{'serial'</em><em>, </em><em>'OpenMP'}</em><em>, </em><em>optional</em>) – Keyword selecting the type of acceleration.</p></li>
+<li><p><strong>backend</strong> (<em>{'serial'</em><em>, </em><em>'OpenMP'</em><em>, </em><em>'distopia'}</em><em>, </em><em>optional</em>) – Keyword selecting the type of acceleration.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -722,7 +733,7 @@ triclinic and must be provided in the same format as returned by
 <li><p><strong>result</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – Preallocated result array of dtype <code class="docutils literal notranslate"><span class="pre">numpy.float64</span></code> and shape <code class="docutils literal notranslate"><span class="pre">(n,)</span></code>
 (for <code class="docutils literal notranslate"><span class="pre">n</span></code> coordinate quadruplets). Avoids recreating the array in
 repeated function calls.</p></li>
-<li><p><strong>backend</strong> (<em>{'serial'</em><em>, </em><em>'OpenMP'}</em><em>, </em><em>optional</em>) – Keyword selecting the type of acceleration.</p></li>
+<li><p><strong>backend</strong> (<em>{'serial'</em><em>, </em><em>'OpenMP'</em><em>, </em><em>'distopia'}</em><em>, </em><em>optional</em>) – Keyword selecting the type of acceleration.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>

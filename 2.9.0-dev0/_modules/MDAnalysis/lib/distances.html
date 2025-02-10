@@ -190,6 +190,7 @@
 
 <span class="sd">   &quot;OpenMP&quot;   :mod:`c_distances_openmp` parallel implementation in C/Cython</span>
 <span class="sd">                                        with OpenMP</span>
+<span class="sd">   &quot;distopia&quot;  `_distopia`               SIMD-accelerated implementation</span>
 <span class="sd">   ========== ========================= ======================================</span>
 
 <span class="sd">Use of the distopia library</span>
@@ -203,29 +204,33 @@
 <span class="sd">you wish to use is covered by distopia. For more information see the</span>
 <span class="sd">`distopia documentation`_.</span>
 
-<span class="sd">.. Table:: Functions available using the `distopia`_ backend.</span>
-<span class="sd">    :align: center</span>
+<span class="sd">.. table:: Functions available using the `distopia`_ backend.</span>
+<span class="sd">   :align: center</span>
 
-<span class="sd">    +-------------------------------------+-----------------------------------+</span>
-<span class="sd">    | Functions                           | Notes                             |</span>
-<span class="sd">    +=====================================+===================================+</span>
-<span class="sd">    | MDAnalysis.lib.distances.calc_bonds | Doesn&#39;t support triclinic boxes   |</span>
-<span class="sd">    +-------------------------------------+-----------------------------------+</span>
+<span class="sd">   +-----------------------------------------------+</span>
+<span class="sd">   | Functions                                     |</span>
+<span class="sd">   +===============================================+</span>
+<span class="sd">   | MDAnalysis.lib.distances.calc_bonds           |</span>
+<span class="sd">   +-----------------------------------------------+</span>
+<span class="sd">   | MDAnalysis.lib.distances.calc_angles          |</span>
+<span class="sd">   +-----------------------------------------------+</span>
+<span class="sd">   | MDAnalysis.lib.distances.calc_dihedrals       |</span>
+<span class="sd">   +-----------------------------------------------+</span>
+<span class="sd">   | MDAnalysis.lib.distances.distance_array       | </span>
+<span class="sd">   +-----------------------------------------------+</span>
+<span class="sd">   | MDAnalysis.lib.distances.self_distance_array  |</span>
+<span class="sd">   +-----------------------------------------------+</span>
 
 <span class="sd">If `distopia`_ is installed, the functions in this table will accept the key</span>
 <span class="sd">&#39;distopia&#39; for the `backend` keyword argument. If the distopia backend is</span>
 <span class="sd">selected the `distopia` library will be used to calculate the distances. Note</span>
 <span class="sd">that for functions listed in this table **distopia is not the default backend</span>
-<span class="sd">if and must be selected.**</span>
+<span class="sd">and must be selected.**</span>
 
-<span class="sd">.. Note::</span>
-<span class="sd">   Distopia does not currently support triclinic simulation boxes. If you</span>
-<span class="sd">   specify `distopia` as the backend and your simulation box is triclinic,</span>
-<span class="sd">   the function will fall back to the default `serial` backend.</span>
 
 <span class="sd">.. Note::</span>
 <span class="sd">    Due to the use of Instruction Set Architecture (`ISA`_) specific SIMD</span>
-<span class="sd">    intrinsics in distopia via `VCL2`_, the precision of your results may</span>
+<span class="sd">    intrinsics in distopia via `HWY`_, the precision of your results may</span>
 <span class="sd">    depend on the ISA available on your machine. However, in all tested cases</span>
 <span class="sd">    distopia satisfied the accuracy thresholds used to the functions in this</span>
 <span class="sd">    module. Please document any issues you encounter with distopia&#39;s accuracy</span>
@@ -234,7 +239,7 @@
 <span class="sd">.. _distopia: https://github.com/MDAnalysis/distopia</span>
 <span class="sd">.. _distopia documentation: https://www.mdanalysis.org/distopia</span>
 <span class="sd">.. _ISA: https://en.wikipedia.org/wiki/Instruction_set_architecture</span>
-<span class="sd">.. _VCL2: https://github.com/vectorclass/version2</span>
+<span class="sd">.. _HWY: https://github.com/google/highway</span>
 <span class="sd">.. _relevant distopia issue: https://github.com/MDAnalysis/mdanalysis/issues/3915</span>
 
 <span class="sd">.. versionadded:: 0.13.0</span>
@@ -243,6 +248,8 @@
 <span class="sd">   :class:`~MDAnalysis.core.groups.AtomGroup` or an :class:`np.ndarray`</span>
 <span class="sd">.. versionchanged:: 2.5.0</span>
 <span class="sd">   Interface to the `distopia`_ package added.</span>
+<span class="sd">.. versionchanged:: 2.9.0</span>
+<span class="sd">   Distopia support greatly expanded (with distopia ≥ 0.4.0).</span>
 
 <span class="sd">Functions</span>
 <span class="sd">---------</span>
@@ -444,7 +451,7 @@
 <span class="sd">        ``numpy.float64``.</span>
 <span class="sd">        Avoids creating the array which saves time when the function</span>
 <span class="sd">        is called repeatedly.</span>
-<span class="sd">    backend : {&#39;serial&#39;, &#39;OpenMP&#39;}, optional</span>
+<span class="sd">    backend : {&#39;serial&#39;, &#39;OpenMP&#39;, &#39;distopia&#39;}, optional</span>
 <span class="sd">        Keyword selecting the type of acceleration.</span>
 
 <span class="sd">    Returns</span>
@@ -462,6 +469,8 @@
 <span class="sd">    .. versionchanged:: 2.3.0</span>
 <span class="sd">       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an</span>
 <span class="sd">       argument in any position and checks inputs using type hinting.</span>
+<span class="sd">    .. versionchanged:: 2.9.0</span>
+<span class="sd">       Added support for the `distopia` backend.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">confnum</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">refnum</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -476,6 +485,14 @@
     <span class="n">distances</span> <span class="o">=</span> <span class="n">_check_result_array</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="p">(</span><span class="n">refnum</span><span class="p">,</span> <span class="n">confnum</span><span class="p">))</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">distances</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">distances</span>
+
+    <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;distopia&quot;</span><span class="p">:</span>
+        <span class="c1"># distopia requires that all the input arrays are the same type,</span>
+        <span class="c1"># while MDAnalysis allows for mixed types, this should be changed</span>
+        <span class="c1"># pre 3.0.0 release see issue #3707</span>
+        <span class="n">distances</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">box</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">box</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+
     <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">boxtype</span><span class="p">,</span> <span class="n">box</span> <span class="o">=</span> <span class="n">check_box</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">boxtype</span> <span class="o">==</span> <span class="s2">&quot;ortho&quot;</span><span class="p">:</span>
@@ -496,6 +513,13 @@
             <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">distances</span><span class="p">),</span>
             <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span>
         <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;distopia&quot;</span><span class="p">:</span>
+        <span class="c1"># mda expects the result to be in float64, so we need to convert it back</span>
+        <span class="c1"># to float64, change for 3.0, see #3707</span>
+        <span class="n">distances</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">distances</span>
 
     <span class="k">return</span> <span class="n">distances</span></div>
 
@@ -535,7 +559,7 @@
 <span class="sd">        Preallocated result array which must have the shape ``(n*(n-1)/2,)`` and</span>
 <span class="sd">        dtype ``numpy.float64``. Avoids creating the array which saves time when</span>
 <span class="sd">        the function is called repeatedly.</span>
-<span class="sd">    backend : {&#39;serial&#39;, &#39;OpenMP&#39;}, optional</span>
+<span class="sd">    backend : {&#39;serial&#39;, &#39;OpenMP&#39;, &#39;distopia&#39;}, optional</span>
 <span class="sd">        Keyword selecting the type of acceleration.</span>
 
 <span class="sd">    Returns</span>
@@ -558,6 +582,8 @@
 <span class="sd">    .. versionchanged:: 2.3.0</span>
 <span class="sd">       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an</span>
 <span class="sd">       argument in any position and checks inputs using type hinting.</span>
+<span class="sd">    .. versionchanged:: 2.9.0</span>
+<span class="sd">       Added support for the `distopia` backend.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">refnum</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">distnum</span> <span class="o">=</span> <span class="n">refnum</span> <span class="o">*</span> <span class="p">(</span><span class="n">refnum</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
@@ -571,6 +597,14 @@
     <span class="n">distances</span> <span class="o">=</span> <span class="n">_check_result_array</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="p">(</span><span class="n">distnum</span><span class="p">,))</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">distances</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">distances</span>
+
+    <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;distopia&quot;</span><span class="p">:</span>
+        <span class="c1"># distopia requires that all the input arrays are the same type,</span>
+        <span class="c1"># while MDAnalysis allows for mixed types, this should be changed</span>
+        <span class="c1"># pre 3.0.0 release see issue #3707</span>
+        <span class="n">distances</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">box</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">box</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+
     <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">boxtype</span><span class="p">,</span> <span class="n">box</span> <span class="o">=</span> <span class="n">check_box</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">boxtype</span> <span class="o">==</span> <span class="s2">&quot;ortho&quot;</span><span class="p">:</span>
@@ -591,6 +625,13 @@
             <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">distances</span><span class="p">),</span>
             <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span>
         <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;distopia&quot;</span><span class="p">:</span>
+        <span class="c1"># mda expects the result to be in float64, so we need to convert it back</span>
+        <span class="c1"># to float64, change for 3.0, see #3707</span>
+        <span class="n">distances</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">distances</span>
 
     <span class="k">return</span> <span class="n">distances</span></div>
 
@@ -1792,13 +1833,17 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">numatom</span> <span class="o">=</span> <span class="n">coords1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">bondlengths</span> <span class="o">=</span> <span class="n">_check_result_array</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="p">(</span><span class="n">numatom</span><span class="p">,))</span>
+    <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;distopia&quot;</span><span class="p">:</span>
+        <span class="c1"># distopia requires that all the input arrays are the same type,</span>
+        <span class="c1"># while MDAnalysis allows for mixed types, this should be changed</span>
+        <span class="c1"># pre 3.0.0 release see issue #3707</span>
+        <span class="n">bondlengths</span> <span class="o">=</span> <span class="n">bondlengths</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">box</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">box</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
 
     <span class="k">if</span> <span class="n">numatom</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">boxtype</span><span class="p">,</span> <span class="n">box</span> <span class="o">=</span> <span class="n">check_box</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">boxtype</span> <span class="o">==</span> <span class="s2">&quot;ortho&quot;</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;distopia&quot;</span><span class="p">:</span>
-                    <span class="n">bondlengths</span> <span class="o">=</span> <span class="n">bondlengths</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
                 <span class="n">_run</span><span class="p">(</span>
                     <span class="s2">&quot;calc_bond_distance_ortho&quot;</span><span class="p">,</span>
                     <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">bondlengths</span><span class="p">),</span>
@@ -1811,15 +1856,18 @@
                     <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span>
                 <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;distopia&quot;</span><span class="p">:</span>
-                <span class="n">bondlengths</span> <span class="o">=</span> <span class="n">bondlengths</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
             <span class="n">_run</span><span class="p">(</span>
                 <span class="s2">&quot;calc_bond_distance&quot;</span><span class="p">,</span>
                 <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">bondlengths</span><span class="p">),</span>
                 <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span>
             <span class="p">)</span>
     <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;distopia&quot;</span><span class="p">:</span>
+        <span class="c1"># mda expects the result to be in float64, so we need to convert it back</span>
+        <span class="c1"># to float64, change for 3.0, see #3707</span>
         <span class="n">bondlengths</span> <span class="o">=</span> <span class="n">bondlengths</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">bondlengths</span>
+
     <span class="k">return</span> <span class="n">bondlengths</span></div>
 
 
@@ -1884,7 +1932,7 @@
 <span class="sd">        Preallocated result array of dtype ``numpy.float64`` and shape ``(n,)``</span>
 <span class="sd">        (for ``n`` coordinate triplets). Avoids recreating the array in repeated</span>
 <span class="sd">        function calls.</span>
-<span class="sd">    backend : {&#39;serial&#39;, &#39;OpenMP&#39;}, optional</span>
+<span class="sd">    backend : {&#39;serial&#39;, &#39;OpenMP&#39;, &#39;distopia&#39;}, optional</span>
 <span class="sd">        Keyword selecting the type of acceleration.</span>
 
 <span class="sd">    Returns</span>
@@ -1911,6 +1959,13 @@
     <span class="n">numatom</span> <span class="o">=</span> <span class="n">coords1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">angles</span> <span class="o">=</span> <span class="n">_check_result_array</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="p">(</span><span class="n">numatom</span><span class="p">,))</span>
 
+    <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;distopia&quot;</span><span class="p">:</span>
+        <span class="c1"># distopia requires that all the input arrays are the same type,</span>
+        <span class="c1"># while MDAnalysis allows for mixed types, this should be changed</span>
+        <span class="c1"># pre 3.0.0 release see issue #3707</span>
+        <span class="n">angles</span> <span class="o">=</span> <span class="n">angles</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">box</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">box</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+
     <span class="k">if</span> <span class="n">numatom</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">boxtype</span><span class="p">,</span> <span class="n">box</span> <span class="o">=</span> <span class="n">check_box</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
@@ -1933,6 +1988,12 @@
                 <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span>
             <span class="p">)</span>
 
+    <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;distopia&quot;</span><span class="p">:</span>
+        <span class="c1"># mda expects the result to be in float64, so we need to convert it back</span>
+        <span class="c1"># to float64, change for 3.0, see #3707</span>
+        <span class="n">angles</span> <span class="o">=</span> <span class="n">angles</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">angles</span>
     <span class="k">return</span> <span class="n">angles</span></div>
 
 
@@ -2009,7 +2070,7 @@
 <span class="sd">        Preallocated result array of dtype ``numpy.float64`` and shape ``(n,)``</span>
 <span class="sd">        (for ``n`` coordinate quadruplets). Avoids recreating the array in</span>
 <span class="sd">        repeated function calls.</span>
-<span class="sd">    backend : {&#39;serial&#39;, &#39;OpenMP&#39;}, optional</span>
+<span class="sd">    backend : {&#39;serial&#39;, &#39;OpenMP&#39;, &#39;distopia&#39;}, optional</span>
 <span class="sd">        Keyword selecting the type of acceleration.</span>
 
 <span class="sd">    Returns</span>
@@ -2040,6 +2101,13 @@
     <span class="n">numatom</span> <span class="o">=</span> <span class="n">coords1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">dihedrals</span> <span class="o">=</span> <span class="n">_check_result_array</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="p">(</span><span class="n">numatom</span><span class="p">,))</span>
 
+    <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;distopia&quot;</span><span class="p">:</span>
+        <span class="c1"># distopia requires that all the input arrays are the same type,</span>
+        <span class="c1"># while MDAnalysis allows for mixed types, this should be changed</span>
+        <span class="c1"># pre 3.0.0 release see issue #3707</span>
+        <span class="n">dihedrals</span> <span class="o">=</span> <span class="n">dihedrals</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">box</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">box</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+
     <span class="k">if</span> <span class="n">numatom</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">boxtype</span><span class="p">,</span> <span class="n">box</span> <span class="o">=</span> <span class="n">check_box</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
@@ -2061,7 +2129,12 @@
                 <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">coords3</span><span class="p">,</span> <span class="n">coords4</span><span class="p">,</span> <span class="n">dihedrals</span><span class="p">),</span>
                 <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span>
             <span class="p">)</span>
-
+    <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s2">&quot;distopia&quot;</span><span class="p">:</span>
+        <span class="c1"># mda expects the result to be in float64, so we need to convert it back</span>
+        <span class="c1"># to float64, change for 3.0, see #3707</span>
+        <span class="n">dihedrals</span> <span class="o">=</span> <span class="n">dihedrals</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">dihedrals</span>
     <span class="k">return</span> <span class="n">dihedrals</span></div>
 
 

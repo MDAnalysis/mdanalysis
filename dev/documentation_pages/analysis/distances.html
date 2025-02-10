@@ -313,7 +313,7 @@ triclinic and must be provided in the same format as returned by
 <code class="docutils literal notranslate"><span class="pre">numpy.float64</span></code>.
 Avoids creating the array which saves time when the function
 is called repeatedly.</p></li>
-<li><p><strong>backend</strong> (<em>{'serial'</em><em>, </em><em>'OpenMP'}</em><em>, </em><em>optional</em>) – Keyword selecting the type of acceleration.</p></li>
+<li><p><strong>backend</strong> (<em>{'serial'</em><em>, </em><em>'OpenMP'</em><em>, </em><em>'distopia'}</em><em>, </em><em>optional</em>) – Keyword selecting the type of acceleration.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -334,6 +334,9 @@ Now also accepts single coordinates as input.</p>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 2.3.0: </span>Can now accept an <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> as an
 argument in any position and checks inputs using type hinting.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.9.0: </span>Added support for the <cite>distopia</cite> backend.</p>
 </div>
 </dd></dl>
 
@@ -360,7 +363,7 @@ triclinic and must be provided in the same format as returned by
 <li><p><strong>result</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – Preallocated result array which must have the shape <code class="docutils literal notranslate"><span class="pre">(n*(n-1)/2,)</span></code> and
 dtype <code class="docutils literal notranslate"><span class="pre">numpy.float64</span></code>. Avoids creating the array which saves time when
 the function is called repeatedly.</p></li>
-<li><p><strong>backend</strong> (<em>{'serial'</em><em>, </em><em>'OpenMP'}</em><em>, </em><em>optional</em>) – Keyword selecting the type of acceleration.</p></li>
+<li><p><strong>backend</strong> (<em>{'serial'</em><em>, </em><em>'OpenMP'</em><em>, </em><em>'distopia'}</em><em>, </em><em>optional</em>) – Keyword selecting the type of acceleration.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -378,6 +381,7 @@ coordinates <code class="docutils literal notranslate"><span class="pre">i</span
 <li><p><em>.. versionchanged:: 0.19.0</em> – Internal dtype conversion of input coordinates to <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code>.</p></li>
 <li><p><em>.. versionchanged:: 2.3.0</em> – Can now accept an <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> as an
 argument in any position and checks inputs using type hinting.</p></li>
+<li><p><em>.. versionchanged:: 2.9.0</em> – Added support for the <cite>distopia</cite> backend.</p></li>
 </ul>
 </p>
 </dd>
