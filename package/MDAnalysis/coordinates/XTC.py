@@ -102,7 +102,10 @@ class XTCWriter(XDRBaseWriter):
                 raise TypeError(errmsg) from None
 
         xyz = ts.positions.copy()
-        time = ts.time
+        if self.dt is None:
+            time = ts.time
+        else:
+            time = dt * ts.frame
         step = ts.frame
         dimensions = ts.dimensions
 
