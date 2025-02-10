@@ -106,7 +106,7 @@ class XTCWriter(XDRBaseWriter):
             time = ts.time
         else:
             time = self._dt * ts.frame
-        step = ts.frame
+        step = ts.data.get('step', ts.frame)
         dimensions = ts.dimensions
 
         if self._convert_units:
