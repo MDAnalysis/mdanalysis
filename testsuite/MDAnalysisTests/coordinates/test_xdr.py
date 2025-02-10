@@ -247,7 +247,7 @@ class _GromacsReader(object):
     def test_time_when_dt_set(self, universe_with_dt_set):
         universe_with_dt_set.trajectory[4]
         assert_almost_equal(
-            universe.trajectory.time,
+            universe_with_dt_set.trajectory.time,
             10000.0,
             3,
             err_msg="wrong time of frame when dt set",
