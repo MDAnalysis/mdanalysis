@@ -124,6 +124,10 @@ class _GromacsReader(object):
     def universe(self):
         return mda.Universe(GRO, self.filename, convert_units=True)
 
+    # fixture for testing #4905
+    def universe_with_dt_set(self):
+        return mda.Universe(GRO, self.filename, convert_units=True, dt=2500)
+
     def test_rewind_xdrtrj(self, universe):
         universe.trajectory.rewind()
         assert_equal(universe.coord.frame, 0, "rewinding to frame 1")
@@ -198,6 +202,14 @@ class _GromacsReader(object):
         assert_almost_equal(
             universe.trajectory.dt, 100.0, 4, err_msg="wrong timestep dt"
         )
+    
+    def test_dt_when_dt_set(self, universe_with_dt_set):
+        assert_almost_equal(
+            universe_with_dt_set.trajectory.dt,
+            2500.0,
+            4,
+            err_msg="wrong timestep dt when dt set"
+        )
 
     def test_totaltime(self, universe):
         # test_totaltime(): need to reduce precision because dt is only precise
@@ -209,6 +221,17 @@ class _GromacsReader(object):
             3,
             err_msg="wrong total length of trajectory",
         )
+    
+    def test_totaltime_when_dt_set(self, universe_with_dt_set):
+        # test_totaltime(): need to reduce precision because dt is only precise
+        # to ~4 decimals and accumulating the inaccuracy leads to even lower
+        # precision in the totaltime (consequence of fixing Issue 64)
+        assert_almost_equal(
+            universe_with_dt_set.trajectory.totaltime,
+            22500.0,
+            3,
+            err_msg="wrong total length of trajectory when dt set",
+        )
 
     def test_frame(self, universe):
         universe.trajectory[4]  # index is 0-based and frames are 0-based
@@ -218,6 +241,15 @@ class _GromacsReader(object):
         universe.trajectory[4]
         assert_almost_equal(
             universe.trajectory.time, 400.0, 3, err_msg="wrong time of frame"
+        )
+    
+    def test_time_when_dt_set(self, universe_with_dt_set):
+        universe.trajectory[4]
+        assert_almost_equal(
+            universe.trajectory.time,
+            10000.0,
+            3,
+            err_msg="wrong time of frame when dt set"
         )
 
     def test_get_Writer(self, universe, tmpdir):
@@ -243,6 +275,31 @@ class _GromacsReader(object):
         # 3...
         assert_almost_equal(
             u.atoms.positions, universe.atoms.positions, self.prec
+        )
+    
+    def test_Writer_with_dt_setting(self, tmpdir):
+        universe = mda.Universe(GRO, self.filename, convert_units=True)
+        ext = os.path.splitext(self.filename)[1]
+        outfile = str(tmpdir.join("/xdr-reader-test" + ext))
+        with universe.trajectory.Writer(outfile, dt=1000) as W:
+            W.write(universe.atoms)
+            universe.trajectory.next()
+            W.write(universe.atoms)
+
+        universe.trajectory.rewind()
+        u = mda.Universe(GRO, outfile)
+        assert_equal(u.trajectory.n_frames, 2)
+        # prec = 6: TRR test fails; here I am generous and take self.prec =
+        # 3...
+        assert_almost_equal(
+            u.atoms.positions, universe.atoms.positions, self.prec
+        )
+        # test total trajectory length
+        assert_almost_equal(
+            u.trajectory.totaltime,
+            1000.0,
+            3,
+            err_msg="wrong total length of trajectory upon setting",
         )
 
     def test_EOFraisesStopIteration(self, universe):
