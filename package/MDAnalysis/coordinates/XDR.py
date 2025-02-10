@@ -174,7 +174,7 @@ class XDRBaseReader(base.ReaderBase):
         try:
             xdr_frame = self._xdr.read()
             if dt is not None:
-                self._ts_kwargs['dt'] = dt
+                self._ts_kwargs["dt"] = dt
             else:
                 dt = xdr_frame.time - frame.time
             self._xdr.seek(1)
@@ -323,7 +323,9 @@ class XDRBaseReader(base.ReaderBase):
 class XDRBaseWriter(base.WriterBase):
     """Base class for libmdaxdr file formats xtc and trr"""
 
-    def __init__(self, filename, n_atoms, convert_units=True, dt = None, **kwargs):
+    def __init__(
+        self, filename, n_atoms, convert_units=True, dt = None, **kwargs
+    ):
         """
         Parameters
         ----------
