@@ -245,7 +245,7 @@ class _GromacsReader(object):
         )
 
     def test_time_when_dt_set(self, universe_with_dt_set):
-        universe.trajectory[4]
+        universe_with_dt_set.trajectory[4]
         assert_almost_equal(
             universe.trajectory.time,
             10000.0,
