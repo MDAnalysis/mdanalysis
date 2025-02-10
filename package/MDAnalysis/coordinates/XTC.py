@@ -105,7 +105,7 @@ class XTCWriter(XDRBaseWriter):
         if self._dt is None:
             time = ts.time
         else:
-            time = dt * ts.frame
+            time = self._dt * ts.frame
         step = ts.frame
         dimensions = ts.dimensions
 
