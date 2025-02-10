@@ -133,6 +133,7 @@ class XDRBaseReader(base.ReaderBase):
         convert_units=True,
         sub=None,
         refresh_offsets=False,
+        dt=None,
         **kwargs,
     ):
         """
@@ -148,6 +149,8 @@ class XDRBaseReader(base.ReaderBase):
             itself is that of the sub system.
         refresh_offsets : bool (optional)
             force refresh of offsets
+        dt : float (optional)
+            timestep in MDAnalysis units to load trajectory with
         **kwargs : dict
             General reader arguments.
 
@@ -170,7 +173,10 @@ class XDRBaseReader(base.ReaderBase):
         frame = self._xdr.read()
         try:
             xdr_frame = self._xdr.read()
-            dt = xdr_frame.time - frame.time
+            if dt is not None:
+                self._ts_kwargs['dt'] = dt
+            else:
+                dt = xdr_frame.time - frame.time
             self._xdr.seek(1)
         except StopIteration:
             dt = 0

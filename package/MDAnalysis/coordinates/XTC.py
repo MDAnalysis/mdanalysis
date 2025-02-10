@@ -164,7 +164,11 @@ class XTCReader(XDRBaseReader):
     def _frame_to_ts(self, frame, ts):
         """convert a xtc-frame to a mda TimeStep"""
         ts.frame = self._frame
-        ts.time = frame.time
+        if 'dt' in ts.data:
+            dt = ts.data['dt']
+            ts.time = self._frame * dt
+        else:
+            ts.time = frame.time
         ts.data['step'] = frame.step
         ts.dimensions = triclinic_box(*frame.box)
 
