@@ -41,12 +41,11 @@ except ImportError:
 else:
     HAS_DISTOPIA = True
 
-    # check for compatibility: currently needs to be >=0.3.1,
+    # check for compatibility: currently needs to be >=0.4.0,
     # some versions of `distopia` don't have a version attribute
     try:
         distopia_version = Version(distopia.__version__)
     except AttributeError:
-        warnings.warn("distopia version cannot be determined, assuming 0.0.0")
         distopia_version = Version("0.0.0")
     if distopia_version < MIN_DISTOPIA_VERSION:
         warnings.warn(

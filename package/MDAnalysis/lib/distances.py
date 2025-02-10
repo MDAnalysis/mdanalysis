@@ -107,7 +107,7 @@ and must be selected.**
 .. versionchanged:: 2.5.0
    Interface to the `distopia`_ package added.
 .. versionchanged:: 2.9.0
-   Distopia support greatly expanded (with distopia ≥ 0.3.1).
+   Distopia support greatly expanded (with distopia ≥ 0.4.0).
 
 Functions
 ---------
@@ -345,7 +345,7 @@ def distance_array(
     if backend == "distopia":
         # distopia requires that all the input arrays are the same type,
         # while MDAnalysis allows for mixed types, this should be changed
-        # pre 0.3.0 release see issue #3707
+        # pre 3.0.0 release see issue #3707
         distances = distances.astype(np.float32)
         box = np.asarray(box).astype(np.float32) if box is not None else None
 
@@ -454,7 +454,7 @@ def self_distance_array(
     if backend == "distopia":
         # distopia requires that all the input arrays are the same type,
         # while MDAnalysis allows for mixed types, this should be changed
-        # pre 0.3.0 release see issue #3707
+        # pre 3.0.0 release see issue #3707
         distances = distances.astype(np.float32)
         box = np.asarray(box).astype(np.float32) if box is not None else None
 
@@ -1674,7 +1674,7 @@ def calc_bonds(
     if backend == "distopia":
         # distopia requires that all the input arrays are the same type,
         # while MDAnalysis allows for mixed types, this should be changed
-        # pre 0.3.0 release see issue #3707
+        # pre 3.0.0 release see issue #3707
         bondlengths = bondlengths.astype(np.float32)
         box = np.asarray(box).astype(np.float32) if box is not None else None
 
@@ -1797,7 +1797,7 @@ def calc_angles(
     if backend == "distopia":
         # distopia requires that all the input arrays are the same type,
         # while MDAnalysis allows for mixed types, this should be changed
-        # pre 0.3.0 release see issue #3707
+        # pre 3.0.0 release see issue #3707
         angles = angles.astype(np.float32)
         box = np.asarray(box).astype(np.float32) if box is not None else None
 
@@ -1936,7 +1936,7 @@ def calc_dihedrals(
     if backend == "distopia":
         # distopia requires that all the input arrays are the same type,
         # while MDAnalysis allows for mixed types, this should be changed
-        # pre 0.3.0 release see issue #3707
+        # pre 3.0.0 release see issue #3707
         dihedrals = dihedrals.astype(np.float32)
         box = np.asarray(box).astype(np.float32) if box is not None else None
 
