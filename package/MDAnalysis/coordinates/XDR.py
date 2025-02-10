@@ -324,7 +324,7 @@ class XDRBaseWriter(base.WriterBase):
     """Base class for libmdaxdr file formats xtc and trr"""
 
     def __init__(
-        self, filename, n_atoms, convert_units=True, dt = None, **kwargs
+        self, filename, n_atoms, convert_units=True, dt=None, **kwargs
     ):
         """
         Parameters

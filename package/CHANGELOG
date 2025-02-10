@@ -35,6 +35,7 @@ Enhancements
  * Enable parallelization for analysis.nucleicacids.NucPairDist (Issue #4670)
  * Add check and warning for empty (all zero) coordinates in RDKit converter (PR #4824)
  * Added `precision` for XYZWriter (Issue #4775, PR #4771) 
+ * Added timestep support for XDR writers and readers(Issue #4905, PR #4908)
 
 
 Changes
