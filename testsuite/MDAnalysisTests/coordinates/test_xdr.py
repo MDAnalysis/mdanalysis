@@ -202,13 +202,13 @@ class _GromacsReader(object):
         assert_almost_equal(
             universe.trajectory.dt, 100.0, 4, err_msg="wrong timestep dt"
         )
-    
+
     def test_dt_when_dt_set(self, universe_with_dt_set):
         assert_almost_equal(
             universe_with_dt_set.trajectory.dt,
             2500.0,
             4,
-            err_msg="wrong timestep dt when dt set"
+            err_msg="wrong timestep dt when dt set",
         )
 
     def test_totaltime(self, universe):
@@ -221,7 +221,7 @@ class _GromacsReader(object):
             3,
             err_msg="wrong total length of trajectory",
         )
-    
+
     def test_totaltime_when_dt_set(self, universe_with_dt_set):
         # test_totaltime(): need to reduce precision because dt is only precise
         # to ~4 decimals and accumulating the inaccuracy leads to even lower
@@ -242,14 +242,14 @@ class _GromacsReader(object):
         assert_almost_equal(
             universe.trajectory.time, 400.0, 3, err_msg="wrong time of frame"
         )
-    
+
     def test_time_when_dt_set(self, universe_with_dt_set):
         universe.trajectory[4]
         assert_almost_equal(
             universe.trajectory.time,
             10000.0,
             3,
-            err_msg="wrong time of frame when dt set"
+            err_msg="wrong time of frame when dt set",
         )
 
     def test_get_Writer(self, universe, tmpdir):
@@ -276,7 +276,7 @@ class _GromacsReader(object):
         assert_almost_equal(
             u.atoms.positions, universe.atoms.positions, self.prec
         )
-    
+
     def test_Writer_with_dt_setting(self, tmpdir):
         universe = mda.Universe(GRO, self.filename, convert_units=True)
         ext = os.path.splitext(self.filename)[1]
