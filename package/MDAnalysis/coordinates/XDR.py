@@ -173,9 +173,7 @@ class XDRBaseReader(base.ReaderBase):
         frame = self._xdr.read()
         try:
             xdr_frame = self._xdr.read()
-            if dt is not None:
-                self._ts_kwargs["dt"] = dt
-            else:
+            if dt is None:
                 dt = xdr_frame.time - frame.time
             self._xdr.seek(1)
         except StopIteration:
