@@ -182,7 +182,7 @@ class TRRReader(XDRBaseReader):
     def _frame_to_ts(self, frame, ts):
         """convert a trr-frame to a mda TimeStep"""
         dt = self._kwargs["dt"]
-        if dt is not None and dt != ts.dt:
+        if dt is not None:
             ts.time = self._frame * dt
         else:
             ts.time = frame.time

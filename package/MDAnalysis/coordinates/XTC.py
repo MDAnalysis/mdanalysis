@@ -172,7 +172,7 @@ class XTCReader(XDRBaseReader):
         """convert a xtc-frame to a mda TimeStep"""
         ts.frame = self._frame
         dt = self._kwargs["dt"]
-        if dt is not None and dt != ts.dt:
+        if dt is not None:
             ts.time = self._frame * dt
         else:
             ts.time = frame.time
