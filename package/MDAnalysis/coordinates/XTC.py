@@ -53,7 +53,7 @@ class XTCWriter(XDRBaseWriter):
     units = {'time': 'ps', 'length': 'nm'}
     _file = XTCFile
 
-    def __init__(self, filename, n_atoms, convert_units=True,
+    def __init__(self, filename, n_atoms, convert_units=True, dt=None,
                  precision=3, **kwargs):
         """
         Parameters
@@ -64,10 +64,12 @@ class XTCWriter(XDRBaseWriter):
             number of atoms to write
         convert_units : bool (optional)
             convert into MDAnalysis units
+        dt : float (optional)
+            timestep in MDAnalysis units to load trajectory with
         precision : float (optional)
             set precision of saved trjactory to this number of decimal places.
         """
-        super(XTCWriter, self).__init__(filename, n_atoms, convert_units,
+        super(XTCWriter, self).__init__(filename, n_atoms, convert_units, dt,
                                         **kwargs)
         self.precision = precision
 
@@ -103,6 +105,8 @@ class XTCWriter(XDRBaseWriter):
 
         xyz = ts.positions.copy()
         if self._dt is None:
+            time = ts.time
+        elif self._dt == ts.dt:
             time = ts.time
         else:
             time = self._dt * ts.frame
@@ -167,8 +171,8 @@ class XTCReader(XDRBaseReader):
     def _frame_to_ts(self, frame, ts):
         """convert a xtc-frame to a mda TimeStep"""
         ts.frame = self._frame
-        if self._kwargs["dt"] is not None:
-            dt = self._kwargs["dt"]
+        dt = self._kwargs["dt"]
+        if dt is not None and dt != ts.dt:
             ts.time = self._frame * dt
         else:
             ts.time = frame.time
