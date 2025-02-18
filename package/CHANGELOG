@@ -15,7 +15,7 @@ The rules for this file:
 
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, ChiahsinChu, RMeli, tanishy7777, talagayev, tylerjereddy,
-         marinegor
+         marinegor, hmacdope
 
  * 2.9.0
 
@@ -27,12 +27,14 @@ Fixes
    the function to prevent shared state. (Issue #4655)
 
 Enhancements
+ * Improve distopia backend support in line with new functionality available 
+   in distopia >= 0.3.1 (PR #4734)
  * Addition of 'water' token for water selection (Issue #4839)
  * Enables parallelization for analysis.density.DensityAnalysis (Issue #4677, PR #4729)
  * Enables parallelization for analysis.contacts.Contacts (Issue #4660)
  * Enable parallelization for analysis.nucleicacids.NucPairDist (Issue #4670)
  * Add check and warning for empty (all zero) coordinates in RDKit converter (PR #4824)
- * Added `precision` for XYZWriter (Issue #4775, PR #4771)
+ * Added `precision` for XYZWriter (Issue #4775, PR #4771) 
 
 
 Changes
