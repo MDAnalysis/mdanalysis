@@ -322,9 +322,8 @@ def test_nojump_constantvel_stride_2(nojump_universes_fromfile):
     """
     Test if the nojump transform warning is emitted.
     """
-    match = r"NoJump transformation must be applied from the first frame onward\. Applying it starting from frame \d+ is not supported\."
-
-    with pytest.warns(UserWarning, match=match):
+    match = "NoJump transformation must be applied from the first frame onward."
+    with pytest.raises(ValueError, match=match):
         u = nojump_universes_fromfile
         for ts in u.trajectory[::2]:  # Exercises the warning.
             pass

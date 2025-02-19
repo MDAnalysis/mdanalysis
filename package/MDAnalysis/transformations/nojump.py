@@ -129,7 +129,11 @@ class NoJump(TransformationBase):
         if ts.frame == 0:
             # We don't need to apply the transformation here. However, we need to
             # ensure we have the 0th frame coordinates in reduced form. We also need to
-            # set an an appropriate value for self.older_frame.
+            # set an an appropriate value for self.older frame. This is so that on the
+            # following frame we don't return early when we check
+            # `self.older_frame != "A"`. If we return early, then the transformation is
+            # not applied, and any jumps across boundaries that occur at that frame will
+            # not be accounted for.
             self.prev = ts.positions @ Linverse
             self.old_frame = 0
             self.older_frame = -1
@@ -142,8 +146,8 @@ class NoJump(TransformationBase):
             != (ts.frame - self.old_frame)
         ):
             warnings.warn(
-                "NoJump detected an irregular frame interval. Resetting the reference frame. "
-                "This may affect accuracy if frames are not sequential.",
+                "NoJump detected that the interval between frames is unequal."
+                "We are resetting the reference frame to the current timestep.",
                 UserWarning,
             )
             self.prev = ts.positions @ Linverse
@@ -153,23 +157,26 @@ class NoJump(TransformationBase):
 
         if self.check_c and np.abs(self.old_frame - ts.frame) != 1:
             warnings.warn(
-                "NoJump is only accurate when positions change within half a box length per step. "
-                "Skipping frames may reduce accuracy.",
+                "NoJump transform is only accurate when positions"
+                "do not move by more than half a box length."
+                "Currently jumping between frames with a step of more than 1."
+                "This might be fine, but depending on the trajectory stride,"
+                "this might be inaccurate.",
                 UserWarning,
             )
 
         # Convert into reduced coordinate space
         fcurrent = ts.positions @ Linverse
         fprev = self.prev  # Previous unwrapped coordinates in reduced box coordinates.
-
-        # Calculate the new positions in reduced coordinate space
+        # Calculate the new positions in reduced coordinate space (Equation B6 from
+        # 10.1021/acs.jctc.2c00327). As it turns out, the displacement term can
+        # be moved inside the round function in this coordinate space, as the
+        # difference between wrapped and unwrapped coordinates is an integer.
         newpositions = fcurrent - np.round(fcurrent - fprev)
-
         # Convert back into real space
         ts.positions = newpositions @ L
-
-        # Save for the next frame
-        self.prev = newpositions  # In reduced coordinate space.
+        # Set things we need to save for the next frame.
+        self.prev = newpositions  # Note that this is in reduced coordinate space.
         self.older_frame = self.old_frame
         self.old_frame = ts.frame
 
