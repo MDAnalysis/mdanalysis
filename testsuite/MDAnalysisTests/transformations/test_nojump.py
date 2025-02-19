@@ -332,13 +332,13 @@ def test_nojump_raises_valueerror_outside_first_frame(nojump_universes_fromfile)
     """
     Test if NoJump transformation raises ValueError when applied outside the first frame.
     """
-    match = "NoJump transformation must be applied from the first frame onward."
-    with pytest.raises(ValueError, match=match):
-        u = nojump_universes_fromfile
-        u.trajectory[-1]  # Move to the last frame
-        u.trajectory.add_transformations(NoJump())  # Add NoJump transformation
-        next(u.trajectory)  # Trigger the transformation by iterating
+    universe = nojump_universes_fromfile.copy()  # Ensure a fresh Universe
+    universe.trajectory[1]  # Move to the second frame
 
+    match = "Can't add transformations again. Please create a new Universe object"
+    
+    with pytest.raises(ValueError, match=match):
+        universe.trajectory.add_transformations(NoJump(universe.atoms))
 
 def test_nojump_constantvel_jumparound(nojump_universes_fromfile):
     """
