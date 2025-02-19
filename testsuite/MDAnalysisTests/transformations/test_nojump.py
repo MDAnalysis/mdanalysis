@@ -322,11 +322,22 @@ def test_nojump_constantvel_stride_2(nojump_universes_fromfile):
     """
     Test if the nojump transform warning is emitted.
     """
-    match = "NoJump transformation must be applied from the first frame onward."
-    with pytest.raises(ValueError, match=match):
+    match = "Currently jumping between frames with a step of more than 1."
+    with pytest.warns(UserWarning, match=match):
         u = nojump_universes_fromfile
         for ts in u.trajectory[::2]:  # Exercises the warning.
             pass
+
+def test_nojump_raises_valueerror_outside_first_frame(nojump_universes_fromfile):
+    """
+    Test if NoJump transformation raises ValueError when applied outside the first frame.
+    """
+    match = "NoJump transformation must be applied from the first frame onward."
+    with pytest.raises(ValueError, match=match):
+        u = nojump_universes_fromfile
+        u.trajectory[-1]  # Move to the last frame
+        u.trajectory.add_transformations(NoJump())  # Add NoJump transformation
+        next(u.trajectory)  # Trigger the transformation by iterating
 
 
 def test_nojump_constantvel_jumparound(nojump_universes_fromfile):

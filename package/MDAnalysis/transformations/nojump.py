@@ -167,7 +167,9 @@ class NoJump(TransformationBase):
 
         # Convert into reduced coordinate space
         fcurrent = ts.positions @ Linverse
-        fprev = self.prev  # Previous unwrapped coordinates in reduced box coordinates.
+        fprev = (
+            self.prev
+        )  # Previous unwrapped coordinates in reduced box coordinates.
         # Calculate the new positions in reduced coordinate space (Equation B6 from
         # 10.1021/acs.jctc.2c00327). As it turns out, the displacement term can
         # be moved inside the round function in this coordinate space, as the
@@ -176,7 +178,9 @@ class NoJump(TransformationBase):
         # Convert back into real space
         ts.positions = newpositions @ L
         # Set things we need to save for the next frame.
-        self.prev = newpositions  # Note that this is in reduced coordinate space.
+        self.prev = (
+            newpositions  # Note that this is in reduced coordinate space.
+        )
         self.older_frame = self.old_frame
         self.old_frame = ts.frame
 
