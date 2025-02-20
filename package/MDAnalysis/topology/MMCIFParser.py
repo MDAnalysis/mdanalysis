@@ -86,7 +86,7 @@ def _into_idx(arr: list) -> list[int]:
     -------
         list[int] -- array where these elements are replaced with their unique indices, in order of appearance.
 
-    .. versionadded:: 2.8.0
+    .. versionadded:: 2.9.0
     """
     return [
         idx
@@ -113,7 +113,7 @@ def get_Atomattrs(model: "gemmi.Model") -> tuple[list[AtomAttr], np.ndarray]:
     ValueError
         if any of the records is neither 'ATOM' nor 'HETATM'
 
-    .. versionadded:: 2.8.0
+    .. versionadded:: 2.9.0
     """
     (
         altlocs,  # at.altloc
@@ -211,7 +211,7 @@ def get_Residueattrs(
     -------
         tuple[list[ResidueAttr], np.ndarray] -- first element is list of all extracted attributes, second element is `segidx`
 
-    .. versionadded:: 2.8.0
+    .. versionadded:: 2.9.0
     """
     (
         icodes,  # residue.seqid.icode
@@ -259,7 +259,7 @@ def get_Segmentattrs(model: "gemmi.Model") -> list[SegmentAttr]:
     -------
         list[SegmentAttr] -- list of all extracted attributes
 
-    .. versionadded:: 2.8.0
+    .. versionadded:: 2.9.0
     """
     segids = [chain.name for chain in model]
     return [Segids(segids)]
