@@ -328,19 +328,27 @@ def test_nojump_constantvel_stride_2(nojump_universes_fromfile):
         for ts in u.trajectory[::2]:  # Exercises the warning.
             pass
 
-def test_nojump_raises_valueerror_outside_first_frame(nojump_universes_fromfile):
+
+def test_nojump_raises_valueerror_outside_first_frame(
+    nojump_universes_fromfile,
+):
     """
     Test if NoJump transformation raises ValueError when applied outside the first frame.
     """
     universe = nojump_universes_fromfile.copy()  # Ensure a fresh Universe
     universe.trajectory[1]  # Move to the second frame
 
-    match = "Can't add transformations again. Please create a new Universe object"
-    
+    match = (
+        "Can't add transformations again. Please create a new Universe object"
+    )
+
     with pytest.raises(ValueError, match=match):
         universe.trajectory.add_transformations(NoJump(universe.atoms))
 
-def test_nojump_fails_when_applied_after_first_frame(nojump_universes_fromfile):
+
+def test_nojump_fails_when_applied_after_first_frame(
+    nojump_universes_fromfile,
+):
     """
     Test if NoJump transformation raises ValueError when applied after the first frame.
     """
@@ -351,6 +359,7 @@ def test_nojump_fails_when_applied_after_first_frame(nojump_universes_fromfile):
         universe.trajectory.add_transformations(NoJump(universe.atoms))
 
     assert "Can't add transformations again" in str(excinfo.value)
+
 
 def test_nojump_constantvel_jumparound(nojump_universes_fromfile):
     """
