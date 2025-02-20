@@ -1,6 +1,44 @@
 """
-MMCIF Topology Parser #
-===================
+MMCIF Topology Parser
+====================
+
+Read topology information from mmCIF/PDBx coordinate files using the [gemmi](https://github.com/project-gemmi/gemmi) library.
+
+mmCIF files contain topology information about the molecules in the structure. For each atom the following attributes are read
+and stored in the relevant topology attributes:
+    - :class:`..core.topologyattrs.AtomAttr` subclasses:
+        - :class:`..core.topologyattrs.AltLocs`
+        - :class:`..core.topologyattrs.Atomids`
+        - :class:`..core.topologyattrs.Atomnames`
+        - :class:`..core.topologyattrs.Atomtypes`
+        - :class:`..core.topologyattrs.ChainIDs`
+        - :class:`..core.topologyattrs.Elements`
+        - :class:`..core.topologyattrs.FormalCharges`
+        - :class:`..core.topologyattrs.Masses`
+        - :class:`..core.topologyattrs.Occupancies`
+        - :class:`..core.topologyattrs.RecordTypes`
+        - :class:`..core.topologyattrs.Tempfactors`
+    - :class:`..core.topologyattrs.ResidueAttr` subclasses:
+        - :class:`..core.topologyattrs.Resnums`
+        - :class:`..core.topologyattrs.ICodes`
+        - :class:`..core.topologyattrs.Resids`
+        - :class:`..core.topologyattrs.Resnames`
+    - :class:`..core.topologyattrs.SegmentAttr` subclasses:
+        - :class:`..core.topologyattrs.Segids`
+
+References
+----------
+.. [1] Westbrook, J. D. and Bourne, P. E. `Star/mmCIF: An extensive
+       ontology for macromolecular structure and beyond.`
+       *Bioinformatics* (2000) **16**: 159-168.
+.. [2] `project-gemmi/gemmi <https://github.com/project-gemmi/gemmi>`_ -- library for structural biology in C++11/Python
+
+See Also
+--------
+:mod:`MDAnalysis.topology.PDBParser`
+    For the PDB equivalent of this parser.
+
+.. versionadded:: 2.8.0
 """
 
 try:
@@ -148,7 +186,9 @@ def get_Atomattrs(model: "gemmi.Model") -> tuple[list[AtomAttr], np.ndarray]:
         for record in record_types
     ]
     if any((elem is None for elem in record_types)):
-        raise ValueError("Found an atom that is neither ATOM or HETATM")
+        raise ValueError(
+            "Found an atom that is neither ATOM or HETATM"
+        )  # FIXME: add tests for this
 
     attrs = [
         AltLocs(altlocs),
@@ -262,12 +302,12 @@ class MMCIFParser(TopologyReaderBase):
         - :class:`..core.topologyattrs.SegmentAttr` subclasses:
             - :class:`..core.topologyattrs.Segids`
 
-    .. versionadded:: 2.8.0
+    .. versionadded:: 2.9.0
     """
 
-    format = ["cif", "cif.gz", "mmcif"]
+    format = ["cif", "cif.gz", "mmcif", "mmcif.gz"]
 
-    def parse(self, **kwargs):
+    def parse(self, **kwargs) -> Topology:
         """Read the file and return the structure.
 
         Returns
@@ -277,7 +317,7 @@ class MMCIFParser(TopologyReaderBase):
         structure = gemmi.read_structure(self.filename)
 
         if len(structure) > 1:
-            warnings.warn(
+            warnings.warn(  # FIXME: add tests for this
                 "MMCIF model {self.filename} contains {len(model)=} different models, "
                 "but only the first one will be used to assign the topology"
             )
