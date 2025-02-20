@@ -23,8 +23,6 @@ inputs:
     default: 'cython'
   fasteners:
     default: 'fasteners'
-  gemmi:
-    default: 'gemmi'
   griddataformats:
     default: 'griddataformats'
   gsd:
@@ -61,7 +59,9 @@ inputs:
   dask:
     default: 'dask'
   distopia:
-    default: 'distopia>=0.2.0,<0.3.0'
+    default: 'distopia>=0.4.0'
+  gemmi:
+      default: 'gemmi'
   h5py:
     default: 'h5py>=2.10'
   hole2:
@@ -112,7 +112,7 @@ runs:
         CONDA_MIN_DEPS: |
           ${{ inputs.codecov }}
           ${{ inputs.cython }}
-          ${{ inputs.fasteners }}
+          ${{ inputs.filelock }}
           ${{ inputs.griddataformats }}
           ${{ inputs.hypothesis }}
           ${{ inputs.matplotlib }}
