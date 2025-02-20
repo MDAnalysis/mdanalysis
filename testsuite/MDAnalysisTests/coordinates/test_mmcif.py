@@ -3,26 +3,26 @@ import glob
 import MDAnalysis as mda
 import numpy as np
 import pytest
-from numpy.testing import (
-    assert_allclose,
-    assert_almost_equal,
-    assert_array_almost_equal,
-    assert_equal,
-)
+from MDAnalysis.coordinates.MMCIF import HAS_GEMMI
 
 from MDAnalysisTests.datafiles import MMCIF as MMCIF_FOLDER
-from MDAnalysis.coordinates.MMCIF import HAS_GEMMI
 
 
 @pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
-@pytest.mark.parametrize("mmcif_filename", glob.glob(f"{MMCIF_FOLDER}/*.cif*"))
+@pytest.mark.parametrize(
+    "mmcif_filename",
+    [f for f in glob.glob(f"{MMCIF_FOLDER}/*.cif*") if "invalid" not in f],
+)
 def test_works_with_explicit_format(mmcif_filename):
     u = mda.Universe(mmcif_filename, format="MMCIF")
     assert u.trajectory.n_atoms > 0
 
 
 @pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
-@pytest.mark.parametrize("mmcif_filename", glob.glob(f"{MMCIF_FOLDER}/*.cif*"))
+@pytest.mark.parametrize(
+    "mmcif_filename",
+    [f for f in glob.glob(f"{MMCIF_FOLDER}/*.cif*") if "invalid" not in f],
+)
 def test_works_without_explicit_format(mmcif_filename):
     u = mda.Universe(mmcif_filename)
     assert u.trajectory.n_atoms > 0
