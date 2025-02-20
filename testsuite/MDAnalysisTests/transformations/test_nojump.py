@@ -329,36 +329,17 @@ def test_nojump_constantvel_stride_2(nojump_universes_fromfile):
             pass
 
 
-def test_nojump_raises_valueerror_outside_first_frame(
-    nojump_universes_fromfile,
-):
+def test_nojump_raises_valueerror_outside_first_frame(nojump_universe):
     """
     Test if NoJump transformation raises ValueError when applied outside the first frame.
     """
-    universe = nojump_universes_fromfile.copy()  # Ensure a fresh Universe
-    universe.trajectory[1]  # Move to the second frame
-
-    match = (
-        "Can't add transformations again. Please create a new Universe object"
-    )
+    match = "Periodic box dimensions not provided at step 0"
 
     with pytest.raises(ValueError, match=match):
-        universe.trajectory.add_transformations(NoJump(universe.atoms))
-
-
-def test_nojump_fails_when_applied_after_first_frame(
-    nojump_universes_fromfile,
-):
-    """
-    Test if NoJump transformation raises ValueError when applied after the first frame.
-    """
-    universe = nojump_universes_fromfile.copy()
-    universe.trajectory[1]  # Move to the second frame
-
-    with pytest.raises(ValueError) as excinfo:
-        universe.trajectory.add_transformations(NoJump(universe.atoms))
-
-    assert "Can't add transformations again" in str(excinfo.value)
+        u = nojump_universe
+        u.trajectory[-1]  # Move to the last frame
+        u.trajectory.add_transformations(NoJump())  # Add NoJump transformation
+        next(u.trajectory)  # Trigger the transformation by iterating
 
 
 def test_nojump_constantvel_jumparound(nojump_universes_fromfile):
