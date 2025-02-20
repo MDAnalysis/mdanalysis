@@ -1,19 +1,8 @@
-import glob
-import os
-from io import StringIO
-
 import MDAnalysis as mda
-import numpy as np
 import pytest
-from numpy.testing import (
-    assert_allclose,
-    assert_almost_equal,
-    assert_array_almost_equal,
-    assert_equal,
-)
+from MDAnalysis.coordinates.MMCIF import HAS_GEMMI
 
 from MDAnalysisTests.datafiles import MMCIF as MMCIF_FOLDER
-from MDAnalysis.coordinates.MMCIF import HAS_GEMMI
 
 
 @pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")

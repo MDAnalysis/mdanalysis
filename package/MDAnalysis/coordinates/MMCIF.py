@@ -1,8 +1,8 @@
 """MMCIF structure files in MDAnalysis --- :mod:`MDAnalysis.coordinates.MMCIF`
 ==========================================================================
 
-MDAnalysis reads coordinates from MMCIF (macromolecular Crystallographic Information File) files
-using the gemmi library as a backend. MMCIF is a more modern and flexible alternative to the PDB format,
+MDAnalysis reads coordinates from MMCIF (macromolecular Crystallographic Information File) files, also known as PDBx/mmCIF format,
+using the ``gemmi`` library as a backend. MMCIF is a more modern and flexible alternative to the PDB format,
 capable of storing detailed structural and experimental data about biological macromolecules.
 
 MMCIF files use a structured, tabular format with key-value pairs to store both coordinate and atom information.
@@ -47,9 +47,6 @@ Basic structure loading::
 
         # or from cif.gz file
         u = mda.Universe("structure.cif.gz")
-
-
-The coordinates are stored in Angstroms.
 
 Classes
 -------
