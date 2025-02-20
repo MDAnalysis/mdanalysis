@@ -340,6 +340,18 @@ def test_nojump_raises_valueerror_outside_first_frame(nojump_universes_fromfile)
     with pytest.raises(ValueError, match=match):
         universe.trajectory.add_transformations(NoJump(universe.atoms))
 
+def test_nojump_fails_when_applied_after_first_frame(nojump_universes_fromfile):
+    """
+    Test if NoJump transformation raises ValueError when applied after the first frame.
+    """
+    universe = nojump_universes_fromfile.copy()
+    universe.trajectory[1]  # Move to the second frame
+
+    with pytest.raises(ValueError) as excinfo:
+        universe.trajectory.add_transformations(NoJump(universe.atoms))
+
+    assert "Can't add transformations again" in str(excinfo.value)
+
 def test_nojump_constantvel_jumparound(nojump_universes_fromfile):
     """
     Test if the nojump transform is emitting a warning.
