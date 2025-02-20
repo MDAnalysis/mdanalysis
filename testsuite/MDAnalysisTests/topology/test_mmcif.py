@@ -43,3 +43,8 @@ def test_sequence(mmcif_filename, sequence):
         for res in u.select_atoms("protein and chainid A").residues
     ]
     assert in_structure == sequence, ":".join(in_structure)
+
+
+def test_wrong_format():
+    with pytest.raises(ValueError):
+        mda.Universe(f"{MMCIF_FOLDER}/1YJP_invalid.cif")
