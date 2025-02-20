@@ -175,9 +175,7 @@ def get_Atomattrs(model: "gemmi.Model") -> tuple[list[AtomAttr], np.ndarray]:
         for record in record_types
     ]
     if any((elem is None for elem in record_types)):
-        raise ValueError(
-            "Found an atom that is neither ATOM or HETATM"
-        )  # FIXME: add tests for this
+        raise ValueError("Found an atom that is neither ATOM or HETATM")
 
     attrs = [
         AltLocs(altlocs),
@@ -307,7 +305,7 @@ class MMCIFParser(TopologyReaderBase):
 
         if len(structure) > 1:
             warnings.warn(  # FIXME: add tests for this
-                "MMCIF model {self.filename} contains {len(model)=} different models, "
+                f"MMCIF model {self.filename} contains {len(structure)=} different models, "
                 "but only the first one will be used to assign the topology"
             )
         model = structure[0]
