@@ -107,7 +107,7 @@ class MMCIFReader(base.SingleFrameReaderBase):
     is read here (and a warning is thrown). Also, if the structure has a placeholder "CRYST1"
     record (1, 1, 1, 90, 90, 90), it's set to ``None`` instead.
 
-    .. versionadded:: 2.8.0
+    .. versionadded:: 2.9.0
     """
 
     format = ["cif", "cif.gz", "mmcif"]
