@@ -26,19 +26,8 @@ and stored in the relevant topology attributes:
     - :class:`..core.topologyattrs.SegmentAttr` subclasses:
         - :class:`..core.topologyattrs.Segids`
 
-References
-----------
-.. [1] Westbrook, J. D. and Bourne, P. E. `Star/mmCIF: An extensive
-       ontology for macromolecular structure and beyond.`
-       *Bioinformatics* (2000) **16**: 159-168.
-.. [2] `project-gemmi/gemmi <https://github.com/project-gemmi/gemmi>`_ -- library for structural biology in C++11/Python
 
-See Also
---------
-:mod:`MDAnalysis.topology.PDBParser`
-    For the PDB equivalent of this parser.
-
-.. versionadded:: 2.8.0
+.. versionadded:: 2.9.0
 """
 
 try:
