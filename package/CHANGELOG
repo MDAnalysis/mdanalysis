@@ -28,7 +28,7 @@ Fixes
 
 Enhancements
  * Implementation of PDBx/MMCIF coordinate and topology reader based on 
-  `gemmi` library (Issue #2367)
+  `gemmi` library (fixes issue #2367, extends issue #4303, PR #4712)
  * Improve distopia backend support in line with new functionality available 
    in distopia >= 0.3.1 (PR #4734)
  * Addition of 'water' token for water selection (Issue #4839)
