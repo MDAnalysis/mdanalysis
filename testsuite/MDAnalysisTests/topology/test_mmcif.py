@@ -45,6 +45,7 @@ def test_sequence(mmcif_filename, sequence):
     assert in_structure == sequence, ":".join(in_structure)
 
 
+@pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
 def test_wrong_format():
     with pytest.raises(ValueError):
         mda.Universe(f"{MMCIF_FOLDER}/1YJP_invalid.cif")
