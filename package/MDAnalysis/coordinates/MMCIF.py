@@ -1,4 +1,8 @@
-"""MMCIF structure files in MDAnalysis --- :mod:`MDAnalysis.coordinates.MMCIF`
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+#
+"""
+MMCIF structure files in MDAnalysis --- :mod:`MDAnalysis.coordinates.MMCIF`
 ==========================================================================
 
 MDAnalysis reads coordinates from MMCIF (macromolecular Crystallographic Information File) files, also known as PDBx/mmCIF format,
@@ -42,6 +46,7 @@ Examples
 Basic structure loading::
 
     .. code-block:: python
+
         # Load structure from MMCIF
         u = mda.Universe("structure.cif")
 
@@ -57,8 +62,8 @@ Classes
 
 See Also
 --------
-- wwPDB MMCIF Resources: http://mmcif.wwpdb.org
-- Gemmi library documentation: https://gemmi.readthedocs.io
+- wwPDB MMCIF Resources: <http://mmcif.wwpdb.org>_
+- Gemmi library documentation: <https://gemmi.readthedocs.io>_
 
 .. versionadded:: 2.9.0
 """

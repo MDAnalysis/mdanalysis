@@ -1,31 +1,40 @@
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+#
 """
 MMCIF Topology Parser
 ====================
 
-Read topology information from mmCIF/PDBx coordinate files using the [gemmi](https://github.com/project-gemmi/gemmi) library.
+Read topology information from mmCIF/PDBx coordinate files using the `Gemmi library <https://github.com/project-gemmi/gemmi>`_
 
 mmCIF files contain topology information about the molecules in the structure. For each atom the following attributes are read
 and stored in the relevant topology attributes:
     - :class:`..core.topologyattrs.AtomAttr` subclasses:
-        - :class:`..core.topologyattrs.AltLocs`
-        - :class:`..core.topologyattrs.Atomids`
-        - :class:`..core.topologyattrs.Atomnames`
-        - :class:`..core.topologyattrs.Atomtypes`
-        - :class:`..core.topologyattrs.ChainIDs`
-        - :class:`..core.topologyattrs.Elements`
-        - :class:`..core.topologyattrs.FormalCharges`
-        - :class:`..core.topologyattrs.Masses`
-        - :class:`..core.topologyattrs.Occupancies`
-        - :class:`..core.topologyattrs.RecordTypes`
-        - :class:`..core.topologyattrs.Tempfactors`
+        - :class:`MDAnalysis.core.topologyattrs.AltLocs`
+        - :class:`MDAnalysis.core.topologyattrs.Atomids`
+        - :class:`MDAnalysis.core.topologyattrs.Atomnames`
+        - :class:`MDAnalysis.core.topologyattrs.Atomtypes`
+        - :class:`MDAnalysis.core.topologyattrs.ChainIDs`
+        - :class:`MDAnalysis.core.topologyattrs.Elements`
+        - :class:`MDAnalysis.core.topologyattrs.FormalCharges`
+        - :class:`MDAnalysis.core.topologyattrs.Masses`
+        - :class:`MDAnalysis.core.topologyattrs.Occupancies`
+        - :class:`MDAnalysis.core.topologyattrs.RecordTypes`
+        - :class:`MDAnalysis.core.topologyattrs.Tempfactors`
     - :class:`..core.topologyattrs.ResidueAttr` subclasses:
-        - :class:`..core.topologyattrs.Resnums`
-        - :class:`..core.topologyattrs.ICodes`
-        - :class:`..core.topologyattrs.Resids`
-        - :class:`..core.topologyattrs.Resnames`
+        - :class:`MDAnalysis.core.topologyattrs.Resnums`
+        - :class:`MDAnalysis.core.topologyattrs.ICodes`
+        - :class:`MDAnalysis.core.topologyattrs.Resids`
+        - :class:`MDAnalysis.core.topologyattrs.Resnames`
     - :class:`..core.topologyattrs.SegmentAttr` subclasses:
-        - :class:`..core.topologyattrs.Segids`
+        - :class:`MDAnalysis.core.topologyattrs.Segids`
 
+Classes
+-------
+
+.. autoclass:: MMCIFParser
+   :members:
+   :inherited-members:
 
 .. versionadded:: 2.9.0
 """
