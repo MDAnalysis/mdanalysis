@@ -30,6 +30,7 @@ provide the format in the keyword argument *format* to
    coordinates/INPCRD
    coordinates/LAMMPS
    coordinates/MMTF
+   coordinates/MMCIF
    coordinates/MOL2
    coordinates/NAMDBIN
    coordinates/PDB
