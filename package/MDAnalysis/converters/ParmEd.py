@@ -179,9 +179,9 @@ class ParmEdConverter(base.ConverterBase):
                 raise ImportError
         except ImportError:
             if NumpyVersion(np.__version__) >= "2.0.0":
-                ermsg = "ParmEd is not compatible with NumPy 2.0+"
+                errmsg = "ParmEd is not compatible with NumPy 2.0+"
             else:
-                ermsg = (
+                errmsg = (
                     "ParmEd is required for ParmEdConverter but is not "
                     "installed. Try installing it with \n"
                     "pip install parmed"
