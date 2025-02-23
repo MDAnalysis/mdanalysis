@@ -136,12 +136,12 @@ class MMCIFReader(base.SingleFrameReaderBase):
         self.n_atoms = len(coords)
         self.ts = self._Timestep.from_coordinates(coords, **self._ts_kwargs)
         if np.allclose(cell_dims, np.array([1.0, 1.0, 1.0, 90.0, 90.0, 90.0])):
-            warnings.warn(  # FIXME: add tests for this
+            warnings.warn(
                 "1 A^3 CRYST1 record,"
                 " this is usually a placeholder."
                 " Unit cell dimensions will be set to None."
             )
-            self.ts.dimensions = None  # FIXME: add tests for this
+            self.ts.dimensions = None
         else:
             self.ts.dimensions = cell_dims
         self.ts.frame = 0

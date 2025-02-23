@@ -56,4 +56,6 @@ def test_multimodel_warning_msg():
         UserWarning,
         match=r"MMCIF model .+ contains .+ different models, but only the first one will be used to assign the topology",
     ):
-        mda.topology.MMCIFParser.MMCIFParser(f"{MMCIF_FOLDER}/multimodel_warning.cif").parse()
+        mda.topology.MMCIFParser.MMCIFParser(
+            f"{MMCIF_FOLDER}/multimodel_warning.cif"
+        ).parse()

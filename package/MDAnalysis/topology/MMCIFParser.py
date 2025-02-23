@@ -309,7 +309,7 @@ class MMCIFParser(TopologyReaderBase):
         structure = gemmi.read_structure(self.filename)
 
         if len(structure) > 1:
-            warnings.warn(  # FIXME: add tests for this
+            warnings.warn(
                 f"MMCIF model {self.filename} contains {len(structure)=} different models, "
                 "but only the first one will be used to assign the topology"
             )

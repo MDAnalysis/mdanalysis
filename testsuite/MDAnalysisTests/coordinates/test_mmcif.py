@@ -17,6 +17,7 @@ from MDAnalysisTests.datafiles import MMCIF as MMCIF_FOLDER
         if "invalid" not in f and "warning" not in f
     ],
 )
+@pytest.mark.filterwarnings("ignore::UserWarning")
 def test_works_with_explicit_format(mmcif_filename):
     u = mda.Universe(mmcif_filename, format="MMCIF")
     assert u.trajectory.n_atoms > 0
@@ -31,6 +32,7 @@ def test_works_with_explicit_format(mmcif_filename):
         if "invalid" not in f and "warning" not in f
     ],
 )
+@pytest.mark.filterwarnings("ignore::UserWarning")
 def test_works_without_explicit_format(mmcif_filename):
     u = mda.Universe(mmcif_filename)
     assert u.trajectory.n_atoms > 0
@@ -76,3 +78,17 @@ def test_multimodel_warning_msg():
         UserWarning, match=r"File .+ has .+ models, but only the first one will be read"
     ):
         mda.coordinates.MMCIF.MMCIFReader(f"{MMCIF_FOLDER}/multimodel_warning.cif")
+
+
+@pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
+def test_cryst1_record_placeholder():
+    with pytest.warns(
+        UserWarning,
+        match=r"CRYST1 record, this is usually a placeholder. Unit cell dimensions will be set to",
+    ):
+        assert (
+            mda.coordinates.MMCIF.MMCIFReader(
+                f"{MMCIF_FOLDER}/custom.cif.gz"
+            ).ts.dimensions
+            is None
+        )
