@@ -11,7 +11,11 @@ from MDAnalysisTests.datafiles import MMCIF as MMCIF_FOLDER
 @pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
 @pytest.mark.parametrize(
     "mmcif_filename",
-    [f for f in glob.glob(f"{MMCIF_FOLDER}/*.cif*") if "invalid" not in f],
+    [
+        f
+        for f in glob.glob(f"{MMCIF_FOLDER}/*.cif*")
+        if "invalid" not in f and "warning" not in f
+    ],
 )
 def test_works_with_explicit_format(mmcif_filename):
     u = mda.Universe(mmcif_filename, format="MMCIF")
@@ -21,7 +25,11 @@ def test_works_with_explicit_format(mmcif_filename):
 @pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
 @pytest.mark.parametrize(
     "mmcif_filename",
-    [f for f in glob.glob(f"{MMCIF_FOLDER}/*.cif*") if "invalid" not in f],
+    [
+        f
+        for f in glob.glob(f"{MMCIF_FOLDER}/*.cif*")
+        if "invalid" not in f and "warning" not in f
+    ],
 )
 def test_works_without_explicit_format(mmcif_filename):
     u = mda.Universe(mmcif_filename)
@@ -60,3 +68,11 @@ def test_n_atoms(mmcif_filename, natoms_protein, natoms_total):
 )
 def test_cell(mmcif_filename, cell):
     assert np.allclose(mda.Universe(mmcif_filename).coord._unitcell, cell)
+
+
+@pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
+def test_multimodel_warning_msg():
+    with pytest.warns(
+        UserWarning, match=r"File .+ has .+ models, but only the first one will be read"
+    ):
+        mda.coordinates.MMCIF.MMCIFReader(f"{MMCIF_FOLDER}/multimodel_warning.cif")

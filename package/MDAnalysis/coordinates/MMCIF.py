@@ -128,13 +128,8 @@ class MMCIFReader(base.SingleFrameReaderBase):
         )
         if len(structure) > 1:
             warnings.warn(  # FIXME: add tests for this
-                f"File {self.filename} has {len(structure)} models, but only the first one will be read"
+                f"File {self.filename} has {len(structure)=} models, but only the first one will be read"
             )
-        if len(structure) > 1:
-            warnings.warn(  # FIXME: add tests for this
-                "MMCIF model {self.filename} contains {len(model)=} different models, "
-                "but only the first one will be used to assign the topology"
-            )  # TODO: if the structures represent timestamps, can parse them with :func:`get_coordinates`.
 
         model = structure[0]
         coords = get_coordinates(model)

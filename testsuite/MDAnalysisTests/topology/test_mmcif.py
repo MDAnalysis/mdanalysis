@@ -39,8 +39,7 @@ def test_chains(mmcif_filename, n_chains):
 def test_sequence(mmcif_filename, sequence):
     u = mda.Universe(mmcif_filename)
     in_structure = [
-        str(res.resname)
-        for res in u.select_atoms("protein and chainid A").residues
+        str(res.resname) for res in u.select_atoms("protein and chainid A").residues
     ]
     assert in_structure == sequence, ":".join(in_structure)
 
@@ -49,3 +48,12 @@ def test_sequence(mmcif_filename, sequence):
 def test_wrong_format():
     with pytest.raises(ValueError):
         mda.Universe(f"{MMCIF_FOLDER}/1YJP_invalid.cif")
+
+
+@pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
+def test_multimodel_warning_msg():
+    with pytest.warns(
+        UserWarning,
+        match=r"MMCIF model .+ contains .+ different models, but only the first one will be used to assign the topology",
+    ):
+        mda.topology.MMCIFParser.MMCIFParser(f"{MMCIF_FOLDER}/multimodel_warning.cif").parse()
