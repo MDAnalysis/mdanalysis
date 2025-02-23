@@ -19,13 +19,13 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "MDAnalysis"
 dynamic = ['version', 'readme']
-license = {file = "LICENSE"}
+license = { file = "LICENSE" }
 description = "An object-oriented toolkit to analyze molecular dynamics trajectories."
 authors = [
-    {name = 'MDAnalysis Development Team', email = 'mdanalysis@numfocus.org'}
+    { name = 'MDAnalysis Development Team', email = 'mdanalysis@numfocus.org' },
 ]
 maintainers = [
-    {name = 'MDAnalysis Core Developers', email = 'mdanalysis@numfocus.org'}
+    { name = 'MDAnalysis Core Developers', email = 'mdanalysis@numfocus.org' },
 ]
 requires-python = ">=3.10"
 dependencies = [
@@ -45,8 +45,14 @@ dependencies = [
     'mdahole2',
 ]
 keywords = [
-    "python", "science", "chemistry", "biophysics", "molecular-dynamics",
-    "computational-chemistry", "molecular-simulation", "analysis",
+    "python",
+    "science",
+    "chemistry",
+    "biophysics",
+    "molecular-dynamics",
+    "computational-chemistry",
+    "molecular-simulation",
+    "analysis",
     "trajectory-analysis",
 ]
 classifiers = [
@@ -79,7 +85,7 @@ extra_formats = [
     "pytng>=0.2.3",
     "gsd>3.0.0",
     "rdkit>=2020.03.1",
-    "gemmi", # for mmcif format
+    "gemmi",            # for mmcif format
 ]
 analysis = [
     "biopython>=1.80",
@@ -96,9 +102,7 @@ doc = [
     "pybtex",
     "pybtex-docutils",
 ]
-parallel = [
-    "dask",
-]
+parallel = ["dask"]
 
 [project.urls]
 Homepage = "https://www.mdanalysis.org"
@@ -120,16 +124,14 @@ zip-safe = false
 find = {}
 
 [tool.setuptools.package-data]
-MDAnalysis = [
-    'analysis/data/*.npy',
-]
+MDAnalysis = ['analysis/data/*.npy']
 
 [tool.black]
 line-length = 79
 target-version = ['py310', 'py311', 'py312', 'py313']
 extend-exclude = '''
 (
-__pycache__ 
+__pycache__
 | MDAnalysis/core/selection\.py
 | MDAnalysis/analysis/atomicdistances\.py
 | MDAnalysis/topology/CMSParser\.py
@@ -139,9 +141,7 @@ __pycache__
 | MDAnalysis/analysis/align\.py
 | MDAnalysis/analysis/dasktimeseries\.py
 | MDAnalysis/coordinates/H5MD\.py
-| MDAnalysis/coordinates/MMCIF\.py
 | MDAnalysis/coordinates/__init__\.py
-| MDAnalysis/topology/MMCIFParser\.py
 | MDAnalysis/topology/PDBParser\.py
 | MDAnalysis/topology/__init__\.py
 | MDAnalysis/topology/tpr/utils\.py

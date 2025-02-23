@@ -167,9 +167,7 @@ __pycache__
 | testsuite/MDAnalysisTests/analysis/test_diffusionmap\.py
 | testsuite/MDAnalysisTests/analysis/conftest\.py
 | testsuite/MDAnalysisTests/analysis/test_align\.py
-| testsuite/MDAnalysisTests/coordinates/test_mmcif\.py
 | testsuite/MDAnalysisTests/datafiles\.py
-| testsuite/MDAnalysisTests/topology/test_mmcif\.py
 | testsuite/MDAnalysisTests/coordinates/test_cif\.py
 | testsuite/MDAnalysisTests/analysis/test_encore\.py
 | testsuite/MDAnalysisTests/parallelism/test_multiprocessing\.py
