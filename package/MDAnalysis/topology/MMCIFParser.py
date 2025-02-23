@@ -97,7 +97,11 @@ def _into_idx(arr: list) -> list[int]:
 
     .. versionadded:: 2.9.0
     """
-    return [idx for idx, (_, group) in enumerate(itertools.groupby(arr)) for _ in group]
+    return [
+        idx
+        for idx, (_, group) in enumerate(itertools.groupby(arr))
+        for _ in group
+    ]
 
 
 def get_Atomattrs(model: "gemmi.Model") -> tuple[list[AtomAttr], np.ndarray]:

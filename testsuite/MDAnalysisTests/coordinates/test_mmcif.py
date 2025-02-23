@@ -75,9 +75,12 @@ def test_cell(mmcif_filename, cell):
 @pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
 def test_multimodel_warning_msg():
     with pytest.warns(
-        UserWarning, match=r"File .+ has .+ models, but only the first one will be read"
+        UserWarning,
+        match=r"File .+ has .+ models, but only the first one will be read",
     ):
-        mda.coordinates.MMCIF.MMCIFReader(f"{MMCIF_FOLDER}/multimodel_warning.cif")
+        mda.coordinates.MMCIF.MMCIFReader(
+            f"{MMCIF_FOLDER}/multimodel_warning.cif"
+        )
 
 
 @pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")

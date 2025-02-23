@@ -39,7 +39,8 @@ def test_chains(mmcif_filename, n_chains):
 def test_sequence(mmcif_filename, sequence):
     u = mda.Universe(mmcif_filename)
     in_structure = [
-        str(res.resname) for res in u.select_atoms("protein and chainid A").residues
+        str(res.resname)
+        for res in u.select_atoms("protein and chainid A").residues
     ]
     assert in_structure == sequence, ":".join(in_structure)
 
