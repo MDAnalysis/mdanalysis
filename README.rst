@@ -79,7 +79,7 @@ described in the `Installation Quick Start`_.
 **Source code** is hosted in a git repository at
 https://github.com/MDAnalysis/mdanalysis and is packaged under the
 GNU Lesser General Public License, version 3 or any later version (LGPLv3+).
-Invidiual source code components are provided under the
+Individual source code components are provided under the
 GNU Lesser General Public License, version 2.1 or any later version (LGPLv2.1+).
 Please see the file LICENSE_ for more information.
 
