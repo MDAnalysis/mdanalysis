@@ -21,7 +21,7 @@ import them from :mod:`MDAnalysis.visualization`, for instance: ::
   scipy_.
 
 .. _matplotlib: http://matplotlib.org
-.. _scipy: https://scipy.org/
+.. _scipy: https://www.scipy.org/scipylib/index.html
 
 
 Visualization of Lipid Flow

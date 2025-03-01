@@ -261,7 +261,7 @@
 
     <span class="c1"># reset nparents to the larger one between input and heuristic from data</span>
     <span class="c1"># This is useful for creating empty Universe where default value is 1.</span>
-    <span class="n">nparents</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">([</span><span class="n">nparents</span><span class="p">,</span> <span class="n">u_values</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="n">nparents</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">([</span><span class="n">nparents</span><span class="p">,</span> <span class="n">u_values</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
     <span class="n">residue_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nparents</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
     <span class="n">missing_resids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">setdiff1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nparents</span><span class="p">),</span> <span class="n">u_values</span><span class="p">))</span>
     <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">upshift_sorted</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -272,7 +272,7 @@
         <span class="k">if</span> <span class="n">missing_resid</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">residue_indices</span><span class="p">[</span><span class="n">missing_resid</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">residue_indices</span><span class="p">[</span><span class="n">missing_resid</span><span class="p">]</span> <span class="o">=</span> <span class="n">residue_indices</span><span class="p">[</span><span class="n">missing_resid</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">residue_indices</span><span class="p">[</span><span class="n">missing_resid</span><span class="p">]</span> <span class="o">=</span> <span class="n">residue_indices</span><span class="p">[</span><span class="n">missing_resid</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
     <span class="n">downshift</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="n">residue_indices</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
     <span class="c1"># Add None to end of array to force it to be of type Object</span>
@@ -328,15 +328,10 @@
 <span class="sd">    .. versionchanged:: 2.3.0</span>
 <span class="sd">        Lazy building RA and SR.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">n_atoms</span><span class="p">,</span>
-        <span class="n">n_residues</span><span class="p">,</span>
-        <span class="n">n_segments</span><span class="p">,</span>  <span class="c1"># Size of tables</span>
-        <span class="n">atom_resindex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">residue_segindex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># Contents of tables</span>
-    <span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">n_atoms</span><span class="p">,</span> <span class="n">n_residues</span><span class="p">,</span> <span class="n">n_segments</span><span class="p">,</span>  <span class="c1"># Size of tables</span>
+                 <span class="n">atom_resindex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">residue_segindex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># Contents of tables</span>
+                 <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="n">n_atoms</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_residues</span> <span class="o">=</span> <span class="n">n_residues</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_segments</span> <span class="o">=</span> <span class="n">n_segments</span>
@@ -363,25 +358,22 @@
 <a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.copy">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a deepcopy of this Transtable&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">n_residues</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">n_segments</span><span class="p">,</span>
-            <span class="n">atom_resindex</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_AR</span><span class="p">,</span>
-            <span class="n">residue_segindex</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_RS</span><span class="p">,</span>
-        <span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_residues</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_segments</span><span class="p">,</span>
+                              <span class="n">atom_resindex</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_AR</span><span class="p">,</span> <span class="n">residue_segindex</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_RS</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">RA</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_RA</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_RA</span> <span class="o">=</span> <span class="n">make_downshift_arrays</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_AR</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_residues</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_RA</span> <span class="o">=</span> <span class="n">make_downshift_arrays</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_AR</span><span class="p">,</span>
+                                             <span class="bp">self</span><span class="o">.</span><span class="n">n_residues</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_RA</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">SR</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SR</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_SR</span> <span class="o">=</span> <span class="n">make_downshift_arrays</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_RS</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_segments</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_SR</span> <span class="o">=</span> <span class="n">make_downshift_arrays</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_RS</span><span class="p">,</span>
+                                             <span class="bp">self</span><span class="o">.</span><span class="n">n_segments</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SR</span>
 
     <span class="nd">@property</span>
@@ -616,6 +608,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_RS</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_RS</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">segidx</span><span class="p">])])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_SR</span> <span class="o">=</span> <span class="kc">None</span>
 
+
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_residues</span> <span class="o">-</span> <span class="mi">1</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">add_Segment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -626,8 +619,8 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># don&#39;t serialize _RA and _SR for performance.</span>
         <span class="n">attrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span>
-        <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;_RA&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;_SR&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;_RA&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;_SR&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">return</span> <span class="n">attrs</span></div>
 
 
@@ -645,15 +638,10 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">n_atoms</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-        <span class="n">n_res</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-        <span class="n">n_seg</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-        <span class="n">attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">atom_resindex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">residue_segindex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_res</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_seg</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                 <span class="n">attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">atom_resindex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">residue_segindex</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -671,13 +659,9 @@
 <span class="sd">            1-D array giving the segindex of each residue in the system</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tt</span> <span class="o">=</span> <span class="n">TransTable</span><span class="p">(</span>
-            <span class="n">n_atoms</span><span class="p">,</span>
-            <span class="n">n_res</span><span class="p">,</span>
-            <span class="n">n_seg</span><span class="p">,</span>
-            <span class="n">atom_resindex</span><span class="o">=</span><span class="n">atom_resindex</span><span class="p">,</span>
-            <span class="n">residue_segindex</span><span class="o">=</span><span class="n">residue_segindex</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tt</span> <span class="o">=</span> <span class="n">TransTable</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">n_res</span><span class="p">,</span> <span class="n">n_seg</span><span class="p">,</span>
+                             <span class="n">atom_resindex</span><span class="o">=</span><span class="n">atom_resindex</span><span class="p">,</span>
+                             <span class="n">residue_segindex</span><span class="o">=</span><span class="n">residue_segindex</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">attrs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">attrs</span> <span class="o">=</span> <span class="p">[]</span>
@@ -752,26 +736,16 @@
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">guessed_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;A list of the guessed attributes in this topology&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">filter</span><span class="p">(</span>
-            <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span>
-                <span class="n">x</span><span class="o">.</span><span class="n">is_guessed</span>
-                <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">is_guessed</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Container</span><span class="p">))</span>
-                <span class="k">else</span> <span class="kc">True</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">is_guessed</span>
-            <span class="p">),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="k">return</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">is_guessed</span>
+                      <span class="k">if</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">is_guessed</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Container</span><span class="p">))</span>
+                      <span class="k">else</span> <span class="kc">True</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">is_guessed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">read_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;A list of the attributes read from the topology&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">filter</span><span class="p">(</span>
-            <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span>
-                <span class="ow">not</span> <span class="n">x</span><span class="o">.</span><span class="n">is_guessed</span>
-                <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">is_guessed</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Container</span><span class="p">))</span>
-                <span class="k">else</span> <span class="kc">False</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">is_guessed</span>
-            <span class="p">),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="k">return</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="ow">not</span> <span class="n">x</span><span class="o">.</span><span class="n">is_guessed</span>
+                      <span class="k">if</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">is_guessed</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Container</span><span class="p">))</span>
+                      <span class="k">else</span> <span class="kc">False</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">is_guessed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Topology.add_Residue">
 <a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.Topology.add_Residue">[docs]</a>
@@ -792,28 +766,21 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Check that all data is here before making any changes</span>
         <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">attr</span><span class="o">.</span><span class="n">per_object</span> <span class="o">==</span> <span class="s2">&quot;residue&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">attr</span><span class="o">.</span><span class="n">per_object</span> <span class="o">==</span> <span class="s1">&#39;residue&#39;</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="k">if</span> <span class="n">attr</span><span class="o">.</span><span class="n">singular</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">new_attrs</span><span class="p">:</span>
-                <span class="n">missing</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="n">attr</span><span class="o">.</span><span class="n">singular</span>
-                    <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span>
-                    <span class="k">if</span> <span class="p">(</span>
-                        <span class="n">attr</span><span class="o">.</span><span class="n">per_object</span> <span class="o">==</span> <span class="s2">&quot;residue&quot;</span>
-                        <span class="ow">and</span> <span class="n">attr</span><span class="o">.</span><span class="n">singular</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">new_attrs</span>
-                    <span class="p">)</span>
-                <span class="p">)</span>
-                <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span>
-                    <span class="s2">&quot;Missing the following attributes for the new&quot;</span>
-                    <span class="s2">&quot; Residue: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">missing</span><span class="p">))</span>
-                <span class="p">)</span>
+                <span class="n">missing</span> <span class="o">=</span> <span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">singular</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span>
+                           <span class="k">if</span> <span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">per_object</span> <span class="o">==</span> <span class="s1">&#39;residue&#39;</span> <span class="ow">and</span>
+                               <span class="n">attr</span><span class="o">.</span><span class="n">singular</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">new_attrs</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;Missing the following attributes for the new&quot;</span>
+                                  <span class="s2">&quot; Residue: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">missing</span><span class="p">)))</span>
 
         <span class="c1"># Resize topology table</span>
         <span class="n">residx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">add_Residue</span><span class="p">(</span><span class="n">segment</span><span class="o">.</span><span class="n">segindex</span><span class="p">)</span>
 
         <span class="c1"># Add new value to each attribute</span>
         <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">attr</span><span class="o">.</span><span class="n">per_object</span> <span class="o">==</span> <span class="s2">&quot;residue&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">attr</span><span class="o">.</span><span class="n">per_object</span> <span class="o">==</span> <span class="s1">&#39;residue&#39;</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="n">newval</span> <span class="o">=</span> <span class="n">new_attrs</span><span class="p">[</span><span class="n">attr</span><span class="o">.</span><span class="n">singular</span><span class="p">]</span>
             <span class="n">attr</span><span class="o">.</span><span class="n">_add_new</span><span class="p">(</span><span class="n">newval</span><span class="p">)</span>
@@ -846,32 +813,26 @@
 <span class="sd">           Added use of _add_new to resize topology attrs</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">attr</span><span class="o">.</span><span class="n">per_object</span> <span class="o">==</span> <span class="s2">&quot;segment&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">attr</span><span class="o">.</span><span class="n">per_object</span> <span class="o">==</span> <span class="s1">&#39;segment&#39;</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">attr</span><span class="o">.</span><span class="n">singular</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">new_attrs</span><span class="p">:</span>
-                    <span class="n">missing</span> <span class="o">=</span> <span class="p">(</span>
-                        <span class="n">attr</span><span class="o">.</span><span class="n">singular</span>
-                        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span>
-                        <span class="k">if</span> <span class="p">(</span>
-                            <span class="n">attr</span><span class="o">.</span><span class="n">per_object</span> <span class="o">==</span> <span class="s2">&quot;segment&quot;</span>
-                            <span class="ow">and</span> <span class="n">attr</span><span class="o">.</span><span class="n">singular</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">new_attrs</span>
-                        <span class="p">)</span>
-                    <span class="p">)</span>
-                    <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span>
-                        <span class="s2">&quot;Missing the following attributes for the&quot;</span>
-                        <span class="s2">&quot; new Segment: </span><span class="si">{}</span><span class="s2">&quot;</span>
-                        <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">missing</span><span class="p">))</span>
-                    <span class="p">)</span>
+                    <span class="n">missing</span> <span class="o">=</span> <span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">singular</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span>
+                               <span class="k">if</span> <span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">per_object</span> <span class="o">==</span> <span class="s1">&#39;segment&#39;</span> <span class="ow">and</span>
+                                   <span class="n">attr</span><span class="o">.</span><span class="n">singular</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">new_attrs</span><span class="p">))</span>
+                    <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;Missing the following attributes for the&quot;</span>
+                                      <span class="s2">&quot; new Segment: </span><span class="si">{}</span><span class="s2">&quot;</span>
+                                      <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">missing</span><span class="p">)))</span>
 
         <span class="n">segidx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">add_Segment</span><span class="p">()</span>
 
         <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">attr</span><span class="o">.</span><span class="n">per_object</span> <span class="o">==</span> <span class="s2">&quot;segment&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">attr</span><span class="o">.</span><span class="n">per_object</span> <span class="o">==</span> <span class="s1">&#39;segment&#39;</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="n">newval</span> <span class="o">=</span> <span class="n">new_attrs</span><span class="p">[</span><span class="n">attr</span><span class="o">.</span><span class="n">singular</span><span class="p">]</span>
             <span class="n">attr</span><span class="o">.</span><span class="n">_add_new</span><span class="p">(</span><span class="n">newval</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">segidx</span></div>
 </div>
+
 
 </pre></div>
 
@@ -882,7 +843,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2025, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Matthew Davies, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Alia Lescoulie, Zhenbo Li, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Kurt McKee, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Laksh Krishna Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Brigitta Sipőcz, Paul Smith, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Joshua Raphael Uy, Heet Vekariya, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Tanish Yelgoe, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Jia-Xin Zhu, Yuxuan Zhuang, Fabian Zills, and Oliver Beckstein.</p>
+    <p>&#169; Copyright 2005-2025, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Matthew Davies, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Alia Lescoulie, Zhenbo Li, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Kurt McKee, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Laksh Krishna Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Brigitta Sipőcz, Paul Smith, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Heet Vekariya, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Tanish Yelgoe, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Jia-Xin Zhu, Yuxuan Zhuang, Fabian Zills, and Oliver Beckstein.</p>
   </div>
 
   

@@ -206,10 +206,6 @@ case-insensitive):</p>
 <td><p>parallel implementation in C/Cython
 with OpenMP</p></td>
 </tr>
-<tr class="row-even"><td><p>“distopia”</p></td>
-<td><p><cite>_distopia</cite></p></td>
-<td><p>SIMD-accelerated implementation</p></td>
-</tr>
 </tbody>
 </table>
 </section>
@@ -226,18 +222,12 @@ you wish to use is covered by distopia. For more information see the
 <caption><span class="caption-text">Functions available using the <a class="reference external" href="https://github.com/MDAnalysis/distopia">distopia</a> backend.</span><a class="headerlink" href="#id2" title="Link to this table"></a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>Functions</p></th>
+<th class="head"><p>Notes</p></th>
 </tr>
 </thead>
 <tbody>
 <tr class="row-even"><td><p>MDAnalysis.lib.distances.calc_bonds</p></td>
-</tr>
-<tr class="row-odd"><td><p>MDAnalysis.lib.distances.calc_angles</p></td>
-</tr>
-<tr class="row-even"><td><p>MDAnalysis.lib.distances.calc_dihedrals</p></td>
-</tr>
-<tr class="row-odd"><td><p>MDAnalysis.lib.distances.distance_array</p></td>
-</tr>
-<tr class="row-even"><td><p>MDAnalysis.lib.distances.self_distance_array</p></td>
+<td><p>Doesn’t support triclinic boxes</p></td>
 </tr>
 </tbody>
 </table>
@@ -245,11 +235,17 @@ you wish to use is covered by distopia. For more information see the
 ‘distopia’ for the <cite>backend</cite> keyword argument. If the distopia backend is
 selected the <cite>distopia</cite> library will be used to calculate the distances. Note
 that for functions listed in this table <strong>distopia is not the default backend
-and must be selected.</strong></p>
+if and must be selected.</strong></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Distopia does not currently support triclinic simulation boxes. If you
+specify <cite>distopia</cite> as the backend and your simulation box is triclinic,
+the function will fall back to the default <cite>serial</cite> backend.</p>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Due to the use of Instruction Set Architecture (<a class="reference external" href="https://en.wikipedia.org/wiki/Instruction_set_architecture">ISA</a>) specific SIMD
-intrinsics in distopia via <a class="reference external" href="https://github.com/google/highway">HWY</a>, the precision of your results may
+intrinsics in distopia via <a class="reference external" href="https://github.com/vectorclass/version2">VCL2</a>, the precision of your results may
 depend on the ISA available on your machine. However, in all tested cases
 distopia satisfied the accuracy thresholds used to the functions in this
 module. Please document any issues you encounter with distopia’s accuracy
@@ -264,9 +260,6 @@ in the <a class="reference external" href="https://github.com/MDAnalysis/mdanaly
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 2.5.0: </span>Interface to the <a class="reference external" href="https://github.com/MDAnalysis/distopia">distopia</a> package added.</p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 2.9.0: </span>Distopia support greatly expanded (with distopia ≥ 0.4.0).</p>
 </div>
 </section>
 <section id="functions">
@@ -301,7 +294,7 @@ triclinic and must be provided in the same format as returned by
 <code class="docutils literal notranslate"><span class="pre">numpy.float64</span></code>.
 Avoids creating the array which saves time when the function
 is called repeatedly.</p></li>
-<li><p><strong>backend</strong> (<em>{'serial'</em><em>, </em><em>'OpenMP'</em><em>, </em><em>'distopia'}</em><em>, </em><em>optional</em>) – Keyword selecting the type of acceleration.</p></li>
+<li><p><strong>backend</strong> (<em>{'serial'</em><em>, </em><em>'OpenMP'}</em><em>, </em><em>optional</em>) – Keyword selecting the type of acceleration.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -322,9 +315,6 @@ Now also accepts single coordinates as input.</p>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 2.3.0: </span>Can now accept an <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> as an
 argument in any position and checks inputs using type hinting.</p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 2.9.0: </span>Added support for the <cite>distopia</cite> backend.</p>
 </div>
 </dd></dl>
 
@@ -351,7 +341,7 @@ triclinic and must be provided in the same format as returned by
 <li><p><strong>result</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – Preallocated result array which must have the shape <code class="docutils literal notranslate"><span class="pre">(n*(n-1)/2,)</span></code> and
 dtype <code class="docutils literal notranslate"><span class="pre">numpy.float64</span></code>. Avoids creating the array which saves time when
 the function is called repeatedly.</p></li>
-<li><p><strong>backend</strong> (<em>{'serial'</em><em>, </em><em>'OpenMP'</em><em>, </em><em>'distopia'}</em><em>, </em><em>optional</em>) – Keyword selecting the type of acceleration.</p></li>
+<li><p><strong>backend</strong> (<em>{'serial'</em><em>, </em><em>'OpenMP'}</em><em>, </em><em>optional</em>) – Keyword selecting the type of acceleration.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -369,7 +359,6 @@ coordinates <code class="docutils literal notranslate"><span class="pre">i</span
 <li><p><em>.. versionchanged:: 0.19.0</em> – Internal dtype conversion of input coordinates to <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code>.</p></li>
 <li><p><em>.. versionchanged:: 2.3.0</em> – Can now accept an <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> as an
 argument in any position and checks inputs using type hinting.</p></li>
-<li><p><em>.. versionchanged:: 2.9.0</em> – Added support for the <cite>distopia</cite> backend.</p></li>
 </ul>
 </p>
 </dd>
@@ -647,7 +636,7 @@ triclinic and must be provided in the same format as returned by
 <li><p><strong>result</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – Preallocated result array of dtype <code class="docutils literal notranslate"><span class="pre">numpy.float64</span></code> and shape <code class="docutils literal notranslate"><span class="pre">(n,)</span></code>
 (for <code class="docutils literal notranslate"><span class="pre">n</span></code> coordinate triplets). Avoids recreating the array in repeated
 function calls.</p></li>
-<li><p><strong>backend</strong> (<em>{'serial'</em><em>, </em><em>'OpenMP'</em><em>, </em><em>'distopia'}</em><em>, </em><em>optional</em>) – Keyword selecting the type of acceleration.</p></li>
+<li><p><strong>backend</strong> (<em>{'serial'</em><em>, </em><em>'OpenMP'}</em><em>, </em><em>optional</em>) – Keyword selecting the type of acceleration.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -733,7 +722,7 @@ triclinic and must be provided in the same format as returned by
 <li><p><strong>result</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – Preallocated result array of dtype <code class="docutils literal notranslate"><span class="pre">numpy.float64</span></code> and shape <code class="docutils literal notranslate"><span class="pre">(n,)</span></code>
 (for <code class="docutils literal notranslate"><span class="pre">n</span></code> coordinate quadruplets). Avoids recreating the array in
 repeated function calls.</p></li>
-<li><p><strong>backend</strong> (<em>{'serial'</em><em>, </em><em>'OpenMP'</em><em>, </em><em>'distopia'}</em><em>, </em><em>optional</em>) – Keyword selecting the type of acceleration.</p></li>
+<li><p><strong>backend</strong> (<em>{'serial'</em><em>, </em><em>'OpenMP'}</em><em>, </em><em>optional</em>) – Keyword selecting the type of acceleration.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1050,7 +1039,7 @@ the OpenMP-enable functions.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2025, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Matthew Davies, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Alia Lescoulie, Zhenbo Li, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Kurt McKee, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Laksh Krishna Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Brigitta Sipőcz, Paul Smith, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Joshua Raphael Uy, Heet Vekariya, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Tanish Yelgoe, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Jia-Xin Zhu, Yuxuan Zhuang, Fabian Zills, and Oliver Beckstein.</p>
+    <p>&#169; Copyright 2005-2025, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Matthew Davies, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Alia Lescoulie, Zhenbo Li, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Kurt McKee, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Laksh Krishna Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Brigitta Sipőcz, Paul Smith, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Heet Vekariya, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Tanish Yelgoe, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Jia-Xin Zhu, Yuxuan Zhuang, Fabian Zills, and Oliver Beckstein.</p>
   </div>
 
   
