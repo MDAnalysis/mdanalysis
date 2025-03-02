@@ -49,8 +49,8 @@ from MDAnalysis.tests.datafiles import (TPR, TPR400, TPR402, TPR403, TPR404,
                                         TPR2021_bonded, TPR2021_double_bonded,
                                         TPR2021Double, TPR2022RC1_bonded,
                                         TPR2023_bonded, TPR2024_4_bonded,
-                                        TPR2025_0_bonded,
-                                        TPR2024_bonded)
+                                        TPR2025_0_bonded, TPR2024_bonded,
+                                        TPR_NNPOT_2025_0)
 from numpy.testing import assert_equal
 
 # fmt: on
@@ -211,6 +211,18 @@ class TestTPR46x(TPRAttrs):
     def filename(self, request):
         return request.param
 
+class TestTPRNnpot(TPRAttrs):
+    expected_n_atoms = 23
+    expected_n_residues = 2
+    expected_n_segments = 1
+    ref_moltypes = np.array(["Protein_chain_A"] * 2, dtype=object)
+    ref_molnums = np.array([0] * 2)
+    ref_chainIDs = ["A"]
+
+    @pytest.fixture(params=[TPR_NNPOT_2025_0])
+    def filename(self, request):
+        return request.param
+
 
 def _test_is_in_topology(name, elements, topology_path, topology_section):
     """
@@ -342,6 +354,16 @@ def test_settle(bonds_water):
     assert len(bonds_water) == 202
     # The last index corresponds to the last water atom
     assert bonds_water[-1][1] == 2262
+
+
+@pytest.mark.parametrize("tpr_path", [TPR_NNPOT_2025_0])
+def test_ala2(tpr_path):
+    topology = MDAnalysis.topology.TPRParser.TPRParser(tpr_path).parse()
+    # Check that bonds etc are read correctly
+    assert len(topology.bonds.values) == 22  # 12 Bond + 10 Connect
+    assert len(topology.angles.values) == 21  # 21 Angle
+    assert len(topology.dihedrals.values) == 26  # 26 Proper Dih.
+    assert len(topology.impropers.values) == 1  # 1 Per. Imp. Dih.
 
 
 @pytest.mark.parametrize(

@@ -159,6 +159,7 @@ __all__ = [
     "TPR_EXTRA_2024",
     "TPR_EXTRA_2024_4",
     "TPR_EXTRA_2025_0",
+    "TPR_NNPOT_2025_0",
     "PDB_sub_sol",
     "PDB_sub_dry",  # TRRReader sub selection
     "TRR_sub_sol",
@@ -619,6 +620,10 @@ TPR_EXTRA_2016 = (
 ).as_posix()
 TPR_EXTRA_407 = (
     _data_ref / "tprs/virtual_sites/extra-interactions-4.0.7.tpr"
+).as_posix()
+# ALA dipeptide with neural network potential and a few other options
+TPR_NNPOT_2025_0 = (
+    _data_ref / "tprs/ala_nnpot_gmx_2025_0.tpr"
 ).as_posix()
 
 XYZ_psf = (_data_ref / "2r9r-1b.psf").as_posix()
