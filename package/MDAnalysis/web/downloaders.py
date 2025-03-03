@@ -41,10 +41,9 @@ class DownloaderBase():
             raise RuntimeError("File not set. Run download() to set file before convert_to_universe()")
         
         try:
-            u = Universe(self._file.name, topology_format=self.file_format.upper(), **kwargs)
+            return Universe(self._file.name, topology_format=self.file_format.upper(), **kwargs)
         finally:
             self._file.close() # Securely closed self._file from inherited classes
-        return u  
 
 
 class PdbDownloader(DownloaderBase):
@@ -81,6 +80,8 @@ class PdbDownloader(DownloaderBase):
             r.raise_for_status()
             self._file.write(r.text)
         except requests.HTTPError:
+
+        # Clean Up files in case of download failure
             self._file.close()
             named_file_path.unlink() 
             raise FileDownloadPDBError
