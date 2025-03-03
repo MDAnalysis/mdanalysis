@@ -172,7 +172,7 @@ class ParmEdConverter(base.ConverterBase):
         try:
             import parmed as pmd
         except ImportError:
-            ermsg = (
+            errmsg = (
                 "ParmEd is required for ParmEdConverter but is not "
                 "installed. Try installing it with \n"
                 "pip install parmed"
