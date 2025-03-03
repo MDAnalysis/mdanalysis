@@ -36,12 +36,14 @@ class DownloaderBase():
 
     def convert_to_universe(self, **kwargs):
         """Converts Downloaded file to a Universe"""
-        print(self._file)
+
         if self._file is None:
             raise RuntimeError("File not set. Run download() to set file before convert_to_universe()")
         
-        u = Universe(self._file.name, topology_format=self.file_format.upper(), **kwargs)
-        self._file.close() # Securely closed self._file from inherited classes
+        try:
+            u = Universe(self._file.name, topology_format=self.file_format.upper(), **kwargs)
+        finally:
+            self._file.close() # Securely closed self._file from inherited classes
         return u  
 
 
