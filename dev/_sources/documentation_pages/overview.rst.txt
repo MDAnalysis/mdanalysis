@@ -129,7 +129,7 @@ Finally, the :meth:`MDAnalysis.Universe.select_atoms` method generates a new
 as described in :ref:`selection-commands-label`.
 
 .. _SciPy: http://www.scipy.org/
-.. _IPython: http://ipython.scipy.org/
+.. _IPython: https://ipython.org/
 .. _MDAnalysis test suite: https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
 
 
