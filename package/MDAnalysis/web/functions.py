@@ -1,7 +1,7 @@
 from .downloaders import PdbDownloader
 
 
-def fetch_pdb(PDB_ID, download_path=None, timeout=30, **kwargs):
+def fetch_pdb(PDB_ID, download_path=None, timeout=None, **kwargs):
     """Fetchs PDB from RCSB"""
 
     downloader = PdbDownloader(PDB_ID).download(download_path,
