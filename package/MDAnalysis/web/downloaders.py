@@ -94,10 +94,7 @@ class PdbDownloader(BaseDownloader):
                 r.raise_for_status()
                 self._file.write(r.text)
             except requests.HTTPError:
-                print(self._file)
-                print(self._file.name)
-                # Clean Up files in case of download failure
-                #Path(str(self._file)).unlink()
+                # This also deletes the undownloaded file
                 raise FileDownloadPDBError
             finally:
                 # Closes File safely if saving to cache
