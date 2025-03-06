@@ -212,7 +212,7 @@ class PDBParser(TopologyReaderBase):
         -------
         MDAnalysis Topology object
         """
-        top = self._parseatoms()
+        top = self._parseatoms(**kwargs)
 
         try:
             bonds = self._parsebonds(top.ids.values)
@@ -229,7 +229,7 @@ class PDBParser(TopologyReaderBase):
 
         return top
 
-    def _parseatoms(self):
+    def _parseatoms(self, **kwargs):
         """Create the initial Topology object"""
         resid_prev = 0  # resid looping hack
 
@@ -311,6 +311,10 @@ class PDBParser(TopologyReaderBase):
 
         # If segids not present, try to use chainids
         if not any(segids):
+            segids = chainids
+
+        # If force_chainids_to_segids is set, use chainids as segids
+        if "force_chainids_to_segids" in kwargs.keys() and kwargs["force_chainids_to_segids"]:
             segids = chainids
 
         n_atoms = len(serials)
