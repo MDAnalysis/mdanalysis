@@ -25,6 +25,10 @@ class BaseDownloader(ABC):
 
     def __str__(self):
         return f"Metadata: id={self.id}, file_format={self.file_format}, "
+    
+    def __del__(self):
+        if self._file is not None:
+            self._file.close() # Ensure file-like object is closed in child classes
 
     def __init__(self, id, file_format):
         """Declares attributes meant to be manipulated by child classes"""
@@ -32,7 +36,7 @@ class BaseDownloader(ABC):
         # Attributes are meant to get updated by child instances 
         self.id = id
         self.file_format = file_format
-        
+
         self._file = None
 
     @abstractmethod
@@ -73,7 +77,8 @@ class PdbDownloader(BaseDownloader):
             
             # Found Cache, so don't download anything and open existing file
             if named_file_path.exists() and named_file_path.is_file():
-                self._file = open(named_file_path,"r")                      
+                self._file = open(named_file_path,"r")     
+                self._download = False                 
             
             else: # No cache found, so create Cache
                 self._file = open(named_file_path, 'w+t')
@@ -94,7 +99,7 @@ class PdbDownloader(BaseDownloader):
                 r.raise_for_status()
                 self._file.write(r.text)
             except requests.HTTPError:
-                # This also deletes the undownloaded file
+                # This also deletes the undownloaded file since write() hasn't been called yet
                 raise FileDownloadPDBError
             finally:
                 # Closes File safely if saving to cache
