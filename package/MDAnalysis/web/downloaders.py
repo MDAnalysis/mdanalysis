@@ -19,6 +19,19 @@ class FileDownloadPDBError(Exception):
 
         super().__init__(message)
 
+# Dict to convert file name arguments for Universe(topology_format="")
+TOPOLOGY_FORMAT_CONVERTER = {
+    "physical_file_extension": tuple([["pdb.gz", "pdb"]],
+                            ) ,
+    "topology_format": tuple(["PDB",],
+                             )
+    }
+
+def _file_format_to_topology_string(file_extension):
+    """Converts file names to a string usable by Universe(topology_format=)"""
+    for valid_file_extensions, valid_topology_string in zip(*TOPOLOGY_FORMAT_CONVERTER.values(), strict=True):
+        if file_extension in valid_file_extensions:
+            return valid_topology_string
 
 class BaseDownloader(ABC):
     """Abstract Base Class for all Downloaders. Not meant to be directly initalized!"""
@@ -51,14 +64,17 @@ class BaseDownloader(ABC):
             raise RuntimeError("File not set. Run download() to set file before convert_to_universe()")
 
         try:
-            return Universe(self._file.name, topology_format=self.file_format.upper(), **kwargs)
+            return Universe(self._file.name,
+                            topology_format=_file_format_to_topology_string(self.file_format),
+                            **kwargs)
         finally:
             self._file.close() 
 
 class PdbDownloader(BaseDownloader):
     """Class to handle download PDBs from the RCSB"""
      
-    def __init__(self, PDB_ID, file_format="pdb"):
+    def __init__(self, PDB_ID, file_format="pdb.gz"):
+
         super().__init__(PDB_ID, file_format)
 
         self._download = False

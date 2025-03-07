@@ -5,7 +5,7 @@ import pytest
 import requests
 
 working_PDB_ID = '1DPX' # egg white lysozyme 
-file_format = "pdb"
+file_format = "pdb.gz"
 
 
 @pytest.fixture(scope="function")
@@ -16,12 +16,18 @@ def shared_cache_directory(tmp_path_factory):
 
 class Test_Pdb_Downloader_BaseFunctionality():
     """Test Public API of Pdb_Downloader()"""
-   
-    def test_base_functionality(self):
-        """Test keywords in convert_to_universe()"""
-        downloader =  mda.web.PdbDownloader(PDB_ID=working_PDB_ID).download()
     
-        assert(isinstance(downloader.convert_to_universe(in_memory=True), mda.Universe))
+    valid_file_formats = ("pdb.gz", "pdb")
+
+    def test_base_functionality(self):
+        """Test file_formats and keywords in convert_to_universe()"""
+
+        universe_list = []
+        for file_format in self.valid_file_formats:
+            downloader =  mda.web.PdbDownloader(PDB_ID=working_PDB_ID, file_format=file_format).download()
+            universe_list.append(downloader.convert_to_universe(in_memory=True))
+
+        assert all(isinstance(universe, mda.Universe) for universe in universe_list)
 
     def test_timeout(self):
         """Checks requests timeout Exception for fetch_pdb and PdbDownloader"""
@@ -32,7 +38,7 @@ class Test_Pdb_Downloader_BaseFunctionality():
         """Test invalid id for PdbDownloader"""
 
         with pytest.raises(mda.web.downloaders.FileDownloadPDBError):
-            mda.web.PdbDownloader(PDB_ID='BananaBoat').download()
+            mda.web.PdbDownloader(PDB_ID='BananaBoat').download()       
 
 class Test_Pdb_Downloader_Cache():
     ### Cache Test underneath
