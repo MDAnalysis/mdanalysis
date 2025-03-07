@@ -1,11 +1,8 @@
 import MDAnalysis as mda
 import filecmp
 
-
 import pytest
 import requests
-
-
 
 working_PDB_ID = '1DPX' # egg white lysozyme 
 file_format = "pdb"

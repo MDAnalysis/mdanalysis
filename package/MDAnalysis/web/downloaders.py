@@ -68,7 +68,7 @@ class PdbDownloader(BaseDownloader):
 
         # create temporary file to save pdb file
         if cache_path is None: 
-            self._file = tempfile.NamedTemporaryFile(mode='w+t')
+            self._file = tempfile.NamedTemporaryFile(mode='wb')
             self._download = True
 
         # Create/Parse download cache
@@ -77,11 +77,11 @@ class PdbDownloader(BaseDownloader):
             
             # Found Cache, so don't download anything and open existing file
             if named_file_path.exists() and named_file_path.is_file():
-                self._file = open(named_file_path,"r")     
+                self._file = open(named_file_path, 'r')     
                 self._download = False                 
             
             else: # No cache found, so create Cache
-                self._file = open(named_file_path, 'w+t')
+                self._file = open(named_file_path, 'wb')
                 self._download = True
 
 
@@ -97,7 +97,7 @@ class PdbDownloader(BaseDownloader):
                 r = requests.get(f"https://files.rcsb.org/download/{self.id}.{self.file_format}",
                                 timeout=timeout)
                 r.raise_for_status()
-                self._file.write(r.text)
+                self._file.write(r.content)
             except requests.HTTPError:
                 # This also deletes the undownloaded file since write() hasn't been called yet
                 raise FileDownloadPDBError
