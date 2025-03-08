@@ -52,6 +52,7 @@ class BaseDownloader(ABC):
         # Attributes are meant to get updated by child instances 
         self.id = id
         self.file_format = file_format
+        self.filename = f"{self.id}.{self.file_format}"
 
         self._file = None
 
@@ -105,7 +106,7 @@ class PdbDownloader(BaseDownloader):
 
         # Create/Parse download cache
         else: 
-            named_file_path = Path(cache_path) / f"{self.id}.{self.file_format}"
+            named_file_path = Path(cache_path) / self.filename
             
             # Found Cache, so don't download anything and open existing file
             if named_file_path.exists() and named_file_path.is_file():
@@ -131,7 +132,7 @@ class PdbDownloader(BaseDownloader):
                 
                 r.raise_for_status()
                 if progress_bar:
-                    _requests_progress_bar(r, f"{self.id}.{self.file_format}", self._file)
+                    _requests_progress_bar(r, self.filename, self._file)
                 else:
                     self._file.write(r.content)
             except requests.HTTPError:
