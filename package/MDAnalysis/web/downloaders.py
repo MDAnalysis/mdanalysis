@@ -75,12 +75,12 @@ class BaseDownloader(ABC):
 
 def _requests_progress_bar(requests_response, file_name, file_writer, return_writer=False):
     """Puts a progress bar while writing a file_like object from the web"""
-    chunk_size = 1 
+    chunk_size = 1 # Files are so small that you can read them one byte at a time
     r = requests_response
 
     with ProgressBar(total=len(r.content), unit='B', unit_scale=True, desc=file_name) as pb:
-        for i in r.iter_content(chunk_size=chunk_size):
-            file_writer.write(i)
+        for byte in r.iter_content(chunk_size=chunk_size):
+            file_writer.write(byte)
             pb.update(chunk_size)
 
     if return_writer:
