@@ -1,9 +1,12 @@
+from MDAnalysis.core.universe import Universe
+from MDAnalysis.lib.log import ProgressBar
+
 from pathlib import Path
 from abc import ABC, abstractmethod
-import tempfile
+#from io import BytesIO
 
+import tempfile
 import requests
-from MDAnalysis.core.universe import Universe
 
 class FileDownloadPDBError(Exception):
     """
@@ -34,7 +37,7 @@ def _file_format_to_topology_string(file_extension):
             return valid_topology_string
 
 class BaseDownloader(ABC):
-    """Abstract Base Class for all Downloaders. Not meant to be directly initalized!"""
+    """Abstract Base Class for all File-Based Downloaders. Not meant to be directly initalized!"""
 
     def __str__(self):
         return f"Metadata: id={self.id}, file_format={self.file_format}, "
@@ -70,6 +73,19 @@ class BaseDownloader(ABC):
         finally:
             self._file.close() 
 
+def _requests_progress_bar(requests_response, file_name, file_writer, return_writer=False):
+    """Puts a progress bar while writing a file_like object from the web"""
+    chunk_size = 1 
+    r = requests_response
+
+    with ProgressBar(total=len(r.content), unit='B', unit_scale=True, desc=file_name) as pb:
+        for i in r.iter_content(chunk_size=chunk_size):
+            file_writer.write(i)
+            pb.update(chunk_size)
+
+    if return_writer:
+        return file_writer
+
 class PdbDownloader(BaseDownloader):
     """Class to handle download PDBs from the RCSB"""
      
@@ -84,12 +100,12 @@ class PdbDownloader(BaseDownloader):
 
         # create temporary file to save pdb file
         if cache_path is None: 
-            self._file = tempfile.NamedTemporaryFile(mode='wb')
+            self._file = tempfile.NamedTemporaryFile('wb')
             self._download = True
 
         # Create/Parse download cache
         else: 
-            named_file_path = Path(cache_path) /  f"{self.id}.{self.file_format}"
+            named_file_path = Path(cache_path) / f"{self.id}.{self.file_format}"
             
             # Found Cache, so don't download anything and open existing file
             if named_file_path.exists() and named_file_path.is_file():
@@ -101,7 +117,7 @@ class PdbDownloader(BaseDownloader):
                 self._download = True
 
 
-    def download(self, cache_path=None, timeout=None):
+    def download(self, cache_path=None, timeout=None, progress_bar=False):
         """Downloads files from the RCSB"""
 
         # Sets self._file correctly
@@ -111,11 +127,14 @@ class PdbDownloader(BaseDownloader):
         if self._download:
             try:
                 r = requests.get(f"https://files.rcsb.org/download/{self.id}.{self.file_format}",
-                                timeout=timeout)
+                                timeout=timeout, stream=progress_bar)
+                
                 r.raise_for_status()
-                self._file.write(r.content)
+                if progress_bar:
+                    _requests_progress_bar(r, f"{self.id}.{self.file_format}", self._file)
+                else:
+                    self._file.write(r.content)
             except requests.HTTPError:
-                # This also deletes the undownloaded file since write() hasn't been called yet
                 raise FileDownloadPDBError
             finally:
                 # Closes File safely if saving to cache
@@ -123,3 +142,4 @@ class PdbDownloader(BaseDownloader):
                     self._file.close()
                     
         return self
+
