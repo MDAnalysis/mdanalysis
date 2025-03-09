@@ -3,9 +3,10 @@ from MDAnalysis.lib.log import ProgressBar
 
 from pathlib import Path
 from abc import ABC, abstractmethod
-#from io import BytesIO
 
-import tempfile
+import io
+import gzip
+
 import requests
 
 class FileDownloadPDBError(Exception):
@@ -68,7 +69,7 @@ class BaseDownloader(ABC):
             raise RuntimeError("File not set. Run download() to set file before convert_to_universe()")
 
         try:
-            return Universe(self._file.name,
+            return Universe(topology=self._file,
                             topology_format=_file_format_to_topology_string(self.file_format),
                             **kwargs)
         finally:
@@ -88,7 +89,8 @@ class PdbDownloader(BaseDownloader):
 
         # create temporary file to save pdb file
         if cache_path is None: 
-            self._file = tempfile.NamedTemporaryFile('wb')
+            #self._file = tempfile.NamedTemporaryFile('wb')
+            self._file = io.BytesIO()
             self._download = True
 
         # Create/Parse download cache
@@ -127,23 +129,34 @@ class PdbDownloader(BaseDownloader):
                 r = requests.get(f"https://files.rcsb.org/download/{self.id}.{self.file_format}",
                                 timeout=timeout, stream=progress_bar)
                 
-                # Moves to except block if invalid PDB code was declared!0
+                # Moves to except block if invalid PDB code was declared!
                 r.raise_for_status()
 
+                # Progress Bar code
                 if progress_bar:
                     self._requests_progress_bar(r)
                 else:
                     self._file.write(r.content)
- 
+
+                # Download Cleanup!
+                # Universe doesn't accept binary stream only a text stream
+                # so need to convert BinaryIO to StringIO first!
+                self._file.seek(0)
+                if isinstance(self._file, io.BytesIO):
+                    if self.file_format == "pdb.gz":
+                        opened_gzip = gzip.open(self._file).read()
+                        self._file = io.StringIO(opened_gzip.decode('UTF-8'))
+                    elif self.file_format == "pdb":
+                        self._file = io.StringIO(self._file.read().decode('UTF-8'))
+
+                # Cleanly saves files to disk for cache
+                elif cache_path is not None:
+                    self._file.close() 
+
             except requests.HTTPError:
-                # Buffer isn't saved since self._file.write()
+                # Buffer isn't saved since self._file.write() isn't called!
                 # So no cleanup is needed!
                 raise FileDownloadPDBError
- 
-            finally:
-                # Closes File safely if saving to cache
-                if cache_path is not None:
-                    self._file.close()
-                    
+                                
         return self
 
