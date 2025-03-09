@@ -31,6 +31,7 @@ import importlib
 import MDAnalysis as mda
 from MDAnalysis.coordinates.H5MD import HAS_H5PY
 from MDAnalysisTests.datafiles import MMTF, TPR_xvf, H5MD_xvf
+from MDAnalysisTests.util import import_not_available
 
 # duecredit itself is not needed in the name space but this is a
 # convenient way to skip all tests if duecredit is not installed

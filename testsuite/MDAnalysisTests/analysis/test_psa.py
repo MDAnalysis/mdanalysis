@@ -25,7 +25,7 @@ from importlib import reload
 import pytest
 
 from MDAnalysis.analysis import psa
-from MDAnalysisTests.util import block_import, import_not_available
+from MDAnalysisTests.util import import_not_available
 
 
 @pytest.mark.skipif(
