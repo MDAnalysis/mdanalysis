@@ -70,12 +70,10 @@ inputs:
     default: 'netcdf4'
   networkx:
     default: 'networkx'
-  mdahole2:
-    default: 'mdahole2'
+  hole2:
+    default: 'hole2'
   openmm:
     default: 'openmm'
-  pathsimanalysis:
-    default: 'pathsimanalysis'
   pytng:
     default: 'pytng>=0.2.3'
   rdkit:
@@ -86,8 +84,6 @@ inputs:
     default: 'seaborn>=0.7.0'
   tidynamics:
     default: 'tidynamics>=1.0.0'
-  waterdynamics:
-    default: 'waterdynamics'
   # pip-installed min dependencies
   coverage:
     default: 'coverage'
@@ -102,10 +98,16 @@ inputs:
   # pip-install optional dependencies
   duecredit:
     default: 'duecredit'
+  mdahole2:
+    default: 'mdahole2'
   parmed:
     default: 'parmed'
+  pathsimanalysis:
+    default: 'pathsimanalysis'
   pyedr:
     default: 'pyedr>=0.7.0'
+  waterdynamics:
+    default: 'waterdynamics'
 
 runs:
   using: "composite"
