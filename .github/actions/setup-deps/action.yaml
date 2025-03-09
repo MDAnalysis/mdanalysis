@@ -70,8 +70,6 @@ inputs:
     default: 'netcdf4'
   networkx:
     default: 'networkx'
-  hole2:
-    default: 'hole2'
   openmm:
     default: 'openmm'
   pytng:
