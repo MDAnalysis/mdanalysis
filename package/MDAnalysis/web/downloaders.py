@@ -52,7 +52,7 @@ class BaseDownloader(ABC):
         # Attributes are meant to get updated by child instances 
         self.id = id
         self.file_format = file_format
-        self.filename = f"{self.id}.{self.file_format}"
+        self.file_name = f"{self.id}.{self.file_format}"
 
         self._file = None
 
@@ -74,19 +74,6 @@ class BaseDownloader(ABC):
         finally:
             self._file.close() 
 
-def _requests_progress_bar(requests_response, file_name, file_writer, return_writer=False):
-    """Puts a progress bar while writing a file_like object from the web"""
-    chunk_size = 1 # Files are so small that you can read them one byte at a time
-    r = requests_response
-
-    with ProgressBar(total=len(r.content), unit='B', unit_scale=True, desc=file_name) as pb:
-        for byte in r.iter_content(chunk_size=chunk_size):
-            file_writer.write(byte)
-            pb.update(chunk_size)
-
-    if return_writer:
-        return file_writer
-
 class PdbDownloader(BaseDownloader):
     """Class to handle download PDBs from the RCSB"""
      
@@ -106,17 +93,27 @@ class PdbDownloader(BaseDownloader):
 
         # Create/Parse download cache
         else: 
-            named_file_path = Path(cache_path) / self.filename
+            cache_file = Path(cache_path) / self.file_name
             
             # Found Cache, so don't download anything and open existing file
-            if named_file_path.exists() and named_file_path.is_file():
-                self._file = open(named_file_path, 'r')     
+            # Note this doesn't check the content of the file!
+            if cache_file.exists() and cache_file.is_file():
+                self._file = open(cache_file, 'r')     
                 self._download = False                 
             
             else: # No cache found, so create Cache
-                self._file = open(named_file_path, 'wb')
+                self._file = open(cache_file, 'wb')
                 self._download = True
 
+    def _requests_progress_bar(self, requests_response):
+        """Puts a progress bar when writing content with a request object"""
+        chunk_size = 1 # Files are so small that you can read them one byte at a time
+        r = requests_response
+
+        with ProgressBar(total=len(r.content), unit='B', unit_scale=True, desc=self.file_name) as pb:
+            for byte in r.iter_content(chunk_size=chunk_size):
+                self._file.write(byte)
+                pb.update(chunk_size)
 
     def download(self, cache_path=None, timeout=None, progress_bar=False):
         """Downloads files from the RCSB"""
@@ -130,13 +127,18 @@ class PdbDownloader(BaseDownloader):
                 r = requests.get(f"https://files.rcsb.org/download/{self.id}.{self.file_format}",
                                 timeout=timeout, stream=progress_bar)
                 
+                # Checks for valid PDB
                 r.raise_for_status()
+
+                # Progress Bar Option
                 if progress_bar:
-                    _requests_progress_bar(r, self.filename, self._file)
+                    self._requests_progress_bar(r)
                 else:
                     self._file.write(r.content)
+ 
             except requests.HTTPError:
                 raise FileDownloadPDBError
+ 
             finally:
                 # Closes File safely if saving to cache
                 if cache_path is not None:
