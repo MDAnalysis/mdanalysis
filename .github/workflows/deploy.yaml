@@ -66,7 +66,7 @@ jobs:
         #  (github.event_name == 'release' && github.event.action == 'published')
         uses: actions/upload-artifact@v4
         with:
-          name: wheel-${{ matrix.buildplat[1] }}-${{ matrix.python }}
+          name: wheel-${{ matrix.buildplat[0] }}-${{ matrix.python }}
           path: wheelhouse/*.whl
           retention-days: 7
 
