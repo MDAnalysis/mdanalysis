@@ -29,10 +29,21 @@ from MDAnalysisTests.util import block_import, import_not_available
 
 
 @pytest.mark.skipif(
-    import_not_available("tidynamics"),
-    reason="Test skipped because tidynamics not found",
+    import_not_available("pathsimanalysis"),
+    reason="Test skipped because PathSimAnalysis is not found",
 )
 def test_moved_to_mdakit_warning():
     wmsg = "MDAnalysis.analysis.psa is deprecated in favour of the MDAKit"
     with pytest.warns(DeprecationWarning, match=wmsg):
         reload(psa)
+
+
+@pytest.mark.skipif
+    not import_not_available("pathsimanalysis"),
+    reason="Test skipped because PathSimAnalysis is found",
+)
+def test_install_mdakit_warning():
+    wmsg = "Please install"
+    with pytest.warns(UserWarning, match=wmsg):
+        reload(psa)
+
