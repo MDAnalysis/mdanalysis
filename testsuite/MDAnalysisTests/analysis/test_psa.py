@@ -38,7 +38,7 @@ def test_moved_to_mdakit_warning():
         reload(psa)
 
 
-@pytest.mark.skipif
+@pytest.mark.skipif(
     not import_not_available("pathsimanalysis"),
     reason="Test skipped because PathSimAnalysis is found",
 )
@@ -46,4 +46,3 @@ def test_install_mdakit_warning():
     wmsg = "Please install"
     with pytest.warns(UserWarning, match=wmsg):
         reload(psa)
-

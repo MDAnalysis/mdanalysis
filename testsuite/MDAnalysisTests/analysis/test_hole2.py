@@ -39,7 +39,7 @@ def test_moved_to_mdakit_warning():
         reload(hole2)
 
 
-@pytest.mark.skipif
+@pytest.mark.skipif(
     not import_not_available("mdahole2"),
     reason="Test skipped because mdahole2 is found",
 )
@@ -47,4 +47,3 @@ def test_install_mdakit_warning():
     wmsg = "Please install"
     with pytest.warns(UserWarning, match=wmsg):
         reload(hole2)
-

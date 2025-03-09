@@ -37,7 +37,7 @@ def test_moved_to_mdakit_warning():
         reload(waterdynamics)
 
 
-@pytest.mark.skipif
+@pytest.mark.skipif(
     not import_not_available("waterdynamics"),
     reason="Test skipped because waterdynamics is found",
 )
@@ -45,4 +45,3 @@ def test_install_mdakit_warning():
     wmsg = "Please install"
     with pytest.warns(UserWarning, match=wmsg):
         reload(waterdynamics)
-
