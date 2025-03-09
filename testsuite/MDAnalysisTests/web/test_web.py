@@ -5,8 +5,6 @@ import pytest
 import requests
 
 working_PDB_ID = '1DPX' # egg white lysozyme 
-file_format = "pdb.gz"
-
 
 @pytest.fixture(scope="function")
 def shared_cache_directory(tmp_path_factory):
@@ -14,7 +12,7 @@ def shared_cache_directory(tmp_path_factory):
     return tmp_path_factory.mktemp("cache") 
 
 
-class Test_Pdb_Downloader_BaseFunctionality():
+class Test_PDB_Downloader_BaseFunctionality():
     """Test Public API of Pdb_Downloader()"""
     
     valid_file_formats = ("pdb.gz", "pdb")
@@ -24,7 +22,7 @@ class Test_Pdb_Downloader_BaseFunctionality():
 
         universe_list = []
         for file_format in self.valid_file_formats:
-            downloader =  mda.web.PdbDownloader(PDB_ID=working_PDB_ID, file_format=file_format).download()
+            downloader =  mda.web.PDBDownloader(PDB_ID=working_PDB_ID, file_format=file_format).download()
             universe_list.append(downloader.convert_to_universe(in_memory=True))
 
         assert all(isinstance(universe, mda.Universe) for universe in universe_list)
@@ -32,38 +30,43 @@ class Test_Pdb_Downloader_BaseFunctionality():
     def test_timeout(self):
         """Checks requests timeout Exception for fetch_pdb and PdbDownloader"""
         with pytest.raises(requests.exceptions.ConnectTimeout):
-            mda.web.PdbDownloader(PDB_ID=working_PDB_ID).download(timeout=0.00000001)
+            mda.web.PDBDownloader(PDB_ID=working_PDB_ID).download(timeout=0.0000001)
 
     def test_invalid_id(self):
         """Test invalid id for PdbDownloader"""
 
         with pytest.raises(mda.web.downloaders.FileDownloadPDBError):
-            mda.web.PdbDownloader(PDB_ID='BananaBoat').download()       
+            mda.web.PDBDownloader(PDB_ID='BananaBoat').download()       
 
 class Test_Pdb_Downloader_Cache():
     ### Cache Test underneath
+    file_format = "pdb.gz" # default format for PdbDownloader
+
+    def test_file_format(self):
+        assert self.file_format == "pdb.gz"
+
     def test_file_name_cache(self, shared_cache_directory):
         """Test that cache is saved as ID.file_format"""
-        downloader =  mda.web.PdbDownloader(PDB_ID=working_PDB_ID)
+        downloader =  mda.web.PDBDownloader(PDB_ID=working_PDB_ID,)
         
         downloader.download(cache_path=shared_cache_directory)
 
-        assert shared_cache_directory / f"{working_PDB_ID}.{file_format}"
+        assert shared_cache_directory / f"{working_PDB_ID}.{self.file_format}"
 
     def test_loading_cache(self, shared_cache_directory):
         """Test that PdbDownloader.download() is reading cache"""
 
-        downloader1 =  mda.web.PdbDownloader(PDB_ID=working_PDB_ID,
-                                            file_format=file_format)
+        downloader1 =  mda.web.PDBDownloader(PDB_ID=working_PDB_ID,
+                                            file_format=self.file_format)
 
         downloader1.download(cache_path=shared_cache_directory)
-        f1  = shared_cache_directory / f"{working_PDB_ID}.{file_format}"
+        f1  = shared_cache_directory / f"{working_PDB_ID}.{self.file_format}"
 
-        downloader2 =  mda.web.PdbDownloader(PDB_ID=working_PDB_ID,
-                                            file_format=file_format)
+        downloader2 =  mda.web.PDBDownloader(PDB_ID=working_PDB_ID,
+                                            file_format=self.file_format)
         downloader2.download(cache_path=shared_cache_directory)
   
-        f2  = shared_cache_directory / f"{working_PDB_ID}.{file_format}"
+        f2  = shared_cache_directory / f"{working_PDB_ID}.{self.file_format}"
         
         assert filecmp.cmp(f1, f2, shallow=False) == True
 

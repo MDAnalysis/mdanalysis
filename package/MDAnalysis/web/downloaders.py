@@ -75,7 +75,7 @@ class BaseDownloader(ABC):
         finally:
             self._file.close() 
 
-class PdbDownloader(BaseDownloader):
+class PDBDownloader(BaseDownloader):
     """Class to handle download PDBs from the RCSB"""
      
     def __init__(self, PDB_ID, file_format="pdb.gz"):
