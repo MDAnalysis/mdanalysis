@@ -25,8 +25,13 @@ from importlib import reload
 import pytest
 
 from MDAnalysis.analysis import psa
+from MDAnalysisTests.util import block_import, import_not_available
 
 
+@pytest.mark.skipif(
+    import_not_available("tidynamics"),
+    reason="Test skipped because tidynamics not found",
+)
 def test_moved_to_mdakit_warning():
     wmsg = "MDAnalysis.analysis.psa is deprecated in favour of the MDAKit"
     with pytest.warns(DeprecationWarning, match=wmsg):

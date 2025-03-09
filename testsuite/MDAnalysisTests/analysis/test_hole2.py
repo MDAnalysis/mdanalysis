@@ -26,8 +26,13 @@ from importlib import reload
 import pytest
 
 from MDAnalysis.analysis import hole2
+from MDAnalysisTests.util import block_import, import_not_available
 
 
+@pytest.mark.skipif(
+    import_not_available("tidynamics"),
+    reason="Test skipped because tidynamics not found",
+)
 def test_moved_to_mdakit_warning():
     wmsg = "MDAnalysis.analysis.hole2 is deprecated"
     with pytest.warns(DeprecationWarning, match=wmsg):
