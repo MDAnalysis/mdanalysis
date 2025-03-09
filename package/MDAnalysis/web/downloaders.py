@@ -41,7 +41,8 @@ class BaseDownloader(ABC):
     """Abstract Base Class for all File-Based Downloaders. Not meant to be directly initalized!"""
 
     def __str__(self):
-        return f"Metadata: id={self.id}, file_format={self.file_format}, "
+        file_set = True if self._file is not None else False
+        return f"{self.__class__.__name__}: Filename: {self.file_name}, File set? {file_set}"
     
     def __del__(self):
         if self._file is not None:
