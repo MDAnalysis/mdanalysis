@@ -13,37 +13,49 @@ def shared_cache_directory(tmp_path_factory):
 
 
 class Test_PDB_Downloader_BaseFunctionality():
-    """Test Public API of Pdb_Downloader()"""
+    """Test Public API of PDBDownloader()"""
     
     valid_file_formats = ("pdb.gz", "pdb")
 
-    def test_base_functionality(self):
+    def test_file_formats(self):
         """Test file_formats and keywords in convert_to_universe()"""
 
         universe_list = []
         for file_format in self.valid_file_formats:
             downloader =  mda.web.PDBDownloader(PDB_ID=working_PDB_ID, file_format=file_format).download()
-            universe_list.append(downloader.convert_to_universe(in_memory=True))
+            universe_list.append(downloader.convert_to_universe())
 
         assert all(isinstance(universe, mda.Universe) for universe in universe_list)
 
+    def test_keywords(self):
+        """Test keywords download() and convert_to_universe() in PDBDownloader"""
+
+        downloader =  mda.web.PDBDownloader(PDB_ID=working_PDB_ID).download(progress_bar=True)
+        u = downloader.convert_to_universe(in_memory=True)
+        
+
+        assert isinstance(u, mda.Universe)
+
     def test_timeout(self):
-        """Checks requests timeout Exception for fetch_pdb and PdbDownloader"""
+        """Checks requests timeout Exception for fetch_pdb and PDBDownloader"""
         with pytest.raises(requests.exceptions.ConnectTimeout):
             mda.web.PDBDownloader(PDB_ID=working_PDB_ID).download(timeout=0.0000001)
 
-    def test_invalid_id(self):
-        """Test invalid id for PdbDownloader"""
+    def test_invalid_PDB_id(self):
+        """Test invalid id for PDBDownloader"""
 
         with pytest.raises(mda.web.downloaders.FileDownloadPDBError):
-            mda.web.PDBDownloader(PDB_ID='BananaBoat').download()       
+            mda.web.PDBDownloader(PDB_ID='BananaBoat').download()
+
+    def test_premature_convert_to_universe(self):
+        """Tests if convert_to_universe() was called before download()"""
+
+        with pytest.raises(RuntimeError):
+            mda.web.PDBDownloader(PDB_ID='BananaBoat').convert_to_universe()
 
 class Test_Pdb_Downloader_Cache():
     ### Cache Test underneath
     file_format = "pdb.gz" # default format for PdbDownloader
-
-    def test_file_format(self):
-        assert self.file_format == "pdb.gz"
 
     def test_file_name_cache(self, shared_cache_directory):
         """Test that cache is saved as ID.file_format"""
@@ -54,7 +66,7 @@ class Test_Pdb_Downloader_Cache():
         assert shared_cache_directory / f"{working_PDB_ID}.{self.file_format}"
 
     def test_loading_cache(self, shared_cache_directory):
-        """Test that PdbDownloader.download() is reading cache"""
+        """Test that PDBDownloader.download() is reading cache"""
 
         downloader1 =  mda.web.PDBDownloader(PDB_ID=working_PDB_ID,
                                             file_format=self.file_format)
@@ -86,11 +98,6 @@ class Test_Fetch_Pdb():
         """Check if keywords could be passed to Universe constructors"""
         assert isinstance(mda.fetch_pdb(working_PDB_ID, download_path=None, timeout=None, in_memory=True),
                           mda.Universe)
-
-
-
-
-
 
 
 

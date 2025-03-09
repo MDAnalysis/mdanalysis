@@ -155,8 +155,6 @@ class PDBDownloader(BaseDownloader):
                     self._file.close() 
 
             except requests.HTTPError:
-                # Buffer isn't saved since self._file.write() isn't called!
-                # So no cleanup is needed!
                 raise FileDownloadPDBError
                                 
         return self
