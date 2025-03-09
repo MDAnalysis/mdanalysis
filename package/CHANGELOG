@@ -38,6 +38,11 @@ Enhancements
 
 
 Changes
+ * MDANalysis.analysis.psa, MDAnalysis.analysis.waterdynamics and
+   MDAnalysis.analysis.hole2 are now no longer available by default in
+   MDAnalysis. You will need to install their respective MDAKits to
+   keep using them. Please note that they will be fully removed in
+   MDAnalysis v3.0 (Issue #4899, PR #4953).
  * Changed `fasteners` dependency to  `filelock` (Issue #4797, PR #4800)
  * Codebase is now formatted with black (version `24`) (PR #4886)
 
