@@ -93,16 +93,16 @@ class PdbDownloader(BaseDownloader):
 
         # Create/Parse download cache
         else: 
-            cache_file = Path(cache_path) / self.file_name
+            cache_file_path = Path(cache_path) / self.file_name
             
             # Found Cache, so don't download anything and open existing file
             # Note this doesn't check the content of the file!
-            if cache_file.exists() and cache_file.is_file():
-                self._file = open(cache_file, 'r')     
+            if cache_file_path.exists() and cache_file_path.is_file():
+                self._file = open(cache_file_path, 'r')     
                 self._download = False                 
             
             else: # No cache found, so create Cache
-                self._file = open(cache_file, 'wb')
+                self._file = open(cache_file_path, 'wb')
                 self._download = True
 
     def _requests_progress_bar(self, requests_response):
@@ -127,16 +127,17 @@ class PdbDownloader(BaseDownloader):
                 r = requests.get(f"https://files.rcsb.org/download/{self.id}.{self.file_format}",
                                 timeout=timeout, stream=progress_bar)
                 
-                # Checks for valid PDB
+                # Moves to except block if invalid PDB code was declared!0
                 r.raise_for_status()
 
-                # Progress Bar Option
                 if progress_bar:
                     self._requests_progress_bar(r)
                 else:
                     self._file.write(r.content)
  
             except requests.HTTPError:
+                # Buffer isn't saved since self._file.write()
+                # So no cleanup is needed!
                 raise FileDownloadPDBError
  
             finally:
