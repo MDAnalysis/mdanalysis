@@ -66,6 +66,7 @@ jobs:
         #  (github.event_name == 'release' && github.event.action == 'published')
         uses: actions/upload-artifact@v4
         with:
+          name: wheel-${{ matrix.buildplat[1] }}-${{ matrix.python }}
           path: wheelhouse/*.whl
           retention-days: 7
 
@@ -91,6 +92,7 @@ jobs:
         #  (github.event_name == 'release' && github.event.action == 'published')
         uses: actions/upload-artifact@v4
         with:
+          name: sdist
           path: package/dist/*.tar.gz
           retention-days: 7
 
@@ -116,6 +118,7 @@ jobs:
         #  (github.event_name == 'release' && github.event.action == 'published')
         uses: actions/upload-artifact@v4
         with:
+          name: sdist_tests
           path: testsuite/dist/*.tar.gz
           retention-days: 7
 
@@ -126,8 +129,8 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: artifact
           path: dist
+          merge-multiple: true
       - name: ls
         run: |
           ls dist/*
