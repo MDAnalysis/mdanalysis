@@ -15,12 +15,12 @@ The rules for this file:
 
 -------------------------------------------------------------------------------
 03/09/25 IAlibay, ChiahsinChu, RMeli, tanishy7777, talagayev, tylerjereddy,
-         marinegor, hmacdope, jauy123
+         marinegor, hmacdope, jauy123, al42and
 
  * 2.9.0
 
 Fixes
- * Add support for TPR files produced by GROMACS 2024.4
+ * Add support for TPR files produced by GROMACS 2024.4 and GROMACS 2025.0
  * Fixes invalid default unit from Angstrom to Angstrom^{-3} for
    convert_density() function. (Issue #4829)
  * Fixes deprecation warning Array to scalar convertion. Replaced atan2()
@@ -41,6 +41,11 @@ Enhancements
  * Added `precision` for XYZWriter (Issue #4775, PR #4771) 
 
 Changes
+ * MDAnalysis.analysis.psa, MDAnalysis.analysis.waterdynamics and
+   MDAnalysis.analysis.hole2 are now no longer available by default in
+   MDAnalysis. You will need to install their respective MDAKits to
+   keep using them. Please note that they will be fully removed in
+   MDAnalysis v3.0 (Issue #4899, PR #4953).
  * Changed `fasteners` dependency to  `filelock` (Issue #4797, PR #4800)
  * Codebase is now formatted with black (version `24`) (PR #4886)
 
