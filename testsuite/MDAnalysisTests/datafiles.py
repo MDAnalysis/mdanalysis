@@ -622,9 +622,7 @@ TPR_EXTRA_407 = (
     _data_ref / "tprs/virtual_sites/extra-interactions-4.0.7.tpr"
 ).as_posix()
 # ALA dipeptide with neural network potential and a few other options
-TPR_NNPOT_2025_0 = (
-    _data_ref / "tprs/ala_nnpot_gmx_2025_0.tpr"
-).as_posix()
+TPR_NNPOT_2025_0 = (_data_ref / "tprs/ala_nnpot_gmx_2025_0.tpr").as_posix()
 
 XYZ_psf = (_data_ref / "2r9r-1b.psf").as_posix()
 XYZ_bz2 = (_data_ref / "2r9r-1b.xyz.bz2").as_posix()

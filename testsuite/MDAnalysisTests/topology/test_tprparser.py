@@ -211,6 +211,7 @@ class TestTPR46x(TPRAttrs):
     def filename(self, request):
         return request.param
 
+
 class TestTPRNnpot(TPRAttrs):
     expected_n_atoms = 23
     expected_n_residues = 2
