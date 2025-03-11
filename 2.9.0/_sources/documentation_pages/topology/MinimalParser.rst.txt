@@ -1,0 +1,1 @@
+.. automodule:: MDAnalysis.topology.MinimalParser
