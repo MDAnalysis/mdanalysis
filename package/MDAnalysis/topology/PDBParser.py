@@ -302,7 +302,7 @@ class PDBParser(TopologyReaderBase):
                 occupancies.append(float_or_default(line[54:60], 0.0))
                 tempfactors.append(float_or_default(line[60:66], 1.0))  # AKA bfactor
 
-                segids.append(line[66:76].strip())
+                segids.append(line[72:76].strip())
 
         # Warn about wrapped serials
         if self._wrapped_serials:
