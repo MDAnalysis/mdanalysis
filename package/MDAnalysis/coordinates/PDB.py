@@ -214,7 +214,8 @@ class PDBReader(base.ReaderBase):
     47 - 54        Real(8.3)     z            Orthogonal coordinates for Z in Angstroms.
     55 - 60        Real(6.2)     occupancy    Occupancy.
     61 - 66        Real(6.2)     tempFactor   Temperature  factor.
-    67 - 76        String        segID        (unofficial CHARMM extension ?)
+    67 - 72        -             -            (not in the official PDB format)
+    73 - 76        String        segID        (unofficial CHARMM extension ?)
     77 - 78        LString(2)    element      Element symbol, right-justified.
     79 - 80        LString(2)    charge       Charge  on the atom.
     =============  ============  ===========  =============================================
