@@ -260,7 +260,7 @@ radii, resids,
 resnames, icodes,
 segids</p></td>
 <td><p>PDB-like but whitespace-separated files with charge
-and radius information as used by, e.g., <a class="reference external" href="https://apbs-pdb2pqr.readthedocs.io/en/latest/apbs/">APBS</a>.
+and radius information as used by, e.g., <a class="reference external" href="https://apbs.readthedocs.io/en/latest/">APBS</a>.
 <a class="reference internal" href="PQRParser.html#module-MDAnalysis.topology.PQRParser" title="MDAnalysis.topology.PQRParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.PQRParser</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>PDBQT <a class="footnote-reference brackets" href="#a" id="id5" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p></td>
@@ -422,7 +422,7 @@ occupancies,
 types, icodes,
 resnames, resids,
 segids, models</p></td>
-<td><p><a class="reference external" href="https://mmtf.rcsb.org/">Macromolecular Transmission Format (MMTF)</a>. An
+<td><p><a class="reference external" href="https://www.rcsb.org/news/feature/65a1af31c76ca3abcc925d0c">Macromolecular Transmission Format (MMTF)</a>. An
 efficient compact format for biomolecular
 structures.</p></td>
 </tr>
@@ -456,6 +456,12 @@ in <a class="reference internal" href="TPRParser.html#module-MDAnalysis.topology
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><a class="reference internal" href="../coordinates_modules.html#coordinates"><span class="std std-ref">Coordinates modules</span></a> with the <a class="reference internal" href="../coordinates/init.html#id2"><span class="std std-ref">Table of supported coordinate formats</span></a></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The HOOMD XML file format has been deprecated in favor of the GSD.
+<a class="reference external" href="https://hoomd-blue.readthedocs.io/en/v2.9.3/module-deprecated-dump.html">https://hoomd-blue.readthedocs.io/en/v2.9.3/module-deprecated-dump.html</a>
+Transitioning to the GSD file format is advisable for working with HOOMD-blue simulations.</p>
 </div>
 <section id="developer-notes">
 <span id="topology-parsers-developer-notes"></span><h2><span class="section-number">5.1.1. </span>Developer Notes<a class="headerlink" href="#developer-notes" title="Link to this heading"></a></h2>

@@ -35,11 +35,11 @@ written out in a range of formats.
 .. _LAMMPS:  http://lammps.sandia.gov/
 .. _NAMD:    http://www.ks.uiuc.edu/Research/namd/
 .. _Gromacs: http://www.gromacs.org/
-.. _`DL_POLY`: http://www.scd.stfc.ac.uk//44516.aspx
+.. _`DL_POLY`: https://www.sc.stfc.ac.uk/software/type/computational-materials-and-molecular-science/?searchquery=dl_poly
 .. _VMD: http://www.ks.uiuc.edu/Research/vmd/
 .. _PyMol: http://www.pymol.org/
-.. _PDB: http://www.rcsb.org/pdb/static.do?p=file_formats/pdb/index.html
-.. _XYZ format: http://openbabel.org/wiki/XYZ_%28format%29
+.. _PDB: https://www.wwpdb.org/documentation/file-formats-and-the-pdb
+.. _XYZ format: https://en.wikipedia.org/wiki/XYZ_file_format
 
 
 Getting involved

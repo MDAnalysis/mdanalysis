@@ -537,7 +537,7 @@ is a file name, False when <cite>filename</cite> is a file-like object.</p></li>
 </section>
 <section id="ascii-traj-trajectories">
 <span id="ascii-trajectories"></span><h2><span class="section-number">7.20.2. </span>ASCII TRAJ trajectories<a class="headerlink" href="#ascii-traj-trajectories" title="Link to this heading"></a></h2>
-<p>ASCII <a class="reference external" href="http://ambermd.org">AMBER</a> TRJ coordinate files (as defined in <a class="reference external" href="http://ambermd.org/formats.html#trajectory">AMBER TRJ format</a>)
+<p>ASCII <a class="reference external" href="http://ambermd.org">AMBER</a> TRJ coordinate files (as defined in <a class="reference external" href="https://ambermd.org/FileFormats.php#trajectory">AMBER TRJ format</a>)
 are handled by the <a class="reference internal" href="#MDAnalysis.coordinates.TRJ.TRJReader" title="MDAnalysis.coordinates.TRJ.TRJReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">TRJReader</span></code></a>. It is also possible to directly
 read <em>bzip2</em> or <em>gzip</em> compressed files.</p>
 <p>AMBER ASCII trajectories are recognised by the suffix ‘.trj’,
@@ -570,7 +570,7 @@ assumed to be non-periodic (for technical reasons).</p></li>
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.TRJ.TRJReader">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.TRJ.</span></span><span class="sig-name descname"><span class="pre">TRJReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#TRJReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.TRJReader" title="Link to this definition"></a></dt>
 <dd><p>AMBER trajectory reader.</p>
-<p>Reads the ASCII formatted <a class="reference external" href="http://ambermd.org/formats.html#trajectory">AMBER TRJ format</a>. Periodic box information
+<p>Reads the ASCII formatted <a class="reference external" href="https://ambermd.org/FileFormats.php#trajectory">AMBER TRJ format</a>. Periodic box information
 is auto-detected.</p>
 <p>The number of atoms in a timestep <em>must</em> be provided in the <cite>n_atoms</cite>
 keyword because it is not stored in the trajectory header and cannot be

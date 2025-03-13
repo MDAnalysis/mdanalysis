@@ -299,8 +299,8 @@ on <em>Ubuntu 16.0.6</em>. You may have to play around with different combinatio
 versions of h5py/HDF5 to get a working parallel build.</p>
 <blockquote>
 <div><ol class="arabic">
-<li><p><a class="reference external" href="https://mpi4py.readthedocs.io/en/stable/appendix.html#building-mpi-from-sources">Build MPI from sources</a></p></li>
-<li><p><a class="reference external" href="https://support.hdfgroup.org/ftp/HDF5/current/src/unpacked/release_docs/INSTALL_parallel">Build HDF5 from sources</a> with parallel settings enabled:</p>
+<li><p><a class="reference external" href="https://docs.open-mpi.org/en/v5.0.x/installing-open-mpi/downloading.html">Build MPI from sources</a></p></li>
+<li><p><a class="reference external" href="https://docs.h5py.org/en/latest/mpi.html">Build HDF5 from sources</a> with parallel settings enabled:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./configure<span class="w"> </span>--enable-parallel<span class="w"> </span>--enable-shared
 make
 make<span class="w"> </span>install
