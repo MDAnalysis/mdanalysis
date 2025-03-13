@@ -41,18 +41,25 @@ See Also
 """
 import warnings
 
-from waterdynamics.waterdynamics import (
-    WaterOrientationalRelaxation,
-    AngularDistribution,
-    MeanSquareDisplacement,
-    SurvivalProbability,
-)
-
-
-wmsg = (
-    "Deprecation in version 2.8.0\n"
-    "MDAnalysis.analysis.waterdynamics is deprecated in favour of the "
-    "MDAKit waterdynamics (https://www.mdanalysis.org/waterdynamics/) "
-    "and will be removed in MDAnalysis version 3.0.0"
-)
-warnings.warn(wmsg, category=DeprecationWarning)
+try:
+    from waterdynamics.waterdynamics import (
+        WaterOrientationalRelaxation,
+        AngularDistribution,
+        MeanSquareDisplacement,
+        SurvivalProbability,
+    )
+except ImportError:
+    wmsg = (
+        "Please install the waterdynamics mdakit to use it in MDAnalysis.\n"
+        "More details can be found here: "
+        "https://www.mdanalysis.org/waterdynamics/getting_started.html"
+    )
+    warnings.warn(wmsg, category=UserWarning)
+else:
+    wmsg = (
+        "Deprecation in version 2.8.0\n"
+        "MDAnalysis.analysis.waterdynamics is deprecated in favour of the "
+        "MDAKit waterdynamics (https://www.mdanalysis.org/waterdynamics/) "
+        "and will be removed in MDAnalysis version 3.0.0"
+    )
+    warnings.warn(wmsg, category=DeprecationWarning)

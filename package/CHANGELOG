@@ -14,15 +14,31 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, ChiahsinChu, RMeli, tanishy7777, talagayev, tylerjereddy,
-         marinegor, hmacdope, jauy123
+??/??/?? IAlibay
+
+
+ * 2.10.0
+
+Fixes
+
+Enhancements
+
+Changes
+
+Deprecations
+
+
+03/11/25 IAlibay, ChiahsinChu, RMeli, tanishy7777, talagayev, tylerjereddy,
+         marinegor, hmacdope, jauy123, al42and
 
  * 2.9.0
 
 Fixes
- * Add support for TPR files produced by GROMACS 2024.4
- * Fixes invalid default unit from Angstrom to Angstrom^{-3} for convert_density() function. (Issue #4829)
- * Fixes deprecation warning Array to scalar convertion. Replaced atan2() with np.arctan2() (Issue #4339)
+ * Add support for TPR files produced by GROMACS 2024.4 and GROMACS 2025.0
+ * Fixes invalid default unit from Angstrom to Angstrom^{-3} for
+   convert_density() function. (Issue #4829)
+ * Fixes deprecation warning Array to scalar convertion. Replaced atan2()
+   with np.arctan2() (Issue #4339)
  * Replaced mutable defaults with None and initialized them within
    the function to prevent shared state. (Issue #4655)
 
@@ -30,18 +46,22 @@ Enhancements
  * Improve distopia backend support in line with new functionality available 
    in distopia >= 0.3.1 (PR #4734)
  * Addition of 'water' token for water selection (Issue #4839)
- * Enables parallelization for analysis.density.DensityAnalysis (Issue #4677, PR #4729)
+ * Enables parallelization for analysis.density.DensityAnalysis
+   (Issue #4677, PR #4729)
  * Enables parallelization for analysis.contacts.Contacts (Issue #4660)
  * Enable parallelization for analysis.nucleicacids.NucPairDist (Issue #4670)
- * Add check and warning for empty (all zero) coordinates in RDKit converter (PR #4824)
+ * Add check and warning for empty (all zero) coordinates in RDKit converter
+   (PR #4824)
  * Added `precision` for XYZWriter (Issue #4775, PR #4771) 
 
-
 Changes
+ * MDAnalysis.analysis.psa, MDAnalysis.analysis.waterdynamics and
+   MDAnalysis.analysis.hole2 are now no longer available by default in
+   MDAnalysis. You will need to install their respective MDAKits to
+   keep using them. Please note that they will be fully removed in
+   MDAnalysis v3.0 (Issue #4899, PR #4953).
  * Changed `fasteners` dependency to  `filelock` (Issue #4797, PR #4800)
  * Codebase is now formatted with black (version `24`) (PR #4886)
-
-Deprecations
 
 
 11/11/24 IAlibay, HeetVekariya, marinegor, lilyminium, RMeli,

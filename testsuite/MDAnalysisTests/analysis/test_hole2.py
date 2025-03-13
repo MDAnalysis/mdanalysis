@@ -26,9 +26,24 @@ from importlib import reload
 import pytest
 
 from MDAnalysis.analysis import hole2
+from MDAnalysisTests.util import import_not_available
 
 
+@pytest.mark.skipif(
+    import_not_available("mdahole2"),
+    reason="Test skipped because mdahole2 is not found",
+)
 def test_moved_to_mdakit_warning():
     wmsg = "MDAnalysis.analysis.hole2 is deprecated"
     with pytest.warns(DeprecationWarning, match=wmsg):
+        reload(hole2)
+
+
+@pytest.mark.skipif(
+    not import_not_available("mdahole2"),
+    reason="Test skipped because mdahole2 is found",
+)
+def test_install_mdakit_warning():
+    wmsg = "Please install"
+    with pytest.warns(UserWarning, match=wmsg):
         reload(hole2)
