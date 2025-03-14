@@ -50,7 +50,7 @@ case-insensitive):
                                         with OpenMP
 
    "distopia"  `_distopia`              SIMD-accelerated implementation
-                                        with the distopia_ library
+                                        with the `distopia`_ library
    ========== ========================= ======================================
 
 
