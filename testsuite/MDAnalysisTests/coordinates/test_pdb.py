@@ -1554,3 +1554,36 @@ def test_charges_limit(value):
     arr = np.array([0, 0, 0, value, 1, -1, 0], dtype=int)
     with pytest.raises(ValueError, match="9 is not supported by PDB standard"):
         mda.coordinates.PDB.PDBWriter._format_PDB_charges(arr)
+
+
+def test_force_chainids_to_segids():
+    # get examples from issue 2874
+
+    res1_str = """\
+ATOM    659  N   THR A 315      22.716  15.055  -1.000  1.00 16.08         A N
+ATOM    660  CA  THR A 315      22.888  13.803  -0.302  1.00  0.00           C
+ATOM    661  C   THR A 315      22.006  12.700  -0.882  1.00  0.00           C
+ATOM    662  O   THR A 315      21.138  12.959  -1.727  1.00 16.25         A O
+ATOM    663  CB  THR A 315      22.481  13.956   1.182  1.00  0.00           C
+ATOM    664  CG2 THR A 315      23.384  14.924   1.927  1.00  0.00           C
+ATOM    665  OG1 THR A 315      21.172  14.548   1.274  1.00  0.00           O
+"""
+
+    res2_str = """\
+ATOM    659  N   THR A 315      22.716  15.055  -1.000  1.00 16.08         A N
+ATOM    660  CA  THR A 315      22.888  13.803  -0.302  1.00 15.13         A C
+ATOM    661  C   THR A 315      22.006  12.700  -0.882  1.00 15.69         A C
+ATOM    662  O   THR A 315      21.138  12.959  -1.727  1.00 16.25         A O
+ATOM    663  CB  THR A 315      22.481  13.956   1.182  1.00 16.22         A C
+ATOM    664  CG2 THR A 315      22.874  15.310   1.747  1.00 17.32         A C
+ATOM    665  OG1 THR A 315      21.047  13.922   1.304  1.00 15.14         A O
+"""
+
+    res1 = mda.Universe(
+        StringIO(res1_str), format="PDB", force_chainids_to_segids=True
+    )
+    res2 = mda.Universe(
+        StringIO(res2_str), format="PDB", force_chainids_to_segids=True
+    )
+
+    assert len(res1.residues) == len(res2.residues)

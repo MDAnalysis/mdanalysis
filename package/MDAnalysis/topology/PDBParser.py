@@ -311,10 +311,15 @@ class PDBParser(TopologyReaderBase):
 
         # If segids not present, try to use chainids
         if not any(segids):
+            warnings.warn("Segment IDs (columns 73-76) are missing. "
+                          "Try to load from the chain IDs.")
             segids = chainids
 
         # If force_chainids_to_segids is set, use chainids as segids
-        if "force_chainids_to_segids" in kwargs.keys() and kwargs["force_chainids_to_segids"]:
+        if ("force_chainids_to_segids" in kwargs.keys()
+           and kwargs["force_chainids_to_segids"]):
+            warnings.warn("force_chainids_to_segids is set. "
+                          "Using chain IDs as segment IDs.")
             segids = chainids
 
         n_atoms = len(serials)
@@ -407,6 +412,8 @@ class PDBParser(TopologyReaderBase):
             n_segments = 1
             attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
             segidx = None
+            warnings.warn("Segment/chain ID is empty, "
+                          "set segids to default value 'SYSTEM'.")
 
         top = Topology(n_atoms, n_residues, n_segments,
                        attrs=attrs,
