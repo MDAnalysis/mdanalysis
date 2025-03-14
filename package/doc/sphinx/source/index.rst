@@ -22,13 +22,13 @@ most of these formats, too, together with atom selections for use in
 Gromacs_, CHARMM_, VMD_ and PyMol_ (see :ref:`Selection exporters`).
 
 It allows one to read molecular dynamics trajectories and access the
-atomic coordinates through NumPy_ arrays. This provides a flexible and
+atomic coordinates through `NumPy`_ arrays. This provides a flexible and
 relatively fast framework for complex analysis tasks. Fairly complete
 atom :ref:`selection-commands-label` are implemented. Trajectories can
 also be manipulated (for instance, fit to a reference structure) and
 written out in a range of formats.
 
-.. _`www.mdanalysis.org`: https://www.mdanalysis.org
+.. _www.mdanalysis.org: https://www.mdanalysis.org
 .. _NumPy: https://numpy.org/
 .. _CHARMM:  http://www.charmm.org/
 .. _Amber:   http://ambermd.org/
@@ -48,100 +48,34 @@ Getting involved
 Please report **bugs** or **enhancement requests** through the `Issue
 Tracker`_. Questions can also be asked on the `GitHub Discussions`_.
 
-The MDAnalysis community subscribes to a `Code of Conduct`_ that all community
-members agree and adhere to --- please read it.
+The MDAnalysis community follows a `Code of Conduct`_ that all members are expected to adhere to. 
+Please take a moment to read it.
 
 .. _Issue Tracker: https://github.com/MDAnalysis/mdanalysis/issues
-.. _`GitHub Discussions`:
-   https://github.com/MDAnalysis/mdanalysis/discussions
-.. _`Code of Conduct`: https://www.mdanalysis.org/pages/conduct/
-
-
-
-User Guide
-==========
-
-The MDAnalysis `User Guide`_ provides comprehensive information on how to
-use the library. We would recommend that new users have a look at the
-`Quick Start Guide`_. The User Guide also has a set of `examples`_ on how to
-use the MDAnalysis library which may be of interest.
-
-.. _`User Guide`: https://userguide.mdanalysis.org/stable/index.html
-.. _`Quick Start Guide`: https://userguide.mdanalysis.org/stable/examples/quickstart.html
-.. _`examples`: https://userguide.mdanalysis.org/stable/examples/README.html
+.. _GitHub Discussions: https://github.com/MDAnalysis/mdanalysis/discussions
+.. _Code of Conduct: https://www.mdanalysis.org/pages/conduct/
 
 
 .. _installation-instructions:
 
-Installing MDAnalysis
-=====================
+Installing and using MDAnalysis
+===============================
 
-The easiest approach to `install the latest release`_ is to use a package that
-can be installed either with conda_ or pip_.
+The MDAnalysis `User Guide`_ provides comprehensive information on how to `install`_
+and use the library. We would recommend that new users have a look at the
+`Quick Start Guide`_. The User Guide also has a set of `examples`_ on how to
+use the MDAnalysis library which may be of interest.
 
-conda
------
+.. _User Guide: https://userguide.mdanalysis.org/stable/index.html
+.. _Quick Start Guide: https://userguide.mdanalysis.org/stable/examples/quickstart.html
+.. _examples: https://userguide.mdanalysis.org/stable/examples/README.html
+.. _install: https://userguide.mdanalysis.org/stable/installation.html 
 
-First installation with conda_:
-
-.. code-block:: bash
-
-   conda config --add channels conda-forge
-   conda install mdanalysis
-
-which will automatically install a *full set of dependencies*.
-
-To upgrade later:
-
-.. code-block:: bash
-
-   conda update mdanalysis
-
-pip
----
-
-Installation with `pip`_ and a *minimal set of dependencies*:
-
-.. code-block:: bash
-
-   pip install --upgrade MDAnalysis
-
-To install with a *full set of dependencies* (which includes everything needed
-for :mod:`MDAnalysis.analysis`), add the ``[analysis]`` tag:
-
-.. code-block:: bash
-
-   pip install --upgrade MDAnalysis[analysis]
-
-
-Tests
------
-
-If you want to `run the tests`_ or use example files to follow some of the
-examples in the documentation or the tutorials_, also install the
-``MDAnalysisTests`` package:
-
-.. code-block:: bash
-
-   conda install mdanalysistests            # with conda
-   pip install --upgrade MDAnalysisTests    # with pip
-
-.. _install the latest release:
-   https://userguide.mdanalysis.org/stable/installation.html#installation
-.. _pip:
-   http://www.pip-installer.org/en/latest/index.html
-.. _conda:
-   http://conda.pydata.org/docs/
-.. _run the tests: https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
-.. _tutorials: https://www.mdanalysis.org/pages/learning_MDAnalysis/
-
-
-Source Code
+Source code
 ===========
 
-**Source code** is available from
-https://github.com/MDAnalysis/mdanalysis/ and is packaged under the
-`Lesser GNU Public Licence, version 3 or any later version`_. Individual components
+The MDAnalysis source code is available on https://github.com/MDAnalysis/mdanalysis/ and is 
+distributed under the `Lesser GNU Public Licence, version 3 or any later version`_. Individual components
 of the source code are provided under LGPL compatible licenses, details can be
 found in the `MDAnalysis license file`_. Obtain the sources with `git`_.
 
@@ -151,14 +85,12 @@ found in the `MDAnalysis license file`_. Obtain the sources with `git`_.
 
 
 The `User Guide`_ provides more information on how to
-`install the development version`_ of MDAnalysis.
+`install from source`_.
 
-.. _Lesser GNU Public Licence, version 3 or any later version:
-   https://www.gnu.org/licenses/lgpl-3.0.en.html
-.. _MDAnalysis license file:
-   https://github.com/MDAnalysis/mdanalysis/blob/develop/LICENSE
+.. _Lesser GNU Public Licence, version 3 or any later version: https://www.gnu.org/licenses/lgpl-3.0.en.html
+.. _MDAnalysis license file: https://github.com/MDAnalysis/mdanalysis/blob/develop/LICENSE
 .. _git: https://git-scm.com/
-.. _`install the development version`: https://userguide.mdanalysis.org/stable/installation.html#development-versions
+.. _install from source: https://userguide.mdanalysis.org/stable/installation.html
 
 
 Citation
@@ -167,13 +99,10 @@ Citation
 When using MDAnalysis in published work, please cite
 [Michaud-Agrawal2011]_ and [Gowers2016]_.
 
-MDAnalysis also contains specific algorithms and whole analysis
-modules whose algorithms have also been published in the scientific
-literature. Please make sure to also reference any
-:ref:`references-components` in published work.
+MDAnalysis includes specific algorithms and analysis modules, some of which have been published in the scientific literature.  
+Please ensure you cite the relevant :ref:`references-components` when using these features in your research.
 
 Thank you!
-
 
 .. Hide the contents from the front page because they are already in
 .. the side bar in the Alabaster sphinx style; requires Alabaster
@@ -185,7 +114,7 @@ Thank you!
 .. toctree::
    :maxdepth: 4
    :caption: Documentation
-   :numbered:		
+   :numbered:     
    :hidden:
 
    ./documentation_pages/overview
@@ -214,3 +143,4 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
