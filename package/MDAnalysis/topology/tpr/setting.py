@@ -53,6 +53,7 @@ SUPPORTED_VERSIONS = (
     129,
     133,
     134,
+    137,
 )
 
 # Some constants
@@ -94,12 +95,12 @@ tpxv_RemoveTholeRfac = 127
     F_DIHRESVIOL, F_CONSTR, F_CONSTRNC, F_SETTLE, F_VSITE1,
     F_VSITE2, F_VSITE2FD, F_VSITE3, F_VSITE3FD, F_VSITE3FAD,
     F_VSITE3OUT, F_VSITE4FD, F_VSITE4FDN, F_VSITEN,
-    F_COM_PULL, F_DENSITYFITTING, F_EQM, F_EPOT, F_EKIN,
+    F_COM_PULL, F_DENSITYFITTING, F_EQM, F_ENNPOT, F_EPOT, F_EKIN,
     F_ETOT, F_ECONSERVED, F_TEMP, F_VTEMP_NOLONGERUSED,
     F_PDISPCORR, F_PRES, F_DHDL_CON, F_DVDL,
     F_DKDL, F_DVDL_COUL, F_DVDL_VDW, F_DVDL_BONDED,
     F_DVDL_RESTRAINT, F_DVDL_TEMPERATURE, F_NRE
-) = list(range(95))
+) = list(range(96))
 # fmt: on
 
 #: Function types from ``<gromacs_dir>/src/gmxlib/tpxio.c``
@@ -127,6 +128,7 @@ ftupd = [
     (tpxv_GenericInternalParameters, F_DENSITYFITTING),
     (tpxv_VSite1, F_VSITE1),
     (tpxv_VSite2FD, F_VSITE2FD),
+    (137, F_ENNPOT),
 ]
 # fmt: on
 

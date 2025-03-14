@@ -34,7 +34,7 @@ that defines a Gromacs_ index group. To be used in Gromacs like this::
 The index groups are named *mdanalysis001*, *mdanalysis002*, etc.
 
 .. _Gromacs: http://www.gromacs.org
-.. _ndx: http://www.gromacs.org/Documentation/File_Formats/Index_File
+.. _ndx: https://manual.gromacs.org/current/reference-manual/file-formats.html#ndx
 
 .. autoclass:: SelectionWriter
    :inherited-members:

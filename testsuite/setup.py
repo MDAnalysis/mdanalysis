@@ -75,7 +75,7 @@ class MDA_SDist(sdist.sdist):
 
 if __name__ == "__main__":
     # this must be in-sync with MDAnalysis
-    RELEASE = "2.9.0-dev0"
+    RELEASE = "2.10.0-dev0"
 
     setup(
         version=RELEASE,

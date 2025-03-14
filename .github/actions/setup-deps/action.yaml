@@ -96,10 +96,16 @@ inputs:
   # pip-install optional dependencies
   duecredit:
     default: 'duecredit'
+  mdahole2:
+    default: 'mdahole2'
   parmed:
     default: 'parmed'
+  pathsimanalysis:
+    default: 'pathsimanalysis'
   pyedr:
     default: 'pyedr>=0.7.0'
+  waterdynamics:
+    default: 'waterdynamics'
 
 runs:
   using: "composite"

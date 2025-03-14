@@ -180,8 +180,8 @@ parallel hdf5/h5py/mpi4py please let everyone know on the
 .. _`H5PY`: http://docs.h5py.org/
 .. _`parallel h5py docs`: https://docs.h5py.org/en/stable/mpi.html
 .. _`mpi4py`: https://mpi4py.readthedocs.io/en/stable/index.html
-.. _`Build MPI from sources`: https://mpi4py.readthedocs.io/en/stable/appendix.html#building-mpi-from-sources
-.. _`Build HDF5 from sources`: https://support.hdfgroup.org/ftp/HDF5/current/src/unpacked/release_docs/INSTALL_parallel
+.. _`Build MPI from sources`: https://docs.open-mpi.org/en/v5.0.x/installing-open-mpi/downloading.html
+.. _`Build HDF5 from sources`: https://docs.h5py.org/en/latest/mpi.html
 .. _`Install mpi4py`: https://mpi4py.readthedocs.io/en/stable/install.html#requirements
 .. _`Build h5py from sources`: https://docs.h5py.org/en/stable/mpi.html#building-against-parallel-hdf5
 .. _`H5MD notation`: https://nongnu.org/h5md/modules/units.html
