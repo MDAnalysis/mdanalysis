@@ -174,6 +174,10 @@ class PDBParser(TopologyReaderBase):
      - bonds
      - formalcharges
 
+    Note that `PDBParser` accepts an optional keyword argument
+    ``force_chainids_to_segids``. If set to ``True``, the chain IDs (if existed)
+    will forcibly be used prior to the segment IDs for creating segments.
+
     See Also
     --------
     :class:`MDAnalysis.coordinates.PDB.PDBReader`

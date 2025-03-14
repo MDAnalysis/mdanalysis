@@ -312,6 +312,12 @@ class Universe(object):
         functionality to treat independent trajectory files as a single virtual
         trajectory.
     **kwargs: extra arguments are passed to the topology parser.
+        For instance, when reading a PDB file
+        (:class:`PDBReader<MDAnalysis.coordinates.PDB>`,
+        :class:`PDBParser<MDAnalysis.topology.PDBParser>`), set
+        ``force_chainids_to_segids=True`` to make the universe use the
+        chainIDs (column 22) prior to the segmentIDs (column 73-76) as the
+        `segids` in the universe and select the corresponding SegmentGroup.
 
     Attributes
     ----------
