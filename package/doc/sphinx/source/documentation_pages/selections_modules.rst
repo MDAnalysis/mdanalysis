@@ -122,4 +122,4 @@ Each module implements a :class:`SelectionWriter` for a specific format.
 .. _Gromacs: http://www.gromacs.org
 .. _VMD: http://www.ks.uiuc.edu/Research/vmd/
 .. _PyMOL: http://www.pymol.org
-.. _Jmol: http://wiki.jmol.org/
+.. _Jmol: https://jmol.sourceforge.net/

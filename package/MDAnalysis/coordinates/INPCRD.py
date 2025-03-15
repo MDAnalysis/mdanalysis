@@ -27,7 +27,7 @@
 
 Read coordinates in Amber_ coordinate/restart file (suffix "inpcrd").
 
-.. _Amber: http://ambermd.org/formats.html#restart
+.. _Amber: https://ambermd.org/FileFormats.php
 
 
 Classes
