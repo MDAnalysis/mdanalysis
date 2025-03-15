@@ -190,8 +190,11 @@
 
 <span class="sd">   &quot;OpenMP&quot;   :mod:`c_distances_openmp` parallel implementation in C/Cython</span>
 <span class="sd">                                        with OpenMP</span>
-<span class="sd">   &quot;distopia&quot;  `_distopia`               SIMD-accelerated implementation</span>
+
+<span class="sd">   &quot;distopia&quot;  `_distopia`              SIMD-accelerated implementation</span>
+<span class="sd">                                        with the `distopia`_ library</span>
 <span class="sd">   ========== ========================= ======================================</span>
+
 
 <span class="sd">Use of the distopia library</span>
 <span class="sd">---------------------------</span>
@@ -207,25 +210,27 @@
 <span class="sd">.. table:: Functions available using the `distopia`_ backend.</span>
 <span class="sd">   :align: center</span>
 
-<span class="sd">   +-----------------------------------------------+</span>
-<span class="sd">   | Functions                                     |</span>
-<span class="sd">   +===============================================+</span>
-<span class="sd">   | MDAnalysis.lib.distances.calc_bonds           |</span>
-<span class="sd">   +-----------------------------------------------+</span>
-<span class="sd">   | MDAnalysis.lib.distances.calc_angles          |</span>
-<span class="sd">   +-----------------------------------------------+</span>
-<span class="sd">   | MDAnalysis.lib.distances.calc_dihedrals       |</span>
-<span class="sd">   +-----------------------------------------------+</span>
-<span class="sd">   | MDAnalysis.lib.distances.distance_array       | </span>
-<span class="sd">   +-----------------------------------------------+</span>
-<span class="sd">   | MDAnalysis.lib.distances.self_distance_array  |</span>
-<span class="sd">   +-----------------------------------------------+</span>
+<span class="sd">   +-------------------------------------------------------+</span>
+<span class="sd">   | Functions                                             |</span>
+<span class="sd">   +=======================================================+</span>
+<span class="sd">   | :func:`MDAnalysis.lib.distances.calc_bonds`           |</span>
+<span class="sd">   +-------------------------------------------------------+</span>
+<span class="sd">   | :func:`MDAnalysis.lib.distances.calc_angles`          |</span>
+<span class="sd">   +-------------------------------------------------------+</span>
+<span class="sd">   | :func:`MDAnalysis.lib.distances.calc_dihedrals`       |</span>
+<span class="sd">   +-------------------------------------------------------+</span>
+<span class="sd">   | :func:`MDAnalysis.lib.distances.distance_array`       |</span>
+<span class="sd">   +-------------------------------------------------------+</span>
+<span class="sd">   | :func:`MDAnalysis.lib.distances.self_distance_array`  |</span>
+<span class="sd">   +-------------------------------------------------------+</span>
 
 <span class="sd">If `distopia`_ is installed, the functions in this table will accept the key</span>
-<span class="sd">&#39;distopia&#39; for the `backend` keyword argument. If the distopia backend is</span>
-<span class="sd">selected the `distopia` library will be used to calculate the distances. Note</span>
-<span class="sd">that for functions listed in this table **distopia is not the default backend</span>
-<span class="sd">and must be selected.**</span>
+<span class="sd">&#39;distopia&#39; for the `backend` keyword argument. The variable</span>
+<span class="sd">:data:`HAS_DISTOPIA` is set to ``True`` if distopia is available.</span>
+
+<span class="sd">If the distopia backend is selected the `distopia` library will be used to</span>
+<span class="sd">calculate the distances. Note that for functions listed in this table</span>
+<span class="sd">**distopia is not the default backend and must be explicitly selected.**</span>
 
 
 <span class="sd">.. Note::</span>
@@ -251,6 +256,14 @@
 <span class="sd">.. versionchanged:: 2.9.0</span>
 <span class="sd">   Distopia support greatly expanded (with distopia ≥ 0.4.0).</span>
 
+<span class="sd">Constants</span>
+<span class="sd">---------</span>
+<span class="sd">.. data:: HAS_DISTOPIA</span>
+
+<span class="sd">   This variable is ``True`` if the :mod:`distopia` package has been</span>
+<span class="sd">   installed and is available as a `backend`. Otherwise it is</span>
+<span class="sd">   ``False``.</span>
+
 <span class="sd">Functions</span>
 <span class="sd">---------</span>
 <span class="sd">.. autofunction:: distance_array</span>
@@ -266,6 +279,7 @@
 <span class="sd">.. autofunction:: augment_coordinates(coordinates, box, r)</span>
 <span class="sd">.. autofunction:: undo_augment(results, translation, nreal)</span>
 <span class="sd">.. autofunction:: minimize_vectors(vectors, box)</span>
+
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">npt</span>
