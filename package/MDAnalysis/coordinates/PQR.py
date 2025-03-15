@@ -100,9 +100,9 @@ The PQR format does not provide a means by which to provide box information.
 In all cases the `dimensions` attribute will be set to `None`.
 
 
-.. _PQR:     https://apbs-pdb2pqr.readthedocs.io/en/latest/formats/pqr.html
-.. _APBS:    https://apbs-pdb2pqr.readthedocs.io/en/latest/apbs/index.html
-.. _PDB2PQR: https://apbs-pdb2pqr.readthedocs.io/en/latest/pdb2pqr/index.html
+.. _PQR:     https://apbs.readthedocs.io/en/latest/formats/pqr.html
+.. _APBS:    https://apbs.readthedocs.io/en/latest/
+.. _PDB2PQR: https://pdb2pqr.readthedocs.io/en/latest/
 .. _PDB:     http://www.wwpdb.org/documentation/file-format
 """
 import itertools
@@ -117,7 +117,7 @@ class PQRReader(base.SingleFrameReaderBase):
     """Read a PQR_ file into MDAnalysis.
 
     .. _PQR:
-        https://apbs-pdb2pqr.readthedocs.io/en/latest/formats/pqr.html
+        https://apbs.readthedocs.io/en/latest/formats/pqr.html
 
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based

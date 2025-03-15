@@ -42,7 +42,7 @@ Classes
 
 
 .. _PQR:     https://apbs-pdb2pqr.readthedocs.io/en/latest/formats/pqr.html
-.. _APBS:    https://apbs-pdb2pqr.readthedocs.io/en/latest/apbs/index.html
+.. _APBS:    https://apbs.readthedocs.io/en/latest/
 .. _PDB2PQR: https://apbs-pdb2pqr.readthedocs.io/en/latest/pdb2pqr/index.html
 .. _PDB:     http://www.wwpdb.org/documentation/file-format
 

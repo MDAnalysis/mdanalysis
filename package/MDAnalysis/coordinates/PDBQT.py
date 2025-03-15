@@ -33,7 +33,7 @@ define the list of atoms (but no connectivity information will be
 available in this case).
 
 .. _PDBQT:
-   http://autodock.scripps.edu/faqs-help/faq/what-is-the-format-of-a-pdbqt-file
+   https://autodock.scripps.edu/wp-content/uploads/sites/56/2021/10/AutoDock4.2.6_UserGuide.pdf
 .. _AutoDock:
    http://autodock.scripps.edu/
 """
@@ -198,8 +198,7 @@ class PDBQTWriter(base.WriterBase):
     """PDBQT writer that implements a subset of the PDB_ 3.2 standard and the PDBQT_ spec.
 
     .. _PDB: http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html
-    .. _PDBQT: http://autodock.scripps.edu/faqs-help/faq/what-is-the-format-of-a-pdbqt-file
-
+    .. _PDBQT: https://autodock.scripps.edu/wp-content/uploads/sites/56/2021/10/AutoDock4.2.6_UserGuide.pdf
 
     .. versionchanged:: 2.6.0
        Files are now written in `wt` mode, and keep extensions, allowing
