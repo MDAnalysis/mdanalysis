@@ -206,6 +206,9 @@ class PDBParser(TopologyReaderBase):
     .. versionchanged:: 2.8.0
         Removed type and mass guessing (attributes guessing takes place now
         through universe.guess_TopologyAttrs() API).
+    .. versionchanged:: 2.10.0 dev
+        Modified the segid columns and added the `force_chainids_to_segids`
+        keyword argument.
     """
     format = ['PDB', 'ENT']
 
