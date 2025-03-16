@@ -1809,7 +1809,7 @@ class Universe(object):
 
         """
 
-        # check if custom_ids is provided, if not, use the chainIDs.
+        # check if custom_segids is provided, if not, use the chainIDs.
         # Otherwise, do nothing.
         if custom_segids is not None:
             pass
@@ -1818,11 +1818,11 @@ class Universe(object):
         else:
             return None
 
-        # check if the length of custom_ids
+        # check if the length of custom_segids
         assert len(custom_segids) == self.atoms.n_atoms, \
-            "The length of custom_ids should be the same as " \
+            "The length of custom_segids should be the same as " \
             "the number of atoms in the universe."
-        custom_segids = np.array(custom_segids)
+        custom_segids = np.array(custom_segids, dtype=object)
 
         _update_topology_by_segids(self, custom_segids)
         _generate_from_topology(self)
