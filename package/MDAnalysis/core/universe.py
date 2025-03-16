@@ -78,7 +78,6 @@ from ..lib import util
 from ..lib.log import ProgressBar
 from ..lib.util import cached, NamedStream, isstream
 from ..lib.mdamath import find_fragments
-from ..topology.base import change_squash
 from . import groups
 from ._get_readers import get_reader_for, get_parser_for
 from .groups import (ComponentBase, GroupBase,
@@ -97,12 +96,16 @@ logger = logging.getLogger("MDAnalysis.core.universe")
 
 
 def _update_topology_by_segids(universe, custom_segids):
+    from ..topology.base import change_squash
     # copy the original topology
     top = universe._topology.copy()
 
     # detect the residue and above (segment level) attributes
-    res_attridices = [idx for idx, each_attr in enumerate(top.attrs)
-                      if Residue in each_attr.target_classes]
+    res_attridices = [
+        idx
+        for idx, each_attr in enumerate(top.attrs)
+        if Residue in each_attr.target_classes
+    ]
     res_attrs = [top.attrs[each_attr] for each_attr in res_attridices]
 
     # delete residue level and above (segment level) attributes
@@ -114,22 +117,40 @@ def _update_topology_by_segids(universe, custom_segids):
             unable_delete_attrnames.append(each_attr.attrname)
 
     # get the remaining attributes (atom level attributes)
-    attrs = [each_attr for each_attr in top.attrs
-             if each_attr.attrname not in unable_delete_attrnames]
+    attrs = [
+        each_attr
+        for each_attr in top.attrs
+        if each_attr.attrname not in unable_delete_attrnames
+    ]
 
     # create new residues level stuff
     if hasattr(universe.atoms, "icodes"):
         residx, (resids, resnames, icodes, resnums, segids) = change_squash(
-            (universe.atoms.resids, universe.atoms.resnames, universe.atoms.icodes,
-             custom_segids),
-            (universe.atoms.resids, universe.atoms.resnames, universe.atoms.icodes,
-             universe.atoms.resnums, custom_segids))
+            (
+                universe.atoms.resids,
+                universe.atoms.resnames,
+                universe.atoms.icodes,
+                custom_segids,
+            ),
+            (
+                universe.atoms.resids,
+                universe.atoms.resnames,
+                universe.atoms.icodes,
+                universe.atoms.resnums,
+                custom_segids,
+            ),
+        )
         attrs.append(ICodes(icodes))
     else:
         residx, (resids, resnames, resnums, segids) = change_squash(
             (universe.atoms.resids, universe.atoms.resnames, custom_segids),
-            (universe.atoms.resids, universe.atoms.resnames,
-             universe.atoms.resnums, custom_segids))
+            (
+                universe.atoms.resids,
+                universe.atoms.resnames,
+                universe.atoms.resnums,
+                custom_segids,
+            ),
+        )
     n_residues = len(resids)
 
     attrs.append(Resnums(resnums))
@@ -143,11 +164,18 @@ def _update_topology_by_segids(universe, custom_segids):
     attrs.append(Segids(segids))
 
     # create new topology
-    top = Topology(universe.atoms.n_atoms, n_residues, n_segments, attrs=attrs,
-                   atom_resindex=residx, residue_segindex=segidx)
+    top = Topology(
+        universe.atoms.n_atoms,
+        n_residues,
+        n_segments,
+        attrs=attrs,
+        atom_resindex=residx,
+        residue_segindex=segidx,
+    )
 
     # update the universe
     universe._topology = top
+
 
 def _check_file_like(topology):
     if isstream(topology):
@@ -1781,7 +1809,8 @@ class Universe(object):
 
         """
 
-        # check if custom_ids is provided, if not, use the chainIDs. Otherwise, do nothing.
+        # check if custom_ids is provided, if not, use the chainIDs.
+        # Otherwise, do nothing.
         if custom_segids is not None:
             pass
         elif custom_segids is None and hasattr(self.atoms, "chainIDs"):
@@ -1790,7 +1819,9 @@ class Universe(object):
             return None
 
         # check if the length of custom_ids
-        assert len(custom_segids) == self.atoms.n_atoms, "The length of custom_ids should be the same as the number of atoms in the universe."
+        assert len(custom_segids) == self.atoms.n_atoms, \
+            "The length of custom_ids should be the same as " \
+            "the number of atoms in the universe."
         custom_segids = np.array(custom_segids)
 
         _update_topology_by_segids(self, custom_segids)
