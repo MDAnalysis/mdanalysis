@@ -173,7 +173,7 @@ def _update_topology_by_segids(universe, custom_segids):
         residue_segindex=segidx,
     )
 
-    # update the universe
+    # update the topologu in the universe
     universe._topology = top
 
 
@@ -467,6 +467,11 @@ class Universe(object):
         Added :meth:`~MDAnalysis.core.universe.Universe.guess_TopologyAttrs` API
         guessing masses and atom types after topology
         is read from a registered parser.
+
+    .. versionchanged:: 2.10.0 dev
+        Added :meth: `~MDAnalysis.core.universe.Universe.guess_or_set_segments`
+        API to guess or set segments based on the atom-wise chainIDs or provided
+        custom segids.
 
     """
     def __init__(self, topology=None, *coordinates, all_coordinates=False,
@@ -1803,7 +1808,7 @@ class Universe(object):
 
             u.guess_or_set_segments() # guess the segments based on chainIDs
 
-        To set custom segment IDs for the Universe::
+        To set custom segment IDs for the segments of the Universe::
 
             u.guess_or_set_segments(custom_segids=['A', 'A', 'B', 'B'])
 

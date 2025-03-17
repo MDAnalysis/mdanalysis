@@ -1538,3 +1538,72 @@ class TestOnlyTopology:
             u = mda.Universe(t, to_guess=())
 
         assert len(u.atoms) == 10
+
+
+def test_guess_or_set_segments():
+    bad_seg_str = """\
+ATOM    659  N   THR A 315      22.716  15.055  -1.000  1.00 16.08         A N
+ATOM    660  CA  THR A 315      22.888  13.803  -0.302  1.00  0.00           C
+ATOM    661  C   THR A 315      22.006  12.700  -0.882  1.00  0.00           C
+ATOM    662  O   THR A 316      21.138  12.959  -1.727  1.00 16.25         A O
+ATOM    663  CB  THR B 314      22.481  13.956   1.182  1.00  0.00         B C
+ATOM    664  CG2 THR B 315      23.384  14.924   1.927  1.00  0.00           C
+ATOM    665  OG1 THR B 315      21.172  14.548   1.274  1.00  0.00           O
+"""
+
+    good_str = """\
+ATOM    659  N   THR A 315      22.716  15.055  -1.000  1.00 16.08         A N
+ATOM    660  CA  THR A 315      22.888  13.803  -0.302  1.00 15.13         A C
+ATOM    661  C   THR A 315      22.006  12.700  -0.882  1.00 15.69         A C
+ATOM    662  O   THR A 316      21.138  12.959  -1.727  1.00 16.25         A O
+ATOM    663  CB  THR B 314      22.481  13.956   1.182  1.00 16.22         B C
+ATOM    664  CG2 THR B 315      22.874  15.310   1.747  1.00 17.32         B C
+ATOM    665  OG1 THR B 315      21.047  13.922   1.304  1.00 15.14         B O
+"""
+
+    bad_seg1 = mda.Universe(StringIO(bad_seg_str), format="PDB")
+    bad_seg2 = mda.Universe(StringIO(bad_seg_str), format="PDB")
+    good = mda.Universe(StringIO(good_str), format="PDB")
+
+    bad_seg1.guess_or_set_segments(["A", "A", "A", "A", "B", "B", "B"])
+    bad_seg2.guess_or_set_segments()
+
+    # segment level
+    assert len(bad_seg1.segments) == len(good.segments)
+    assert len(bad_seg2.segments) == len(good.segments)
+    for seg1, seg2, seg3 in zip(
+        bad_seg1.segments, bad_seg2.segments, good.segments
+    ):
+        assert seg1.segid == seg3.segid
+        assert seg2.segid == seg3.segid
+
+    # residue level
+    assert len(bad_seg1.residues) == len(good.residues)
+    assert len(bad_seg2.residues) == len(good.residues)
+    for re1, re2, re3 in zip(
+        bad_seg1.residues, bad_seg2.residues, good.residues
+    ):
+
+        assert re1.resname == re3.resname
+        assert re1.resid == re3.resid
+        assert re1.segid == re3.segid
+
+        assert re2.resname == re3.resname
+        assert re2.resid == re3.resid
+        assert re2.segid == re3.segid
+
+    # atom level
+    assert len(bad_seg1.atoms) == len(good.atoms)
+    assert len(bad_seg2.atoms) == len(good.atoms)
+    for atom1, atom2, atom3 in zip(bad_seg1.atoms, bad_seg2.atoms, good.atoms):
+        assert atom1.name == atom3.name
+        assert atom1.resname == atom3.resname
+        assert atom1.resid == atom3.resid
+        assert atom1.segid == atom3.segid
+        assert atom1.chainID == atom3.chainID
+
+        assert atom2.name == atom3.name
+        assert atom2.resname == atom3.resname
+        assert atom2.resid == atom3.resid
+        assert atom2.segid == atom3.segid
+        assert atom2.chainID == atom3.chainID
