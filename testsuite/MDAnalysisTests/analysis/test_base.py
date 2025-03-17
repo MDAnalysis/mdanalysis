@@ -27,10 +27,12 @@ import MDAnalysis as mda
 import numpy as np
 import pytest
 from MDAnalysis.analysis import backends, base
-from numpy.testing import assert_allclose, assert_almost_equal, assert_equal
+from numpy.testing import assert_allclose, assert_equal  # Removed assert_almost_equal
 
 from MDAnalysisTests.datafiles import DCD, PSF, TPR, XTC
 from MDAnalysisTests.util import no_deprecated_call
+
+
 
 
 class FrameAnalysis(base.AnalysisBase):
@@ -272,14 +274,13 @@ def test_fails_for_unparallelizable(u, run_class, backend, n_workers):
     ],
 )
 def test_start_stop_step_parallel(u, run_kwargs, frames, client_FrameAnalysis):
-    # client_FrameAnalysis is defined [here](testsuite/MDAnalysisTests/analysis/conftest.py),
-    # and determines a set of parameters ('backend', 'n_workers'), taking only backends
-    # that are implemented for a given subclass, to run the test against.
     an = FrameAnalysis(u.trajectory).run(**run_kwargs, **client_FrameAnalysis)
     assert an.n_frames == len(frames)
     assert_equal(an.found_frames, frames)
     assert_equal(an.frames, frames, err_msg=FRAMES_ERR)
-    assert_almost_equal(an.times, frames + 1, decimal=4, err_msg=TIMES_ERR)
+    # Replaced assert_almost_equal with assert_allclose
+    assert_allclose(an.times, frames + 1, atol=1e-4, rtol=0, err_msg=TIMES_ERR)
+
 
 
 def test_reset_n_parts_to_n_frames(u):
@@ -614,7 +615,8 @@ def test_AnalysisFromFunction_args_content(u, client_AnalysisFromFunction):
     assert len(ans.args) == 3
     result = np.sum(ans.run(**client_AnalysisFromFunction).results.timeseries)
     assert_allclose(result, -317054.67757345125, rtol=0, atol=1.5e-6)
-    assert_almost_equal(result, -317054.67757345125, decimal=6)
+    # Replaced assert_almost_equal with pytest.approx
+    assert result == pytest.approx(-317054.67757345125, abs=1e-6)
     assert (ans.args[0] is protein) and (ans.args[1] is another)
     assert ans._trajectory is protein.universe.trajectory
 
