@@ -1818,9 +1818,12 @@ class Universe(object):
         # Otherwise, do nothing.
         if custom_segids is not None:
             pass
-        elif custom_segids is None and hasattr(self.atoms, "chainIDs"):
+        elif custom_segids is None and hasattr(self.atoms, "chainIDs") and \
+                not all(self.atoms.chainIDs == ""):
             custom_segids = self.atoms.chainIDs.tolist()
         else:
+            warnings.warn("No chainIDs found in the Universe. "
+                          "Please provide custom_segids.")
             return None
 
         # check if the length of custom_segids

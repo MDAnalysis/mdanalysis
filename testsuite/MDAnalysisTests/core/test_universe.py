@@ -1551,6 +1551,16 @@ ATOM    664  CG2 THR B 315      23.384  14.924   1.927  1.00  0.00           C
 ATOM    665  OG1 THR B 315      21.172  14.548   1.274  1.00  0.00           O
 """
 
+    no_chain_str = """\
+ATOM    659  N   THR   315      22.716  15.055  -1.000  1.00 16.08         A N
+ATOM    660  CA  THR   315      22.888  13.803  -0.302  1.00  0.00           C
+ATOM    661  C   THR   315      22.006  12.700  -0.882  1.00  0.00           C
+ATOM    662  O   THR   316      21.138  12.959  -1.727  1.00 16.25         A O
+ATOM    663  CB  THR   314      22.481  13.956   1.182  1.00  0.00         B C
+ATOM    664  CG2 THR   315      23.384  14.924   1.927  1.00  0.00           C
+ATOM    665  OG1 THR   315      21.172  14.548   1.274  1.00  0.00           O
+"""
+
     good_str = """\
 ATOM    659  N   THR A 315      22.716  15.055  -1.000  1.00 16.08         A N
 ATOM    660  CA  THR A 315      22.888  13.803  -0.302  1.00 15.13         A C
@@ -1561,12 +1571,29 @@ ATOM    664  CG2 THR B 315      22.874  15.310   1.747  1.00 17.32         B C
 ATOM    665  OG1 THR B 315      21.047  13.922   1.304  1.00 15.14         B O
 """
 
+    good_gro_str = """\
+Written by MDAnalysis
+    7
+  315THR      N    1   2.272   1.506  -0.100
+  315THR     CA    2   2.289   1.380  -0.030
+  315THR      C    3   2.201   1.270  -0.088
+  315THR      O    4   2.114   1.296  -0.173
+  315THR     CB    5   2.248   1.396   0.118
+  315THR    CG2    6   2.287   1.531   0.175
+  315THR    OG1    7   2.105   1.392   0.130
+   0.00000   0.00000   0.00000
+"""
     bad_seg1 = mda.Universe(StringIO(bad_seg_str), format="PDB")
     bad_seg2 = mda.Universe(StringIO(bad_seg_str), format="PDB")
+    no_chain = mda.Universe(StringIO(no_chain_str), format="PDB")
+    no_chain_n_segments_orig = no_chain.segments.n_segments
     good = mda.Universe(StringIO(good_str), format="PDB")
+    good_gro = mda.Universe(StringIO(good_gro_str), format="GRO")
 
-    bad_seg1.guess_or_set_segments(["A", "A", "A", "A", "B", "B", "B"])
-    bad_seg2.guess_or_set_segments()
+    # check bad_seg1, bad_seg2 with good
+    # guessing
+    bad_seg1.guess_or_set_segments(["A", "A", "A", "A", "B", "B", "B"])  # set
+    bad_seg2.guess_or_set_segments()  # guess with chainIDs
 
     # segment level
     assert len(bad_seg1.segments) == len(good.segments)
@@ -1607,3 +1634,17 @@ ATOM    665  OG1 THR B 315      21.047  13.922   1.304  1.00 15.14         B O
         assert atom2.resid == atom3.resid
         assert atom2.segid == atom3.segid
         assert atom2.chainID == atom3.chainID
+
+    # check no_chain
+    with pytest.warns(UserWarning):
+        no_chain.guess_or_set_segments()  # guess with chainIDs, so do nothing
+
+    assert (
+        no_chain.segments.n_segments == no_chain_n_segments_orig
+    )  # no change
+
+    # check good_gro with good
+    good_gro.guess_or_set_segments(["A", "A", "A", "A", "B", "B", "B"])  # set
+
+    assert len(good_gro.segments) == len(good.segments)
+    assert all(good_gro.segments.segids == good.segments.segids)
