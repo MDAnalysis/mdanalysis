@@ -54,11 +54,11 @@ class FrameAnalysis(base.AnalysisBase):
         self.results.run_n_frames = []
 
         # self.n_frames is defined elsewhere
-        self.run_n_frames = len(self._trajectory[self._run_slicer])
+        self.run_n_frames = len(self._trajectory[self.run_state.slicer])
 
     def _single_frame(self):
         frame_index = self._frame_index
-        run_frame_index = self._run_frame_index
+        run_frame_index = self.run_state.frame_index
 
         self.results.found_frames.append(self._ts.frame)
         self.results.frame_index.append(frame_index)

@@ -152,7 +152,8 @@ import itertools
 import logging
 import warnings
 from functools import partial
-from typing import Iterable, Union
+from typing import Iterable, Union, Optional, List
+from dataclasses import dataclass
 
 import numpy as np
 from .. import coordinates
@@ -168,6 +169,29 @@ from .backends import (
 from .results import Results, ResultsGroup
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass(frozen=True)
+class RunConfig:
+    """Stores user-provided arguments for `run()`."""
+    start: Optional[int] = None
+    stop: Optional[int] = None
+    step: Optional[int] = None
+    frames: Optional[np.ndarray] = None
+    backend: Optional[Union[str, BackendBase]] = None
+    n_workers: Optional[int] = None
+    n_parts: Optional[int] = None
+    unsupported_backend: bool = False
+
+
+@dataclass
+class RunState:
+    """Stores runtime-generated attributes that can be used
+    during the analysis."""
+    slicer: Optional[Union[slice, np.ndarray]] = None
+    n_frames: Optional[int] = None
+    computation_groups: Optional[List[np.ndarray]] = None
+    frame_index: Optional[int] = None
 
 
 class AnalysisBase(object):
@@ -376,7 +400,6 @@ class AnalysisBase(object):
                 start, stop, step
             )
             slicer = slice(start, stop, step)
-        self.start, self.stop, self.step = start, stop, step
         return slicer
 
     def _prepare_sliced_trajectory(self, slicer: Union[slice, np.ndarray]):
@@ -447,7 +470,8 @@ class AnalysisBase(object):
             whole trajectory being analyzed.
         """
         slicer = self._define_run_frames(trajectory, start, stop, step, frames)
-        self._run_slicer = slicer
+        self.run_state.slicer = slicer
+        self.run_state.n_frames = len(trajectory[slicer])
         self._prepare_sliced_trajectory(slicer)
 
     def _single_frame(self):
@@ -546,7 +570,7 @@ class AnalysisBase(object):
             )
         ):
             self._frame_index = idx  # accessed later by subclasses
-            self._run_frame_index = indexed_frames[idx, 0]
+            self.run_state.frame_index = indexed_frames[idx, 0]
             self._ts = ts
             self.frames[idx] = ts.frame
             self.times[idx] = ts.time
@@ -788,7 +812,7 @@ class AnalysisBase(object):
             By default, performs calculations in a serial fashion.
             Otherwise, user can choose a backend: ``str`` is matched to a
             builtin backend (one of ``serial``, ``multiprocessing`` and
-            ``dask``), or a :class:`MDAnalysis.analysis.results.BackendBase`
+            ``dask``), or a :class:`MDAnalysis.analysis.backends.BackendBase`
             subclass.
 
             .. versionadded:: 2.8.0
@@ -864,6 +888,17 @@ class AnalysisBase(object):
                     f"{executor.n_workers=} is greater than {n_parts=}"
                 )
             )
+        
+        self._run_config = RunConfig(
+            start=start,
+            stop=stop,
+            step=step,
+            frames=frames,
+            backend=backend,
+            n_workers=n_workers,
+            n_parts=n_parts,
+            unsupported_backend=unsupported_backend,
+        )
 
         # start preparing the run
         worker_func = partial(
@@ -881,6 +916,7 @@ class AnalysisBase(object):
         computation_groups = self._setup_computation_groups(
             start=start, stop=stop, step=step, frames=frames, n_parts=n_parts
         )
+        self.run_state.computation_groups = computation_groups
 
         # get all results from workers in other processes.
         # we need `AnalysisBase` classes
@@ -912,6 +948,34 @@ class AnalysisBase(object):
         .. versionadded:: 2.8.0
         """
         return ResultsGroup(lookup=None)
+    
+    @property
+    def run_config(self) -> RunConfig:
+        """Stores user-provided arguments for `run()`.
+        It includes `start`, `stop`, `step`, `frames`, `backend`, `n_workers`,
+        `n_parts` and `unsupported_backend` attributes.
+        """
+        return self._run_config
+
+    @property
+    def run_state(self) -> RunState:
+        """
+        Stores runtime-generated attributes that can be used
+        during the analysis.
+
+        It includes `slicer`, `n_frames`, `computation_groups` and `frame_index`
+        attributes.
+
+        The `slicer`, `n_frames`, `frame_index` attributes are used to store the
+        information for the whole trajectory being analyzed.
+        They are different from e.g. `self.n_frames` which is used to store the
+        information for the current computation group being analyzed.
+        """
+        # lazy initialization for the OldAPIAnalysis as it doesn't have the same
+        # `__init__` function as the current AnalysisBase.
+        if not hasattr(self, "_run_state"):
+            self._run_state = RunState()
+        return self._run_state
 
 
 class AnalysisFromFunction(AnalysisBase):
