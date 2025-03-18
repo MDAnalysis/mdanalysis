@@ -77,6 +77,7 @@ extra_formats = [
     "pytng>=0.2.3",
     "gsd>3.0.0",
     "rdkit>=2020.03.1",
+    "requests"
 ]
 analysis = [
     "biopython>=1.80",
