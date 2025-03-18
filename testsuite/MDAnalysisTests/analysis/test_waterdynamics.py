@@ -24,9 +24,24 @@ from importlib import reload
 import pytest
 
 from MDAnalysis.analysis import waterdynamics
+from MDAnalysisTests.util import import_not_available
 
 
+@pytest.mark.skipif(
+    import_not_available("waterdynamics"),
+    reason="Test skipped because waterdynamics is not found",
+)
 def test_moved_to_mdakit_warning():
     wmsg = "MDAnalysis.analysis.waterdynamics is deprecated"
     with pytest.warns(DeprecationWarning, match=wmsg):
+        reload(waterdynamics)
+
+
+@pytest.mark.skipif(
+    not import_not_available("waterdynamics"),
+    reason="Test skipped because waterdynamics is found",
+)
+def test_install_mdakit_warning():
+    wmsg = "Please install"
+    with pytest.warns(UserWarning, match=wmsg):
         reload(waterdynamics)

@@ -26,13 +26,10 @@ Reading trajectories with *chemfiles* --- :mod:`MDAnalysis.coordinates.chemfiles
 MDAnalysis interoperates with the `chemfiles`_ library. The *chemfiles* C++ library
 supports an expanding set of file formats, some of which are not natively supported by
 MDAnalysis. Using the *CHEMFILES* reader you can use  `chemfiles`_ for the low-level
-file reading. Check the list of `chemfile-supported file formats <formats>`_.
+file reading. Check the list of `chemfile-supported file formats`_.
 
 .. _chemfiles: https://chemfiles.org
-.. _formats: https://chemfiles.org/chemfiles/0.10.0/formats.html#list-of-supported-formats
-.. NOTE: MDAnalysis currently restricts chemfiles to 0.10 <= version < 0.11. Update the link
-..       above to the latest documentation once this restriction is lifted.
-..       https://chemfiles.org/chemfiles/latest/formats.html#list-of-supported-formats
+.. _chemfile-supported file formats: https://chemfiles.org/chemfiles/latest/formats.html#list-of-supported-formats
 
 Using the CHEMFILES reader
 --------------------------

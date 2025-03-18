@@ -443,11 +443,11 @@ class AnalysisBase(object):
             :meth:`_compute` for each of the computation groups.
 
         .. versionchanged:: 2.9.0
-            Add `self._global_slicer` attribute to store the slicer for the
-            whole trajectory.
+            Add `self._run_slicer` attribute to store the slicer for the
+            whole trajectory being analyzed.
         """
         slicer = self._define_run_frames(trajectory, start, stop, step, frames)
-        self._global_slicer = slicer
+        self._run_slicer = slicer
         self._prepare_sliced_trajectory(slicer)
 
     def _single_frame(self):
@@ -458,8 +458,9 @@ class AnalysisBase(object):
 
           - ``self._frame_index``: index of the frame in results array
           Note that this is not the same as the frame number in the trajectory
-          - ``self._global_frame_index``: index of the frame in the trajectory
+          - ``self._run_frame_index``: index of the frame in the trajectory
           This is useful for parallel runs, where you can't rely on the
+          `self._frame_index`.
           - ``self._ts`` -- Timestep instance
           - ``self._sliced_trajectory`` -- trajectory that you're iterating over
           - ``self.results`` -- :class:`MDAnalysis.analysis.results.Results` instance
@@ -545,7 +546,7 @@ class AnalysisBase(object):
             )
         ):
             self._frame_index = idx  # accessed later by subclasses
-            self._global_frame_index = indexed_frames[idx, 0]
+            self._run_frame_index = indexed_frames[idx, 0]
             self._ts = ts
             self.frames[idx] = ts.frame
             self.times[idx] = ts.time

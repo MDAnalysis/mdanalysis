@@ -36,7 +36,7 @@ will get an error only if at any time step the number of particles is detected
 to be different to the one that was set at the first time step. No check on
 changes in particle identity or topology is currently implemented.
 
-.. _`HOOMD-blue`: http://codeblue.umich.edu/hoomd-blue/index.html
+.. _`HOOMD-blue`: https://glotzerlab.engin.umich.edu/hoomd-blue/
 
 Classes
 -------

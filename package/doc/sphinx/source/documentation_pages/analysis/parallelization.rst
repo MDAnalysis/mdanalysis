@@ -129,9 +129,9 @@ order to understand how parallelization is implemented:
 parameters :attr:`start`, :attr:`stop`, :attr:`step` or :attr:`frames` are consistent with the given
 trajectory and prepares the :attr:`slicer` object that defines the iteration
 pattern through the trajectory with :meth:`_define_run_frames`.
-The attribute :attr:`self._global_slicer` is assigned based on the `slicer`.
+The attribute :attr:`self._run_slicer` is assigned based on the `slicer`.
 Users can later access the full sliced trajectory being analyzed via
-:attr:`self._trajectory[self._global_slicer]`.
+:attr:`self._trajectory[self._run_slicer]`.
 
 :meth:`_prepare_sliced_trajectory` assigns to
 the :attr:`self._sliced_trajectory` attribute, computes the number of frames in
@@ -163,11 +163,12 @@ iterates over :attr:`self._sliced_trajectory`, assigning
 :attr:`self._frame_index` and :attr:`self._ts` as frame index (within a
 computation group) and timestamp, and also setting respective
 :attr:`self.frames` and :attr:`self.times` array values. Additionally,
-:attr:`self._global_frame_index` is assigned the global frame index
-within the full sliced trajectory (:attr:`self._trajectory[self._global_slicer]`).
-This global frame index is particularly useful for analyses requiring it, such as 
+:attr:`self._run_frame_index` is assigned the run frame index
+within the full sliced trajectory (:attr:`self._trajectory[self._run_slicer]`)
+that is being analyzed.
+This run frame index is particularly useful for analyses requiring it, such as 
 :class:`MDAnalysis.analysis.diffusionmap.DistanceMatrix` that needs to know the
-frame index in the full trajectory.
+frame index in the trajectory sliced that is being analyzed.
 See :ref:`retrieving-correct-frame-index` for more details.
 
 After :meth:`_compute` has finished, the main analysis instance calls the
@@ -375,12 +376,12 @@ Retrieving correct frame index in parallel analysis
 ===================================================
 
 To retrieve the correct frame index during parallel analysis, use the 
-:attr:`self._global_frame_index` attribute. This attribute represents the global 
+:attr:`self._run_frame_index` attribute. This attribute represents the correct 
 frame index within the full sliced trajectory 
-(:attr:`self._trajectory[self._global_slicer]`).
+(:attr:`self._trajectory[self._run_slicer]`).
 
 For an example illustrating when to use :attr:`_frame_index` versus 
-:attr:`_global_frame_index` and :attr:`self._global_slicer`,
+:attr:`_run_frame_index` and :attr:`self._run_slicer`,
 see the following code snippet:
 
 .. code-block:: python
@@ -397,32 +398,32 @@ see the following code snippet:
             return ('serial', 'multiprocessing', 'dask')
 
         def _prepare(self):
-            """Initialize result attributes and compute global frame count."""
+            """Initialize result attributes and compute frame count."""
             self.results.frame_index = []
-            self.results.global_frame_index = []
+            self.results.run_frame_index = []
             self.results.n_frames = []
-            self.results.global_n_frames = []
-            self.global_n_frames = len(self._trajectory[self._global_slicer])
+            self.results.run_n_frames = []
+            self.run_n_frames = len(self._trajectory[self._run_slicer])
 
         def _single_frame(self):
             """Process a single frame during the analysis."""
             frame_index = self._frame_index
-            global_frame_index = self._global_frame_index
+            run_frame_index = self._run_frame_index
 
             # Append results for the current frame
             self.results.frame_index.append(frame_index)
-            self.results.global_frame_index.append(global_frame_index)
+            self.results.run_frame_index.append(run_frame_index)
             self.results.n_frames.append(self.n_frames)
-            self.results.global_n_frames.append(self.global_n_frames)
+            self.results.run_n_frames.append(self.run_n_frames)
 
         def _get_aggregator(self):
             """Return an aggregator to combine results from multiple workers."""
             return ResultsGroup(
                 lookup={
                     'frame_index': ResultsGroup.flatten_sequence,
-                    'global_frame_index': ResultsGroup.flatten_sequence,
+                    'run_frame_index': ResultsGroup.flatten_sequence,
                     'n_frames': ResultsGroup.flatten_sequence,
-                    'global_n_frames': ResultsGroup.flatten_sequence,
+                    'run_n_frames': ResultsGroup.flatten_sequence,
                 }
             )
 
@@ -432,9 +433,9 @@ see the following code snippet:
     print(ana.results)
     # Output:
     # {'frame_index': [0, 1, 2, 3, 4], 
-    #  'global_frame_index': [0, 1, 2, 3, 4], 
+    #  'run_frame_index': [0, 1, 2, 3, 4], 
     #  'n_frames': [5, 5, 5, 5, 5], 
-    #  'global_n_frames': [5, 5, 5, 5, 5]}
+    #  'run_n_frames': [5, 5, 5, 5, 5]}
 
     # Example usage: parallel analysis
     ana = MyAnalysis(u.trajectory)
@@ -442,9 +443,9 @@ see the following code snippet:
     print(ana.results)
     # Output:
     # {'frame_index': [0, 1, 2, 0, 1], 
-    #  'global_frame_index': [0, 1, 2, 3, 4], 
+    #  'run_frame_index': [0, 1, 2, 3, 4], 
     #  'n_frames': [3, 3, 3, 2, 2], 
-    #  'global_n_frames': [5, 5, 5, 5, 5]}
+    #  'run_n_frames': [5, 5, 5, 5, 5]}
 
 
 .. rubric:: References

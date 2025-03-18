@@ -219,6 +219,7 @@ The class and its methods
 
 .. autoclass:: HydrogenBondAnalysis
    :members:
+   :inherited-members: run
 
    .. attribute:: results.hbonds
 

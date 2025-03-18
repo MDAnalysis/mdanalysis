@@ -67,11 +67,6 @@ jobs:
             pytest                   \
             pytest-xdist             \
             pytest-timeout
-        # deps that depend on MDA
-        python -m pip install --no-deps \
-            waterdynamics   \
-            pathsimanalysis \
-            mdahole2
 
     - name: pre_install_list_deps
       run: python -m pip list

@@ -49,22 +49,22 @@ class FrameAnalysis(base.AnalysisBase):
     def _prepare(self):
         self.results.found_frames = []
         self.results.frame_index = []
-        self.results.global_frame_index = []
+        self.results.run_frame_index = []
         self.results.n_frames = []
-        self.results.global_n_frames = []
+        self.results.run_n_frames = []
 
         # self.n_frames is defined elsewhere
-        self.global_n_frames = len(self._trajectory[self._global_slicer])
+        self.run_n_frames = len(self._trajectory[self._run_slicer])
 
     def _single_frame(self):
         frame_index = self._frame_index
-        global_frame_index = self._global_frame_index
+        run_frame_index = self._run_frame_index
 
         self.results.found_frames.append(self._ts.frame)
         self.results.frame_index.append(frame_index)
-        self.results.global_frame_index.append(global_frame_index)
+        self.results.run_frame_index.append(run_frame_index)
         self.results.n_frames.append(self.n_frames)
-        self.results.global_n_frames.append(self.global_n_frames)
+        self.results.run_n_frames.append(self.run_n_frames)
 
     def _conclude(self):
         self.found_frames = list(self.results.found_frames)
@@ -74,9 +74,9 @@ class FrameAnalysis(base.AnalysisBase):
             {
                 "found_frames": base.ResultsGroup.ndarray_hstack,
                 "frame_index": base.ResultsGroup.ndarray_hstack,
-                "global_frame_index": base.ResultsGroup.ndarray_hstack,
+                "run_frame_index": base.ResultsGroup.ndarray_hstack,
                 "n_frames": base.ResultsGroup.ndarray_hstack,
-                "global_n_frames": base.ResultsGroup.ndarray_hstack,
+                "run_n_frames": base.ResultsGroup.ndarray_hstack,
             }
         )
 
@@ -479,8 +479,8 @@ def test_frames_times(client_FrameAnalysis):
     assert_allclose(
         an.times, frames * 100, rtol=0, atol=1.5e-4, err_msg=TIMES_ERR
     )
-    assert_equal(an.results.global_frame_index, frame_indices)
-    assert_equal(an.results.global_n_frames, [n_frames] * n_frames)
+    assert_equal(an.results.run_frame_index, frame_indices)
+    assert_equal(an.results.run_n_frames, [n_frames] * n_frames)
 
 
 def test_verbose(u):
