@@ -1577,6 +1577,10 @@ Written by MDAnalysis
     good = mda.Universe(StringIO(good_str), format="PDB")
     bad_gro = mda.Universe(StringIO(bad_gro_str), format="GRO")
 
+    # check do nothing
+    with pytest.warns(UserWarning):
+        good.set_groups()
+
     # check bad_seg1 with good
     # guessing
     bad_seg1.set_groups(
@@ -1609,12 +1613,15 @@ Written by MDAnalysis
 
     # check bad_gro with good
     bad_gro.set_groups(
-        atomwise_resids=[315, 315, 315, 316, 314, 315, 315],
         atomwise_segids=["A", "A", "A", "A", "B", "B", "B"],
     )  # set
 
     assert len(bad_gro.segments) == len(good.segments)
     assert all(bad_gro.segments.segids == good.segments.segids)
+
+    bad_gro.set_groups(
+        atomwise_resids=[315, 315, 315, 316, 314, 315, 315],
+    )  # set
     assert len(bad_gro.residues) == len(good.residues)
     assert all(bad_gro.residues.resids == good.residues.resids)
     assert len(bad_gro.atoms) == len(good.atoms)
