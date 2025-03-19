@@ -1793,7 +1793,7 @@ class Universe(object):
                           'for universe with 0 atoms')
 
     def set_groups(self, atomwise_resids=None, atomwise_segids=None):
-        """Guess or set the groups (by resids/segids) of the Universe.
+        """Set the groups (ResidueGroup, SegmentGroup) of the Universe by atomwise resids/segids.
 
         Parameters
         ----------
