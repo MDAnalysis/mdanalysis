@@ -208,7 +208,8 @@ class PDBParser(TopologyReaderBase):
         through universe.guess_TopologyAttrs() API).
     .. versionchanged:: 2.10.0 dev
         Modified the segid columns and added the `force_chainids_to_segids`
-        keyword argument.
+        keyword argument. Some warnings will be generated if the segids is
+        not present or if the chainids are not completely equal to segids.
     """
     format = ['PDB', 'ENT']
 
@@ -315,6 +316,10 @@ class PDBParser(TopologyReaderBase):
         if self._wrapped_serials:
             warnings.warn("Serial numbers went over 100,000.  "
                           "Higher serials have been guessed")
+
+        # If segids is not equal to chainids, warn the user
+        if any([a != b for a, b in zip(segids, chainids)]):
+            warnings.warn("Segment IDs and Chain IDs are not completely equal.")
 
         # If segids not present, try to use chainids
         if not any(segids):

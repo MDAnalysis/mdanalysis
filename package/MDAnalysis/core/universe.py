@@ -95,7 +95,7 @@ from ..guesser.base import get_guesser
 logger = logging.getLogger("MDAnalysis.core.universe")
 
 
-def _update_topology_by_segids(universe, custom_segids):
+def _update_topology_by_ids(universe, atomwise_resids, atomwise_segids):
     from ..topology.base import change_squash
     # copy the original topology
     top = universe._topology.copy()
@@ -127,28 +127,28 @@ def _update_topology_by_segids(universe, custom_segids):
     if hasattr(universe.atoms, "icodes"):
         residx, (resids, resnames, icodes, resnums, segids) = change_squash(
             (
-                universe.atoms.resids,
+                atomwise_resids,
                 universe.atoms.resnames,
                 universe.atoms.icodes,
-                custom_segids,
+                atomwise_segids,
             ),
             (
-                universe.atoms.resids,
+                atomwise_resids,
                 universe.atoms.resnames,
                 universe.atoms.icodes,
                 universe.atoms.resnums,
-                custom_segids,
+                atomwise_segids,
             ),
         )
         attrs.append(ICodes(icodes))
     else:
         residx, (resids, resnames, resnums, segids) = change_squash(
-            (universe.atoms.resids, universe.atoms.resnames, custom_segids),
+            (atomwise_resids, universe.atoms.resnames, atomwise_segids),
             (
-                universe.atoms.resids,
+                atomwise_resids,
                 universe.atoms.resnames,
                 universe.atoms.resnums,
-                custom_segids,
+                atomwise_segids,
             ),
         )
     n_residues = len(resids)
@@ -469,9 +469,8 @@ class Universe(object):
         is read from a registered parser.
 
     .. versionchanged:: 2.10.0 dev
-        Added :meth: `~MDAnalysis.core.universe.Universe.guess_or_set_segments`
-        API to guess or set segments based on the atom-wise chainIDs or provided
-        custom segids.
+        Added :meth: `~MDAnalysis.core.universe.Universe.set_groups`
+        API to set residues/segments based on the atomwise resids/segids.
 
     """
     def __init__(self, topology=None, *coordinates, all_coordinates=False,
@@ -1793,46 +1792,67 @@ class Universe(object):
             warnings.warn('Can not guess attributes '
                           'for universe with 0 atoms')
 
-    def guess_or_set_segments(self, custom_segids: list = None):
-        """Guess or set the segments of the Universe.
+    def set_groups(self, atomwise_resids=None, atomwise_segids=None):
+        """Guess or set the groups (by resids/segids) of the Universe.
 
         Parameters
         ----------
-        custom_segids: list
-            A list of custom segment IDs to be set for the Universe. The length
+        atomwise_resids:
+            A list of residue IDs to be set for the Universe. The length
+            of the list should be equal to the number of atoms in the Universe.
+
+        atomwise_segids:
+            A list of segment IDs to be set for the Universe. The length
             of the list should be equal to the number of atoms in the Universe.
 
         Examples
         --------
-        To guess the segments of the Universe::
-
-            u.guess_or_set_segments() # guess the segments based on chainIDs
-
         To set custom segment IDs for the segments of the Universe::
 
-            u.guess_or_set_segments(custom_segids=['A', 'A', 'B', 'B'])
+            atomwise_segids = ['A', 'A', 'B', 'B']
+            u.set_groups(atomwise_segids=atomwise_segids)
+
+            # Now the Universe has two segments with IDs 'A' and 'B'
 
         """
 
-        # check if custom_segids is provided, if not, use the chainIDs.
+        # check if atomwise_segids is provided, if not, use the chainIDs.
         # Otherwise, do nothing.
-        if custom_segids is not None:
-            pass
-        elif custom_segids is None and hasattr(self.atoms, "chainIDs") and \
-                not all(self.atoms.chainIDs == ""):
-            custom_segids = self.atoms.chainIDs.tolist()
+        if (atomwise_resids is not None) or (atomwise_segids is not None):
+            # resids
+            if atomwise_resids is None:
+                atomwise_resids = self.atoms.resids
+            else:
+                self.atomwise_resids_orig = self.atoms.resids
+                warnings.warn("The original resids is stored in "
+                              "atomwise_resids_orig.")
+
+            # segids
+            if atomwise_segids is None:
+                atomwise_segids = self.atoms.segids
+            else:
+                self.atomwise_segids_orig = self.atoms.segids
+                warnings.warn("The original segids is stored in "
+                              "atomwise_segids_orig.")
         else:
-            warnings.warn("No chainIDs found in the Universe. "
-                          "Please provide custom_segids.")
+            warnings.warn("Do nothing. Please provide atomwise_resids or "
+                          "atomwise_segids.")
             return None
 
-        # check if the length of custom_segids
-        assert len(custom_segids) == self.atoms.n_atoms, \
-            "The length of custom_segids should be the same as " \
+        # check if the length of atomwise_resids, atomwise_segids
+        assert len(atomwise_resids) == self.atoms.n_atoms, \
+            "The length of atomwise_resids should be the same as " \
             "the number of atoms in the universe."
-        custom_segids = np.array(custom_segids, dtype=object)
+        assert len(atomwise_segids) == self.atoms.n_atoms, \
+            "The length of atomwise_segids should be the same as " \
+            "the number of atoms in the universe."
 
-        _update_topology_by_segids(self, custom_segids)
+        atomwise_resids = np.array(atomwise_resids, dtype=object)
+        atomwise_segids = np.array(atomwise_segids, dtype=object)
+
+        _update_topology_by_ids(self,
+                                atomwise_resids=atomwise_resids,
+                                atomwise_segids=atomwise_segids)
         _generate_from_topology(self)
 
 
