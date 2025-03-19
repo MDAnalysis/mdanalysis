@@ -400,6 +400,7 @@ class AnalysisBase(object):
                 start, stop, step
             )
             slicer = slice(start, stop, step)
+        self.start, self.stop, self.step = start, stop, step
         return slicer
 
     def _prepare_sliced_trajectory(self, slicer: Union[slice, np.ndarray]):
