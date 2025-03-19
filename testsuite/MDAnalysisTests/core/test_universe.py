@@ -1617,3 +1617,5 @@ Written by MDAnalysis
     assert all(bad_gro.segments.segids == good.segments.segids)
     assert len(bad_gro.residues) == len(good.residues)
     assert all(bad_gro.residues.resids == good.residues.resids)
+    assert len(bad_gro.atoms) == len(good.atoms)
+    assert all(bad_gro.atoms.resids == good.atoms.resids)
