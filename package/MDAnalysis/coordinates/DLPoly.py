@@ -196,7 +196,7 @@ class HistoryReader(base.ReaderBase):
             if self._has_vels:
                 ts._velocities[i] = self._file.readline().split()
             if self._has_forces:
-                ts._forces[i] = self._file.readline().split(), dtype=np.float32
+                ts._forces[i] = self._file.readline().split()
             i += 1
 
         if ids:
