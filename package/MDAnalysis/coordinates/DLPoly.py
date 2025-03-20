@@ -90,7 +90,7 @@ class ConfigReader(base.SingleFrameReaderBase):
                     vxyz = np.float32(inf.readline().split())
                     velocities.append(vxyz)
                 if has_forces:
-                    fxyz = np.float32(inf.readline().split())
+                    fxyz = np.float32(inf.readline().split()) / 100
                     forces.append(fxyz)
 
                 line = inf.readline().strip()
@@ -196,7 +196,7 @@ class HistoryReader(base.ReaderBase):
             if self._has_vels:
                 ts._velocities[i] = self._file.readline().split()
             if self._has_forces:
-                ts._forces[i] = np.array(self._file.readline().split(), dtype=np.float32) / 100
+                ts._forces[i] = self._file.readline().split(), dtype=np.float32
             i += 1
 
         if ids:
