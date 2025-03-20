@@ -118,8 +118,9 @@ class _DLPConfig2(object):
         ref = np.array([2.637614561, 0.5778767520e-01, -1.704765568])
         assert_allclose(u.atoms[2].velocity, ref)
 
+    # modified to original numbers / 100 
     def test_for(self, u):
-        ref = np.array([150.3309776, -812.6932914, 1429.413120])
+        ref = np.array([1.503309776, -8.126932914, 14.29413120])
         assert_allclose(u.atoms[2].force, ref)
 
     def test_number(self, u):
