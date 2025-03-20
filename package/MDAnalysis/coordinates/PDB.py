@@ -239,7 +239,8 @@ class PDBReader(base.ReaderBase):
     please use the karg `force_chainids_to_segids=True`. This will prioritize the
     chain ID to the segment ID (see Issue #4948, PR #4965).
 
-    .. _Chimera: https://www.cgl.ucsf.edu/chimera/docs/UsersGuide/tutorials/pdbintro.html#note6
+    .. _Chimera: \
+        https://www.cgl.ucsf.edu/chimera/docs/UsersGuide/tutorials/pdbintro.html#note6
 
     See Also
     --------

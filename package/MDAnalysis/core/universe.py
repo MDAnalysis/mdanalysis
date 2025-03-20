@@ -97,31 +97,17 @@ logger = logging.getLogger("MDAnalysis.core.universe")
 
 def _update_topology_by_ids(universe, atomwise_resids, atomwise_segids):
     from ..topology.base import change_squash
-    # copy the original topology
-    top = universe._topology.copy()
 
-    # detect the residue and above (segment level) attributes
-    res_attridices = [
+    # the original topology
+    top = universe._topology
+
+    # detect the atom level attributes (excluding residue level and above)
+    atom_attridices = [
         idx
         for idx, each_attr in enumerate(top.attrs)
-        if Residue in each_attr.target_classes
+        if not (Residue in each_attr.target_classes)
     ]
-    res_attrs = [top.attrs[each_attr] for each_attr in res_attridices]
-
-    # delete residue level and above (segment level) attributes
-    unable_delete_attrnames = []
-    for each_attr in res_attrs:
-        try:
-            top.del_TopologyAttr(each_attr)
-        except Exception:
-            unable_delete_attrnames.append(each_attr.attrname)
-
-    # get the remaining attributes (atom level attributes)
-    attrs = [
-        each_attr
-        for each_attr in top.attrs
-        if each_attr.attrname not in unable_delete_attrnames
-    ]
+    attrs = [top.attrs[each_attr] for each_attr in atom_attridices]
 
     # create new residues level stuff
     if hasattr(universe.atoms, "icodes"):
@@ -1793,7 +1779,8 @@ class Universe(object):
                           'for universe with 0 atoms')
 
     def set_groups(self, atomwise_resids=None, atomwise_segids=None):
-        """Set the groups (ResidueGroup, SegmentGroup) of the Universe by atomwise resids/segids.
+        """Set the groups (ResidueGroup, SegmentGroup) of the Universe
+        by atomwise resids/segids.
 
         Parameters
         ----------
@@ -1816,7 +1803,7 @@ class Universe(object):
 
         """
 
-        # check if atomwise_segids is provided, if not, use the chainIDs.
+        # check if resids/segids is provided, if not, use the original ones.
         # Otherwise, do nothing.
         if (atomwise_resids is not None) or (atomwise_segids is not None):
             # resids
