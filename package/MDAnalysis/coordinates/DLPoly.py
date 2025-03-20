@@ -99,7 +99,7 @@ class ConfigReader(base.SingleFrameReaderBase):
         if has_vels:
             velocities = np.array(velocities, dtype=np.float32)
         if has_forces:
-            forces = np.array(forces, dtype=np.float32)
+            forces = np.array(forces, dtype=np.float32) / 100
         self.n_atoms = len(coords)
 
         if ids:
@@ -196,7 +196,7 @@ class HistoryReader(base.ReaderBase):
             if self._has_vels:
                 ts._velocities[i] = self._file.readline().split()
             if self._has_forces:
-                ts._forces[i] = self._file.readline().split()
+                ts._forces[i] = np.array(self._file.readline().split(), dtype=np.float32) / 100
             i += 1
 
         if ids:
