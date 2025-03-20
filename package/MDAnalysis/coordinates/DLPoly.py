@@ -90,7 +90,7 @@ class ConfigReader(base.SingleFrameReaderBase):
                     vxyz = np.float32(inf.readline().split())
                     velocities.append(vxyz)
                 if has_forces:
-                    fxyz = np.float32(inf.readline().split()) / 100
+                    fxyz = np.float32(inf.readline().split())
                     forces.append(fxyz)
 
                 line = inf.readline().strip()

@@ -70,8 +70,9 @@ class _DLPConfig(object):
         ref = np.array([1.056610291, -1.218664448, 3.345828610])
         assert_allclose(ts._velocities[0], ref)
 
+    # modified to original numbers / 100
     def test_forces(self, ts):
-        ref = np.array([-1979.558687, 739.7961625, 1027.996603])
+        ref = np.array([-19.79558687, 7.397961625, 10.27996603])
         assert_allclose(ts._forces[0], ref)
 
 

@@ -173,7 +173,6 @@ class TRZReader(base.ReaderBase):
             ('p1', '<i4'),
             ('title', '80c'),
             ('p2', '<2i4'),
-            ('force', '<i4'),
             ('p3', '<i4')])
         data = np.fromfile(self.trzfile, dtype=self._headerdtype, count=1)
         self.title = ''.join(c.decode('utf-8') for c in data['title'][0]).strip()
