@@ -130,6 +130,7 @@ class TRZReader(base.ReaderBase):
         self._read_trz_header()
         self.ts = Timestep(self.n_atoms,
                            velocities=True,
+                           forces=self.has_force,
                            reader=self,
                            **self._ts_kwargs)
 
@@ -163,6 +164,17 @@ class TRZReader(base.ReaderBase):
             ('vy', readarg),
             ('pad6', '<2i4'),
             ('vz', readarg)]
+        if not self.has_force:
+            frame_contents += [('pad7', '<i4')]
+        else:
+            frame_contents += [
+                ('pad7', '<2i4'),
+                ('fx', readarg),
+                ('pad8', '<2i4'),
+                ('fy', readarg),
+                ('pad9', '<2i4'),
+                ('fz', readarg),
+                ('pad10', '<i4')]
         self._dtype = np.dtype(frame_contents)
 
         self._read_next_timestep()
@@ -173,9 +185,16 @@ class TRZReader(base.ReaderBase):
             ('p1', '<i4'),
             ('title', '80c'),
             ('p2', '<2i4'),
+            ('force', '<i4'),
             ('p3', '<i4')])
         data = np.fromfile(self.trzfile, dtype=self._headerdtype, count=1)
         self.title = ''.join(c.decode('utf-8') for c in data['title'][0]).strip()
+        if data['force'] == 10:
+            self.has_force = False
+        elif data['force'] == 20:
+            self.has_force = True
+        else:
+            raise IOError
 
     def _read_next_timestep(self, ts=None):
         if ts is None:
@@ -204,6 +223,10 @@ class TRZReader(base.ReaderBase):
             ts._velocities[:, 0] = data['vx']
             ts._velocities[:, 1] = data['vy']
             ts._velocities[:, 2] = data['vz']
+            if self.has_force:
+                ts._forces[:, 0] = data['fx']
+                ts._forces[:, 1] = data['fy']
+                ts._forces[:, 2] = data['fz']
         except IndexError: # Raises indexerror if data has no data (EOF)
             raise IOError from None
         else:
