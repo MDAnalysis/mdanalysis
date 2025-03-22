@@ -8,7 +8,7 @@
 
 |docs| |devdocs| |discussions|
 
-|anaconda| |asv|
+|pypi| |anaconda| |asv|
 
 MDAnalysis_ is a Python library for the analysis of computer simulations of many-body systems at the molecular scale, spanning use cases from interactions of drugs with proteins to novel materials. It is widely used in the scientific community and is written by scientists for scientists. 
 
@@ -178,6 +178,10 @@ For citations of included algorithms and sub-modules please see the references_.
 .. |cov|   image:: https://codecov.io/gh/MDAnalysis/mdanalysis/branch/develop/graph/badge.svg
    :alt: Coverage Status
    :target: https://codecov.io/gh/MDAnalysis/mdanalysis
+
+.. |pypi| image:: https://img.shields.io/pypi/v/MDAnalysis
+   :alt: PyPI Version
+   :target: https://pypi.org/project/MDAnalysis/
 
 .. |anaconda| image:: https://anaconda.org/conda-forge/mdanalysis/badges/version.svg
    :alt: Anaconda

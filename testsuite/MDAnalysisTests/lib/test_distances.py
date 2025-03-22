@@ -1973,7 +1973,7 @@ class TestInputUnchanged(object):
         res = distances.transform_RtoS(crd, box, backend=backend)
         assert_equal(crd, ref)
         crd = res
-        ref = crd.copy()
+        np.copyto(ref, crd)
         res = distances.transform_StoR(crd, box, backend=backend)
         assert_equal(crd, ref)
 
