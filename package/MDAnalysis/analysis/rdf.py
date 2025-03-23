@@ -330,7 +330,6 @@ class InterRDF(AnalysisBase):
         if self.norm == "rdf":
             # Cumulative volume for rdf normalization
             self.results.volume_cum = 0
-            self.volume_cum = 0
         # Set the max range to filter the search radius
         self._maxrange = self.rdf_settings["range"][1]
 
@@ -361,7 +360,6 @@ class InterRDF(AnalysisBase):
 
         if self.norm == "rdf":
             self.results.volume_cum += self._ts.volume
-            self.volume_cum += self._ts.volume
 
     def _get_aggregator(self):
         return ResultsGroup(
@@ -719,7 +717,6 @@ class InterRDF_s(AnalysisBase):
         if self.norm == "rdf":
             # Cumulative volume for rdf normalization
             self.results.volume_cum = 0
-            self.volume_cum = 0
         self._maxrange = self.rdf_settings["range"][1]
 
     def _single_frame(self):
@@ -738,7 +735,6 @@ class InterRDF_s(AnalysisBase):
 
         if self.norm == "rdf":
             self.results.volume_cum += self._ts.volume
-            self.volume_cum += self._ts.volume
 
     def _conclude(self):
         norm = self.n_frames
