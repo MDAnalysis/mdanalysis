@@ -83,6 +83,39 @@ from ..lib import distances
 from .base import AnalysisBase, ResultsGroup
 
 
+def flatten_sum_alternate(arrs):
+    r"""Custom aggregator for nested arrays
+
+    This function takes a nested list or tuple of NumPy arrays, flattens it into a single list, 
+    and aggregates the elements at alternating indices into two separate arrays. The first 
+    array accumulates elements at even indices, while the second accumulates elements at odd indices.
+
+    Parameters
+    ----------
+    arrs : list
+        List of arrays or nested lists of arrays
+
+    Returns
+    -------
+    list of ndarray
+        A list containing two NumPy arrays:
+        - The first array is the sum of all elements at even indices in the sum of flattened arrays.
+        - The second array is the sum of all elements at odd indices in the sum of flattened arrays.
+    """
+
+    def flatten(arr):
+        if isinstance(arr, (list, tuple)):
+            return [item for sublist in arr for item in flatten(sublist)]
+        return [arr]
+
+    flat = flatten(arrs)
+    aggregated_arr = [np.zeros_like(flat[0]), np.zeros_like(flat[1])]
+    for i in range(len(flat) // 2):
+        aggregated_arr[0] += flat[2 * i]  # 0, 2, 4, ...
+        aggregated_arr[1] += flat[2 * i + 1]  # 1, 3, 5, ...
+    return aggregated_arr
+
+
 class InterRDF(AnalysisBase):
     r"""Radial distribution function
 
@@ -621,38 +654,10 @@ class InterRDF_s(AnalysisBase):
 
     _analysis_algorithm_is_parallelizable = True
 
-    @staticmethod
-    def func(arrs):
-        r"""Custom aggregator for nested arrays
-
-        Parameters
-        ----------
-        arrs : list
-            List of arrays or nested lists of arrays
-
-        Returns
-        -------
-        ndarray
-            Sums flattened arrays at alternate index
-            in the list and returns a list of two arrays
-        """
-
-        def flatten(arr):
-            if isinstance(arr, (list, tuple)):
-                return [item for sublist in arr for item in flatten(sublist)]
-            return [arr]
-
-        flat = flatten(arrs)
-        aggregated_arr = [np.zeros_like(flat[0]), np.zeros_like(flat[1])]
-        for i in range(len(flat) // 2):
-            aggregated_arr[0] += flat[2 * i]  # 0, 2, 4, ...
-            aggregated_arr[1] += flat[2 * i + 1]  # 1, 3, 5, ...
-        return aggregated_arr
-
     def _get_aggregator(self):
         return ResultsGroup(
             lookup={
-                "count": self.func,
+                "count": flatten_sum_alternate,
                 "volume_cum": ResultsGroup.ndarray_sum,
                 "bins": ResultsGroup.ndarray_mean,
                 "edges": ResultsGroup.ndarray_mean,
