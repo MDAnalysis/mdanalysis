@@ -45,7 +45,7 @@ from ..lib.mdamath import triclinic_box
 from ..lib.util import store_init_arguments
 
 
-def offsets_filename(filename, ending='npz'):
+def offsets_filename(filename, ending="npz"):
     """Return offset or its lock filename for XDR files.
     For this the filename is appended
     with `_offsets.{ending}`.
@@ -63,7 +63,7 @@ def offsets_filename(filename, ending='npz'):
 
     """
     head, tail = split(filename)
-    return join(head, f'.{tail}_offsets.{ending}')
+    return join(head, f".{tail}_offsets.{ending}")
 
 
 def read_numpy_offsets(filename):
@@ -89,6 +89,7 @@ def read_numpy_offsets(filename):
     except (ValueError, IOError):
         warnings.warn(f"Failed to load offsets file {filename}\n")
         return False
+
 
 class XDRBaseReader(base.ReaderBase):
     """Base class for libmdaxdr file formats xtc and trr
@@ -124,9 +125,16 @@ class XDRBaseReader(base.ReaderBase):
     .. versionchanged:: 2.9.0
        Changed fasteners.InterProcessLock() to filelock.FileLock
     """
+
     @store_init_arguments
-    def __init__(self, filename, convert_units=True, sub=None,
-                 refresh_offsets=False, **kwargs):
+    def __init__(
+        self,
+        filename,
+        convert_units=True,
+        sub=None,
+        refresh_offsets=False,
+        **kwargs,
+    ):
         """
         Parameters
         ----------
@@ -144,9 +152,9 @@ class XDRBaseReader(base.ReaderBase):
             General reader arguments.
 
         """
-        super(XDRBaseReader, self).__init__(filename,
-                                            convert_units=convert_units,
-                                            **kwargs)
+        super(XDRBaseReader, self).__init__(
+            filename, convert_units=convert_units, **kwargs
+        )
         self._xdr = self._file(self.filename)
 
         self._sub = sub
@@ -192,8 +200,7 @@ class XDRBaseReader(base.ReaderBase):
         fails. To prevent the competition of generating the same offset file
         from multiple processes, an `InterProcessLock` is used."""
         fname = offsets_filename(self.filename)
-        lock_name = offsets_filename(self.filename,
-                                     ending='lock')
+        lock_name = offsets_filename(self.filename, ending="lock")
 
         #  check if the location of the lock is writable.
         try:
@@ -201,8 +208,10 @@ class XDRBaseReader(base.ReaderBase):
                 pass
         except OSError as e:
             if isinstance(e, PermissionError) or e.errno == errno.EROFS:
-                warnings.warn(f"Cannot write lock/offset file in same location as "
-                              f"{self.filename}. Using slow offset calculation.")
+                warnings.warn(
+                    f"Cannot write lock/offset file in same location as "
+                    f"{self.filename}. Using slow offset calculation."
+                )
                 self._read_offsets(store=False)
                 return
             else:
@@ -221,29 +230,33 @@ class XDRBaseReader(base.ReaderBase):
             # refer to Issue #1893
             data = read_numpy_offsets(fname)
             if not data:
-                warnings.warn(f"Reading offsets from {fname} failed, "
-                              "reading offsets from trajectory instead.\n"
-                              "Consider setting 'refresh_offsets=True' "
-                              "when loading your Universe.")
+                warnings.warn(
+                    f"Reading offsets from {fname} failed, "
+                    "reading offsets from trajectory instead.\n"
+                    "Consider setting 'refresh_offsets=True' "
+                    "when loading your Universe."
+                )
                 self._read_offsets(store=True)
                 return
 
             ctime_ok = size_ok = n_atoms_ok = False
 
             try:
-                ctime_ok = getctime(self.filename) == data['ctime']
-                size_ok = getsize(self.filename) == data['size']
-                n_atoms_ok = self._xdr.n_atoms == data['n_atoms']
+                ctime_ok = getctime(self.filename) == data["ctime"]
+                size_ok = getsize(self.filename) == data["size"]
+                n_atoms_ok = self._xdr.n_atoms == data["n_atoms"]
             except KeyError:
                 # we tripped over some old offset formated file
                 pass
 
             if not (ctime_ok and size_ok and n_atoms_ok):
-                warnings.warn("Reload offsets from trajectory\n "
-                              "ctime or size or n_atoms did not match")
+                warnings.warn(
+                    "Reload offsets from trajectory\n "
+                    "ctime or size or n_atoms did not match"
+                )
                 self._read_offsets(store=True)
             else:
-                self._xdr.set_offsets(data['offsets'])
+                self._xdr.set_offsets(data["offsets"])
 
     def _read_offsets(self, store=False):
         """read frame offsets from trajectory"""
@@ -253,9 +266,13 @@ class XDRBaseReader(base.ReaderBase):
             ctime = getctime(self.filename)
             size = getsize(self.filename)
             try:
-                np.savez(fname,
-                         offsets=offsets, size=size, ctime=ctime,
-                         n_atoms=self._xdr.n_atoms)
+                np.savez(
+                    fname,
+                    offsets=offsets,
+                    size=size,
+                    ctime=ctime,
+                    n_atoms=self._xdr.n_atoms,
+                )
             except Exception as e:
                 warnings.warn(f"Couldn't save offsets because: {e}")
 
@@ -270,7 +287,7 @@ class XDRBaseReader(base.ReaderBase):
         self._frame = -1
         offsets = self._xdr.offsets.copy()
         self._xdr.close()
-        self._xdr.open(self.filename.encode('utf-8'), 'r')
+        self._xdr.open(self.filename.encode("utf-8"), "r")
         # only restore in case we actually had offsets
         if len(offsets) != 0:
             self._xdr.set_offsets(offsets)
@@ -282,7 +299,7 @@ class XDRBaseReader(base.ReaderBase):
             self._xdr.seek(i)
             timestep = self._read_next_timestep()
         except IOError:
-            warnings.warn('seek failed, recalculating offsets and retrying')
+            warnings.warn("seek failed, recalculating offsets and retrying")
             offsets = self._xdr.calc_offsets()
             self._xdr.set_offsets(offsets)
             self._read_offsets(store=True)
@@ -316,7 +333,7 @@ class XDRBaseWriter(base.WriterBase):
         self.filename = filename
         self._convert_units = convert_units
         self.n_atoms = n_atoms
-        self._xdr = self._file(self.filename, 'w')
+        self._xdr = self._file(self.filename, "w")
 
     def close(self):
         """close trajectory"""

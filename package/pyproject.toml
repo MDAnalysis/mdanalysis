@@ -40,9 +40,6 @@ dependencies = [
     'packaging',
     'filelock',
     'mda-xdrlib',
-    'waterdynamics',
-    'pathsimanalysis',
-    'mdahole2',
 ]
 keywords = [
     "python", "science", "chemistry", "biophysics", "molecular-dynamics",
@@ -86,6 +83,9 @@ analysis = [
     "scikit-learn",
     "tidynamics>=1.0.0",
     'networkx>=2.0',
+    'waterdynamics',
+    'pathsimanalysis',
+    'mdahole2',
 ]
 doc = [
     "sphinx",
@@ -133,7 +133,6 @@ __pycache__
 | MDAnalysis/analysis/atomicdistances\.py
 | MDAnalysis/topology/CMSParser\.py
 | MDAnalysis/topology/__init__\.py
-| MDAnalysis/coordinates/XDR\.py
 | MDAnalysis/core/selection\.py
 | MDAnalysis/analysis/diffusionmap\.py
 | MDAnalysis/analysis/align\.py

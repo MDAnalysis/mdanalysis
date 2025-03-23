@@ -188,6 +188,13 @@ Note
 
 .. _CHARMM: https://www.charmm.org/charmm/
 .. _HOOMD XML: http://codeblue.umich.edu/hoomd-blue/doc/page_xml_file_format.html
+
+.. Note::
+
+   The HOOMD XML file format has been deprecated in favor of the GSD.
+   https://hoomd-blue.readthedocs.io/en/v2.9.3/module-deprecated-dump.html
+   Transitioning to the GSD file format is advisable for working with HOOMD-blue simulations.
+
 .. _HOOMD: http://glotzerlab.engin.umich.edu/hoomd-blue/
 .. _NAMD: http://www.ks.uiuc.edu/Research/namd/
 .. _LAMMPS: https://lammps.sandia.gov/
@@ -197,8 +204,8 @@ Note
 .. _Tinker: https://dasher.wustl.edu/tinker/
 .. _DL_POLY: https://www.scd.stfc.ac.uk/Pages/DL_POLY.aspx
 .. _AutoDock: http://autodock.scripps.edu/
-.. _APBS: https://apbs-pdb2pqr.readthedocs.io/en/latest/apbs/
-.. _Macromolecular Transmission Format (MMTF): https://mmtf.rcsb.org/
+.. _APBS: https://apbs.readthedocs.io/en/latest/
+.. _Macromolecular Transmission Format (MMTF): https://www.rcsb.org/news/feature/65a1af31c76ca3abcc925d0c
 .. _FHI-AIMS: https://aimsclub.fhi-berlin.mpg.de/
 .. _GAMESS: https://www.msg.chem.iastate.edu/gamess/
 

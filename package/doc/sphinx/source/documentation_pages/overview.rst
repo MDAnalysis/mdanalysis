@@ -38,7 +38,7 @@ of a protein and the radius of gyration of the backbone atoms are calculated::
         print(f"frame = {ts.frame}: d = {d} Angstroem, Rgyr = {rgyr} Angstroem")
 
 
-.. _NumPy:   http://numpy.scipy.org
+.. _NumPy:   https://numpy.org/
 .. _CHARMM:  http://www.charmm.org/
 .. _LAMMPS:  http://lammps.sandia.gov/
 .. _NAMD:    http://www.ks.uiuc.edu/Research/namd/
@@ -129,7 +129,7 @@ Finally, the :meth:`MDAnalysis.Universe.select_atoms` method generates a new
 as described in :ref:`selection-commands-label`.
 
 .. _SciPy: http://www.scipy.org/
-.. _IPython: http://ipython.scipy.org/
+.. _IPython: https://ipython.org/
 .. _MDAnalysis test suite: https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
 
 

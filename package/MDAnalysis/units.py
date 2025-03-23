@@ -354,14 +354,14 @@ forceUnit_factor = {
 #: *elementary_charge* in :data:`constants`.
 #: The `conversion factor to Amber charge units`_ is 18.2223.
 #:
-#: .. _`conversion factor to Amber charge units`: http://ambermd.org/formats.html#parm
+#: .. _`conversion factor to Amber charge units`: https://ambermd.org/FileFormats.php#parm.dat
 #:
 #: .. versionchanged:: 0.9.0
 #:    Use CODATA 2010 value for *elementary charge*, which differs from the previously used value
 #:    *e* =  1.602176487 x 10**(-19) C by 7.8000000e-27 C.
 chargeUnit_factor = {
     "e": 1.0,
-    "Amber": 18.2223,  # http://ambermd.org/formats.html#parm
+    "Amber": 18.2223,  # https://ambermd.org/FileFormats.php#parm.dat
     "C": constants["elementary_charge"],
     "As": constants["elementary_charge"],
 }
