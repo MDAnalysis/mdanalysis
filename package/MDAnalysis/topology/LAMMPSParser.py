@@ -98,12 +98,14 @@ from ..core.topologyattrs import (
     Bonds,
     Charges,
     Dihedrals,
+    Elements,
     Impropers,
     Masses,
     Resids,
     Resnums,
     Segids,
 )
+from ..guesser.tables import SYMB2Z
 
 logger = logging.getLogger("MDAnalysis.topology.LAMMPS")
 
@@ -601,7 +603,18 @@ class DATAParser(TopologyReaderBase):
 
         return unitcell
 
-
+# Define the headers that define topology information from the lammps file
+# Any headers outside of this set will be ignored
+DUMP_HEADERS = set(
+    [
+        "id",
+        "mol",
+        "type",
+        "mass",
+        "element",
+        "q"
+    ]
+)
 class LammpsDumpParser(TopologyReaderBase):
     """Parses Lammps ascii dump files in 'atom' format.
 
@@ -627,33 +640,76 @@ class LammpsDumpParser(TopologyReaderBase):
             fin.readline()  # y
             fin.readline()  # z
 
-            indices = np.zeros(natoms, dtype=int)
-            types = np.zeros(natoms, dtype=object)
 
+     
+            # Next line contains the headers for the atom data
             atomline = fin.readline()  # ITEM ATOMS
             attrs = atomline.split()[2:]  # attributes on coordinate line
             col_ids = {attr: i for i, attr in enumerate(attrs)}  # column ids
+            headers = {header: header in col_ids for header in DUMP_HEADERS} # Find the headers present in the dump file
+            atom_data = {}
+            # Initialize the atom data arrays
+            if headers["id"]:
+                atom_data["id"] = np.zeros(natoms, dtype=np.int32)
+            else:
+                raise ValueError("No id column found in dump file")
+            if headers["type"]:
+                atom_data["type"] = np.zeros(natoms, dtype=object)
+            else:
+                warnings.warn("Set all atom types to 1")
+                atom_data["type"] = np.ones(natoms, dtype=object)
+            if headers["mass"]:
+                atom_data["mass"] = np.zeros(natoms, dtype=np.float64)
+            if headers["mol"]:
+                atom_data["mol"] = np.zeros(natoms, dtype=int)
+            else:
+                atom_data["mol"] = np.ones(natoms, dtype=int) # Set resids to 1 if not present
+            if headers["q"]:
+                atom_data["q"] = np.zeros(natoms, dtype=np.float32)
+            if headers["element"]:
+                atom_data["element"] = np.zeros(natoms, dtype=object)
+
 
             for i in range(natoms):
                 fields = fin.readline().split()
+                for header in DUMP_HEADERS:
+                    if headers[header]:
+                        atom_data[header][i] = fields[col_ids[header]]
 
-                indices[i] = fields[col_ids["id"]]
-                types[i] = fields[col_ids["type"]]
+        # Reorder the atom data by id
+        order = np.argsort(atom_data["id"])
+        for key, value in atom_data.items():
+            atom_data[key] = value[order]
 
-        order = np.argsort(indices)
-        indices = indices[order]
-        types = types[order]
+        # Get the number of unique residues and the assignment of each atom to a residue
+        residx, resids = squash_by(atom_data["mol"])[:2]
+        n_residues = len(resids)
 
         attrs = []
-        attrs.append(Atomids(indices))
-        attrs.append(Atomtypes(types))
-        attrs.append(Masses(np.ones(natoms, dtype=np.float64), guessed=True))
-        warnings.warn("Guessed all Masses to 1.0")
-        attrs.append(Resids(np.array([1], dtype=int)))
-        attrs.append(Resnums(np.array([1], dtype=int)))
+        attrs.append(Atomids(atom_data["id"]))
+        attrs.append(Atomtypes(atom_data["type"]))
+        if headers["mass"]:
+            attrs.append(Masses(atom_data["mass"]))
+        else:
+            warnings.warn("Guessed all Masses to 1.0")
+            attrs.append(Masses(np.ones(natoms, dtype=np.float64), guessed=True))
+        attrs.append(Resids(resids))
+        attrs.append(Resnums(resids.copy()))
         attrs.append(Segids(np.array(["SYSTEM"], dtype=object)))
-
-        return Topology(natoms, 1, 1, attrs=attrs)
+        if "q" in atom_data:
+            attrs.append(Charges(atom_data["q"]))
+        if "element" in atom_data:
+            validated_elements = []
+            for elem in atom_data["element"]:
+                if elem.capitalize() in SYMB2Z:
+                    validated_elements.append(elem.capitalize())
+                else:
+                    wmsg = (f"Unknown element {elem} found for some atoms. "
+                            f"These have been given an empty element record. ")
+                    warnings.warn(wmsg)
+                    validated_elements.append('')
+            attrs.append(Elements(np.array(validated_elements, dtype=object)))
+        return Topology(natoms, n_residues, 1, attrs=attrs, atom_resindex=residx)
 
 
 @functools.total_ordering
