@@ -48,8 +48,11 @@ case-insensitive):
 
    "OpenMP"   :mod:`c_distances_openmp` parallel implementation in C/Cython
                                         with OpenMP
-   "distopia"  `_distopia`               SIMD-accelerated implementation
+
+   "distopia"  `_distopia`              SIMD-accelerated implementation
+                                        with the `distopia`_ library
    ========== ========================= ======================================
+
 
 Use of the distopia library
 ---------------------------
@@ -65,25 +68,27 @@ you wish to use is covered by distopia. For more information see the
 .. table:: Functions available using the `distopia`_ backend.
    :align: center
 
-   +-----------------------------------------------+
-   | Functions                                     |
-   +===============================================+
-   | MDAnalysis.lib.distances.calc_bonds           |
-   +-----------------------------------------------+
-   | MDAnalysis.lib.distances.calc_angles          |
-   +-----------------------------------------------+
-   | MDAnalysis.lib.distances.calc_dihedrals       |
-   +-----------------------------------------------+
-   | MDAnalysis.lib.distances.distance_array       | 
-   +-----------------------------------------------+
-   | MDAnalysis.lib.distances.self_distance_array  |
-   +-----------------------------------------------+
+   +-------------------------------------------------------+
+   | Functions                                             |
+   +=======================================================+
+   | :func:`MDAnalysis.lib.distances.calc_bonds`           |
+   +-------------------------------------------------------+
+   | :func:`MDAnalysis.lib.distances.calc_angles`          |
+   +-------------------------------------------------------+
+   | :func:`MDAnalysis.lib.distances.calc_dihedrals`       |
+   +-------------------------------------------------------+
+   | :func:`MDAnalysis.lib.distances.distance_array`       |
+   +-------------------------------------------------------+
+   | :func:`MDAnalysis.lib.distances.self_distance_array`  |
+   +-------------------------------------------------------+
 
 If `distopia`_ is installed, the functions in this table will accept the key
-'distopia' for the `backend` keyword argument. If the distopia backend is
-selected the `distopia` library will be used to calculate the distances. Note
-that for functions listed in this table **distopia is not the default backend
-and must be selected.**
+'distopia' for the `backend` keyword argument. The variable
+:data:`HAS_DISTOPIA` is set to ``True`` if distopia is available.
+
+If the distopia backend is selected the `distopia` library will be used to
+calculate the distances. Note that for functions listed in this table
+**distopia is not the default backend and must be explicitly selected.**
 
 
 .. Note::
@@ -109,6 +114,14 @@ and must be selected.**
 .. versionchanged:: 2.9.0
    Distopia support greatly expanded (with distopia ≥ 0.4.0).
 
+Constants
+---------
+.. data:: HAS_DISTOPIA
+
+   This variable is ``True`` if the :mod:`distopia` package has been
+   installed and is available as a `backend`. Otherwise it is
+   ``False``.
+
 Functions
 ---------
 .. autofunction:: distance_array
@@ -124,6 +137,7 @@ Functions
 .. autofunction:: augment_coordinates(coordinates, box, r)
 .. autofunction:: undo_augment(results, translation, nreal)
 .. autofunction:: minimize_vectors(vectors, box)
+
 """
 import numpy as np
 import numpy.typing as npt
