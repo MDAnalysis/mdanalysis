@@ -458,11 +458,7 @@ class closeContactGNMAnalysis(GNMAnalysis):
     def generate_kirchoff(self):
         nresidues = self.ca.n_residues
         positions = self.ca.positions
-        residue_index_map = [
-            resnum
-            for [resnum, residue] in enumerate(self.ca.residues)
-            for atom in residue.atoms
-        ]
+        residue_index_map = self.ca.resindices.copy()
         matrix = np.zeros((nresidues, nresidues), dtype=np.float64)
         cutoffsq = self.cutoff**2
 
