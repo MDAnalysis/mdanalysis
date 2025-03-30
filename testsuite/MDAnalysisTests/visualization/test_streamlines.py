@@ -52,6 +52,133 @@ def membrane_xtc(tmpdir_factory, univ):
             z_delta += 0.02
     return str(tmp_xtc)
 
+def test_produce_list_indices_point_in_polygon_this_frame():
+    # Define two squares:
+    # square1 covers the area [0,1]x[0,1]
+    # square2 covers the area [2,3]x[2,3]
+    square1 = [(0, 0), (1, 0), (1, 1), (0, 1)]
+    square2 = [(2, 2), (3, 2), (3, 3), (2, 3)]
+    
+    # Create a list of vertex coordinates (for two squares)
+    vertex_list = [square1, square2]
+    
+    # Define points:
+    # Point [0.5, 0.5] lies inside square1.
+    # Point [1.5, 1.5] lies outside both squares.
+    # Point [2.5, 2.5] lies inside square2.
+    # Point [3.5, 3.5] lies outside both squares.
+    points = np.array([
+        [0.5, 0.5],
+        [1.5, 1.5],
+        [2.5, 2.5],
+        [3.5, 3.5]
+    ])
+
+    # Call the function under test.
+    result = streamlines.produce_list_indices_point_in_polygon_this_frame(vertex_list, points)
+    
+    # np.where returns a tuple; thus for each square we expect:
+    # For square1: point index 0 is inside → (array([0]),)
+    # For square2: point index 2 is inside → (array([2]),)
+    expected = [(np.array([0]),), (np.array([2]),)]
+    
+    # Check that each result matches the expected indices.
+    for res_tuple, exp_tuple in zip(result, expected):
+        np.testing.assert_array_equal(res_tuple[0], exp_tuple[0])
+
+def test_produce_list_centroids_empty():
+    # Simulate an empty index set for one square:
+    list_indices = [(np.array([]),)]
+    # Dummy particle coordinate array (won't be used since indices is empty)
+    pts = np.array([[0, 0], [1, 1]])
+    result = streamlines.produce_list_centroids_this_frame(list_indices, pts)
+    assert result == [None]
+
+def test_produce_list_centroids_single_square():
+    # Create an array of particle coordinates
+    pts = np.array([
+        [0, 0],
+        [1, 1],
+        [2, 2],
+        [3, 3]
+    ])
+    # Choose indices that pick points [1] and [3]
+    indices_tuple = (np.array([1, 3]),)
+    list_indices = [indices_tuple]
+    result = streamlines.produce_list_centroids_this_frame(list_indices, pts)
+    expected = np.average(pts[[1, 3]], axis=0)
+    np.testing.assert_array_almost_equal(result[0], expected)
+
+def test_produce_list_centroids_multiple_squares():
+    pts = np.array([
+        [0, 0],
+        [1, 1],
+        [2, 2],
+        [3, 3],
+        [4, 4]
+    ])
+    # First square will use pts[0] and pts[2]
+    indices1 = (np.array([0, 2]),)
+    # Second square will use pts[1], pts[3] and pts[4]
+    indices2 = (np.array([1, 3, 4]),)
+    list_indices = [indices1, indices2]
+    result = streamlines.produce_list_centroids_this_frame(list_indices, pts)
+    expected1 = np.average(pts[[0, 2]], axis=0)
+    expected2 = np.average(pts[[1, 3, 4]], axis=0)
+    np.testing.assert_array_almost_equal(result[0], expected1)
+    np.testing.assert_array_almost_equal(result[1], expected2)
+
+def test_per_core_work_2D(membrane_xtc, univ):
+    xmin=univ.atoms.positions[..., 0].min()
+    xmax=univ.atoms.positions[..., 0].max()
+    ymin=univ.atoms.positions[..., 1].min()
+    ymax=univ.atoms.positions[..., 1].max()
+    tuple_of_limits = (xmin, xmax, ymin, ymax)
+    grid = streamlines.produce_grid(
+        tuple_of_limits=tuple_of_limits, grid_spacing=20
+    )
+    (
+        list_square_vertex_arrays_per_core,
+        list_parent_index_values,
+        _,
+        _,
+    ) = streamlines.split_grid(grid=grid, num_cores=1)
+    values = streamlines.per_core_work(
+        topology_file_path=Martini_membrane_gro,
+        trajectory_file_path=membrane_xtc,
+        list_square_vertex_arrays_this_core = list_square_vertex_arrays_per_core[0],
+        MDA_selection="name PO4",
+        start_frame=1,
+        end_frame=2,
+        reconstruction_index_list=list_parent_index_values[0],
+        maximum_delta_magnitude=2.0,
+    )
+    returnable = [(np.array([0, 0]), [0.7999992370605469, 0.5399990081787109]),
+                  (np.array([1, 0]), [0.8000001907348633, 0.5399971008300781]),
+                  (np.array([2, 0]), [0.8000020980834961, 0.5400047302246094]),
+                  (np.array([3, 0]), [0.8000001907348633, 0.5400009155273438]),
+                  (np.array([4, 0]), [0.7999982833862305, 0.5400009155273438]),
+                  (np.array([0, 1]), [0.7999992370605469, 0.5399999618530273]),
+                  (np.array([1, 1]), [0.7999954223632812, 0.5400009155273438]),
+                  (np.array([2, 1]), [0.7999992370605469, 0.5400047302246094]),
+                  (np.array([3, 1]), [0.7999954223632812, 0.5399932861328125]),
+                  (np.array([4, 1]), [0.8000030517578125, 0.5399932861328125]),
+                  (np.array([0, 2]), [0.8000068664550781, 0.5399999618530273]),
+                  (np.array([1, 2]), [0.7999992370605469, 0.5400009155273438]),
+                  (np.array([2, 2]), [0.8000106811523438, 0.5400009155273438]),
+                  (np.array([3, 2]), [0.8000106811523438, 0.5399932861328125]),
+                  (np.array([4, 2]), [0.8000030517578125, 0.5399932861328125]),
+                  (np.array([0, 3]), [0.7999954223632812, 0.5399999618530273]),
+                  (np.array([1, 3]), [0.7999954223632812, 0.5400009155273438]),
+                  (np.array([2, 3]), [0.8000030517578125, 0.5399971008300781]),
+                  (np.array([3, 3]), [0.8000030517578125, 0.5399932861328125]),
+                  (np.array([4, 3]), [0.8000030517578125, 0.5400009155273438]),
+                  (np.array([0, 4]), [0.79998779296875, 0.5400009155273438]),
+                  (np.array([1, 4]), [0.8000106811523438, 0.5399971008300781]),
+                  (np.array([2, 4]), [0.7999954223632812, 0.5400047302246094]),
+                  (np.array([3, 4]), [0.8000030517578125, 0.5400009155273438]),
+                  (np.array([4, 4]), [0.7999954223632812, 0.5399932861328125])] 
+    assert_allclose(values, returnable,)
 
 def test_streamplot_2D(membrane_xtc, univ):
     # regression test the data structures
@@ -121,6 +248,28 @@ def test_streamplot_2D_zero_return(membrane_xtc, univ, tmpdir):
     assert avg == approx(0.0)
     assert std == approx(0.0)
 
+def test_streamplot_2D_max_core(membrane_xtc, univ, tmpdir):
+    # simple roundtrip test to ensure that
+    # zeroed arrays are returned by the 2D streamplot
+    # code when called with an empty selection
+    u1, v1, avg, std = streamlines.generate_streamlines(
+        topology_file_path=Martini_membrane_gro,
+        trajectory_file_path=membrane_xtc,
+        grid_spacing=20,
+        MDA_selection="name POX",
+        start_frame=1,
+        end_frame=2,
+        xmin=univ.atoms.positions[..., 0].min(),
+        xmax=univ.atoms.positions[..., 0].max(),
+        ymin=univ.atoms.positions[..., 1].min(),
+        ymax=univ.atoms.positions[..., 1].max(),
+        maximum_delta_magnitude=2.0,
+        num_cores="maximum",
+    )
+    assert_allclose(u1, np.zeros((5, 5)))
+    assert_allclose(v1, np.zeros((5, 5)))
+    assert avg == approx(0.0)
+    assert std == approx(0.0)
 
 def test_streamplot_3D(membrane_xtc, univ, tmpdir):
     # because mayavi is too heavy of a dependency
