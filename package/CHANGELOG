@@ -14,12 +14,15 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, orbeckst
+??/??/?? IAlibay, orbeckst, BHM-Bob
 
 
  * 2.10.0
 
 Fixes
+ * Fixes bug in `analysis/gnm.py`: `closeContactGNMAnalysis`: correct the
+   `residue_index_map` generation when selection is not `protein`.
+   (Issue #4924, PR #4961)
 
 Enhancements
 
