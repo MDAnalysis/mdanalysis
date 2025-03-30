@@ -86,81 +86,12 @@ from .groups import (ComponentBase, GroupBase,
 from .topology import Topology
 from .topologyattrs import (
     AtomAttr, ResidueAttr, SegmentAttr,
-    Segids, ICodes, Resnums, Resnames, Resids,
     BFACTOR_WARNING, _Connection
 )
 from .topologyobjects import TopologyObject
 from ..guesser.base import get_guesser
 
 logger = logging.getLogger("MDAnalysis.core.universe")
-
-
-def _update_topology_by_ids(universe, atomwise_resids, atomwise_segids):
-    from ..topology.base import change_squash
-
-    # the original topology
-    top = universe._topology
-
-    # detect the atom level attributes (excluding residue level and above)
-    atom_attridices = [
-        idx
-        for idx, each_attr in enumerate(top.attrs)
-        if not (Residue in each_attr.target_classes)
-    ]
-    attrs = [top.attrs[each_attr] for each_attr in atom_attridices]
-
-    # create new residues level stuff
-    if hasattr(universe.atoms, "icodes"):
-        residx, (resids, resnames, icodes, resnums, segids) = change_squash(
-            (
-                atomwise_resids,
-                universe.atoms.resnames,
-                universe.atoms.icodes,
-                atomwise_segids,
-            ),
-            (
-                atomwise_resids,
-                universe.atoms.resnames,
-                universe.atoms.icodes,
-                universe.atoms.resnums,
-                atomwise_segids,
-            ),
-        )
-        attrs.append(ICodes(icodes))
-    else:
-        residx, (resids, resnames, resnums, segids) = change_squash(
-            (atomwise_resids, universe.atoms.resnames, atomwise_segids),
-            (
-                atomwise_resids,
-                universe.atoms.resnames,
-                universe.atoms.resnums,
-                atomwise_segids,
-            ),
-        )
-    n_residues = len(resids)
-
-    attrs.append(Resnums(resnums))
-    attrs.append(Resids(resids))
-    attrs.append(Resnums(resids.copy()))
-    attrs.append(Resnames(resnames))
-
-    # create new segment level stuff
-    segidx, (segids,) = change_squash((segids,), (segids,))
-    n_segments = len(segids)
-    attrs.append(Segids(segids))
-
-    # create new topology
-    top = Topology(
-        universe.atoms.n_atoms,
-        n_residues,
-        n_segments,
-        attrs=attrs,
-        atom_resindex=residx,
-        residue_segindex=segidx,
-    )
-
-    # update the topology in the universe
-    universe._topology = top
 
 
 def _check_file_like(topology):
