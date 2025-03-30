@@ -380,12 +380,6 @@ class Universe(object):
         functionality to treat independent trajectory files as a single virtual
         trajectory.
     **kwargs: extra arguments are passed to the topology parser.
-        For instance, when reading a PDB file
-        (:class:`PDBReader<MDAnalysis.coordinates.PDB>`,
-        :class:`PDBParser<MDAnalysis.topology.PDBParser>`), set
-        ``force_chainids_to_segids=True`` to make the universe use the
-        chainIDs (column 22) instead of the segmentIDs (column 73-76) as the
-        `segids` in the universe and select the corresponding SegmentGroup.
 
     Attributes
     ----------
@@ -453,10 +447,6 @@ class Universe(object):
         Added :meth:`~MDAnalysis.core.universe.Universe.guess_TopologyAttrs` API
         guessing masses and atom types after topology
         is read from a registered parser.
-
-    .. versionchanged:: 2.10.0
-        Added :meth: `~MDAnalysis.core.universe.Universe.set_groups`
-        API to set residues/segments based on the atomwise resids/segids.
 
     """
     def __init__(self, topology=None, *coordinates, all_coordinates=False,
@@ -1777,92 +1767,6 @@ class Universe(object):
         else:
             warnings.warn('Can not guess attributes '
                           'for universe with 0 atoms')
-
-    def set_groups(self, atomwise_resids=None, atomwise_segids=None):
-        """Set the groups (ResidueGroup, SegmentGroup) of the Universe
-        by atomwise resids/segids.
-
-        The topology will also be updated based on the provided atomwise resids
-        and segids. The original resids and segids will be stored in attributes
-        `atomwise_resids_orig` and/or `atomwise_segids_orig` if they are modified.
-        See notes for the logic of the function.
-
-        Parameters
-        ----------
-        atomwise_resids:
-            A list of residue IDs to be set for the Universe. The length
-            of the list should be equal to the number of atoms in the Universe.
-            If `None`, the original resids will be used.
-
-        atomwise_segids:
-            A list of segment IDs to be set for the Universe. The length
-            of the list should be equal to the number of atoms in the Universe.
-            If `None`, the original segids will be used.
-
-        Raises
-        ------
-        AssertionError
-            If the length of the provided atomwise_resids or atomwise_segids
-            does not match the number of atoms in the Universe.
-
-        Notes
-        -----
-        First, the function will check if resids or segids is provided.
-        If both resids and segids are not provided (`None`), it will do nothing.
-        If only one of them is provided, it will use the original values for the
-        other one. If both are provided, it will use the provided values for
-        both resids and segids.
-        The function will then update the topology by a new generated topology
-        with new values of the resids and segids.
-
-        Examples
-        --------
-        To set custom segment IDs for the segments of the Universe::
-
-            atomwise_segids = ['A', 'A', 'B', 'B']
-            u.set_groups(atomwise_segids=atomwise_segids)
-
-            # Now the Universe has two segments with IDs 'A' and 'B'
-
-        ::versionadded:: 2.10.0
-        """
-
-        if (atomwise_resids is not None) or (atomwise_segids is not None):
-            # resids
-            if atomwise_resids is None:
-                atomwise_resids = self.atoms.resids
-            else:
-                self.atomwise_resids_orig = self.atoms.resids
-                warnings.warn("The original resids is stored in "
-                              "atomwise_resids_orig.")
-
-            # segids
-            if atomwise_segids is None:
-                atomwise_segids = self.atoms.segids
-            else:
-                self.atomwise_segids_orig = self.atoms.segids
-                warnings.warn("The original segids is stored in "
-                              "atomwise_segids_orig.")
-        else:
-            warnings.warn("Do nothing. Please provide atomwise_resids or "
-                          "atomwise_segids.")
-            return
-
-        # check if the length of atomwise_resids, atomwise_segids
-        assert len(atomwise_resids) == self.atoms.n_atoms, \
-            "The length of atomwise_resids should be the same as " \
-            "the number of atoms in the universe."
-        assert len(atomwise_segids) == self.atoms.n_atoms, \
-            "The length of atomwise_segids should be the same as " \
-            "the number of atoms in the universe."
-
-        atomwise_resids = np.array(atomwise_resids, dtype=object)
-        atomwise_segids = np.array(atomwise_segids, dtype=object)
-
-        _update_topology_by_ids(self,
-                                atomwise_resids=atomwise_resids,
-                                atomwise_segids=atomwise_segids)
-        _generate_from_topology(self)
 
 
 def Merge(*args):

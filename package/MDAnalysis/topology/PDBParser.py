@@ -174,10 +174,6 @@ class PDBParser(TopologyReaderBase):
      - bonds
      - formalcharges
 
-    Note that `PDBParser` accepts an optional keyword argument
-    ``force_chainids_to_segids``. If set to ``True``, the chain IDs (if existed)
-    will forcibly be used instead of the segment IDs for creating segments.
-
     See Also
     --------
     :class:`MDAnalysis.coordinates.PDB.PDBReader`
@@ -207,10 +203,7 @@ class PDBParser(TopologyReaderBase):
         Removed type and mass guessing (attributes guessing takes place now
         through universe.guess_TopologyAttrs() API).
     .. versionchanged:: 2.10.0
-        Read the segid from columns 73-76 only and added the
-        `force_chainids_to_segids` keyword argument. Some warnings will be
-        generated if the segids is not present or if the chainids are not
-        completely equal to segids.
+        Read the segid from columns 73-76 only.
     """
     format = ['PDB', 'ENT']
 
@@ -221,7 +214,7 @@ class PDBParser(TopologyReaderBase):
         -------
         MDAnalysis Topology object
         """
-        top = self._parseatoms(**kwargs)
+        top = self._parseatoms()
 
         try:
             bonds = self._parsebonds(top.ids.values)
@@ -238,7 +231,7 @@ class PDBParser(TopologyReaderBase):
 
         return top
 
-    def _parseatoms(self, **kwargs):
+    def _parseatoms(self):
         """Create the initial Topology object"""
         resid_prev = 0  # resid looping hack
 
@@ -326,13 +319,6 @@ class PDBParser(TopologyReaderBase):
         if not any(segids):
             warnings.warn("Segment IDs (columns 73-76) are missing. "
                           "Try to load from the chain IDs.")
-            segids = chainids
-
-        # If force_chainids_to_segids is set, use chainids as segids
-        if ("force_chainids_to_segids" in kwargs.keys()
-           and kwargs["force_chainids_to_segids"]):
-            warnings.warn("force_chainids_to_segids is set. "
-                          "Using chain IDs as segment IDs.")
             segids = chainids
 
         n_atoms = len(serials)
