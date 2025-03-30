@@ -175,3 +175,47 @@ def test_closeContactGNMAnalysis_weights_None(universe, client_GNMAnalysis):
         ]
     )
     # fmt: on
+
+
+def test_closeContactGNMAnalysis_select_CA(universe, client_GNMAnalysis):
+    # Issue #4924 fix the bug of CA selection
+    gnm = mda.analysis.gnm.closeContactGNMAnalysis(
+        universe, "name CA", weights=None
+    )
+    gnm.run(stop=2, **client_GNMAnalysis)
+    result = gnm.results
+    assert len(result.times) == 2
+    assert_almost_equal(gnm.results.times, (0, 100), decimal=4)
+    # without Issue #4924 fix, eigenvalues are [3.20010632e-16, 4.27574601e-16]
+    # but use big totolerance to make sure PASS in each platform
+    assert_almost_equal(
+        gnm.results.eigenvalues,
+        [3.57984776e-16, 3.53892581e-16],
+    )
+    gen = gnm.generate_kirchoff()
+    # without Issue #4924 fix, gnm only use 0~14 residues for this data
+    assert np.abs(gen[15]).sum() > 0
+    # fmt: off
+    assert_almost_equal(
+        gen[0],
+        [
+            1.0, -1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        ]
+    )
+    # fmt: on
