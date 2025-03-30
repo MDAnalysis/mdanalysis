@@ -1780,10 +1780,12 @@ class Universe(object):
 
     def set_groups(self, atomwise_resids=None, atomwise_segids=None):
         """Set the groups (ResidueGroup, SegmentGroup) of the Universe
-        by atomwise resids/segids. The reidues and segments groups
-        will be updated based on the provided atomwise resids and segids.
-        The original resids and segids will be stored in `atomwise_resids_orig`
-        and/or `atomwise_segids_orig` if they are modified.
+        by atomwise resids/segids.
+
+        The topology will also be updated based on the provided atomwise resids
+        and segids. The original resids and segids will be stored in attributes
+        `atomwise_resids_orig` and/or `atomwise_segids_orig` if they are modified.
+        See notes for the logic of the function.
 
         Parameters
         ----------
@@ -1810,8 +1812,8 @@ class Universe(object):
         If only one of them is provided, it will use the original values for the
         other one. If both are provided, it will use the provided values for
         both resids and segids.
-        The function will then update the topology by generating
-        a new topology with the new values of the resids and segids.
+        The function will then update the topology by a new generated topology
+        with new values of the resids and segids.
 
         Examples
         --------
