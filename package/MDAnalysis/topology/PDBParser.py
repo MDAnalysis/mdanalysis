@@ -67,6 +67,7 @@ Classes
 """
 import numpy as np
 import warnings
+import logging
 
 from ..guesser.tables import SYMB2Z
 from ..lib import util
@@ -90,6 +91,9 @@ from ..core.topologyattrs import (
     Tempfactors,
     FormalCharges,
 )
+
+# Set up a logger for the PDBParser
+logger = logging.getLogger("MDAnalysis.topology.PDBParser")
 
 
 def float_or_default(val, default):
@@ -313,12 +317,12 @@ class PDBParser(TopologyReaderBase):
 
         # If segids is not equal to chainids, warn the user
         if any([a != b for a, b in zip(segids, chainids)]):
-            warnings.warn("Segment IDs and Chain IDs are not completely equal.")
+            logger.debug("Segment IDs and Chain IDs are not completely equal.")
 
         # If segids not present, try to use chainids
         if not any(segids):
-            warnings.warn("Segment IDs (columns 73-76) are missing. "
-                          "Try to load from the chain IDs.")
+            logger.info("Setting segids from chainIDs because no segids"
+                        "found in the PDB file.")
             segids = chainids
 
         n_atoms = len(serials)
@@ -411,8 +415,8 @@ class PDBParser(TopologyReaderBase):
             n_segments = 1
             attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
             segidx = None
-            warnings.warn("Segment/chain ID is empty, "
-                          "set segids to default value 'SYSTEM'.")
+            logger.info("Segment/chain ID is empty, "
+                        "set segids to default value 'SYSTEM'.")
 
         top = Topology(n_atoms, n_residues, n_segments,
                        attrs=attrs,
