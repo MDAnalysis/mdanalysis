@@ -176,10 +176,11 @@ def split_grid(grid, num_cores):
         current_column,
     ]
 
+
 # some utility functions for trajectory iteration
-
-
-def produce_list_indices_point_in_polygon_this_frame(vertex_coord_list, relevant_particle_coordinate_array_xy):
+def produce_list_indices_point_in_polygon_this_frame(
+    vertex_coord_list, relevant_particle_coordinate_array_xy
+):
     """
     Produce a list of indices for particles of interest in the current frame.
     The list is ordered according to the order of the squares in the grid.
@@ -190,15 +191,15 @@ def produce_list_indices_point_in_polygon_this_frame(vertex_coord_list, relevant
     for square_vertices in vertex_coord_list:
         path_object = matplotlib.path.Path(square_vertices)
         index_list_in_polygon = np.where(
-            path_object.contains_points(
-                relevant_particle_coordinate_array_xy
-            )
+            path_object.contains_points(relevant_particle_coordinate_array_xy)
         )
         list_indices_point_in_polygon.append(index_list_in_polygon)
     return list_indices_point_in_polygon
 
 
-def produce_list_centroids_this_frame(list_indices_in_polygon, relevant_particle_coordinate_array_xy):
+def produce_list_centroids_this_frame(
+    list_indices_in_polygon, relevant_particle_coordinate_array_xy
+):
     """
     Produce a list of centroids for the particles in the current frame.
     The list is ordered according to the order of the squares in the grid.
@@ -219,9 +220,7 @@ def produce_list_centroids_this_frame(list_indices_in_polygon, relevant_particle
             current_square_indices_centroid = np.average(
                 current_coordinate_array_in_square, axis=0
             )
-            list_centroids_this_frame.append(
-                current_square_indices_centroid
-            )
+            list_centroids_this_frame.append(current_square_indices_centroid)
     return list_centroids_this_frame  # a list of numpy xy centroid arrays for this frame
 
 
@@ -256,14 +255,14 @@ def per_core_work(
         list_indices_in_squares_this_frame = (
             produce_list_indices_point_in_polygon_this_frame(
                 list_square_vertex_arrays_this_core,
-                relevant_particle_coordinate_array_xy
+                relevant_particle_coordinate_array_xy,
             )
         )
         # likewise, I will need a list of centroids of particles in each square (same order as above list):
         list_centroids_in_squares_this_frame = (
             produce_list_centroids_this_frame(
                 list_indices_in_squares_this_frame,
-                relevant_particle_coordinate_array_xy
+                relevant_particle_coordinate_array_xy,
             )
         )
         if (
@@ -273,7 +272,7 @@ def per_core_work(
             list_centroids_this_frame_using_indices_from_last_frame = (
                 produce_list_centroids_this_frame(
                     list_previous_frame_indices,
-                    relevant_particle_coordinate_array_xy
+                    relevant_particle_coordinate_array_xy,
                 )
             )
             # I need to write a velocity of zero if there are any 'empty' squares in either frame:
