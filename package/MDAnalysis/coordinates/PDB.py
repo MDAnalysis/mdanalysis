@@ -234,10 +234,7 @@ class PDBReader(base.ReaderBase):
 
     *The columns 73-76 are not part of the official PDB format but are used by
     some programs to store/operate the segment ID. For instance, Chimera_ assigns
-    it as the attribute `pdbSegment` to allow command-line specification. If you
-    would like to force the use of chainID as the segID when reading PDB, please
-    use the kwarg `force_chainids_to_segids=True`. This will prioritize the
-    chain ID to the segment ID.
+    it as the attribute `pdbSegment` to allow command-line specification.
 
     .. _Chimera:
         https://www.cgl.ucsf.edu/chimera/docs/UsersGuide/tutorials/pdbintro.html#note6
@@ -263,8 +260,6 @@ class PDBReader(base.ReaderBase):
        frame.  Occupancies are also read into this dictionary.
     .. versionchanged:: 2.10.0
        segID is read from 73-76 instead of 67-72.
-       The `force_chainids_to_segids` keyword was added to allow the user to
-       prioritize the chain ID as the segment ID when reading PDB files.
     """
     format = ['PDB', 'ENT']
     units = {'time': None, 'length': 'Angstrom'}

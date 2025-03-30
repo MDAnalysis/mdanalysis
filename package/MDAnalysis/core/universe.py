@@ -94,6 +94,7 @@ from ..guesser.base import get_guesser
 logger = logging.getLogger("MDAnalysis.core.universe")
 
 
+
 def _check_file_like(topology):
     if isstream(topology):
         if hasattr(topology, 'name'):
