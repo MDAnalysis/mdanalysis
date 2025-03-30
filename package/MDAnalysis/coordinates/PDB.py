@@ -259,7 +259,7 @@ class PDBReader(base.ReaderBase):
        Tempfactors (aka bfactors) are now read into the ts.data dictionary each
        frame.  Occupancies are also read into this dictionary.
     .. versionchanged:: 2.10.0
-       segID is read from 73-76 instead of 67-72.
+       segID is read from 73-76 instead of 67-76.
     """
     format = ['PDB', 'ENT']
     units = {'time': None, 'length': 'Angstrom'}
