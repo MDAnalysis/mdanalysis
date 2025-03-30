@@ -207,7 +207,7 @@ class PDBParser(TopologyReaderBase):
         Removed type and mass guessing (attributes guessing takes place now
         through universe.guess_TopologyAttrs() API).
     .. versionchanged:: 2.10.0
-        Read the segid from columns 73-76 only.
+        segID is read from 73-76 instead of 67-76.
     """
     format = ['PDB', 'ENT']
 
@@ -321,7 +321,7 @@ class PDBParser(TopologyReaderBase):
 
         # If segids not present, try to use chainids
         if not any(segids):
-            logger.info("Setting segids from chainIDs because no segids"
+            logger.info("Setting segids from chainIDs because no segids "
                         "found in the PDB file.")
             segids = chainids
 
@@ -416,7 +416,7 @@ class PDBParser(TopologyReaderBase):
             attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
             segidx = None
             logger.info("Segment/chain ID is empty, "
-                        "set segids to default value 'SYSTEM'.")
+                        "setting segids to default value 'SYSTEM'.")
 
         top = Topology(n_atoms, n_residues, n_segments,
                        attrs=attrs,
