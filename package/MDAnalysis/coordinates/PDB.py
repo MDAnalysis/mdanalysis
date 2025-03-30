@@ -235,11 +235,11 @@ class PDBReader(base.ReaderBase):
     *The columns 73-76 are not part of the official PDB format but are used by
     some programs to store/operate the segment ID. For instance, Chimera_ assigns
     it as the attribute `pdbSegment` to allow command-line specification. If you
-    would like to forcely use the chain ID as the segment ID when reading PDB,
-    please use the karg `force_chainids_to_segids=True`. This will prioritize the
-    chain ID to the segment ID (see Issue #4948, PR #4965).
+    would like to force the use of chainID as the segID when reading PDB, please
+    use the kwarg `force_chainids_to_segids=True`. This will prioritize the
+    chain ID to the segment ID.
 
-    .. _Chimera: \
+    .. _Chimera:
         https://www.cgl.ucsf.edu/chimera/docs/UsersGuide/tutorials/pdbintro.html#note6
 
     See Also
@@ -247,7 +247,7 @@ class PDBReader(base.ReaderBase):
     :class:`PDBWriter`
     :class:`PDBReader`
 
-    
+
     .. versionchanged:: 0.11.0
        * Frames now 0-based instead of 1-based
        * New :attr:`title` (list with all TITLE lines).
@@ -261,10 +261,10 @@ class PDBReader(base.ReaderBase):
     .. versionchanged:: 2.5.0
        Tempfactors (aka bfactors) are now read into the ts.data dictionary each
        frame.  Occupancies are also read into this dictionary.
-    .. versionchanged:: 2.10.0 dev
-        The unofficial column is set to 73-76 instead of 67-72.
-        The `force_chainids_to_segids` keyword was added to allow the user to
-        prioritize the chain ID as the segment ID when reading PDB files.
+    .. versionchanged:: 2.10.0
+       segID is read from 73-76 instead of 67-72.
+       The `force_chainids_to_segids` keyword was added to allow the user to
+       prioritize the chain ID as the segment ID when reading PDB files.
     """
     format = ['PDB', 'ENT']
     units = {'time': None, 'length': 'Angstrom'}

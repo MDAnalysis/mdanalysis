@@ -159,7 +159,7 @@ def _update_topology_by_ids(universe, atomwise_resids, atomwise_segids):
         residue_segindex=segidx,
     )
 
-    # update the topologu in the universe
+    # update the topology in the universe
     universe._topology = top
 
 
@@ -454,7 +454,7 @@ class Universe(object):
         guessing masses and atom types after topology
         is read from a registered parser.
 
-    .. versionchanged:: 2.10.0 dev
+    .. versionchanged:: 2.10.0
         Added :meth: `~MDAnalysis.core.universe.Universe.set_groups`
         API to set residues/segments based on the atomwise resids/segids.
 
@@ -1780,17 +1780,38 @@ class Universe(object):
 
     def set_groups(self, atomwise_resids=None, atomwise_segids=None):
         """Set the groups (ResidueGroup, SegmentGroup) of the Universe
-        by atomwise resids/segids.
+        by atomwise resids/segids. The reidues and segments groups
+        will be updated based on the provided atomwise resids and segids.
+        The original resids and segids will be stored in `atomwise_resids_orig`
+        and/or `atomwise_segids_orig` if they are modified.
 
         Parameters
         ----------
         atomwise_resids:
             A list of residue IDs to be set for the Universe. The length
             of the list should be equal to the number of atoms in the Universe.
+            If `None`, the original resids will be used.
 
         atomwise_segids:
             A list of segment IDs to be set for the Universe. The length
             of the list should be equal to the number of atoms in the Universe.
+            If `None`, the original segids will be used.
+
+        Raises
+        ------
+        AssertionError
+            If the length of the provided atomwise_resids or atomwise_segids
+            does not match the number of atoms in the Universe.
+
+        Notes
+        -----
+        First, the function will check if resids or segids is provided.
+        If both resids and segids are not provided (`None`), it will do nothing.
+        If only one of them is provided, it will use the original values for the
+        other one. If both are provided, it will use the provided values for
+        both resids and segids.
+        The function will then update the topology by generating
+        a new topology with the new values of the resids and segids.
 
         Examples
         --------
@@ -1801,10 +1822,9 @@ class Universe(object):
 
             # Now the Universe has two segments with IDs 'A' and 'B'
 
+        ::versionadded:: 2.10.0
         """
 
-        # check if resids/segids is provided, if not, use the original ones.
-        # Otherwise, do nothing.
         if (atomwise_resids is not None) or (atomwise_segids is not None):
             # resids
             if atomwise_resids is None:
@@ -1824,7 +1844,7 @@ class Universe(object):
         else:
             warnings.warn("Do nothing. Please provide atomwise_resids or "
                           "atomwise_segids.")
-            return None
+            return
 
         # check if the length of atomwise_resids, atomwise_segids
         assert len(atomwise_resids) == self.atoms.n_atoms, \

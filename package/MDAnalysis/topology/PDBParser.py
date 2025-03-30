@@ -176,7 +176,7 @@ class PDBParser(TopologyReaderBase):
 
     Note that `PDBParser` accepts an optional keyword argument
     ``force_chainids_to_segids``. If set to ``True``, the chain IDs (if existed)
-    will forcibly be used prior to the segment IDs for creating segments.
+    will forcibly be used instead of the segment IDs for creating segments.
 
     See Also
     --------
@@ -206,10 +206,11 @@ class PDBParser(TopologyReaderBase):
     .. versionchanged:: 2.8.0
         Removed type and mass guessing (attributes guessing takes place now
         through universe.guess_TopologyAttrs() API).
-    .. versionchanged:: 2.10.0 dev
-        Modified the segid columns and added the `force_chainids_to_segids`
-        keyword argument. Some warnings will be generated if the segids is
-        not present or if the chainids are not completely equal to segids.
+    .. versionchanged:: 2.10.0
+        Read the segid from columns 73-76 only and added the
+        `force_chainids_to_segids` keyword argument. Some warnings will be
+        generated if the segids is not present or if the chainids are not
+        completely equal to segids.
     """
     format = ['PDB', 'ENT']
 
