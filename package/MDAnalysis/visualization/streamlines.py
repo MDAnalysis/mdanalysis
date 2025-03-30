@@ -177,13 +177,15 @@ def split_grid(grid, num_cores):
     ]
 
 # some utility functions for trajectory iteration
+
+
 def produce_list_indices_point_in_polygon_this_frame(vertex_coord_list, relevant_particle_coordinate_array_xy):
     """
     Produce a list of indices for particles of interest in the current frame.
     The list is ordered according to the order of the squares in the grid.
     Each entry in the list is a tuple of indices for the particles in that square.
     The list is the same length as the number of squares in the grid.
-    """ 
+    """
     list_indices_point_in_polygon = []
     for square_vertices in vertex_coord_list:
         path_object = matplotlib.path.Path(square_vertices)
@@ -194,6 +196,7 @@ def produce_list_indices_point_in_polygon_this_frame(vertex_coord_list, relevant
         )
         list_indices_point_in_polygon.append(index_list_in_polygon)
     return list_indices_point_in_polygon
+
 
 def produce_list_centroids_this_frame(list_indices_in_polygon, relevant_particle_coordinate_array_xy):
     """
@@ -220,6 +223,7 @@ def produce_list_centroids_this_frame(list_indices_in_polygon, relevant_particle
                 current_square_indices_centroid
             )
     return list_centroids_this_frame  # a list of numpy xy centroid arrays for this frame
+
 
 def per_core_work(
     topology_file_path,
@@ -313,6 +317,7 @@ def per_core_work(
         if ts.frame > end_frame:
             break  # stop here
     return list(zip(reconstruction_index_list, xy_deltas_to_write.tolist()))
+
 
 def generate_streamlines(
     topology_file_path,
