@@ -16,7 +16,7 @@ class SimpleRmsBench(object):
     """Benchmarks for MDAnalysis.analysis.rms.rmsd"""
 
     params = ([100, 500, 2000], [True, False], [False, True], [False, True])
-    param_names = ["num_atoms", "weigh/ts", "center", "superposition"]
+    param_names = ["num_atoms", "use_weights", "center", "superposition"]
 
     def setup(self, num_atoms, weights, center, superposition):
         # mimic rmsd docstring example code
