@@ -1832,7 +1832,7 @@ class Universe(object):
         .. versionadded:: 2.10.0
         """
         if (atomwise_resids is None) and (atomwise_segids is None):
-            warnings.warn("Do nothing. Please provide atomwise_resids or "
+            warnings.warn("Not setting groups. Please provide atomwise_resids or "
                           "atomwise_segids.")
             return
 
