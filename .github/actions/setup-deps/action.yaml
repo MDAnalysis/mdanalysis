@@ -59,7 +59,7 @@ inputs:
   dask:
     default: 'dask'
   distopia:
-    default: 'distopia>=0.2.0,<0.3.0'
+    default: 'distopia>=0.4.0'
   h5py:
     default: 'h5py>=2.10'
   hole2:
@@ -96,10 +96,16 @@ inputs:
   # pip-install optional dependencies
   duecredit:
     default: 'duecredit'
+  mdahole2:
+    default: 'mdahole2'
   parmed:
     default: 'parmed'
+  pathsimanalysis:
+    default: 'pathsimanalysis'
   pyedr:
     default: 'pyedr>=0.7.0'
+  waterdynamics:
+    default: 'waterdynamics'
 
 runs:
   using: "composite"
