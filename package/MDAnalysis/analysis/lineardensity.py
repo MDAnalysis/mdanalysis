@@ -36,6 +36,7 @@ import warnings
 from MDAnalysis.analysis.base import AnalysisBase, Results
 from MDAnalysis.units import constants
 from MDAnalysis.lib.util import deprecate
+from MDAnalysis.analysis.results import ResultsGroup
 
 
 # TODO: Remove in version 3.0.0
@@ -198,6 +199,16 @@ class LinearDensity(AnalysisBase):
        and :attr:`results.x.charge_density_stddev` instead.
     """
 
+    _analysis_algorithm_is_parallelizable = True
+
+    @classmethod
+    def get_supported_backends(cls):
+        return (
+            "serial",
+            "multiprocessing",
+            "dask",
+        )
+
     def __init__(self, select, grouping="atoms", binsize=0.25, **kwargs):
         super(LinearDensity, self).__init__(
             select.universe.trajectory, **kwargs
@@ -246,6 +257,35 @@ class LinearDensity(AnalysisBase):
         self.masses = None
         self.charges = None
         self.totalmass = None
+
+    @staticmethod
+    def custom_aggregator(results):
+        mass_density = [entry["mass_density"] for entry in results]
+        mass_density_stddev = [
+            entry["mass_density_stddev"] for entry in results
+        ]
+        charge_density = [entry["charge_density"] for entry in results]
+        charge_density_stddev = [
+            entry["charge_density_stddev"] for entry in results
+        ]
+        return Results(
+            dim=results[0]["dim"],
+            slice_volume=results[0]["slice_volume"],
+            hist_bin_edges=results[0]["hist_bin_edges"],
+            mass_density=np.sum(mass_density, axis=0),
+            mass_density_stddev=np.sum(mass_density_stddev, axis=0),
+            charge_density=np.sum(charge_density, axis=0),
+            charge_density_stddev=np.sum(charge_density_stddev, axis=0),
+        )
+
+    def _get_aggregator(self):
+        return ResultsGroup(
+            lookup={
+                "x": self.custom_aggregator,
+                "y": self.custom_aggregator,
+                "z": self.custom_aggregator,
+            }
+        )
 
     def _single_frame(self):
         # Get masses and charges for the selection
