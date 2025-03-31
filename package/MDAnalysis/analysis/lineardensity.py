@@ -253,10 +253,33 @@ class LinearDensity(AnalysisBase):
             for key in self.keys:
                 self.results[dim][key] = np.zeros(self.nbins)
 
-        # Variables later defined in _single_frame() method
-        self.masses = None
-        self.charges = None
-        self.totalmass = None
+        # Get masses and charges for the selection
+        if self.grouping == "atoms":
+            self.masses = self._ags[0].masses
+            self.charges = self._ags[0].charges
+
+        elif self.grouping in ["residues", "segments", "fragments"]:
+            self.masses = self._ags[0].total_mass(compound=self.grouping)
+            self.charges = self._ags[0].total_charge(compound=self.grouping)
+
+        else:
+            raise AttributeError(
+                f"{self.grouping} is not a valid value for grouping."
+            )
+
+        self.totalmass = np.sum(self.masses)
+
+        self.group = getattr(self._ags[0], self.grouping)
+        self._ags[0].wrap(compound=self.grouping)
+
+        # Find position of atom/group of atoms
+        if self.grouping == "atoms":
+            self.positions = self._ags[0].positions  # faster for atoms
+        else:
+            # Centre of mass for residues, segments, fragments
+            self.positions = self._ags[0].center_of_mass(
+                compound=self.grouping
+            )
 
     @staticmethod
     def custom_aggregator(results):
@@ -288,32 +311,6 @@ class LinearDensity(AnalysisBase):
         )
 
     def _single_frame(self):
-        # Get masses and charges for the selection
-        if self.grouping == "atoms":
-            self.masses = self._ags[0].masses
-            self.charges = self._ags[0].charges
-
-        elif self.grouping in ["residues", "segments", "fragments"]:
-            self.masses = self._ags[0].total_mass(compound=self.grouping)
-            self.charges = self._ags[0].total_charge(compound=self.grouping)
-
-        else:
-            raise AttributeError(
-                f"{self.grouping} is not a valid value for grouping."
-            )
-
-        self.totalmass = np.sum(self.masses)
-
-        self.group = getattr(self._ags[0], self.grouping)
-        self._ags[0].wrap(compound=self.grouping)
-
-        # Find position of atom/group of atoms
-        if self.grouping == "atoms":
-            positions = self._ags[0].positions  # faster for atoms
-        else:
-            # Centre of mass for residues, segments, fragments
-            positions = self._ags[0].center_of_mass(compound=self.grouping)
-
         for dim in ["x", "y", "z"]:
             idx = self.results[dim]["dim"]
 
@@ -321,7 +318,7 @@ class LinearDensity(AnalysisBase):
             key_std = "mass_density_stddev"
             # histogram for positions weighted on masses
             hist, _ = np.histogram(
-                positions[:, idx],
+                self.positions[:, idx],
                 weights=self.masses,
                 bins=self.nbins,
                 range=(0.0, max(self.dimensions)),
@@ -334,7 +331,7 @@ class LinearDensity(AnalysisBase):
             key_std = "charge_density_stddev"
             # histogram for positions weighted on charges
             hist, bin_edges = np.histogram(
-                positions[:, idx],
+                self.positions[:, idx],
                 weights=self.charges,
                 bins=self.nbins,
                 range=(0.0, max(self.dimensions)),
