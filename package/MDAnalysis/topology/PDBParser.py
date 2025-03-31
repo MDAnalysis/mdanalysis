@@ -330,10 +330,10 @@ class PDBParser(TopologyReaderBase):
         if not any(segids):
             logger.info("Setting segids from chainIDs because no segids "
                         "found in the PDB file.")
+            segids = chainids
 
         # If force_chainids_to_segids is set, use chainids as segids
-        if ("force_chainids_to_segids" in kwargs.keys()
-           and kwargs["force_chainids_to_segids"]):
+        if kwargs.get("force_chainids_to_segids", False):
             logger.info("force_chainids_to_segids is set. "
                         "Using chain IDs as segment IDs.")
             segids = chainids
