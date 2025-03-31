@@ -67,6 +67,7 @@ Classes
 """
 import numpy as np
 import warnings
+import logging
 
 from ..guesser.tables import SYMB2Z
 from ..lib import util
@@ -90,6 +91,9 @@ from ..core.topologyattrs import (
     Tempfactors,
     FormalCharges,
 )
+
+# Set up a logger for the PDBParser
+logger = logging.getLogger("MDAnalysis.topology.PDBParser")
 
 
 def float_or_default(val, default):
@@ -207,9 +211,9 @@ class PDBParser(TopologyReaderBase):
         Removed type and mass guessing (attributes guessing takes place now
         through universe.guess_TopologyAttrs() API).
     .. versionchanged:: 2.10.0
-        Read the segid from columns 73-76 only and added the
-        `force_chainids_to_segids` keyword argument. Some warnings will be
-        generated if the segids is not present or if the chainids are not
+        segID is read from 73-76 instead of 67-76 and added the
+        `force_chainids_to_segids` keyword argument. Some infos in logger will
+        be generated if the segids is not present or if the chainids are not
         completely equal to segids.
     """
     format = ['PDB', 'ENT']
@@ -320,18 +324,17 @@ class PDBParser(TopologyReaderBase):
 
         # If segids is not equal to chainids, warn the user
         if any([a != b for a, b in zip(segids, chainids)]):
-            warnings.warn("Segment IDs and Chain IDs are not completely equal.")
+            logger.debug("Segment IDs and Chain IDs are not completely equal.")
 
         # If segids not present, try to use chainids
         if not any(segids):
-            warnings.warn("Segment IDs (columns 73-76) are missing. "
-                          "Try to load from the chain IDs.")
-            segids = chainids
-
+            logger.info("Setting segids from chainIDs because no segids "
+                        "found in the PDB file.")
+        
         # If force_chainids_to_segids is set, use chainids as segids
         if ("force_chainids_to_segids" in kwargs.keys()
            and kwargs["force_chainids_to_segids"]):
-            warnings.warn("force_chainids_to_segids is set. "
+            logger.info("force_chainids_to_segids is set. "
                           "Using chain IDs as segment IDs.")
             segids = chainids
 
@@ -425,8 +428,8 @@ class PDBParser(TopologyReaderBase):
             n_segments = 1
             attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
             segidx = None
-            warnings.warn("Segment/chain ID is empty, "
-                          "set segids to default value 'SYSTEM'.")
+            logger.info("Segment/chain ID is empty, "
+                        "setting segids to default value 'SYSTEM'.")
 
         top = Topology(n_atoms, n_residues, n_segments,
                        attrs=attrs,

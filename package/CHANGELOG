@@ -23,6 +23,9 @@ Fixes
  * Fixes bug in `analysis/gnm.py`: `closeContactGNMAnalysis`: correct the
    `residue_index_map` generation when selection is not `protein`.
    (Issue #4924, PR #4961)
+ * Reads `segids` column in `PDBParser` from 73-76 instead of 67-76 to 
+   align the standard of a PDBReader (e.g., Chimera, CHARMM, Gemmi). 
+   (Issue #4948, PR #5001)
 
 Enhancements
 
