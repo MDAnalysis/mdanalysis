@@ -1,4 +1,5 @@
 import MDAnalysis
+import numpy as np
 
 try:
     from MDAnalysisTests.datafiles import DCD, PSF
@@ -14,8 +15,8 @@ except:
 class SimpleRmsBench(object):
     """Benchmarks for MDAnalysis.analysis.rms.rmsd"""
 
-    params = ([100, 500, 2000], [None, [1.0, 0.5]], [False, True], [False, True])
-    param_names = ["num_atoms", "weights", "center", "superposition"]
+    params = ([100, 500, 2000], [True, False], [False, True], [False, True])
+    param_names = ["num_atoms", "weigh/ts", "center", "superposition"]
 
     def setup(self, num_atoms, weights, center, superposition):
         # mimic rmsd docstring example code
@@ -23,14 +24,11 @@ class SimpleRmsBench(object):
         # ag.positions is the new syntax
         # but older commit hashes will need to use
         # ag.coordinates()
-        try:
-            self.A = self.u.atoms.positions.copy()[:num_atoms]
-            self.u.trajectory[-1]
-            self.B = self.u.atoms.positions.copy()[:num_atoms]
-        except:
-            self.A = self.u.atoms.positions.copy()[:num_atoms]
-            self.u.trajectory[-1]
-            self.B = self.u.atoms.positions.copy()[:num_atoms]
+        self.A = self.u.atoms.positions.copy()[:num_atoms]
+        self.u.trajectory[-1]
+        self.B = self.u.atoms.positions.copy()[:num_atoms]
+        self.atoms = self.u.atoms[:num_atoms]
+        self.weights = self.atoms.masses/np.sum(self.atoms.masses) if weights else None
 
     def time_rmsd(self, num_atoms, weights, center, superposition):
         """Benchmark rmsd function using a setup similar to
@@ -40,7 +38,6 @@ class SimpleRmsBench(object):
         rms.rmsd(
             a=self.A,
             b=self.B,
-            weights=weights,
             center=center,
             superposition=superposition,
         )
