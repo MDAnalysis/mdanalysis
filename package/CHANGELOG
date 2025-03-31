@@ -14,7 +14,7 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, orbeckst, BHM-Bob
+??/??/?? IAlibay, orbeckst, BHM-Bob, tanishy7777
 
 
  * 2.10.0
@@ -26,7 +26,10 @@ Fixes
  * Reads `segids` column in `PDBParser` from 73-76 instead of 67-76 to 
    align the standard of a PDBReader (e.g., Chimera, CHARMM, Gemmi). 
    (Issue #4948, PR #5001)
-
+ * Fixes the benchmark `SimpleRmsBench` in `benchmarks/analysis/rms.py`
+   by changing the way weights for RMSD are calculated, instead of
+   directly passing them.
+   (Issue #3520, PR #5006)
 Enhancements
 
 Changes
