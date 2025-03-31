@@ -1613,7 +1613,7 @@ ATOM    665  OG1 THR A 315      21.047  13.922   1.304  1.00 15.14        B  O
     # segid is set to "B" for all atoms
     assert_equal(u_standard.atoms.segids, ["B"] * len(u_standard.atoms))
 
-    
+
 def test_force_chainids_to_segids():
     # get examples from issue 2874
 
