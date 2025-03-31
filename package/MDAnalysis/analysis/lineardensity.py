@@ -268,18 +268,7 @@ class LinearDensity(AnalysisBase):
             )
 
         self.totalmass = np.sum(self.masses)
-
         self.group = getattr(self._ags[0], self.grouping)
-        self._ags[0].wrap(compound=self.grouping)
-
-        # Find position of atom/group of atoms
-        if self.grouping == "atoms":
-            self.positions = self._ags[0].positions  # faster for atoms
-        else:
-            # Centre of mass for residues, segments, fragments
-            self.positions = self._ags[0].center_of_mass(
-                compound=self.grouping
-            )
 
     @staticmethod
     def custom_aggregator(results):
@@ -311,6 +300,14 @@ class LinearDensity(AnalysisBase):
         )
 
     def _single_frame(self):
+        self._ags[0].wrap(compound=self.grouping)
+        # Find position of atom/group of atoms
+        if self.grouping == "atoms":
+            positions = self._ags[0].positions  # faster for atoms
+        else:
+            # Centre of mass for residues, segments, fragments
+            positions = self._ags[0].center_of_mass(compound=self.grouping)
+
         for dim in ["x", "y", "z"]:
             idx = self.results[dim]["dim"]
 
@@ -318,7 +315,7 @@ class LinearDensity(AnalysisBase):
             key_std = "mass_density_stddev"
             # histogram for positions weighted on masses
             hist, _ = np.histogram(
-                self.positions[:, idx],
+                positions[:, idx],
                 weights=self.masses,
                 bins=self.nbins,
                 range=(0.0, max(self.dimensions)),
@@ -331,7 +328,7 @@ class LinearDensity(AnalysisBase):
             key_std = "charge_density_stddev"
             # histogram for positions weighted on charges
             hist, bin_edges = np.histogram(
-                self.positions[:, idx],
+                positions[:, idx],
                 weights=self.charges,
                 bins=self.nbins,
                 range=(0.0, max(self.dimensions)),
