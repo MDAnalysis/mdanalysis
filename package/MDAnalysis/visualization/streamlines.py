@@ -177,8 +177,8 @@ def split_grid(grid, num_cores):
     ]
 
 
-# some utility functions for trajectory iteration
-def produce_list_indices_point_in_polygon_this_frame(
+# some private utility functions for trajectory iteration
+def _produce_list_indices_point_in_polygon_this_frame(
     vertex_coord_list, relevant_particle_coordinate_array_xy
 ):
     """
@@ -197,7 +197,7 @@ def produce_list_indices_point_in_polygon_this_frame(
     return list_indices_point_in_polygon
 
 
-def produce_list_centroids_this_frame(
+def _produce_list_centroids_this_frame(
     list_indices_in_polygon, relevant_particle_coordinate_array_xy
 ):
     """
@@ -253,14 +253,14 @@ def per_core_work(
         # only 2D / xy coords for now
         # I will need a list of indices for relevant particles falling within each square in THIS frame:
         list_indices_in_squares_this_frame = (
-            produce_list_indices_point_in_polygon_this_frame(
+            _produce_list_indices_point_in_polygon_this_frame(
                 list_square_vertex_arrays_this_core,
                 relevant_particle_coordinate_array_xy,
             )
         )
         # likewise, I will need a list of centroids of particles in each square (same order as above list):
         list_centroids_in_squares_this_frame = (
-            produce_list_centroids_this_frame(
+            _produce_list_centroids_this_frame(
                 list_indices_in_squares_this_frame,
                 relevant_particle_coordinate_array_xy,
             )
@@ -270,7 +270,7 @@ def per_core_work(
         ):  # if the previous frame had indices in at least one square I will need to use
             #  those indices to generate the updates to the corresponding centroids in this frame:
             list_centroids_this_frame_using_indices_from_last_frame = (
-                produce_list_centroids_this_frame(
+                _produce_list_centroids_this_frame(
                     list_previous_frame_indices,
                     relevant_particle_coordinate_array_xy,
                 )

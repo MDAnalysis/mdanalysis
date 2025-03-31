@@ -71,7 +71,7 @@ def test_produce_list_indices_point_in_polygon_this_frame():
     points = np.array([[0.5, 0.5], [1.5, 1.5], [2.5, 2.5], [3.5, 3.5]])
 
     # Call the function under test.
-    result = streamlines.produce_list_indices_point_in_polygon_this_frame(
+    result = streamlines._produce_list_indices_point_in_polygon_this_frame(
         vertex_list, points
     )
 
@@ -90,7 +90,7 @@ def test_produce_list_centroids_empty():
     list_indices = [(np.array([]),)]
     # Dummy particle coordinate array (won't be used since indices is empty)
     pts = np.array([[0, 0], [1, 1]])
-    result = streamlines.produce_list_centroids_this_frame(list_indices, pts)
+    result = streamlines._produce_list_centroids_this_frame(list_indices, pts)
     assert result == [None]
 
 
@@ -100,7 +100,7 @@ def test_produce_list_centroids_single_square():
     # Choose indices that pick points [1] and [3]
     indices_tuple = (np.array([1, 3]),)
     list_indices = [indices_tuple]
-    result = streamlines.produce_list_centroids_this_frame(list_indices, pts)
+    result = streamlines._produce_list_centroids_this_frame(list_indices, pts)
     expected = np.average(pts[[1, 3]], axis=0)
     np.testing.assert_array_almost_equal(result[0], expected)
 
@@ -112,7 +112,7 @@ def test_produce_list_centroids_multiple_squares():
     # Second square will use pts[1], pts[3] and pts[4]
     indices2 = (np.array([1, 3, 4]),)
     list_indices = [indices1, indices2]
-    result = streamlines.produce_list_centroids_this_frame(list_indices, pts)
+    result = streamlines._produce_list_centroids_this_frame(list_indices, pts)
     expected1 = np.average(pts[[0, 2]], axis=0)
     expected2 = np.average(pts[[1, 3, 4]], axis=0)
     np.testing.assert_array_almost_equal(result[0], expected1)
