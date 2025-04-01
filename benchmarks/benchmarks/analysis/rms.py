@@ -18,7 +18,7 @@ class SimpleRmsBench(object):
     params = ([100, 500, 2000], [True, False], [False, True], [False, True])
     param_names = ["num_atoms", "use_weights", "center", "superposition"]
 
-    def setup(self, num_atoms, weights, center, superposition):
+    def setup(self, num_atoms, use_weights, center, superposition):
         # mimic rmsd docstring example code
         self.u = MDAnalysis.Universe(PSF, DCD)
         # ag.positions is the new syntax
@@ -28,7 +28,7 @@ class SimpleRmsBench(object):
         self.u.trajectory[-1]
         self.B = self.u.atoms.positions.copy()[:num_atoms]
         self.atoms = self.u.atoms[:num_atoms]
-        self.weights = self.atoms.masses/np.sum(self.atoms.masses) if weights else None
+        self.weights = self.atoms.masses/np.sum(self.atoms.masses) if use_weights else None
 
     def time_rmsd(self, num_atoms, weights, center, superposition):
         """Benchmark rmsd function using a setup similar to
@@ -38,6 +38,7 @@ class SimpleRmsBench(object):
         rms.rmsd(
             a=self.A,
             b=self.B,
+            weights=self.weights,
             center=center,
             superposition=superposition,
         )
