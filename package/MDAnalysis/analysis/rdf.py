@@ -86,9 +86,10 @@ from .base import AnalysisBase, ResultsGroup
 def nested_array_sum(arrs):
     r"""Custom aggregator for nested arrays
 
-    This function takes a nested list or tuple of NumPy arrays, flattens it into a single list, 
-    and aggregates the elements at alternating indices into two separate arrays. The first 
-    array accumulates elements at even indices, while the second accumulates elements at odd indices.
+    This function takes a nested list or tuple of NumPy arrays, flattens it
+    into a single list, and aggregates the elements at alternating indices
+    into two separate arrays. The first array accumulates elements at even
+    indices, while the second accumulates elements at odd indices.
 
     Parameters
     ----------
@@ -99,8 +100,10 @@ def nested_array_sum(arrs):
     -------
     list of ndarray
         A list containing two NumPy arrays:
-        - The first array is the sum of all elements at even indices in the sum of flattened arrays.
-        - The second array is the sum of all elements at odd indices in the sum of flattened arrays.
+        - The first array is the sum of all elements at even indices
+          in the sum of flattened arrays.
+        - The second array is the sum of all elements at odd indices
+          in the sum of flattened arrays.
     """
 
     def flatten(arr):
@@ -635,7 +638,6 @@ class InterRDF_s(AnalysisBase):
        Instead of `density=True` use `norm='density'`
     .. deprecated:: 2.3.0
        The `universe` parameter is superflous.
-    
     .. versionchanged:: 2.9.0
        Enabled **parallel execution** with the ``multiprocessing`` and ``dask``
        backends; use the new method :meth:`get_supported_backends` to see all

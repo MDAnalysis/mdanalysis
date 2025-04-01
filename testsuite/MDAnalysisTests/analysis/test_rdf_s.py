@@ -173,6 +173,31 @@ def test_rdf_attr_warning(rdf, attr):
     with pytest.warns(DeprecationWarning, match=wmsg):
         getattr(rdf, attr) is rdf.results[attr]
 
+
+def test_nested_array_sum():
+    arr_1 = np.random.rand(1, 2, 75)
+    arr_2 = np.random.rand(2, 2, 75)
+    arr_3 = np.random.rand(1, 2, 75)
+    arr_4 = np.random.rand(2, 2, 75)
+    arrs = [[arr_1, arr_2],
+            [arr_3, arr_4]]
+
+    result = nested_array_sum(arrs)
+
+    assert result[0].shape == arrs[0][0].shape
+    assert result[0].shape == arrs[1][0].shape
+    assert result[1].shape == arrs[0][1].shape
+    assert result[1].shape == arrs[1][1].shape
+
+    assert np.array_equal(result[0], arr_1 + arr_3)
+    assert np.array_equal(result[1], arr_2 + arr_4)
+
+    arrs = [[np.ones((2, 2)), np.ones((2, 2))],
+            [np.ones((2, 2)), np.ones((2, 2))]]
+
+
+# tests for parallelization
+
 @pytest.mark.parametrize(
     "classname,is_parallelizable",
     [

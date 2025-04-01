@@ -158,6 +158,7 @@ def test_unknown_norm(sels):
 
 # tests for parallelization
 
+
 @pytest.mark.parametrize(
     "classname,is_parallelizable",
     [
