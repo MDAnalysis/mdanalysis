@@ -156,6 +156,7 @@ def test_unknown_norm(sels):
     with pytest.raises(ValueError, match="invalid norm"):
         InterRDF(s1, s2, sels, norm="foo")
 
+
 # tests for parallelization
 
 
@@ -163,7 +164,7 @@ def test_unknown_norm(sels):
     "classname,is_parallelizable",
     [
         (mda.analysis.rdf.InterRDF, True),
-    ]
+    ],
 )
 def test_class_is_parallelizable(classname, is_parallelizable):
     assert classname._analysis_algorithm_is_parallelizable == is_parallelizable
@@ -172,9 +173,15 @@ def test_class_is_parallelizable(classname, is_parallelizable):
 @pytest.mark.parametrize(
     "classname,backends",
     [
-        (mda.analysis.rdf.InterRDF,
-         ('serial', 'multiprocessing', 'dask',)),
-    ]
+        (
+            mda.analysis.rdf.InterRDF,
+            (
+                "serial",
+                "multiprocessing",
+                "dask",
+            ),
+        ),
+    ],
 )
 def test_supported_backends(classname, backends):
     assert classname.get_supported_backends() == backends
