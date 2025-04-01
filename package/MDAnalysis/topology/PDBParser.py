@@ -67,6 +67,7 @@ Classes
 """
 import numpy as np
 import warnings
+import logging
 
 from ..guesser.tables import SYMB2Z
 from ..lib import util
@@ -90,6 +91,9 @@ from ..core.topologyattrs import (
     Tempfactors,
     FormalCharges,
 )
+
+# Set up a logger for the PDBParser
+logger = logging.getLogger("MDAnalysis.topology.PDBParser")
 
 
 def float_or_default(val, default):
@@ -202,6 +206,8 @@ class PDBParser(TopologyReaderBase):
     .. versionchanged:: 2.8.0
         Removed type and mass guessing (attributes guessing takes place now
         through universe.guess_TopologyAttrs() API).
+    .. versionchanged:: 2.10.0
+        segID is read from 73-76 instead of 67-76.
     """
     format = ['PDB', 'ENT']
 
@@ -302,15 +308,21 @@ class PDBParser(TopologyReaderBase):
                 occupancies.append(float_or_default(line[54:60], 0.0))
                 tempfactors.append(float_or_default(line[60:66], 1.0))  # AKA bfactor
 
-                segids.append(line[66:76].strip())
+                segids.append(line[72:76].strip())
 
         # Warn about wrapped serials
         if self._wrapped_serials:
             warnings.warn("Serial numbers went over 100,000.  "
                           "Higher serials have been guessed")
 
+        # If segids is not equal to chainids, warn the user
+        if any([a != b for a, b in zip(segids, chainids)]):
+            logger.debug("Segment IDs and Chain IDs are not completely equal.")
+
         # If segids not present, try to use chainids
         if not any(segids):
+            logger.info("Setting segids from chainIDs because no segids "
+                        "found in the PDB file.")
             segids = chainids
 
         n_atoms = len(serials)
@@ -403,6 +415,8 @@ class PDBParser(TopologyReaderBase):
             n_segments = 1
             attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
             segidx = None
+            logger.info("Segment/chain ID is empty, "
+                        "setting segids to default value 'SYSTEM'.")
 
         top = Topology(n_atoms, n_residues, n_segments,
                        attrs=attrs,
