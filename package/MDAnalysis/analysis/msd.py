@@ -263,6 +263,11 @@ due.cite(
 del Doi
 
 
+# aggregator wants 'timeseries' and 'msds_by_particle' to be passed
+# so using this as a workaround
+def _noop(arrs) -> None: pass
+
+
 class EinsteinMSD(AnalysisBase):
     r"""Class to calculate Mean Squared Displacement by the Einstein relation.
 
@@ -403,18 +408,13 @@ class EinsteinMSD(AnalysisBase):
             :, self._dim
         ]
 
-    # aggregator wants 'timeseries' and 'msds_by_particle' to be passed
-    # so using this as a workaround
-    @staticmethod
-    def f(arrs):
-        pass
 
     def _get_aggregator(self):
         return ResultsGroup(
             lookup={
                 "_position_array": ResultsGroup.ndarray_vstack,
-                "msds_by_particle": self.f,
-                "timeseries": self.f,
+                "msds_by_particle": _noop,
+                "timeseries": _noop,
             }
         )
 
