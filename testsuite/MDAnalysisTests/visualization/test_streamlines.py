@@ -102,7 +102,7 @@ def test_produce_list_centroids_single_square():
     list_indices = [indices_tuple]
     result = streamlines._produce_list_centroids_this_frame(list_indices, pts)
     expected = np.array([2.0, 2.0])
-    np.testing.assert_array_almost_equal(result[0], expected)
+    np.testing.assert_allclose(result[0], expected)
 
 
 def test_produce_list_centroids_multiple_squares():
@@ -143,7 +143,7 @@ def test_adjacent_squares():
 def test_point_on_boundary():
     # Test that a point exactly on the square's boundary is not considered inside.
     # For a square covering [0,1]x[0,1], a point at [1,0.5] lies exactly on the right edge.
-    # By default, matplotlib.path.Path.contains_points does not include boundary points.
+    # By default, matplotlib.path.Path.contains_points includes boundary points.
     square = [(0, 0), (1, 0), (1, 1), (0, 1)]
     vertex_list = [square]
     points = np.array([[1, 0.5]])  # exactly on the boundary
@@ -183,8 +183,7 @@ def test_per_core_work_2D(membrane_xtc, univ):
     )
     for entry in values:
         res = entry[1]
-        assert res[0] == pytest.approx(0.8, abs=1e-1)
-        assert res[1] == pytest.approx(0.5, abs=1e-1)
+        np.testing.assert_allclose(res[:2], np.array([0.8, 0.5]), atol=1e-1)
 
 
 def test_streamplot_2D(membrane_xtc, univ):
@@ -256,10 +255,8 @@ def test_streamplot_2D_zero_return(membrane_xtc, univ, tmpdir):
     assert std == approx(0.0)
 
 
-def test_streamplot_2D_max_core(membrane_xtc, univ, tmpdir):
-    # simple roundtrip test to ensure that
-    # zeroed arrays are returned by the 2D streamplot
-    # code when called with an empty selection
+def test_streamplot_2D_dual_core(membrane_xtc, univ, tmpdir):
+    # simple test to ensure that it runs with multiple cores
     u1, v1, avg, std = streamlines.generate_streamlines(
         topology_file_path=Martini_membrane_gro,
         trajectory_file_path=membrane_xtc,
@@ -272,7 +269,7 @@ def test_streamplot_2D_max_core(membrane_xtc, univ, tmpdir):
         ymin=univ.atoms.positions[..., 1].min(),
         ymax=univ.atoms.positions[..., 1].max(),
         maximum_delta_magnitude=2.0,
-        num_cores="maximum",
+        num_cores=2,
     )
     assert_allclose(u1, np.zeros((5, 5)))
     assert_allclose(v1, np.zeros((5, 5)))
