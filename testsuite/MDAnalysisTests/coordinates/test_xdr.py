@@ -260,11 +260,12 @@ class _GromacsReader(object):
             assert_equal(universe.trajectory.format, W.format)
             assert_equal(universe.atoms.n_atoms, W.n_atoms)
 
-    def test_Writer(self, tmpdir):
+    @pytest.mark.parametrize("dt", [None, 1000])
+    def test_Writer(self, tmpdir, dt):
         universe = mda.Universe(GRO, self.filename, convert_units=True)
         ext = os.path.splitext(self.filename)[1]
-        outfile = str(tmpdir.join("/xdr-reader-test" + ext))
-        with universe.trajectory.Writer(outfile) as W:
+        outfile = tmpdir.join("/xdr-reader-test" + ext)
+        with universe.trajectory.Writer(outfile, dt=dt) as W:
             W.write(universe.atoms)
             universe.trajectory.next()
             W.write(universe.atoms)
@@ -277,31 +278,14 @@ class _GromacsReader(object):
         assert_almost_equal(
             u.atoms.positions, universe.atoms.positions, self.prec
         )
-
-    def test_Writer_with_dt_setting(self, tmpdir):
-        universe = mda.Universe(GRO, self.filename, convert_units=True)
-        ext = os.path.splitext(self.filename)[1]
-        outfile = str(tmpdir.join("/xdr-reader-test" + ext))
-        with universe.trajectory.Writer(outfile, dt=1000) as W:
-            W.write(universe.atoms)
-            universe.trajectory.next()
-            W.write(universe.atoms)
-
-        universe.trajectory.rewind()
-        u = mda.Universe(GRO, outfile)
-        assert_equal(u.trajectory.n_frames, 2)
-        # prec = 6: TRR test fails; here I am generous and take self.prec =
-        # 3...
-        assert_almost_equal(
-            u.atoms.positions, universe.atoms.positions, self.prec
-        )
-        # test total trajectory length
-        assert_almost_equal(
-            u.trajectory.totaltime,
-            1000.0,
-            3,
-            err_msg="wrong total length of trajectory upon setting",
-        )
+        if dt:
+            # test total trajectory length
+            assert_almost_equal(
+                u.trajectory.totaltime,
+                dt,
+                3,
+                err_msg="wrong total length of trajectory upon setting",
+            )
 
     def test_EOFraisesStopIteration(self, universe):
         def go_beyond_EOF():
