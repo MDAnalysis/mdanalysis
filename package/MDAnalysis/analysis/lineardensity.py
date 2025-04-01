@@ -300,6 +300,22 @@ class LinearDensity(AnalysisBase):
         )
 
     def _single_frame(self):
+        if self.grouping == "atoms":
+            self.masses = self._ags[0].masses
+            self.charges = self._ags[0].charges
+
+        elif self.grouping in ["residues", "segments", "fragments"]:
+            self.masses = self._ags[0].total_mass(compound=self.grouping)
+            self.charges = self._ags[0].total_charge(compound=self.grouping)
+
+        else:
+            raise AttributeError(
+                f"{self.grouping} is not a valid value for grouping."
+            )
+
+        self.totalmass = np.sum(self.masses)
+
+        self.group = getattr(self._ags[0], self.grouping)
         self._ags[0].wrap(compound=self.grouping)
         # Find position of atom/group of atoms
         if self.grouping == "atoms":
