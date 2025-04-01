@@ -1836,36 +1836,35 @@ class Universe(object):
                           "atomwise_segids.")
             return
 
+        # resids
+        if atomwise_resids is None:
+            atomwise_resids = self.atoms.resids
+
         else:
-            # resids
-            if atomwise_resids is None:
-                atomwise_resids = self.atoms.resids
+            # check the length of atomwise_resids
+            assert len(atomwise_resids) == self.atoms.n_atoms, \
+                "The length of atomwise_resids should be the same as " \
+                "the number of atoms in the universe."
 
-            else:
-                # check the length of atomwise_resids
-                assert len(atomwise_resids) == self.atoms.n_atoms, \
-                    "The length of atomwise_resids should be the same as " \
-                    "the number of atoms in the universe."
+            self.atomwise_resids_orig = self.atoms.resids
+            logger.info("The new resids replaces the current one. "
+                        "The original resids is stored in "
+                        "atomwise_resids_orig.")
 
-                self.atomwise_resids_orig = self.atoms.resids
-                logger.info("The new resids replaces the current one. "
-                            "The original resids is stored in "
-                            "atomwise_resids_orig.")
+        # segids
+        if atomwise_segids is None:
+            atomwise_segids = self.atoms.segids
 
-            # segids
-            if atomwise_segids is None:
-                atomwise_segids = self.atoms.segids
+        else:
+            # check the length of atomwise_segids
+            assert len(atomwise_segids) == self.atoms.n_atoms, \
+                "The length of atomwise_segids should be the same as " \
+                "the number of atoms in the universe."
 
-            else:
-                # check the length of atomwise_segids
-                assert len(atomwise_segids) == self.atoms.n_atoms, \
-                    "The length of atomwise_segids should be the same as " \
-                    "the number of atoms in the universe."
-
-                self.atomwise_segids_orig = self.atoms.segids
-                logger.info("The new resids replaces the current one. "
-                            "The original segids is stored in "
-                            "atomwise_segids_orig.")
+            self.atomwise_segids_orig = self.atoms.segids
+            logger.info("The new resids replaces the current one. "
+                        "The original segids is stored in "
+                        "atomwise_segids_orig.")
 
         atomwise_resids = np.array(atomwise_resids, dtype=object)
         atomwise_segids = np.array(atomwise_segids, dtype=object)
