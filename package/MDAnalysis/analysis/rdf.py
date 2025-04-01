@@ -83,7 +83,7 @@ from ..lib import distances
 from .base import AnalysisBase, ResultsGroup
 
 
-def flatten_sum_alternate(arrs):
+def nested_array_sum(arrs):
     r"""Custom aggregator for nested arrays
 
     This function takes a nested list or tuple of NumPy arrays, flattens it into a single list, 
@@ -655,7 +655,7 @@ class InterRDF_s(AnalysisBase):
     def _get_aggregator(self):
         return ResultsGroup(
             lookup={
-                "count": flatten_sum_alternate,
+                "count": nested_array_sum,
                 "volume_cum": ResultsGroup.ndarray_sum,
                 "bins": ResultsGroup.ndarray_mean,
                 "edges": ResultsGroup.ndarray_mean,
