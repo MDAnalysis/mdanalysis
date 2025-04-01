@@ -1541,9 +1541,7 @@ class TestOnlyTopology:
 
 
 class TestUniverseSetGroups(object):
-    def __init__(self):
-
-        bad_seg_str = """\
+    bad_seg_str = """\
 ATOM    659  N   THR A 315      22.716  15.055  -1.000  1.00 16.08         A N
 ATOM    660  CA  THR A 315      22.888  13.803  -0.302  1.00  0.00           C
 ATOM    661  C   THR A 315      22.006  12.700  -0.882  1.00  0.00           C
@@ -1553,7 +1551,7 @@ ATOM    664  CG2 THR B 315      23.384  14.924   1.927  1.00  0.00           C
 ATOM    665  OG1 THR B 315      21.172  14.548   1.274  1.00  0.00           O
 """
 
-        good_str = """\
+    good_str = """\
 ATOM    659  N   THR A 315      22.716  15.055  -1.000  1.00 16.08         A N
 ATOM    660  CA  THR A 315      22.888  13.803  -0.302  1.00 15.13         A C
 ATOM    661  C   THR A 315      22.006  12.700  -0.882  1.00 15.69         A C
@@ -1563,7 +1561,7 @@ ATOM    664  CG2 THR B 315      22.874  15.310   1.747  1.00 17.32         B C
 ATOM    665  OG1 THR B 315      21.047  13.922   1.304  1.00 15.14         B O
 """
 
-        bad_gro_str = """\
+    bad_gro_str = """\
 Written by MDAnalysis
     7
     2THR      N    1   2.272   1.506  -0.100
@@ -1575,9 +1573,9 @@ Written by MDAnalysis
     2THR    OG1    7   2.105   1.392   0.130
    0.00000   0.00000   0.00000
 """
-        self.bad_seg1 = mda.Universe(StringIO(bad_seg_str), format="PDB")
-        self.good = mda.Universe(StringIO(good_str), format="PDB")
-        self.bad_gro = mda.Universe(StringIO(bad_gro_str), format="GRO")
+    bad_seg1 = mda.Universe(StringIO(bad_seg_str), format="PDB")
+    good = mda.Universe(StringIO(good_str), format="PDB")
+    bad_gro = mda.Universe(StringIO(bad_gro_str), format="GRO")
 
     def test_do_nothing(self):
         # check do nothing
