@@ -93,13 +93,20 @@ def characteristic_poly(n, d):
 def test_parallize_equivalence(u, SELECTION):
     msd_serial = MSD(u, SELECTION)
     msd_parallel = MSD(u, SELECTION)
-    
-    results_serial = msd_serial.run(backend='serial')
-    results_parallel = msd_parallel.run(backend='multiprocessing', n_workers=2)
+    results_serial = msd_serial.run(backend="serial")
+    results_parallel = msd_parallel.run(backend="multiprocessing", n_workers=2)
 
-    assert np.array_equal(results_serial.results.msds_by_particle, results_parallel.results.msds_by_particle)
-    assert np.array_equal(results_serial.results.timeseries, results_parallel.results.timeseries)
-    assert np.array_equal(results_serial.results._position_array, results_parallel.results._position_array)
+    assert np.array_equal(
+        results_serial.results.msds_by_particle,
+        results_parallel.results.msds_by_particle,
+    )
+    assert np.array_equal(
+        results_serial.results.timeseries, results_parallel.results.timeseries
+    )
+    assert np.array_equal(
+        results_serial.results._position_array,
+        results_parallel.results._position_array,
+    )
 
 
 class TestMSDSimple(object):

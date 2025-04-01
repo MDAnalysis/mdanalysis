@@ -265,7 +265,8 @@ del Doi
 
 # aggregator wants 'timeseries' and 'msds_by_particle' to be passed
 # so using this as a workaround
-def _noop(arrs) -> None: pass
+def _noop(arrs) -> None:
+    pass
 
 
 class EinsteinMSD(AnalysisBase):
@@ -407,7 +408,6 @@ class EinsteinMSD(AnalysisBase):
         self.results._position_array[self._frame_index] = self.ag.positions[
             :, self._dim
         ]
-
 
     def _get_aggregator(self):
         return ResultsGroup(
