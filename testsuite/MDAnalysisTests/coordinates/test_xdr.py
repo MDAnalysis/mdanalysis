@@ -264,7 +264,7 @@ class _GromacsReader(object):
     def test_Writer(self, tmpdir, dt):
         universe = mda.Universe(GRO, self.filename, convert_units=True)
         ext = os.path.splitext(self.filename)[1]
-        outfile = tmpdir.join("/xdr-reader-test" + ext)
+        outfile = str(tmpdir.join("/xdr-reader-test" + ext))
         with universe.trajectory.Writer(outfile, dt=dt) as W:
             W.write(universe.atoms)
             universe.trajectory.next()
