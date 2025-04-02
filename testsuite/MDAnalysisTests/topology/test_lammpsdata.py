@@ -37,6 +37,7 @@ from MDAnalysis.tests.datafiles import (
     LAMMPSDUMP,
     LAMMPSDUMP_long,
     LAMMPSDUMP_allinfo,
+    LAMMPSDUMP_nomass_elemx,
     LAMMPSdata_PairIJ,
 )
 
@@ -405,32 +406,39 @@ class TestDumpParserFull(LammpsDumpBase):
     expected_elements = ["C", "H", "H", "H", "C", "O", "N"]
 
 
-LAMMPS_DUMP_ELEMENTX = """\
-ITEM: TIMESTEP
-0
-ITEM: NUMBER OF ATOMS
-1
-ITEM: BOX BOUNDS pp pp pp
--1.6350000000000001e-01 3.8836500000000001e+01
--1.7050000000000001e-01 3.8829500000000003e+01
--1.1550000000000001e-01 9.4884500000000003e+01
-ITEM: ATOMS id mol type x y z element q proc mass
-1 1 9 6.10782 11.4384 0.798271 X -0.27 0 12.011
-"""
+# Test whether mass information is guessed correctly
+# when element information is available
+# and whether the user is warned about unknown elements
+class TestDumpParserElementX(LammpsDumpBase):
+    ref_filename = LAMMPSDUMP_nomass_elemx
+    expected_attrs = ["types", "masses", "charges", "elements"]
+    expected_n_atoms = 5
+    expected_n_residues = 1
+    expected_resids = [1]
+    expected_masses = [12.011, 1, 1.008, 1.008, 12.011]
+    expected_types = ["9", "6", "6", "6", "7"]
+    expected_charges = [-0.27, 0.09, 0.09, 0.09, 0.51]
+    expected_elements = ["C", "", "H", "H", "C"]
 
+    def test_elementwarn(self):
+        with self.parser(self.ref_filename) as p:
+            with pytest.warns(
+                UserWarning,
+                match="Unknown element X found for some atoms. "
+                "These have been given an empty element record.",
+            ):
+                p.parse()
 
-def test_elementnotfound():
-    u = mda.Universe(StringIO(LAMMPS_DUMP_ELEMENTX), format="LAMMPSDUMP")
-    assert len(u.atoms) == 1
-    assert_equal(u.atoms.elements, [""])
-
-
-def test_elementwarn():
-    with pytest.warns(
-        UserWarning,
-        match="Unknown element X found for some atoms. These have been given an empty element record.",
-    ):
-        u = mda.Universe(StringIO(LAMMPS_DUMP_ELEMENTX), format="LAMMPSDUMP")
+    def test_masses_warning(self):
+        # masses are mandatory, but badly guessed
+        # check that user is alerted
+        with self.parser(self.ref_filename) as p:
+            with pytest.warns(
+                UserWarning,
+                match="No mass column found in dump file. "
+                "Using guessed masses from element info.",
+            ):
+                p.parse()
 
 
 LAMMPS_DUMP_NOATOMIDS = """\
@@ -444,13 +452,13 @@ ITEM: BOX BOUNDS pp pp pp
 -1.1550000000000001e-01 9.4884500000000003e+01
 ITEM: ATOMS mol type x y z q mass
 1 9 6.10782 11.4384 0.798271 -0.27 12.011
-1 6 5.73938 10.7721 1.60738 0.09 1.008" 
+1 6 5.73938 10.7721 1.60738 0.09 1.008
 """
 
 
 def test_noatomid_failure():
     with pytest.raises(ValueError, match="No id column found in dump file"):
-        u = mda.Universe(StringIO(LAMMPS_DUMP_NOATOMIDS), format="LAMMPSDUMP")
+        mda.Universe(StringIO(LAMMPS_DUMP_NOATOMIDS), format="LAMMPSDUMP")
 
 
 LAMMPS_DUMP_NOTYPES = """\
@@ -476,4 +484,4 @@ def test_notypes():
 
 def test_notypes_warn():
     with pytest.warns(UserWarning, match="Set all atom types to 1"):
-        u = mda.Universe(StringIO(LAMMPS_DUMP_NOTYPES), format="LAMMPSDUMP")
+        mda.Universe(StringIO(LAMMPS_DUMP_NOTYPES), format="LAMMPSDUMP")
