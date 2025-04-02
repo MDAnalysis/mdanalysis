@@ -89,10 +89,9 @@ def characteristic_poly(n, d):
     y = d * x * x
     return y
 
-
 def test_parallize_equivalence(u, SELECTION):
-    msd_serial = MSD(u, SELECTION)
-    msd_parallel = MSD(u, SELECTION)
+    msd_serial = MSD(u, SELECTION, fft=False)
+    msd_parallel = MSD(u, SELECTION, fft=False)
     results_serial = msd_serial.run(backend="serial")
     results_parallel = msd_parallel.run(backend="multiprocessing", n_workers=2)
 
