@@ -151,7 +151,7 @@ def test_point_on_boundary():
         vertex_list, points
     )
     expected = [(np.array([0], dtype=int),)]
-    np.testing.assert_array_equal(result[0][0], expected[0][0])
+    np.testing.assert_array_equal(result, expected)
 
 
 def test_per_core_work_2D(membrane_xtc, univ):
