@@ -619,7 +619,7 @@ DUMP_HEADERS = {
 
 class LammpsDumpParser(TopologyReaderBase):
     """Parses Lammps ascii dump files.
-    id, mol, type, mass, element and q columns are read 
+    id, mol, type, mass, element and q columns are read
     and used to set the corresponding topology attributes.
 
     All other columns are ignored.
