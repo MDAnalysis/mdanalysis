@@ -154,6 +154,18 @@ def test_point_on_boundary():
     np.testing.assert_array_equal(result, expected)
 
 
+def test_points_on_boundary_of_two_adjacent_squares():
+    square1 = [(0, 0), (1, 0), (1, 1), (0, 1)]
+    square2 = [(1, 0), (2, 0), (2, 1), (1, 1)]
+    vertex_list = [square1, square2]
+    points = np.array([[1, 0.5], [1, 0.7]])  # exactly on the boundary
+    result = streamlines._produce_list_indices_point_in_polygon_this_frame(
+        vertex_list, points
+    )
+    expected = [(np.array([0, 1], dtype=int),), (np.array([0, 1], dtype=int),)]
+    np.testing.assert_array_equal(result, expected)
+
+
 def test_per_core_work_2D(membrane_xtc, univ):
     xmin = univ.atoms.positions[..., 0].min()
     xmax = univ.atoms.positions[..., 0].max()
