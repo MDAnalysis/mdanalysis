@@ -1592,26 +1592,24 @@ Written by MDAnalysis
         # segment level
         assert len(self.bad_seg1.segments) == len(self.good.segments)
         assert len(self.good.segments) == 2
-        for seg1, seg3 in zip(self.bad_seg1.segments, self.good.segments):
-            assert seg1.segid == seg3.segid
+        assert_equal(self.bad_seg1.segments.segids, self.good.segments.segids)
 
         # residue level
         assert len(self.bad_seg1.residues) == len(self.good.residues)
         assert len(self.good.residues) == 4
-        for re1, re3 in zip(self.bad_seg1.residues, self.good.residues):
-
-            assert re1.resname == re3.resname
-            assert re1.resid == re3.resid
-            assert re1.segid == re3.segid
+        assert_equal(self.bad_seg1.residues.resids, self.good.residues.resids)
+        assert_equal(
+            self.bad_seg1.residues.resnames, self.good.residues.resnames
+        )
+        assert_equal(self.bad_seg1.residues.segids, self.good.residues.segids)
 
         # atom level
         assert len(self.bad_seg1.atoms) == len(self.good.atoms)
-        for atom1, atom3 in zip(self.bad_seg1.atoms, self.good.atoms):
-            assert atom1.name == atom3.name
-            assert atom1.resname == atom3.resname
-            assert atom1.resid == atom3.resid
-            assert atom1.segid == atom3.segid
-            assert atom1.chainID == atom3.chainID
+        assert_equal(self.bad_seg1.atoms.resids, self.good.atoms.resids)
+        assert_equal(self.bad_seg1.atoms.resnames, self.good.atoms.resnames)
+        assert_equal(self.bad_seg1.atoms.segids, self.good.atoms.segids)
+        assert_equal(self.bad_seg1.atoms.names, self.good.atoms.names)
+        assert_equal(self.bad_seg1.atoms.chainIDs, self.good.atoms.chainIDs)
 
         # check bad_gro with good
         self.bad_gro.set_groups(
@@ -1619,13 +1617,13 @@ Written by MDAnalysis
         )  # set
 
         assert len(self.bad_gro.segments) == len(self.good.segments)
-        assert all(self.bad_gro.segments.segids == self.good.segments.segids)
+        assert_equal(self.bad_gro.segments.segids, self.good.segments.segids)
 
     def test_set_residues(self):
         self.bad_gro.set_groups(
             atomwise_resids=[315, 315, 315, 316, 314, 315, 315],
         )  # set
         assert len(self.bad_gro.residues) == len(self.good.residues)
-        assert all(self.bad_gro.residues.resids == self.good.residues.resids)
+        assert_equal(self.bad_gro.residues.resids, self.good.residues.resids)
         assert len(self.bad_gro.atoms) == len(self.good.atoms)
-        assert all(self.bad_gro.atoms.resids == self.good.atoms.resids)
+        assert_equal(self.bad_gro.atoms.resids, self.good.atoms.resids)
