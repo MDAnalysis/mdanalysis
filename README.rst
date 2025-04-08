@@ -12,7 +12,7 @@
 
 MDAnalysis_ is a Python library for the analysis of computer simulations of many-body systems at the molecular scale, spanning use cases from interactions of drugs with proteins to novel materials. It is widely used in the scientific community and is written by scientists for scientists. 
 
-It works with a wide range of popular simulation packages including Gromacs, Amber, NAMD, CHARMM, DL_Poly, HooMD, LAMMPS and many others — see the lists of supported `trajectory formats`_ and `topology formats`_.
+It works with a wide range of popular simulation packages including GROMACS, Amber, NAMD, CHARMM, DL_POLY, HOOMD, LAMMPS and many others — see the lists of supported `trajectory formats`_ and `topology formats`_.
 MDAnalysis also includes widely used analysis algorithms in the `MDAnalysis.analysis`_ module.
 
 .. _numfocus-fiscal-sponsor-attribution:
