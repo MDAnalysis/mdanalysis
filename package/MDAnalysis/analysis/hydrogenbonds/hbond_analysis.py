@@ -350,9 +350,9 @@ class HydrogenBondAnalysis(AnalysisBase):
         self.u = universe
         self._trajectory = self.u.trajectory
 
-        self.donors_sel = donors_sel.strip() if donors_sel is not None else donors_sel
-        self.hydrogens_sel = hydrogens_sel.strip() if hydrogens_sel is not None else hydrogens_sel
-        self.acceptors_sel = acceptors_sel.strip() if acceptors_sel is not None else acceptors_sel
+        self._donors_sel = donors_sel.strip() if donors_sel is not None else donors_sel
+        self._hydrogens_sel = hydrogens_sel.strip() if hydrogens_sel is not None else hydrogens_sel
+        self._acceptors_sel = acceptors_sel.strip() if acceptors_sel is not None else acceptors_sel
 
         msg = ("{} is an empty selection string - no hydrogen bonds will "
                "be found. This may be intended, but please check your "
@@ -393,10 +393,10 @@ class HydrogenBondAnalysis(AnalysisBase):
         self.results.hbonds = None
 
         # Set atom selections if they have not been provided
-        if self.acceptors_sel is None:
-            self.acceptors_sel = self.guess_acceptors()
-        if self.hydrogens_sel is None:
-            self.hydrogens_sel = self.guess_hydrogens()
+        if self._acceptors_sel is None:
+            self._acceptors_sel = self.guess_acceptors()
+        if self._hydrogens_sel is None:
+            self._hydrogens_sel = self.guess_hydrogens()
 
         # Select atom groups
         self._acceptors = self.u.select_atoms(self.acceptors_sel,
@@ -984,3 +984,38 @@ class HydrogenBondAnalysis(AnalysisBase):
         unique_hbonds = unique_hbonds[unique_hbonds[:, 3].argsort()[::-1]]
 
         return unique_hbonds
+
+    @property
+    def donors_sel(self):
+        """Selection string for the hydrogen bond donor atoms."""
+        return self._donors_sel
+
+    @donors_sel.setter
+    def donors_sel(self, value):
+        self._donors_sel = value
+        self._donors, self._hydrogens = self._get_dh_pairs()
+
+    @property
+    def hydrogens_sel(self):
+        """Selection string for the hydrogen bond hydrogen atoms."""
+        return self._hydrogens_sel
+
+    @hydrogens_sel.setter
+    def hydrogens_sel(self, value):
+        self._hydrogens_sel = value
+        if self._hydrogens_sel is None:
+            self._hydrogens_sel = self.guess_hydrogens()
+        self._donors, self._hydrogens = self._get_dh_pairs()
+
+    @property
+    def acceptors_sel(self):
+        """Selection string for the hydrogen bond acceptor atoms."""
+        return self._acceptors_sel
+
+    @acceptors_sel.setter
+    def acceptors_sel(self, value):
+        self._acceptors_sel = value
+        if self._acceptors_sel is None:
+            self._acceptors_sel = self.guess_acceptors()
+        self._acceptors = self.u.select_atoms(self._acceptors_sel,
+                                              updating=self.update_selections)
