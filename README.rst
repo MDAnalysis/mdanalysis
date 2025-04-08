@@ -198,3 +198,6 @@ For citations of included algorithms and sub-modules please see the references_.
 .. |discussions| image:: https://img.shields.io/github/discussions/MDAnalysis/MDAnalysis
    :alt: GitHub Discussions
    :target: https://github.com/MDAnalysis/mdanalysis/discussions
+
+   Minor update added by GSoC 2025 applicant Youraj Kumar for test PR.
+
