@@ -21,8 +21,8 @@ The rules for this file:
 
 Fixes
  * Fixes bug in `analysis/hydrogenbonds.py`: `_donors` and `_hydrogens`
-   was not updated when the `acceptors_sel` and `hydrogens_sel` were provided
-   after initialization. (Issue #5010)
+   were not updated when the `acceptors_sel` and `hydrogens_sel` were provided
+   after initialization. (Issue #5010, PR #5018)
  * Fixes bug in `analysis/gnm.py`: `closeContactGNMAnalysis`: correct the
    `residue_index_map` generation when selection is not `protein`.
    (Issue #4924, PR #4961)

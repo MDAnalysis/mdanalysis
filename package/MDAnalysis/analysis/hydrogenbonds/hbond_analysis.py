@@ -345,6 +345,10 @@ class HydrogenBondAnalysis(AnalysisBase):
         .. versionchanged:: 2.8.0
             Introduced :meth:`get_supported_backends` allowing for parallel execution on
             :mod:`multiprocessing` and :mod:`dask` backends.
+        .. versionchanged:: 2.10.0
+            The `donors_sel`, `hydrogens_sel`, and `acceptors_sel` are stored as properties
+            now and update the internal `_donor`, `_hydrogens`, and `_acceptors` when they
+            are modified.
         """
 
         self.u = universe
@@ -987,7 +991,10 @@ class HydrogenBondAnalysis(AnalysisBase):
 
     @property
     def donors_sel(self):
-        """Selection string for the hydrogen bond donor atoms."""
+        """Selection string for the hydrogen bond donor atoms.
+        
+        .. versionadded:: 2.10.0
+        """
         return self._donors_sel
 
     @donors_sel.setter
@@ -997,7 +1004,10 @@ class HydrogenBondAnalysis(AnalysisBase):
 
     @property
     def hydrogens_sel(self):
-        """Selection string for the hydrogen bond hydrogen atoms."""
+        """Selection string for the hydrogen bond hydrogen atoms.
+        
+        .. versionadded:: 2.10.0
+        """
         return self._hydrogens_sel
 
     @hydrogens_sel.setter
@@ -1009,7 +1019,10 @@ class HydrogenBondAnalysis(AnalysisBase):
 
     @property
     def acceptors_sel(self):
-        """Selection string for the hydrogen bond acceptor atoms."""
+        """Selection string for the hydrogen bond acceptor atoms.
+        
+        .. versionadded:: 2.10.0
+        """
         return self._acceptors_sel
 
     @acceptors_sel.setter
