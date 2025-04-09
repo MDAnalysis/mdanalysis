@@ -58,7 +58,8 @@ Enhancements
  * Enable parallelization for analysis.nucleicacids.NucPairDist (Issue #4670)
  * Add check and warning for empty (all zero) coordinates in RDKit converter
    (PR #4824)
- * Added `precision` for XYZWriter (Issue #4775, PR #4771) 
+ * Added `precision` for XYZWriter (Issue #4775, PR #4771)
+ * Improved tests for lineardensity.py (Issue #3603, PR #5013)
 
 Changes
  * MDAnalysis.analysis.psa, MDAnalysis.analysis.waterdynamics and
