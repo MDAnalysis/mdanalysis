@@ -48,8 +48,6 @@ def test_invalid_grouping():
 
 ### Creating the Test Universes ###
 
-test_Systems = ['neutral_Particles', 'charged_Particles', 'charged_Dimers']
-
 def make_Universe(coords, charges, masses, n_atoms, n_frames, atomsPerRes, resPerSegs):
     """Generate a reference universe of 100 atoms with uniformly drawn random positions."""
     n_residues = n_atoms // atomsPerRes # Arbitrarily 5 atoms per residue
@@ -105,7 +103,7 @@ def charged_Particles(n_atoms, n_frames, atomsPerRes, resPerSegs):
 
     return make_Universe(coords, charges, masses, n_atoms, n_frames, atomsPerRes, resPerSegs)
 
-def charged_Dimers(n_dimers, n_frames, dimersPerRes, resPerSegs, dimerLength = 0.05):
+def charged_Dimers(n_dimers=100, n_frames=1, dimersPerRes=5, resPerSegs=4, dimerLength = 0.05):
     n_atoms = 2 * n_dimers
     
     charges = np.random.random(n_atoms) * 2 - np.ones(n_atoms) # Between -1 and 1
@@ -128,12 +126,13 @@ def charged_Dimers(n_dimers, n_frames, dimersPerRes, resPerSegs, dimerLength = 0
     return make_Universe(coords, charges, masses, n_atoms, n_frames, dimersPerRes * 2, resPerSegs)
 
 
+
 ### Calculating the Expected Values ###
 
 def calc_Prop(u, prop = 'masses'): # Property can be 'masses' or 'charges'
-    expected_atoms = eval(f'u.atoms.{prop}')
-    expected_residues = np.array([sum(eval(f'res.atoms.{prop}')) for res in u.residues])
-    expected_segments = np.array([sum(eval(f'seg.atoms.{prop}')) for seg in u.segments])
+    expected_atoms = getattr(u.atoms, prop)
+    expected_residues = np.array([sum(getattr(res.atoms, prop)) for res in u.residues])
+    expected_segments = np.array([sum(getattr(seg.atoms, prop)) for seg in u.segments])
 
     return expected_atoms, expected_residues, expected_segments
 
@@ -143,21 +142,23 @@ def find_Centres(groups): # Always based on Centre of Mass (NOT Centre of Charge
         total_Mass = sum(group.atoms.masses)
         if total_Mass != 0:
             centres.append(np.sum(group.atoms.positions.transpose() * abs(group.atoms.masses), axis = 1) / total_Mass)
+        # Just in case there are particles with 0 mass (somehow)
         elif total_Mass == 0:
-            centres.append(np.sum(group.atoms.positions.transpose() * abs(group.atoms.masses), axis = 1) / len(group.atoms)) ############## NOT NEDEDEDDED 
+            centres.append(np.sum(group.atoms.positions.transpose() * abs(group.atoms.masses), axis = 1) / len(group.atoms))
 
     return np.array(centres)
 
 def calc_Densities(u, prop = 'masses', spliceLen = 0.25): # Property can be 'masses' or 'charges'
 
     propShort = 'mass'
-    if prop == 'charges': propShort = 'charge'
+    if prop == 'charges':
+        propShort = 'charge'
 
     ### Atoms
     expected_atoms = np.zeros((3, int(u.dimensions[0] // spliceLen))).astype(float) # Works for cubic Universe
     for atom in u.atoms:
         for i in range(3):
-            expected_atoms[i][int(atom.position[i] // spliceLen)] += eval(f'atom.{propShort}')
+            expected_atoms[i][int(atom.position[i] // spliceLen)] += getattr(atom, propShort)
 
 
 
@@ -204,15 +205,13 @@ expected_charges = []
 expected_xmass = []
 expected_xcharge = []
 
-for system in test_Systems:
+test_Universes = [neutral_Particles, charged_Particles, charged_Dimers]
+test_Params = [[100, 1, 5, 4], [100, 1, 5, 4], [100, 1, 5, 4, 0.05]]
 
-    universe = eval(f'{system}(100, 1, 5, 4)')
+for i in range(len(test_Universes)):
+    
+    universe = test_Universes[i](*test_Params[i])
     universes.append(universe)
-
-##    expected_masses_atoms, expected_masses_residues, expected_masses_segments = calc_Prop(universe, 'masses')
-##    expected_charges_atoms, expected_charges_residues, expected_charges_segments = calc_Prop(universe, 'charges')
-##    expected_xmass_atoms, expected_xmass_residues, expected_xmass_segments = calc_Densities(universe, 'masses', spliceLen)
-##    expected_xcharge_atoms, expected_xcharge_residues, expected_xcharge_segments = calc_Densities(universe, 'charges', spliceLen)
 
     expected_masses.append(calc_Prop(universe, 'masses'))
     expected_charges.append(calc_Prop(universe, 'charges'))
@@ -222,10 +221,10 @@ for system in test_Systems:
 ### Parametrizing for Pytest ###
 
 # NOTE: There is an extra [0] after the expected_xmass and expected_xcharge as the original data has all 3 co-ords, but only comparing to x here
-params = [(universes[i], groupings[j], expected_masses[i][j], expected_charges[i][j], expected_xmass[i][j][0], expected_xcharge[i][j][0]) for j in range(len(groupings)) for i in range(len(universes))]
+pytest_Params = [(universes[i], groupings[j], expected_masses[i][j], expected_charges[i][j], expected_xmass[i][j][0], expected_xcharge[i][j][0]) for j in range(len(groupings)) for i in range(len(universes))]
 @pytest.mark.parametrize(
     "universe, grouping, expected_masses, expected_charges, expected_xmass, expected_xcharge",
-    params,
+    pytest_Params,
 )
 
 def test_lineardensity(
@@ -244,20 +243,6 @@ def test_lineardensity(
     # rtol changed here due to floating point imprecision
     assert_allclose(ld.results.x.mass_density, expected_xmass, rtol=1e-06)
     assert_allclose(ld.results.x.charge_density, expected_xcharge)
-
-
-for i in range(len(params)):
-    print(i)
-    universe = params[i][0]
-    sel_string = "all"
-    selection = universe.select_atoms(sel_string)
-    ld = LinearDensity(selection, params[i][1], binsize=0.25).run()
-    assert_allclose(ld.masses, params[i][2])
-    assert_allclose(ld.charges, params[i][3])
-    # rtol changed here due to floating point imprecision
-    assert_allclose(ld.results.x.mass_density, params[i][4], rtol=1e-06)
-    assert_allclose(ld.results.x.charge_density, params[i][5])
-
 
 @pytest.fixture(scope="module")
 def testing_Universe():
