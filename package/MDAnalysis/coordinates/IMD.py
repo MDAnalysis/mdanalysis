@@ -8,9 +8,11 @@ MDAnalysis IMDReader
 
 """
 
+import numpy as np
+import logging
+
 from MDAnalysis.coordinates import core
 from MDAnalysis.lib.util import store_init_arguments
-from MDAnalysis.coordinates.util import parse_host_port
 from MDAnalysis.coordinates.base import StreamReaderBase
 
 try:
@@ -19,7 +21,7 @@ try:
 except ImportError:
     HAS_IMDCLIENT = False
 
-    # Allow building doucmnetation without imdclient
+    # Allow building documentation without imdclient
     import types
 
     class MockIMDClient:
@@ -30,9 +32,7 @@ except ImportError:
 else:
     HAS_IMDCLIENT = True
 
-import logging
-
-logger = logging.getLogger("imdclient.IMDClient")
+logger = logging.getLogger("MDAnalysis.coordinates.IMDReader")
 
 
 class IMDReader(StreamReaderBase):
@@ -41,12 +41,12 @@ class IMDReader(StreamReaderBase):
 
     Parameters
     ----------
-    filename : a string of the form "host:port" where host is the hostname
+    filename : a string of the form "imd://host:port" where host is the hostname
         or IP address of the listening GROMACS server and port
         is the port number.
     n_atoms : int (optional)
         number of atoms in the system. defaults to number of atoms
-        in the topology. don't set this unless you know what you're doing.
+        in the topology. Don't set this unless you know what you're doing.
     kwargs : dict (optional)
         keyword arguments passed to the constructed :class:`IMDClient`
     """
@@ -97,8 +97,8 @@ class IMDReader(StreamReaderBase):
 
         try:
             self._read_next_timestep()
-        except StopIteration:
-            raise RuntimeError("IMDReader: No data found in stream")
+        except StopIteration as e:
+            raise RuntimeError("IMDReader: No data found in stream") from e
 
     def _read_frame(self, frame):
 
@@ -110,7 +110,7 @@ class IMDReader(StreamReaderBase):
         self._frame = frame
         self._load_imdframe_into_ts(imdf)
 
-        logger.debug(f"IMDReader: Loaded frame {self._frame}")
+        logger.debug("IMDReader: Loaded frame %d", self._frame)
         return self.ts
 
     def _load_imdframe_into_ts(self, imdf):
@@ -129,11 +129,11 @@ class IMDReader(StreamReaderBase):
         if imdf.positions is not None:
             # must call copy because reference is expected to reset
             # see 'test_frame_collect_all_same' in MDAnalysisTests.coordinates.base
-            self.ts.positions = imdf.positions
+            np.copyto(self.ts.positions, imdf.positions)
         if imdf.velocities is not None:
-            self.ts.velocities = imdf.velocities
+            np.copyto(self.ts.velocities, imdf.velocities)
         if imdf.forces is not None:
-            self.ts.forces = imdf.forces
+            np.copyto(self.ts.forces, imdf.forces)
 
     @staticmethod
     def _format_hint(thing):
@@ -150,3 +150,19 @@ class IMDReader(StreamReaderBase):
             self._imdclient.stop()
         # NOTE: removeme after testing
         logger.debug("IMDReader shut down gracefully.")
+
+# NOTE: think of other edge cases as well- should be robust
+def parse_host_port(filename):
+    if not filename.startswith("imd://"):
+        raise ValueError("IMDReader: URL must be in the format 'imd://host:port'")
+    # Check if the format is correct
+    parts = filename.split("imd://")[1].split(":")
+    if len(parts) == 2:
+        host = parts[0]
+        try:
+            port = int(parts[1])
+            return (host, port)
+        except ValueError as e:
+            raise ValueError("IMDReader: Port must be an integer") from e
+    else:
+        raise ValueError("IMDReader: URL must be in the format 'imd://host:port'")
