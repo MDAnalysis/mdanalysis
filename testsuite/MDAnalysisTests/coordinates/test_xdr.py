@@ -563,9 +563,7 @@ class TestTRRWriter(_GromacsWriter):
 
     def test_data_preservation(self, universe, Writer, outfile):
 
-        with Writer(
-            outfile, universe.atoms.n_atoms, dt=universe.trajectory.dt
-        ) as W:
+        with Writer(outfile, universe.atoms.n_atoms) as W:
             for ts in universe.trajectory:
                 W.write(universe)
 
