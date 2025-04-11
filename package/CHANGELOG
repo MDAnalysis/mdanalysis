@@ -14,7 +14,7 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, orbeckst, BHM-Bob
+??/??/?? IAlibay, orbeckst, BHM-Bob, TRY-ER
 
 
  * 2.10.0
@@ -28,6 +28,8 @@ Fixes
    (Issue #4948, PR #5001)
 
 Enhancements
+ * Improve parsing of topology information from LAMMPS dump files to allow
+   reading of mass, charge and element attributes. (Issue #3449, PR #4995)
  * New feature in `Universe`: `set_groups`. This function allows updating `_topology`, `residues` (ResidueGroup), `segments` (SegmentGroup) in the `Universe` using user-provided atomwise `resids` and/or `segids`. (Issue #4948 #2874, PR #4965)   
  * Adds an argument `force_chainids_to_segids` in `PDBParser`: this will force the use of ChainID as the segID when reading PDB (it is helpful if the segment IDs (segids) are partially missing in the PDB file). (Issue #4948 #2874, PR #4965)
 
