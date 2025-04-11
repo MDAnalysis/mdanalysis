@@ -14,7 +14,7 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, orbeckst, BHM-Bob, tanishy7777
+??/??/?? IAlibay, orbeckst, BHM-Bob, TRY-ER, tanishy7777
 
 
  * 2.10.0
@@ -30,7 +30,8 @@ Fixes
    by changing the way weights for RMSD are calculated, instead of
    directly passing them. (Issue #3520, PR #5006)
 Enhancements
-
+ * Improve parsing of topology information from LAMMPS dump files to allow
+   reading of mass, charge and element attributes. (Issue #3449, PR #4995)
 Changes
 
 Deprecations
