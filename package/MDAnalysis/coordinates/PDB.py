@@ -234,10 +234,7 @@ class PDBReader(base.ReaderBase):
 
     *The columns 73-76 are not part of the official PDB format but are used by
     some programs to store/operate the segment ID. For instance, Chimera_ assigns
-    it as the attribute `pdbSegment` to allow command-line specification. If you
-    would like to force the use of chainID as the segID when reading PDB, please
-    use the kwarg `force_chainids_to_segids=True`. This will prioritize the
-    chain ID to the segment ID.
+    it as the attribute `pdbSegment` to allow command-line specification.
 
     .. _Chimera:
         https://www.cgl.ucsf.edu/chimera/docs/UsersGuide/tutorials/pdbintro.html#note6
@@ -247,6 +244,10 @@ class PDBReader(base.ReaderBase):
     :class:`PDBWriter`
     :class:`PDBReader`
 
+    If you would like to force the use of chainID as the segID when parsing PDB,
+    please use the kwarg `force_chainids_to_segids=True`
+    (:class:`MDAnalysis.topology.PDBParser.PDBParser`).
+    This will prioritize the chain ID to the segment ID.
 
     .. versionchanged:: 0.11.0
        * Frames now 0-based instead of 1-based

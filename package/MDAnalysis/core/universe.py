@@ -96,6 +96,17 @@ logger = logging.getLogger("MDAnalysis.core.universe")
 
 
 def _update_topology_by_ids(universe, atomwise_resids, atomwise_segids):
+    """Update the topology of a Universe with new atomwise resids and segids.
+
+    Parameters
+    ----------
+    universe : Universe
+        The universe to update.
+    atomwise_resids : numpy.ndarray
+        The new atomwise residue indices.
+    atomwise_segids : numpy.ndarray
+        The new atomwise segment indices.
+    """
     from ..topology.base import change_squash
 
     # the original topology
@@ -105,7 +116,7 @@ def _update_topology_by_ids(universe, atomwise_resids, atomwise_segids):
     atom_attridices = [
         idx
         for idx, each_attr in enumerate(top.attrs)
-        if not (Residue in each_attr.target_classes)
+        if Residue not in each_attr.target_classes
     ]
     attrs = [top.attrs[each_attr] for each_attr in atom_attridices]
 
