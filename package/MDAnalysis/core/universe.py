@@ -1853,9 +1853,10 @@ class Universe(object):
 
         else:
             # check the length of atomwise_resids
-            assert len(atomwise_resids) == self.atoms.n_atoms, \
-                "The length of atomwise_resids should be the same as " \
-                "the number of atoms in the universe."
+            if len(atomwise_resids) != self.atoms.n_atoms:
+                raise ValueError(
+                    "The length of atomwise_resids should be the same as "
+                    "the number of atoms in the universe.")
 
             self.atomwise_resids_orig = self.atoms.resids
             logger.info("The new resids replaces the current one. "
@@ -1868,16 +1869,17 @@ class Universe(object):
 
         else:
             # check the length of atomwise_segids
-            assert len(atomwise_segids) == self.atoms.n_atoms, \
-                "The length of atomwise_segids should be the same as " \
-                "the number of atoms in the universe."
+            if len(atomwise_segids) != self.atoms.n_atoms:
+                raise ValueError(
+                    "The length of atomwise_segids should be the same as "
+                    "the number of atoms in the universe.")
 
             self.atomwise_segids_orig = self.atoms.segids
             logger.info("The new resids replaces the current one. "
                         "The original segids is stored in "
                         "atomwise_segids_orig.")
 
-        atomwise_resids = np.array(atomwise_resids, dtype=object)
+        atomwise_resids = np.array(atomwise_resids, dtype=int)
         atomwise_segids = np.array(atomwise_segids, dtype=object)
 
         _update_topology_by_ids(self,

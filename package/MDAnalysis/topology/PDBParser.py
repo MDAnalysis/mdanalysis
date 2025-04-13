@@ -179,8 +179,9 @@ class PDBParser(TopologyReaderBase):
      - formalcharges
 
     Note that `PDBParser` accepts an optional keyword argument
-    ``force_chainids_to_segids``. If set to ``True``, the chain IDs (if in the file)
-    will forcibly be used instead of the segment IDs for creating segments.
+    ``force_chainids_to_segids``. If set to ``True``, the chain IDs (even if
+    empty values are in the chain ID column in the file) will forcibly be used
+    instead of the segment IDs for creating segments.
 
     See Also
     --------
@@ -420,7 +421,8 @@ class PDBParser(TopologyReaderBase):
         attrs.append(ICodes(icodes))
         attrs.append(Resnames(resnames))
 
-        if any(segids) and not any(val is None for val in segids):
+        if kwargs.get("force_chainids_to_segids", False) or \
+            (any(segids) and not any(val is None for val in segids)):
             segidx, (segids,) = change_squash((segids,), (segids,))
             n_segments = len(segids)
             attrs.append(Segids(segids))

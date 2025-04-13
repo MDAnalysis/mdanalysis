@@ -1540,8 +1540,10 @@ class TestOnlyTopology:
         assert len(u.atoms) == 10
 
 
-class TestUniverseSetGroups(object):
-    bad_seg_str = """\
+class TestUniverseSetGroups:
+    @pytest.fixture()
+    def bad_seg(self):
+        bad_seg_str = """\
 ATOM    659  N   THR A 315      22.716  15.055  -1.000  1.00 16.08         A N
 ATOM    660  CA  THR A 315      22.888  13.803  -0.302  1.00  0.00           C
 ATOM    661  C   THR A 315      22.006  12.700  -0.882  1.00  0.00           C
@@ -1550,8 +1552,11 @@ ATOM    663  CB  THR B 314      22.481  13.956   1.182  1.00  0.00         B C
 ATOM    664  CG2 THR B 315      23.384  14.924   1.927  1.00  0.00           C
 ATOM    665  OG1 THR B 315      21.172  14.548   1.274  1.00  0.00           O
 """
+        return mda.Universe(StringIO(bad_seg_str), format="PDB")
 
-    good_str = """\
+    @pytest.fixture()
+    def good(self):
+        good_str = """\
 ATOM    659  N   THR A 315      22.716  15.055  -1.000  1.00 16.08         A N
 ATOM    660  CA  THR A 315      22.888  13.803  -0.302  1.00 15.13         A C
 ATOM    661  C   THR A 315      22.006  12.700  -0.882  1.00 15.69         A C
@@ -1560,8 +1565,11 @@ ATOM    663  CB  THR B 314      22.481  13.956   1.182  1.00 16.22         B C
 ATOM    664  CG2 THR B 315      22.874  15.310   1.747  1.00 17.32         B C
 ATOM    665  OG1 THR B 315      21.047  13.922   1.304  1.00 15.14         B O
 """
+        return mda.Universe(StringIO(good_str), format="PDB")
 
-    bad_gro_str = """\
+    @pytest.fixture()
+    def bad_gro(self):
+        bad_gro_str = """\
 Written by MDAnalysis
     7
     2THR      N    1   2.272   1.506  -0.100
@@ -1571,59 +1579,130 @@ Written by MDAnalysis
     1THR     CB    5   2.248   1.396   0.118
     2THR    CG2    6   2.287   1.531   0.175
     2THR    OG1    7   2.105   1.392   0.130
-   0.00000   0.00000   0.00000
+   3.00000   3.00000   3.00000
 """
-    bad_seg1 = mda.Universe(StringIO(bad_seg_str), format="PDB")
-    good = mda.Universe(StringIO(good_str), format="PDB")
-    bad_gro = mda.Universe(StringIO(bad_gro_str), format="GRO")
+        return mda.Universe(StringIO(bad_gro_str), format="GRO")
 
-    def test_do_nothing(self):
-        # check do nothing
-        with pytest.warns(UserWarning):
-            self.good.set_groups()
+    def test_do_nothing(self, good):
+        # check do nothing (check the warning message)
+        with pytest.warns(
+            UserWarning,
+            match="Not setting groups. Please provide atomwise_resids or "
+            "atomwise_segids",
+        ):
+            good.set_groups()
 
-    def test_set_segments(self):
-        # check bad_seg1 with good
-        # guessing
-        self.bad_seg1.set_groups(
-            atomwise_segids=["A", "A", "A", "A", "B", "B", "B"]
-        )  # set
+            # check segments
+            assert_equal(["A", "B"], good.segments.segids)
+            # check residues
+            assert_equal([315, 316, 314, 315], good.residues.resids)
 
+    def test_set_segments(self, bad_seg, bad_gro, good):
+        # check bad_seg with good
+        # [BEFORE] 5 segments and 5 residues in bad_seg
+        assert len(bad_seg.segments) == 5  # 5 segments
+        assert_equal(["A", "", "A", "B", ""], bad_seg.segments.segids)
+        assert len(bad_seg.residues) == 5  # 5 residues
+        assert_equal([315, 315, 316, 314, 315], bad_seg.residues.resids)
+        assert_equal(
+            ["THR", "THR", "THR", "THR", "THR"], bad_seg.residues.resnames
+        )
+        assert_equal(["A", "", "A", "B", ""], bad_seg.residues.segids)
+        assert len(bad_seg.atoms) == 7  # 7 atoms
+        assert_equal([315, 315, 315, 316, 314, 315, 315], bad_seg.atoms.resids)
+        assert_equal(["THR"] * 7, bad_seg.atoms.resnames)
+        assert_equal(["A", "", "", "A", "B", "", ""], bad_seg.atoms.segids)
+        assert_equal(
+            ["N", "CA", "C", "O", "CB", "CG2", "OG1"], bad_seg.atoms.names
+        )
+        assert_equal(
+            ["A", "A", "A", "A", "B", "B", "B"], bad_seg.atoms.chainIDs
+        )
+
+        # [ACT] set new segids
+        bad_seg.set_groups(atomwise_segids=["A", "A", "A", "A", "B", "B", "B"])
+
+        # [AFTER] 2 segments and 4 residues in bad_seg
         # segment level
-        assert len(self.bad_seg1.segments) == len(self.good.segments)
-        assert len(self.good.segments) == 2
-        assert_equal(self.bad_seg1.segments.segids, self.good.segments.segids)
+        assert len(bad_seg.segments) == len(good.segments)
+        assert len(bad_seg.segments) == 2  # 2 segments
+        assert_equal(bad_seg.segments.segids, good.segments.segids)
 
         # residue level
-        assert len(self.bad_seg1.residues) == len(self.good.residues)
-        assert len(self.good.residues) == 4
-        assert_equal(self.bad_seg1.residues.resids, self.good.residues.resids)
-        assert_equal(
-            self.bad_seg1.residues.resnames, self.good.residues.resnames
-        )
-        assert_equal(self.bad_seg1.residues.segids, self.good.residues.segids)
+        assert len(bad_seg.residues) == len(good.residues)
+        assert len(bad_seg.residues) == 4  # 4 residues
+        assert_equal(bad_seg.residues.resids, good.residues.resids)
+        assert_equal(bad_seg.residues.resnames, good.residues.resnames)
+        assert_equal(bad_seg.residues.segids, good.residues.segids)
 
         # atom level
-        assert len(self.bad_seg1.atoms) == len(self.good.atoms)
-        assert_equal(self.bad_seg1.atoms.resids, self.good.atoms.resids)
-        assert_equal(self.bad_seg1.atoms.resnames, self.good.atoms.resnames)
-        assert_equal(self.bad_seg1.atoms.segids, self.good.atoms.segids)
-        assert_equal(self.bad_seg1.atoms.names, self.good.atoms.names)
-        assert_equal(self.bad_seg1.atoms.chainIDs, self.good.atoms.chainIDs)
+        assert len(bad_seg.atoms) == len(good.atoms)
+        assert len(bad_seg.atoms) == 7  # 7 atoms
+        assert_equal(bad_seg.atoms.resids, good.atoms.resids)
+        assert_equal(bad_seg.atoms.resnames, good.atoms.resnames)
+        assert_equal(bad_seg.atoms.segids, good.atoms.segids)
+        assert_equal(bad_seg.atoms.names, good.atoms.names)
+        assert_equal(bad_seg.atoms.chainIDs, good.atoms.chainIDs)
 
         # check bad_gro with good
-        self.bad_gro.set_groups(
+        # [BEFORE] 1 segment in bad_gro
+        assert len(bad_gro.segments) == 1  # 1 segment
+        assert_equal(["SYSTEM"], bad_gro.segments.segids)
+
+        # [ACT] set new segids
+        bad_gro.set_groups(
             atomwise_segids=["A", "A", "A", "A", "B", "B", "B"],
-        )  # set
+        )
 
-        assert len(self.bad_gro.segments) == len(self.good.segments)
-        assert_equal(self.bad_gro.segments.segids, self.good.segments.segids)
+        # [AFTER] 2 segments in bad_gro
+        assert len(bad_gro.segments) == len(good.segments)
+        assert len(bad_gro.segments) == 2  # 2 segments
+        assert_equal(bad_gro.segments.segids, good.segments.segids)
 
-    def test_set_residues(self):
-        self.bad_gro.set_groups(
+    def test_set_residues(self, bad_gro, good):
+        # check bad_gro with good
+        # [BEFORE] resids in bad_gro
+        assert_equal([2, 3, 1, 2], bad_gro.residues.resids)
+        assert_equal([2, 2, 2, 3, 1, 2, 2], bad_gro.atoms.resids)
+
+        # [ACT]
+        bad_gro.set_groups(
             atomwise_resids=[315, 315, 315, 316, 314, 315, 315],
-        )  # set
-        assert len(self.bad_gro.residues) == len(self.good.residues)
-        assert_equal(self.bad_gro.residues.resids, self.good.residues.resids)
-        assert len(self.bad_gro.atoms) == len(self.good.atoms)
-        assert_equal(self.bad_gro.atoms.resids, self.good.atoms.resids)
+        )
+
+        # [AFTER] resids in bad_gro
+        assert len(bad_gro.residues) == len(good.residues)
+        assert_equal(bad_gro.residues.resids, good.residues.resids)
+        assert len(bad_gro.atoms) == len(good.atoms)
+        assert_equal(bad_gro.atoms.resids, good.atoms.resids)
+
+    def test_set_groups_both(self, bad_gro, good):
+        # test: both atomwise_segids and atomwise_resids exist
+        # check bad_gro with good
+        # [BEFORE] 1 segment in bad_gro
+        assert len(bad_gro.segments) == 1
+        assert_equal(["SYSTEM"], bad_gro.segments.segids)
+        assert len(bad_gro.residues) == 4
+        assert_equal(["SYSTEM"] * 4, bad_gro.residues.segids)
+        assert_equal([2, 3, 1, 2], bad_gro.residues.resids)
+        assert len(bad_gro.atoms) == 7
+        assert_equal(["SYSTEM"] * 7, bad_gro.atoms.segids)
+        assert_equal([2, 2, 2, 3, 1, 2, 2], bad_gro.atoms.resids)
+
+        # [ACT] set new segids and resids
+        bad_gro.set_groups(
+            atomwise_segids=good.atoms.segids,
+            atomwise_resids=good.atoms.resids,
+        )
+
+        # [AFTER] 1 segments in bad_gro
+        assert len(bad_gro.segments) == len(good.segments)
+        assert len(bad_gro.segments) == 2
+        assert_equal(bad_gro.segments.segids, good.segments.segids)
+        assert len(bad_gro.residues) == len(good.residues)
+        assert len(bad_gro.residues) == 4
+        assert_equal(bad_gro.residues.segids, good.residues.segids)
+        assert_equal(bad_gro.residues.resids, good.residues.resids)
+        assert len(bad_gro.atoms) == 7
+        assert_equal(bad_gro.atoms.segids, good.atoms.segids)
+        assert_equal(bad_gro.atoms.resids, good.atoms.resids)
