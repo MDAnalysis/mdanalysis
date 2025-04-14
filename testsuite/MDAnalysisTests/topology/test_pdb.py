@@ -490,7 +490,7 @@ ATOM    665  OG1 THR   315      21.047  13.922   1.304  1.00 15.14         A O
 
     assert len(res1_not_force.segments) == 4
     assert_equal(["A", "", "A", ""], res1_not_force.segments.segids)
-    assert len(res1_force.residues) == 4
+    assert len(res1_not_force.residues) == 4
     assert_equal([315, 315, 315, 315], res1_not_force.residues.resids)
     assert len(res1_force.segments) == 1
     assert_equal(["B"], res1_force.segments.segids)
