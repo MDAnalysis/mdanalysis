@@ -1807,3 +1807,41 @@ Written by MDAnalysis
             sorted([each.attrname for each in tpr._topology.attrs]),
             sorted([each.attrname for each in original_attrs]),
         )
+
+    def test_no_affect_custom_attrs(self, good):
+        # [BEFORE-1] check custom attributes
+        with pytest.raises(NoDataError):
+            print(good.atoms.charges)
+        assert len(good._topology.attrs) == 18
+
+        # [ACT-1] assign custom attributes
+        good.add_TopologyAttr("charges", [0,1,-1,0,-1,0,1])
+        
+        # [AFTER-1] check custom attributes
+        assert_equal([0,1,-1,0,-1,0,1], good.atoms.charges)
+        assert len(good._topology.attrs) == 19
+
+        # [BEFORE-2] check segids and resids
+        assert len(good.segments) == 2
+        assert_equal(["A", "B"], good.segments.segids)
+        assert len(good.residues) == 4
+        assert_equal([315, 316, 314, 315], good.residues.resids)
+        original_attrs = good._topology.attrs
+
+        # [ACT-2] set new segids and resids
+        good.set_groups(
+            atomwise_segids=["C", "C", "C", "C", "C", "C", "C"],
+            atomwise_resids=[1, 1, 1, 2, 2, 2, 3],
+        )
+
+        # [AFTER-2] check segids and resids
+        assert len(good.segments) == 1
+        assert_equal(["C"], good.segments.segids)
+        assert len(good.residues) == 3
+        assert_equal([1, 2, 3], good.residues.resids)
+        assert_equal([0,1,-1,0,-1,0,1], good.atoms.charges)
+        assert len(good._topology.attrs) == 19
+        assert_equal(
+            sorted([each.attrname for each in original_attrs]),
+            sorted([each.attrname for each in good._topology.attrs]),
+        )
