@@ -417,7 +417,6 @@ class PDBParser(TopologyReaderBase):
         n_residues = len(resids)
         attrs.append(Resnums(resnums))
         attrs.append(Resids(resids))
-        attrs.append(Resnums(resids.copy()))
         attrs.append(ICodes(icodes))
         attrs.append(Resnames(resnames))
 
