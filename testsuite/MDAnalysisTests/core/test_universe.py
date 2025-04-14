@@ -1815,10 +1815,10 @@ Written by MDAnalysis
         assert len(good._topology.attrs) == 18
 
         # [ACT-1] assign custom attributes
-        good.add_TopologyAttr("charges", [0,1,-1,0,-1,0,1])
-        
+        good.add_TopologyAttr("charges", [0, 1, -1, 0, -1, 0, 1])
+
         # [AFTER-1] check custom attributes
-        assert_equal([0,1,-1,0,-1,0,1], good.atoms.charges)
+        assert_equal([0, 1, -1, 0, -1, 0, 1], good.atoms.charges)
         assert len(good._topology.attrs) == 19
 
         # [BEFORE-2] check segids and resids
@@ -1839,7 +1839,7 @@ Written by MDAnalysis
         assert_equal(["C"], good.segments.segids)
         assert len(good.residues) == 3
         assert_equal([1, 2, 3], good.residues.resids)
-        assert_equal([0,1,-1,0,-1,0,1], good.atoms.charges)
+        assert_equal([0, 1, -1, 0, -1, 0, 1], good.atoms.charges)
         assert len(good._topology.attrs) == 19
         assert_equal(
             sorted([each.attrname for each in original_attrs]),
