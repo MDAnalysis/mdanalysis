@@ -86,7 +86,7 @@ from .groups import (ComponentBase, GroupBase,
 from .topology import Topology
 from .topologyattrs import (
     AtomAttr, ResidueAttr, SegmentAttr,
-    Segids, ICodes, Resnums, Resnames, Resids,
+    Segindices, Segids, Resindices, Resids, Atomindices,
     BFACTOR_WARNING, _Connection
 )
 from .topologyobjects import TopologyObject
@@ -113,52 +113,68 @@ def _update_topology_by_ids(universe, atomwise_resids, atomwise_segids):
     top = universe._topology
 
     # detect the atom level attributes (excluding residue level and above)
-    atom_attridices = [
+    atom_attrindices = [
         idx
         for idx, each_attr in enumerate(top.attrs)
-        if Residue not in each_attr.target_classes
+        if (Residue not in each_attr.target_classes) and
+        (not isinstance(each_attr, Atomindices))
     ]
-    attrs = [top.attrs[each_attr] for each_attr in atom_attridices]
+    attrs = [top.attrs[each_attr] for each_attr in atom_attrindices]
 
     # create new residues level stuff
-    if hasattr(universe.atoms, "icodes"):
-        residx, (resids, resnames, icodes, resnums, segids) = change_squash(
-            (
-                atomwise_resids,
-                universe.atoms.resnames,
-                universe.atoms.icodes,
-                atomwise_segids,
-            ),
-            (
-                atomwise_resids,
-                universe.atoms.resnames,
-                universe.atoms.icodes,
-                universe.atoms.resnums,
-                atomwise_segids,
-            ),
+    residue_attrindices = [
+        idx
+        for idx, each_attr in enumerate(top.attrs)
+        if (
+            (Residue in each_attr.target_classes) and
+            (Segment not in each_attr.target_classes) and
+            (not isinstance(each_attr, Resids)) and
+            (not isinstance(each_attr, Resindices))
         )
-        attrs.append(ICodes(icodes))
-    else:
-        residx, (resids, resnames, resnums, segids) = change_squash(
-            (atomwise_resids, universe.atoms.resnames, atomwise_segids),
-            (
-                atomwise_resids,
-                universe.atoms.resnames,
-                universe.atoms.resnums,
-                atomwise_segids,
-            ),
-        )
-    n_residues = len(resids)
+    ]  # residue level attributes except resids and resindices
 
-    attrs.append(Resnums(resnums))
-    attrs.append(Resids(resids))
-    attrs.append(Resnums(resids.copy()))
-    attrs.append(Resnames(resnames))
+    res_criteria = [atomwise_resids, atomwise_segids] + [
+        getattr(universe.atoms, top.attrs[each_attr].attrname)
+        for each_attr in residue_attrindices
+        if top.attrs[each_attr].attrname != 'resnums'
+    ]
+
+    res_to_squash = [atomwise_resids, atomwise_segids] + [
+        getattr(universe.atoms, top.attrs[each_attr].attrname)
+        for each_attr in residue_attrindices
+    ]
+
+    residx, res_squashed = change_squash(res_criteria, res_to_squash)
+    resids = res_squashed[0]
+    res_squashed_segids = res_squashed[1]
+    n_residues = len(resids)
+    # all residue-level attributes except resids
+    res_squashed_res_attrs = res_squashed[2:]
+
+    res_attrs = [Resids(resids)] + [
+        # use the correspdoning type of the attribute with new sqaushed values
+        top.attrs[each_attr].__class__(res_squashed_res_attrs[idx])
+        for idx, each_attr in enumerate(residue_attrindices)
+    ]
+    attrs.extend(res_attrs)
 
     # create new segment level stuff
-    segidx, (segids,) = change_squash((segids,), (segids,))
+    segidx, (segids,) = change_squash((res_squashed_segids,), (res_squashed_segids,))
     n_segments = len(segids)
     attrs.append(Segids(segids))
+
+    # other attributes
+    other_attrs = [
+        each_attr
+        for each_attr in top.attrs
+        if (
+            (Segment in each_attr.target_classes) and
+            (not isinstance(each_attr, Segids)) and
+            (not isinstance(each_attr, Atomindices)) and
+            (not isinstance(each_attr, Resindices)) and
+            (not isinstance(each_attr, Segindices))
+        )
+    ]
 
     # create new topology
     top = Topology(
@@ -169,6 +185,11 @@ def _update_topology_by_ids(universe, atomwise_resids, atomwise_segids):
         atom_resindex=residx,
         residue_segindex=segidx,
     )
+
+    # add back other attributes
+    if len(other_attrs) > 0:
+        for each_otherattr in other_attrs:
+            top.add_TopologyAttr(each_otherattr)
 
     # update the topology in the universe
     universe._topology = top

@@ -55,6 +55,8 @@ from MDAnalysisTests.datafiles import (
     MMTF,
     CONECT,
     PDB_conect,
+    ITP_tip5p,
+    TPR,
 )
 
 import MDAnalysis as mda
@@ -1583,6 +1585,14 @@ Written by MDAnalysis
 """
         return mda.Universe(StringIO(bad_gro_str), format="GRO")
 
+    @pytest.fixture()
+    def itp(self):
+        return mda.Universe(ITP_tip5p, HW2_CHARGE=2, infer_system=True)
+
+    @pytest.fixture()
+    def tpr(self):
+        return mda.Universe(TPR)
+
     def test_do_nothing(self, good):
         # check do nothing (check the warning message)
         with pytest.warns(
@@ -1597,7 +1607,7 @@ Written by MDAnalysis
             # check residues
             assert_equal([315, 316, 314, 315], good.residues.resids)
 
-    def test_set_segments(self, bad_seg, bad_gro, good):
+    def test_set_segments(self, bad_seg, good):
         # check bad_seg with good
         # [BEFORE] 5 segments and 5 residues in bad_seg
         assert len(bad_seg.segments) == 5  # 5 segments
@@ -1618,6 +1628,7 @@ Written by MDAnalysis
         assert_equal(
             ["A", "A", "A", "A", "B", "B", "B"], bad_seg.atoms.chainIDs
         )
+        original_attrs = bad_seg._topology.attrs
 
         # [ACT] set new segids
         bad_seg.set_groups(atomwise_segids=["A", "A", "A", "A", "B", "B", "B"])
@@ -1644,26 +1655,19 @@ Written by MDAnalysis
         assert_equal(bad_seg.atoms.names, good.atoms.names)
         assert_equal(bad_seg.atoms.chainIDs, good.atoms.chainIDs)
 
-        # check bad_gro with good
-        # [BEFORE] 1 segment in bad_gro
-        assert len(bad_gro.segments) == 1  # 1 segment
-        assert_equal(["SYSTEM"], bad_gro.segments.segids)
-
-        # [ACT] set new segids
-        bad_gro.set_groups(
-            atomwise_segids=["A", "A", "A", "A", "B", "B", "B"],
+        # check attrs
+        assert len(bad_seg._topology.attrs) == len(original_attrs)
+        assert_equal(
+            sorted([each.attrname for each in bad_seg._topology.attrs]),
+            sorted([each.attrname for each in original_attrs]),
         )
-
-        # [AFTER] 2 segments in bad_gro
-        assert len(bad_gro.segments) == len(good.segments)
-        assert len(bad_gro.segments) == 2  # 2 segments
-        assert_equal(bad_gro.segments.segids, good.segments.segids)
 
     def test_set_residues(self, bad_gro, good):
         # check bad_gro with good
         # [BEFORE] resids in bad_gro
         assert_equal([2, 3, 1, 2], bad_gro.residues.resids)
         assert_equal([2, 2, 2, 3, 1, 2, 2], bad_gro.atoms.resids)
+        original_attrs = bad_gro._topology.attrs
 
         # [ACT]
         bad_gro.set_groups(
@@ -1675,6 +1679,11 @@ Written by MDAnalysis
         assert_equal(bad_gro.residues.resids, good.residues.resids)
         assert len(bad_gro.atoms) == len(good.atoms)
         assert_equal(bad_gro.atoms.resids, good.atoms.resids)
+        assert len(bad_gro._topology.attrs) == len(original_attrs)
+        assert_equal(
+            sorted([each.attrname for each in bad_gro._topology.attrs]),
+            sorted([each.attrname for each in original_attrs]),
+        )
 
     def test_set_groups_both(self, bad_gro, good):
         # test: both atomwise_segids and atomwise_resids exist
@@ -1688,6 +1697,7 @@ Written by MDAnalysis
         assert len(bad_gro.atoms) == 7
         assert_equal(["SYSTEM"] * 7, bad_gro.atoms.segids)
         assert_equal([2, 2, 2, 3, 1, 2, 2], bad_gro.atoms.resids)
+        original_attrs = bad_gro._topology.attrs
 
         # [ACT] set new segids and resids
         bad_gro.set_groups(
@@ -1706,18 +1716,94 @@ Written by MDAnalysis
         assert len(bad_gro.atoms) == 7
         assert_equal(bad_gro.atoms.segids, good.atoms.segids)
         assert_equal(bad_gro.atoms.resids, good.atoms.resids)
+        assert len(bad_gro._topology.attrs) == len(original_attrs)
+        assert_equal(
+            sorted([each.attrname for each in bad_gro._topology.attrs]),
+            sorted([each.attrname for each in original_attrs]),
+        )
 
     def test_value_error(self, good):
         # [BEFORE] atomwise_segids
         assert len(good.atoms) == 7
-        
+
         # [ACT] set new segids and resids
         with pytest.raises(ValueError):
             good.set_groups(
                 atomwise_segids=["A", "A"],
             )
-        
+
         with pytest.raises(ValueError):
             good.set_groups(
                 atomwise_resids=[30, 31],
             )
+
+    def test_with_ITP(self, itp):
+        # [BEFORE] 1 segment in itp
+        assert len(itp.segments) == 1
+        assert_equal(["SOL"], itp.segments.segids)
+        assert len(itp.residues) == 1
+        assert_equal([1], itp.residues.resids)
+        assert_equal([1], itp.residues.chargegroups)
+        assert len(itp.atoms) == 5
+        assert_equal([1] * 5, itp.atoms.resids)
+        assert_equal([1] * 5, itp.atoms.chargegroups)
+        original_attrs = itp._topology.attrs
+
+        # [ACT] set new segids and resids
+        itp.set_groups(
+            atomwise_segids=["A", "A", "B", "B", "B"],
+            atomwise_resids=[3, 3, 3, 3, 4],
+        )
+
+        # [AFTER] 2 segments in itp
+        assert len(itp.segments) == 2
+        assert_equal(["A", "B"], itp.segments.segids)
+        assert len(itp.residues) == 3
+        assert_equal(["A", "B", "B"], itp.residues.segids)
+        assert_equal([3, 3, 4], itp.residues.resids)
+        assert_equal([1, 1, 1], itp.residues.chargegroups)
+        assert len(itp.atoms) == 5
+        assert_equal([3, 3, 3, 3, 4], itp.atoms.resids)
+        assert_equal([1] * 5, itp.atoms.chargegroups)
+        assert len(itp._topology.attrs) == len(original_attrs)
+        assert_equal(
+            sorted([each.attrname for each in itp._topology.attrs]),
+            sorted([each.attrname for each in original_attrs]),
+        )
+
+    def test_with_TPR(self, tpr):
+        # [BEFORE]
+        assert len(tpr.segments) == 3
+        assert_equal(
+            ["seg_0_AKeco", "seg_1_SOL", "seg_2_NA+"], tpr.segments.segids
+        )
+        assert len(tpr.residues) == 11302
+        assert_equal(range(1, 11303, 1), tpr.residues.resids)
+        orignial_res_molnums = tpr.residues.molnums
+        assert len(tpr.atoms) == 47681
+        orignial_resids = tpr.atoms.resids
+        orignial_atm_molnums = tpr.atoms.molnums
+        original_attrs = tpr._topology.attrs
+
+        # [ACT] set new segids and resids
+        sub_dict = {"seg_0_AKeco": "A", "seg_1_SOL": "B", "seg_2_NA+": "C"}
+        new_segids = [sub_dict[each] for each in tpr.atoms.segids]
+        tpr.set_groups(
+            atomwise_segids=new_segids,
+            atomwise_resids=tpr.atoms.resids + 120,
+        )
+
+        # [AFTER]
+        assert len(tpr.segments) == 3
+        assert_equal(["A", "B", "C"], tpr.segments.segids)
+        assert len(tpr.residues) == 11302
+        assert_equal(range(1 + 120, 11303 + 120, 1), tpr.residues.resids)
+        assert_equal(orignial_res_molnums, tpr.residues.molnums)
+        assert len(tpr.atoms) == 47681
+        assert_equal(orignial_resids + 120, tpr.atoms.resids)
+        assert_equal(orignial_atm_molnums, tpr.atoms.molnums)
+        assert len(tpr._topology.attrs) == len(original_attrs)
+        assert_equal(
+            sorted([each.attrname for each in tpr._topology.attrs]),
+            sorted([each.attrname for each in original_attrs]),
+        )

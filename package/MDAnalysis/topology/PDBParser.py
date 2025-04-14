@@ -421,8 +421,10 @@ class PDBParser(TopologyReaderBase):
         attrs.append(ICodes(icodes))
         attrs.append(Resnames(resnames))
 
-        if kwargs.get("force_chainids_to_segids", False) or \
-            (any(segids) and not any(val is None for val in segids)):
+        if (
+            kwargs.get("force_chainids_to_segids", False) or
+            (any(segids) and not any(val is None for val in segids))
+        ):
             segidx, (segids,) = change_squash((segids,), (segids,))
             n_segments = len(segids)
             attrs.append(Segids(segids))
