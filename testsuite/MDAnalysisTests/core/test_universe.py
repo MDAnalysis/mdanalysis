@@ -1706,3 +1706,18 @@ Written by MDAnalysis
         assert len(bad_gro.atoms) == 7
         assert_equal(bad_gro.atoms.segids, good.atoms.segids)
         assert_equal(bad_gro.atoms.resids, good.atoms.resids)
+
+    def test_value_error(self, good):
+        # [BEFORE] atomwise_segids
+        assert len(good.atoms) == 7
+        
+        # [ACT] set new segids and resids
+        with pytest.raises(ValueError):
+            good.set_groups(
+                atomwise_segids=["A", "A"],
+            )
+        
+        with pytest.raises(ValueError):
+            good.set_groups(
+                atomwise_resids=[30, 31],
+            )
