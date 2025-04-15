@@ -239,7 +239,7 @@ The class and its methods
 import logging
 import warnings
 from collections.abc import Iterable
-
+from collections import defaultdict
 import numpy as np
 
 from ..base import AnalysisBase, Results, ResultsGroup
@@ -675,165 +675,120 @@ class HydrogenBondAnalysis(AnalysisBase):
 
         return donors, hydrogens
 
-    def _filter_atoms(self, donors, acceptors):
-        """Create a mask to filter donor, hydrogen and acceptor atoms.
-
-        This can be used to consider only hydrogen bonds between two or more
-        specified groups.
-
-        Groups are specified with the `between` keyword when creating the
-        HydrogenBondAnalysis object.
-
-           Returns
-           -------
-           mask: np.ndarray
-
-
-        .. versionchanged:: 2.5.0
-           Change return value to a mask instead of separate AtomGroups.
-``
-        """
-
-        mask = np.full(donors.n_atoms, fill_value=False)
-        for group1, group2 in self.between_ags:
-
-            # Find donors in G1 and acceptors in G2
-            mask[
-                    np.logical_and(
-                        np.isin(donors.indices, group1.indices),
-                        np.isin(acceptors.indices, group2.indices)
-                    )
-            ] = True
-
-            # Find acceptors in G1 and donors in G2
-            mask[
-                np.logical_and(
-                    np.isin(acceptors.indices, group1.indices),
-                    np.isin(donors.indices, group2.indices)
-                )
-            ] = True
-
-        return mask
-
-
     def _prepare(self):
         self.results.hbonds = [[], [], [], [], [], []]
-
-
+ 
     def _single_frame(self):
-
         box = self._ts.dimensions
 
         # Update donor-hydrogen pairs if necessary
         if self.update_selections:
             self._donors, self._hydrogens = self._get_dh_pairs()
 
-        
-        tmp_donors = self.u.atoms[[]] 
-        tmp_hydrogens = self.u.atoms[[]] 
-        tmp_acceptors = self.u.atoms[[]] 
         if self.between_ags is not None:
-            l1 = []
-            l2 = []
-            
-            for group1, group2 in self.between_ags:
-                # both A-B and B-A pairs are considered
-                print("groups", group1, group2, len(group1), len(group2))
-                print(self._donors.indices, self._acceptors.indices)
-                print(len(np.unique(self._donors.indices)), len(self._donors.indices))
-                print(len(np.unique(self._acceptors.indices)), len(self._acceptors.indices))
+            # map donor indices to respective hydrogen indices
+            donor_idx_to_H_indices = defaultdict(list)
 
-                d_a_indices, d_a_distances = capped_distance(
-                    group1,
-                    group2,
+            for d, h in zip(self._donors, self._hydrogens):
+                donor_idx_to_H_indices[d.index].append(h.index)
+
+            tmp_hbond_candidates = [] 
+
+            for group1, group2 in self.between_ags:
+
+                tmp_donors_g1_mask = np.isin(self._donors.indices, group1.indices) 
+                donors_for_dist = self._donors[tmp_donors_g1_mask] 
+                tmp_acceptors_g2_mask = np.isin(self._acceptors.indices, group2.indices) 
+                acceptors_for_dist = self._acceptors[tmp_acceptors_g2_mask] 
+ 
+                d_a_indices_12, d_a_distances_12 = capped_distance(
+                    donors_for_dist.positions,
+                    acceptors_for_dist.positions,
                     max_cutoff=self.d_a_cutoff,
-                    min_cutoff=1.0,
                     box=box,
-                    return_distances=True
+                    return_distances=True,
                 )
 
-                print("distances", d_a_distances)
-                print("indices", d_a_indices, d_a_indices.shape)
-
-                if np.size(d_a_indices) == 0:
+                if np.size(d_a_indices_12) == 0:
                     warnings.warn(
                         "No hydrogen bonds were found given d-a cutoff of "
                         f"{self.d_a_cutoff} between Donor, {self.donors_sel}, and "
                         f"Acceptor, {self.acceptors_sel}."
                     )
-
-                l1.extend(d_a_indices)
-                l2.extend(d_a_distances)
-
-                # tmp_donors = self._donors[l1.T[0]]
-                # tmp_hydrogens = self._hydrogens[l1.T[0]]
-                # tmp_acceptors = self._acceptors[l1.T[1]]
-
-                lt1 = np.array(l1)
-                lt2 = np.array(l2)
-
-                tmp_donors += group1[lt1.T[0]]
-                tmp_hydrogens += group1[lt1.T[0]]
-                tmp_acceptors += group2[lt1.T[1]]
 
                 
-                # Find acceptors in G1 and donors in G2
-                if np.array_equal(group1.indices, group2.indices):
-                    print("skipping as group1 and group2 are the same")
-                    continue
+                tmp_donors = donors_for_dist[d_a_indices_12.T[0]]
+                tmp_acceptors = acceptors_for_dist[d_a_indices_12.T[1]]
+                distance = d_a_distances_12
 
-                d_a_indices, d_a_distances = capped_distance(
-                    group2,
-                    group1,
+                # Fetch hydrogens bonded to the tmp_donorss
+                # TODO: figure out vectorization
+                for i in range(len(d_a_indices_12)):
+                    if tmp_donors[i].index in donor_idx_to_H_indices:
+                        possible_H_indices = donor_idx_to_H_indices[tmp_donors[i].index]
+                        for h_idx in possible_H_indices:
+                            tmp_hbond_candidates.append(
+                                (tmp_donors[i].index, h_idx, tmp_acceptors[i].index, distance[i])
+                            )
+
+                if np.array_equal(group1.indices, group2.indices):
+                    continue # in case between 2 same residues like ["protein", "protein"]
+
+                tmp_donors_g2_mask = np.isin(self._donors.indices, group2.indices) 
+                donors_for_dist = self._donors[tmp_donors_g2_mask] 
+                tmp_acceptors_g1_mask = np.isin(self._acceptors.indices, group1.indices) 
+                acceptors_for_dist = self._acceptors[tmp_acceptors_g1_mask] 
+
+                d_a_indices_21, d_a_distances_21 = capped_distance(
+                    donors_for_dist.positions,
+                    acceptors_for_dist.positions,
                     max_cutoff=self.d_a_cutoff,
-                    min_cutoff=1.0,
                     box=box,
-                    return_distances=True
+                    return_distances=True,
                 )
 
-                print("distances", d_a_distances)
-                print("indices", d_a_indices, d_a_indices.shape)
-
-                if np.size(d_a_indices) == 0:
+                if np.size(d_a_indices_12) == 0:
                     warnings.warn(
                         "No hydrogen bonds were found given d-a cutoff of "
                         f"{self.d_a_cutoff} between Donor, {self.donors_sel}, and "
                         f"Acceptor, {self.acceptors_sel}."
                     )
+                
 
-                l1.extend(d_a_indices)
-                l2.extend(d_a_distances)
+                tmp_donors = donors_for_dist[d_a_indices_21.T[0]]
+                tmp_acceptors = acceptors_for_dist[d_a_indices_21.T[1]]
+                distance = d_a_distances_21
 
-                lt1 = np.array(l1)
-                lt2 = np.array(l2)
+                for i in range(len(d_a_indices_21)):
+                    if tmp_donors[i].index in donor_idx_to_H_indices:
+                        possible_H_indices = donor_idx_to_H_indices[tmp_donors[i].index]
+                        for h_idx in possible_H_indices:
+                            tmp_hbond_candidates.append(
+                                (tmp_donors[i].index, h_idx, tmp_acceptors[i].index, distance[i])
+                            )
 
-                tmp_donors += group1[lt1.T[0]]
-                tmp_hydrogens += group1[lt1.T[0]]
-                tmp_acceptors += group2[lt1.T[1]]
+            unique_hbond_dict = {}
+            for d_idx, h_idx, a_idx, dist in tmp_hbond_candidates:
+                key = (d_idx, h_idx, a_idx)
+                if key not in unique_hbond_dict:
+                    unique_hbond_dict[key] = dist
 
-            # Remove D-A pairs more than d_a_cutoff away from one another
+            unique_keys = list(unique_hbond_dict.keys())
+            unique_d_idx = [k[0] for k in unique_keys]
+            unique_h_idx = [k[1] for k in unique_keys]
+            unique_a_idx = [k[2] for k in unique_keys]
+            unique_distances = np.array(list(unique_hbond_dict.values()))
 
-            
-            l1 = np.array(l1)
-            l2 = np.array(l2)
-            print("l1", l1)
-            print("l2", l2)
+            tmp_donors = self.u.atoms[unique_d_idx]
+            tmp_hydrogens = self.u.atoms[unique_h_idx]
+            tmp_acceptors = self.u.atoms[unique_a_idx]
+            d_a_distances_filtered = unique_distances
 
-            print(type(l1), l1.dtype, l1.shape)
-
-
-            # print(self._donors, self._acceptors)
-            print("tmp_donors", tmp_donors)
-            print("tmp_hydrogens", tmp_hydrogens)
-            print("tmp_acceptors", tmp_acceptors)
-            d_a_distances = l2
         else:
-            
             d_a_indices, d_a_distances = capped_distance(
                 self._donors.positions,
                 self._acceptors.positions,
                 max_cutoff=self.d_a_cutoff,
-                min_cutoff=1.0,
                 box=box,
                 return_distances=True,
             )
@@ -849,7 +804,7 @@ class HydrogenBondAnalysis(AnalysisBase):
             tmp_donors = self._donors[d_a_indices.T[0]]
             tmp_hydrogens = self._hydrogens[d_a_indices.T[0]]
             tmp_acceptors = self._acceptors[d_a_indices.T[1]]
-
+            d_a_distances_filtered = d_a_distances
 
         # Find D-H-A angles greater than d_h_a_angle_cutoff
         d_h_a_angles = np.rad2deg(
@@ -873,7 +828,7 @@ class HydrogenBondAnalysis(AnalysisBase):
         hbond_donors = tmp_donors[hbond_indices]
         hbond_hydrogens = tmp_hydrogens[hbond_indices]
         hbond_acceptors = tmp_acceptors[hbond_indices]
-        hbond_distances = d_a_distances[hbond_indices]
+        hbond_distances = d_a_distances_filtered[hbond_indices]
         hbond_angles = d_h_a_angles[hbond_indices]
 
         # Store data on hydrogen bonds found at this frame
