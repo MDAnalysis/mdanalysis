@@ -14,7 +14,7 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, orbeckst, BHM-Bob
+??/??/?? IAlibay, orbeckst, BHM-Bob, TRY-ER, Abdulrahman-PROG, tulga-rdn
 
 
  * 2.10.0
@@ -23,9 +23,15 @@ Fixes
  * Fixes bug in `analysis/gnm.py`: `closeContactGNMAnalysis`: correct the
    `residue_index_map` generation when selection is not `protein`.
    (Issue #4924, PR #4961)
+ * Reads `segids` column in `PDBParser` from 73-76 instead of 67-76 to 
+   align the standard of a PDBReader (e.g., Chimera, CHARMM, Gemmi). 
+   (Issue #4948, PR #5001)
 
 Enhancements
-
+ * Improve parsing of topology information from LAMMPS dump files to allow
+   reading of mass, charge and element attributes. (Issue #3449, PR #4995)
+ * Enables parallelization for analysis.lineardensity.LinearDensity
+   (Issue #4678, PR #5007)
 Changes
 
 Deprecations

@@ -189,6 +189,11 @@ class LinearDensity(AnalysisBase):
           It contains the bin edges of the histrogram bins for calculated
           densities and can be used for easier plotting of histogram data.
 
+    .. versionchanged:: 2.10.0
+       Introduced :meth:`get_supported_backends` allowing
+       for parallel execution on :mod:`multiprocessing`
+       and :mod:`dask` backends.
+
 
     .. deprecated:: 2.2.0
        The `results` dictionary has been changed and the attributes
