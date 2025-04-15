@@ -258,7 +258,7 @@ def test_old_name_deprecations():
 
 
 # TODO: deprecated, remove in 3.0.0
-# the parallelization here is not related to the parallelization through 
+# the parallelization here is not related to the parallelization through
 # the AnalysisBase, so it is tested only in serial
 def test_parallel_analysis(testing_Universe):
     """tests _add_other_result() method. Runs LinearDensity for all atoms of
