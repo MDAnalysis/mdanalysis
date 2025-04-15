@@ -728,37 +728,128 @@ class HydrogenBondAnalysis(AnalysisBase):
         if self.update_selections:
             self._donors, self._hydrogens = self._get_dh_pairs()
 
-        # find D and A within cutoff distance of one another
-        # min_cutoff = 1.0 as an atom cannot form a hydrogen bond with itself
-        d_a_indices, d_a_distances = capped_distance(
-            self._donors.positions,
-            self._acceptors.positions,
-            max_cutoff=self.d_a_cutoff,
-            min_cutoff=1.0,
-            box=box,
-            return_distances=True,
-        )
+        
+        tmp_donors = self.u.atoms[[]] 
+        tmp_hydrogens = self.u.atoms[[]] 
+        tmp_acceptors = self.u.atoms[[]] 
+        if self.between_ags is not None:
+            l1 = []
+            l2 = []
+            
+            for group1, group2 in self.between_ags:
+                # both A-B and B-A pairs are considered
+                print("groups", group1, group2, len(group1), len(group2))
+                print(self._donors.indices, self._acceptors.indices)
+                print(len(np.unique(self._donors.indices)), len(self._donors.indices))
+                print(len(np.unique(self._acceptors.indices)), len(self._acceptors.indices))
 
-        if np.size(d_a_indices) == 0:
-            warnings.warn(
-                "No hydrogen bonds were found given d-a cutoff of "
-                f"{self.d_a_cutoff} between Donor, {self.donors_sel}, and "
-                f"Acceptor, {self.acceptors_sel}."
+                d_a_indices, d_a_distances = capped_distance(
+                    group1,
+                    group2,
+                    max_cutoff=self.d_a_cutoff,
+                    min_cutoff=1.0,
+                    box=box,
+                    return_distances=True
+                )
+
+                print("distances", d_a_distances)
+                print("indices", d_a_indices, d_a_indices.shape)
+
+                if np.size(d_a_indices) == 0:
+                    warnings.warn(
+                        "No hydrogen bonds were found given d-a cutoff of "
+                        f"{self.d_a_cutoff} between Donor, {self.donors_sel}, and "
+                        f"Acceptor, {self.acceptors_sel}."
+                    )
+
+                l1.extend(d_a_indices)
+                l2.extend(d_a_distances)
+
+                # tmp_donors = self._donors[l1.T[0]]
+                # tmp_hydrogens = self._hydrogens[l1.T[0]]
+                # tmp_acceptors = self._acceptors[l1.T[1]]
+
+                lt1 = np.array(l1)
+                lt2 = np.array(l2)
+
+                tmp_donors += group1[lt1.T[0]]
+                tmp_hydrogens += group1[lt1.T[0]]
+                tmp_acceptors += group2[lt1.T[1]]
+
+                
+                # Find acceptors in G1 and donors in G2
+                if np.array_equal(group1.indices, group2.indices):
+                    print("skipping as group1 and group2 are the same")
+                    continue
+
+                d_a_indices, d_a_distances = capped_distance(
+                    group2,
+                    group1,
+                    max_cutoff=self.d_a_cutoff,
+                    min_cutoff=1.0,
+                    box=box,
+                    return_distances=True
+                )
+
+                print("distances", d_a_distances)
+                print("indices", d_a_indices, d_a_indices.shape)
+
+                if np.size(d_a_indices) == 0:
+                    warnings.warn(
+                        "No hydrogen bonds were found given d-a cutoff of "
+                        f"{self.d_a_cutoff} between Donor, {self.donors_sel}, and "
+                        f"Acceptor, {self.acceptors_sel}."
+                    )
+
+                l1.extend(d_a_indices)
+                l2.extend(d_a_distances)
+
+                lt1 = np.array(l1)
+                lt2 = np.array(l2)
+
+                tmp_donors += group1[lt1.T[0]]
+                tmp_hydrogens += group1[lt1.T[0]]
+                tmp_acceptors += group2[lt1.T[1]]
+
+            # Remove D-A pairs more than d_a_cutoff away from one another
+
+            
+            l1 = np.array(l1)
+            l2 = np.array(l2)
+            print("l1", l1)
+            print("l2", l2)
+
+            print(type(l1), l1.dtype, l1.shape)
+
+
+            # print(self._donors, self._acceptors)
+            print("tmp_donors", tmp_donors)
+            print("tmp_hydrogens", tmp_hydrogens)
+            print("tmp_acceptors", tmp_acceptors)
+            d_a_distances = l2
+        else:
+            
+            d_a_indices, d_a_distances = capped_distance(
+                self._donors.positions,
+                self._acceptors.positions,
+                max_cutoff=self.d_a_cutoff,
+                min_cutoff=1.0,
+                box=box,
+                return_distances=True,
             )
 
-        # Remove D-A pairs more than d_a_cutoff away from one another
-        tmp_donors = self._donors[d_a_indices.T[0]]
-        tmp_hydrogens = self._hydrogens[d_a_indices.T[0]]
-        tmp_acceptors = self._acceptors[d_a_indices.T[1]]
+            if np.size(d_a_indices) == 0:
+                warnings.warn(
+                    "No hydrogen bonds were found given d-a cutoff of "
+                    f"{self.d_a_cutoff} between Donor, {self.donors_sel}, and "
+                    f"Acceptor, {self.acceptors_sel}."
+                )
 
-        # Remove donor-acceptor pairs between pairs of AtomGroups we are not
-        # interested in
-        if self.between_ags is not None:
-            between_mask = self._filter_atoms(tmp_donors, tmp_acceptors)
-            tmp_donors = tmp_donors[between_mask]
-            tmp_hydrogens = tmp_hydrogens[between_mask]
-            tmp_acceptors = tmp_acceptors[between_mask]
-            d_a_distances = d_a_distances[between_mask]
+            # Remove D-A pairs more than d_a_cutoff away from one another
+            tmp_donors = self._donors[d_a_indices.T[0]]
+            tmp_hydrogens = self._hydrogens[d_a_indices.T[0]]
+            tmp_acceptors = self._acceptors[d_a_indices.T[1]]
+
 
         # Find D-H-A angles greater than d_h_a_angle_cutoff
         d_h_a_angles = np.rad2deg(
