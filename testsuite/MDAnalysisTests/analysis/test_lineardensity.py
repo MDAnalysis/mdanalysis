@@ -232,11 +232,11 @@ testdict = {
 
 
 # TODO: Remove in 3.0.0
-def test_old_name_deprecations(client_LinearDensity):
+def test_old_name_deprecations():
     universe = mda.Universe(waterPSF, waterDCD)
     sel_string = "all"
     selection = universe.select_atoms(sel_string)
-    ld = LinearDensity(selection, binsize=5).run(**client_LinearDensity)
+    ld = LinearDensity(selection, binsize=5).run()
     with pytest.warns(DeprecationWarning):
         assert_allclose(ld.results.x.pos, ld.results.x.mass_density)
         assert_allclose(ld.results.x.pos_std, ld.results.x.mass_density_stddev)
@@ -258,7 +258,9 @@ def test_old_name_deprecations(client_LinearDensity):
 
 
 # TODO: deprecated, remove in 3.0.0
-def test_parallel_analysis(testing_Universe, client_LinearDensity):
+# the parallelization here is not related to the parallelization through 
+# the AnalysisBase, so it is tested only in serial
+def test_parallel_analysis(testing_Universe):
     """tests _add_other_result() method. Runs LinearDensity for all atoms of
     a universe and for two subsets, then adds the results of the two subsets
     and checks the results are the same."""
@@ -266,11 +268,9 @@ def test_parallel_analysis(testing_Universe, client_LinearDensity):
     selection1 = u.select_atoms("prop x < 1.1")
     selection2 = u.select_atoms("prop x >= 1.1")
     selection_whole = u.select_atoms("all")
-    ld1 = LinearDensity(selection1, binsize=1).run(**client_LinearDensity)
-    ld2 = LinearDensity(selection2, binsize=1).run(**client_LinearDensity)
-    ld_whole = LinearDensity(selection_whole, binsize=1).run(
-        **client_LinearDensity
-    )
+    ld1 = LinearDensity(selection1, binsize=1).run()
+    ld2 = LinearDensity(selection2, binsize=1).run()
+    ld_whole = LinearDensity(selection_whole, binsize=1).run()
     with pytest.warns(
         DeprecationWarning, match="`_add_other_results` is deprecated!"
     ):

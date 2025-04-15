@@ -272,6 +272,8 @@ class LinearDensity(AnalysisBase):
 
     @staticmethod
     def custom_aggregator(results):
+        # NB: the *stddev values here are not the standard deviation, 
+        # but the variance. The stddev is calculated in _conclude()
         mass_density = [entry["mass_density"] for entry in results]
         mass_density_stddev = [
             entry["mass_density_stddev"] for entry in results
