@@ -14,7 +14,7 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, orbeckst, BHM-Bob, TRY-ER
+??/??/?? IAlibay, orbeckst, BHM-Bob, TRY-ER, pbuslaev
 
 
  * 2.10.0
@@ -31,13 +31,14 @@ Enhancements
  * Improve parsing of topology information from LAMMPS dump files to allow
    reading of mass, charge and element attributes. (Issue #3449, PR #4995)
  * Added timestep support for XDR writers and readers (Issue #4905, PR #4908)
+
 Changes
 
 Deprecations
 
 
 03/11/25 IAlibay, ChiahsinChu, RMeli, tanishy7777, talagayev, tylerjereddy,
-         marinegor, hmacdope, jauy123, al42and, pbuslaev
+         marinegor, hmacdope, jauy123, al42and
 
  * 2.9.0
 
