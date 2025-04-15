@@ -284,7 +284,10 @@ class _GromacsReader(object):
                 u.trajectory.totaltime,
                 dt,
                 3,
-                err_msg="wrong total length of trajectory upon setting",
+                err_msg=(
+                    "wrong total length of trajectory upon setting dt "
+                    "explicitly"
+                ),
             )
 
     def test_EOFraisesStopIteration(self, universe):

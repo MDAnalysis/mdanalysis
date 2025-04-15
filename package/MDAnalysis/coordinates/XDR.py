@@ -151,8 +151,8 @@ class XDRBaseReader(base.ReaderBase):
             force refresh of offsets
         dt : float (optional)
             timestep in MDAnalysis units to load trajectory with
-            If dt is None, the time is taken from the xdr file
-            Else, the time is set to dt * frame
+            If `dt` is ``None``, the time is taken from the xdr file
+            Else, the time is set to `dt` * frame
         **kwargs : dict
             General reader arguments.
 
@@ -339,8 +339,8 @@ class XDRBaseWriter(base.WriterBase):
             convert from MDAnalysis units to format specific units
         dt : float (optional)
             timestep in MDAnalysis units to write trajectory with
-            If dt is None, time for a frame is set from the timestep
-            Else, the time for a frame is dt * frame
+            If `dt` is ``None``, time for a frame is set from the timestep
+            Else, the time for a frame is `dt` * frame
         **kwargs : dict
             General writer arguments
         """

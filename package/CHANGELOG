@@ -28,6 +28,7 @@ Fixes
    (Issue #4948, PR #5001)
 
 Enhancements
+ * Added timestep support for XDR writers and readers (Issue #4905, PR #4908)
 
 Changes
 
@@ -35,7 +36,7 @@ Deprecations
 
 
 03/11/25 IAlibay, ChiahsinChu, RMeli, tanishy7777, talagayev, tylerjereddy,
-         marinegor, hmacdope, jauy123, al42and
+         marinegor, hmacdope, jauy123, al42and, pbuslaev
 
  * 2.9.0
 
@@ -59,7 +60,6 @@ Enhancements
  * Add check and warning for empty (all zero) coordinates in RDKit converter
    (PR #4824)
  * Added `precision` for XYZWriter (Issue #4775, PR #4771) 
- * Added timestep support for XDR writers and readers(Issue #4905, PR #4908)
 
 Changes
  * MDAnalysis.analysis.psa, MDAnalysis.analysis.waterdynamics and

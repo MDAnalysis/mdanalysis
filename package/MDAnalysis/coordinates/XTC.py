@@ -65,9 +65,9 @@ class XTCWriter(XDRBaseWriter):
         convert_units : bool (optional)
             convert into MDAnalysis units
         dt : float (optional)
-            timestep in MDAnalysis units to load trajectory with
-            If dt is None, time for a frame is set from the timestep
-            Else, the time for a frame is dt * frame
+            timestep in MDAnalysis units to write trajectory with
+            If `dt` is ``None``, time for a frame is set from the timestep
+            Else, the time for a frame is `dt` * frame
         precision : float (optional)
             set precision of saved trjactory to this number of decimal places.
         """
