@@ -492,14 +492,18 @@
 <span class="sd">        .. versionchanged:: 2.8.0</span>
 <span class="sd">            Introduced :meth:`get_supported_backends` allowing for parallel execution on</span>
 <span class="sd">            :mod:`multiprocessing` and :mod:`dask` backends.</span>
+<span class="sd">        .. versionchanged:: 2.10.0</span>
+<span class="sd">            The `donors_sel`, `hydrogens_sel`, and `acceptors_sel` are stored as properties</span>
+<span class="sd">            now and update the internal `_donor`, `_hydrogens`, and `_acceptors` when they</span>
+<span class="sd">            are modified.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="n">universe</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">donors_sel</span> <span class="o">=</span> <span class="n">donors_sel</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="n">donors_sel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">donors_sel</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hydrogens_sel</span> <span class="o">=</span> <span class="n">hydrogens_sel</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="n">hydrogens_sel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">hydrogens_sel</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">acceptors_sel</span> <span class="o">=</span> <span class="n">acceptors_sel</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="n">acceptors_sel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">acceptors_sel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_donors_sel</span> <span class="o">=</span> <span class="n">donors_sel</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="n">donors_sel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">donors_sel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hydrogens_sel</span> <span class="o">=</span> <span class="n">hydrogens_sel</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="n">hydrogens_sel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">hydrogens_sel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_acceptors_sel</span> <span class="o">=</span> <span class="n">acceptors_sel</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="n">acceptors_sel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">acceptors_sel</span>
 
         <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> is an empty selection string - no hydrogen bonds will &quot;</span>
                <span class="s2">&quot;be found. This may be intended, but please check your &quot;</span>
@@ -540,10 +544,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="c1"># Set atom selections if they have not been provided</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">acceptors_sel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">acceptors_sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_acceptors</span><span class="p">()</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hydrogens_sel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">hydrogens_sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_hydrogens</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_acceptors_sel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_acceptors_sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_acceptors</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hydrogens_sel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_hydrogens_sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_hydrogens</span><span class="p">()</span>
 
         <span class="c1"># Select atom groups</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_acceptors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">acceptors_sel</span><span class="p">,</span>
@@ -1151,7 +1155,51 @@
         <span class="n">unique_hbonds</span> <span class="o">=</span> <span class="n">unique_hbonds</span><span class="p">[</span><span class="n">unique_hbonds</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">argsort</span><span class="p">()[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
 
         <span class="k">return</span> <span class="n">unique_hbonds</span></div>
-</div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">donors_sel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Selection string for the hydrogen bond donor atoms.</span>
+<span class="sd">        </span>
+<span class="sd">        .. versionadded:: 2.10.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_donors_sel</span>
+
+    <span class="nd">@donors_sel</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">donors_sel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_donors_sel</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_donors</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hydrogens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_dh_pairs</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">hydrogens_sel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Selection string for the hydrogen bond hydrogen atoms.</span>
+<span class="sd">        </span>
+<span class="sd">        .. versionadded:: 2.10.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hydrogens_sel</span>
+
+    <span class="nd">@hydrogens_sel</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">hydrogens_sel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hydrogens_sel</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hydrogens_sel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_hydrogens_sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_hydrogens</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_donors</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hydrogens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_dh_pairs</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">acceptors_sel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Selection string for the hydrogen bond acceptor atoms.</span>
+<span class="sd">        </span>
+<span class="sd">        .. versionadded:: 2.10.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_acceptors_sel</span>
+
+    <span class="nd">@acceptors_sel</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">acceptors_sel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_acceptors_sel</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_acceptors_sel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_acceptors_sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_acceptors</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_acceptors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_acceptors_sel</span><span class="p">,</span>
+                                              <span class="n">updating</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">update_selections</span><span class="p">)</span></div>
 
 </pre></div>
 

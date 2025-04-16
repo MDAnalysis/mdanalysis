@@ -384,12 +384,12 @@ combination, or when those are absent, with atom <em>type</em> selections.</p>
 <li><p><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – MDAnalysis Universe object</p></li>
 <li><p><strong>donors_sel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Selection string for the hydrogen bond donor atoms. If the
 universe topology contains bonding information, leave
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">donors_sel</span></code> as <cite>None</cite> so that donor-hydrogen pairs can be
+<a class="reference internal" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.donors_sel" title="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.donors_sel"><code class="xref py py-attr docutils literal notranslate"><span class="pre">donors_sel</span></code></a> as <cite>None</cite> so that donor-hydrogen pairs can be
 correctly identified.</p></li>
 <li><p><strong>hydrogens_sel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Selection string for the hydrogen bond hydrogen atoms. Leave as
 <cite>None</cite> to guess which hydrogens to use in the analysis using
-<a class="reference internal" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.guess_hydrogens" title="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.guess_hydrogens"><code class="xref py py-attr docutils literal notranslate"><span class="pre">guess_hydrogens</span></code></a>. If <code class="xref py py-attr docutils literal notranslate"><span class="pre">hydrogens_sel</span></code> is left as
-<cite>None</cite>, also leave <code class="xref py py-attr docutils literal notranslate"><span class="pre">donors_sel</span></code> as None so that
+<a class="reference internal" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.guess_hydrogens" title="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.guess_hydrogens"><code class="xref py py-attr docutils literal notranslate"><span class="pre">guess_hydrogens</span></code></a>. If <a class="reference internal" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.hydrogens_sel" title="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.hydrogens_sel"><code class="xref py py-attr docutils literal notranslate"><span class="pre">hydrogens_sel</span></code></a> is left as
+<cite>None</cite>, also leave <a class="reference internal" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.donors_sel" title="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.donors_sel"><code class="xref py py-attr docutils literal notranslate"><span class="pre">donors_sel</span></code></a> as None so that
 donor-hydrogen pairs can be correctly identified.</p></li>
 <li><p><strong>acceptors_sel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Selection string for the hydrogen bond acceptor atoms. Leave as
 <cite>None</cite> to guess which atoms to use in the analysis using
@@ -432,6 +432,11 @@ bond donors, or bond acceptors</p>
 <p><span class="versionmodified changed">Changed in version 2.8.0: </span>Introduced <a class="reference internal" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.get_supported_backends" title="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.get_supported_backends"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_supported_backends()</span></code></a> allowing for parallel execution on
 <a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#module-multiprocessing" title="(in Python v3.13)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multiprocessing</span></code></a> and <code class="xref py py-mod docutils literal notranslate"><span class="pre">dask</span></code> backends.</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.10.0: </span>The <cite>donors_sel</cite>, <cite>hydrogens_sel</cite>, and <cite>acceptors_sel</cite> are stored as properties
+now and update the internal <cite>_donor</cite>, <cite>_hydrogens</cite>, and <cite>_acceptors</cite> when they
+are modified.</p>
+</div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.results.hbonds">
 <span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">hbonds</span></span><a class="headerlink" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.results.hbonds" title="Link to this definition"></a></dt>
@@ -449,6 +454,15 @@ bond interactions. See <a class="reference internal" href="#output">Output</a> f
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 2.0.0: </span>Will be removed in MDAnalysis 3.0.0. Please use
 <a class="reference internal" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.results.hbonds" title="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.results.hbonds"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.hbonds</span></code></a> instead.</p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.acceptors_sel">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">acceptors_sel</span></span><a class="headerlink" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.acceptors_sel" title="Link to this definition"></a></dt>
+<dd><p>Selection string for the hydrogen bond acceptor atoms.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.10.0.</span></p>
 </div>
 </dd></dl>
 
@@ -506,6 +520,15 @@ the hydrogen bond was found.</p>
 <p class="admonition-title">Note</p>
 <p>Unique hydrogen bonds are determined through a consideration of the
 resname and atom type of the donor and acceptor atoms in a hydrogen bond.</p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.donors_sel">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">donors_sel</span></span><a class="headerlink" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.donors_sel" title="Link to this definition"></a></dt>
+<dd><p>Selection string for the hydrogen bond donor atoms.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.10.0.</span></p>
 </div>
 </dd></dl>
 
@@ -570,12 +593,12 @@ name combination, or when those are absent, atom types.</p>
 could be considered acceptor atoms in the hydrogen bond analysis. If
 an atom has an atomic charge less than <code class="xref py py-attr docutils literal notranslate"><span class="pre">max_charge</span></code> then it is
 considered capable of participating in hydrogen bonds.</p>
-<p>If <code class="xref py py-attr docutils literal notranslate"><span class="pre">acceptors_sel</span></code> is <cite>None</cite>, this function is called to guess
+<p>If <a class="reference internal" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.acceptors_sel" title="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.acceptors_sel"><code class="xref py py-attr docutils literal notranslate"><span class="pre">acceptors_sel</span></code></a> is <cite>None</cite>, this function is called to guess
 the selection.</p>
 <p>Alternatively, this function may be used to quickly generate a
 <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> of potential acceptor atoms involved in hydrogen bonding.
 This <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> may then be modified before being used to set the
-attribute <code class="xref py py-attr docutils literal notranslate"><span class="pre">acceptors_sel</span></code>.</p>
+attribute <a class="reference internal" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.acceptors_sel" title="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.acceptors_sel"><code class="xref py py-attr docutils literal notranslate"><span class="pre">acceptors_sel</span></code></a>.</p>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 2.4.0: </span>Added ability to use atom types</p>
 </div>
@@ -612,13 +635,13 @@ could be considered donor atoms in the hydrogen bond analysis. If an
 atom has an atomic charge less than <code class="xref py py-attr docutils literal notranslate"><span class="pre">max_charge</span></code>, and it is
 within <code class="xref py py-attr docutils literal notranslate"><span class="pre">d_h_cutoff</span></code> of a hydrogen atom, then it is considered
 capable of participating in hydrogen bonds.</p>
-<p>If <code class="xref py py-attr docutils literal notranslate"><span class="pre">donors_sel</span></code> is <cite>None</cite>, and the universe topology does not
+<p>If <a class="reference internal" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.donors_sel" title="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.donors_sel"><code class="xref py py-attr docutils literal notranslate"><span class="pre">donors_sel</span></code></a> is <cite>None</cite>, and the universe topology does not
 have bonding information, this function is called to guess the
 selection.</p>
 <p>Alternatively, this function may be used to quickly generate a
 <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> of potential donor atoms involved in hydrogen bonding.
 This <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> may then be modified before being used to set the
-attribute <code class="xref py py-attr docutils literal notranslate"><span class="pre">donors_sel</span></code>.</p>
+attribute <a class="reference internal" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.donors_sel" title="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.donors_sel"><code class="xref py py-attr docutils literal notranslate"><span class="pre">donors_sel</span></code></a>.</p>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 2.4.0: </span>Added ability to use atom types</p>
 </div>
@@ -655,14 +678,23 @@ which atoms are hydrogen atoms that are capable of participating in
 hydrogen bonding. If an atom has a mass less than <code class="xref py py-attr docutils literal notranslate"><span class="pre">max_mass</span></code> and
 an atomic charge greater than <code class="xref py py-attr docutils literal notranslate"><span class="pre">min_charge</span></code> then it is considered
 capable of participating in hydrogen bonds.</p>
-<p>If <code class="xref py py-attr docutils literal notranslate"><span class="pre">hydrogens_sel</span></code> is <cite>None</cite>, this function is called to guess
+<p>If <a class="reference internal" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.hydrogens_sel" title="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.hydrogens_sel"><code class="xref py py-attr docutils literal notranslate"><span class="pre">hydrogens_sel</span></code></a> is <cite>None</cite>, this function is called to guess
 the selection.</p>
 <p>Alternatively, this function may be used to quickly generate a
 <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> of potential hydrogen atoms involved in hydrogen bonding.
 This str may then be modified before being used to set the attribute
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">hydrogens_sel</span></code>.</p>
+<a class="reference internal" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.hydrogens_sel" title="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.hydrogens_sel"><code class="xref py py-attr docutils literal notranslate"><span class="pre">hydrogens_sel</span></code></a>.</p>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 2.4.0: </span>Added ability to use atom types</p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.hydrogens_sel">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">hydrogens_sel</span></span><a class="headerlink" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.hydrogens_sel" title="Link to this definition"></a></dt>
+<dd><p>Selection string for the hydrogen bond hydrogen atoms.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.10.0.</span></p>
 </div>
 </dd></dl>
 
