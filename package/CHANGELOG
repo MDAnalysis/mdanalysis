@@ -14,7 +14,7 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, orbeckst, BHM-Bob, TRY-ER, Abdulrahman-PROG
+??/??/?? IAlibay, orbeckst, BHM-Bob, TRY-ER, Abdulrahman-PROG, tanishy7777
 
 
  * 2.10.0
@@ -30,6 +30,9 @@ Fixes
 Enhancements
  * Improve parsing of topology information from LAMMPS dump files to allow
    reading of mass, charge and element attributes. (Issue #3449, PR #4995)
+ * Improves performance of `between` keyword for HydrogenBondAnalysis.
+   (Issue #4130, PR #5029)
+
 Changes
 
 Deprecations
