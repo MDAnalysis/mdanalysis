@@ -14,12 +14,16 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, orbeckst, BHM-Bob, TRY-ER, tanishy7777
+??/??/?? IAlibay, orbeckst, BHM-Bob, TRY-ER, Abdulrahman-PROG, pbuslaev,
+         yuxuanzhuang, yuyuan871111, tanishy7777
 
 
  * 2.10.0
 
 Fixes
+ * Fixes bug in `analysis/hydrogenbonds.py`: `_donors` and `_hydrogens`
+   were not updated when the `acceptors_sel` and `hydrogens_sel` were provided
+   after initialization. (Issue #5010, PR #5018)
  * Fixes bug in `analysis/gnm.py`: `closeContactGNMAnalysis`: correct the
    `residue_index_map` generation when selection is not `protein`.
    (Issue #4924, PR #4961)
@@ -32,6 +36,16 @@ Fixes
 Enhancements
  * Improve parsing of topology information from LAMMPS dump files to allow
    reading of mass, charge and element attributes. (Issue #3449, PR #4995)
+ * Added timestep support for XDR writers and readers (Issue #4905, PR #4908)
+ * New feature in `Universe`: `set_groups`. This function allows updating 
+   `_topology`, `residues` (ResidueGroup), `segments` (SegmentGroup) in 
+   the `Universe` using user-provided atomwise `resids` and/or `segids`. 
+   (Issue #4948 #2874, PR #4965)   
+ * Adds an argument `force_chainids_to_segids` in `PDBParser`: this will 
+   force the use of ChainID as the segID when reading PDB (it is helpful 
+   if the segment IDs (segids) are partially missing in the PDB file). 
+   (Issue #4948 #2874, PR #4965)
+
 Changes
 
 Deprecations

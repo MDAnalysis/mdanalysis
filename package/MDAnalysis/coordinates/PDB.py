@@ -244,6 +244,11 @@ class PDBReader(base.ReaderBase):
     :class:`PDBWriter`
     :class:`PDBReader`
 
+    If you would like to force the use of chainID as the segID when parsing PDB,
+    please use the keyword argument `force_chainids_to_segids=True`
+    (:class:`MDAnalysis.topology.PDBParser.PDBParser`).
+    This will prioritize the chain ID to the segment ID.
+
 
     .. versionchanged:: 0.11.0
        * Frames now 0-based instead of 1-based

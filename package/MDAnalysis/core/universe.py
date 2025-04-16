@@ -86,6 +86,7 @@ from .groups import (ComponentBase, GroupBase,
 from .topology import Topology
 from .topologyattrs import (
     AtomAttr, ResidueAttr, SegmentAttr,
+    Segindices, Segids, Resindices, Resids, Atomindices,
     BFACTOR_WARNING, _Connection
 )
 from .topologyobjects import TopologyObject
@@ -93,6 +94,105 @@ from ..guesser.base import get_guesser
 
 logger = logging.getLogger("MDAnalysis.core.universe")
 
+
+def _update_topology_by_ids(universe, atomwise_resids, atomwise_segids):
+    """Update the topology of a Universe with new atomwise resids and segids.
+
+    Parameters
+    ----------
+    universe : Universe
+        The universe to update.
+    atomwise_resids : numpy.ndarray
+        The new atomwise residue indices.
+    atomwise_segids : numpy.ndarray
+        The new atomwise segment indices.
+    """
+    from ..topology.base import change_squash
+
+    # the original topology
+    top = universe._topology
+
+    # detect the atom level attributes (excluding residue level and above)
+    atom_attrindices = [
+        idx
+        for idx, each_attr in enumerate(top.attrs)
+        if (Residue not in each_attr.target_classes) and
+        (not isinstance(each_attr, Atomindices))
+    ]
+    attrs = [top.attrs[each_attr] for each_attr in atom_attrindices]
+
+    # create new residues level stuff
+    residue_attrindices = [
+        idx
+        for idx, each_attr in enumerate(top.attrs)
+        if (
+            (Residue in each_attr.target_classes) and
+            (Segment not in each_attr.target_classes) and
+            (not isinstance(each_attr, Resids)) and
+            (not isinstance(each_attr, Resindices))
+        )
+    ]  # residue level attributes except resids and resindices
+
+    res_criteria = [atomwise_resids, atomwise_segids] + [
+        getattr(universe.atoms, top.attrs[each_attr].attrname)
+        for each_attr in residue_attrindices
+        if top.attrs[each_attr].attrname != 'resnums'
+    ]
+
+    res_to_squash = [atomwise_resids, atomwise_segids] + [
+        getattr(universe.atoms, top.attrs[each_attr].attrname)
+        for each_attr in residue_attrindices
+    ]
+
+    residx, res_squashed = change_squash(res_criteria, res_to_squash)
+    resids = res_squashed[0]
+    res_squashed_segids = res_squashed[1]
+    n_residues = len(resids)
+    # all residue-level attributes except resids
+    res_squashed_res_attrs = res_squashed[2:]
+
+    res_attrs = [Resids(resids)] + [
+        # use the correspdoning type of the attribute with new sqaushed values
+        top.attrs[each_attr].__class__(res_squashed_res_attrs[idx])
+        for idx, each_attr in enumerate(residue_attrindices)
+    ]
+    attrs.extend(res_attrs)
+
+    # create new segment level stuff
+    segidx, (segids,) = change_squash((res_squashed_segids,), (res_squashed_segids,))
+    n_segments = len(segids)
+    attrs.append(Segids(segids))
+
+    # other attributes
+    other_attrs = [
+        each_attr
+        for each_attr in top.attrs
+        if (
+            (Segment in each_attr.target_classes) and
+            (not isinstance(each_attr, Segids)) and
+            (not isinstance(each_attr, Atomindices)) and
+            (not isinstance(each_attr, Resindices)) and
+            (not isinstance(each_attr, Segindices))
+        )
+    ]
+
+    # create new topology
+    top = Topology(
+        universe.atoms.n_atoms,
+        n_residues,
+        n_segments,
+        attrs=attrs,
+        atom_resindex=residx,
+        residue_segindex=segidx,
+    )
+
+    # add back other attributes
+    if len(other_attrs) > 0:
+        for each_otherattr in other_attrs:
+            top.add_TopologyAttr(each_otherattr)
+
+    # update the topology in the universe
+    universe._topology = top
 
 
 def _check_file_like(topology):
@@ -312,6 +412,12 @@ class Universe(object):
         functionality to treat independent trajectory files as a single virtual
         trajectory.
     **kwargs: extra arguments are passed to the topology parser.
+        For instance, when reading a PDB file
+        (:class:`PDBReader<MDAnalysis.coordinates.PDB>`,
+        :class:`PDBParser<MDAnalysis.topology.PDBParser>`), set
+        ``force_chainids_to_segids=True`` to make the universe use the
+        chainIDs (column 22) instead of the segmentIDs (column 73-76) as the
+        `segids` in the universe and select the corresponding SegmentGroup.
 
     Attributes
     ----------
@@ -379,6 +485,10 @@ class Universe(object):
         Added :meth:`~MDAnalysis.core.universe.Universe.guess_TopologyAttrs` API
         guessing masses and atom types after topology
         is read from a registered parser.
+
+    .. versionchanged:: 2.10.0
+        Added :meth: `~MDAnalysis.core.universe.Universe.set_groups`
+        API to set residues/segments based on the atomwise resids/segids.
 
     """
     def __init__(self, topology=None, *coordinates, all_coordinates=False,
@@ -1699,6 +1809,104 @@ class Universe(object):
         else:
             warnings.warn('Can not guess attributes '
                           'for universe with 0 atoms')
+
+    def set_groups(self, atomwise_resids=None, atomwise_segids=None):
+        """Set the groups (`ResidueGroup`, `SegmentGroup`) of the Universe
+        by atomwise resids/segids.
+
+        The `topology` will also be updated based on the provided `atomwise_resids`
+        and `atomwise_segids`. The original `resids` and `segids` will be stored
+        in attributes `atomwise_resids_orig` and/or `atomwise_segids_orig` if
+        they are modified.
+        See notes for the logic of the function.
+
+        Parameters
+        ----------
+        atomwise_resids:
+            A list of residue IDs to be set for the Universe. The length
+            of the list should be equal to the number of atoms in the Universe.
+            If `None`, the original resids will be used.
+
+        atomwise_segids:
+            A list of segment IDs to be set for the Universe. The length
+            of the list should be equal to the number of atoms in the Universe.
+            If `None`, the original segids will be used.
+
+        Raises
+        ------
+        AssertionError
+            If the length of the provided atomwise_resids or atomwise_segids
+            does not match the number of atoms in the Universe.
+
+        Notes
+        -----
+        First, the function will check if resids or segids is provided.
+        If both resids and segids are not provided (`None`), it will do nothing.
+        If only one of them is provided, it will use the original values for the
+        other one. If both are provided, it will use the provided values for
+        both resids and segids.
+        The function will then update the topology by a new generated topology
+        with new values of the resids and segids.
+        Finally, the corresponding new `ResidueGroup` and `SegmentGroup` will be
+        created by the updated topology.
+
+        Examples
+        --------
+        To set custom segment IDs for the segments of the Universe::
+
+            atomwise_segids = ['A', 'A', 'B', 'B']
+            u.set_groups(atomwise_segids=atomwise_segids)
+
+            # Now the Universe has two segments with segIDs 'A' and 'B'
+            u.segments
+            >>> <SegmentGroup with 2 segments>
+
+        .. versionadded:: 2.10.0
+        """
+        if (atomwise_resids is None) and (atomwise_segids is None):
+            warnings.warn("Not setting groups. Please provide atomwise_resids or "
+                          "atomwise_segids.")
+            return
+
+        # resids
+        if atomwise_resids is None:
+            atomwise_resids = self.atoms.resids
+
+        else:
+            # check the length of atomwise_resids
+            if len(atomwise_resids) != self.atoms.n_atoms:
+                raise ValueError(
+                    "The length of atomwise_resids should be the same as "
+                    "the number of atoms in the universe.")
+
+            self.atomwise_resids_orig = self.atoms.resids
+            logger.info("The new resids replaces the current one. "
+                        "The original resids is stored in "
+                        "atomwise_resids_orig.")
+
+        # segids
+        if atomwise_segids is None:
+            atomwise_segids = self.atoms.segids
+
+        else:
+            # check the length of atomwise_segids
+            if len(atomwise_segids) != self.atoms.n_atoms:
+                raise ValueError(
+                    "The length of atomwise_segids should be the same as "
+                    "the number of atoms in the universe.")
+
+            self.atomwise_segids_orig = self.atoms.segids
+            logger.info("The new resids replaces the current one. "
+                        "The original segids is stored in "
+                        "atomwise_segids_orig.")
+
+        atomwise_resids = np.array(atomwise_resids, dtype=int)
+        atomwise_segids = np.array(atomwise_segids, dtype=object)
+
+        _update_topology_by_ids(self,
+                                atomwise_resids=atomwise_resids,
+                                atomwise_segids=atomwise_segids)
+        _generate_from_topology(self)
 
 
 def Merge(*args):

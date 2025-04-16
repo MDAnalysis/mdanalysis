@@ -178,6 +178,11 @@ class PDBParser(TopologyReaderBase):
      - bonds
      - formalcharges
 
+    Note that `PDBParser` accepts an optional keyword argument
+    ``force_chainids_to_segids``. If set to ``True``, the chain IDs (even if
+    empty values are in the chain ID column in the file) will forcibly be used
+    instead of the segment IDs for creating segments.
+
     See Also
     --------
     :class:`MDAnalysis.coordinates.PDB.PDBReader`
@@ -207,7 +212,10 @@ class PDBParser(TopologyReaderBase):
         Removed type and mass guessing (attributes guessing takes place now
         through universe.guess_TopologyAttrs() API).
     .. versionchanged:: 2.10.0
-        segID is read from 73-76 instead of 67-76.
+        segID is read from 73-76 instead of 67-76 and added the
+        `force_chainids_to_segids` keyword argument. Some infos in logger will
+        be generated if the segids is not present or if the chainids are not
+        completely equal to segids.
     """
     format = ['PDB', 'ENT']
 
@@ -218,7 +226,7 @@ class PDBParser(TopologyReaderBase):
         -------
         MDAnalysis Topology object
         """
-        top = self._parseatoms()
+        top = self._parseatoms(**kwargs)
 
         try:
             bonds = self._parsebonds(top.ids.values)
@@ -235,7 +243,7 @@ class PDBParser(TopologyReaderBase):
 
         return top
 
-    def _parseatoms(self):
+    def _parseatoms(self, **kwargs):
         """Create the initial Topology object"""
         resid_prev = 0  # resid looping hack
 
@@ -325,6 +333,12 @@ class PDBParser(TopologyReaderBase):
                         "found in the PDB file.")
             segids = chainids
 
+        # If force_chainids_to_segids is set, use chainids as segids
+        if kwargs.get("force_chainids_to_segids", False):
+            logger.info("force_chainids_to_segids is set. "
+                        "Using chain IDs as segment IDs.")
+            segids = chainids
+
         n_atoms = len(serials)
 
         attrs = []
@@ -403,11 +417,13 @@ class PDBParser(TopologyReaderBase):
         n_residues = len(resids)
         attrs.append(Resnums(resnums))
         attrs.append(Resids(resids))
-        attrs.append(Resnums(resids.copy()))
         attrs.append(ICodes(icodes))
         attrs.append(Resnames(resnames))
 
-        if any(segids) and not any(val is None for val in segids):
+        if (
+            kwargs.get("force_chainids_to_segids", False) or
+            (any(segids) and not any(val is None for val in segids))
+        ):
             segidx, (segids,) = change_squash((segids,), (segids,))
             n_segments = len(segids)
             attrs.append(Segids(segids))
