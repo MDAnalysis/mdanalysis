@@ -230,6 +230,10 @@ valid. If partially missing or incorrect, empty records are assigned.</p>
 </ul>
 </dd>
 </dl>
+<p>Note that <cite>PDBParser</cite> accepts an optional keyword argument
+<code class="docutils literal notranslate"><span class="pre">force_chainids_to_segids</span></code>. If set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, the chain IDs (even if
+empty values are in the chain ID column in the file) will forcibly be used
+instead of the segment IDs for creating segments.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><a class="reference internal" href="../coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBReader" title="MDAnalysis.coordinates.PDB.PDBReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDB.PDBReader</span></code></a></p>
@@ -266,7 +270,10 @@ instead a UserWarning is emitted.</p>
 through universe.guess_TopologyAttrs() API).</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 2.10.0: </span>segID is read from 73-76 instead of 67-76.</p>
+<p><span class="versionmodified changed">Changed in version 2.10.0: </span>segID is read from 73-76 instead of 67-76 and added the
+<cite>force_chainids_to_segids</cite> keyword argument. Some infos in logger will
+be generated if the segids is not present or if the chainids are not
+completely equal to segids.</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.topology.PDBParser.PDBParser.close">

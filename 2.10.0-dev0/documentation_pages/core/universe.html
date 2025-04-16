@@ -298,8 +298,14 @@ representations, which allow for manipulation of coordinates.</p>
 functionality to treat independent trajectory files as a single virtual
 trajectory.</p>
 </dd>
+<dt><a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs: extra arguments are passed to the topology parser.</dt><dd><p>For instance, when reading a PDB file
+(<a class="reference internal" href="../coordinates/PDB.html#module-MDAnalysis.coordinates.PDB" title="MDAnalysis.coordinates.PDB"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDBReader</span></code></a>,
+<a class="reference internal" href="../topology/PDBParser.html#module-MDAnalysis.topology.PDBParser" title="MDAnalysis.topology.PDBParser"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDBParser</span></code></a>), set
+<code class="docutils literal notranslate"><span class="pre">force_chainids_to_segids=True</span></code> to make the universe use the
+chainIDs (column 22) instead of the segmentIDs (column 73-76) as the
+<cite>segids</cite> in the universe and select the corresponding SegmentGroup.</p>
+</dd>
 </dl>
-<p><a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs: extra arguments are passed to the topology parser.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe.trajectory">
 <span class="sig-name descname"><span class="pre">trajectory</span></span><a class="headerlink" href="#MDAnalysis.core.universe.Universe.trajectory" title="Link to this definition"></a></dt>
@@ -442,6 +448,10 @@ Removed instant selectors.</p>
 <p><span class="versionmodified changed">Changed in version 2.8.0: </span>Added <a class="reference internal" href="#MDAnalysis.core.universe.Universe.guess_TopologyAttrs" title="MDAnalysis.core.universe.Universe.guess_TopologyAttrs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">guess_TopologyAttrs()</span></code></a> API
 guessing masses and atom types after topology
 is read from a registered parser.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.10.0: </span>Added :meth: <cite>~MDAnalysis.core.universe.Universe.set_groups</cite>
+API to set residues/segments based on the atomwise resids/segids.</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe.add_Residue">
@@ -1031,6 +1041,57 @@ resulting in a different number of atoms in each model.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup.select_atoms" title="MDAnalysis.core.groups.AtomGroup.select_atoms"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup.select_atoms()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe.set_groups">
+<span class="sig-name descname"><span class="pre">set_groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomwise_resids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atomwise_segids</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.set_groups"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.set_groups" title="Link to this definition"></a></dt>
+<dd><p>Set the groups (<cite>ResidueGroup</cite>, <cite>SegmentGroup</cite>) of the Universe
+by atomwise resids/segids.</p>
+<p>The <cite>topology</cite> will also be updated based on the provided <cite>atomwise_resids</cite>
+and <cite>atomwise_segids</cite>. The original <cite>resids</cite> and <cite>segids</cite> will be stored
+in attributes <cite>atomwise_resids_orig</cite> and/or <cite>atomwise_segids_orig</cite> if
+they are modified.
+See notes for the logic of the function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atomwise_resids</strong> – A list of residue IDs to be set for the Universe. The length
+of the list should be equal to the number of atoms in the Universe.
+If <cite>None</cite>, the original resids will be used.</p></li>
+<li><p><strong>atomwise_segids</strong> – A list of segment IDs to be set for the Universe. The length
+of the list should be equal to the number of atoms in the Universe.
+If <cite>None</cite>, the original segids will be used.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AssertionError" title="(in Python v3.13)"><strong>AssertionError</strong></a> – If the length of the provided atomwise_resids or atomwise_segids
+    does not match the number of atoms in the Universe.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>First, the function will check if resids or segids is provided.
+If both resids and segids are not provided (<cite>None</cite>), it will do nothing.
+If only one of them is provided, it will use the original values for the
+other one. If both are provided, it will use the provided values for
+both resids and segids.
+The function will then update the topology by a new generated topology
+with new values of the resids and segids.
+Finally, the corresponding new <cite>ResidueGroup</cite> and <cite>SegmentGroup</cite> will be
+created by the updated topology.</p>
+<p class="rubric">Examples</p>
+<p>To set custom segment IDs for the segments of the Universe:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">atomwise_segids</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">]</span>
+<span class="n">u</span><span class="o">.</span><span class="n">set_groups</span><span class="p">(</span><span class="n">atomwise_segids</span><span class="o">=</span><span class="n">atomwise_segids</span><span class="p">)</span>
+
+<span class="c1"># Now the Universe has two segments with segIDs &#39;A&#39; and &#39;B&#39;</span>
+<span class="n">u</span><span class="o">.</span><span class="n">segments</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="o">&lt;</span><span class="n">SegmentGroup</span> <span class="k">with</span> <span class="mi">2</span> <span class="n">segments</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.10.0.</span></p>
 </div>
 </dd></dl>
 

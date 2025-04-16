@@ -228,6 +228,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.topology</span><span class="w"> </span><span class="kn">import</span> <span class="n">Topology</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.topologyattrs</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">AtomAttr</span><span class="p">,</span> <span class="n">ResidueAttr</span><span class="p">,</span> <span class="n">SegmentAttr</span><span class="p">,</span>
+    <span class="n">Segindices</span><span class="p">,</span> <span class="n">Segids</span><span class="p">,</span> <span class="n">Resindices</span><span class="p">,</span> <span class="n">Resids</span><span class="p">,</span> <span class="n">Atomindices</span><span class="p">,</span>
     <span class="n">BFACTOR_WARNING</span><span class="p">,</span> <span class="n">_Connection</span>
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.topologyobjects</span><span class="w"> </span><span class="kn">import</span> <span class="n">TopologyObject</span>
@@ -235,6 +236,105 @@
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.core.universe&quot;</span><span class="p">)</span>
 
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_update_topology_by_ids</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">atomwise_resids</span><span class="p">,</span> <span class="n">atomwise_segids</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Update the topology of a Universe with new atomwise resids and segids.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    universe : Universe</span>
+<span class="sd">        The universe to update.</span>
+<span class="sd">    atomwise_resids : numpy.ndarray</span>
+<span class="sd">        The new atomwise residue indices.</span>
+<span class="sd">    atomwise_segids : numpy.ndarray</span>
+<span class="sd">        The new atomwise segment indices.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..topology.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">change_squash</span>
+
+    <span class="c1"># the original topology</span>
+    <span class="n">top</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">_topology</span>
+
+    <span class="c1"># detect the atom level attributes (excluding residue level and above)</span>
+    <span class="n">atom_attrindices</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">idx</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">each_attr</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">top</span><span class="o">.</span><span class="n">attrs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">Residue</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">each_attr</span><span class="o">.</span><span class="n">target_classes</span><span class="p">)</span> <span class="ow">and</span>
+        <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">each_attr</span><span class="p">,</span> <span class="n">Atomindices</span><span class="p">))</span>
+    <span class="p">]</span>
+    <span class="n">attrs</span> <span class="o">=</span> <span class="p">[</span><span class="n">top</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">each_attr</span><span class="p">]</span> <span class="k">for</span> <span class="n">each_attr</span> <span class="ow">in</span> <span class="n">atom_attrindices</span><span class="p">]</span>
+
+    <span class="c1"># create new residues level stuff</span>
+    <span class="n">residue_attrindices</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">idx</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">each_attr</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">top</span><span class="o">.</span><span class="n">attrs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="p">(</span><span class="n">Residue</span> <span class="ow">in</span> <span class="n">each_attr</span><span class="o">.</span><span class="n">target_classes</span><span class="p">)</span> <span class="ow">and</span>
+            <span class="p">(</span><span class="n">Segment</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">each_attr</span><span class="o">.</span><span class="n">target_classes</span><span class="p">)</span> <span class="ow">and</span>
+            <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">each_attr</span><span class="p">,</span> <span class="n">Resids</span><span class="p">))</span> <span class="ow">and</span>
+            <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">each_attr</span><span class="p">,</span> <span class="n">Resindices</span><span class="p">))</span>
+        <span class="p">)</span>
+    <span class="p">]</span>  <span class="c1"># residue level attributes except resids and resindices</span>
+
+    <span class="n">res_criteria</span> <span class="o">=</span> <span class="p">[</span><span class="n">atomwise_resids</span><span class="p">,</span> <span class="n">atomwise_segids</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span>
+        <span class="nb">getattr</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">top</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">each_attr</span><span class="p">]</span><span class="o">.</span><span class="n">attrname</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">each_attr</span> <span class="ow">in</span> <span class="n">residue_attrindices</span>
+        <span class="k">if</span> <span class="n">top</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">each_attr</span><span class="p">]</span><span class="o">.</span><span class="n">attrname</span> <span class="o">!=</span> <span class="s1">&#39;resnums&#39;</span>
+    <span class="p">]</span>
+
+    <span class="n">res_to_squash</span> <span class="o">=</span> <span class="p">[</span><span class="n">atomwise_resids</span><span class="p">,</span> <span class="n">atomwise_segids</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span>
+        <span class="nb">getattr</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">top</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">each_attr</span><span class="p">]</span><span class="o">.</span><span class="n">attrname</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">each_attr</span> <span class="ow">in</span> <span class="n">residue_attrindices</span>
+    <span class="p">]</span>
+
+    <span class="n">residx</span><span class="p">,</span> <span class="n">res_squashed</span> <span class="o">=</span> <span class="n">change_squash</span><span class="p">(</span><span class="n">res_criteria</span><span class="p">,</span> <span class="n">res_to_squash</span><span class="p">)</span>
+    <span class="n">resids</span> <span class="o">=</span> <span class="n">res_squashed</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">res_squashed_segids</span> <span class="o">=</span> <span class="n">res_squashed</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">n_residues</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">resids</span><span class="p">)</span>
+    <span class="c1"># all residue-level attributes except resids</span>
+    <span class="n">res_squashed_res_attrs</span> <span class="o">=</span> <span class="n">res_squashed</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span>
+
+    <span class="n">res_attrs</span> <span class="o">=</span> <span class="p">[</span><span class="n">Resids</span><span class="p">(</span><span class="n">resids</span><span class="p">)]</span> <span class="o">+</span> <span class="p">[</span>
+        <span class="c1"># use the correspdoning type of the attribute with new sqaushed values</span>
+        <span class="n">top</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">each_attr</span><span class="p">]</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">res_squashed_res_attrs</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">each_attr</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">residue_attrindices</span><span class="p">)</span>
+    <span class="p">]</span>
+    <span class="n">attrs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">res_attrs</span><span class="p">)</span>
+
+    <span class="c1"># create new segment level stuff</span>
+    <span class="n">segidx</span><span class="p">,</span> <span class="p">(</span><span class="n">segids</span><span class="p">,)</span> <span class="o">=</span> <span class="n">change_squash</span><span class="p">((</span><span class="n">res_squashed_segids</span><span class="p">,),</span> <span class="p">(</span><span class="n">res_squashed_segids</span><span class="p">,))</span>
+    <span class="n">n_segments</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">segids</span><span class="p">)</span>
+    <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Segids</span><span class="p">(</span><span class="n">segids</span><span class="p">))</span>
+
+    <span class="c1"># other attributes</span>
+    <span class="n">other_attrs</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">each_attr</span>
+        <span class="k">for</span> <span class="n">each_attr</span> <span class="ow">in</span> <span class="n">top</span><span class="o">.</span><span class="n">attrs</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="p">(</span><span class="n">Segment</span> <span class="ow">in</span> <span class="n">each_attr</span><span class="o">.</span><span class="n">target_classes</span><span class="p">)</span> <span class="ow">and</span>
+            <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">each_attr</span><span class="p">,</span> <span class="n">Segids</span><span class="p">))</span> <span class="ow">and</span>
+            <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">each_attr</span><span class="p">,</span> <span class="n">Atomindices</span><span class="p">))</span> <span class="ow">and</span>
+            <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">each_attr</span><span class="p">,</span> <span class="n">Resindices</span><span class="p">))</span> <span class="ow">and</span>
+            <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">each_attr</span><span class="p">,</span> <span class="n">Segindices</span><span class="p">))</span>
+        <span class="p">)</span>
+    <span class="p">]</span>
+
+    <span class="c1"># create new topology</span>
+    <span class="n">top</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span>
+        <span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span>
+        <span class="n">n_residues</span><span class="p">,</span>
+        <span class="n">n_segments</span><span class="p">,</span>
+        <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">,</span>
+        <span class="n">atom_resindex</span><span class="o">=</span><span class="n">residx</span><span class="p">,</span>
+        <span class="n">residue_segindex</span><span class="o">=</span><span class="n">segidx</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># add back other attributes</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">other_attrs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">each_otherattr</span> <span class="ow">in</span> <span class="n">other_attrs</span><span class="p">:</span>
+            <span class="n">top</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="n">each_otherattr</span><span class="p">)</span>
+
+    <span class="c1"># update the topology in the universe</span>
+    <span class="n">universe</span><span class="o">.</span><span class="n">_topology</span> <span class="o">=</span> <span class="n">top</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_check_file_like</span><span class="p">(</span><span class="n">topology</span><span class="p">):</span>
@@ -456,6 +556,12 @@
 <span class="sd">        functionality to treat independent trajectory files as a single virtual</span>
 <span class="sd">        trajectory.</span>
 <span class="sd">    **kwargs: extra arguments are passed to the topology parser.</span>
+<span class="sd">        For instance, when reading a PDB file</span>
+<span class="sd">        (:class:`PDBReader&lt;MDAnalysis.coordinates.PDB&gt;`,</span>
+<span class="sd">        :class:`PDBParser&lt;MDAnalysis.topology.PDBParser&gt;`), set</span>
+<span class="sd">        ``force_chainids_to_segids=True`` to make the universe use the</span>
+<span class="sd">        chainIDs (column 22) instead of the segmentIDs (column 73-76) as the</span>
+<span class="sd">        `segids` in the universe and select the corresponding SegmentGroup.</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
@@ -523,6 +629,10 @@
 <span class="sd">        Added :meth:`~MDAnalysis.core.universe.Universe.guess_TopologyAttrs` API</span>
 <span class="sd">        guessing masses and atom types after topology</span>
 <span class="sd">        is read from a registered parser.</span>
+
+<span class="sd">    .. versionchanged:: 2.10.0</span>
+<span class="sd">        Added :meth: `~MDAnalysis.core.universe.Universe.set_groups`</span>
+<span class="sd">        API to set residues/segments based on the atomwise resids/segids.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topology</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">all_coordinates</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -1899,6 +2009,107 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Can not guess attributes &#39;</span>
                           <span class="s1">&#39;for universe with 0 atoms&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Universe.set_groups">
+<a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.set_groups">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomwise_resids</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">atomwise_segids</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the groups (`ResidueGroup`, `SegmentGroup`) of the Universe</span>
+<span class="sd">        by atomwise resids/segids.</span>
+
+<span class="sd">        The `topology` will also be updated based on the provided `atomwise_resids`</span>
+<span class="sd">        and `atomwise_segids`. The original `resids` and `segids` will be stored</span>
+<span class="sd">        in attributes `atomwise_resids_orig` and/or `atomwise_segids_orig` if</span>
+<span class="sd">        they are modified.</span>
+<span class="sd">        See notes for the logic of the function.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        atomwise_resids:</span>
+<span class="sd">            A list of residue IDs to be set for the Universe. The length</span>
+<span class="sd">            of the list should be equal to the number of atoms in the Universe.</span>
+<span class="sd">            If `None`, the original resids will be used.</span>
+
+<span class="sd">        atomwise_segids:</span>
+<span class="sd">            A list of segment IDs to be set for the Universe. The length</span>
+<span class="sd">            of the list should be equal to the number of atoms in the Universe.</span>
+<span class="sd">            If `None`, the original segids will be used.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        AssertionError</span>
+<span class="sd">            If the length of the provided atomwise_resids or atomwise_segids</span>
+<span class="sd">            does not match the number of atoms in the Universe.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        First, the function will check if resids or segids is provided.</span>
+<span class="sd">        If both resids and segids are not provided (`None`), it will do nothing.</span>
+<span class="sd">        If only one of them is provided, it will use the original values for the</span>
+<span class="sd">        other one. If both are provided, it will use the provided values for</span>
+<span class="sd">        both resids and segids.</span>
+<span class="sd">        The function will then update the topology by a new generated topology</span>
+<span class="sd">        with new values of the resids and segids.</span>
+<span class="sd">        Finally, the corresponding new `ResidueGroup` and `SegmentGroup` will be</span>
+<span class="sd">        created by the updated topology.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        To set custom segment IDs for the segments of the Universe::</span>
+
+<span class="sd">            atomwise_segids = [&#39;A&#39;, &#39;A&#39;, &#39;B&#39;, &#39;B&#39;]</span>
+<span class="sd">            u.set_groups(atomwise_segids=atomwise_segids)</span>
+
+<span class="sd">            # Now the Universe has two segments with segIDs &#39;A&#39; and &#39;B&#39;</span>
+<span class="sd">            u.segments</span>
+<span class="sd">            &gt;&gt;&gt; &lt;SegmentGroup with 2 segments&gt;</span>
+
+<span class="sd">        .. versionadded:: 2.10.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">atomwise_resids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">atomwise_segids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Not setting groups. Please provide atomwise_resids or &quot;</span>
+                          <span class="s2">&quot;atomwise_segids.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># resids</span>
+        <span class="k">if</span> <span class="n">atomwise_resids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">atomwise_resids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">resids</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># check the length of atomwise_resids</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atomwise_resids</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;The length of atomwise_resids should be the same as &quot;</span>
+                    <span class="s2">&quot;the number of atoms in the universe.&quot;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">atomwise_resids_orig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">resids</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;The new resids replaces the current one. &quot;</span>
+                        <span class="s2">&quot;The original resids is stored in &quot;</span>
+                        <span class="s2">&quot;atomwise_resids_orig.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># segids</span>
+        <span class="k">if</span> <span class="n">atomwise_segids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">atomwise_segids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">segids</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># check the length of atomwise_segids</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atomwise_segids</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;The length of atomwise_segids should be the same as &quot;</span>
+                    <span class="s2">&quot;the number of atoms in the universe.&quot;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">atomwise_segids_orig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">segids</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;The new resids replaces the current one. &quot;</span>
+                        <span class="s2">&quot;The original segids is stored in &quot;</span>
+                        <span class="s2">&quot;atomwise_segids_orig.&quot;</span><span class="p">)</span>
+
+        <span class="n">atomwise_resids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">atomwise_resids</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">atomwise_segids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">atomwise_segids</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+
+        <span class="n">_update_topology_by_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                                <span class="n">atomwise_resids</span><span class="o">=</span><span class="n">atomwise_resids</span><span class="p">,</span>
+                                <span class="n">atomwise_segids</span><span class="o">=</span><span class="n">atomwise_segids</span><span class="p">)</span>
+        <span class="n">_generate_from_topology</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 </div>
 
 

@@ -432,7 +432,12 @@ some programs to store/operate the segment ID. For instance, <a class="reference
 it as the attribute <cite>pdbSegment</cite> to allow command-line specification.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBWriter" title="MDAnalysis.coordinates.PDB.PDBWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDBWriter</span></code></a>, <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBReader" title="MDAnalysis.coordinates.PDB.PDBReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDBReader</span></code></a></p>
+<p><a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBWriter" title="MDAnalysis.coordinates.PDB.PDBWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDBWriter</span></code></a>
+<a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBReader" title="MDAnalysis.coordinates.PDB.PDBReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDBReader</span></code></a></p>
+<p>If you would like to force the use of chainID as the segID when parsing PDB,
+please use the keyword argument <cite>force_chainids_to_segids=True</cite>
+(<a class="reference internal" href="../topology/PDBParser.html#MDAnalysis.topology.PDBParser.PDBParser" title="MDAnalysis.topology.PDBParser.PDBParser"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.topology.PDBParser.PDBParser</span></code></a>).
+This will prioritize the chain ID to the segment ID.</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.11.0: </span>* Frames now 0-based instead of 1-based

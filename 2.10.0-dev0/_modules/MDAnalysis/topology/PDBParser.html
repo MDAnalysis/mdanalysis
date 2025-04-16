@@ -322,6 +322,11 @@
 <span class="sd">     - bonds</span>
 <span class="sd">     - formalcharges</span>
 
+<span class="sd">    Note that `PDBParser` accepts an optional keyword argument</span>
+<span class="sd">    ``force_chainids_to_segids``. If set to ``True``, the chain IDs (even if</span>
+<span class="sd">    empty values are in the chain ID column in the file) will forcibly be used</span>
+<span class="sd">    instead of the segment IDs for creating segments.</span>
+
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
 <span class="sd">    :class:`MDAnalysis.coordinates.PDB.PDBReader`</span>
@@ -351,7 +356,10 @@
 <span class="sd">        Removed type and mass guessing (attributes guessing takes place now</span>
 <span class="sd">        through universe.guess_TopologyAttrs() API).</span>
 <span class="sd">    .. versionchanged:: 2.10.0</span>
-<span class="sd">        segID is read from 73-76 instead of 67-76.</span>
+<span class="sd">        segID is read from 73-76 instead of 67-76 and added the</span>
+<span class="sd">        `force_chainids_to_segids` keyword argument. Some infos in logger will</span>
+<span class="sd">        be generated if the segids is not present or if the chainids are not</span>
+<span class="sd">        completely equal to segids.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;PDB&#39;</span><span class="p">,</span> <span class="s1">&#39;ENT&#39;</span><span class="p">]</span>
 
@@ -364,7 +372,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        MDAnalysis Topology object</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">top</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parseatoms</span><span class="p">()</span>
+        <span class="n">top</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parseatoms</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">bonds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parsebonds</span><span class="p">(</span><span class="n">top</span><span class="o">.</span><span class="n">ids</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
@@ -382,7 +390,7 @@
         <span class="k">return</span> <span class="n">top</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_parseatoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parseatoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the initial Topology object&quot;&quot;&quot;</span>
         <span class="n">resid_prev</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># resid looping hack</span>
 
@@ -472,6 +480,12 @@
                         <span class="s2">&quot;found in the PDB file.&quot;</span><span class="p">)</span>
             <span class="n">segids</span> <span class="o">=</span> <span class="n">chainids</span>
 
+        <span class="c1"># If force_chainids_to_segids is set, use chainids as segids</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;force_chainids_to_segids&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;force_chainids_to_segids is set. &quot;</span>
+                        <span class="s2">&quot;Using chain IDs as segment IDs.&quot;</span><span class="p">)</span>
+            <span class="n">segids</span> <span class="o">=</span> <span class="n">chainids</span>
+
         <span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">serials</span><span class="p">)</span>
 
         <span class="n">attrs</span> <span class="o">=</span> <span class="p">[]</span>
@@ -550,11 +564,13 @@
         <span class="n">n_residues</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">resids</span><span class="p">)</span>
         <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Resnums</span><span class="p">(</span><span class="n">resnums</span><span class="p">))</span>
         <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Resids</span><span class="p">(</span><span class="n">resids</span><span class="p">))</span>
-        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Resnums</span><span class="p">(</span><span class="n">resids</span><span class="o">.</span><span class="n">copy</span><span class="p">()))</span>
         <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ICodes</span><span class="p">(</span><span class="n">icodes</span><span class="p">))</span>
         <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Resnames</span><span class="p">(</span><span class="n">resnames</span><span class="p">))</span>
 
-        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">segids</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">segids</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;force_chainids_to_segids&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">or</span>
+            <span class="p">(</span><span class="nb">any</span><span class="p">(</span><span class="n">segids</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">segids</span><span class="p">))</span>
+        <span class="p">):</span>
             <span class="n">segidx</span><span class="p">,</span> <span class="p">(</span><span class="n">segids</span><span class="p">,)</span> <span class="o">=</span> <span class="n">change_squash</span><span class="p">((</span><span class="n">segids</span><span class="p">,),</span> <span class="p">(</span><span class="n">segids</span><span class="p">,))</span>
             <span class="n">n_segments</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">segids</span><span class="p">)</span>
             <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Segids</span><span class="p">(</span><span class="n">segids</span><span class="p">))</span>
