@@ -14,12 +14,15 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, orbeckst, BHM-Bob, TRY-ER, Abdulrahman-PROG, pbuslaev, 
-         yuyuan871111
+??/??/?? IAlibay, orbeckst, BHM-Bob, TRY-ER, Abdulrahman-PROG, pbuslaev,
+         yuxuanzhuang, yuyuan871111
 
  * 2.10.0
 
 Fixes
+ * Fixes bug in `analysis/hydrogenbonds.py`: `_donors` and `_hydrogens`
+   were not updated when the `acceptors_sel` and `hydrogens_sel` were provided
+   after initialization. (Issue #5010, PR #5018)
  * Fixes bug in `analysis/gnm.py`: `closeContactGNMAnalysis`: correct the
    `residue_index_map` generation when selection is not `protein`.
    (Issue #4924, PR #4961)
