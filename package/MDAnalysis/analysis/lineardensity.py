@@ -272,9 +272,6 @@ class LinearDensity(AnalysisBase):
                 f"{self.grouping} is not a valid value for grouping."
             )
 
-        self.totalmass = np.sum(self.masses)
-        self.group = getattr(self._ags[0], self.grouping)
-
     @staticmethod
     def custom_aggregator(results):
         # NB: the *stddev values here are not the standard deviation,
