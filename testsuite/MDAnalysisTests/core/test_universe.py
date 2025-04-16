@@ -1811,7 +1811,7 @@ Written by MDAnalysis
     def test_no_affect_custom_attrs(self, good):
         # [BEFORE-1] check custom attributes
         with pytest.raises(NoDataError):
-            print(good.atoms.charges)
+            good.atoms.charges
         assert len(good._topology.attrs) == 18
 
         # [ACT-1] assign custom attributes
