@@ -113,7 +113,10 @@ class TRRWriter(XDRBaseWriter):
             if self._convert_units:
                 self.convert_forces_to_native(forces)
 
-        time = ts.time
+        if self._dt is None:
+            time = ts.time
+        else:
+            time = self._dt * ts.frame
         step = ts.data.get('step', ts.frame)
 
         if self._convert_units:
@@ -176,7 +179,11 @@ class TRRReader(XDRBaseReader):
 
     def _frame_to_ts(self, frame, ts):
         """convert a trr-frame to a mda TimeStep"""
-        ts.time = frame.time
+        dt = self._kwargs["dt"]
+        if dt is None:
+            ts.time = frame.time
+        else:
+            ts.time = self._frame * dt
         ts.frame = self._frame
         ts.data['step'] = frame.step
 
