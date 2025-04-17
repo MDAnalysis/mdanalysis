@@ -438,3 +438,67 @@ def test_PDB_bad_charges(infile, entry):
     with pytest.warns(UserWarning, match=wmsg):
         u = mda.Universe(StringIO(infile), format="PDB")
         assert not hasattr(u, "formalcharges")
+
+
+def test_force_chainids_to_segids():
+    # get examples from issue 2874 with minor modifications
+
+    res1_str = """\
+ATOM    659  N   THR B 315      22.716  15.055  -1.000  1.00 16.08         A N
+ATOM    660  CA  THR B 315      22.888  13.803  -0.302  1.00  0.00           C
+ATOM    661  C   THR B 315      22.006  12.700  -0.882  1.00  0.00           C
+ATOM    662  O   THR B 315      21.138  12.959  -1.727  1.00 16.25         A O
+ATOM    663  CB  THR B 315      22.481  13.956   1.182  1.00  0.00           C
+ATOM    664  CG2 THR B 315      23.384  14.924   1.927  1.00  0.00           C
+ATOM    665  OG1 THR B 315      21.172  14.548   1.274  1.00  0.00           O
+"""
+
+    res2_str = """\
+ATOM    659  N   THR B 315      22.716  15.055  -1.000  1.00 16.08         A N
+ATOM    660  CA  THR B 315      22.888  13.803  -0.302  1.00 15.13         A C
+ATOM    661  C   THR B 315      22.006  12.700  -0.882  1.00 15.69         A C
+ATOM    662  O   THR B 315      21.138  12.959  -1.727  1.00 16.25         A O
+ATOM    663  CB  THR B 315      22.481  13.956   1.182  1.00 16.22         A C
+ATOM    664  CG2 THR B 315      22.874  15.310   1.747  1.00 17.32         A C
+ATOM    665  OG1 THR B 315      21.047  13.922   1.304  1.00 15.14         A O
+"""
+    res3_str = """\
+ATOM    659  N   THR   315      22.716  15.055  -1.000  1.00 16.08         A N
+ATOM    660  CA  THR   315      22.888  13.803  -0.302  1.00 15.13         A C
+ATOM    661  C   THR   315      22.006  12.700  -0.882  1.00 15.69         A C
+ATOM    662  O   THR   315      21.138  12.959  -1.727  1.00 16.25         A O
+ATOM    663  CB  THR   315      22.481  13.956   1.182  1.00 16.22         A C
+ATOM    664  CG2 THR   315      22.874  15.310   1.747  1.00 17.32         A C
+ATOM    665  OG1 THR   315      21.047  13.922   1.304  1.00 15.14         A O
+"""
+
+    res1_not_force = mda.Universe(
+        StringIO(res1_str), format="PDB", force_chainids_to_segids=False
+    )
+    res1_force = mda.Universe(
+        StringIO(res1_str), format="PDB", force_chainids_to_segids=True
+    )
+    res2_not_force = mda.Universe(
+        StringIO(res2_str), format="PDB", force_chainids_to_segids=False
+    )
+    res2_force = mda.Universe(
+        StringIO(res2_str), format="PDB", force_chainids_to_segids=True
+    )
+    res3_force = mda.Universe(
+        StringIO(res3_str), format="PDB", force_chainids_to_segids=True
+    )
+
+    assert len(res1_not_force.segments) == 4
+    assert_equal(["A", "", "A", ""], res1_not_force.segments.segids)
+    assert len(res1_not_force.residues) == 4
+    assert_equal([315, 315, 315, 315], res1_not_force.residues.resids)
+    assert len(res1_force.segments) == 1
+    assert_equal(["B"], res1_force.segments.segids)
+    assert len(res1_force.residues) == 1
+    assert_equal([315], res1_force.residues.resids)
+    assert len(res2_not_force.segments) == 1
+    assert_equal(["A"], res2_not_force.segments.segids)
+    assert len(res2_force.segments) == 1
+    assert_equal(["B"], res2_force.segments.segids)
+    assert len(res3_force.segments) == 1
+    assert_equal([""], res3_force.segments.segids)

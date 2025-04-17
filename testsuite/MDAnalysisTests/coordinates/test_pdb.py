@@ -1554,3 +1554,61 @@ def test_charges_limit(value):
     arr = np.array([0, 0, 0, value, 1, -1, 0], dtype=int)
     with pytest.raises(ValueError, match="9 is not supported by PDB standard"):
         mda.coordinates.PDB.PDBWriter._format_PDB_charges(arr)
+
+
+def test_read_segids():
+    # test to read the segids using column 73-76 instead of 67-76
+    invalid_seg_format_str = """\
+ATOM    659  N   THR A 315      22.716  15.055  -1.000  1.00 16.08   B       N
+ATOM    660  CA  THR A 315      22.888  13.803  -0.302  1.00  0.00   B       C
+ATOM    661  C   THR A 315      22.006  12.700  -0.882  1.00  0.00   B       C
+ATOM    662  O   THR A 315      21.138  12.959  -1.727  1.00 16.25   B       O
+ATOM    663  CB  THR A 315      22.481  13.956   1.182  1.00  0.00   B       C
+ATOM    664  CG2 THR A 315      23.384  14.924   1.927  1.00  0.00   B       C
+ATOM    665  OG1 THR A 315      21.172  14.548   1.274  1.00  0.00   B       O
+"""
+
+    acceptable_format_str = """\
+ATOM    659  N   THR A 315      22.716  15.055  -1.000  1.00 16.08           N
+ATOM    660  CA  THR A 315      22.888  13.803  -0.302  1.00 152.13          C
+ATOM    661  C   THR A 315      22.006  12.700  -0.882  1.00 15.69           C
+ATOM    662  O   THR A 315      21.138  12.959  -1.727  1.00 116.25          O
+ATOM    663  CB  THR A 315      22.481  13.956   1.182  1.00 16.22           C
+ATOM    664  CG2 THR A 315      22.874  15.310   1.747  1.00 173.26          C
+ATOM    665  OG1 THR A 315      21.047  13.922   1.304  1.00 15.14           O
+"""
+
+    standard_format_str = """\
+ATOM    659  N   THR A 315      22.716  15.055  -1.000  1.00 16.08        B  N
+ATOM    660  CA  THR A 315      22.888  13.803  -0.302  1.00 15.13        B  C
+ATOM    661  C   THR A 315      22.006  12.700  -0.882  1.00 15.69        B  C
+ATOM    662  O   THR A 315      21.138  12.959  -1.727  1.00 16.25        B  O
+ATOM    663  CB  THR A 315      22.481  13.956   1.182  1.00 16.22        B  C
+ATOM    664  CG2 THR A 315      22.874  15.310   1.747  1.00 17.32        B  C
+ATOM    665  OG1 THR A 315      21.047  13.922   1.304  1.00 15.14        B  O
+"""
+
+    u_invalid_segid = mda.Universe(
+        StringIO(invalid_seg_format_str), format="PDB"
+    )
+    u_acceptable = mda.Universe(StringIO(acceptable_format_str), format="PDB")
+    u_standard = mda.Universe(StringIO(standard_format_str), format="PDB")
+
+    # Before version 2.10.0, segid was read from column 67-76.
+    # Thus, segids existed and were set to "B" for all atoms.
+    # After version 2.10.0, segid is read from column 73-76.
+    # segid is expected to set by chainID "A" for all atoms.
+    assert_equal(
+        u_invalid_segid.atoms.segids, ["A"] * len(u_invalid_segid.atoms)
+    )
+
+    # Before version 2.10.0, segid was set to read from column 67-76.
+    # Due to misalignment in b-factor column,
+    # segids were set to ['3', '', '5', '', '6'] for all atoms.
+    # After version 2.10.0, segid is read from column 73-76.
+    # segid is expected to set by chainID "A" for all atoms.
+    assert_equal(u_acceptable.atoms.segids, ["A"] * len(u_standard.atoms))
+
+    # After version 2.10.0, segid is read from column 73-76.
+    # segid is set to "B" for all atoms
+    assert_equal(u_standard.atoms.segids, ["B"] * len(u_standard.atoms))
