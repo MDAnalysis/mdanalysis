@@ -272,34 +272,40 @@ class LinearDensity(AnalysisBase):
                 f"{self.grouping} is not a valid value for grouping."
             )
 
+        self.totalmass = np.sum(self.masses)
+
     @staticmethod
-    def custom_aggregator(results):
+    def _custom_aggregator(results):
         # NB: the *stddev values here are not the standard deviation,
         # but the variance. The stddev is calculated in _conclude()
-        mass_density = [entry["mass_density"] for entry in results]
-        mass_density_stddev = [
-            entry["mass_density_stddev"] for entry in results
-        ]
-        charge_density = [entry["charge_density"] for entry in results]
-        charge_density_stddev = [
-            entry["charge_density_stddev"] for entry in results
-        ]
+        mass_density = np.sum(
+            [entry["mass_density"] for entry in results], axis=0
+        )
+        mass_density_stddev = np.sum(
+            [entry["mass_density_stddev"] for entry in results], axis=0
+        )
+        charge_density = np.sum(
+            [entry["charge_density"] for entry in results], axis=0
+        )
+        charge_density_stddev = np.sum(
+            [entry["charge_density_stddev"] for entry in results], axis=0
+        )
         return Results(
             dim=results[0]["dim"],
             slice_volume=results[0]["slice_volume"],
             hist_bin_edges=results[0]["hist_bin_edges"],
-            mass_density=np.sum(mass_density, axis=0),
-            mass_density_stddev=np.sum(mass_density_stddev, axis=0),
-            charge_density=np.sum(charge_density, axis=0),
-            charge_density_stddev=np.sum(charge_density_stddev, axis=0),
+            mass_density=mass_density,
+            mass_density_stddev=mass_density_stddev,
+            charge_density=charge_density,
+            charge_density_stddev=charge_density_stddev,
         )
 
     def _get_aggregator(self):
         return ResultsGroup(
             lookup={
-                "x": self.custom_aggregator,
-                "y": self.custom_aggregator,
-                "z": self.custom_aggregator,
+                "x": self._custom_aggregator,
+                "y": self._custom_aggregator,
+                "z": self._custom_aggregator,
             }
         )
 
@@ -317,7 +323,7 @@ class LinearDensity(AnalysisBase):
                 f"{self.grouping} is not a valid value for grouping."
             )
 
-        self.totalmass = np.sum(self.masses)
+        # self.totalmass = np.sum(self.masses)
 
         self.group = getattr(self._ags[0], self.grouping)
         self._ags[0].wrap(compound=self.grouping)
