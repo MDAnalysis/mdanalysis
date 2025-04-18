@@ -323,8 +323,6 @@ class LinearDensity(AnalysisBase):
                 f"{self.grouping} is not a valid value for grouping."
             )
 
-        # self.totalmass = np.sum(self.masses)
-
         self.group = getattr(self._ags[0], self.grouping)
         self._ags[0].wrap(compound=self.grouping)
         # Find position of atom/group of atoms
