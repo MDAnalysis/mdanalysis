@@ -178,6 +178,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnalysisBase</span><span class="p">,</span> <span class="n">Results</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">constants</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.lib.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">deprecate</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.results</span><span class="w"> </span><span class="kn">import</span> <span class="n">ResultsGroup</span>
 
 
 <span class="c1"># TODO: Remove in version 3.0.0</span>
@@ -335,6 +336,10 @@
 <span class="sd">          It contains the bin edges of the histrogram bins for calculated</span>
 <span class="sd">          densities and can be used for easier plotting of histogram data.</span>
 
+<span class="sd">    .. versionchanged:: 2.10.0</span>
+<span class="sd">       *  Introduced :meth:`get_supported_backends` allowing for parallel execution</span>
+<span class="sd">          on :mod:`multiprocessing` and :mod:`dask` backends.</span>
+<span class="sd">       *  Removed undocumented and unused attribute :attr:`totalmass`.</span>
 
 <span class="sd">    .. deprecated:: 2.2.0</span>
 <span class="sd">       The `results` dictionary has been changed and the attributes</span>
@@ -344,6 +349,19 @@
 <span class="sd">       :attr:`results.x.mass_density_stddev`, :attr:`results.x.charge_density`,</span>
 <span class="sd">       and :attr:`results.x.charge_density_stddev` instead.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_analysis_algorithm_is_parallelizable</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="LinearDensity.get_supported_backends">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/lineardensity.html#MDAnalysis.analysis.lineardensity.LinearDensity.get_supported_backends">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_supported_backends</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="s2">&quot;serial&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;multiprocessing&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;dask&quot;</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">grouping</span><span class="o">=</span><span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="n">binsize</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">LinearDensity</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
@@ -389,13 +407,7 @@
             <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nbins</span><span class="p">)</span>
 
-        <span class="c1"># Variables later defined in _single_frame() method</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">masses</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">charges</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">totalmass</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># Get masses and charges for the selection</span>
+        <span class="c1"># Get masses and charges for the selection (e.g. UpdatingAtomGroup)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">grouping</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">masses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ags</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">masses</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">charges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ags</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">charges</span>
@@ -409,11 +421,57 @@
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">grouping</span><span class="si">}</span><span class="s2"> is not a valid value for grouping.&quot;</span>
             <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">totalmass</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">masses</span><span class="p">)</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_custom_aggregator</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
+        <span class="c1"># NB: the *stddev values here are not the standard deviation,</span>
+        <span class="c1"># but the variance. The stddev is calculated in _conclude()</span>
+        <span class="n">mass_density</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">entry</span><span class="p">[</span><span class="s2">&quot;mass_density&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">results</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span>
+        <span class="p">)</span>
+        <span class="n">mass_density_stddev</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">entry</span><span class="p">[</span><span class="s2">&quot;mass_density_stddev&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">results</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span>
+        <span class="p">)</span>
+        <span class="n">charge_density</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">entry</span><span class="p">[</span><span class="s2">&quot;charge_density&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">results</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span>
+        <span class="p">)</span>
+        <span class="n">charge_density_stddev</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">entry</span><span class="p">[</span><span class="s2">&quot;charge_density_stddev&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">results</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">Results</span><span class="p">(</span>
+            <span class="n">dim</span><span class="o">=</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;dim&quot;</span><span class="p">],</span>
+            <span class="n">slice_volume</span><span class="o">=</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;slice_volume&quot;</span><span class="p">],</span>
+            <span class="n">hist_bin_edges</span><span class="o">=</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;hist_bin_edges&quot;</span><span class="p">],</span>
+            <span class="n">mass_density</span><span class="o">=</span><span class="n">mass_density</span><span class="p">,</span>
+            <span class="n">mass_density_stddev</span><span class="o">=</span><span class="n">mass_density_stddev</span><span class="p">,</span>
+            <span class="n">charge_density</span><span class="o">=</span><span class="n">charge_density</span><span class="p">,</span>
+            <span class="n">charge_density_stddev</span><span class="o">=</span><span class="n">charge_density_stddev</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_aggregator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span>
+            <span class="n">lookup</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_custom_aggregator</span><span class="p">,</span>
+                <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_custom_aggregator</span><span class="p">,</span>
+                <span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_custom_aggregator</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">grouping</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">masses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ags</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">masses</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">charges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ags</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">charges</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">grouping</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;residues&quot;</span><span class="p">,</span> <span class="s2">&quot;segments&quot;</span><span class="p">,</span> <span class="s2">&quot;fragments&quot;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">masses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ags</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">total_mass</span><span class="p">(</span><span class="n">compound</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">grouping</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">charges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ags</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">total_charge</span><span class="p">(</span><span class="n">compound</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">grouping</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">grouping</span><span class="si">}</span><span class="s2"> is not a valid value for grouping.&quot;</span>
+            <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">group</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ags</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">grouping</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ags</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">wrap</span><span class="p">(</span><span class="n">compound</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">grouping</span><span class="p">)</span>
-
         <span class="c1"># Find position of atom/group of atoms</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">grouping</span> <span class="o">==</span> <span class="s2">&quot;atoms&quot;</span><span class="p">:</span>
             <span class="n">positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ags</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">positions</span>  <span class="c1"># faster for atoms</span>
@@ -514,7 +572,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2025, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Pavel Buslaev, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Matthew Davies, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Abdulrahman Elbanna, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, BHM-Bob G, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Alia Lescoulie, Zhenbo Li, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Kurt McKee, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Debasish Mohanty, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Namir Oues, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, James Rowe, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Laksh Krishna Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Brigitta Sipőcz, Paul Smith, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Joshua Raphael Uy, Heet Vekariya, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Lexi Xu, Zhuyi Xue, Mingyi Xue, Alexander Yang, Yu-Yuan (Stuart) Yang, Tanish Yelgoe, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Jia-Xin Zhu, Yuxuan Zhuang, Fabian Zills, and Oliver Beckstein.</p>
+    <p>&#169; Copyright 2005-2025, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Pavel Buslaev, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Matthew Davies, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Abdulrahman Elbanna, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, BHM-Bob G, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Alia Lescoulie, Zhenbo Li, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Kurt McKee, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Debasish Mohanty, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Namir Oues, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, James Rowe, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Laksh Krishna Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Brigitta Sipőcz, Paul Smith, Tulga-Erdene Sodjargal, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Joshua Raphael Uy, Heet Vekariya, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Lexi Xu, Zhuyi Xue, Mingyi Xue, Alexander Yang, Yu-Yuan (Stuart) Yang, Tanish Yelgoe, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Jia-Xin Zhu, Yuxuan Zhuang, Fabian Zills, and Oliver Beckstein.</p>
   </div>
 
   
