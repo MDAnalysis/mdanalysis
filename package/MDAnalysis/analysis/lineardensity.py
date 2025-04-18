@@ -190,10 +190,9 @@ class LinearDensity(AnalysisBase):
           densities and can be used for easier plotting of histogram data.
 
     .. versionchanged:: 2.10.0
-       Introduced :meth:`get_supported_backends` allowing
-       for parallel execution on :mod:`multiprocessing`
-       and :mod:`dask` backends.
-
+       *  Introduced :meth:`get_supported_backends` allowing for parallel execution
+          on :mod:`multiprocessing` and :mod:`dask` backends.
+       *  Removed undocumented and unused attribute :attr:`totalmass`.
 
     .. deprecated:: 2.2.0
        The `results` dictionary has been changed and the attributes
@@ -271,8 +270,6 @@ class LinearDensity(AnalysisBase):
             raise AttributeError(
                 f"{self.grouping} is not a valid value for grouping."
             )
-
-        self.totalmass = np.sum(self.masses)
 
     @staticmethod
     def _custom_aggregator(results):

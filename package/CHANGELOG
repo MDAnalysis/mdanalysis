@@ -50,6 +50,8 @@ Enhancements
    (Issue #4678, PR #5007)
 
 Changes
+ * Removed undocumented and unused attribute
+   `analysis.lineardensity.LinearDensity.totalmass` (PR #5007)
 
 Deprecations
 
