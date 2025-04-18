@@ -258,7 +258,7 @@ class LinearDensity(AnalysisBase):
             for key in self.keys:
                 self.results[dim][key] = np.zeros(self.nbins)
 
-        # Get masses and charges for the selection
+        # Get masses and charges for the selection (e.g. UpdatingAtomGroup)
         if self.grouping == "atoms":
             self.masses = self._ags[0].masses
             self.charges = self._ags[0].charges
