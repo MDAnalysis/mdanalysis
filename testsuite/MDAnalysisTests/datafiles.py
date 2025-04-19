@@ -96,6 +96,7 @@ __all__ = [
     "PDB_xvf",
     "TPR_xvf",
     "TRR_xvf",  # Gromacs coords/veloc/forces (cobrotoxin, OPLS-AA, Gromacs 4.5.5 tpr)
+    "TPR_xvf_2024_4",
     "H5MD_xvf",  # TPR_xvf + TRR_xvf converted to h5md format
     "H5MD_energy",  # H5MD trajectory with observables/atoms/energy
     "H5MD_malformed",  # H5MD trajectory with malformed observable group
@@ -491,38 +492,48 @@ PDB_CRYOEM_BOX = (_data_ref / "5a7u.pdb").as_posix()
 PDB_CHECK_RIGHTHAND_PA = (_data_ref / "6msm.pdb.bz2").as_posix()
 FHIAIMS = (_data_ref / "fhiaims.in").as_posix()
 
-GRO = (_data_ref / 'adk_oplsaa.gro').as_posix()
-GRO_velocity = (_data_ref / 'sample_velocity_file.gro').as_posix()
-GRO_incomplete_vels = (_data_ref / 'grovels.gro').as_posix()
-GRO_large = (_data_ref / 'bigbox.gro.bz2').as_posix()
-GRO_residwrap = (_data_ref / 'residwrap.gro').as_posix()
-GRO_residwrap_0base = (_data_ref / 'residwrap_0base.gro').as_posix()
-GRO_sameresid_diffresname = (_data_ref / 'sameresid_diffresname.gro').as_posix()
-PDB = (_data_ref / 'adk_oplsaa.pdb').as_posix()
-XTC = (_data_ref / 'adk_oplsaa.xtc').as_posix()
-TRR = (_data_ref / 'adk_oplsaa.trr').as_posix()
-TPR = (_data_ref / 'adk_oplsaa.tpr').as_posix()
-PDB_sub_dry = (_data_ref / 'cobrotoxin_dry_neutral_0.pdb').as_posix()
-TRR_sub_sol = (_data_ref / 'cobrotoxin.trr').as_posix()
-XTC_sub_sol = (_data_ref / 'cobrotoxin.xtc').as_posix()
-PDB_sub_sol = (_data_ref / 'cobrotoxin.pdb').as_posix()
-PDB_xlserial = (_data_ref / 'xl_serial.pdb').as_posix()
-GRO_MEMPROT = (_data_ref / 'analysis/YiiP_lipids.gro.gz').as_posix()
-XTC_MEMPROT = (_data_ref / 'analysis/YiiP_lipids.xtc').as_posix()
-XTC_multi_frame = (_data_ref / 'xtc_test_only_10_frame_10_atoms.xtc').as_posix()
-TRR_multi_frame = (_data_ref / 'trr_test_only_10_frame_10_atoms.trr').as_posix()
-TNG_traj = (_data_ref / 'argon_npt_compressed.tng').as_posix()
-TNG_traj_gro = (_data_ref / 'argon_npt_compressed.gro.gz').as_posix()
-TNG_traj_uneven_blocks = (_data_ref / 'argon_npt_compressed_uneven.tng').as_posix()
-TNG_traj_vels_forces = (_data_ref / 'argon_npt_compressed_vels_forces.tng').as_posix()
-PDB_xvf = (_data_ref / 'cobrotoxin.pdb').as_posix()
-TPR_xvf = (_data_ref / 'cobrotoxin.tpr').as_posix()
-TPR_xvf_2024_4 = (_data_ref / 'cobrotoxin_2024_4.tpr').as_posix()
-TRR_xvf = (_data_ref / 'cobrotoxin.trr').as_posix()
-H5MD_xvf = (_data_ref / 'cobrotoxin.h5md').as_posix()
-H5MD_energy = (_data_ref / 'cu.h5md').as_posix()
-H5MD_malformed = (_data_ref / 'cu_malformed.h5md').as_posix()
-XVG_BZ2 = (_data_ref / 'cobrotoxin_protein_forces.xvg.bz2').as_posix()
+GRO = (_data_ref / "adk_oplsaa.gro").as_posix()
+GRO_velocity = (_data_ref / "sample_velocity_file.gro").as_posix()
+GRO_incomplete_vels = (_data_ref / "grovels.gro").as_posix()
+GRO_large = (_data_ref / "bigbox.gro.bz2").as_posix()
+GRO_residwrap = (_data_ref / "residwrap.gro").as_posix()
+GRO_residwrap_0base = (_data_ref / "residwrap_0base.gro").as_posix()
+GRO_sameresid_diffresname = (
+    _data_ref / "sameresid_diffresname.gro"
+).as_posix()
+PDB = (_data_ref / "adk_oplsaa.pdb").as_posix()
+XTC = (_data_ref / "adk_oplsaa.xtc").as_posix()
+TRR = (_data_ref / "adk_oplsaa.trr").as_posix()
+TPR = (_data_ref / "adk_oplsaa.tpr").as_posix()
+PDB_sub_dry = (_data_ref / "cobrotoxin_dry_neutral_0.pdb").as_posix()
+TRR_sub_sol = (_data_ref / "cobrotoxin.trr").as_posix()
+XTC_sub_sol = (_data_ref / "cobrotoxin.xtc").as_posix()
+PDB_sub_sol = (_data_ref / "cobrotoxin.pdb").as_posix()
+PDB_xlserial = (_data_ref / "xl_serial.pdb").as_posix()
+GRO_MEMPROT = (_data_ref / "analysis/YiiP_lipids.gro.gz").as_posix()
+XTC_MEMPROT = (_data_ref / "analysis/YiiP_lipids.xtc").as_posix()
+XTC_multi_frame = (
+    _data_ref / "xtc_test_only_10_frame_10_atoms.xtc"
+).as_posix()
+TRR_multi_frame = (
+    _data_ref / "trr_test_only_10_frame_10_atoms.trr"
+).as_posix()
+TNG_traj = (_data_ref / "argon_npt_compressed.tng").as_posix()
+TNG_traj_gro = (_data_ref / "argon_npt_compressed.gro.gz").as_posix()
+TNG_traj_uneven_blocks = (
+    _data_ref / "argon_npt_compressed_uneven.tng"
+).as_posix()
+TNG_traj_vels_forces = (
+    _data_ref / "argon_npt_compressed_vels_forces.tng"
+).as_posix()
+PDB_xvf = (_data_ref / "cobrotoxin.pdb").as_posix()
+TPR_xvf = (_data_ref / "cobrotoxin.tpr").as_posix()
+TPR_xvf_2024_4 = (_data_ref / "cobrotoxin_2024_4.tpr").as_posix()
+TRR_xvf = (_data_ref / "cobrotoxin.trr").as_posix()
+H5MD_xvf = (_data_ref / "cobrotoxin.h5md").as_posix()
+H5MD_energy = (_data_ref / "cu.h5md").as_posix()
+H5MD_malformed = (_data_ref / "cu_malformed.h5md").as_posix()
+XVG_BZ2 = (_data_ref / "cobrotoxin_protein_forces.xvg.bz2").as_posix()
 
 XPDB_small = (_data_ref / "5digitResid.pdb").as_posix()
 # number is the gromacs version

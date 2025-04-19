@@ -72,6 +72,6 @@ class TPRReader(base.SingleFrameReaderBase):
             self.ts._pos = np.asarray(tpr_utils.ndo_rvec(data, th.natoms),
                                       dtype=np.float32)
         if th.bV:
-            self.ts._velocities = np.asarray(tpr_utils.ndo_rvec(data, th.natoms),
-                                             dtype=np.float32)
+            self.ts.velocities = np.asarray(tpr_utils.ndo_rvec(data, th.natoms),
+                                            dtype=np.float32)
             self.ts.has_velocities = True
