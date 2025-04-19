@@ -463,7 +463,16 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
         im_excl_grp_size = data.unpack_int()
         ndo_int(data, im_excl_grp_size)
         # TODO: why is this needed?
-        data.unpack_int()
+        # NOTE: this `mystery_n` value is at least sometimes used
+        # for tpx >= 137, but is often 0 otherwise
+        mystery_n = data.unpack_int()
+        if fver >= 137:
+            # NOTE: Tyler observed that the first float32
+            # positional coordinate was offset by `mystery_n`
+            # 32-bit units in a sample tpx 137 tpr file
+            # by empirical testing
+            for i in range(mystery_n):
+                data.unpack_int()
 
     return top
 
