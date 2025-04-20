@@ -290,7 +290,7 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
     # mtop: the topology of the whole system
     symtab = do_symtab(data)
     do_symstr(data, symtab)  # system_name
-    do_ffparams(data, fver)  # params
+    ff_params = do_ffparams(data, fver)  # params
 
     nmoltype = data.unpack_int()
     moltypes = []  # non-gromacs
@@ -433,7 +433,7 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
     # src/gromacs/fileio/tpxio.cpp
     # TODO: expand tpx version support for striding to
     # the coordinates
-    if fver >= 129:
+    if fver >= 127:
         # TODO: the following value is important, and not sure
         # how to access programmatically yet...
         # from GMX source code:
@@ -442,6 +442,15 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
         # tpx/GMX version?
         SimulationAtomGroupType_size = 10
         n_atoms = data.unpack_int()
+        atnr = ff_params.atnr
+        if fver < 129:
+            # NOTE: speculative, Tyler did this by
+            # inspecting binary data and relative file offsets
+            # for older tpr files relative to more recent;
+            # the stride skip appears related to `atnr` in GMX source, the
+            # number of non-bonded atom types
+            for i in range(atnr + 1):
+                data.unpack_int()
         interm = data.unpack_uchar()
         ngrid = data.unpack_int()
         grid_spacing = data.unpack_int()
