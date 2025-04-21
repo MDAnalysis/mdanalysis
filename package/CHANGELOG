@@ -48,6 +48,7 @@ Enhancements
    (Issue #4948 #2874, PR #4965)
  * Enables parallelization for analysis.lineardensity.LinearDensity
    (Issue #4678, PR #5007)
+ * Remove `default` channel from RTD conda env. (Issue # 5036, PR # 5037)
 
 Changes
  * Removed undocumented and unused attribute
