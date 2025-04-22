@@ -433,7 +433,7 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
     # src/gromacs/fileio/tpxio.cpp
     # TODO: expand tpx version support for striding to
     # the coordinates
-    if fver >= 122:
+    if fver >= 119:
         # TODO: the following value is important, and not sure
         # how to access programmatically yet...
         # from GMX source code:
@@ -469,12 +469,13 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
             if n_grp_numbers != 0:
                 for i in range(n_grp_numbers):
                     data.unpack_uchar()
-        im_excl_grp_size = data.unpack_int()
-        ndo_int(data, im_excl_grp_size)
-        # TODO: why is this needed?
-        # NOTE: this `mystery_n` value is at least sometimes used
-        # for tpx >= 137, but is often 0 otherwise
-        mystery_n = data.unpack_int()
+        if fver > 119:
+            im_excl_grp_size = data.unpack_int()
+            ndo_int(data, im_excl_grp_size)
+            # TODO: why is this needed?
+            # NOTE: this `mystery_n` value is at least sometimes used
+            # for tpx >= 137, but is often 0 otherwise
+            mystery_n = data.unpack_int()
         if fver >= 137:
             # NOTE: Tyler observed that the first float32
             # positional coordinate was offset by `mystery_n`
