@@ -433,7 +433,8 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
     # src/gromacs/fileio/tpxio.cpp
     # TODO: expand tpx version support for striding to
     # the coordinates
-    if fver >= 119:
+    atnr = ff_params.atnr
+    if fver >= 112:
         # TODO: the following value is important, and not sure
         # how to access programmatically yet...
         # from GMX source code:
@@ -442,7 +443,9 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
         # tpx/GMX version?
         SimulationAtomGroupType_size = 10
         n_atoms = data.unpack_int()
-        atnr = ff_params.atnr
+        if fver < 116:
+            for i in range(3 * atnr):
+                data.unpack_int()
         if fver < 129:
             # NOTE: speculative, Tyler did this by
             # inspecting binary data and relative file offsets
@@ -451,7 +454,11 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
             # number of non-bonded atom types
             for i in range(atnr + 1):
                 data.unpack_int()
+
         interm = data.unpack_uchar()
+        if fver < 116:
+            for i in range(2 * atnr):
+                data.unpack_int()
         ngrid = data.unpack_int()
         grid_spacing = data.unpack_int()
         n_elements = grid_spacing ** 2
