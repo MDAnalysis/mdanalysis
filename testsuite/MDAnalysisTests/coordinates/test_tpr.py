@@ -14,6 +14,10 @@ from MDAnalysisTests.datafiles import (
     TPR2019B3_bonded,
     TPR2018,
     TPR2018_bonded,
+    TPR2016,
+    TPR2016_bonded,
+    TPR510,
+    TPR510_bonded,
     TPR_xvf_2024_4,
     TPR_NNPOT_2025_0,
 )
@@ -164,6 +168,38 @@ from numpy.testing import assert_allclose, assert_equal
         ),
         (
             TPR2018_bonded,  # tpx 112
+            [4.446, 4.659, 2.384],
+            [4.446, 4.659, 2.384],
+            (14, 3),
+            np.zeros(3),
+            np.zeros(3),
+        ),
+        (
+            TPR2016,  # tpx 110
+            [3.25000e-01, 1.00400e00, 1.03800e00],
+            [-2.56000e-01, 1.37300e00, 3.59800e00],
+            (2263, 3),
+            np.zeros(3),
+            np.zeros(3),
+        ),
+        (
+            TPR2016_bonded,  # tpx 110
+            [4.446, 4.659, 2.384],
+            [4.446, 4.659, 2.384],
+            (14, 3),
+            np.zeros(3),
+            np.zeros(3),
+        ),
+        (
+            TPR510,  # tpx 103
+            [3.25000e-01, 1.00400e00, 1.03800e00],
+            [-2.56000e-01, 1.37300e00, 3.59800e00],
+            (2263, 3),
+            np.zeros(3),
+            np.zeros(3),
+        ),
+        (
+            TPR510_bonded,  # tpx 103
             [4.446, 4.659, 2.384],
             [4.446, 4.659, 2.384],
             (14, 3),
