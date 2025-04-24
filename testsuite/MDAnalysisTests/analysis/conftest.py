@@ -17,6 +17,7 @@ from MDAnalysis.analysis.hydrogenbonds.hbond_analysis import (
 from MDAnalysis.analysis.nucleicacids import NucPairDist
 from MDAnalysis.analysis.contacts import Contacts
 from MDAnalysis.analysis.density import DensityAnalysis
+from MDAnalysis.analysis.lineardensity import LinearDensity
 from MDAnalysis.lib.util import is_installed
 
 
@@ -175,4 +176,12 @@ def client_Contacts(request):
 
 @pytest.fixture(scope="module", params=params_for_cls(DensityAnalysis))
 def client_DensityAnalysis(request):
+    return request.param
+
+
+# MDAnalysis.analysis.lineardensity
+
+
+@pytest.fixture(scope="module", params=params_for_cls(LinearDensity))
+def client_LinearDensity(request):
     return request.param

@@ -15,7 +15,8 @@ The rules for this file:
 
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, orbeckst, BHM-Bob, TRY-ER, Abdulrahman-PROG, pbuslaev,
-         yuxuanzhuang, yuyuan871111, tanishy7777
+         yuxuanzhuang, yuyuan871111, tanishy7777, tulga-rdn
+
 
 
  * 2.10.0
@@ -30,6 +31,9 @@ Fixes
  * Reads `segids` column in `PDBParser` from 73-76 instead of 67-76 to 
    align the standard of a PDBReader (e.g., Chimera, CHARMM, Gemmi). 
    (Issue #4948, PR #5001)
+ * Fixes the benchmark `SimpleRmsBench` in `benchmarks/analysis/rms.py`
+   by changing the way weights for RMSD are calculated, instead of
+   directly passing them. (Issue #3520, PR #5006)
 
 Enhancements
  * Improve parsing of topology information from LAMMPS dump files to allow
@@ -45,8 +49,12 @@ Enhancements
    (Issue #4948 #2874, PR #4965)
  * Improves performance of `between` keyword for HydrogenBondAnalysis.
    (Issue #4130, PR #5029)
+ * Enables parallelization for analysis.lineardensity.LinearDensity
+   (Issue #4678, PR #5007)
 
 Changes
+ * Removed undocumented and unused attribute
+   `analysis.lineardensity.LinearDensity.totalmass` (PR #5007)
 
 Deprecations
 
