@@ -47,10 +47,10 @@ Enhancements
    force the use of ChainID as the segID when reading PDB (it is helpful 
    if the segment IDs (segids) are partially missing in the PDB file). 
    (Issue #4948 #2874, PR #4965)
- * Improves performance of `between` keyword for HydrogenBondAnalysis.
-   (Issue #4130, PR #5029)
  * Enables parallelization for analysis.lineardensity.LinearDensity
    (Issue #4678, PR #5007)
+ * Improves performance of `between` keyword for HydrogenBondAnalysis.
+   (Issue #4130, PR #5029)
 
 Changes
  * Removed undocumented and unused attribute
