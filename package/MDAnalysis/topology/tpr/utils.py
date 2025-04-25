@@ -434,7 +434,7 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
     # TODO: expand tpx version support for striding to
     # the coordinates
     atnr = ff_params.atnr
-    if fver >= 103:
+    if fver >= 100:
         # TODO: the following value is important, and not sure
         # how to access programmatically yet...
         # from GMX source code:
