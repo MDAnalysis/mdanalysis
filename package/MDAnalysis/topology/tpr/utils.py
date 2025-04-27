@@ -74,6 +74,8 @@ from ...core.topologyattrs import (
     Impropers,
 )
 
+global_precision = 4
+
 
 class TPXUnpacker(xdrlib.Unpacker):
     """
@@ -224,10 +226,12 @@ def read_tpxheader(data):
     """this function is now compatible with do_tpxheader in tpxio.cpp
     """
     # Last compatibility check with gromacs-2016
+    global global_precision
     ver_str = data.do_string()  # version string e.g. VERSION 4.0.5
     if not ver_str.startswith(b'VERSION'):
         raise ValueError('Input does not look like a TPR file.')
     precision = data.unpack_int()  # e.g. 4
+    global_precision = precision
     define_unpack_real(precision, data)
     fileVersion = data.unpack_int()  # version of tpx file
     fileVersion_err(fileVersion)
@@ -434,7 +438,7 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
     # TODO: expand tpx version support for striding to
     # the coordinates
     atnr = ff_params.atnr
-    if fver >= 100:
+    if fver >= 58:
         # TODO: the following value is important, and not sure
         # how to access programmatically yet...
         # from GMX source code:
@@ -444,7 +448,7 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
         SimulationAtomGroupType_size = 10
         n_atoms = data.unpack_int()
         if fver < 116:
-            for i in range(3 * atnr):
+            for i in range(3 * atnr * int(global_precision / 4)):
                 data.unpack_int()
         if fver < 129:
             # NOTE: speculative, Tyler did this by
@@ -455,16 +459,21 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
             for i in range(atnr + 1):
                 data.unpack_int()
 
-        interm = data.unpack_uchar()
-        if fver < 116:
+        if 58 < fver <= 83:
+            for i in range(atnr * int(global_precision / 4) * 2):
+                data.unpack_int()
+        if fver > 83:
+            interm = data.unpack_uchar()
+        if 83 < fver < 116:
             for i in range(2 * atnr):
                 data.unpack_int()
-        ngrid = data.unpack_int()
-        grid_spacing = data.unpack_int()
-        n_elements = grid_spacing ** 2
-        for i in range(ngrid):
-            for j in range(n_elements):
-                ndo_real(data, 4)
+        if fver > 58:
+            ngrid = data.unpack_int()
+            grid_spacing = data.unpack_int()
+            n_elements = grid_spacing ** 2
+            for i in range(ngrid):
+                for j in range(n_elements):
+                    ndo_real(data, 4)
         for i in range(SimulationAtomGroupType_size):
             group_size = data.unpack_int()
             ndo_int(data, group_size)
