@@ -149,8 +149,9 @@ class TestCappedDistances(object):
     @pytest.mark.parametrize("box", boxes_1)
     @pytest.mark.parametrize("method", method_1)
     @pytest.mark.parametrize("min_cutoff", min_cutoff_1)
+    @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_capped_distance_checkbrute(
-        self, npoints, box, method, min_cutoff, query, request
+        self, npoints, box, method, min_cutoff, query, request, backend
     ):
         q = request.getfixturevalue(query)
         np.random.seed(90003)
@@ -168,6 +169,7 @@ class TestCappedDistances(object):
             min_cutoff=min_cutoff,
             box=box,
             method=method,
+            backend=backend,
         )
 
         if pairs.shape != (0,):
@@ -196,8 +198,9 @@ class TestCappedDistances(object):
     @pytest.mark.parametrize("box", boxes_1)
     @pytest.mark.parametrize("method", method_1)
     @pytest.mark.parametrize("min_cutoff", min_cutoff_1)
+    @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_capped_distance_return(
-        self, npoints, box, query, request, method, min_cutoff
+        self, npoints, box, query, request, method, min_cutoff, backend
     ):
         q = request.getfixturevalue(query)
         np.random.seed(90003)
@@ -216,6 +219,7 @@ class TestCappedDistances(object):
             box=box,
             method=method,
             return_distances=False,
+            backend=backend,
         )
 
         if pairs.shape != (0,):
@@ -254,8 +258,9 @@ class TestCappedDistances(object):
     @pytest.mark.parametrize("min_cutoff", min_cutoff_1)
     @pytest.mark.parametrize("ret_dist", (False, True))
     @pytest.mark.parametrize("atomgroup", (False, True))
+    @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_self_capped_distance(
-        self, npoints, box, method, min_cutoff, ret_dist, atomgroup
+        self, npoints, box, method, min_cutoff, ret_dist, atomgroup, backend
     ):
         points = self.points_or_ag_self_capped(npoints, atomgroup=atomgroup)
         max_cutoff = 0.2
@@ -266,6 +271,7 @@ class TestCappedDistances(object):
             box=box,
             method=method,
             return_distances=ret_dist,
+            backend=backend,
         )
         if ret_dist:
             pairs, cdists = result
@@ -1903,7 +1909,7 @@ class TestInputUnchanged(object):
         return [u.atoms for u in universes]
 
     @pytest.mark.parametrize("box", boxes)
-    @pytest.mark.parametrize("backend", ["serial", "openmp"])
+    @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_input_unchanged_distance_array(self, coords, box, backend):
         crds = coords[:2]
         refs = [crd.copy() for crd in crds]
@@ -1913,7 +1919,7 @@ class TestInputUnchanged(object):
         assert_equal(crds, refs)
 
     @pytest.mark.parametrize("box", boxes)
-    @pytest.mark.parametrize("backend", ["serial", "openmp"])
+    @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_input_unchanged_distance_array_atomgroup(
         self, coords_atomgroups, box, backend
     ):
@@ -1925,7 +1931,7 @@ class TestInputUnchanged(object):
         assert_equal([crd.positions for crd in crds], refs)
 
     @pytest.mark.parametrize("box", boxes)
-    @pytest.mark.parametrize("backend", ["serial", "openmp"])
+    @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_input_unchanged_self_distance_array(self, coords, box, backend):
         crd = coords[0]
         ref = crd.copy()
@@ -1933,7 +1939,7 @@ class TestInputUnchanged(object):
         assert_equal(crd, ref)
 
     @pytest.mark.parametrize("box", boxes)
-    @pytest.mark.parametrize("backend", ["serial", "openmp"])
+    @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_input_unchanged_self_distance_array_atomgroup(
         self, coords_atomgroups, box, backend
     ):
@@ -1944,22 +1950,31 @@ class TestInputUnchanged(object):
 
     @pytest.mark.parametrize("box", boxes)
     @pytest.mark.parametrize("met", ["bruteforce", "pkdtree", "nsgrid", None])
-    def test_input_unchanged_capped_distance(self, coords, box, met):
+    @pytest.mark.parametrize("backend", distopia_conditional_backend())
+    def test_input_unchanged_capped_distance(self, coords, box, met, backend):
         crds = coords[:2]
         refs = [crd.copy() for crd in crds]
         res = distances.capped_distance(
-            crds[0], crds[1], max_cutoff=0.3, box=box, method=met
+            crds[0],
+            crds[1],
+            max_cutoff=0.3,
+            box=box,
+            method=met,
+            backend=backend,
         )
         assert_equal(crds, refs)
 
     @pytest.mark.parametrize("box", boxes)
     @pytest.mark.parametrize("met", ["bruteforce", "pkdtree", "nsgrid", None])
-    def test_input_unchanged_self_capped_distance(self, coords, box, met):
+    @pytest.mark.parametrize("backend", distopia_conditional_backend())
+    def test_input_unchanged_self_capped_distance(
+        self, coords, box, met, backend
+    ):
         crd = coords[0]
         ref = crd.copy()
         r_cut = 0.25
         res = distances.self_capped_distance(
-            crd, max_cutoff=r_cut, box=box, method=met
+            crd, max_cutoff=r_cut, box=box, method=met, backend=backend
         )
         assert_equal(crd, ref)
 
@@ -2108,8 +2123,9 @@ class TestEmptyInputCoordinates(object):
     @pytest.mark.parametrize("min_cut", [min_cut, None])
     @pytest.mark.parametrize("ret_dist", [False, True])
     @pytest.mark.parametrize("met", ["bruteforce", "pkdtree", "nsgrid", None])
+    @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_empty_input_capped_distance(
-        self, empty_coord, min_cut, box, met, ret_dist
+        self, empty_coord, min_cut, box, met, ret_dist, backend
     ):
         res = distances.capped_distance(
             empty_coord,
@@ -2119,6 +2135,7 @@ class TestEmptyInputCoordinates(object):
             box=box,
             method=met,
             return_distances=ret_dist,
+            backend=backend,
         )
         if ret_dist:
             assert_equal(res[0], np.empty((0, 2), dtype=np.int64))
@@ -2130,8 +2147,9 @@ class TestEmptyInputCoordinates(object):
     @pytest.mark.parametrize("min_cut", [min_cut, None])
     @pytest.mark.parametrize("ret_dist", [False, True])
     @pytest.mark.parametrize("met", ["bruteforce", "pkdtree", "nsgrid", None])
+    @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_empty_input_self_capped_distance(
-        self, empty_coord, min_cut, box, met, ret_dist
+        self, empty_coord, min_cut, box, met, ret_dist, backend
     ):
         res = distances.self_capped_distance(
             empty_coord,
@@ -2140,6 +2158,7 @@ class TestEmptyInputCoordinates(object):
             box=box,
             method=met,
             return_distances=ret_dist,
+            backend=backend,
         )
         if ret_dist:
             assert_equal(res[0], np.empty((0, 2), dtype=np.int64))
@@ -2244,7 +2263,7 @@ class TestOutputTypes(object):
 
     @pytest.mark.parametrize("box", boxes)
     @pytest.mark.parametrize("incoords", list(comb(coords, 2)))
-    @pytest.mark.parametrize("backend", ["serial", "openmp"])
+    @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_output_type_distance_array(self, incoords, box, backend):
         res = distances.distance_array(*incoords, box=box, backend=backend)
         assert type(res) == np.ndarray
@@ -2256,7 +2275,7 @@ class TestOutputTypes(object):
 
     @pytest.mark.parametrize("box", boxes)
     @pytest.mark.parametrize("incoords", coords)
-    @pytest.mark.parametrize("backend", ["serial", "openmp"])
+    @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_output_type_self_distance_array(self, incoords, box, backend):
         res = distances.self_distance_array(incoords, box=box, backend=backend)
         assert type(res) == np.ndarray
@@ -2268,8 +2287,9 @@ class TestOutputTypes(object):
     @pytest.mark.parametrize("ret_dist", [False, True])
     @pytest.mark.parametrize("incoords", list(comb(coords, 2)))
     @pytest.mark.parametrize("met", ["bruteforce", "pkdtree", "nsgrid", None])
+    @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_output_type_capped_distance(
-        self, incoords, min_cut, box, met, ret_dist
+        self, incoords, min_cut, box, met, ret_dist, backend
     ):
         res = distances.capped_distance(
             *incoords,
@@ -2278,6 +2298,7 @@ class TestOutputTypes(object):
             box=box,
             method=met,
             return_distances=ret_dist,
+            backend=backend,
         )
         if ret_dist:
             pairs, dist = res
@@ -2297,8 +2318,9 @@ class TestOutputTypes(object):
     @pytest.mark.parametrize("ret_dist", [False, True])
     @pytest.mark.parametrize("incoords", coords)
     @pytest.mark.parametrize("met", ["bruteforce", "pkdtree", "nsgrid", None])
+    @pytest.mark.parametrize("backend", distopia_conditional_backend())
     def test_output_type_self_capped_distance(
-        self, incoords, min_cut, box, met, ret_dist
+        self, incoords, min_cut, box, met, ret_dist, backend
     ):
         res = distances.self_capped_distance(
             incoords,
@@ -2307,6 +2329,7 @@ class TestOutputTypes(object):
             box=box,
             method=met,
             return_distances=ret_dist,
+            backend=backend,
         )
         if ret_dist:
             pairs, dist = res

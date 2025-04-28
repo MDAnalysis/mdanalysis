@@ -26,8 +26,18 @@ from numpy.testing import assert_allclose, assert_almost_equal
 
 import MDAnalysis as mda
 from MDAnalysis.analysis.rdf import InterRDF_s, InterRDF
+from MDAnalysis.lib.distances import HAS_DISTOPIA
 
 from MDAnalysisTests.datafiles import GRO_MEMPROT, XTC_MEMPROT
+
+
+def distopia_conditional_backend():
+    # functions that allow distopia acceleration need to be tested with
+    # distopia backend argument but distopia is an optional dep.
+    if HAS_DISTOPIA:
+        return ["serial", "openmp", "distopia"]
+    else:
+        return ["serial", "openmp"]
 
 
 @pytest.fixture(scope="module")
@@ -171,3 +181,9 @@ def test_rdf_attr_warning(rdf, attr):
     wmsg = f"The `{attr}` attribute was deprecated in MDAnalysis 2.0.0"
     with pytest.warns(DeprecationWarning, match=wmsg):
         getattr(rdf, attr) is rdf.results[attr]
+
+
+@pytest.mark.parametrize("backend", distopia_conditional_backend())
+def test_backend(u, sels, backend):
+    rdf = InterRDF_s(u, sels, norm="none", backend=backend).run()
+    assert_allclose(max(rdf.results.rdf[0][0][0]), 0.6)

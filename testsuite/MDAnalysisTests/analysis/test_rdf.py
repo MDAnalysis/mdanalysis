@@ -24,10 +24,20 @@ import pytest
 
 import MDAnalysis as mda
 from MDAnalysis.analysis.rdf import InterRDF
+from MDAnalysis.lib.distances import HAS_DISTOPIA
 
 from MDAnalysisTests.datafiles import two_water_gro
 
 from numpy.testing import assert_allclose
+
+
+def distopia_conditional_backend():
+    # functions that allow distopia acceleration need to be tested with
+    # distopia backend argument but distopia is an optional dep.
+    if HAS_DISTOPIA:
+        return ["serial", "openmp", "distopia"]
+    else:
+        return ["serial", "openmp"]
 
 
 @pytest.fixture()
@@ -152,3 +162,10 @@ def test_unknown_norm(sels):
     s1, s2 = sels
     with pytest.raises(ValueError, match="invalid norm"):
         InterRDF(s1, s2, sels, norm="foo")
+
+
+@pytest.mark.parametrize("backend", distopia_conditional_backend())
+def test_norm(sels, backend):
+    s1, s2 = sels
+    rdf = InterRDF(s1, s2, norm="none", backend=backend).run()
+    assert_allclose(max(rdf.results.rdf), 4)
