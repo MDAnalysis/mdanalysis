@@ -604,7 +604,7 @@ def capped_distance(
        argument in any position and checks inputs using type hinting.
     .. versionchanged:: 2.10.0
        Added the "backend" argument to select the type of acceleration of
-       the distance calculations. 
+       the distance calculations.
     """
     if box is not None:
         box = np.asarray(box, dtype=np.float32)
@@ -796,7 +796,7 @@ def _bruteforce_capped(
        argument in any position and checks inputs using type hinting.
     .. versionchanged:: 2.10.0
        Added the "backend" argument to select the type of acceleration of
-       the distance calculations. 
+       the distance calculations.
     """
     # Default return values (will be overwritten only if pairs are found):
     pairs = np.empty((0, 2), dtype=np.intp)
@@ -898,7 +898,7 @@ def _pkdtree_capped(
        argument in any position and checks inputs using type hinting.
     .. versionchanged:: 2.10.0
        Added the "backend" argument to select the type of acceleration of
-       the distance calculations. 
+       the distance calculations.
     """
     from .pkdtree import (
         PeriodicKDTree,
@@ -1151,7 +1151,7 @@ def self_capped_distance(
        argument in any position and checks inputs using type hinting.
     .. versionchanged:: 2.10.0
        Added the "backend" argument to select the type of acceleration of
-       the distance calculations. 
+       the distance calculations.
     """
     if box is not None:
         box = np.asarray(box, dtype=np.float32)
@@ -1414,7 +1414,7 @@ def _pkdtree_capped_self(
        argument in any position and checks inputs using type hinting.
     .. versionchanged:: 2.10.0
        Added the "backend" argument to select the type of acceleration of
-       the distance calculations. 
+       the distance calculations.
     """
     from .pkdtree import (
         PeriodicKDTree,
