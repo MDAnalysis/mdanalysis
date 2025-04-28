@@ -803,7 +803,9 @@ def _bruteforce_capped(
     distances = np.empty((0,), dtype=np.float64)
 
     if len(reference) > 0 and len(configuration) > 0:
-        _distances = distance_array(reference, configuration, box=box, backend=backend)
+        _distances = distance_array(
+            reference, configuration, box=box, backend=backend
+        )
         if min_cutoff is not None:
             mask = np.where(
                 (_distances <= max_cutoff) & (_distances > min_cutoff)
@@ -918,8 +920,10 @@ def _pkdtree_capped(
             if return_distances or (min_cutoff is not None):
                 refA, refB = pairs[:, 0], pairs[:, 1]
                 distances = calc_bonds(
-                    reference[refA], configuration[refB], box=box,
-                    backend=backend
+                    reference[refA],
+                    configuration[refB],
+                    box=box,
+                    backend=backend,
                 )
                 if min_cutoff is not None:
                     mask = np.where(distances > min_cutoff)
@@ -1436,8 +1440,7 @@ def _pkdtree_capped_self(
             if return_distances or (min_cutoff is not None):
                 refA, refB = pairs[:, 0], pairs[:, 1]
                 distances = calc_bonds(
-                    reference[refA], reference[refB], box=box,
-                    backend=backend
+                    reference[refA], reference[refB], box=box, backend=backend
                 )
                 if min_cutoff is not None:
                     idx = distances > min_cutoff
