@@ -285,7 +285,7 @@ def distance_array(
     configuration: Union[npt.NDArray, "AtomGroup"],
     box: Optional[npt.NDArray] = None,
     result: Optional[npt.NDArray] = None,
-    backend: Optional[str] = "serial",
+    backend: str = "serial",
 ) -> npt.NDArray:
     """Calculate all possible distances between a reference set and another
     configuration.
@@ -399,7 +399,7 @@ def self_distance_array(
     reference: Union[npt.NDArray, "AtomGroup"],
     box: Optional[npt.NDArray] = None,
     result: Optional[npt.NDArray] = None,
-    backend: Optional[str] = "serial",
+    backend: str = "serial",
 ) -> npt.NDArray:
     """Calculate all possible distances within a configuration `reference`.
 
@@ -1680,7 +1680,7 @@ def calc_bonds(
     coords2: Union[npt.NDArray, "AtomGroup"],
     box: Optional[npt.NDArray] = None,
     result: Optional[npt.NDArray] = None,
-    backend: Optional[str] = "serial",
+    backend: str = "serial",
 ) -> npt.NDArray:
     """Calculates the bond lengths between pairs of atom positions from the two
     coordinate arrays `coords1` and `coords2`, which must contain the same
@@ -1794,7 +1794,7 @@ def calc_angles(
     coords3: Union[npt.NDArray, "AtomGroup"],
     box: Optional[npt.NDArray] = None,
     result: Optional[npt.NDArray] = None,
-    backend: Optional[str] = "serial",
+    backend: str = "serial",
 ) -> npt.NDArray:
     """Calculates the angles formed between triplets of atom positions from the
     three coordinate arrays `coords1`, `coords2`, and `coords3`. All coordinate
@@ -1918,7 +1918,7 @@ def calc_dihedrals(
     coords4: Union[npt.NDArray, "AtomGroup"],
     box: Optional[npt.NDArray] = None,
     result: Optional[npt.NDArray] = None,
-    backend: Optional[str] = "serial",
+    backend: str = "serial",
 ) -> npt.NDArray:
     r"""Calculates the dihedral angles formed between quadruplets of positions
     from the four coordinate arrays `coords1`, `coords2`, `coords3`, and
@@ -2052,7 +2052,7 @@ def calc_dihedrals(
 def apply_PBC(
     coords: Union[npt.NDArray, "AtomGroup"],
     box: Optional[npt.NDArray] = None,
-    backend: Optional[str] = "serial",
+    backend: str = "serial",
 ) -> npt.NDArray:
     """Moves coordinates into the primary unit cell.
 
