@@ -131,6 +131,11 @@ class InterRDF(AnalysisBase):
         spatially correlated due to direct bonded connections.
     verbose : bool
         Show detailed progress of the calculation if set to `True`
+    backend : {'serial', 'OpenMP', 'distopia'}, optional
+        Keyword selecting the type of acceleration of the distance calculations.
+        Default is 'serial'.
+
+        .. versionadded:: 2.10.0
 
     Attributes
     ----------
@@ -227,6 +232,7 @@ class InterRDF(AnalysisBase):
         norm="rdf",
         exclusion_block=None,
         exclude_same=None,
+        backend="serial",
         **kwargs,
     ):
         super(InterRDF, self).__init__(g1.universe.trajectory, **kwargs)
@@ -262,6 +268,8 @@ class InterRDF(AnalysisBase):
                 "Use 'rdf', 'density' or 'none'."
             )
 
+        self.backend = backend
+
     def _prepare(self):
         # Empty histogram to store the RDF
         count, edges = np.histogram([-1], **self.rdf_settings)
@@ -283,6 +291,7 @@ class InterRDF(AnalysisBase):
             self.g2.positions,
             self._maxrange,
             box=self._ts.dimensions,
+            backend=self.backend,
         )
         # Maybe exclude same molecule distances
         if self._exclusion_block is not None:
@@ -423,6 +432,12 @@ class InterRDF_s(AnalysisBase):
 
         .. deprecated:: 2.3.0
             Instead of `density=True` use `norm='density'`
+
+    backend : {'serial', 'OpenMP', 'distopia'}, optional
+        Keyword selecting the type of acceleration of the distance calculations.
+        Default is 'serial'.
+
+        .. versionadded:: 2.10.0
 
     Attributes
     ----------
@@ -571,6 +586,7 @@ class InterRDF_s(AnalysisBase):
         range=(0.0, 15.0),
         norm="rdf",
         density=False,
+        backend="serial",
         **kwargs,
     ):
         super(InterRDF_s, self).__init__(
@@ -603,6 +619,8 @@ class InterRDF_s(AnalysisBase):
             )
             self.norm = "density"
 
+        self.backend = backend
+
     def _prepare(self):
         count, edges = np.histogram([-1], **self.rdf_settings)
         self.results.count = [
@@ -624,6 +642,7 @@ class InterRDF_s(AnalysisBase):
                 ag2.positions,
                 self._maxrange,
                 box=self._ts.dimensions,
+                backend=self.backend,
             )
 
             for j, (idx1, idx2) in enumerate(pairs):

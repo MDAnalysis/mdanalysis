@@ -285,7 +285,7 @@ def distance_array(
     configuration: Union[npt.NDArray, "AtomGroup"],
     box: Optional[npt.NDArray] = None,
     result: Optional[npt.NDArray] = None,
-    backend: str = "serial",
+    backend: Optional[str] = "serial",
 ) -> npt.NDArray:
     """Calculate all possible distances between a reference set and another
     configuration.
@@ -399,7 +399,7 @@ def self_distance_array(
     reference: Union[npt.NDArray, "AtomGroup"],
     box: Optional[npt.NDArray] = None,
     result: Optional[npt.NDArray] = None,
-    backend: str = "serial",
+    backend: Optional[str] = "serial",
 ) -> npt.NDArray:
     """Calculate all possible distances within a configuration `reference`.
 
@@ -519,6 +519,7 @@ def capped_distance(
     box: Optional[npt.NDArray] = None,
     method: Optional[str] = None,
     return_distances: Optional[bool] = True,
+    backend: Optional[str] = "serial",
 ):
     """Calculates pairs of indices corresponding to entries in the `reference`
     and `configuration` arrays which are separated by a distance lying within
@@ -557,6 +558,8 @@ def capped_distance(
         method.
     return_distances : bool, optional
         If set to ``True``, distances will also be returned.
+    backend : {'serial', 'OpenMP', 'distopia'}, optional
+        Keyword selecting the type of acceleration.
 
     Returns
     -------
@@ -599,6 +602,9 @@ def capped_distance(
     .. versionchanged:: 2.3.0
        Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
        argument in any position and checks inputs using type hinting.
+    .. versionchanged:: 2.10.0
+       Added the "backend" argument to select the type of acceleration of
+       the distance calculations. 
     """
     if box is not None:
         box = np.asarray(box, dtype=np.float32)
@@ -629,6 +635,7 @@ def capped_distance(
         min_cutoff=min_cutoff,
         box=box,
         return_distances=return_distances,
+        backend=backend,
     )
 
 
@@ -727,6 +734,7 @@ def _bruteforce_capped(
     min_cutoff: Optional[float] = None,
     box: Optional[npt.NDArray] = None,
     return_distances: Optional[bool] = True,
+    backend: Optional[str] = "serial",
 ):
     """Capped distance evaluations using a brute force method.
 
@@ -764,6 +772,8 @@ def _bruteforce_capped(
         ``[lx, ly, lz, alpha, beta, gamma]``.
     return_distances : bool, optional
         If set to ``True``, distances will also be returned.
+    backend : {'serial', 'OpenMP', 'distopia'}, optional
+        Keyword selecting the type of acceleration.
 
     Returns
     -------
@@ -784,13 +794,16 @@ def _bruteforce_capped(
     .. versionchanged:: 2.3.0
        Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
        argument in any position and checks inputs using type hinting.
+    .. versionchanged:: 2.10.0
+       Added the "backend" argument to select the type of acceleration of
+       the distance calculations. 
     """
     # Default return values (will be overwritten only if pairs are found):
     pairs = np.empty((0, 2), dtype=np.intp)
     distances = np.empty((0,), dtype=np.float64)
 
     if len(reference) > 0 and len(configuration) > 0:
-        _distances = distance_array(reference, configuration, box=box)
+        _distances = distance_array(reference, configuration, box=box, backend=backend)
         if min_cutoff is not None:
             mask = np.where(
                 (_distances <= max_cutoff) & (_distances > min_cutoff)
@@ -823,6 +836,7 @@ def _pkdtree_capped(
     min_cutoff: Optional[float] = None,
     box: Optional[npt.NDArray] = None,
     return_distances: Optional[bool] = True,
+    backend: Optional[str] = "serial",
 ):
     """Capped distance evaluations using a KDtree method.
 
@@ -860,6 +874,8 @@ def _pkdtree_capped(
         ``[lx, ly, lz, alpha, beta, gamma]``.
     return_distances : bool, optional
         If set to ``True``, distances will also be returned.
+    backend : {'serial', 'OpenMP', 'distopia'}, optional
+        Keyword selecting the type of acceleration.
 
     Returns
     -------
@@ -880,6 +896,9 @@ def _pkdtree_capped(
     .. versionchanged:: 2.3.0
        Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
        argument in any position and checks inputs using type hinting.
+    .. versionchanged:: 2.10.0
+       Added the "backend" argument to select the type of acceleration of
+       the distance calculations. 
     """
     from .pkdtree import (
         PeriodicKDTree,
@@ -899,7 +918,8 @@ def _pkdtree_capped(
             if return_distances or (min_cutoff is not None):
                 refA, refB = pairs[:, 0], pairs[:, 1]
                 distances = calc_bonds(
-                    reference[refA], configuration[refB], box=box
+                    reference[refA], configuration[refB], box=box,
+                    backend=backend
                 )
                 if min_cutoff is not None:
                     mask = np.where(distances > min_cutoff)
@@ -1044,6 +1064,7 @@ def self_capped_distance(
     box: Optional[npt.NDArray] = None,
     method: Optional[str] = None,
     return_distances: Optional[bool] = True,
+    backend: Optional[str] = "serial",
 ):
     """Calculates pairs of indices corresponding to entries in the `reference`
     array which are separated by a distance lying within the specified
@@ -1078,6 +1099,8 @@ def self_capped_distance(
         method.
     return_distances : bool, optional
         If set to ``True``, distances will also be returned.
+    backend : {'serial', 'OpenMP', 'distopia'}, optional
+        Keyword selecting the type of acceleration.
 
     Returns
     -------
@@ -1126,6 +1149,9 @@ def self_capped_distance(
     .. versionchanged:: 2.3.0
        Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
        argument in any position and checks inputs using type hinting.
+    .. versionchanged:: 2.10.0
+       Added the "backend" argument to select the type of acceleration of
+       the distance calculations. 
     """
     if box is not None:
         box = np.asarray(box, dtype=np.float32)
@@ -1152,6 +1178,7 @@ def self_capped_distance(
         min_cutoff=min_cutoff,
         box=box,
         return_distances=return_distances,
+        backend=backend,
     )
 
 
@@ -1236,6 +1263,7 @@ def _bruteforce_capped_self(
     min_cutoff: Optional[float] = None,
     box: Optional[npt.NDArray] = None,
     return_distances: Optional[bool] = True,
+    backend: Optional[str] = "serial",
 ):
     """Capped distance evaluations using a brute force method.
 
@@ -1266,6 +1294,8 @@ def _bruteforce_capped_self(
         ``[lx, ly, lz, alpha, beta, gamma]``.
     return_distances : bool, optional
         If set to ``True``, distances will also be returned.
+    backend : {'serial', 'OpenMP', 'distopia'}, optional
+        Keyword selecting the type of acceleration.
 
     Returns
     -------
@@ -1287,6 +1317,9 @@ def _bruteforce_capped_self(
     .. versionchanged:: 2.3.0
        Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
        argument in any position and checks inputs using type hinting.
+    .. versionchanged:: 2.10.0
+       Added the "backend" argument to select the type of acceleration of
+       the distance calculations.
     """
     # Default return values (will be overwritten only if pairs are found):
     pairs = np.empty((0, 2), dtype=np.intp)
@@ -1296,7 +1329,7 @@ def _bruteforce_capped_self(
     # We're searching within a single coordinate set, so we need at least two
     # coordinates to find distances between them.
     if N > 1:
-        distvec = self_distance_array(reference, box=box)
+        distvec = self_distance_array(reference, box=box, backend=backend)
         dist = np.full((N, N), np.finfo(np.float64).max, dtype=np.float64)
         dist[np.triu_indices(N, 1)] = distvec
 
@@ -1325,6 +1358,7 @@ def _pkdtree_capped_self(
     min_cutoff: Optional[float] = None,
     box: Optional[npt.NDArray] = None,
     return_distances: Optional[bool] = True,
+    backend: Optional[str] = "serial",
 ):
     """Capped distance evaluations using a KDtree method.
 
@@ -1355,6 +1389,8 @@ def _pkdtree_capped_self(
         ``[lx, ly, lz, alpha, beta, gamma]``.
     return_distances : bool, optional
         If set to ``True``, distances will also be returned.
+    backend : {'serial', 'OpenMP', 'distopia'}, optional
+        Keyword selecting the type of acceleration.
 
     Returns
     -------
@@ -1376,6 +1412,9 @@ def _pkdtree_capped_self(
     .. versionchanged:: 2.3.0
        Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an
        argument in any position and checks inputs using type hinting.
+    .. versionchanged:: 2.10.0
+       Added the "backend" argument to select the type of acceleration of
+       the distance calculations. 
     """
     from .pkdtree import (
         PeriodicKDTree,
@@ -1397,7 +1436,8 @@ def _pkdtree_capped_self(
             if return_distances or (min_cutoff is not None):
                 refA, refB = pairs[:, 0], pairs[:, 1]
                 distances = calc_bonds(
-                    reference[refA], reference[refB], box=box
+                    reference[refA], reference[refB], box=box,
+                    backend=backend
                 )
                 if min_cutoff is not None:
                     idx = distances > min_cutoff
@@ -1616,7 +1656,7 @@ def calc_bonds(
     coords2: Union[npt.NDArray, "AtomGroup"],
     box: Optional[npt.NDArray] = None,
     result: Optional[npt.NDArray] = None,
-    backend: str = "serial",
+    backend: Optional[str] = "serial",
 ) -> npt.NDArray:
     """Calculates the bond lengths between pairs of atom positions from the two
     coordinate arrays `coords1` and `coords2`, which must contain the same
@@ -1730,7 +1770,7 @@ def calc_angles(
     coords3: Union[npt.NDArray, "AtomGroup"],
     box: Optional[npt.NDArray] = None,
     result: Optional[npt.NDArray] = None,
-    backend: str = "serial",
+    backend: Optional[str] = "serial",
 ) -> npt.NDArray:
     """Calculates the angles formed between triplets of atom positions from the
     three coordinate arrays `coords1`, `coords2`, and `coords3`. All coordinate
@@ -1854,7 +1894,7 @@ def calc_dihedrals(
     coords4: Union[npt.NDArray, "AtomGroup"],
     box: Optional[npt.NDArray] = None,
     result: Optional[npt.NDArray] = None,
-    backend: str = "serial",
+    backend: Optional[str] = "serial",
 ) -> npt.NDArray:
     r"""Calculates the dihedral angles formed between quadruplets of positions
     from the four coordinate arrays `coords1`, `coords2`, `coords3`, and
@@ -1988,7 +2028,7 @@ def calc_dihedrals(
 def apply_PBC(
     coords: Union[npt.NDArray, "AtomGroup"],
     box: Optional[npt.NDArray] = None,
-    backend: str = "serial",
+    backend: Optional[str] = "serial",
 ) -> npt.NDArray:
     """Moves coordinates into the primary unit cell.
 
