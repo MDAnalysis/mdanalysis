@@ -628,15 +628,26 @@ def capped_distance(
         box=box,
         method=method,
     )
-    return function(
-        reference,
-        configuration,
-        max_cutoff,
-        min_cutoff=min_cutoff,
-        box=box,
-        return_distances=return_distances,
-        backend=backend,
-    )
+
+    if function.__name__ == "_nsgrid_capped":
+        return function(
+            reference,
+            configuration,
+            max_cutoff,
+            min_cutoff=min_cutoff,
+            box=box,
+            return_distances=return_distances,
+        )
+    else:
+        return function(
+            reference,
+            configuration,
+            max_cutoff,
+            min_cutoff=min_cutoff,
+            box=box,
+            return_distances=return_distances,
+            backend=backend,
+        )
 
 
 def _determine_method(
@@ -1176,14 +1187,24 @@ def self_capped_distance(
         box=box,
         method=method,
     )
-    return function(
-        reference,
-        max_cutoff,
-        min_cutoff=min_cutoff,
-        box=box,
-        return_distances=return_distances,
-        backend=backend,
-    )
+
+    if function.__name__ == "_nsgrid_capped_self":
+        return function(
+            reference,
+            max_cutoff,
+            min_cutoff=min_cutoff,
+            box=box,
+            return_distances=return_distances,
+        )
+    else:
+        return function(
+            reference,
+            max_cutoff,
+            min_cutoff=min_cutoff,
+            box=box,
+            return_distances=return_distances,
+            backend=backend,
+        )
 
 
 def _determine_method_self(
