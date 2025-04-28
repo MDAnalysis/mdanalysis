@@ -15,7 +15,7 @@ The rules for this file:
 
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, orbeckst, BHM-Bob, TRY-ER, Abdulrahman-PROG, pbuslaev,
-         yuxuanzhuang, yuyuan871111, tanishy7777, tulga-rdn
+         yuxuanzhuang, yuyuan871111, tanishy7777, tulga-rdn, Gareth-elliott
 
 
  * 2.10.0
@@ -48,6 +48,8 @@ Enhancements
    (Issue #4948 #2874, PR #4965)
  * Enables parallelization for analysis.lineardensity.LinearDensity
    (Issue #4678, PR #5007)
+ * Enabled selection of backend for distance calculations in RDF classes
+   (PR #5038)
 
 Changes
  * Removed undocumented and unused attribute
