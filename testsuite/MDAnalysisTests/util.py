@@ -285,6 +285,7 @@ def get_userid():
     else:
         return os.geteuid()
 
+
 def distopia_conditional_backend():
     # functions that allow distopia acceleration need to be tested with
     # distopia backend argument but distopia is an optional dep.
