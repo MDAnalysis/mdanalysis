@@ -26,18 +26,9 @@ from numpy.testing import assert_allclose, assert_almost_equal
 
 import MDAnalysis as mda
 from MDAnalysis.analysis.rdf import InterRDF_s, InterRDF
-from MDAnalysis.lib.distances import HAS_DISTOPIA
+from MDAnalysisTests.util import distopia_conditional_backend
 
 from MDAnalysisTests.datafiles import GRO_MEMPROT, XTC_MEMPROT
-
-
-def distopia_conditional_backend():
-    # functions that allow distopia acceleration need to be tested with
-    # distopia backend argument but distopia is an optional dep.
-    if HAS_DISTOPIA:
-        return ["serial", "openmp", "distopia"]
-    else:
-        return ["serial", "openmp"]
 
 
 @pytest.fixture(scope="module")

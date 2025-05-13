@@ -32,18 +32,9 @@ import MDAnalysis
 import numpy as np
 import pytest
 from MDAnalysis.lib import distances, mdamath
-from MDAnalysis.lib.distances import HAS_DISTOPIA
 from MDAnalysis.tests.datafiles import DCD, PSF, TRIC
 from numpy.testing import assert_allclose, assert_almost_equal, assert_equal
-
-
-def distopia_conditional_backend():
-    # functions that allow distopia acceleration need to be tested with
-    # distopia backend argument but distopia is an optional dep.
-    if HAS_DISTOPIA:
-        return ["serial", "openmp", "distopia"]
-    else:
-        return ["serial", "openmp"]
+from MDAnalysisTests.util import distopia_conditional_backend
 
 
 class TestCheckResultArray(object):
