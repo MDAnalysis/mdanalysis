@@ -1,6 +1,34 @@
 """
-MDAnalysis IMDReader
-^^^^^^^^^^^^^^^^^^^^
+IMDReader --- :mod:`MDAnalysis.coordinates.IMD`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Read and analyze simulation data interactively using `IMDClient`_.
+
+.. _IMDClient: https://github.com/Becksteinlab/imdclient
+
+Units
+-----
+The units in IMDv3 are fixed.
+
+.. list-table::
+   :widths: 10 10
+   :header-rows: 1
+
+   * - Measurement
+     - Unit
+   * - Length
+     - angstrom
+   * - Velocity
+     - angstrom/picosecond
+   * - Force
+     - kilojoules/(mol*angstrom)
+   * - Time
+     - picosecond
+   * - Energy
+     - kilojoules/mol
+
+Classes
+-------
 
 .. autoclass:: IMDReader
    :members:
