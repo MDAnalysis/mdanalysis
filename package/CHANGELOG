@@ -33,6 +33,8 @@ Fixes
  * Fixes the benchmark `SimpleRmsBench` in `benchmarks/analysis/rms.py`
    by changing the way weights for RMSD are calculated, instead of
    directly passing them. (Issue #3520, PR #5006)
+ * Fixes bug in `units.py`: conversion factors for some speed units has
+   been fixed (Issue #5051)  
 
 Enhancements
  * Improve parsing of topology information from LAMMPS dump files to allow
