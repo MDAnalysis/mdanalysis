@@ -240,11 +240,11 @@ class DATAReader(base.SingleFrameReaderBase):
 
     @store_init_arguments
     def __init__(self, filename, **kwargs):
-        self.n_atoms = kwargs.pop("n_atoms", None)
-        if self.n_atoms is None:  # this should be done by parsing DATA first
+        n_atoms = kwargs.pop("n_atoms", None)
+        if n_atoms is None:  # this should be done by parsing DATA first
             raise ValueError("DATAReader requires n_atoms keyword")
         self.atom_style = kwargs.pop("atom_style", None)
-        super(DATAReader, self).__init__(filename, **kwargs)
+        super(DATAReader, self).__init__(filename, n_atoms=n_atoms, **kwargs)
 
     def _read_first_frame(self):
         with DATAParser(self.filename) as p:
