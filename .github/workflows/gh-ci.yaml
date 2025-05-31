@@ -93,9 +93,9 @@ jobs:
         # disable GSD because it occasionally introduce hanging in testing #4209
         gsd: ''
         # pin coverage
-        coverage: '7.8.0'
+        coverage: 'coverage==7.8.0'
         # pin cython
-        cython: '3.0'
+        cython: 'cython==3.0'
         # in most cases will just default to empty, i.e. pick up max version from other deps
         numpy: ${{ matrix.numpy }}
         extra-pip-deps: ${{ matrix.extra-pip-deps }}
