@@ -1666,7 +1666,7 @@ class SingleFrameReaderBase(ProtoReader):
         self.convert_units = convert_units
 
         self.n_frames = 1
-        self.n_atom = n_atoms
+        self.n_atoms = n_atoms
 
         ts_kwargs = {}
         for att in ('dt', 'time_offset'):
