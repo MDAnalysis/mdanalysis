@@ -15,7 +15,7 @@ The rules for this file:
 
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, orbeckst, BHM-Bob, TRY-ER, Abdulrahman-PROG, pbuslaev,
-         yuxuanzhuang, yuyuan871111, tanishy7777, tulga-rdn
+         yuxuanzhuang, yuyuan871111, tanishy7777, tulga-rdn, Gareth-elliott
 
 
  * 2.10.0
@@ -49,10 +49,18 @@ Enhancements
    (Issue #4948 #2874, PR #4965)
  * Enables parallelization for analysis.lineardensity.LinearDensity
    (Issue #4678, PR #5007)
+ * Enabled selection of backend for distance calculations in RDF classes
+   (PR #5038)
+ * Modified functions in lib.distances to add the backend keyword,
+   so that it gets passed through from the calling functions and classes
+   (PR #5038)
+ * Moved distopia checking function to common import location in
+   MDAnalysisTest.util (PR #5038)
 
 Changes
  * Removed undocumented and unused attribute
    `analysis.lineardensity.LinearDensity.totalmass` (PR #5007)
+ * Remove `default` channel from RTD conda env. (Issue # 5036, PR # 5037)   
 
 Deprecations
 

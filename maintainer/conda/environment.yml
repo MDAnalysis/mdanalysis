@@ -1,6 +1,5 @@
 name: mda-dev
 channels:
-  - defaults
   - conda-forge
 dependencies:
   - chemfiles>=0.10
