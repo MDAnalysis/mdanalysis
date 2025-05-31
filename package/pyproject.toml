@@ -1,7 +1,7 @@
 [build-system]
 # Minimum requirements for the build system to execute
 requires = [
-    "Cython>=0.28",
+    "Cython>=0.28,<3.1",
     "packaging",
     # numpy requirement for wheel builds for distribution on PyPI - building
     # against 2.x yields wheels that are also compatible with numpy 1.x at
