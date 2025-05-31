@@ -95,7 +95,7 @@ jobs:
         # pin coverage
         coverage: 'coverage==7.8.0'
         # pin cython
-        cython: 'cython==3.0'
+        cython: 'cython<3.1'
         # in most cases will just default to empty, i.e. pick up max version from other deps
         numpy: ${{ matrix.numpy }}
         extra-pip-deps: ${{ matrix.extra-pip-deps }}
