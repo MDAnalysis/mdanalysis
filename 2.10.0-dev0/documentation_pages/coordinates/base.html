@@ -989,6 +989,10 @@ Keywords “dt” and “time_offset” read into _ts_kwargs</p>
 <code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code> object (fixing behavior that was not
 well defined previously).</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.10.0: </span>Fixed a typo in the attribute assignment (<cite>self.atom</cite> → <cite>self.atoms</cite>),
+which may affect subclasses relying on this value.</p>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.base.SingleFrameReaderBase.OtherWriter">
 <span class="sig-name descname"><span class="pre">OtherWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.base.SingleFrameReaderBase.OtherWriter" title="Link to this definition"></a></dt>

@@ -1913,6 +1913,9 @@
 <span class="sd">       Calling `__iter__` now rewinds the reader before yielding a</span>
 <span class="sd">       :class:`Timestep` object (fixing behavior that was not</span>
 <span class="sd">       well defined previously).</span>
+<span class="sd">    .. versionchanged:: 2.10.0</span>
+<span class="sd">       Fixed a typo in the attribute assignment (`self.atom` → `self.atoms`),</span>
+<span class="sd">       which may affect subclasses relying on this value.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_err</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> only contains a single frame&quot;</span>
 
@@ -1924,7 +1927,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span> <span class="o">=</span> <span class="n">convert_units</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_atom</span> <span class="o">=</span> <span class="n">n_atoms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="n">n_atoms</span>
 
         <span class="n">ts_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">att</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;dt&#39;</span><span class="p">,</span> <span class="s1">&#39;time_offset&#39;</span><span class="p">):</span>
