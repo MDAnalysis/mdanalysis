@@ -21,6 +21,7 @@ The rules for this file:
  * 2.10.0
 
 Fixes
+ * Fix incorrect `self.atom` assignment in SingleFrameReaderBase (Issue #5052, PR #5055)
  * Fixes bug in `analysis/hydrogenbonds.py`: `_donors` and `_hydrogens`
    were not updated when the `acceptors_sel` and `hydrogens_sel` were provided
    after initialization. (Issue #5010, PR #5018)
@@ -33,7 +34,6 @@ Fixes
  * Fixes the benchmark `SimpleRmsBench` in `benchmarks/analysis/rms.py`
    by changing the way weights for RMSD are calculated, instead of
    directly passing them. (Issue #3520, PR #5006)
- * Fix incorrect `self.atom` assignment in SingleFrameReaderBase (Issue #5052, PR #5055)
 
 Enhancements
  * Improve parsing of topology information from LAMMPS dump files to allow
