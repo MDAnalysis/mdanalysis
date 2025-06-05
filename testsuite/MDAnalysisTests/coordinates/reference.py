@@ -232,7 +232,7 @@ class RefLAMMPSData(object):
         [11.89985657, 48.4455719, 19.09719849], dtype=np.float32
     )
     vel_atom1 = np.array(
-        [-0.005667593, 0.00791380978, -0.00300779533], dtype=np.float32
+        [-5667.59300232, 7913.80977631, -3007.79533386], dtype=np.float32
     )
     dimensions = np.array(
         [55.42282867, 55.42282867, 55.42282867, 90.0, 90.0, 90.0],
@@ -260,7 +260,7 @@ class RefLAMMPSDataMini(object):
         [11.89985657, 48.4455719, 19.09719849], dtype=np.float32
     )
     vel_atom1 = np.array(
-        [-0.005667593, 0.00791380978, -0.00300779533], dtype=np.float32
+        [-5667.59300232, 7913.80977631, -3007.79533386], dtype=np.float32
     )
     dimensions = np.array(
         [60.0, 50.0, 30.0, 90.0, 90.0, 90.0], dtype=np.float32

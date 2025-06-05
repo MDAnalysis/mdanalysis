@@ -365,7 +365,7 @@ class DATAWriter(base.WriterBase):
         )
         for index, vel in zip(indices, velocities):
             self.f.write(
-                "{i:d} {x:f} {y:f} {z:f}\n".format(
+                "{i:d} {x:.8f} {y:.8f} {z:.8f}\n".format(
                     i=index, x=vel[0], y=vel[1], z=vel[2]
                 )
             )
