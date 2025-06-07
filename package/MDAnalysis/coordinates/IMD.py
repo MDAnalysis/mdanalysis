@@ -38,16 +38,23 @@ Classes
 
 import numpy as np
 import logging
+import warnings
 
 from MDAnalysis.coordinates import core
 from MDAnalysis.lib.util import store_init_arguments
 from MDAnalysis.coordinates.base import StreamReaderBase
+
+
+from packaging.version import Version
+
+MIN_IMDCLIENT_VERSION = Version("0.1.4")
 
 try:
     import imdclient
     from imdclient.IMDClient import IMDClient
 except ImportError:
     HAS_IMDCLIENT = False
+    imdclient_version = Version("0.0.0")
 
     # Allow building documentation without imdclient
     import types
@@ -59,6 +66,17 @@ except ImportError:
 
 else:
     HAS_IMDCLIENT = True
+
+    # Check for compatibility: currently needs to be >=0.1.4
+    imdclient_version = Version(imdclient.__version__)
+    if imdclient_version < MIN_IMDCLIENT_VERSION:
+        warnings.warn(
+            f"imdclient version {imdclient_version} is too old; "
+            f"need at least {imdclient_version}, Your installed version of "
+            "distopia will NOT be used.",
+            category=RuntimeWarning,
+        )
+        HAS_IMDCLIENT = False
 
 logger = logging.getLogger("MDAnalysis.coordinates.IMDReader")
 

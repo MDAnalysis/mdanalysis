@@ -12,6 +12,8 @@ from numpy.testing import (
     assert_equal,
     assert_allclose,
 )
+import sys
+from types import ModuleType
 from MDAnalysis.coordinates.IMD import HAS_IMDCLIENT
 
 if HAS_IMDCLIENT:
@@ -35,6 +37,24 @@ from MDAnalysisTests.coordinates.base import (
     BaseReference,
     assert_timestep_almost_equal,
 )
+
+
+def test_HAS_IMDCLIENT():
+    # mock a version of imdclient that is too old
+    module_name = "imdclient"
+
+    sys.modules.pop(module_name, None)
+    sys.modules.pop("MDAnalysis.coordinates.IMD", None)
+
+    mocked_module = ModuleType(module_name)
+    # too old version
+    mocked_module.__version__ = "0.1.0"
+    sys.modules[module_name] = mocked_module
+
+    from MDAnalysis.coordinates.IMD import HAS_IMDCLIENT
+    assert HAS_IMDCLIENT
+
+
 
 @pytest.mark.skipif(not HAS_IMDCLIENT, reason="IMDClient not installed")
 class IMDReference(BaseReference):
