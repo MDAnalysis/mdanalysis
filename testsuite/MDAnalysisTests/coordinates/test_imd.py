@@ -39,7 +39,7 @@ from MDAnalysisTests.coordinates.base import (
 )
 
 
-def test_HAS_IMDCLIENT():
+def test_HAS_IMDCLIENT_too_old():
     # mock a version of imdclient that is too old
     module_name = "imdclient"
 
@@ -54,9 +54,14 @@ def test_HAS_IMDCLIENT():
     from MDAnalysis.coordinates.IMD import HAS_IMDCLIENT
     assert not HAS_IMDCLIENT
 
+
+
+def test_HAS_IMDCLIENT_new_enough():
+    module_name = "imdclient"
     sys.modules.pop(module_name, None)
     sys.modules.pop("MDAnalysis.coordinates.IMD", None)
 
+    mocked_module = ModuleType(module_name)
     # new enough version
     mocked_module.__version__ = "0.1.4"
     sys.modules[module_name] = mocked_module
@@ -206,16 +211,16 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
     def test_stop_iter(self, reader):
         pass
 
-    def test_iter_rewinds(self, reader, accessor):
+    def test_iter_rewinds(self, reader):
         pass
 
-    def test_timeseries_shape(self, reader, order):
+    def test_timeseries_shape(self, reader,):
         pass
 
-    def test_timeseries_asel_shape(self, reader, asel):
+    def test_timeseries_asel_shape(self, reader):
         pass
 
-    def test_timeseries_values(self, reader, slice):
+    def test_timeseries_values(self, reader):
         pass
 
     def test_transformations_2iter(self, ref, transformed):

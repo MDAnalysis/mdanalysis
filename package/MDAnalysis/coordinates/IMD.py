@@ -63,17 +63,18 @@ except ImportError:
         pass
     imdclient = types.ModuleType("imdclient")
     imdclient.IMDClient = MockIMDClient
+    imdclient.__version__ = "0.0.0"
 
 else:
     HAS_IMDCLIENT = True
+    imdclient_version = Version(imdclient.__version__)
 
     # Check for compatibility: currently needs to be >=0.1.4
-    imdclient_version = Version(imdclient.__version__)
     if imdclient_version < MIN_IMDCLIENT_VERSION:
         warnings.warn(
             f"imdclient version {imdclient_version} is too old; "
             f"need at least {imdclient_version}, Your installed version of "
-            "distopia will NOT be used.",
+            "imdclient will NOT be used.",
             category=RuntimeWarning,
         )
         HAS_IMDCLIENT = False
