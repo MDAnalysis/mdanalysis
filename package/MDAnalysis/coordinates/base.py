@@ -1655,6 +1655,9 @@ class SingleFrameReaderBase(ProtoReader):
        Calling `__iter__` now rewinds the reader before yielding a
        :class:`Timestep` object (fixing behavior that was not
        well defined previously).
+    .. versionchanged:: 2.10.0
+       Fixed a typo in the attribute assignment (`self.atom` → `self.atoms`),
+       which may affect subclasses relying on this value.
     """
     _err = "{0} only contains a single frame"
 
@@ -1666,7 +1669,7 @@ class SingleFrameReaderBase(ProtoReader):
         self.convert_units = convert_units
 
         self.n_frames = 1
-        self.n_atom = n_atoms
+        self.n_atoms = n_atoms
 
         ts_kwargs = {}
         for att in ('dt', 'time_offset'):

@@ -83,7 +83,6 @@ import warnings
 
 from ..guesser.tables import SYMB2Z
 import numpy as np
-from numpy.lib import NumpyVersion
 
 from . import base
 from ..coordinates.base import SingleFrameReaderBase
@@ -171,21 +170,13 @@ class ParmEdConverter(base.ConverterBase):
         obj : AtomGroup or Universe or :class:`Timestep`
         """
         try:
-            # TODO: remove this guard when parmed has a release
-            # that supports NumPy 2
-            if NumpyVersion(np.__version__) < "2.0.0":
-                import parmed as pmd
-            else:
-                raise ImportError
+            import parmed as pmd
         except ImportError:
-            if NumpyVersion(np.__version__) >= "2.0.0":
-                ermsg = "ParmEd is not compatible with NumPy 2.0+"
-            else:
-                ermsg = (
-                    "ParmEd is required for ParmEdConverter but is not "
-                    "installed. Try installing it with \n"
-                    "pip install parmed"
-                )
+            errmsg = (
+                "ParmEd is required for ParmEdConverter but is not "
+                "installed. Try installing it with \n"
+                "pip install parmed"
+            )
             raise ImportError(errmsg)
         try:
             # make sure to use atoms (Issue 46)

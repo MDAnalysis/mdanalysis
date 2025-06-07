@@ -14,15 +14,68 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, ChiahsinChu, RMeli, tanishy7777, talagayev, tylerjereddy,
-         marinegor, hmacdope
+??/??/?? IAlibay, orbeckst, BHM-Bob, TRY-ER, Abdulrahman-PROG, pbuslaev,
+         yuxuanzhuang, yuyuan871111, tanishy7777, tulga-rdn, Gareth-elliott
+
+
+ * 2.10.0
+
+Fixes
+ * Fix incorrect `self.atom` assignment in SingleFrameReaderBase (Issue #5052, PR #5055)
+ * Fixes bug in `analysis/hydrogenbonds.py`: `_donors` and `_hydrogens`
+   were not updated when the `acceptors_sel` and `hydrogens_sel` were provided
+   after initialization. (Issue #5010, PR #5018)
+ * Fixes bug in `analysis/gnm.py`: `closeContactGNMAnalysis`: correct the
+   `residue_index_map` generation when selection is not `protein`.
+   (Issue #4924, PR #4961)
+ * Reads `segids` column in `PDBParser` from 73-76 instead of 67-76 to 
+   align the standard of a PDBReader (e.g., Chimera, CHARMM, Gemmi). 
+   (Issue #4948, PR #5001)
+ * Fixes the benchmark `SimpleRmsBench` in `benchmarks/analysis/rms.py`
+   by changing the way weights for RMSD are calculated, instead of
+   directly passing them. (Issue #3520, PR #5006)
+
+Enhancements
+ * Improve parsing of topology information from LAMMPS dump files to allow
+   reading of mass, charge and element attributes. (Issue #3449, PR #4995)
+ * Added timestep support for XDR writers and readers (Issue #4905, PR #4908)
+ * New feature in `Universe`: `set_groups`. This function allows updating 
+   `_topology`, `residues` (ResidueGroup), `segments` (SegmentGroup) in 
+   the `Universe` using user-provided atomwise `resids` and/or `segids`. 
+   (Issue #4948 #2874, PR #4965)   
+ * Adds an argument `force_chainids_to_segids` in `PDBParser`: this will 
+   force the use of ChainID as the segID when reading PDB (it is helpful 
+   if the segment IDs (segids) are partially missing in the PDB file). 
+   (Issue #4948 #2874, PR #4965)
+ * Enables parallelization for analysis.lineardensity.LinearDensity
+   (Issue #4678, PR #5007)
+ * Enabled selection of backend for distance calculations in RDF classes
+   (PR #5038)
+ * Modified functions in lib.distances to add the backend keyword,
+   so that it gets passed through from the calling functions and classes
+   (PR #5038)
+ * Moved distopia checking function to common import location in
+   MDAnalysisTest.util (PR #5038)
+
+Changes
+ * Removed undocumented and unused attribute
+   `analysis.lineardensity.LinearDensity.totalmass` (PR #5007)
+ * Remove `default` channel from RTD conda env. (Issue # 5036, PR # 5037)   
+
+Deprecations
+
+
+03/11/25 IAlibay, ChiahsinChu, RMeli, tanishy7777, talagayev, tylerjereddy,
+         marinegor, hmacdope, jauy123, al42and
 
  * 2.9.0
 
 Fixes
- * Add support for TPR files produced by GROMACS 2024.4
- * Fixes invalid default unit from Angstrom to Angstrom^{-3} for convert_density() function. (Issue #4829)
- * Fixes deprecation warning Array to scalar convertion. Replaced atan2() with np.arctan2() (Issue #4339)
+ * Add support for TPR files produced by GROMACS 2024.4 and GROMACS 2025.0
+ * Fixes invalid default unit from Angstrom to Angstrom^{-3} for
+   convert_density() function. (Issue #4829)
+ * Fixes deprecation warning Array to scalar convertion. Replaced atan2()
+   with np.arctan2() (Issue #4339)
  * Replaced mutable defaults with None and initialized them within
    the function to prevent shared state. (Issue #4655)
 
@@ -30,18 +83,22 @@ Enhancements
  * Improve distopia backend support in line with new functionality available 
    in distopia >= 0.3.1 (PR #4734)
  * Addition of 'water' token for water selection (Issue #4839)
- * Enables parallelization for analysis.density.DensityAnalysis (Issue #4677, PR #4729)
+ * Enables parallelization for analysis.density.DensityAnalysis
+   (Issue #4677, PR #4729)
  * Enables parallelization for analysis.contacts.Contacts (Issue #4660)
  * Enable parallelization for analysis.nucleicacids.NucPairDist (Issue #4670)
- * Add check and warning for empty (all zero) coordinates in RDKit converter (PR #4824)
+ * Add check and warning for empty (all zero) coordinates in RDKit converter
+   (PR #4824)
  * Added `precision` for XYZWriter (Issue #4775, PR #4771) 
 
-
 Changes
+ * MDAnalysis.analysis.psa, MDAnalysis.analysis.waterdynamics and
+   MDAnalysis.analysis.hole2 are now no longer available by default in
+   MDAnalysis. You will need to install their respective MDAKits to
+   keep using them. Please note that they will be fully removed in
+   MDAnalysis v3.0 (Issue #4899, PR #4953).
  * Changed `fasteners` dependency to  `filelock` (Issue #4797, PR #4800)
  * Codebase is now formatted with black (version `24`) (PR #4886)
-
-Deprecations
 
 
 11/11/24 IAlibay, HeetVekariya, marinegor, lilyminium, RMeli,

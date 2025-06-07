@@ -32,8 +32,8 @@ Data are read and written in binary representation but because this depends on
 the machine hardware architecture, MDAnalysis *always* reads and writes TRZ
 trajectories in *little-endian* byte order.
 
-.. _IBIsCO: http://www.theo.chemie.tu-darmstadt.de/ibisco/IBISCO.html
-.. _YASP: http://www.theo.chemie.tu-darmstadt.de/group/services/yaspdoc/yaspdoc.html
+.. _IBIsCO: https://onlinelibrary.wiley.com/doi/full/10.1002/jcc.21717
+.. _YASP: https://www.sciencedirect.com/science/article/abs/pii/0010465593901442
 
 Classes
 -------

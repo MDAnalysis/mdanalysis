@@ -133,6 +133,7 @@ __all__ = [
     "TPR2023",
     "TPR2024",
     "TPR2024_4",
+    "TPR2025_0",
     "TPR510_bonded",
     "TPR2016_bonded",
     "TPR2018_bonded",
@@ -147,6 +148,7 @@ __all__ = [
     "TPR2023_bonded",
     "TPR2024_bonded",
     "TPR2024_4_bonded",
+    "TPR2025_0_bonded",
     "TPR_EXTRA_2021",
     "TPR_EXTRA_2020",
     "TPR_EXTRA_2018",
@@ -156,6 +158,8 @@ __all__ = [
     "TPR_EXTRA_2023",
     "TPR_EXTRA_2024",
     "TPR_EXTRA_2024_4",
+    "TPR_EXTRA_2025_0",
+    "TPR_NNPOT_2025_0",
     "PDB_sub_sol",
     "PDB_sub_dry",  # TRRReader sub selection
     "TRR_sub_sol",
@@ -258,6 +262,8 @@ __all__ = [
     "LAMMPSdata_additional_columns",  # structure for the additional column lammpstrj
     "LAMMPSDUMP",
     "LAMMPSDUMP_long",  # lammpsdump file with a few zeros sprinkled in the first column first frame
+    "LAMMPSDUMP_allinfo",  # lammpsdump file with resids, masses, charges and element symbols
+    "LAMMPSDUMP_nomass_elemx",  # lammps dump file with no masses, but with element symbols and one symbol 'X'
     "LAMMPSDUMP_allcoords",  # lammpsdump file with all coordinate conventions (x,xs,xu,xsu) present, from LAMMPS rdf example
     "LAMMPSDUMP_nocoords",  # lammpsdump file with no coordinates
     "LAMMPSDUMP_triclinic",  # lammpsdump file to test triclinic dimension parsing, albite with most atoms deleted
@@ -553,6 +559,7 @@ TPR2022RC1 = (_data_ref / "tprs/2lyz_gmx_2022-rc1.tpr").as_posix()
 TPR2023 = (_data_ref / "tprs/2lyz_gmx_2023.tpr").as_posix()
 TPR2024 = (_data_ref / "tprs/2lyz_gmx_2024.tpr").as_posix()
 TPR2024_4 = (_data_ref / "tprs/2lyz_gmx_2024_4.tpr").as_posix()
+TPR2025_0 = (_data_ref / "tprs/2lyz_gmx_2025_0.tpr").as_posix()
 # double precision
 TPR455Double = (_data_ref / "tprs/drew_gmx_4.5.5.double.tpr").as_posix()
 TPR460 = (_data_ref / "tprs/ab42_gmx_4.6.tpr").as_posix()
@@ -584,7 +591,11 @@ TPR2022RC1_bonded = (
 TPR2023_bonded = (_data_ref / "tprs/all_bonded/dummy_2023.tpr").as_posix()
 TPR2024_bonded = (_data_ref / "tprs/all_bonded/dummy_2024.tpr").as_posix()
 TPR2024_4_bonded = (_data_ref / "tprs/all_bonded/dummy_2024_4.tpr").as_posix()
+TPR2025_0_bonded = (_data_ref / "tprs/all_bonded/dummy_2025_0.tpr").as_posix()
 # all interactions
+TPR_EXTRA_2025_0 = (
+    _data_ref / "tprs/virtual_sites/extra-interactions-2025_0.tpr"
+).as_posix()
 TPR_EXTRA_2024_4 = (
     _data_ref / "tprs/virtual_sites/extra-interactions-2024_4.tpr"
 ).as_posix()
@@ -612,6 +623,8 @@ TPR_EXTRA_2016 = (
 TPR_EXTRA_407 = (
     _data_ref / "tprs/virtual_sites/extra-interactions-4.0.7.tpr"
 ).as_posix()
+# ALA dipeptide with neural network potential and a few other options
+TPR_NNPOT_2025_0 = (_data_ref / "tprs/ala_nnpot_gmx_2025_0.tpr").as_posix()
 
 XYZ_psf = (_data_ref / "2r9r-1b.psf").as_posix()
 XYZ_bz2 = (_data_ref / "2r9r-1b.xyz.bz2").as_posix()
@@ -742,6 +755,10 @@ LAMMPSdata_triclinic = (_data_ref / "lammps/albite_triclinic.data").as_posix()
 LAMMPSdata_PairIJ = (_data_ref / "lammps/pairij_coeffs.data.bz2").as_posix()
 LAMMPSDUMP = (_data_ref / "lammps/wat.lammpstrj.bz2").as_posix()
 LAMMPSDUMP_long = (_data_ref / "lammps/wat.lammpstrj_long.bz2").as_posix()
+LAMMPSDUMP_allinfo = (_data_ref / "lammps/mass_q_elem.lammpstrj").as_posix()
+LAMMPSDUMP_nomass_elemx = (
+    _data_ref / "lammps/nomass_elemx.lammpstrj"
+).as_posix()
 LAMMPSDUMP_allcoords = (
     _data_ref / "lammps/spce_all_coords.lammpstrj.bz2"
 ).as_posix()

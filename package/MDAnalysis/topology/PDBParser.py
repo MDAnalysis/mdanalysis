@@ -67,6 +67,7 @@ Classes
 """
 import numpy as np
 import warnings
+import logging
 
 from ..guesser.tables import SYMB2Z
 from ..lib import util
@@ -90,6 +91,9 @@ from ..core.topologyattrs import (
     Tempfactors,
     FormalCharges,
 )
+
+# Set up a logger for the PDBParser
+logger = logging.getLogger("MDAnalysis.topology.PDBParser")
 
 
 def float_or_default(val, default):
@@ -174,6 +178,11 @@ class PDBParser(TopologyReaderBase):
      - bonds
      - formalcharges
 
+    Note that `PDBParser` accepts an optional keyword argument
+    ``force_chainids_to_segids``. If set to ``True``, the chain IDs (even if
+    empty values are in the chain ID column in the file) will forcibly be used
+    instead of the segment IDs for creating segments.
+
     See Also
     --------
     :class:`MDAnalysis.coordinates.PDB.PDBReader`
@@ -202,6 +211,11 @@ class PDBParser(TopologyReaderBase):
     .. versionchanged:: 2.8.0
         Removed type and mass guessing (attributes guessing takes place now
         through universe.guess_TopologyAttrs() API).
+    .. versionchanged:: 2.10.0
+        segID is read from 73-76 instead of 67-76 and added the
+        `force_chainids_to_segids` keyword argument. Some infos in logger will
+        be generated if the segids is not present or if the chainids are not
+        completely equal to segids.
     """
     format = ['PDB', 'ENT']
 
@@ -212,7 +226,7 @@ class PDBParser(TopologyReaderBase):
         -------
         MDAnalysis Topology object
         """
-        top = self._parseatoms()
+        top = self._parseatoms(**kwargs)
 
         try:
             bonds = self._parsebonds(top.ids.values)
@@ -229,7 +243,7 @@ class PDBParser(TopologyReaderBase):
 
         return top
 
-    def _parseatoms(self):
+    def _parseatoms(self, **kwargs):
         """Create the initial Topology object"""
         resid_prev = 0  # resid looping hack
 
@@ -302,15 +316,27 @@ class PDBParser(TopologyReaderBase):
                 occupancies.append(float_or_default(line[54:60], 0.0))
                 tempfactors.append(float_or_default(line[60:66], 1.0))  # AKA bfactor
 
-                segids.append(line[66:76].strip())
+                segids.append(line[72:76].strip())
 
         # Warn about wrapped serials
         if self._wrapped_serials:
             warnings.warn("Serial numbers went over 100,000.  "
                           "Higher serials have been guessed")
 
+        # If segids is not equal to chainids, warn the user
+        if any([a != b for a, b in zip(segids, chainids)]):
+            logger.debug("Segment IDs and Chain IDs are not completely equal.")
+
         # If segids not present, try to use chainids
         if not any(segids):
+            logger.info("Setting segids from chainIDs because no segids "
+                        "found in the PDB file.")
+            segids = chainids
+
+        # If force_chainids_to_segids is set, use chainids as segids
+        if kwargs.get("force_chainids_to_segids", False):
+            logger.info("force_chainids_to_segids is set. "
+                        "Using chain IDs as segment IDs.")
             segids = chainids
 
         n_atoms = len(serials)
@@ -391,11 +417,13 @@ class PDBParser(TopologyReaderBase):
         n_residues = len(resids)
         attrs.append(Resnums(resnums))
         attrs.append(Resids(resids))
-        attrs.append(Resnums(resids.copy()))
         attrs.append(ICodes(icodes))
         attrs.append(Resnames(resnames))
 
-        if any(segids) and not any(val is None for val in segids):
+        if (
+            kwargs.get("force_chainids_to_segids", False) or
+            (any(segids) and not any(val is None for val in segids))
+        ):
             segidx, (segids,) = change_squash((segids,), (segids,))
             n_segments = len(segids)
             attrs.append(Segids(segids))
@@ -403,6 +431,8 @@ class PDBParser(TopologyReaderBase):
             n_segments = 1
             attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
             segidx = None
+            logger.info("Segment/chain ID is empty, "
+                        "setting segids to default value 'SYSTEM'.")
 
         top = Topology(n_atoms, n_residues, n_segments,
                        attrs=attrs,

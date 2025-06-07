@@ -702,6 +702,10 @@ def do_iparams(data, functypes, fver):
         elif i in [setting.F_CMAP]:
             data.unpack_int()  # cmap.cmapA
             data.unpack_int()  # cmap.cmapB
+        elif i in [setting.F_ENNPOT]:
+            # TODO: handle the new neural network potentials
+            # supported from GROMACS 2025.0
+            pass
         else:
             raise NotImplementedError(f"unknown functype: {i}")
     return

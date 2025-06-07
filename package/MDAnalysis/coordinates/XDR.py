@@ -133,6 +133,7 @@ class XDRBaseReader(base.ReaderBase):
         convert_units=True,
         sub=None,
         refresh_offsets=False,
+        dt=None,
         **kwargs,
     ):
         """
@@ -148,6 +149,10 @@ class XDRBaseReader(base.ReaderBase):
             itself is that of the sub system.
         refresh_offsets : bool (optional)
             force refresh of offsets
+        dt : float (optional)
+            timestep in MDAnalysis units to load trajectory with;
+            if `dt` is ``None``, the time is taken from the xdr file;
+            else, the time is set to `dt` * frame
         **kwargs : dict
             General reader arguments.
 
@@ -170,7 +175,10 @@ class XDRBaseReader(base.ReaderBase):
         frame = self._xdr.read()
         try:
             xdr_frame = self._xdr.read()
-            dt = xdr_frame.time - frame.time
+            if dt is None:
+                dt = xdr_frame.time - frame.time
+            else:
+                self._ts_kwargs["dt"] = dt
             self._xdr.seek(1)
         except StopIteration:
             dt = 0
@@ -317,7 +325,9 @@ class XDRBaseReader(base.ReaderBase):
 class XDRBaseWriter(base.WriterBase):
     """Base class for libmdaxdr file formats xtc and trr"""
 
-    def __init__(self, filename, n_atoms, convert_units=True, **kwargs):
+    def __init__(
+        self, filename, n_atoms, convert_units=True, dt=None, **kwargs
+    ):
         """
         Parameters
         ----------
@@ -327,6 +337,10 @@ class XDRBaseWriter(base.WriterBase):
             number of atoms to be written
         convert_units : bool (optional)
             convert from MDAnalysis units to format specific units
+        dt : float (optional)
+            timestep in MDAnalysis units to write trajectory with;
+            if `dt` is ``None``, time for a frame is set from the timestep;
+            else, the time for a frame is `dt` * frame
         **kwargs : dict
             General writer arguments
         """
@@ -334,6 +348,7 @@ class XDRBaseWriter(base.WriterBase):
         self._convert_units = convert_units
         self.n_atoms = n_atoms
         self._xdr = self._file(self.filename, "w")
+        self._dt = dt
 
     def close(self):
         """close trajectory"""
