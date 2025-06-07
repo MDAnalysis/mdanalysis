@@ -366,6 +366,13 @@ class TestStreamIteration:
             for ts in sub_sliced_reader:
                 pass
 
+
+    def test_timeseries_raises(self, reader):
+        with pytest.raises(
+            RuntimeError, match="cannot access timeseries for streamed trajectories"
+        ):
+            reader.timeseries()
+
 @pytest.mark.skipif(not HAS_IMDCLIENT, reason="IMDClient not installed")
 def test_n_atoms_mismatch():
     universe = mda.Universe(COORDINATES_TOPOLOGY, COORDINATES_H5MD)

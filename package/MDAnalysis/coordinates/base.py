@@ -1919,7 +1919,7 @@ class StreamReaderBase(ReaderBase):
 
     # Incompatible methods
     def copy(self):
-        raise NotImplementedError(
+        raise RuntimeError(
             "{} does not support copying".format(self.__class__.__name__)
         )
 
@@ -1930,6 +1930,11 @@ class StreamReaderBase(ReaderBase):
             )
         self._frame = -1
         self._reopen_called = True
+
+    def timeseries(self, **kwargs):
+        raise RuntimeError(
+            "{}: cannot access timeseries for streamed trajectories".format(self.__class__.__name__)
+        )
 
     def __getitem__(self, frame):
         """Return the Timestep corresponding to *frame*.
