@@ -324,35 +324,36 @@ class TestStreamIteration:
     def test_iterate_twice_sliced_raises_error(self, reader):
         for ts in reader[::2]:
             pass
-        with pytest.raises(RuntimeError):
+        with pytest.raises(RuntimeError, match="Cannot reopen stream"):
             for ts in reader[::2]:
                 pass
 
     def test_iterate_twice_all_raises_error(self, reader):
         for ts in reader:
             pass
-        with pytest.raises(RuntimeError):
+        with pytest.raises(RuntimeError, match="Cannot reopen stream"):
             for ts in reader:
                 pass
 
     def test_iterate_twice_fi_all_raises_error(self, reader):
         for ts in reader[:]:
             pass
-        with pytest.raises(RuntimeError):
+        with pytest.raises(RuntimeError, match="Cannot reopen stream"):
             for ts in reader[:]:
                 pass
 
     def test_index_stream_raises_error(self, reader):
-        with pytest.raises(TypeError):
+        with pytest.raises(TypeError, match="Streamed trajectories must be"):
             reader[0]
 
     def test_iterate_backwards_raises_error(self, reader):
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="Cannot go backwards"):
             for ts in reader[::-1]:
                 pass
 
+
     def test_iterate_start_stop_raises_error(self, reader):
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="Cannot expect a start index"):
             for ts in reader[1:3]:
                 pass
 
