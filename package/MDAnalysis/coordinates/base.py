@@ -1846,6 +1846,14 @@ class ConverterBase(IOBase, metaclass=_Convertermeta):
         raise NotImplementedError
 
 class StreamReaderBase(ReaderBase):
+    """Base class for readers that read a continuous stream of data.
+
+    This class is used for readers that read a continuous stream of data,
+    such as a live feed from a simulation. This places some constraints on the
+    reader, such as not being able to rewind or iterate more than once.
+
+    .. versionadded:: 2.9.0 
+    """
 
     def __init__(self, filename, convert_units=True, **kwargs):
         super(StreamReaderBase, self).__init__(
