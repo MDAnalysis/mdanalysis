@@ -52,7 +52,18 @@ def test_HAS_IMDCLIENT():
     sys.modules[module_name] = mocked_module
 
     from MDAnalysis.coordinates.IMD import HAS_IMDCLIENT
+    assert not HAS_IMDCLIENT
+
+    sys.modules.pop(module_name, None)
+    sys.modules.pop("MDAnalysis.coordinates.IMD", None)
+
+    # new enough version
+    mocked_module.__version__ = "0.1.4"
+    sys.modules[module_name] = mocked_module
+
+    from MDAnalysis.coordinates.IMD import HAS_IMDCLIENT
     assert HAS_IMDCLIENT
+
 
 
 
