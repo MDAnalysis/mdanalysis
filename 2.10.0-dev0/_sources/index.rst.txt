@@ -32,7 +32,7 @@ written out in a range of formats.
 .. _NumPy: https://numpy.org/
 .. _CHARMM:  http://www.charmm.org/
 .. _Amber:   http://ambermd.org/
-.. _LAMMPS:  http://lammps.sandia.gov/
+.. _LAMMPS:  https://www.lammps.org/
 .. _NAMD:    http://www.ks.uiuc.edu/Research/namd/
 .. _Gromacs: http://www.gromacs.org/
 .. _`DL_POLY`: https://www.sc.stfc.ac.uk/software/type/computational-materials-and-molecular-science/?searchquery=dl_poly

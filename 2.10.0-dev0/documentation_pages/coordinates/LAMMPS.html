@@ -188,16 +188,16 @@
              
   <section id="lammps-dcd-trajectory-and-data-i-o-mdanalysis-coordinates-lammps">
 <span id="module-MDAnalysis.coordinates.LAMMPS"></span><h1><span class="section-number">7.11. </span>LAMMPS DCD trajectory and DATA I/O  — <a class="reference internal" href="#module-MDAnalysis.coordinates.LAMMPS" title="MDAnalysis.coordinates.LAMMPS"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.LAMMPS</span></code></a><a class="headerlink" href="#lammps-dcd-trajectory-and-data-i-o-mdanalysis-coordinates-lammps" title="Link to this heading"></a></h1>
-<p>Classes to read and write <a class="reference external" href="http://lammps.sandia.gov/">LAMMPS</a> DCD binary trajectories, LAMMPS DATA files
+<p>Classes to read and write <a class="reference external" href="https://www.lammps.org/">LAMMPS</a> DCD binary trajectories, LAMMPS DATA files
 and LAMMPS dump files.  Trajectories can be read regardless of system-endianness
 as this is auto-detected.</p>
-<p>LAMMPS can <a class="reference external" href="http://lammps.sandia.gov/doc/dump.html">write DCD</a> trajectories but unlike a <a class="reference external" href="http://www.charmm.org/documentation/c36b1/dynamc.html#%20Trajectory">CHARMM trajectory</a>
+<p>LAMMPS can <a class="reference external" href="https://docs.lammps.org/dump.html">write DCD</a> trajectories but unlike a <a class="reference external" href="http://www.charmm.org/documentation/c36b1/dynamc.html#%20Trajectory">CHARMM trajectory</a>
 (which is often called a DCD even though CHARMM itself calls them
 “trj”) the time unit is not fixed to be the <a class="reference external" href="http://www.charmm.org/documentation/c36b1/usage.html#%20AKMA">AKMA</a> time unit (20 AKMA
 is 0.978 picoseconds or 1 AKMA = 4.888821e-14 s) but can depend on
 settings in LAMMPS. The most common case for biomolecular simulations
 appears to be that the time step is recorded in femtoseconds (command
-<a class="reference external" href="http://lammps.sandia.gov/doc/units.html">units real</a> in the input file) and lengths in ångströms. Other cases
+<a class="reference external" href="https://docs.lammps.org/units.html">units real</a> in the input file) and lengths in ångströms. Other cases
 are unit-less Lennard-Jones time units.</p>
 <p>This presents a problem for MDAnalysis because it cannot autodetect
 the unit from the file. By default we are assuming that the unit for
@@ -214,7 +214,7 @@ however this can be customised, see <a class="reference internal" href="../topol
 <section id="dump-files">
 <h2><span class="section-number">7.11.2. </span>Dump files<a class="headerlink" href="#dump-files" title="Link to this heading"></a></h2>
 <p>The DumpReader expects ascii dump files written with the default
-<a class="reference external" href="http://lammps.sandia.gov/doc/dump.html">LAMMPS dump format</a> of ‘atom’</p>
+<a class="reference external" href="https://docs.lammps.org/dump.html">LAMMPS dump format</a> of ‘atom’</p>
 </section>
 <section id="example-loading-a-lammps-simulation">
 <h2><span class="section-number">7.11.3. </span>Example: Loading a LAMMPS simulation<a class="headerlink" href="#example-loading-a-lammps-simulation" title="Link to this heading"></a></h2>
@@ -254,7 +254,7 @@ data file,</p>
 <p class="admonition-title">Note</p>
 <p>Lennard-Jones units are not implemented. See <a class="reference internal" href="../units.html#module-MDAnalysis.units" title="MDAnalysis.units"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a>
 for other recognized values and the documentation for the LAMMPS
-<a class="reference external" href="http://lammps.sandia.gov/doc/units.html">units command</a>.</p>
+<a class="reference external" href="https://docs.lammps.org/units.html">units command</a>.</p>
 </div>
 </section>
 <section id="classes">
@@ -262,10 +262,10 @@ for other recognized values and the documentation for the LAMMPS
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.LAMMPS.DCDReader">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.LAMMPS.</span></span><span class="sig-name descname"><span class="pre">DCDReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dcdfilename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/LAMMPS.html#DCDReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDReader" title="Link to this definition"></a></dt>
-<dd><p>Read a <a class="reference external" href="http://lammps.sandia.gov/">LAMMPS</a> DCD trajectory.</p>
+<dd><p>Read a <a class="reference external" href="https://www.lammps.org/">LAMMPS</a> DCD trajectory.</p>
 <p>The units can be set from the constructor with the keyword
 arguments <em>timeunit</em> and <em>lengthunit</em>. The defaults are “fs” and
-“Angstrom”, corresponding to LAMMPS <a class="reference external" href="http://lammps.sandia.gov/doc/units.html">units style</a> “<strong>real</strong>”. See
+“Angstrom”, corresponding to LAMMPS <a class="reference external" href="https://docs.lammps.org/units.html">units style</a> “<strong>real</strong>”. See
 <a class="reference internal" href="../units.html#module-MDAnalysis.units" title="MDAnalysis.units"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a> for other recognized values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -957,7 +957,7 @@ be considered to have a length of a single time step <cite>dt</cite> and a
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.LAMMPS.DCDWriter">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.LAMMPS.</span></span><span class="sig-name descname"><span class="pre">DCDWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/LAMMPS.html#DCDWriter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DCDWriter" title="Link to this definition"></a></dt>
-<dd><p>Write a <a class="reference external" href="http://lammps.sandia.gov/">LAMMPS</a> DCD trajectory.</p>
+<dd><p>Write a <a class="reference external" href="https://www.lammps.org/">LAMMPS</a> DCD trajectory.</p>
 <p>The units can be set from the constructor with the keyword
 arguments <em>timeunit</em> and <em>lengthunit</em>. The defaults are “fs” and
 “Angstrom”. See <a class="reference internal" href="../units.html#module-MDAnalysis.units" title="MDAnalysis.units"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a> for other recognized
