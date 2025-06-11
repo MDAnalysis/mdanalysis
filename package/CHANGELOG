@@ -58,11 +58,15 @@ Enhancements
    MDAnalysisTest.util (PR #5038)
 
 Changes
+ * Replaced old vendored lib.transformations with import of the
+   transformations package (#5061)
  * Removed undocumented and unused attribute
    `analysis.lineardensity.LinearDensity.totalmass` (PR #5007)
  * Remove `default` channel from RTD conda env. (Issue # 5036, PR # 5037)   
 
 Deprecations
+* lib.transformations.rotaxis() moved to lib.mdamath.rotaxis()
+* lib.transformations to be removed in 3.0.0
 
 
 03/11/25 IAlibay, ChiahsinChu, RMeli, tanishy7777, talagayev, tylerjereddy,
