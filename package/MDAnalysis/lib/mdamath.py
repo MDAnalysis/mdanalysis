@@ -43,6 +43,7 @@ Linear algebra
 .. autofunction:: triclinic_box
 .. autofunction:: triclinic_vectors
 .. autofunction:: box_volume
+.. autofunction:: rotaxis
 
 
 Connectivity
