@@ -45,6 +45,8 @@ inputs:
     default: 'pytest'
   scipy:
     default: 'scipy'
+  transformations:
+    default: 'transformations'
   threadpoolctl:
     default: 'threadpoolctl'
   tqdm:
