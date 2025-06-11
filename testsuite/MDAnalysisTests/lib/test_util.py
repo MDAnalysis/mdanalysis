@@ -39,7 +39,7 @@ from numpy.testing import (
     assert_array_equal,
     assert_allclose,
 )
-from itertools import combinations_with_replacement as comb_wr
+import itertools
 
 import MDAnalysis as mda
 import MDAnalysis.lib.util as util
@@ -382,9 +382,14 @@ class TestMatrixOperations(object):
             box = np.zeros(6, dtype=np.float32)
         return box
 
-    @pytest.mark.parametrize("lengths", comb_wr([-1, 0, 1, 2], 3))
     @pytest.mark.parametrize(
-        "angles", comb_wr([-10, 0, 20, 70, 90, 120, 180], 3)
+        "lengths", itertools.combinations_with_replacement([-1, 0, 1, 2], 3)
+    )
+    @pytest.mark.parametrize(
+        "angles",
+        itertools.combinations_with_replacement(
+            [-10, 0, 20, 70, 90, 120, 180], 3
+        ),
     )
     def test_triclinic_vectors(self, lengths, angles):
         box = lengths + angles
@@ -485,9 +490,14 @@ class TestMatrixOperations(object):
         res = mdamath.triclinic_box(*mdamath.triclinic_vectors(ref))
         assert_allclose(res, ref)
 
-    @pytest.mark.parametrize("lengths", comb_wr([-1, 0, 1, 2], 3))
     @pytest.mark.parametrize(
-        "angles", comb_wr([-10, 0, 20, 70, 90, 120, 180], 3)
+        "lengths", itertools.combinations_with_replacement([-1, 0, 1, 2], 3)
+    )
+    @pytest.mark.parametrize(
+        "angles",
+        itertools.combinations_with_replacement(
+            [-10, 0, 20, 70, 90, 120, 180], 3
+        ),
     )
     def test_triclinic_box(self, lengths, angles):
         tri_vecs = self.ref_trivecs_unsafe(lengths + angles)
@@ -496,9 +506,14 @@ class TestMatrixOperations(object):
         assert_array_equal(res, ref)
         assert res.dtype == ref.dtype
 
-    @pytest.mark.parametrize("lengths", comb_wr([-1, 0, 1, 2], 3))
     @pytest.mark.parametrize(
-        "angles", comb_wr([-10, 0, 20, 70, 90, 120, 180], 3)
+        "lengths", itertools.combinations_with_replacement([-1, 0, 1, 2], 3)
+    )
+    @pytest.mark.parametrize(
+        "angles",
+        itertools.combinations_with_replacement(
+            [-10, 0, 20, 70, 90, 120, 180], 3
+        ),
     )
     def test_box_volume(self, lengths, angles):
         box = np.array(lengths + angles, dtype=np.float32)
@@ -509,7 +524,9 @@ class TestMatrixOperations(object):
         )
 
     def test_sarrus_det(self):
-        comb = comb_wr(np.linspace(-133.7, 133.7, num=5), 9)
+        comb = itertools.combinations_with_replacement(
+            np.linspace(-133.7, 133.7, num=5), 9
+        )
         # test array of matrices:
         matrix = np.array(tuple(comb)).reshape((-1, 5, 3, 3))
         ref = np.linalg.det(matrix)
@@ -528,6 +545,34 @@ class TestMatrixOperations(object):
         matrix = np.zeros(shape)
         with pytest.raises(ValueError):
             mdamath.sarrus_det(matrix)
+
+
+# rotaxis() used to be in lib.transformations but was migrated to mdamath in
+# 2.10.0; lib.transformations will be removed in 3.0.
+
+
+def test_rotaxis_equal_vectors():
+    a = np.arange(3)
+    x = mdamath.rotaxis(a, a)
+    assert_array_equal(x, [1, 0, 0])
+
+
+def test_rotaxis_different_vectors():
+    # use random coordinate system
+    e = np.eye(3)
+    r = np.array(
+        [
+            [0.69884766, 0.59804425, -0.39237102],
+            [0.18784672, 0.37585347, 0.90744023],
+            [0.69016342, -0.7078681, 0.15032367],
+        ]
+    )
+    re = np.dot(r, e)
+
+    for i, j, l in itertools.permutations(range(3)):
+        x = mdamath.rotaxis(re[i], re[j])
+        # use abs since direction doesn't matter
+        assert_almost_equal(np.abs(np.dot(x, re[l])), 1)
 
 
 class TestMakeWhole(object):

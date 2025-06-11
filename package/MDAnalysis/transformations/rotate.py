@@ -33,8 +33,8 @@ and a point.
 """
 import numpy as np
 from functools import partial
+import transformations
 
-from ..lib.transformations import rotation_matrix
 from ..lib.util import get_weights
 
 from .base import TransformationBase
@@ -195,7 +195,9 @@ class rotateby(TransformationBase):
             position = self.center_method()
         else:
             position = self.point
-        matrix = rotation_matrix(self.angle, self.direction, position)
+        matrix = transformations.rotation_matrix(
+            self.angle, self.direction, position
+        )
         rotation = matrix[:3, :3].T
         translation = matrix[:3, 3]
         ts.positions = np.dot(ts.positions, rotation)

@@ -43,6 +43,7 @@ Linear algebra
 .. autofunction:: triclinic_box
 .. autofunction:: triclinic_vectors
 .. autofunction:: box_volume
+.. autofunction:: rotaxis
 
 
 Connectivity
@@ -455,3 +456,30 @@ def box_volume(dimensions: npt.ArrayLike) -> float:
         tri_vecs = triclinic_vectors(dim, dtype=np.float64)
         volume = tri_vecs[0, 0] * tri_vecs[1, 1] * tri_vecs[2, 2]
     return volume
+
+
+def rotaxis(a, b):
+    """Return the rotation axis to rotate vector a into b.
+
+    Parameters
+    ----------
+    a, b : array_like
+        two vectors
+
+    Returns
+    -------
+    c : np.ndarray
+        vector to rotate a into b
+
+
+    Note
+    ----
+    If a == b this will always return [1, 0, 0]
+
+    .. versionchanged:: 2.10.0
+       Moved from (removed) lib.transformations to lib.mdamath
+    """
+    if np.allclose(a, b):
+        return np.array([1, 0, 0])
+    c = np.cross(a, b)
+    return c / np.linalg.norm(c)

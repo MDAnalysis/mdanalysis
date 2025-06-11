@@ -99,6 +99,8 @@ import os
 import contextlib
 import warnings
 
+import transformations
+
 from .. import (
     _CONVERTERS,
     _TOPOLOGY_ATTRS,
@@ -114,7 +116,6 @@ from ..lib.util import (
     int_array_is_sorted,
 )
 from ..lib import distances
-from ..lib import transformations
 from ..lib import mdamath
 from .accessors import Accessor, ConverterWrapper
 from ..selections import get_writer as get_selection_writer_for
@@ -1518,7 +1519,7 @@ class GroupBase(_MutableBase):
 
         See Also
         --------
-        MDAnalysis.lib.transformations : module of all coordinate transforms
+        :mod:`transformations` : module of all coordinate transforms
 
         Notes
         -----
@@ -1551,7 +1552,7 @@ class GroupBase(_MutableBase):
 
         See Also
         --------
-        MDAnalysis.lib.transformations : module of all coordinate transforms
+        :mod:`transformations` : module of all coordinate transforms
 
         Notes
         -----
@@ -1601,7 +1602,7 @@ class GroupBase(_MutableBase):
         See Also
         --------
         rotateby : rotate around given axis and angle
-        MDAnalysis.lib.transformations : module of all coordinate transforms
+        :mod:`transformations` : module of all coordinate transforms
 
         """
         R = np.asarray(R)
@@ -1651,7 +1652,7 @@ class GroupBase(_MutableBase):
 
         See Also
         --------
-        MDAnalysis.lib.transformations.rotation_matrix :
+        :mod:`transformations.rotation_matrix` :
             calculate :math:`\mathsf{R}`
 
         """
