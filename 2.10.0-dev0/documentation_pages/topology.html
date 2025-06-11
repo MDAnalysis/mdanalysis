@@ -40,7 +40,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="3. Selection commands" href="selections.html" />
-    <link rel="prev" title="1. Overview over MDAnalysis" href="overview.html" /> 
+    <link rel="prev" title="1. Overview of MDAnalysis" href="overview.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -97,7 +97,7 @@
     
         <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">1. Overview of MDAnalysis</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="selections.html">3. Selection commands</a></li>
 <li class="toctree-l1"><a class="reference internal" href="analysis_modules.html">4. Analysis modules</a></li>
@@ -144,21 +144,16 @@
              
   <section id="the-topology-system">
 <span id="topology-label"></span><h1><span class="section-number">2. </span>The topology system<a class="headerlink" href="#the-topology-system" title="Link to this heading"></a></h1>
-<p>As shown briefly in <a class="reference internal" href="overview.html#overview-label"><span class="std std-ref">Overview over MDAnalysis</span></a>, the <a class="reference internal" href="core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> class is the primary object and core interface to molecular dynamics data in MDAnalysis.
-When loading topology information from a file, as with</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">Universe</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.tests.datafiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">PSF</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>the file is read, the contents parsed, and a <a class="reference internal" href="core/topology.html#MDAnalysis.core.topology.Topology" title="MDAnalysis.core.topology.Topology"><code class="xref py py-class docutils literal notranslate"><span class="pre">Topology</span></code></a> object is constructed from these contents.</p>
+<p>See <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology</span></code> for details on topology parsing, format support, and
+the <a class="reference internal" href="core/topology.html#MDAnalysis.core.topology.Topology" title="MDAnalysis.core.topology.Topology"><code class="xref py py-class docutils literal notranslate"><span class="pre">Topology</span></code></a> object.</p>
+<p>User-level documentation can be found in the <a class="reference external" href="https://userguide.mdanalysis.org/stable/topology_system.html">topology section of the User Guide</a>.</p>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="overview.html" class="btn btn-neutral float-left" title="1. Overview over MDAnalysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="overview.html" class="btn btn-neutral float-left" title="1. Overview of MDAnalysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="selections.html" class="btn btn-neutral float-right" title="3. Selection commands" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

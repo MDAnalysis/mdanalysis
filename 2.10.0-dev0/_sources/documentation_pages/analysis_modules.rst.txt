@@ -2,50 +2,39 @@
 
 .. module:: MDAnalysis.analysis
 
+.. _analysis-label:
+
 ****************
 Analysis modules
 ****************
 
-The :mod:`MDAnalysis.analysis` module contains code to carry out specific
-analysis functionality for MD trajectories.  It is based on the core
-functionality (i.e. trajectory I/O, selections etc). The analysis modules can
-be used as examples for how to use MDAnalysis but also as working code for
-research projects; typically all contributed code has been used by the authors
-in their own work.
+The :mod:`MDAnalysis.analysis` module provides a wide collection of analysis tools for 
+molecular dynamics trajectories. These modules build upon MDAnalysis core functionality 
+(trajectory I/O, selections, etc.) and are designed both for reuse in research workflows 
+and as examples of using the MDAnalysis API. Each module typically defines an analysis 
+class that follows a standard interface.
+
+See the `User Guide Analysis section`_ for interactive examples and additional context.
+
+.. _User Guide Analysis section: https://userguide.mdanalysis.org/stable/examples/analysis/README.html   
+
 
 Getting started with analysis
 =============================
 
-.. SeeAlso::
+Most analysis tools are implemented as single classes and follow this usage pattern:
 
-   The `User Guide: Analysis`_ contains extensive documentation of the analysis
-   capabilities with user-friendly examples.
-
-.. _`User Guide: Analysis`:
-   https://userguide.mdanalysis.org/stable/examples/analysis/README.html   
-
-Using the analysis classes
---------------------------
-
-Most analysis tools in MDAnalysis are written as a single class. An analysis
-usually follows the same pattern:
-
-#. Import the desired module, since analysis modules are not imported 
-   by default.
-#. Initialize the analysis class instance from the previously imported module.   
-#. Run the analysis with the :meth:`~MDAnalysis.analysis.base.AnalysisBase.run`
-   method, optionally for specific trajectory slices.
-#. Access the analysis from the
-   :attr:`~MDAnalysis.analysis.base.AnalysisBase.results` attribute
+#. Import the module (e.g., :mod:`MDAnalysis.analysis.rms`).
+#. Initialize the analysis class with the required arguments.
+#. Run the analysis with :meth:`~MDAnalysis.analysis.base.AnalysisBase.run`.
+#. Access results via the :attr:`~MDAnalysis.analysis.base.AnalysisBase.results` attribute.
 
 .. code-block:: python
 
    from MDAnalysis.analysis import ExampleAnalysisModule  # (e.g. RMSD)
-
    analysis_obj = ExampleAnalysisModule.AnalysisClass(universe, ...)
    analysis_obj.run(start=start_frame, stop=stop_frame, step=step)
    print(analysis_obj.results)
-
 
 Please see the individual module documentation for any specific caveats 
 and also read and cite the reference papers associated with these algorithms.
@@ -95,10 +84,8 @@ for maximum available on your machine):
    rmsd = RMSD(u, ref, select='backbone')
    rmsd.run(backend='multiprocessing', n_workers=multiprocessing.cpu_count())
 
-For now, you have to be explicit and specify both ``backend`` and ``n_workers``,
-since the feature is new and there are no good defaults for it. For example,
-if you specify a too big `n_workers`, and your trajectory frames are big,
-you might get and out-of-memory error when executing your run.
+Be explicit and specify both ``backend`` and ``n_workers``. Choosing too many 
+workers or using large trajectory frames may lead to an out-of-memory error.
 
 You can also implement your own backends -- see :mod:`MDAnalysis.analysis.backends`.
 

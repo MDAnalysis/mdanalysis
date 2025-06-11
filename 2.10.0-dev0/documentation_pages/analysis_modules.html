@@ -98,14 +98,13 @@
     
         <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">1. Overview of MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="selections.html">3. Selection commands</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">4. Analysis modules</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#getting-started-with-analysis">4.1. Getting started with analysis</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#using-the-analysis-classes">4.1.1. Using the analysis classes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#using-parallelization-for-built-in-analysis-runs">4.1.2. Using parallelization for built-in analysis runs</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#additional-dependencies">4.1.3. Additional dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-parallelization-for-built-in-analysis-runs">4.1.1. Using parallelization for built-in analysis runs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#additional-dependencies">4.1.2. Additional dependencies</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#building-blocks-for-analysis">4.2. Building blocks for Analysis</a><ul>
@@ -226,35 +225,23 @@
            <div itemprop="articleBody">
              
   <section id="analysis-modules">
-<span id="module-MDAnalysis.analysis"></span><h1><span class="section-number">4. </span>Analysis modules<a class="headerlink" href="#analysis-modules" title="Link to this heading"></a></h1>
-<p>The <a class="reference internal" href="#module-MDAnalysis.analysis" title="MDAnalysis.analysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis</span></code></a> module contains code to carry out specific
-analysis functionality for MD trajectories.  It is based on the core
-functionality (i.e. trajectory I/O, selections etc). The analysis modules can
-be used as examples for how to use MDAnalysis but also as working code for
-research projects; typically all contributed code has been used by the authors
-in their own work.</p>
+<span id="analysis-label"></span><span id="module-MDAnalysis.analysis"></span><h1><span class="section-number">4. </span>Analysis modules<a class="headerlink" href="#analysis-modules" title="Link to this heading"></a></h1>
+<p>The <a class="reference internal" href="#module-MDAnalysis.analysis" title="MDAnalysis.analysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis</span></code></a> module provides a wide collection of analysis tools for
+molecular dynamics trajectories. These modules build upon MDAnalysis core functionality
+(trajectory I/O, selections, etc.) and are designed both for reuse in research workflows
+and as examples of using the MDAnalysis API. Each module typically defines an analysis
+class that follows a standard interface.</p>
+<p>See the <a class="reference external" href="https://userguide.mdanalysis.org/stable/examples/analysis/README.html">User Guide Analysis section</a> for interactive examples and additional context.</p>
 <section id="getting-started-with-analysis">
 <h2><span class="section-number">4.1. </span>Getting started with analysis<a class="headerlink" href="#getting-started-with-analysis" title="Link to this heading"></a></h2>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p>The <a class="reference external" href="https://userguide.mdanalysis.org/stable/examples/analysis/README.html">User Guide: Analysis</a> contains extensive documentation of the analysis
-capabilities with user-friendly examples.</p>
-</div>
-<section id="using-the-analysis-classes">
-<h3><span class="section-number">4.1.1. </span>Using the analysis classes<a class="headerlink" href="#using-the-analysis-classes" title="Link to this heading"></a></h3>
-<p>Most analysis tools in MDAnalysis are written as a single class. An analysis
-usually follows the same pattern:</p>
+<p>Most analysis tools are implemented as single classes and follow this usage pattern:</p>
 <ol class="arabic simple">
-<li><p>Import the desired module, since analysis modules are not imported
-by default.</p></li>
-<li><p>Initialize the analysis class instance from the previously imported module.</p></li>
-<li><p>Run the analysis with the <a class="reference internal" href="analysis/base.html#MDAnalysis.analysis.base.AnalysisBase.run" title="MDAnalysis.analysis.base.AnalysisBase.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code></a>
-method, optionally for specific trajectory slices.</p></li>
-<li><p>Access the analysis from the
-<a class="reference internal" href="analysis/base.html#MDAnalysis.analysis.base.AnalysisBase.results" title="MDAnalysis.analysis.base.AnalysisBase.results"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results</span></code></a> attribute</p></li>
+<li><p>Import the module (e.g., <a class="reference internal" href="analysis/rms.html#module-MDAnalysis.analysis.rms" title="MDAnalysis.analysis.rms"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rms</span></code></a>).</p></li>
+<li><p>Initialize the analysis class with the required arguments.</p></li>
+<li><p>Run the analysis with <a class="reference internal" href="analysis/base.html#MDAnalysis.analysis.base.AnalysisBase.run" title="MDAnalysis.analysis.base.AnalysisBase.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code></a>.</p></li>
+<li><p>Access results via the <a class="reference internal" href="analysis/base.html#MDAnalysis.analysis.base.AnalysisBase.results" title="MDAnalysis.analysis.base.AnalysisBase.results"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results</span></code></a> attribute.</p></li>
 </ol>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExampleAnalysisModule</span>  <span class="c1"># (e.g. RMSD)</span>
-
 <span class="n">analysis_obj</span> <span class="o">=</span> <span class="n">ExampleAnalysisModule</span><span class="o">.</span><span class="n">AnalysisClass</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
 <span class="n">analysis_obj</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">start_frame</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop_frame</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">analysis_obj</span><span class="o">.</span><span class="n">results</span><span class="p">)</span>
@@ -262,9 +249,8 @@ method, optionally for specific trajectory slices.</p></li>
 </div>
 <p>Please see the individual module documentation for any specific caveats
 and also read and cite the reference papers associated with these algorithms.</p>
-</section>
 <section id="using-parallelization-for-built-in-analysis-runs">
-<h3><span class="section-number">4.1.2. </span>Using parallelization for built-in analysis runs<a class="headerlink" href="#using-parallelization-for-built-in-analysis-runs" title="Link to this heading"></a></h3>
+<h3><span class="section-number">4.1.1. </span>Using parallelization for built-in analysis runs<a class="headerlink" href="#using-parallelization-for-built-in-analysis-runs" title="Link to this heading"></a></h3>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 2.8.0.</span></p>
 </div>
@@ -303,14 +289,12 @@ for maximum available on your machine):</p>
 <span class="n">rmsd</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="s1">&#39;multiprocessing&#39;</span><span class="p">,</span> <span class="n">n_workers</span><span class="o">=</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">())</span>
 </pre></div>
 </div>
-<p>For now, you have to be explicit and specify both <code class="docutils literal notranslate"><span class="pre">backend</span></code> and <code class="docutils literal notranslate"><span class="pre">n_workers</span></code>,
-since the feature is new and there are no good defaults for it. For example,
-if you specify a too big <cite>n_workers</cite>, and your trajectory frames are big,
-you might get and out-of-memory error when executing your run.</p>
+<p>Be explicit and specify both <code class="docutils literal notranslate"><span class="pre">backend</span></code> and <code class="docutils literal notranslate"><span class="pre">n_workers</span></code>. Choosing too many
+workers or using large trajectory frames may lead to an out-of-memory error.</p>
 <p>You can also implement your own backends – see <a class="reference internal" href="analysis/backends.html#module-MDAnalysis.analysis.backends" title="MDAnalysis.analysis.backends"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.backends</span></code></a>.</p>
 </section>
 <section id="additional-dependencies">
-<h3><span class="section-number">4.1.3. </span>Additional dependencies<a class="headerlink" href="#additional-dependencies" title="Link to this heading"></a></h3>
+<h3><span class="section-number">4.1.2. </span>Additional dependencies<a class="headerlink" href="#additional-dependencies" title="Link to this heading"></a></h3>
 <p>Some of the modules in <a class="reference internal" href="#module-MDAnalysis.analysis" title="MDAnalysis.analysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis</span></code></a> require additional Python
 packages to enable full functionality. For example,
 <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code> provides more options if <a class="reference external" href="http://scikit-learn.org/">scikit-learn</a> is
