@@ -40,7 +40,7 @@ of a protein and the radius of gyration of the backbone atoms are calculated::
 
 .. _NumPy:   https://numpy.org/
 .. _CHARMM:  http://www.charmm.org/
-.. _LAMMPS:  http://lammps.sandia.gov/
+.. _LAMMPS:  https://www.lammps.org/
 .. _NAMD:    http://www.ks.uiuc.edu/Research/namd/
 .. _Gromacs: http://www.gromacs.org/
 
