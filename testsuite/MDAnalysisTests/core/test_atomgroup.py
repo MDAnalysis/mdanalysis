@@ -33,9 +33,11 @@ from numpy.testing import (
     assert_array_almost_equal,
 )
 
+import transformations
+
 import MDAnalysis as mda
 from MDAnalysis.exceptions import DuplicateWarning, NoDataError
-from MDAnalysis.lib import distances, transformations
+from MDAnalysis.lib import distances
 from MDAnalysis.core.topologyobjects import (
     Bond,
     Angle,

@@ -387,14 +387,6 @@ def extensions(config):
         define_macros=define_macros,
         extra_compile_args=extra_compile_args,
     )
-    transformation = MDAExtension(
-        "MDAnalysis.lib._transformations",
-        ["MDAnalysis/lib/src/transformations/transformations.c"],
-        libraries=mathlib,
-        define_macros=define_macros,
-        include_dirs=include_dirs,
-        extra_compile_args=extra_compile_args,
-    )
     libmdaxdr = MDAExtension(
         "MDAnalysis.lib.formats.libmdaxdr",
         sources=[
@@ -493,7 +485,6 @@ def extensions(config):
         distances,
         distances_omp,
         qcprot,
-        transformation,
         libmdaxdr,
         util,
         encore_utils,

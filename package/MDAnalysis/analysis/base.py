@@ -122,7 +122,7 @@ you have your :meth:`_single_frame` method storing important values under
         def get_supported_backends(cls):
             return ('serial', 'multiprocessing', 'dask',)
 
-        
+
         def _get_aggregator(self):
           return ResultsGroup(lookup={'timeseries': ResultsGroup.ndarray_vstack})
 
@@ -352,7 +352,7 @@ class AnalysisBase(object):
         Returns
         -------
         Union[slice, np.ndarray]
-            Appropriate slicer for the trajectory that would give correct iteraction
+            Appropriate slicer for the trajectory that would give correct iteration
             order via trajectory[slicer]
 
         Raises
