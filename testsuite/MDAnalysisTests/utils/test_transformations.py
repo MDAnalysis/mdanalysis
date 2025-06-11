@@ -396,45 +396,47 @@ class TestOrthogonalizationMatrix(object):
         assert_allclose(np.sum(O), 43.063229, atol=_ATOL)
 
 
-# @pytest.mark.parametrize(
-#     "f",
-#     [
-#         t.transformations.superimposition_matrix,
-#         t.superimposition_matrix,
-#     ],
-# )
-# def test_superimposition_matrix(f):
-#     v0 = np.sin(np.linspace(0, 0.99, 30)).reshape(3, 10)  # arbitrary values
-#     M = f(v0, v0)
-#     assert_allclose(M, np.identity(4), atol=_ATOL)
+@pytest.mark.parametrize(
+    "f",
+    [
+        t.transformations.superimposition_matrix,
+        t.superimposition_matrix,
+    ],
+)
+def test_superimposition_matrix(f):
+    v0 = np.sin(np.linspace(0, 0.99, 30)).reshape(3, 10)  # arbitrary values
+    M = f(v0, v0)
+    assert_allclose(M, np.identity(4), atol=_ATOL)
 
-#     R = t.random_rotation_matrix(np.array([0.3, 0.4, 0.5]))
-#     v0 = ((1, 0, 0), (0, 1, 0), (0, 0, 1), (1, 1, 1))
-#     v1 = np.dot(R, v0)
-#     M = f(v0, v1)
-#     assert_allclose(v1, np.dot(M, v0), atol=_ATOL)
+    R = t.random_rotation_matrix(np.array([0.3, 0.4, 0.5]))
+    v0 = ((1, 0, 0), (0, 1, 0), (0, 0, 1), (1, 1, 1))
+    v1 = np.dot(R, v0)
+    M = f(v0, v1)
+    assert_allclose(v1, np.dot(M, v0), atol=_ATOL)
 
-#     v0 = np.sin(np.linspace(-1, 1, 400)).reshape(4, 100)
-#     v0[3] = 1.0
-#     v1 = np.dot(R, v0)
-#     M = f(v0, v1)
-#     assert_allclose(v1, np.dot(M, v0), atol=_ATOL)
+    v0 = np.sin(np.linspace(-1, 1, 400)).reshape(4, 100)
+    v0[3] = 1.0
+    v1 = np.dot(R, v0)
+    M = f(v0, v1)
+    assert_allclose(v1, np.dot(M, v0), atol=_ATOL)
 
-#     S = t.scale_matrix(0.45)
-#     T = t.translation_matrix(np.array([0.2, 0.2, 0.2]) - 0.5)
-#     M = t.concatenate_matrices(T, R, S)
-#     v1 = np.dot(M, v0)
-#     v0[:3] += np.sin(np.linspace(0.0, 1e-9, 300)).reshape(3, -1)
-#     M = f(v0, v1, scaling=True)
-#     assert_allclose(v1, np.dot(M, v0), atol=_ATOL)
+    # scaling kwarg not supported in transformations any more
+    #
+    # S = t.scale_matrix(0.45)
+    # T = t.translation_matrix(np.array([0.2, 0.2, 0.2]) - 0.5)
+    # M = t.concatenate_matrices(T, R, S)
+    # v1 = np.dot(M, v0)
+    # v0[:3] += np.sin(np.linspace(0.0, 1e-9, 300)).reshape(3, -1)
+    # M = f(v0, v1, scaling=True)
+    # assert_allclose(v1, np.dot(M, v0), atol=_ATOL)
 
-#     M = f(v0, v1, scaling=True, usesvd=False)
-#     assert_allclose(v1, np.dot(M, v0), atol=_ATOL)
-
-#     v = np.empty((4, 100, 3), dtype=np.float64)
-#     v[:, :, 0] = v0
-#     M = f(v0, v1, scaling=True, usesvd=False)
-#     assert_allclose(v1, np.dot(M, v[:, :, 0]), atol=_ATOL)
+    # M = f(v0, v1, scaling=True, usesvd=False)
+    # assert_allclose(v1, np.dot(M, v0), atol=_ATOL)
+    #
+    # v = np.empty((4, 100, 3), dtype=np.float64)
+    # v[:, :, 0] = v0
+    # M = f(v0, v1, scaling=True, usesvd=False)
+    # assert_allclose(v1, np.dot(M, v[:, :, 0]), atol=_ATOL)
 
 
 @pytest.mark.parametrize(
@@ -454,26 +456,27 @@ class TestEulerMatrix(object):
         assert_allclose(np.sum(R[0]), -0.383436184)
 
 
-# @pytest.mark.parametrize(
-#     "f",
-#     [
-#         t.transformations.euler_from_matrix,
-#         t.euler_from_matrix,
-#     ],
-# )
-# class TestEulerFromMatrix(object):
-#     def test_euler_from_matrix_1(self, f):
-#         R0 = t.euler_matrix(1, 2, 3, "syxz")
-#         al, be, ga = f(R0, "syxz")
-#         R1 = t.euler_matrix(al, be, ga, "syxz")
-#         assert_allclose(R0, R1)
+@pytest.mark.parametrize(
+    "f",
+    [
+        t.transformations.euler_from_matrix,
+        t.euler_from_matrix,
+    ],
+)
+class TestEulerFromMatrix(object):
+    def test_euler_from_matrix_1(self, f):
+        R0 = t.euler_matrix(1, 2, 3, "syxz")
+        al, be, ga = f(R0, "syxz")
+        R1 = t.euler_matrix(al, be, ga, "syxz")
+        assert_allclose(R0, R1)
 
-#     def test_euler_from_matrix_2(self, f):
-#         angles = 4.0 * np.pi * np.array([-0.3, -0.3, -0.3])  # arbitrary values
-#         for axes in t._AXES2TUPLE.keys():
-#             R0 = t.euler_matrix(axes=axes, *angles)
-#             R1 = t.euler_matrix(axes=axes, *f(R0, axes))
-#             assert_allclose(R0, R1, err_msg=("{0} failed".format(axes)))
+    @pytest.mark.xfail
+    def test_euler_from_matrix_2(self, f):
+        angles = 4.0 * np.pi * np.array([-0.3, -0.3, -0.3])  # arbitrary values
+        for axes in t._AXES2TUPLE.keys():
+            R0 = t.euler_matrix(axes=axes, *angles)
+            R1 = t.euler_matrix(axes=axes, *f(R0, axes))
+            assert_allclose(R0, R1, err_msg=("{0} failed".format(axes)))
 
 
 def test_euler_from_quaternion():
@@ -816,6 +819,7 @@ class TestVectorNorm(object):
 
 
 class TestArcBall(object):
+    @pytest.mark.xfail
     def test_arcball_1(self):
         ball = t.Arcball()
         ball = t.Arcball(initial=np.identity(4))
@@ -825,15 +829,16 @@ class TestArcBall(object):
         R = ball.matrix()
         assert_allclose(np.sum(R), 3.90583455, atol=_ATOL)
 
-    # def test_arcball_2(self):
-    #     ball = t.Arcball(initial=[1, 0, 0, 0])
-    #     ball.place([320, 320], 320)
-    #     ball.setaxes([1, 1, 0], [-1, 1, 0])
-    #     ball.setconstrain(True)
-    #     ball.down([400, 200])
-    #     ball.drag([200, 400])
-    #     R = ball.matrix()
-    #     assert_allclose(np.sum(R), 0.2055924)
+    @pytest.mark.xfail
+    def test_arcball_2(self):
+        ball = t.Arcball(initial=[1, 0, 0, 0])
+        ball.place([320, 320], 320)
+        ball.setaxes([1, 1, 0], [-1, 1, 0])
+        ball.setconstrain(True)
+        ball.down([400, 200])
+        ball.drag([200, 400])
+        R = ball.matrix()
+        assert_allclose(np.sum(R), 0.2055924)
 
 
 # rotaxis was an MDA addition

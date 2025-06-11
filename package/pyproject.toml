@@ -40,7 +40,7 @@ dependencies = [
     'packaging',
     'filelock',
     'mda-xdrlib',
-    'transformations',
+    'transformations>=2018',
 ]
 keywords = [
     "python", "science", "chemistry", "biophysics", "molecular-dynamics",
