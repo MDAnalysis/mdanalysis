@@ -25,7 +25,7 @@ dependencies:
   - scipy
   - pip
   - sphinx <7.0
-  - transformations>=2018
+  - transformations
   - tidynamics>=1.0.0
   - tqdm>=4.43.0
   - sphinxcontrib-bibtex
