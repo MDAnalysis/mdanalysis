@@ -74,7 +74,7 @@ def _unfold(a: np.ndarray, window: int, axis: int):
 
 
 def _get_hydrogen_atom_position(coord: np.ndarray) -> np.ndarray:
-    """Fills in hydrogen atoms positions if they are abscent, under the
+    """Fills in hydrogen atoms positions if they are absent, under the
     assumption that C-N-H and H-N-CA angles are perfect 120 degrees,
     and N-H bond length is 1.01 A.
 
@@ -118,6 +118,7 @@ def _get_hydrogen_atom_position(coord: np.ndarray) -> np.ndarray:
 
 def get_hbond_map(
     coord: np.ndarray,
+    donor_mask: np.ndarray = None,
     cutoff: float = DEFAULT_CUTOFF,
     margin: float = DEFAULT_MARGIN,
     return_e: bool = False,
@@ -130,6 +131,12 @@ def get_hbond_map(
         input coordinates in either (n, 4, 3) or (n, 5, 3) shape
         (without or with hydrogens). If hydrogens are not present, then
         ideal positions (see :func:_get_hydrogen_atom_positions) are used.
+    donor_mask : np.array
+         Mask out any hydrogens that should not be considered (in particular HN
+         in PRO). If ``None`` then all H will be used (behavior up to 2.9.0).
+
+         .. versionadded:: 2.10.0
+
     cutoff : float, optional
         cutoff, by default DEFAULT_CUTOFF
     margin : float, optional
@@ -144,6 +151,10 @@ def get_hbond_map(
 
 
     .. versionadded:: 2.8.0
+
+    .. versionchanged:: 2.10.0
+       Support masking of hydrogen donors via `donor_mask` (especially needed
+       for ignoring HN on proline residues). Backport of PRO fix from pydssp 0.9.1.
     """
     n_atoms, n_atom_types, _ = coord.shape
     assert n_atom_types in (
@@ -194,15 +205,26 @@ def get_hbond_map(
     local_mask = ~np.eye(n_atoms, dtype=bool)
     local_mask *= ~np.diag(np.ones(n_atoms - 1, dtype=bool), k=-1)
     local_mask *= ~np.diag(np.ones(n_atoms - 2, dtype=bool), k=-2)
+    # mask for donor H absence (Proline)
+    donor_mask = (
+        np.array(donor_mask).astype(float)
+        if donor_mask is not None
+        else np.ones(n_atoms, dtype=float)
+    )
+    donor_mask = np.tile(donor_mask[:, np.newaxis], (1, n_atoms))
     # hydrogen bond map (continuous value extension of original definition)
     hbond_map = np.clip(cutoff - margin - e, a_min=-margin, a_max=margin)
     hbond_map = (np.sin(hbond_map / margin * np.pi / 2) + 1.0) / 2
-    hbond_map = hbond_map * local_mask
+    hbond_map *= local_mask
+    hbond_map *= donor_mask
 
     return hbond_map
 
 
-def assign(coord: np.ndarray) -> np.ndarray:
+def assign(
+    coord: np.ndarray,
+    donor_mask: np.ndarray = None,
+) -> np.ndarray:
     """Assigns secondary structure for a given coordinate array,
     either with or without assigned hydrogens
 
@@ -214,6 +236,12 @@ def assign(coord: np.ndarray) -> np.ndarray:
         (N, CA, C, O) atoms coordinates (if k=4), or (N, CA, C, O, H) coordinates
         (when k=5).
 
+    donor_mask : np.array
+         Mask out any hydrogens that should not be considered (in particular HN
+         in PRO). If ``None`` then all H will be used (behavior up to 2.9.0).
+
+         .. versionadded:: 2.10.0
+
     Returns
     -------
     np.ndarray
@@ -222,9 +250,13 @@ def assign(coord: np.ndarray) -> np.ndarray:
 
 
     .. versionadded:: 2.8.0
+
+    .. versionchanged:: 2.10.0
+       Support masking of donors.
+
     """
     # get hydrogen bond map
-    hbmap = get_hbond_map(coord)
+    hbmap = get_hbond_map(coord, donor_mask=donor_mask)
     hbmap = np.swapaxes(hbmap, -1, -2)  # convert into "i:C=O, j:N-H" form
 
     # identify turn 3, 4, 5

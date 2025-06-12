@@ -112,27 +112,27 @@ Analysis classes
    :inherited-members:
 
    .. attribute:: results.dssp
-   
-      Contains the time series of the DSSP assignment as a 
+
+      Contains the time series of the DSSP assignment as a
       :class:`numpy.ndarray` array of shape ``(n_frames, n_residues)`` where each row
-      contains the assigned secondary structure character for each residue (whose 
+      contains the assigned secondary structure character for each residue (whose
       corresponding resid is stored in :attr:`results.resids`). The three characters
       are ['H', 'E', '-'] and representi alpha-helix, sheet and loop, respectively.
 
    .. attribute:: results.dssp_ndarray
-   
+
       Contains the one-hot encoding of the time series of the DSSP assignment
-      as a :class:`numpy.ndarray` Boolean array of shape ``(n_frames, n_residues, 3)`` 
+      as a :class:`numpy.ndarray` Boolean array of shape ``(n_frames, n_residues, 3)``
       where for each residue the encoding is stored as ``(3,)`` shape
-      :class:`numpy.ndarray` of Booleans so that ``True`` at index 0 represents loop 
-      ('-'), ``True`` at index 1 represents helix ('H'), and ``True`` at index 2 
+      :class:`numpy.ndarray` of Booleans so that ``True`` at index 0 represents loop
+      ('-'), ``True`` at index 1 represents helix ('H'), and ``True`` at index 2
       represents sheet 'E'.
 
       .. SeeAlso:: :func:`translate`
-      
+
 
    .. attribute:: results.resids
-   
+
       A :class:`numpy.ndarray` of length ``n_residues`` that contains the residue IDs
       (resids) for the protein residues that were assigned a secondary structure.
 
@@ -144,7 +144,7 @@ Functions
 .. autofunction:: translate
 """
 
-from typing import Union
+from typing import Union, Optional
 import numpy as np
 from MDAnalysis import Universe, AtomGroup
 
@@ -234,6 +234,15 @@ class DSSP(AnalysisBase):
            (e.g., a :exc:`ValueError` is raised) you must customize `hydrogen_name`
            for your specific case.
 
+    ignore_proline_donor : bool, optional, default ``True``
+         If ``True`` (the default) do not consider HN on proline to be a hydrogen
+         donor for the purpose of calculating secondary structure.
+
+         .. versionadded:: 2.10.0
+            The default ``True`` is the correct DSSP behavior and fixes the earlier
+            implementation. Setting to ``False`` recovers behavior from 2.9.x and
+            earlier.
+
 
     Raises
     ------
@@ -280,6 +289,10 @@ class DSSP(AnalysisBase):
        Enabled **parallel execution** with the ``multiprocessing`` and ``dask``
        backends; use the new method :meth:`get_supported_backends` to see all
        supported backends.
+
+    .. versionchanged:: 2.10.0
+       Change treatment of proline and follow pydssp 0.9.1 (with
+       ``ignore_proline_donor=True``).
     """
 
     _analysis_algorithm_is_parallelizable = True
@@ -299,6 +312,7 @@ class DSSP(AnalysisBase):
         *,
         heavyatom_names: tuple[str] = ("N", "CA", "C", "O O1 OT1"),
         hydrogen_name: str = "H HN HT1 HT2 HT3",
+        ignore_proline_donor: bool = True,
     ):
         self._guess_hydrogens = guess_hydrogens
 
@@ -315,6 +329,9 @@ class DSSP(AnalysisBase):
             ]
             for t in heavyatom_names
         }
+        self._donor_mask: Optional[np.ndarray] = (
+            ag.residues.resnames != "PRO" if ignore_proline_donor else None
+        )
         self._hydrogens: list["AtomGroup"] = [
             res.atoms.select_atoms(f"name {hydrogen_name}")
             for res in ag.residues
@@ -391,7 +408,7 @@ class DSSP(AnalysisBase):
 
     def _single_frame(self):
         coords = self._get_coords()
-        dssp = assign(coords)
+        dssp = assign(coords, donor_mask=self._donor_mask)
         self.results.dssp_ndarray.append(dssp)
 
     def _conclude(self):

@@ -21,6 +21,8 @@ The rules for this file:
  * 2.10.0
 
 Fixes
+ * Fixes incorrect assignment of secondary structure to proline residues in
+   DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)   
  * Fix incorrect `self.atom` assignment in SingleFrameReaderBase (Issue #5052, PR #5055)
  * Fixes bug in `analysis/hydrogenbonds.py`: `_donors` and `_hydrogens`
    were not updated when the `acceptors_sel` and `hydrogens_sel` were provided
@@ -36,6 +38,9 @@ Fixes
    directly passing them. (Issue #3520, PR #5006)
 
 Enhancements
+ * Adds new kwarg `ignore_proline_donor=True` to analysis.dssp.DSSP so that
+   proline HN are not used as H-bond donors in secondary structure
+   calculation. Set to `False` to recover behavior from <2.10.0 (Issue #4913)   
  * Improve parsing of topology information from LAMMPS dump files to allow
    reading of mass, charge and element attributes. (Issue #3449, PR #4995)
  * Added timestep support for XDR writers and readers (Issue #4905, PR #4908)

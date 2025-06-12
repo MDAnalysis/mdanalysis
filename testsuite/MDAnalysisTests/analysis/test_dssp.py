@@ -13,13 +13,50 @@ from MDAnalysisTests.datafiles import TPR, XTC
     "pdb_filename", glob.glob(f"{DSSP_FOLDER}/?????.pdb.gz")
 )
 def test_file_guess_hydrogens(pdb_filename, client_DSSP):
+    # run 2.9.0 tests (which include PRO)
+    # ignore_proline_donor=False
+    # TODO: update reference data for ignore_proline_donor=True
     u = mda.Universe(pdb_filename)
     with open(f"{pdb_filename.rstrip('.gz')}.dssp", "r") as fin:
         correct_answ = fin.read().strip().split()[0]
 
-    run = DSSP(u, guess_hydrogens=True).run(**client_DSSP)
+    run = DSSP(u, guess_hydrogens=True, ignore_proline_donor=False).run(
+        **client_DSSP
+    )
     answ = "".join(run.results.dssp[0])
     assert answ == correct_answ
+
+
+@pytest.mark.parametrize(
+    "pdb_filename",
+    [
+        f"{DSSP_FOLDER}/{PDBID}.pdb.gz"
+        for PDBID in (
+            "1eteA",
+            "3aqgA",
+            "3gknA",
+            "3nzmA",
+            "3a4rA",
+            "3l4rA",
+            "2j49A",
+            "3gfsA",
+        )
+    ],
+)
+def test_file_ignore_proline_donor(pdb_filename, client_DSSP):
+    # weak test: just check that for some structures the two methods give different results
+    u = mda.Universe(pdb_filename)
+
+    run_with_pro = DSSP(
+        u, guess_hydrogens=True, ignore_proline_donor=False
+    ).run(**client_DSSP)
+    answ_with_pro = "".join(run_with_pro.results.dssp[0])
+
+    # ignore_proline_donor=True is the default:
+    run_ignore_pro = DSSP(u, guess_hydrogens=True).run(**client_DSSP)
+    answ_ignore_pro = "".join(run_ignore_pro.results.dssp[0])
+
+    assert answ_ignore_pro != answ_with_pro
 
 
 def test_trajectory(client_DSSP):
@@ -32,8 +69,6 @@ def test_trajectory(client_DSSP):
     assert (
         first_frame[:10] != last_frame[:10] == avg_frame[:10] == "-EEEEEE---"
     )
-    protein = mda.Universe(TPR, XTC).select_atoms("protein")
-    run = DSSP(protein).run(**client_DSSP, stop=10)
 
 
 def test_atomgroup(client_DSSP):
