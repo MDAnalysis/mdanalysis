@@ -263,7 +263,17 @@ due.cite(
 del Doi
 
 
+
 class EinsteinMSD(AnalysisBase):
+
+    @staticmethod
+    def is_linear(sequence): # This function is to check if the timesteps in the array is linear or not! If it's linear default MDA code will carry-out other wise the modified code carries!
+        if len(sequence) < 2:
+            return True
+        step = sequence[1] - sequence[0]
+        return all(sequence[i+1] - sequence[i] == step for i in range(len(sequence) - 1))
+
+
     r"""Class to calculate Mean Squared Displacement by the Einstein relation.
 
     Parameters
@@ -386,9 +396,13 @@ class EinsteinMSD(AnalysisBase):
         if self.fft:
             self._conclude_fft()
         else:
-            self._conclude_simple()
+            if self.is_linear([ts.time for ts in self._trajectory]):
+                self._conclude_simple()
+            else:
+                self._conclude_modified() # New modified code
 
     def _conclude_simple(self):
+        print("The Dump file has linear time spacing") # optional comment I wrote to check if the is_linear flag working correctly
         r"""Calculates the MSD via the simple "windowed" algorithm."""
         lagtimes = np.arange(1, self.n_frames)
         positions = self._position_array.astype(np.float64)
@@ -421,3 +435,68 @@ class EinsteinMSD(AnalysisBase):
                 positions[:, n, :]
             )
         self.results.timeseries = self.results.msds_by_particle.mean(axis=1)
+    
+
+
+    
+
+
+    # New function to calculate <time-averaged msd> in the following
+    # 
+    # Note: This function is generalized for non-linear dumps.
+    #       Moreover, if you use this function to calculate for linear timedump this gives same result as '_conclude_simple' which is implemented in the default version.
+    #       So, I believe this following algorithm can potentially be used to calculate time-averaged msd in future.
+    #       For now it only executes when the dump is non-linear.
+    #       It is tested with a .dump file of a Coarse Grained system of single type 
+
+    def _conclude_modified(self):
+        from collections import defaultdict
+        import matplotlib.pyplot as plt
+        print("The Dump file has non-linear time spacing")
+        
+        dump_times = [ts.time for ts in self._trajectory]
+        # print(dump_times)
+        n_frames = len(dump_times)
+        n_atoms = self.n_particles
+        positions = np.zeros((n_frames, n_atoms, 3))
+        positions = self._position_array.astype(np.float64)
+
+        msd_dict = defaultdict(list) # Dictionary to collect MSDs: {Δt: [msd1, msd2, ...]}
+
+        # Looping over all the frames as if the referenced gets shifted frame to frame
+        for i in range(n_frames):
+            for j in range(i + 1, n_frames):
+                delta_t = dump_times[j] - dump_times[i]
+
+                # Compute displacement and squared displacement
+                disp = positions[j] - positions[i]
+                squared_disp = np.sum(disp ** 2, axis=1)
+                msd = np.mean(squared_disp)
+
+                # Store MSD under corresponding Δt
+                msd_dict[delta_t].append(msd)
+
+        print(msd_dict)
+        msd_dict[0] = [0]
+
+        # Prepare averaged results
+        delta_t_values = []
+        avg_msds = []
+        for delta_t in sorted(msd_dict.keys()):
+            msd_list = msd_dict[delta_t]
+            avg_msd = np.mean(msd_list)
+            delta_t_values.append(delta_t)
+            avg_msds.append(avg_msd)
+            print(f"Δt = {delta_t}: Averaged MSD = {avg_msd} (from {len(msd_list)} pairs)")
+
+        # Plot Δt vs averaged MSD # Optional
+        plt.figure(figsize=(8, 5))
+        plt.plot(delta_t_values, avg_msds,marker='o', linestyle='-', label='Averaged MSD')
+
+        plt.xlabel('Δt (Time Difference)')
+        plt.ylabel('Mean Squared Displacement (MSD)')
+        plt.title('MSD Averaged Over Frame Pairs with Same Δt')
+        plt.grid(True)
+        plt.legend()
+        plt.tight_layout()
+        plt.show()
