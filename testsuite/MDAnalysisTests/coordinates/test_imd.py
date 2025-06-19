@@ -1,19 +1,21 @@
 """Test for MDAnalysis trajectory reader expectations
 """
-import numpy as np
-import logging
+
+import sys
 import pytest
-from MDAnalysis.transformations import translate
 import pickle
-import MDAnalysis as mda
+from types import ModuleType
+
+import numpy as np
 from numpy.testing import (
     assert_almost_equal,
     assert_array_almost_equal,
     assert_equal,
     assert_allclose,
 )
-import sys
-from types import ModuleType
+
+from MDAnalysis.transformations import translate
+import MDAnalysis as mda
 from MDAnalysis.coordinates.IMD import HAS_IMDCLIENT
 
 if HAS_IMDCLIENT:
@@ -62,13 +64,21 @@ def test_HAS_IMDCLIENT_new_enough():
     sys.modules.pop("MDAnalysis.coordinates.IMD", None)
 
     mocked_module = ModuleType(module_name)
+    IMDClient_module = ModuleType(f"{module_name}.IMDClient")
+
+    class MockIMDClient:
+        pass
+
+    IMDClient_module.IMDClient = MockIMDClient
+    mocked_module.IMDClient = IMDClient_module
     # new enough version
     mocked_module.__version__ = "0.1.4"
+
     sys.modules[module_name] = mocked_module
+    sys.modules[f"{module_name}.IMDClient"] = IMDClient_module
 
     from MDAnalysis.coordinates.IMD import HAS_IMDCLIENT
     assert HAS_IMDCLIENT
-
 
 
 
