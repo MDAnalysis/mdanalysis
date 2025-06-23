@@ -170,8 +170,8 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
         )
         return transformed
 
-    def test_n_frames(self, reader, ref):
-        pass
+    def test_n_frames(self, ref, reader):
+        pytest.skip('`n_frames` is unknown for IMDReader')
 
     def test_first_frame(self, ref, reader):
         # don't rewind here as in inherited base test
@@ -180,16 +180,16 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
         )
 
     def test_get_writer_1(self, ref, reader, tmpdir):
-        pass
+        pytest.skip('No Writer for IMDReader')
 
     def test_get_writer_2(self, ref, reader, tmpdir):
-        pass
+        pytest.skip('No Writer for IMDReader')
 
-    def test_total_time(self, reader, ref):
-        pass
+    def test_total_time(self, ref, reader):
+        pytest.skip('`total_time` is unknown for IMDReader')
 
     def test_changing_dimensions(self, ref, reader):
-        pass
+        pytest.skip('IMDReader cannot be rewound')
 
     def test_iter(self, ref, reader):
         for i, ts in enumerate(reader):
@@ -207,7 +207,6 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
                 atol=1.5 * 10**(-ref.prec)
             )
 
-
     def test_volume(self, ref, reader):
         # don't rewind here as in inherited base test
         vol = reader.ts.volume
@@ -216,76 +215,73 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
         assert_allclose(vol, ref.volume, rtol=0, atol=1.5e0)
 
     def test_reload_auxiliaries_from_description(self, ref, reader):
-        pass
+        pytest.skip('Cannot create two IMDReaders on the same stream')
 
     def test_stop_iter(self, reader):
-        pass
+        pytest.skip('IMDReader cannot be rewound')
 
-    def test_iter_rewinds(self, reader):
-        pass
+    def test_iter_rewinds(self, reader, accessor):
+        pytest.skip('IMDReader cannot be rewound')
 
-    def test_timeseries_shape(self, reader,):
-        pass
+    def test_timeseries_shape(self, reader, order):
+        pytest.skip('IMDReader does not support timeseries')
 
-    def test_timeseries_asel_shape(self, reader):
-        pass
+    def test_timeseries_asel_shape(self, reader, asel):
+        pytest.skip('IMDReader does not support timeseries')
 
-    def test_timeseries_values(self, reader):
-        pass
+    def test_timeseries_values(self, reader, slice):
+        pytest.skip('IMDReader does not support timeseries')
 
     def test_transformations_2iter(self, ref, transformed):
-        pass
+        pytest.skip('IMDReader cannot be reopened')
 
     def test_transformations_slice(self, ref, transformed):
-        pass
+        pytest.skip('IMDReader cannot be reopened')
 
     def test_transformations_switch_frame(self, ref, transformed):
-        pass
+        pytest.skip('IMDReader cannot be reopened')
 
     def test_transformation_rewind(self, ref, transformed):
-        pass
-
-    def test_copy(self, ref, transformed):
-        pass
+        pytest.skip('IMDReader cannot be reopened')
 
     def test_pickle_reader(self, reader):
-        pass
+        pytest.skip('IMDReader cannot be pickled')
 
     def test_pickle_next_ts_reader(self, reader):
-        pass
+        pytest.skip('IMDReader cannot be pickled')
 
     def test_pickle_last_ts_reader(self, reader):
-        pass
+        pytest.skip('IMDReader cannot be pickled')
 
     def test_transformations_copy(self, ref, transformed):
-        pass
+        pytest.skip('IMDReader cannot be copied')
 
     def test_timeseries_empty_asel(self, reader):
-        pass
+        pytest.skip('IMDReader does not support timeseries')
 
     def test_timeseries_empty_atomgroup(self, reader):
-        pass
+        pytest.skip('IMDReader does not support timeseries')
 
     def test_timeseries_asel_warns_deprecation(self, reader):
-        pass
+        pytest.skip('IMDReader does not support timeseries')
 
     def test_timeseries_atomgroup(self, reader):
-        pass
+        pytest.skip('IMDReader does not support timeseries')
 
     def test_timeseries_atomgroup_asel_mutex(self, reader):
-        pass
+        pytest.skip('IMDReader does not support timeseries')
 
     def test_last_frame(self, ref, reader):
-        pass
+        pytest.skip('IMDReader cannot be rewound')
 
     def test_go_over_last_frame(self, ref, reader):
-        pass
+        pytest.skip('IMDReader must be an indexed using a slice')
 
     def test_frame_jump(self, ref, reader):
-        pass
+        pytest.skip('IMDReader must be an indexed using a slice')
 
     def test_frame_jump_issue1942(self, ref, reader):
-        pass
+        pytest.skip('IMDReader must be an indexed using a slice')
 
     def test_next_gives_second_frame(self, ref, reader):
         # don't recreate reader here as in inherited base test
@@ -293,10 +289,10 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
         assert_timestep_almost_equal(ts, ref.second_frame, decimal=ref.prec)
 
     def test_frame_collect_all_same(self, reader):
-        pass
+        pytest.skip('IMDReader has independent coordinates')
 
 
-@pytest.mark.skipif(not HAS_IMDCLIENT, reason="IMDClient not isntalled")
+@pytest.mark.skipif(not HAS_IMDCLIENT, reason="IMDClient not installed")
 class TestStreamIteration:
 
     @pytest.fixture
