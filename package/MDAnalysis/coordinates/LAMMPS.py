@@ -105,15 +105,15 @@ See Also
 
    For further discussion follow the reports for `Issue 84`_ and `Issue 64`_.
 
-.. _LAMMPS: http://lammps.sandia.gov/
-.. _write DCD: http://lammps.sandia.gov/doc/dump.html
+.. _LAMMPS: https://www.lammps.org/
+.. _write DCD: https://docs.lammps.org/dump.html
 .. _CHARMM trajectory: http://www.charmm.org/documentation/c36b1/dynamc.html#%20Trajectory
 .. _AKMA: http://www.charmm.org/documentation/c36b1/usage.html#%20AKMA
-.. _units real: http://lammps.sandia.gov/doc/units.html
-.. _units command: http://lammps.sandia.gov/doc/units.html
+.. _units real: https://docs.lammps.org/units.html
+.. _units command: https://docs.lammps.org/units.html
 .. _`Issue 64`: https://github.com/MDAnalysis/mdanalysis/issues/64
 .. _`Issue 84`: https://github.com/MDAnalysis/mdanalysis/issues/84
-.. _`LAMMPS dump format`: http://lammps.sandia.gov/doc/dump.html
+.. _`LAMMPS dump format`: https://docs.lammps.org/dump.html
 
 Classes
 -------
@@ -198,7 +198,7 @@ class DCDReader(DCD.DCDReader):
     "Angstrom", corresponding to LAMMPS `units style`_ "**real**". See
     :mod:`MDAnalysis.units` for other recognized values.
 
-    .. _units style: http://lammps.sandia.gov/doc/units.html
+    .. _units style: https://docs.lammps.org/units.html
     """
 
     format = "LAMMPS"
