@@ -2,9 +2,35 @@
 IMDReader --- :mod:`MDAnalysis.coordinates.IMD`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Read and analyze simulation data interactively using `IMDClient`_.
+:class:`MDAnalysis.coordinates.IMD.IMDReader` is a class that implements the Interactive Molecular Dynamics (IMD) protocol for reading simulation
+data using the IMDClient (see `imdclient <https://github.com/Becksteinlab/imdclient>`_).
+The protocol allows two-way communicating molecular simulation data through a socket.
+Via IMD, a simulation engine sends data to a receiver (in this case, the IMDClient) and the receiver can send forces and specific control
+requests (such as pausing, resuming, or terminating the simulation) back to the simulation engine. It currently supports
+simulation running with GROMACS, LAMMPS, or NAMD.
 
-.. _IMDClient: https://github.com/Becksteinlab/imdclient
+For example, when running a simulation with GROMACS that supports streaming, use the following commands:
+
+.. code-block:: bash
+
+    gmx grompp -f run-NPT_imd-v3.mdp -c conf.gro -p topol.top -o topol.tpr
+    gmx mdrun -v -nt 4 -imdwait -imdport 8889
+
+The :class:`MDAnalysis.coordinates.IMD.IMDReader` can then connect to the running simulation and stream data in real time:
+
+.. code-block:: python
+
+    import MDAnalysis as mda
+    u = mda.Universe("topol.tpr", "imd://localhost:8889", buffer_size=10*1024*1024)
+
+    print("    time [         position         ] [         velocity         ] [           force          ] [            box           ]")
+    sel = u.select_atoms("all")  # Select all atoms; adjust selection as needed
+    for ts in u.trajectory:
+        print(f'{ts.time:8.3f} {sel[0].position} {sel[0].velocity} {sel[0].force} {u.dimensions[0:3]}')
+
+Details about the IMD protocol and usage examples can be found in the
+`imdclient <https://github.com/Becksteinlab/imdclient>`_ repository.
+
 
 Units
 -----
@@ -84,7 +110,8 @@ logger = logging.getLogger("MDAnalysis.coordinates.IMDReader")
 
 class IMDReader(StreamReaderBase):
     """
-    Reader for IMD protocol packets.
+    Reader that supports the Interactive Molecular Dynamics (IMD) protocol for reading simulation
+    data using the IMDClient.
 
     Parameters
     ----------
@@ -186,7 +213,7 @@ class IMDReader(StreamReaderBase):
     def _format_hint(thing):
         try:
             parse_host_port(thing)
-        except:
+        except ValueError:
             return False
         return HAS_IMDCLIENT and True
 
