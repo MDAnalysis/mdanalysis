@@ -130,8 +130,9 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
         """Not a static method like in base class- need new server for each test"""
         return IMDReference()
 
+    @staticmethod
     @pytest.fixture()
-    def reader(self, ref):
+    def reader(ref):
         # This will start the test IMD Server, waiting for a connection
         # to then send handshake & first frame
         ref.server.handshake_sequence("localhost", ref.port)
@@ -156,8 +157,9 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
         )
         return reader
 
+    @staticmethod
     @pytest.fixture()
-    def transformed(self, ref):
+    def transformed(ref):
         # This will start the test IMD Server, waiting for a connection
         # to then send handshake & first frame
         ref.server.handshake_sequence("localhost", ref.port)
@@ -220,16 +222,16 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
     def test_stop_iter(self, reader):
         pytest.skip('IMDReader cannot be rewound')
 
-    def test_iter_rewinds(self, reader, accessor):
+    def test_iter_rewinds(self, reader):
         pytest.skip('IMDReader cannot be rewound')
 
-    def test_timeseries_shape(self, reader, order):
+    def test_timeseries_shape(self, reader):
         pytest.skip('IMDReader does not support timeseries')
 
-    def test_timeseries_asel_shape(self, reader, asel):
+    def test_timeseries_asel_shape(self, reader):
         pytest.skip('IMDReader does not support timeseries')
 
-    def test_timeseries_values(self, reader, slice):
+    def test_timeseries_values(self, reader):
         pytest.skip('IMDReader does not support timeseries')
 
     def test_transformations_2iter(self, ref, transformed):
