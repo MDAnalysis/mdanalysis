@@ -50,6 +50,7 @@ Iterator classes used by the by the :class:`ProtoReader`:
 
 .. autoclass:: FrameIteratorIndices
 
+.. autoclass:: StreamFrameIteratorSliced
 
 .. _ReadersBase:
 
@@ -87,8 +88,10 @@ case, :class:`ProtoReader` should be used.
 .. autoclass:: ProtoReader
    :members:
 
+.. autoclass:: StreamReaderBase
+   :members:
 
-
+   
 .. _WritersBase:
 
 Writers
@@ -1852,7 +1855,7 @@ class StreamReaderBase(ReaderBase):
     such as a live feed from a simulation. This places some constraints on the
     reader, such as not being able to rewind or iterate more than once.
 
-    .. versionadded:: 2.9.0 
+    .. versionadded:: 2.10.0 
     """
 
     def __init__(self, filename, convert_units=True, **kwargs):
@@ -2014,6 +2017,8 @@ class StreamReaderBase(ReaderBase):
 
 
 class StreamFrameIteratorSliced(FrameIteratorBase):
+    """Iterator for sliced frames in a streamed trajectory.
+    """
 
     def __init__(self, trajectory, step):
         super().__init__(trajectory)
