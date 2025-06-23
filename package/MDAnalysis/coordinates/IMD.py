@@ -87,6 +87,7 @@ except ImportError:
 
     class MockIMDClient:
         pass
+
     imdclient = types.ModuleType("imdclient")
     imdclient.IMDClient = MockIMDClient
     imdclient.__version__ = "0.0.0"
@@ -225,10 +226,13 @@ class IMDReader(StreamReaderBase):
         # NOTE: removeme after testing
         logger.debug("IMDReader shut down gracefully.")
 
+
 # NOTE: think of other edge cases as well- should be robust
 def parse_host_port(filename):
     if not filename.startswith("imd://"):
-        raise ValueError("IMDReader: URL must be in the format 'imd://host:port'")
+        raise ValueError(
+            "IMDReader: URL must be in the format 'imd://host:port'"
+        )
     # Check if the format is correct
     parts = filename.split("imd://")[1].split(":")
     if len(parts) == 2:
@@ -239,4 +243,6 @@ def parse_host_port(filename):
         except ValueError as e:
             raise ValueError("IMDReader: Port must be an integer") from e
     else:
-        raise ValueError("IMDReader: URL must be in the format 'imd://host:port'")
+        raise ValueError(
+            "IMDReader: URL must be in the format 'imd://host:port'"
+        )
