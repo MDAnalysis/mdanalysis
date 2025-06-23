@@ -15,12 +15,14 @@ The rules for this file:
 
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, orbeckst, BHM-Bob, TRY-ER, Abdulrahman-PROG, pbuslaev,
-         yuxuanzhuang, yuyuan871111, tanishy7777, tulga-rdn, Gareth-elliott
+         yuxuanzhuang, yuyuan871111, tanishy7777, tulga-rdn, Gareth-elliott,
+         hmacdope
 
 
  * 2.10.0
 
 Fixes
+ *
  * Fix incorrect `self.atom` assignment in SingleFrameReaderBase (Issue #5052, PR #5055)
  * Fixes bug in `analysis/hydrogenbonds.py`: `_donors` and `_hydrogens`
    were not updated when the `acceptors_sel` and `hydrogens_sel` were provided
