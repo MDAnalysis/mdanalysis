@@ -23,16 +23,17 @@ class FileDownloadPDBError(Exception):
 
         super().__init__(message)
 
-# Dict to convert file name arguments for Universe(topology_format="")
-TOPOLOGY_FORMAT_CONVERTER = {
-    "physical_file_extension": tuple([["pdb.gz", "pdb"]],
-                            ) ,
-    "topology_format": tuple(["PDB",],
-                             )
-    }
 
 def _file_format_to_topology_string(file_extension):
-    """Converts file names to a string usable by Universe(topology_format=)"""
+    """Converts downloaded file name to a string usable by Universe(topology_format=)"""
+
+    TOPOLOGY_FORMAT_CONVERTER = {
+        "physical_file_extension": tuple([["pdb.gz", "pdb"]],
+                                ) ,
+        "topology_format": tuple(["PDB",],
+                                )
+        }
+    
     for valid_file_extensions, valid_topology_string in zip(*TOPOLOGY_FORMAT_CONVERTER.values(), strict=True):
         if file_extension in valid_file_extensions:
             return valid_topology_string
@@ -60,7 +61,7 @@ class BaseDownloader(ABC):
 
     @abstractmethod
     def download():
-        """This should be be implelemented setting self._file to a file like object"""
+        """This should be be implemented setting self._file to a file like object"""
         pass
 
     def convert_to_universe(self, **kwargs):
@@ -77,7 +78,7 @@ class BaseDownloader(ABC):
             self._file.close() 
 
 class PDBDownloader(BaseDownloader):
-    """Class to handle download PDBs from the RCSB"""
+    """Class to handle download PDBs from the Protein Data Bank"""
      
     def __init__(self, PDB_ID, file_format="pdb.gz"):
 
@@ -86,11 +87,9 @@ class PDBDownloader(BaseDownloader):
         self._download = False
 
     def _open_file(self, cache_path):
-        """Sets private file-like attribute _file to a physical file on disk"""
+        """This method either load/create cache or reserve a spot in memory to store topologt"""
 
-        # create temporary file to save pdb file
         if cache_path is None: 
-            #self._file = tempfile.NamedTemporaryFile('wb')
             self._file = io.BytesIO()
             self._download = True
 
@@ -111,20 +110,18 @@ class PDBDownloader(BaseDownloader):
     def _requests_progress_bar(self, requests_response):
         """Puts a progress bar when writing content with a request object"""
         chunk_size = 1 # Files are so small that you can read them one byte at a time
-        r = requests_response
 
-        with ProgressBar(total=len(r.content), unit='B', unit_scale=True, desc=self.file_name) as pb:
-            for byte in r.iter_content(chunk_size=chunk_size):
+        with ProgressBar(total=len(requests_response.content), unit='B', unit_scale=True, desc=self.file_name) as pb:
+            for byte in requests_response.iter_content(chunk_size=chunk_size):
                 self._file.write(byte)
                 pb.update(chunk_size)
 
     def download(self, cache_path=None, timeout=None, progress_bar=False):
-        """Downloads files from the RCSB"""
+        """Downloads files from the Protein Data Bank"""
 
-        # Sets self._file correctly
         self._open_file(cache_path)
 
-        # Downloading file into temporary file or cached it into a pernament file
+        # Downloads file into temporary file or cached it into a pernament file
         if self._download:
             try:
                 r = requests.get(f"https://files.rcsb.org/download/{self.id}.{self.file_format}",
@@ -133,7 +130,6 @@ class PDBDownloader(BaseDownloader):
                 # Moves to except block if invalid PDB code was declared!
                 r.raise_for_status()
 
-                # Progress Bar code
                 if progress_bar:
                     self._requests_progress_bar(r)
                 else:
