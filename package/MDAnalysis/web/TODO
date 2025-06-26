@@ -1,8 +1,7 @@
 Am traveling for spring break, so here's a todo list for future me while it still fresh in my mind. (3/10/2025)
 
 1. Start to integrate this code with MDAnalysis/coordinates/ (base.py and PDB.py respectively)
-2. Define a RequestsDownloader() Class from BaseDownloader() into to enscapulate all requests helper functions into one class
-3. All base functionality is done, so start writing docs!
-4. See this to test network errors
+2. All base functionality is done, so start writing docs!
+3. See this to test network errors
 	https://docs.pytest.org/en/stable/how-to/monkeypatch.html#global-patch-example-preventing-requests-from-remote-operations 
 
