@@ -69,7 +69,7 @@ class BaseDownloader(ABC):
         self._file = None
 
     @abstractmethod
-    def download():
+    def download(self):
         """This should be be implemented setting self._file to a file like object"""
         pass
 
