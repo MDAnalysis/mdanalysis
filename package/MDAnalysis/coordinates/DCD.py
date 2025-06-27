@@ -467,10 +467,14 @@ class DCDWriter(base.WriterBase):
             xyz = self.convert_pos_to_native(xyz, inplace=True)
             dimensions = self.convert_dimensions_to_unitcell(ts, inplace=True)
 
-        # we only support writing charmm format unit cell info
-        # The DCD unitcell is written as ``[A, gamma, B, beta, alpha, C]``
+        # Convert angles to cosines following NAMD/VMD convention
+        # The DCD unitcell is written as [A, cos(gamma), B, cos(beta), cos(alpha), C]
         _ts_order = [0, 5, 1, 4, 3, 2]
         box = np.take(dimensions, _ts_order)
+        
+        # Convert angles (indices 1, 3, 4) from degrees to the special cosine format
+        # used by NAMD/VMD: cos(angle) = sin(90 - angle); see Issue 5069
+        box[[1, 3, 4]] = np.sin(np.deg2rad(90.0 - box[[1, 3, 4]]))
 
         self._file.write(xyz=xyz, box=box)
 

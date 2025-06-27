@@ -22,6 +22,8 @@ The rules for this file:
  * 2.10.0
 
 Fixes
+ * Fix DCDWriter to correctly write unit cell angles as cosines following 
+   NAMD/VMD convention (Issue #5069)
  * Fix compile failure due to numpy issues in transformations.c (Issue #5061, PR #5068)
  * Fix incorrect `self.atom` assignment in SingleFrameReaderBase (Issue #5052, PR #5055)
  * Fixes bug in `analysis/hydrogenbonds.py`: `_donors` and `_hydrogens`
