@@ -77,7 +77,6 @@ jobs:
     displayName: 'Install tools'
   - script: >-
       python -m pip install --only-binary=scipy,h5py
-      imdclient
       cython
       hypothesis
       h5py>=2.10
@@ -114,6 +113,8 @@ jobs:
       pytng>=0.2.3
       rdkit>=2020.03.1
       tidynamics>=1.0.0
+      imdclient==0.2.0b0
+
     # remove from azure to avoid test hanging #4707
     # "gsd>3.0.0"
     displayName: 'Install additional dependencies for 64-bit tests'

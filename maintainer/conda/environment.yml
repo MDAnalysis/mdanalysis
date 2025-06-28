@@ -30,7 +30,7 @@ dependencies:
   - sphinxcontrib-bibtex
   - mdaencore
   - waterdynamics
-  - imdclient
+  # - imdclient
   - pip:
       - mdahole2
       - pathsimanalysis
