@@ -229,6 +229,8 @@ class IMDReader(StreamReaderBase):
 
 # NOTE: think of other edge cases as well- should be robust
 def parse_host_port(filename):
+    if not isinstance(filename, str):
+        raise ValueError("IMDReader: filename must be a string")
     if not filename.startswith("imd://"):
         raise ValueError(
             "IMDReader: URL must be in the format 'imd://host:port'"
