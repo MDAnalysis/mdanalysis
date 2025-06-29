@@ -16,7 +16,7 @@ from numpy.testing import (
 
 from MDAnalysis.transformations import translate
 import MDAnalysis as mda
-from MDAnalysis.coordinates.IMD import HAS_IMDCLIENT
+from MDAnalysis.coordinates.IMD import HAS_IMDCLIENT, parse_host_port
 
 if HAS_IMDCLIENT:
     import imdclient
@@ -396,3 +396,37 @@ def test_n_atoms_mismatch():
             f"imd://localhost:{port}",
             n_atoms=universe.trajectory.n_atoms + 1,
         )
+
+
+
+@pytest.mark.skipif(not HAS_IMDCLIENT, reason="IMDClient not installed")
+def test_n_atoms_not_specified():
+    universe = mda.Universe(COORDINATES_TOPOLOGY, COORDINATES_H5MD)
+    port = get_free_port()
+    server = InThreadIMDServer(universe.trajectory)
+    server.set_imdsessioninfo(create_default_imdsinfo_v3())
+    server.handshake_sequence("localhost", port, first_frame=True)
+    with pytest.raises(
+        ValueError,
+        match="IMDReader: n_atoms must be specified",
+    ):
+        IMDReader(
+            f"imd://localhost:{port}",
+
+        )
+
+
+def test_parse_host_port():
+    # Test with a valid host and port
+    host, port = parse_host_port("imd://localhost:8889")
+    assert host == "localhost"
+    assert port == 8889
+
+    # Test with a valid host and invalid port
+    with pytest.raises(ValueError, match="IMDReader: Port must be an integer"):
+        host, port = parse_host_port("imd://localhost:abcd")
+
+
+    with pytest.raises(ValueError, match="IMDReader: URL must be in the format 'imd://host:port'"):
+        host, port = parse_host_port("imd://localhost:blah:bleh")
+
