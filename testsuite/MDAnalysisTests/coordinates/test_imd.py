@@ -209,6 +209,12 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
                 atol=1.5 * 10 ** (-ref.prec),
             )
 
+    def test_transformed(self, ref, transformed):
+        # see transformed fixture
+        ref_trans = ref.first_frame.positions + 1
+        ref_trans[:, 2]  += 0.33
+        assert_allclose(transformed.ts.positions, ref_trans)
+
     def test_volume(self, ref, reader):
         # don't rewind here as in inherited base test
         vol = reader.ts.volume
