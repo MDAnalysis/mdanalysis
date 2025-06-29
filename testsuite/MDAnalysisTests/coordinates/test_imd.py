@@ -323,6 +323,7 @@ class TestStreamIteration:
         reader = IMDReader(
             f"imd://localhost:{port}",
             n_atoms=universe.trajectory.n_atoms,
+            buffer_size=1*1024*1024
         )
         server.send_frames(1, 5)
 
