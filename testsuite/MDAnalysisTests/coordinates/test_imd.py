@@ -137,7 +137,7 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
         # to then send handshake & first frame
         ref.server.handshake_sequence("localhost", ref.port)
         # This will connect to the test IMD Server and read the first frame
-        reader = ref.reader(ref.trajectory, n_atoms=ref.n_atoms)
+        reader = ref.reader(ref.trajectory, n_atoms=ref.n_atoms, buffer_size=1*1024*1024)
         # Send the rest of the frames- small enough to all fit in socket itself
         ref.server.send_frames(1, 5)
 
@@ -164,7 +164,7 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
         # to then send handshake & first frame
         ref.server.handshake_sequence("localhost", ref.port)
         # This will connect to the test IMD Server and read the first frame
-        transformed = ref.reader(ref.trajectory, n_atoms=ref.n_atoms)
+        transformed = ref.reader(ref.trajectory, n_atoms=ref.n_atoms, buffer_size=1*1024*1024)
         # Send the rest of the frames- small enough to all fit in socket itself
         ref.server.send_frames(1, 5)
         transformed.add_transformations(
