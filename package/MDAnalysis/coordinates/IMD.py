@@ -158,7 +158,11 @@ class IMDReader(StreamReaderBase):
         self._imdclient = IMDClient(host, port, n_atoms, **kwargs)
 
         imdsinfo = self._imdclient.get_imdsessioninfo()
-        # NOTE: after testing phase, fail out on IMDv2
+        if imdsinfo.version != 3:
+            raise NotImplementedError(
+                f"IMDReader: Detected IMD version v{imdsinfo.version}, "
+                + "but IMDReader is only compatible with v3"
+            )
 
         self.ts = self._Timestep(
             self.n_atoms,
