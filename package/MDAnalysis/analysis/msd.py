@@ -1,25 +1,3 @@
-######## Documentation
-#
-# Issue: The default '_conclude_simple()' function previously calculated time-averaged mean squared displacement considering linear timespacing between the frames even when a dump file with non-linear timestep gap is provided
-#
-#   Modified by Sirsha Ganguly
-#
-# Modification:
-# '_conclude_modified()' is the new function added to calculate time-averaged mean squared displacement of non-linear dumps
-    # Note: This new function is generalized for non-linear dumps.
-    #       Moreover, if you use this function to calculate for linear timedump this gives same result as '_conclude_simple()' which is implemented in the default version.
-    #       So, I believe the algorithm in '_conclude_modified()' can potentially be used to calculate time-averaged msd in future.
-    #       For now it only executes when the dump is non-linear. [ This is determined by the added function is_linear() ]
-    #       It is tested with a .dump file of a Coarse Grained system of single type 
-#
-# General Algorithm of '_conclude_modified()' to calculate time-averaged msd:
-    # It creates a dictionary/hash-map with the key being the time difference between the frames (Delta t) and value being a list containing the frame to frame MSD values [msd1, msd2, .....] for that particular Delta t
-        # Dictionary to collect MSDs: {Δt: [msd1, msd2, ...]}
-    # The reference frame is changed with each iteration and each time a new Key (i.e, Delta t) is found it is appended in the dictionary/hash-map
-    # If a duplicate Delta_t is found it is added to the value (msd list) of that specefic Key in the dictionary/hash-map
-    # Lastly in the dictionary/hash-map for each Delta_t the msd values inside the list are averaged
-#
-
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
@@ -267,6 +245,7 @@ from ..due import due, Doi
 from .base import AnalysisBase
 from ..core import groups
 from tqdm import tqdm
+import collections
 
 logger = logging.getLogger("MDAnalysis.analysis.msd")
 
@@ -287,14 +266,6 @@ del Doi
 
 
 class EinsteinMSD(AnalysisBase):
-
-    @staticmethod
-    def is_linear(sequence): # This function is to check if the timesteps in the array is linear or not! If it's linear default MDA code will carry-out other wise the modified code carries!
-        if len(sequence) < 2:
-            return True
-        step = sequence[1] - sequence[0]
-        return all(sequence[i+1] - sequence[i] == step for i in range(len(sequence) - 1))
-
 
     r"""Class to calculate Mean Squared Displacement by the Einstein relation.
 
@@ -333,7 +304,7 @@ class EinsteinMSD(AnalysisBase):
     .. versionadded:: 2.0.0
     """
 
-    def __init__(self, u, select="all", msd_type="xyz", fft=True, **kwargs):
+    def __init__(self, u, select="all", msd_type="xyz", fft=True, non_linear = False, **kwargs):
         r"""
         Parameters
         ----------
@@ -361,6 +332,7 @@ class EinsteinMSD(AnalysisBase):
         self.msd_type = msd_type
         self._parse_msd_type()
         self.fft = fft
+        self.non_linear = non_linear
 
         # local
         self.ag = u.select_atoms(self.select)
@@ -415,13 +387,12 @@ class EinsteinMSD(AnalysisBase):
         ]
 
     def _conclude(self):
-        if self.fft:
+        if self.fft == True:
             self._conclude_fft()
-        else:
-            if self.is_linear([ts.time for ts in self._trajectory]):
-                self._conclude_simple()
-            else:
-                self._conclude_modified() # New modified code
+        elif self.non_linear != True:
+            self._conclude_simple()
+        elif self.non_linear:
+            self._conclude_non_linear()
 
     def _conclude_simple(self):
         r"""Calculates the MSD via the simple "windowed" algorithm."""
@@ -458,18 +429,14 @@ class EinsteinMSD(AnalysisBase):
         self.results.timeseries = self.results.msds_by_particle.mean(axis=1)
     
 
-    def _conclude_modified(self):
-        from collections import defaultdict
-        print("The Dump file has non-linear time spacing")
+    def _conclude_non_linear(self):
         
         dump_times = [ts.time for ts in self._trajectory]
-        # print(dump_times)
         n_frames = len(dump_times)
         n_atoms = self.n_particles
-        positions = np.zeros((n_frames, n_atoms, 3))
         positions = self._position_array.astype(np.float64)
 
-        msd_dict = defaultdict(list) # Dictionary to collect MSDs: {Δt: [msd1, msd2, ...]}
+        msd_dict = collections.defaultdict(list) # Dictionary to collect MSDs: {Δt: [msd1, msd2, ...]}
 
         # Looping over all the frames as if the referenced gets shifted frame to frame
         for i in range(n_frames):
@@ -497,5 +464,3 @@ class EinsteinMSD(AnalysisBase):
         
         self.results.timeseries = delta_t_values
         self.results.msds_by_particle = avg_msds
-
-        # self.results.timeseries = self.results.msds_by_particle.mean(axis=1)
