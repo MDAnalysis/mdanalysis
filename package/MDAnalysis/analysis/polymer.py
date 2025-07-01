@@ -242,7 +242,7 @@ class PersistenceLength(AnalysisBase):
 
     @classmethod
     def get_supported_backends(cls):
-        return ('serial', 'multiprocessing')
+        return ('serial', 'multiprocessing', 'dask')
 
     def __init__(self, atomgroups, **kwargs):
         super(PersistenceLength, self).__init__(
