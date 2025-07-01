@@ -245,7 +245,7 @@ class PersistenceLength(AnalysisBase):
 
     @classmethod
     def get_supported_backends(cls):
-        return ('serial', 'multiprocessing', 'dask')
+        return ("serial", "multiprocessing", "dask")
 
     def __init__(self, atomgroups, **kwargs):
         super(PersistenceLength, self).__init__(
@@ -261,7 +261,9 @@ class PersistenceLength(AnalysisBase):
         self.chainlength = chainlength
 
     def _prepare(self):
-        self.results.raw_bond_autocorr = np.zeros(self.chainlength - 1, dtype=np.float32)
+        self.results.raw_bond_autocorr = np.zeros(
+            self.chainlength - 1, dtype=np.float32
+        )
 
     def _single_frame(self):
         # could optimise this by writing a "self dot array"
@@ -277,12 +279,16 @@ class PersistenceLength(AnalysisBase):
 
             inner_pr = np.inner(vecs, vecs)
             for i in range(self.chainlength - 1):
-                self.results.raw_bond_autocorr[:(self.chainlength - 1) - i] += inner_pr[i, i:]
+                self.results.raw_bond_autocorr[
+                    : (self.chainlength - 1) - i
+                ] += inner_pr[i, i:]
 
     def _get_aggregator(self):
-        return ResultsGroup(lookup={
-            'raw_bond_autocorr': ResultsGroup.ndarray_sum,
-            })
+        return ResultsGroup(
+            lookup={
+                "raw_bond_autocorr": ResultsGroup.ndarray_sum,
+            }
+        )
 
     @property
     def lb(self):
@@ -317,7 +323,9 @@ class PersistenceLength(AnalysisBase):
     def _conclude(self):
         norm = np.linspace(self.chainlength - 1, 1, self.chainlength - 1)
         norm *= len(self._atomgroups) * self._trajectory.n_frames
-        self.results.bond_autocorrelation = self.results.raw_bond_autocorr / norm
+        self.results.bond_autocorrelation = (
+            self.results.raw_bond_autocorr / norm
+        )
         self._calc_bond_length()
         self._perform_fit()
 
