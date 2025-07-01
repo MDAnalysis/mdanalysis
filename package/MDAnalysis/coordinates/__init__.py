@@ -274,7 +274,7 @@ also recognized when they are compressed with :program:`gzip` or
    | library       |           |       | file formats`_ and                                   |
    |               |           |       | :mod:`MDAnalysis.coordinates.chemfiles`              |
    +---------------+-----------+-------+------------------------------------------------------+
-   | IMD           | IP address|  r/w  | Receive simulation trajectory data using interactive |
+   | IMD           | IP address|  r    | Receive simulation trajectory data using interactive |
    |               | and port  |       | molecular dynamics version 3 (IMDv3) by configuring  |
    |               | number    |       | a socket address to a NAMD, GROMACS, or LAMMPS       |
    |               |           |       | simulation.                                          |
