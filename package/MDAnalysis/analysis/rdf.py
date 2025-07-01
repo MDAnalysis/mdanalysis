@@ -633,7 +633,11 @@ class InterRDF_s(AnalysisBase):
         if self.norm == "rdf":
             # Cumulative volume for rdf normalization
             self.volume_cum = 0
-        self._minrange = self.rdf_settings["range"][0] if self.rdf_settings["range"][0] > 0 else 0.0
+        self._minrange = (
+            self.rdf_settings["range"][0]
+            if self.rdf_settings["range"][0] > 0
+            else 0.0
+        )
         self._maxrange = self.rdf_settings["range"][1]
 
     def _single_frame(self):
@@ -655,11 +659,12 @@ class InterRDF_s(AnalysisBase):
             bins = self.rdf_settings["bins"]
             minv, maxv = self._minrange, self._maxrange
             # Calculate bin indices for each value in dist, similar to np.histogram's bin assignment.
-            bin_indices = ((dist - minv) * bins / (maxv - minv)).astype(np.int64)
+            bin_indices = (dist - minv) * bins / (maxv - minv)
+            bin_indices = bin_indices.astype(np.int64)
 
             for j, (idx1, idx2) in enumerate(pairs):
                 self.results.count[i][idx1, idx2, bin_indices[j]] += 1
-                self.results.count[i][0, 0, bin_indices[j]] += 1
+                # self.results.count[i][0, 0, bin_indices[j]] += 1  # this is necessary to calc rdf
 
         if self.norm == "rdf":
             self.volume_cum += self._ts.volume
@@ -681,10 +686,8 @@ class InterRDF_s(AnalysisBase):
 
         for i, (ag1, ag2) in enumerate(self.ags):
             # Number of each selection
-            if self.norm == "rdf":
-                N = len(ag1) * len(ag2)
             self.results.indices.append([ag1.indices, ag2.indices])
-            self.results.rdf.append(self.results.count[i] / (norm * N)) # Modify to make it consistent with InterRDF
+            self.results.rdf.append(self.results.count[i] / norm)
 
     def get_cdf(self):
         r"""Calculate the cumulative counts for all sites.
