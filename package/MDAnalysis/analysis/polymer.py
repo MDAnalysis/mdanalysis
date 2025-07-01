@@ -236,6 +236,9 @@ class PersistenceLength(AnalysisBase):
        Former ``results`` are now stored as ``results.bond_autocorrelation``.
        :attr:`lb`, :attr:`lp`, :attr:`fit` are now stored in a
        :class:`MDAnalysis.analysis.base.Results` instance.
+    .. versionchanged:: 2.8.0
+       introduced :meth:`get_supported_backends` allowing for parallel
+       execution on ``multiprocessing`` and ``dask`` backends.
     """
 
     _analysis_algorithm_is_parallelizable = True
