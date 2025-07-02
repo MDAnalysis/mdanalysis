@@ -36,8 +36,6 @@ Fixes
  * Fixes the benchmark `SimpleRmsBench` in `benchmarks/analysis/rms.py`
    by changing the way weights for RMSD are calculated, instead of
    directly passing them. (Issue #3520, PR #5006)
- * Enables parallelization for `analysis.polymer.PersistenceLength`
-
 
 Enhancements
  * Improve parsing of topology information from LAMMPS dump files to allow
@@ -60,6 +58,8 @@ Enhancements
    (PR #5038)
  * Moved distopia checking function to common import location in
    MDAnalysisTest.util (PR #5038)
+ * Enables parallelization for `analysis.polymer.PersistenceLength`. (PR #5074)
+
 
 Changes
  * Removed undocumented and unused attribute
