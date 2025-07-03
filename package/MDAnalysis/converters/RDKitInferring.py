@@ -43,6 +43,7 @@ Classes
 .. autofunction:: reorder_atoms
 
 """
+
 import warnings
 from collections import defaultdict
 from contextlib import suppress
@@ -74,9 +75,7 @@ with suppress(ImportError):
     )  # available since 2022.09.1
 
 
-def reorder_atoms(
-    mol: "Chem.Mol", field: str = "_MDAnalysis_index"
-) -> "Chem.Mol":
+def reorder_atoms(mol: "Chem.Mol", field: str = "_MDAnalysis_index") -> "Chem.Mol":
     """Reorder atoms based on the given field. Defaults to sorting in the same
     order as the input AtomGroup.
 
@@ -89,8 +88,7 @@ def reorder_atoms(
         return Chem.RenumberAtoms(mol, order.astype(int).tolist())
     # not a molecule converted by MDAnalysis
     warnings.warn(
-        f"{field!r} not available on the input mol atoms, skipping reordering "
-        "of atoms."
+        f"{field!r} not available on the input mol atoms, skipping reordering of atoms."
     )
     return mol
 
@@ -243,42 +241,40 @@ class MDAnalysisInferer:
             # go to next atom if above case or atom has no unpaired electron
             if (len(nue) == 1) and (nue[0] <= 0):
                 continue
-            else:
-                neighbors = sorted(
-                    atom.GetNeighbors(),
-                    reverse=True,
-                    key=lambda a: cls._get_nb_unpaired_electrons(a)[0],
+            neighbors = sorted(
+                atom.GetNeighbors(),
+                reverse=True,
+                key=lambda a: cls._get_nb_unpaired_electrons(a)[0],
+            )
+            # check if one of the neighbors has a common NUE
+            for na in neighbors:
+                # get NUE for the neighbor
+                na_nue = cls._get_nb_unpaired_electrons(na)
+                # smallest common NUE
+                common_nue = min(
+                    *[i for i in nue if i >= 0],
+                    *[i for i in na_nue if i >= 0],
+                    default=0,
                 )
-                # check if one of the neighbors has a common NUE
-                for na in neighbors:
-                    # get NUE for the neighbor
-                    na_nue = cls._get_nb_unpaired_electrons(na)
-                    # smallest common NUE
-                    common_nue = min(
-                        min([i for i in nue if i >= 0], default=0),
-                        min([i for i in na_nue if i >= 0], default=0),
-                    )
-                    # a common NUE of 0 means we don't need to do anything
-                    if common_nue != 0:
-                        # increase bond order
-                        bond = mol.GetBondBetweenAtoms(
-                            atom.GetIdx(), na.GetIdx()
-                        )
-                        order = common_nue + 1
-                        bond.SetBondType(RDBONDORDER[order])
-                        mol.UpdatePropertyCache(strict=False)
-                        # go to next atom if one of the valences is complete
-                        nue = cls._get_nb_unpaired_electrons(atom)
-                        if any([n == 0 for n in nue]):
-                            break
-
-                # if atom valence is still not filled
-                nue = cls._get_nb_unpaired_electrons(atom)
-                if not any([n == 0 for n in nue]):
-                    # transform nue to charge
-                    atom.SetFormalCharge(-nue[0])
-                    atom.SetNumRadicalElectrons(0)
+                # a common NUE of 0 means we don't need to do anything
+                if common_nue != 0:
+                    # increase bond order
+                    bond = mol.GetBondBetweenAtoms(atom.GetIdx(), na.GetIdx())
+                    order = common_nue + 1
+                    bond.SetBondType(RDBONDORDER[order])
                     mol.UpdatePropertyCache(strict=False)
+                    # go to next atom if one of the valences is complete
+                    nue = cls._get_nb_unpaired_electrons(atom)
+                    if any(n == 0 for n in nue):
+                        break
+
+            # if atom valence is still not filled
+            nue = cls._get_nb_unpaired_electrons(atom)
+            if not any(n == 0 for n in nue):
+                # transform nue to charge
+                atom.SetFormalCharge(-nue[0])
+                atom.SetNumRadicalElectrons(0)
+                mol.UpdatePropertyCache(strict=False)
 
     @staticmethod
     def _get_nb_unpaired_electrons(atom: "Chem.Atom") -> List[int]:
@@ -369,13 +365,12 @@ class MDAnalysisInferer:
         self._rebuild_conjugated_bonds(mol, max_iter)
 
         # list of sanitized reactions
-        reactions = [
-            ReactionFromSmarts(rxn) for rxn in self.STANDARDIZATION_REACTIONS
-        ]
+        reactions = [ReactionFromSmarts(rxn) for rxn in self.STANDARDIZATION_REACTIONS]
 
         # fragment mol (reactions must have single reactant and product)
-        fragments = list(Chem.GetMolFrags(mol, asMols=True,
-                                          sanitizeFrags=self.sanitize))
+        fragments = list(
+            Chem.GetMolFrags(mol, asMols=True, sanitizeFrags=self.sanitize)
+        )
         for reactant in fragments:
             self._apply_reactions(reactions, reactant)
 
@@ -456,23 +451,18 @@ class MDAnalysisInferer:
         # there's usually an even number of matches for this
         pattern = Chem.MolFromSmarts("[*-{1-2}]-,=[*+0]=,#[*+0]")
         # pattern used to finish fixing a series of conjugated bonds
-        base_end_pattern = Chem.MolFromSmarts(
-            "[*-{1-2}]-,=[*+0]=,#[*+0]-,=[*-{1-2}]"
-        )
+        base_end_pattern = Chem.MolFromSmarts("[*-{1-2}]-,=[*+0]=,#[*+0]-,=[*-{1-2}]")
         # used when there's an odd number of matches for `pattern`
         odd_end_pattern = Chem.MolFromSmarts(
-            "[*-]-[*+0]=[*+0]-[*-,$([#7;X3;v3]),$([#6+0,#7+1]=O),"
-            "$([S;D4;v4]-[O-])]"
+            "[*-]-[*+0]=[*+0]-[*-,$([#7;X3;v3]),$([#6+0,#7+1]=O),$([S;D4;v4]-[O-])]"
         )
         # number of unique matches with the pattern
-        n_matches = len(
-            set([match[0] for match in mol.GetSubstructMatches(pattern)])
-        )
+        n_matches = len({match[0] for match in mol.GetSubstructMatches(pattern)})
         # nothing to standardize
         if n_matches == 0:
             return
         # single match (unusual)
-        elif n_matches == 1:
+        if n_matches == 1:
             # as a last resort, the only way to standardize is to find a
             # nitrogen that can accept a double bond and a positive charge
             # or a carbonyl that will become an enolate
@@ -495,16 +485,12 @@ class MDAnalysisInferer:
                 # [*-]-*=*-[C,N+]=O --> *=*-*=[C,N+]-[O-]
                 # transform the =O to -[O-]
                 if (
-                    term_atom.GetAtomicNum() == 6
-                    and term_atom.GetFormalCharge() == 0
+                    term_atom.GetAtomicNum() == 6 and term_atom.GetFormalCharge() == 0
                 ) or (
-                    term_atom.GetAtomicNum() == 7
-                    and term_atom.GetFormalCharge() == 1
+                    term_atom.GetAtomicNum() == 7 and term_atom.GetFormalCharge() == 1
                 ):
                     for neighbor in term_atom.GetNeighbors():
-                        bond = mol.GetBondBetweenAtoms(
-                            anion2, neighbor.GetIdx()
-                        )
+                        bond = mol.GetBondBetweenAtoms(anion2, neighbor.GetIdx())
                         if (
                             neighbor.GetAtomicNum() == 8
                             and bond.GetBondTypeAsDouble() == 2
@@ -516,13 +502,10 @@ class MDAnalysisInferer:
                 # [*-]-*=*-[Sv4]-[O-] --> *=*-*=[Sv6]=O
                 # transform -[O-] to =O
                 elif (
-                    term_atom.GetAtomicNum() == 16
-                    and term_atom.GetFormalCharge() == 0
+                    term_atom.GetAtomicNum() == 16 and term_atom.GetFormalCharge() == 0
                 ):
                     for neighbor in term_atom.GetNeighbors():
-                        bond = mol.GetBondBetweenAtoms(
-                            anion2, neighbor.GetIdx()
-                        )
+                        bond = mol.GetBondBetweenAtoms(anion2, neighbor.GetIdx())
                         if (
                             neighbor.GetAtomicNum() == 8
                             and neighbor.GetFormalCharge() == -1
@@ -560,10 +543,9 @@ class MDAnalysisInferer:
                     if g in backtrack:
                         continue
                     # add to backtracking and start the switch
-                    else:
-                        anion, a1, a2 = match
-                        backtrack.append(g)
-                        break
+                    anion, a1, a2 = match
+                    backtrack.append(g)
+                    break
                 # already performed all changes
                 else:
                     if backtrack_cycles == 1:
@@ -592,7 +574,7 @@ class MDAnalysisInferer:
                 b.SetBondType(RDBONDORDER[b.GetBondTypeAsDouble() - 1])
                 mol.UpdatePropertyCache(strict=False)
                 # update number of matches for the end pattern
-                n_matches = len(set([match[0] for match in matches]))
+                n_matches = len({match[0] for match in matches})
                 if n_matches == 1:
                     end_pattern = odd_end_pattern
                 # start new iteration

@@ -149,8 +149,7 @@ class RDKitReader(memory.MemoryReader):
         except ImportError:
             # if we can't import rdkit, it's probably not rdkit
             return False
-        else:
-            return isinstance(thing, Chem.Mol)
+        return isinstance(thing, Chem.Mol)
 
     def __init__(self, filename, **kwargs):
         """Read coordinates from an RDKit molecule.
@@ -316,6 +315,7 @@ class RDKitConverter(base.ConverterBase):
         operation is cached).
 
     """
+
     lib = "RDKIT"
     units = {"time": None, "length": "Angstrom"}
 
