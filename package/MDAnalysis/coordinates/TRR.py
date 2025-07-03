@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -113,7 +113,10 @@ class TRRWriter(XDRBaseWriter):
             if self._convert_units:
                 self.convert_forces_to_native(forces)
 
-        time = ts.time
+        if self._dt is None:
+            time = ts.time
+        else:
+            time = self._dt * ts.frame
         step = ts.data.get('step', ts.frame)
 
         if self._convert_units:
@@ -176,7 +179,11 @@ class TRRReader(XDRBaseReader):
 
     def _frame_to_ts(self, frame, ts):
         """convert a trr-frame to a mda TimeStep"""
-        ts.time = frame.time
+        dt = self._kwargs["dt"]
+        if dt is None:
+            ts.time = frame.time
+        else:
+            ts.time = self._frame * dt
         ts.frame = self._frame
         ts.data['step'] = frame.step
 

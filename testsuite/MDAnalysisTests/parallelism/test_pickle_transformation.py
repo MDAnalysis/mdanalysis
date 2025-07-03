@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -35,9 +35,11 @@ from MDAnalysis.transformations.wrap import wrap, unwrap
 from MDAnalysisTests.datafiles import PSF_TRICLINIC, DCD_TRICLINIC
 
 
-@pytest.fixture(params=[
-    (PSF_TRICLINIC, DCD_TRICLINIC),
-])
+@pytest.fixture(
+    params=[
+        (PSF_TRICLINIC, DCD_TRICLINIC),
+    ]
+)
 def u(request):
     top, traj = request.param
     return mda.Universe(top, traj)
@@ -96,8 +98,7 @@ def test_add_fit_translation_pickle(fit_translation_transformation, u):
         assert_almost_equal(u_ts.positions, u_p_ts.positions)
 
 
-def test_add_fit_rot_trans_pickle(fit_rot_trans_transformation,
-                                  u):
+def test_add_fit_rot_trans_pickle(fit_rot_trans_transformation, u):
     u.trajectory.add_transformations(fit_rot_trans_transformation)
     u_p = pickle.loads(pickle.dumps(u))
     u.trajectory[0]

@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -97,7 +97,7 @@ import pytest
 logger = logging.getLogger("MDAnalysisTests.__init__")
 
 # keep in sync with RELEASE in setup.py
-__version__ = "2.8.0-dev0"
+__version__ = "2.10.0-dev0"
 
 
 # Do NOT import MDAnalysis at this level. Tests should do it themselves.
@@ -114,7 +114,7 @@ import sys
 # collection of citations on the first `import MDAnalysis` so the environment
 # variable *must* come before MDAnalysis is imported the first time. See
 # issue #412 https://github.com/MDAnalysis/mdanalysis/issues/412 and PR #1822.
-os.environ['DUECREDIT_ENABLE'] = 'yes'
+os.environ["DUECREDIT_ENABLE"] = "yes"
 
 # Any tests that plot with matplotlib need to run with the simple agg backend
 # because on Travis there is no DISPLAY set.

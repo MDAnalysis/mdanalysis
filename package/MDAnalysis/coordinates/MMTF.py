@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -37,7 +37,7 @@ Classes
 .. autoclass:: MMTFReader
    :members:
 
-.. _MMTF: https://mmtf.rcsb.org/
+.. _MMTF: https://www.rcsb.org/news/feature/65a1af31c76ca3abcc925d0c
 
 """
 import warnings
@@ -50,7 +50,7 @@ from ..due import due, Doi
 
 
 def _parse_mmtf(fn):
-    if fn.endswith('gz'):
+    if fn.endswith("gz"):
         return mmtf.parse_gzip(fn)
     else:
         return mmtf.parse(fn)
@@ -65,17 +65,19 @@ class MMTFReader(base.SingleFrameReaderBase):
        Protein Data Bank. The Reader will be removed in version 3.0.
        Users are encouraged to instead use alternative PDB formats.
     """
-    format = 'MMTF'
+
+    format = "MMTF"
 
     @store_init_arguments
     def __init__(self, filename, convert_units=True, n_atoms=None, **kwargs):
-        wmsg = ("The MMTF Reader is deprecated and will be removed in "
-                "MDAnalysis version 3.0.0")
+        wmsg = (
+            "The MMTF Reader is deprecated and will be removed in "
+            "MDAnalysis version 3.0.0"
+        )
         warnings.warn(wmsg, DeprecationWarning)
 
         super(MMTFReader, self).__init__(
-            filename, convert_units, n_atoms,
-            **kwargs
+            filename, convert_units, n_atoms, **kwargs
         )
 
     @staticmethod
@@ -87,9 +89,9 @@ class MMTFReader(base.SingleFrameReaderBase):
         return isinstance(thing, mmtf.MMTFDecoder)
 
     @due.dcite(
-        Doi('10.1371/journal.pcbi.1005575'),
+        Doi("10.1371/journal.pcbi.1005575"),
         description="MMTF Reader",
-        path='MDAnalysis.coordinates.MMTF',
+        path="MDAnalysis.coordinates.MMTF",
     )
     def _read_first_frame(self):
         # TOOD: Check units?
@@ -99,8 +101,7 @@ class MMTFReader(base.SingleFrameReaderBase):
             top = _parse_mmtf(self.filename)
         self.n_atoms = top.num_atoms
 
-        self.ts = ts = self._Timestep(self.n_atoms,
-                                      **self._ts_kwargs)
+        self.ts = ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
         ts._pos[:, 0] = top.x_coord_list
         ts._pos[:, 1] = top.y_coord_list
         ts._pos[:, 2] = top.z_coord_list

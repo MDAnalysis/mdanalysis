@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -21,7 +21,6 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import MDAnalysis as mda
-
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import DMS_DOMAINS, DMS_NO_SEGID
 
@@ -29,10 +28,19 @@ from MDAnalysisTests.datafiles import DMS_DOMAINS, DMS_NO_SEGID
 class TestDMSParser(ParserBase):
     parser = mda.topology.DMSParser.DMSParser
     ref_filename = DMS_DOMAINS
-    expected_attrs = ['ids', 'names', 'bonds', 'charges',
-                      'masses', 'resids', 'resnames', 'segids',
-                      'chainIDs', 'atomnums']
-    guessed_attrs = ['types']
+    expected_attrs = [
+        "ids",
+        "names",
+        "bonds",
+        "charges",
+        "masses",
+        "resids",
+        "resnames",
+        "segids",
+        "chainIDs",
+        "atomnums",
+    ]
+    guessed_attrs = ["types"]
     expected_n_atoms = 3341
     expected_n_residues = 214
     expected_n_segments = 3
@@ -61,6 +69,11 @@ class TestDMSParser(ParserBase):
 
         s5 = u.select_atoms("resname ALA")
         assert len(s5) == 190
+
+    def test_guessed_types(self, filename):
+        u = mda.Universe(filename)
+        expected = ["N", "H", "H", "H", "C", "H", "C"]
+        assert (u.atoms.types[:7] == expected).all()
 
 
 class TestDMSParserNoSegid(TestDMSParser):

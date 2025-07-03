@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -1655,6 +1655,9 @@ class SingleFrameReaderBase(ProtoReader):
        Calling `__iter__` now rewinds the reader before yielding a
        :class:`Timestep` object (fixing behavior that was not
        well defined previously).
+    .. versionchanged:: 2.10.0
+       Fixed a typo in the attribute assignment (`self.atom` → `self.atoms`),
+       which may affect subclasses relying on this value.
     """
     _err = "{0} only contains a single frame"
 
@@ -1666,7 +1669,7 @@ class SingleFrameReaderBase(ProtoReader):
         self.convert_units = convert_units
 
         self.n_frames = 1
-        self.n_atom = n_atoms
+        self.n_atoms = n_atoms
 
         ts_kwargs = {}
         for att in ('dt', 'time_offset'):

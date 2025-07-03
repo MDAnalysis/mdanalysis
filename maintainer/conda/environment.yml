@@ -1,13 +1,12 @@
 name: mda-dev
 channels:
-  - defaults
   - conda-forge
 dependencies:
   - chemfiles>=0.10
   - codecov
   - cython
   - docutils
-  - fasteners
+  - filelock
   - griddataformats
   - gsd
   - h5py>=2.10

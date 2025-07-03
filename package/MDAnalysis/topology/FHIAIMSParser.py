@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -47,15 +47,12 @@ Classes
 """
 import numpy as np
 
-from . import guessers
 from ..lib.util import openany
 from .base import TopologyReaderBase
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomnames,
     Atomids,
-    Atomtypes,
-    Masses,
     Resids,
     Resnums,
     Segids,
@@ -69,12 +66,19 @@ class FHIAIMSParser(TopologyReaderBase):
     Creates the following attributes:
      - Atomnames
 
-    Guesses the following attributes:
-     - Atomtypes
-     - Masses
 
+    .. note::
+
+        By default, atomtypes and masses will be guessed on Universe creation.
+        This may change in release 3.0.
+        See :ref:`Guessers` for more information.
+
+    .. versionchanged:: 2.8.0
+        Removed type and mass guessing (attributes guessing takes place now
+        through universe.guess_TopologyAttrs() API).
     """
-    format = ['IN', 'FHIAIMS']
+
+    format = ["IN", "FHIAIMS"]
 
     def parse(self, **kwargs):
         """Read the file and return the structure.
@@ -96,24 +100,22 @@ class FHIAIMSParser(TopologyReaderBase):
                     continue
                 # we are now seeing something that's neither atom nor lattice
                 raise ValueError(
-                    'Non-conforming line: ({0})in FHI-AIMS input file {0}'.format(line, self.filename))
+                    "Non-conforming line: ({0})in FHI-AIMS input file {0}".format(
+                        line, self.filename
+                    )
+                )
             names = np.asarray(names)
             natoms = len(names)
 
-        # Guessing time
-        atomtypes = guessers.guess_types(names)
-        masses = guessers.guess_masses(names)
+        attrs = [
+            Atomnames(names),
+            Atomids(np.arange(natoms) + 1),
+            Resids(np.array([1])),
+            Resnums(np.array([1])),
+            Segids(np.array(["SYSTEM"], dtype=object)),
+            Elements(names),
+        ]
 
-        attrs = [Atomnames(names),
-                 Atomids(np.arange(natoms) + 1),
-                 Atomtypes(atomtypes, guessed=True),
-                 Masses(masses, guessed=True),
-                 Resids(np.array([1])),
-                 Resnums(np.array([1])),
-                 Segids(np.array(['SYSTEM'], dtype=object)),
-                 Elements(names)]
-
-        top = Topology(natoms, 1, 1,
-                       attrs=attrs)
+        top = Topology(natoms, 1, 1, attrs=attrs)
 
         return top

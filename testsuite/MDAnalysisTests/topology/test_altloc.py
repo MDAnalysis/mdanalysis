@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -50,7 +50,7 @@ def test_bonds(u):
 
 
 def test_write_read(u, tmpdir):
-    outfile = str(tmpdir.join('test.pdb'))
+    outfile = str(tmpdir.join("test.pdb"))
     u.select_atoms("all").write(outfile)
     u2 = Universe(outfile)
     assert len(u.atoms) == len(u2.atoms)

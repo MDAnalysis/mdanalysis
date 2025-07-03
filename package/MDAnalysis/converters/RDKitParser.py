@@ -1,11 +1,11 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -47,7 +47,6 @@ import warnings
 import numpy as np
 
 from ..topology.base import TopologyReaderBase, change_squash
-from ..topology import guessers
 from ..core.topologyattrs import (
     Atomids,
     Atomnames,
@@ -90,15 +89,13 @@ class RDKitParser(TopologyReaderBase):
      - Atomnames
      - Aromaticities
      - Elements
+     - Types
      - Masses
      - Bonds
      - Resids
      - Resnums
      - RSChirality
      - Segids
-
-    Guesses the following:
-     - Atomtypes
 
     Depending on RDKit's input, the following Attributes might be present:
      - Charges
@@ -156,8 +153,15 @@ class RDKitParser(TopologyReaderBase):
     .. versionadded:: 2.0.0
     .. versionchanged:: 2.1.0
        Added R/S chirality support
+    .. versionchanged:: 2.8.0
+       Removed type guessing (attributes guessing takes place now
+       through universe.guess_TopologyAttrs() API). If atoms types is not
+       present in the input rdkit molecule as a _TriposAtomType property,
+       the type attribute get the same values as the element attribute.
+
     """
-    format = 'RDKIT'
+
+    format = "RDKIT"
 
     @staticmethod
     def _format_hint(thing):
@@ -200,19 +204,24 @@ class RDKitParser(TopologyReaderBase):
         try:
             atom = mol.GetAtomWithIdx(0)
         except RuntimeError:
-            top = Topology(n_atoms=0, n_res=0, n_seg=0,
-                           attrs=None,
-                           atom_resindex=None,
-                           residue_segindex=None)
+            top = Topology(
+                n_atoms=0,
+                n_res=0,
+                n_seg=0,
+                attrs=None,
+                atom_resindex=None,
+                residue_segindex=None,
+            )
             return top
 
         # check if multiple charges present
-        if atom.HasProp('_GasteigerCharge') and (
-        atom.HasProp('_TriposPartialCharge')
+        if atom.HasProp("_GasteigerCharge") and (
+            atom.HasProp("_TriposPartialCharge")
         ):
             warnings.warn(
-                'Both _GasteigerCharge and _TriposPartialCharge properties '
-                'are present. Using Gasteiger charges by default.')
+                "Both _GasteigerCharge and _TriposPartialCharge properties "
+                "are present. Using Gasteiger charges by default."
+            )
 
         for atom in mol.GetAtoms():
             ids.append(atom.GetIdx())
@@ -221,7 +230,7 @@ class RDKitParser(TopologyReaderBase):
             aromatics.append(atom.GetIsAromatic())
             chiralities.append(_rdkit_atom_to_RS(atom))
             mi = atom.GetMonomerInfo()
-            if mi: # atom name and residue info are present
+            if mi:  # atom name and residue info are present
                 names.append(mi.GetName().strip())
                 resnums.append(mi.GetResidueNumber())
                 resnames.append(mi.GetResidueName())
@@ -234,23 +243,25 @@ class RDKitParser(TopologyReaderBase):
             else:
                 # atom name (MOL2 only)
                 try:
-                    names.append(atom.GetProp('_TriposAtomName'))
+                    names.append(atom.GetProp("_TriposAtomName"))
                 except KeyError:
                     pass
                 # atom type (MOL2 only)
                 try:
-                    atomtypes.append(atom.GetProp('_TriposAtomType'))
+                    atomtypes.append(atom.GetProp("_TriposAtomType"))
                 except KeyError:
                     pass
                 # gasteiger charge (computed):
                 # if the user took the time to compute them, make it a priority
                 # over charges read from a MOL2 file
                 try:
-                    charges.append(atom.GetDoubleProp('_GasteigerCharge'))
+                    charges.append(atom.GetDoubleProp("_GasteigerCharge"))
                 except KeyError:
                     # partial charge (MOL2 only)
                     try:
-                        charges.append(atom.GetDoubleProp('_TriposPartialCharge'))
+                        charges.append(
+                            atom.GetDoubleProp("_TriposPartialCharge")
+                        )
                     except KeyError:
                         pass
 
@@ -274,7 +285,7 @@ class RDKitParser(TopologyReaderBase):
             (elements, Elements, object),
             (masses, Masses, np.float32),
             (aromatics, Aromaticities, bool),
-            (chiralities, RSChirality, 'U1'),
+            (chiralities, RSChirality, "U1"),
         ):
             attrs.append(Attr(np.array(vals, dtype=dtype)))
 
@@ -303,14 +314,13 @@ class RDKitParser(TopologyReaderBase):
         if atomtypes:
             attrs.append(Atomtypes(np.array(atomtypes, dtype=object)))
         else:
-            atomtypes = guessers.guess_types(names)
-            attrs.append(Atomtypes(atomtypes, guessed=True))
+            atomtypes = np.char.upper(elements)
 
         # Partial charges
         if charges:
             attrs.append(Charges(np.array(charges, dtype=np.float32)))
         else:
-            pass # no guesser yet
+            pass  # no guesser yet
 
         # PDB only
         for vals, Attr, dtype in (
@@ -330,7 +340,8 @@ class RDKitParser(TopologyReaderBase):
             icodes = np.array(icodes, dtype=object)
             residx, (resnums, resnames, icodes, segids) = change_squash(
                 (resnums, resnames, icodes, segids),
-                (resnums, resnames, icodes, segids))
+                (resnums, resnames, icodes, segids),
+            )
             n_residues = len(resnums)
             for vals, Attr, dtype in (
                 (resnums, Resids, np.int32),
@@ -352,13 +363,17 @@ class RDKitParser(TopologyReaderBase):
             attrs.append(Segids(segids))
         else:
             n_segments = 1
-            attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
+            attrs.append(Segids(np.array(["SYSTEM"], dtype=object)))
             segidx = None
 
         # create topology
-        top = Topology(n_atoms, n_residues, n_segments,
-                       attrs=attrs,
-                       atom_resindex=residx,
-                       residue_segindex=segidx)
+        top = Topology(
+            n_atoms,
+            n_residues,
+            n_segments,
+            attrs=attrs,
+            atom_resindex=residx,
+            residue_segindex=segidx,
+        )
 
         return top

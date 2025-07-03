@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -26,7 +26,7 @@
 
 :Author: Alejandro Bernardin
 :Year: 2014-2015
-:Copyright: GNU Public License v3
+:Copyright: Lesser GNU Public License v2.1+
 
 .. versionadded:: 0.11.0
 
@@ -41,16 +41,25 @@ See Also
 """
 import warnings
 
-from waterdynamics.waterdynamics import (
-    WaterOrientationalRelaxation,
-    AngularDistribution,
-    MeanSquareDisplacement,
-    SurvivalProbability,
-)
-
-
-wmsg = ("Deprecation in version 2.8.0\n"
+try:
+    from waterdynamics.waterdynamics import (
+        WaterOrientationalRelaxation,
+        AngularDistribution,
+        MeanSquareDisplacement,
+        SurvivalProbability,
+    )
+except ImportError:
+    wmsg = (
+        "Please install the waterdynamics mdakit to use it in MDAnalysis.\n"
+        "More details can be found here: "
+        "https://www.mdanalysis.org/waterdynamics/getting_started.html"
+    )
+    warnings.warn(wmsg, category=UserWarning)
+else:
+    wmsg = (
+        "Deprecation in version 2.8.0\n"
         "MDAnalysis.analysis.waterdynamics is deprecated in favour of the "
         "MDAKit waterdynamics (https://www.mdanalysis.org/waterdynamics/) "
-        "and will be removed in MDAnalysis version 3.0.0")
-warnings.warn(wmsg, category=DeprecationWarning)
+        "and will be removed in MDAnalysis version 3.0.0"
+    )
+    warnings.warn(wmsg, category=DeprecationWarning)

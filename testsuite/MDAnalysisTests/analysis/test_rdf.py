@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -24,6 +24,7 @@ import pytest
 
 import MDAnalysis as mda
 from MDAnalysis.analysis.rdf import InterRDF
+from MDAnalysisTests.util import distopia_conditional_backend
 
 from MDAnalysisTests.datafiles import two_water_gro
 
@@ -33,7 +34,7 @@ from numpy.testing import assert_allclose
 @pytest.fixture()
 def u():
     u = mda.Universe(two_water_gro, in_memory=True)
-    u.add_TopologyAttr('chainIDs', u.atoms.resids)
+    u.add_TopologyAttr("chainIDs", u.atoms.resids)
     return u
 
 
@@ -43,8 +44,8 @@ def sels(u):
     # (NOTE: requires in-memory coordinates to make them permanent)
     for at, (x, y) in zip(u.atoms, zip([1] * 3 + [2] * 3, [2, 1, 3] * 2)):
         at.position = x, y, 0.0
-    s1 = u.select_atoms('name OW')
-    s2 = u.select_atoms('name HW1 HW2')
+    s1 = u.select_atoms("name OW")
+    s2 = u.select_atoms("name HW1 HW2")
     return s1, s2
 
 
@@ -96,10 +97,9 @@ def test_exclusion(sels):
     assert rdf.results.count.sum() == 4
 
 
-@pytest.mark.parametrize("attr, count", [
-    ("residue", 8),
-    ("segment", 0),
-    ("chain", 8)])
+@pytest.mark.parametrize(
+    "attr, count", [("residue", 8), ("segment", 0), ("chain", 8)]
+)
 def test_ignore_same_residues(sels, attr, count):
     # should see two distances with 4 counts each
     s1, s2 = sels
@@ -110,13 +110,18 @@ def test_ignore_same_residues(sels, attr, count):
 
 def test_ignore_same_residues_fails(sels):
     s1, s2 = sels
-    with pytest.raises(ValueError, match="The exclude_same argument to InterRDF must be"):
+    with pytest.raises(
+        ValueError, match="The exclude_same argument to InterRDF must be"
+    ):
         InterRDF(s2, s2, exclude_same="unsupported").run()
 
-    with pytest.raises(ValueError, match="The exclude_same argument to InterRDF cannot be used with"):
+    with pytest.raises(
+        ValueError,
+        match="The exclude_same argument to InterRDF cannot be used with",
+    ):
         InterRDF(s2, s2, exclude_same="residue", exclusion_block=tuple()).run()
-        
-        
+
+
 @pytest.mark.parametrize("attr", ("rdf", "bins", "edges", "count"))
 def test_rdf_attr_warning(sels, attr):
     s1, s2 = sels
@@ -126,18 +131,18 @@ def test_rdf_attr_warning(sels, attr):
         getattr(rdf, attr) is rdf.results[attr]
 
 
-@pytest.mark.parametrize("norm, value", [
-    ("density", 1.956823),
-    ("rdf", 244602.88385),
-    ("none", 4)])
+@pytest.mark.parametrize(
+    "norm, value", [("density", 1.956823), ("rdf", 244602.88385), ("none", 4)]
+)
 def test_norm(sels, norm, value):
     s1, s2 = sels
     rdf = InterRDF(s1, s2, norm=norm).run()
     assert_allclose(max(rdf.results.rdf), value)
 
 
-@pytest.mark.parametrize("norm, norm_required", [
-    ("Density", "density"), (None, "none")])
+@pytest.mark.parametrize(
+    "norm, norm_required", [("Density", "density"), (None, "none")]
+)
 def test_norm_values(sels, norm, norm_required):
     s1, s2 = sels
     rdf = InterRDF(s1, s2, norm=norm).run()
@@ -148,3 +153,10 @@ def test_unknown_norm(sels):
     s1, s2 = sels
     with pytest.raises(ValueError, match="invalid norm"):
         InterRDF(s1, s2, sels, norm="foo")
+
+
+@pytest.mark.parametrize("backend", distopia_conditional_backend())
+def test_norm(sels, backend):
+    s1, s2 = sels
+    rdf = InterRDF(s1, s2, norm="none", backend=backend).run()
+    assert_allclose(max(rdf.results.rdf), 4)

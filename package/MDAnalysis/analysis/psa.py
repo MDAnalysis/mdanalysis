@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -27,7 +27,7 @@ Calculating path similarity --- :mod:`MDAnalysis.analysis.psa`
 
 :Author: Sean Seyler
 :Year: 2015
-:Copyright: GNU Public License v3
+:Copyright: Lesser GNU Public License v2.1+
 
 .. versionadded:: 0.10.0
 
@@ -46,26 +46,35 @@ See Also
 
 import warnings
 
-from pathsimanalysis import (
-    get_path_metric_func,
-    sqnorm,
-    get_msd_matrix,
-    reshaper,
-    get_coord_axes,
-    hausdorff,
-    hausdorff_wavg,
-    hausdorff_avg,
-    hausdorff_neighbors,
-    discrete_frechet,
-    dist_mat_to_vec,
-    Path,
-    PSAPair,
-    PSAnalysis,
-)
-
-
-wmsg = ('Deprecation in version 2.8.0:\n'
-        'MDAnalysis.analysis.psa is deprecated in favour of the MDAKit '
-        'PathSimAnalysis (https://github.com/MDAnalysis/PathSimAnalysis) '
-        'and will be removed in MDAnalysis version 3.0.0')
-warnings.warn(wmsg, category=DeprecationWarning)
+try:
+    from pathsimanalysis import (
+        get_path_metric_func,
+        sqnorm,
+        get_msd_matrix,
+        reshaper,
+        get_coord_axes,
+        hausdorff,
+        hausdorff_wavg,
+        hausdorff_avg,
+        hausdorff_neighbors,
+        discrete_frechet,
+        dist_mat_to_vec,
+        Path,
+        PSAPair,
+        PSAnalysis,
+    )
+except ImportError:
+    wmsg = (
+        "Please install the PathSimAnalysis mdakit to use it in MDAnalysis.\n"
+        "More details can be found here: "
+        "https://www.mdanalysis.org/PathSimAnalysis/getting_started.html"
+    )
+    warnings.warn(wmsg, category=UserWarning)
+else:
+    wmsg = (
+        "Deprecation in version 2.8.0:\n"
+        "MDAnalysis.analysis.psa is deprecated in favour of the MDAKit "
+        "PathSimAnalysis (https://github.com/MDAnalysis/PathSimAnalysis) "
+        "and will be removed in MDAnalysis version 3.0.0"
+    )
+    warnings.warn(wmsg, category=DeprecationWarning)

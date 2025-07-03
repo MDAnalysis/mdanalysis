@@ -4,10 +4,16 @@
 
 :Author: Matteo Tiberti, Wouter Boomsma, Tone Bengtsen
 :Year: 2015-2017
-:Copyright: GNU Public License v3
+:Copyright: Lesser GNU Public License v2.1+
 :Maintainer: Matteo Tiberti <matteo.tiberti@gmail.com>, mtiberti on github
 
 .. versionadded:: 0.16.0
+
+
+.. deprecated:: 2.8.0
+   This module is deprecated in favour of the 
+   MDAKit `mdaencore <https://mdanalysis.org/mdaencore/>`_ and will be removed
+   in MDAnalysis 3.0.0.
 
 The module contains implementations of similarity measures between protein
 ensembles described in :footcite:p:`LindorffLarsen2009`. The implementation and examples

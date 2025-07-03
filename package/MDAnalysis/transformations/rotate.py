@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -41,7 +41,7 @@ from .base import TransformationBase
 
 
 class rotateby(TransformationBase):
-    '''
+    """
     Rotates the trajectory by a given angle on a given axis. The axis is defined by
     the user, combining the direction vector and a point. This point can be the center
     of geometry or the center of mass of a user defined AtomGroup, or an array defining
@@ -86,7 +86,7 @@ class rotateby(TransformationBase):
         rotation angle in degrees
     direction: array-like
         vector that will define the direction of a custom axis of rotation from the
-        provided point. Expected shapes are (3, ) or (1, 3). 
+        provided point. Expected shapes are (3, ) or (1, 3).
     ag: AtomGroup, optional
         use the weighted center of an AtomGroup as the point from where the rotation axis
         will be defined. If no AtomGroup is given, the `point` argument becomes mandatory
@@ -98,12 +98,12 @@ class rotateby(TransformationBase):
         define the weights of the atoms when calculating the center of the AtomGroup.
         With ``"mass"`` uses masses as weights; with ``None`` weigh each atom equally.
         If a float array of the same length as `ag` is provided, use each element of
-        the `array_like` as a weight for the corresponding atom in `ag`. Default is 
+        the `array_like` as a weight for the corresponding atom in `ag`. Default is
         None.
     wrap: bool, optional
         If `True`, all the atoms from the given AtomGroup will be moved to the unit cell
         before calculating the center of mass or geometry. Default is `False`, no changes
-        to the atom coordinates are done before calculating the center of the AtomGroup. 
+        to the atom coordinates are done before calculating the center of the AtomGroup.
 
     Returns
     -------
@@ -111,7 +111,7 @@ class rotateby(TransformationBase):
 
     Warning
     -------
-    Wrapping/unwrapping the trajectory or performing PBC corrections may not be possible 
+    Wrapping/unwrapping the trajectory or performing PBC corrections may not be possible
     after rotating the trajectory.
 
 
@@ -121,18 +121,22 @@ class rotateby(TransformationBase):
     .. versionchanged:: 2.0.0
        The transformation was changed to inherit from the base class for
        limiting threads and checking if it can be used in parallel analysis.
-    '''
-    def __init__(self,
-                 angle,
-                 direction,
-                 point=None,
-                 ag=None,
-                 weights=None,
-                 wrap=False,
-                 max_threads=1,
-                 parallelizable=True):
-        super().__init__(max_threads=max_threads,
-                         parallelizable=parallelizable)
+    """
+
+    def __init__(
+        self,
+        angle,
+        direction,
+        point=None,
+        ag=None,
+        weights=None,
+        wrap=False,
+        max_threads=1,
+        parallelizable=True,
+    ):
+        super().__init__(
+            max_threads=max_threads, parallelizable=parallelizable
+        )
 
         self.angle = angle
         self.direction = direction
@@ -144,38 +148,47 @@ class rotateby(TransformationBase):
         self.angle = np.deg2rad(self.angle)
         try:
             self.direction = np.asarray(self.direction, np.float32)
-            if self.direction.shape != (3, ) and \
-               self.direction.shape != (1, 3):
-                raise ValueError('{} is not a valid direction'
-                                 .format(self.direction))
-            self.direction = self.direction.reshape(3, )
+            if self.direction.shape != (3,) and self.direction.shape != (1, 3):
+                raise ValueError(
+                    "{} is not a valid direction".format(self.direction)
+                )
+            self.direction = self.direction.reshape(
+                3,
+            )
         except ValueError:
-            raise ValueError(f'{self.direction} is not a valid direction') \
-                             from None
+            raise ValueError(
+                f"{self.direction} is not a valid direction"
+            ) from None
         if self.point is not None:
             self.point = np.asarray(self.point, np.float32)
-            if self.point.shape != (3, ) and self.point.shape != (1, 3):
-                raise ValueError('{} is not a valid point'.format(self.point))
-            self.point = self.point.reshape(3, )
+            if self.point.shape != (3,) and self.point.shape != (1, 3):
+                raise ValueError("{} is not a valid point".format(self.point))
+            self.point = self.point.reshape(
+                3,
+            )
         elif self.ag:
             try:
                 self.atoms = self.ag.atoms
             except AttributeError:
-                raise ValueError(f'{self.ag} is not an AtomGroup object') \
-                                from None
+                raise ValueError(
+                    f"{self.ag} is not an AtomGroup object"
+                ) from None
             else:
                 try:
-                    self.weights = get_weights(self.atoms,
-                                               weights=self.weights)
+                    self.weights = get_weights(
+                        self.atoms, weights=self.weights
+                    )
                 except (ValueError, TypeError):
-                    errmsg = ("weights must be {'mass', None} or an iterable "
-                              "of the same size as the atomgroup.")
+                    errmsg = (
+                        "weights must be {'mass', None} or an iterable "
+                        "of the same size as the atomgroup."
+                    )
                     raise TypeError(errmsg) from None
-            self.center_method = partial(self.atoms.center,
-                                         self.weights,
-                                         wrap=self.wrap)
+            self.center_method = partial(
+                self.atoms.center, self.weights, wrap=self.wrap
+            )
         else:
-            raise ValueError('A point or an AtomGroup must be specified')
+            raise ValueError("A point or an AtomGroup must be specified")
 
     def _transform(self, ts):
         if self.point is None:

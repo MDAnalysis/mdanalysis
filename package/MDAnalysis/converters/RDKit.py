@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -239,9 +239,7 @@ class RDKitConverter(base.ConverterBase):
         from MDAnalysisTests.datafiles import PSF, DCD
         from rdkit.Chem.Descriptors3D import Asphericity
 
-        u = mda.Universe(PSF, DCD)
-        elements = mda.topology.guessers.guess_types(u.atoms.names)
-        u.add_TopologyAttr('elements', elements)
+        u = mda.Universe(PSF, DCD, to_guess=['elements'])
         ag = u.select_atoms("resid 1-10")
 
         for ts in u.trajectory:
@@ -318,7 +316,6 @@ class RDKitConverter(base.ConverterBase):
         operation is cached).
 
     """
-
     lib = "RDKIT"
     units = {"time": None, "length": "Angstrom"}
 
@@ -403,10 +400,13 @@ class RDKitConverter(base.ConverterBase):
 
         # add a conformer for the current Timestep
         if hasattr(ag, "positions"):
-            if np.isnan(ag.positions).any():
+            if np.isnan(ag.positions).any() or np.allclose(
+                ag.positions, 0.0, rtol=0.0, atol=1e-12
+            ):
                 warnings.warn(
-                    "NaN detected in coordinates, the output "
-                    "molecule will not have 3D coordinates assigned"
+                    "NaN or empty coordinates detected in coordinates, "
+                    "the output molecule will not have 3D coordinates "
+                    "assigned"
                 )
             else:
                 # assign coordinates

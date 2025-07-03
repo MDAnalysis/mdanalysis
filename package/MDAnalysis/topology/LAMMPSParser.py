@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -27,9 +27,15 @@ LAMMPSParser
 
 Parses data_ or dump_ files produced by LAMMPS_.
 
-.. _LAMMPS: http://lammps.sandia.gov/
-.. _data: DATA file format: :http://lammps.sandia.gov/doc/2001/data_format.html
-.. _dump: http://lammps.sandia.gov/doc/dump.html
+.. note::
+
+    By default, masses will be guessed on Universe creation if they are not
+    read from the input file. This may change in release 3.0.
+    See :ref:`Guessers` for more information.
+
+.. _LAMMPS: https://www.lammps.org/
+.. _data: DATA file format: :https://docs.lammps.org/2001/data_format.html
+.. _dump: https://docs.lammps.org/dump.html
 
 .. versionchanged:: 1.0.0
    Deprecated :class:`LAMMPSDataConverter` has now been removed.
@@ -61,7 +67,7 @@ The following code could be used::
   >>> u = mda.Universe('myfile.data', atom_style='id type x y z')
 
 
-.. _`atom_style`: http://lammps.sandia.gov/doc/atom_style.html
+.. _`atom_style`: https://docs.lammps.org/atom_style.html
 
 Classes
 -------
@@ -81,7 +87,6 @@ import string
 import functools
 import warnings
 
-from . import guessers
 from ..lib.util import openany, conv_float
 from ..lib.mdamath import triclinic_box
 from .base import TopologyReaderBase, squash_by
@@ -93,46 +98,51 @@ from ..core.topologyattrs import (
     Bonds,
     Charges,
     Dihedrals,
+    Elements,
     Impropers,
     Masses,
     Resids,
     Resnums,
     Segids,
 )
+from ..guesser.tables import SYMB2Z
+from ..guesser.tables import masses as mass_table
 
 logger = logging.getLogger("MDAnalysis.topology.LAMMPS")
 
 
 # Sections will all start with one of these words
 # and run until the next section title
-SECTIONS = set([
-    'Atoms',  # Molecular topology sections
-    'Velocities',
-    'Masses',
-    'Ellipsoids',
-    'Lines',
-    'Triangles',
-    'Bodies',
-    'Bonds',  # Forcefield sections
-    'Angles',
-    'Dihedrals',
-    'Impropers',
-    'Pair',
-    'Pair LJCoeffs',
-    'PairIJ Coeffs',
-    'Bond Coeffs',
-    'Angle Coeffs',
-    'Dihedral Coeffs',
-    'Improper Coeffs',
-    'BondBond Coeffs',  # Class 2 FF sections
-    'BondAngle Coeffs',
-    'MiddleBondTorsion Coeffs',
-    'EndBondTorsion Coeffs',
-    'AngleTorsion Coeffs',
-    'AngleAngleTorsion Coeffs',
-    'BondBond13 Coeffs',
-    'AngleAngle Coeffs',
-])
+SECTIONS = set(
+    [
+        "Atoms",  # Molecular topology sections
+        "Velocities",
+        "Masses",
+        "Ellipsoids",
+        "Lines",
+        "Triangles",
+        "Bodies",
+        "Bonds",  # Forcefield sections
+        "Angles",
+        "Dihedrals",
+        "Impropers",
+        "Pair",
+        "Pair LJCoeffs",
+        "PairIJ Coeffs",
+        "Bond Coeffs",
+        "Angle Coeffs",
+        "Dihedral Coeffs",
+        "Improper Coeffs",
+        "BondBond Coeffs",  # Class 2 FF sections
+        "BondAngle Coeffs",
+        "MiddleBondTorsion Coeffs",
+        "EndBondTorsion Coeffs",
+        "AngleTorsion Coeffs",
+        "AngleAngleTorsion Coeffs",
+        "BondBond13 Coeffs",
+        "AngleAngle Coeffs",
+    ]
+)
 # We usually check by splitting around whitespace, so check
 # if any SECTION keywords will trip up on this
 # and add them
@@ -141,31 +151,33 @@ for val in list(SECTIONS):
         SECTIONS.add(val.split()[0])
 
 
-HEADERS = set([
-    'atoms',
-    'bonds',
-    'angles',
-    'dihedrals',
-    'impropers',
-    'atom types',
-    'bond types',
-    'angle types',
-    'dihedral types',
-    'improper types',
-    'extra bond per atom',
-    'extra angle per atom',
-    'extra dihedral per atom',
-    'extra improper per atom',
-    'extra special per atom',
-    'ellipsoids',
-    'lines',
-    'triangles',
-    'bodies',
-    'xlo xhi',
-    'ylo yhi',
-    'zlo zhi',
-    'xy xz yz',
-])
+HEADERS = set(
+    [
+        "atoms",
+        "bonds",
+        "angles",
+        "dihedrals",
+        "impropers",
+        "atom types",
+        "bond types",
+        "angle types",
+        "dihedral types",
+        "improper types",
+        "extra bond per atom",
+        "extra angle per atom",
+        "extra dihedral per atom",
+        "extra improper per atom",
+        "extra special per atom",
+        "ellipsoids",
+        "lines",
+        "triangles",
+        "bodies",
+        "xlo xhi",
+        "ylo yhi",
+        "zlo zhi",
+        "xy xz yz",
+    ]
+)
 
 
 class DATAParser(TopologyReaderBase):
@@ -182,13 +194,18 @@ class DATAParser(TopologyReaderBase):
     see :ref:`atom_style_kwarg`.
 
     .. versionadded:: 0.9.0
+    .. versionchanged:: 2.8.0
+        Removed mass guessing (attributes guessing takes place now
+        through universe.guess_TopologyAttrs() API).
+
     """
-    format = 'DATA'
+
+    format = "DATA"
 
     def iterdata(self):
         with openany(self.filename) as f:
             for line in f:
-                line = line.partition('#')[0].strip()
+                line = line.partition("#")[0].strip()
                 if line:
                     yield line
 
@@ -202,19 +219,19 @@ class DATAParser(TopologyReaderBase):
         """
         f = list(self.iterdata())
 
-        starts = [i for i, line in enumerate(f)
-                  if line.split()[0] in SECTIONS]
+        starts = [i for i, line in enumerate(f) if line.split()[0] in SECTIONS]
         starts += [None]
 
         header = {}
-        for line in f[:starts[0]]:
+        for line in f[: starts[0]]:
             for token in HEADERS:
                 if line.endswith(token):
                     header[token] = line.split(token)[0]
                     continue
 
-        sects = {f[l]:f[l+1:starts[i+1]]
-                 for i, l in enumerate(starts[:-1])}
+        sects = {
+            f[l]: f[l + 1 : starts[i + 1]] for i, l in enumerate(starts[:-1])
+        }
 
         return header, sects
 
@@ -239,7 +256,7 @@ class DATAParser(TopologyReaderBase):
 
         atom_style = atom_style.split()
 
-        for attr in ['id', 'type', 'resid', 'charge', 'x', 'y', 'z']:
+        for attr in ["id", "type", "resid", "charge", "x", "y", "z"]:
             try:
                 location = atom_style.index(attr)
             except ValueError:
@@ -247,14 +264,16 @@ class DATAParser(TopologyReaderBase):
             else:
                 style_dict[attr] = location
 
-        reqd_attrs = ['id', 'type', 'x', 'y', 'z']
+        reqd_attrs = ["id", "type", "x", "y", "z"]
         missing_attrs = [attr for attr in reqd_attrs if attr not in style_dict]
         if missing_attrs:
-            raise ValueError("atom_style string missing required field(s): {}"
-                             "".format(', '.join(missing_attrs)))
-                
+            raise ValueError(
+                "atom_style string missing required field(s): {}"
+                "".format(", ".join(missing_attrs))
+            )
+
         return style_dict
-    
+
     def parse(self, **kwargs):
         """Parses a LAMMPS_ DATA file.
 
@@ -264,49 +283,53 @@ class DATAParser(TopologyReaderBase):
         """
         # Can pass atom_style to help parsing
         try:
-            self.style_dict = self._interpret_atom_style(kwargs['atom_style'])
+            self.style_dict = self._interpret_atom_style(kwargs["atom_style"])
         except KeyError:
             self.style_dict = None
 
         head, sects = self.grab_datafile()
 
         try:
-            masses = self._parse_masses(sects['Masses'])
+            masses = self._parse_masses(sects["Masses"])
         except KeyError:
             masses = None
 
-        if 'Atoms' not in sects:
+        if "Atoms" not in sects:
             raise ValueError("Data file was missing Atoms section")
 
         try:
-            top = self._parse_atoms(sects['Atoms'], masses)
+            top = self._parse_atoms(sects["Atoms"], masses)
         except Exception:
             errmsg = (
                 "Failed to parse atoms section.  You can supply a description "
                 "of the atom_style as a keyword argument, "
-                "eg mda.Universe(..., atom_style='id resid x y z')")
+                "eg mda.Universe(..., atom_style='id resid x y z')"
+            )
             raise ValueError(errmsg) from None
 
         # create mapping of id to index (ie atom id 10 might be the 0th atom)
         mapping = {atom_id: i for i, atom_id in enumerate(top.ids.values)}
 
         for attr, L, nentries in [
-                (Bonds, 'Bonds', 2),
-                (Angles, 'Angles', 3),
-                (Dihedrals, 'Dihedrals', 4),
-                (Impropers, 'Impropers', 4)
+            (Bonds, "Bonds", 2),
+            (Angles, "Angles", 3),
+            (Dihedrals, "Dihedrals", 4),
+            (Impropers, "Impropers", 4),
         ]:
             try:
-                type, sect = self._parse_bond_section(sects[L], nentries, mapping)
+                type, sect = self._parse_bond_section(
+                    sects[L], nentries, mapping
+                )
             except KeyError:
                 type, sect = [], []
-            
+
             top.add_TopologyAttr(attr(sect, type))
 
         return top
 
-    def read_DATA_timestep(self, n_atoms, TS_class, TS_kwargs,
-                           atom_style=None):
+    def read_DATA_timestep(
+        self, n_atoms, TS_class, TS_kwargs, atom_style=None
+    ):
         """Read a DATA file and try and extract x, v, box.
 
         - positions
@@ -323,25 +346,25 @@ class DATAParser(TopologyReaderBase):
             self.style_dict = None
         else:
             self.style_dict = self._interpret_atom_style(atom_style)
-        
+
         header, sects = self.grab_datafile()
 
         unitcell = self._parse_box(header)
 
         try:
-            positions, ordering = self._parse_pos(sects['Atoms'])
+            positions, ordering = self._parse_pos(sects["Atoms"])
         except KeyError as err:
             errmsg = f"Position information not found: {err}"
             raise IOError(errmsg) from None
 
-        if 'Velocities' in sects:
-            velocities = self._parse_vel(sects['Velocities'], ordering)
+        if "Velocities" in sects:
+            velocities = self._parse_vel(sects["Velocities"], ordering)
         else:
             velocities = None
 
-        ts = TS_class.from_coordinates(positions,
-                                       velocities=velocities,
-                                       **TS_kwargs)
+        ts = TS_class.from_coordinates(
+            positions, velocities=velocities, **TS_kwargs
+        )
         ts.dimensions = unitcell
 
         return ts
@@ -356,20 +379,22 @@ class DATAParser(TopologyReaderBase):
 
         if self.style_dict is None:
             if len(datalines[0].split()) in (7, 10):
-                style_dict = {'id': 0, 'x': 4, 'y': 5, 'z': 6}
+                style_dict = {"id": 0, "x": 4, "y": 5, "z": 6}
             else:
-                style_dict = {'id': 0, 'x': 3, 'y': 4, 'z': 5}
+                style_dict = {"id": 0, "x": 3, "y": 4, "z": 5}
         else:
             style_dict = self.style_dict
-    
+
         for i, line in enumerate(datalines):
             line = line.split()
 
-            ids[i] = line[style_dict['id']]
+            ids[i] = line[style_dict["id"]]
 
-            pos[i, :] = [line[style_dict['x']],
-                         line[style_dict['y']],
-                         line[style_dict['z']]]
+            pos[i, :] = [
+                line[style_dict["x"]],
+                line[style_dict["y"]],
+                line[style_dict["z"]],
+            ]
 
         order = np.argsort(ids)
         pos = pos[order]
@@ -426,7 +451,9 @@ class DATAParser(TopologyReaderBase):
         for line in datalines:
             line = line.split()
             # map to 0 based int
-            section.append(tuple([mapping[int(x)] for x in line[2:2 + nentries]]))
+            section.append(
+                tuple([mapping[int(x)] for x in line[2 : 2 + nentries]])
+            )
             type.append(line[1])
         return tuple(type), tuple(section)
 
@@ -442,7 +469,7 @@ class DATAParser(TopologyReaderBase):
         Lammps atoms can have lots of different formats,
         and even custom formats
 
-        http://lammps.sandia.gov/doc/atom_style.html
+        https://docs.lammps.org/atom_style.html
 
         Treated here are
         - atoms with 7 fields (with charge) "full"
@@ -462,18 +489,16 @@ class DATAParser(TopologyReaderBase):
         n_atoms = len(datalines)
 
         if self.style_dict is None:
-            sd = {'id': 0,
-                  'resid': 1,
-                  'type': 2}
+            sd = {"id": 0, "resid": 1, "type": 2}
             # Fields per line
             n = len(datalines[0].split())
             if n in (7, 10):
-                sd['charge'] = 3
+                sd["charge"] = 3
         else:
             sd = self.style_dict
 
-        has_charge = 'charge' in sd
-        has_resid = 'resid' in sd
+        has_charge = "charge" in sd
+        has_resid = "resid" in sd
 
         # atom ids aren't necessarily sequential
         atom_ids = np.zeros(n_atoms, dtype=np.int32)
@@ -491,12 +516,12 @@ class DATAParser(TopologyReaderBase):
             # these numpy array are already typed correctly,
             # so just pass the raw strings
             # and let numpy handle the conversion
-            atom_ids[i] = line[sd['id']]
+            atom_ids[i] = line[sd["id"]]
             if has_resid:
-                resids[i] = line[sd['resid']]
-            types[i] = line[sd['type']]
+                resids[i] = line[sd["resid"]]
+            types[i] = line[sd["type"]]
             if has_charge:
-                charges[i] = line[sd['charge']]
+                charges[i] = line[sd["charge"]]
 
         # at this point, we've read the atoms section,
         # but it's still (potentially) unordered
@@ -520,10 +545,6 @@ class DATAParser(TopologyReaderBase):
             for i, at in enumerate(types):
                 masses[i] = massdict[at]
             attrs.append(Masses(masses))
-        else:
-            # Guess them
-            masses = guessers.guess_masses(types)
-            attrs.append(Masses(masses, guessed=True))
 
         residx, resids = squash_by(resids)[:2]
         n_residues = len(resids)
@@ -531,11 +552,11 @@ class DATAParser(TopologyReaderBase):
         attrs.append(Atomids(atom_ids))
         attrs.append(Resids(resids))
         attrs.append(Resnums(resids.copy()))
-        attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
+        attrs.append(Segids(np.array(["SYSTEM"], dtype=object)))
 
-        top = Topology(n_atoms, n_residues, 1,
-                       attrs=attrs,
-                       atom_resindex=residx)
+        top = Topology(
+            n_atoms, n_residues, 1, attrs=attrs, atom_resindex=residx
+        )
 
         return top
 
@@ -554,18 +575,18 @@ class DATAParser(TopologyReaderBase):
         return masses
 
     def _parse_box(self, header):
-        x1, x2 = np.float32(header['xlo xhi'].split())
+        x1, x2 = np.float32(header["xlo xhi"].split())
         x = x2 - x1
-        y1, y2 = np.float32(header['ylo yhi'].split())
+        y1, y2 = np.float32(header["ylo yhi"].split())
         y = y2 - y1
-        z1, z2 = np.float32(header['zlo zhi'].split())
+        z1, z2 = np.float32(header["zlo zhi"].split())
         z = z2 - z1
 
-        if 'xy xz yz' in header:
+        if "xy xz yz" in header:
             # Triclinic
             unitcell = np.zeros((3, 3), dtype=np.float32)
 
-            xy, xz, yz = np.float32(header['xy xz yz'].split())
+            xy, xz, yz = np.float32(header["xy xz yz"].split())
 
             unitcell[0][0] = x
             unitcell[1][0] = xy
@@ -579,21 +600,44 @@ class DATAParser(TopologyReaderBase):
             # Orthogonal
             unitcell = np.zeros(6, dtype=np.float32)
             unitcell[:3] = x, y, z
-            unitcell[3:] = 90., 90., 90.
+            unitcell[3:] = 90.0, 90.0, 90.0
 
         return unitcell
 
 
+# Define the headers that define topology information from the lammps file
+# Any headers outside of this set will be ignored
+DUMP_HEADERS = {
+    "id": {"attr_class": Atomids, "default": None, "dtype": np.int32},
+    "mol": {"attr_class": [Resids, Resnums], "default": 1, "dtype": int},
+    "type": {"attr_class": Atomtypes, "default": 1, "dtype": object},
+    "mass": {"attr_class": Masses, "default": 1.0, "dtype": np.float64},
+    "element": {"attr_class": Elements, "default": None, "dtype": object},
+    "q": {"attr_class": Charges, "default": None, "dtype": np.float32},
+}
+
+
 class LammpsDumpParser(TopologyReaderBase):
-    """Parses Lammps ascii dump files in 'atom' format.
+    """Parses Lammps ascii dump files.
 
-    Sets all masses to 1.0.
+    id, mol, type, mass, element and q columns are read
+    and used to set the corresponding topology attributes.
+
+    All other columns are ignored.
+
+    If masses are not provided they will attempt to be guessed
+    from element names. If no element names are provided then all masses
+    will be set to 1.0.
 
 
-    .. versionchanged:: 2.0.0
     .. versionadded:: 0.19.0
+    .. versionchanged:: 2.0.0
+       Allow for a more flexible column layout
+    .. versionchanged:: 2.10.0
+       Allow reading of mass, charge and element attributes
     """
-    format = 'LAMMPSDUMP'
+
+    format = "LAMMPSDUMP"
 
     def parse(self, **kwargs):
         with openany(self.filename) as fin:
@@ -608,38 +652,99 @@ class LammpsDumpParser(TopologyReaderBase):
             fin.readline()  # y
             fin.readline()  # z
 
-            indices = np.zeros(natoms, dtype=int)
-            types = np.zeros(natoms, dtype=object)
-            
+            # Next line contains the headers for the atom data
             atomline = fin.readline()  # ITEM ATOMS
             attrs = atomline.split()[2:]  # attributes on coordinate line
-            col_ids = {attr: i for i, attr in enumerate(attrs)}  # column ids
+            col_ids = {
+                attr: i for i, attr in enumerate(attrs) if attr in DUMP_HEADERS
+            }  # column ids
+            if "id" not in col_ids:
+                raise ValueError("No id column found in dump file")
+            if "mass" not in col_ids:
+                if "element" in col_ids:
+                    warnings.warn(
+                        "No mass column found in dump file. "
+                        "Using guessed masses from element info."
+                    )
+                else:
+                    warnings.warn("Guessed all Masses to 1.0")
+            if "type" not in col_ids:
+                warnings.warn("Set all atom types to 1")
 
+            atom_data = {}
+            # Initialize the atom data arrays
+            for header in DUMP_HEADERS:
+                if header in col_ids:
+                    atom_data[header] = np.zeros(
+                        natoms, dtype=DUMP_HEADERS[header]["dtype"]
+                    )
+                elif DUMP_HEADERS[header]["default"] is not None:
+                    atom_data[header] = np.full(
+                        natoms,
+                        DUMP_HEADERS[header]["default"],
+                        dtype=DUMP_HEADERS[header]["dtype"],
+                    )
+            # Read the atom data
             for i in range(natoms):
                 fields = fin.readline().split()
+                for header, col_id in col_ids.items():
+                    atom_data[header][i] = fields[col_id]
 
-                indices[i] = fields[col_ids["id"]]
-                types[i] = fields[col_ids["type"]]
+        # Check for valid elements and set masses by element if not given
+        if "element" in col_ids:
+            validated_elements = []
+            for elem in atom_data["element"]:
+                if elem.capitalize() in SYMB2Z:
+                    validated_elements.append(elem.capitalize())
+                else:
+                    wmsg = (
+                        f"Unknown element {elem} found for some atoms. "
+                        f"These have been given an empty element record. "
+                    )
+                    warnings.warn(wmsg)
+                    validated_elements.append("")
+            atom_data["element"] = np.array(
+                validated_elements, dtype=DUMP_HEADERS["element"]["dtype"]
+            )
+            if "mass" not in col_ids:
+                for i, elem in enumerate(validated_elements):
+                    try:
+                        atom_data["mass"][i] = mass_table[elem]
+                    except KeyError:
+                        atom_data["mass"][i] = 1.0
 
-        order = np.argsort(indices)
-        indices = indices[order]
-        types = types[order]
+        # Reorder the atom data by id
+        order = np.argsort(atom_data["id"])
 
         attrs = []
-        attrs.append(Atomids(indices))
-        attrs.append(Atomtypes(types))
-        attrs.append(Masses(np.ones(natoms, dtype=np.float64), guessed=True))
-        warnings.warn('Guessed all Masses to 1.0')
-        attrs.append(Resids(np.array([1], dtype=int)))
-        attrs.append(Resnums(np.array([1], dtype=int)))
-        attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
+        for key, value in atom_data.items():
+            if key == "mol":
+                # Get the number of unique residues
+                # and the assignment of each atom to a residue
+                residx, resids = squash_by(value[order])[:2]
+                n_residues = len(resids)
+                for attr_class in DUMP_HEADERS[key]["attr_class"]:
+                    attrs.append(attr_class(resids))
+            else:
+                attrs.append(DUMP_HEADERS[key]["attr_class"](value[order]))
 
-        return Topology(natoms, 1, 1, attrs=attrs)
+        attrs.append(Segids(np.array(["SYSTEM"], dtype=object)))
+        return Topology(
+            natoms, n_residues, 1, attrs=attrs, atom_resindex=residx
+        )
 
 
 @functools.total_ordering
 class LAMMPSAtom(object):  # pragma: no cover
-    __slots__ = ("index", "name", "type", "chainid", "charge", "mass", "_positions")
+    __slots__ = (
+        "index",
+        "name",
+        "type",
+        "chainid",
+        "charge",
+        "mass",
+        "_positions",
+    )
 
     def __init__(self, index, name, type, chain_id, charge=0, mass=1):
         self.index = index
@@ -650,8 +755,15 @@ class LAMMPSAtom(object):  # pragma: no cover
         self.mass = mass
 
     def __repr__(self):
-        return "<LAMMPSAtom " + repr(self.index + 1) + ": name " + repr(self.type) + " of chain " + repr(
-            self.chainid) + ">"
+        return (
+            "<LAMMPSAtom "
+            + repr(self.index + 1)
+            + ": name "
+            + repr(self.type)
+            + " of chain "
+            + repr(self.chainid)
+            + ">"
+        )
 
     def __lt__(self, other):
         return self.index < other.index
@@ -663,12 +775,22 @@ class LAMMPSAtom(object):  # pragma: no cover
         return hash(self.index)
 
     def __getattr__(self, attr):
-        if attr == 'pos':
+        if attr == "pos":
             return self._positions[self.index]
         else:
             super(LAMMPSAtom, self).__getattribute__(attr)
 
     def __iter__(self):
         pos = self.pos
-        return iter((self.index + 1, self.chainid, self.type, self.charge,
-                     self.mass, pos[0], pos[1], pos[2]))
+        return iter(
+            (
+                self.index + 1,
+                self.chainid,
+                self.type,
+                self.charge,
+                self.mass,
+                pos[0],
+                pos[1],
+                pos[2],
+            )
+        )

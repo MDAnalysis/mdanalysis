@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -26,7 +26,7 @@
 
 :Authors: Eugen Hruska, John Detlefs
 :Year: 2016
-:Copyright: GNU Public License v2
+:Copyright: Lesser GNU Public License v2.1+
 
 This module contains the non-linear dimension reduction method diffusion map.
 The eigenvectors of a diffusion matrix represent the 'collective coordinates'

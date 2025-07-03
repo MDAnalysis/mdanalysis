@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -24,4 +24,4 @@
 from . import streamlines
 from . import streamlines_3D
 
-__all__ = ['streamlines', 'streamlines_3D']
+__all__ = ["streamlines", "streamlines_3D"]

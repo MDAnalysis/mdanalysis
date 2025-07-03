@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -43,40 +43,47 @@ from MDAnalysis.tests.datafiles import (
     HoomdXMLdata,
     XPDB_small,
     XYZ_mini,
-    DLP_HISTORY_minimal, )
+    DLP_HISTORY_minimal,
+)
 
 
-@pytest.mark.parametrize('prop', [
-    'name',
-    'resname',
-    'type',
-    'segid',
-    'moltype',
-])
+@pytest.mark.parametrize(
+    "prop",
+    [
+        "name",
+        "resname",
+        "type",
+        "segid",
+        "moltype",
+    ],
+)
 # topology formats curated from values available in
 # MDAnalysis._PARSERS
-@pytest.mark.parametrize( 'top_format, top', [
-    ('CONFIG', DLP_CONFIG_minimal),
-    ('CRD', CRD),
-    ('DATA', LAMMPSdata),
-    ('DMS', DMS),
-    ('GMS', GMS_SYMOPT),
-    ('GRO', GRO),
-    ('HISTORY', DLP_HISTORY_minimal),
-    ('MMTF', MMTF),
-    ('MOL2', mol2_molecule),
-    ('PARM7', PRM7),
-    ('PDB', PDB_small),
-    ('PDBQT', PDBQT_input),
-    ('PQR', PQR),
-    ('PRMTOP', PRM),
-    ('PSF', PSF),
-    ('TOP', PRM12),
-    ('TPR', TPR),
-    ('XML', HoomdXMLdata),
-    ('XPDB', XPDB_small),
-    ('XYZ', XYZ_mini)
-])
+@pytest.mark.parametrize(
+    "top_format, top",
+    [
+        ("CONFIG", DLP_CONFIG_minimal),
+        ("CRD", CRD),
+        ("DATA", LAMMPSdata),
+        ("DMS", DMS),
+        ("GMS", GMS_SYMOPT),
+        ("GRO", GRO),
+        ("HISTORY", DLP_HISTORY_minimal),
+        ("MMTF", MMTF),
+        ("MOL2", mol2_molecule),
+        ("PARM7", PRM7),
+        ("PDB", PDB_small),
+        ("PDBQT", PDBQT_input),
+        ("PQR", PQR),
+        ("PRMTOP", PRM),
+        ("PSF", PSF),
+        ("TOP", PRM12),
+        ("TPR", TPR),
+        ("XML", HoomdXMLdata),
+        ("XPDB", XPDB_small),
+        ("XYZ", XYZ_mini),
+    ],
+)
 def test_str_types(top_format, top, prop):
     # Python 2/3 topology string type checking
     # Related to Issue #1336

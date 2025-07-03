@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -155,7 +155,6 @@ from ..lib import util
 from ..lib.util import store_init_arguments
 from . import base
 from .timestep import Timestep
-from ..topology.core import guess_atom_element
 from ..exceptions import NoDataError
 
 
@@ -215,7 +214,8 @@ class PDBReader(base.ReaderBase):
     47 - 54        Real(8.3)     z            Orthogonal coordinates for Z in Angstroms.
     55 - 60        Real(6.2)     occupancy    Occupancy.
     61 - 66        Real(6.2)     tempFactor   Temperature  factor.
-    67 - 76        String        segID        (unofficial CHARMM extension ?)
+    67 - 72                                   (not used in the official PDB format)
+    73 - 76        String        segID        (unofficial PDB format*)
     77 - 78        LString(2)    element      Element symbol, right-justified.
     79 - 80        LString(2)    charge       Charge  on the atom.
     =============  ============  ===========  =============================================
@@ -232,13 +232,24 @@ class PDBReader(base.ReaderBase):
 
     .. _CRYST1: http://www.wwpdb.org/documentation/file-format-content/format33/sect8.html#CRYST1
 
+    *The columns 73-76 are not part of the official PDB format but are used by
+    some programs to store/operate the segment ID. For instance, Chimera_ assigns
+    it as the attribute `pdbSegment` to allow command-line specification.
+
+    .. _Chimera:
+        https://www.cgl.ucsf.edu/chimera/docs/UsersGuide/tutorials/pdbintro.html#note6
 
     See Also
     --------
     :class:`PDBWriter`
     :class:`PDBReader`
 
-    
+    If you would like to force the use of chainID as the segID when parsing PDB,
+    please use the keyword argument `force_chainids_to_segids=True`
+    (:class:`MDAnalysis.topology.PDBParser.PDBParser`).
+    This will prioritize the chain ID to the segment ID.
+
+
     .. versionchanged:: 0.11.0
        * Frames now 0-based instead of 1-based
        * New :attr:`title` (list with all TITLE lines).

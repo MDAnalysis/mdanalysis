@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -28,27 +28,37 @@ from MDAnalysis.topology.GSDParser import HAS_GSD
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import GSD
 from MDAnalysisTests.datafiles import GSD_bonds
-from numpy.testing import assert_equal
 import os
 
 
-@pytest.mark.skipif(not HAS_GSD, reason='gsd not installed')
+@pytest.mark.skipif(not HAS_GSD, reason="gsd not installed")
 class GSDBase(ParserBase):
     parser = mda.topology.GSDParser.GSDParser
-    expected_attrs = ['ids', 'names', 'resids', 'resnames', 'masses',
-                      'charges', 'radii',
-                      'bonds', 'angles', 'dihedrals', 'impropers']
+    expected_attrs = [
+        "ids",
+        "names",
+        "resids",
+        "resnames",
+        "masses",
+        "charges",
+        "radii",
+        "types",
+        "bonds",
+        "angles",
+        "dihedrals",
+        "impropers",
+    ]
     expected_n_bonds = 0
     expected_n_angles = 0
     expected_n_dihedrals = 0
     expected_n_impropers = 0
-    
+
     def test_attr_size(self, top):
         assert len(top.ids) == top.n_atoms
         assert len(top.names) == top.n_atoms
         assert len(top.resids) == top.n_residues
         assert len(top.resnames) == top.n_residues
-    
+
     def test_atoms(self, top):
         assert top.n_atoms == self.expected_n_atoms
 
@@ -72,7 +82,7 @@ class GSDBase(ParserBase):
             assert isinstance(top.angles.values[0], tuple)
         else:
             assert top.dihedrals.values == []
-    
+
     def test_impropers(self, top):
         assert len(top.impropers.values) == self.expected_n_impropers
         if self.expected_n_impropers:
@@ -81,7 +91,7 @@ class GSDBase(ParserBase):
             assert top.impropers.values == []
 
 
-@pytest.mark.skipif(not HAS_GSD, reason='gsd not installed')
+@pytest.mark.skipif(not HAS_GSD, reason="gsd not installed")
 class TestGSDParser(GSDBase):
     ref_filename = GSD
     expected_n_atoms = 5832
@@ -89,7 +99,7 @@ class TestGSDParser(GSDBase):
     expected_n_segments = 1
 
 
-@pytest.mark.skipif(not HAS_GSD, reason='gsd not installed')
+@pytest.mark.skipif(not HAS_GSD, reason="gsd not installed")
 class TestGSDParserBonds(GSDBase):
     ref_filename = GSD_bonds
     expected_n_atoms = 490
@@ -103,16 +113,16 @@ class TestGSDParserBonds(GSDBase):
         vals = top.bonds.values
         for b in ((0, 1), (1, 2), (2, 3), (3, 4)):
             assert (b in vals) or (b[::-1] in vals)
-        assert ((0, 450) not in vals)
+        assert (0, 450) not in vals
 
     def test_angles_identity(self, top):
         vals = top.angles.values
         for b in ((0, 1, 2), (1, 2, 3), (2, 3, 4), (3, 4, 5)):
             assert (b in vals) or (b[::-1] in vals)
-        assert ((0, 350, 450) not in vals)
+        assert (0, 350, 450) not in vals
 
     def test_dihedrals_identity(self, top):
         vals = top.dihedrals.values
         for b in ((0, 1, 2, 3), (1, 2, 3, 4), (2, 3, 4, 5), (3, 4, 5, 6)):
             assert (b in vals) or (b[::-1] in vals)
-        assert ((0, 250, 350, 450) not in vals)
+        assert (0, 250, 350, 450) not in vals

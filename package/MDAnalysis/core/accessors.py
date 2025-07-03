@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -168,6 +168,7 @@ class ConverterWrapper:
         be accessed as a method with the name of the package in lowercase, i.e.
         `convert_to.parmed()`
     """
+
     _CONVERTERS = {}
 
     def __init__(self, ag):
@@ -199,6 +200,8 @@ class ConverterWrapper:
         try:
             convert = getattr(self, package.lower())
         except AttributeError:
-            raise ValueError(f"No {package!r} converter found. Available: "
-                             f"{' '.join(self._CONVERTERS.keys())}") from None
+            raise ValueError(
+                f"No {package!r} converter found. Available: "
+                f"{' '.join(self._CONVERTERS.keys())}"
+            ) from None
         return convert(*args, **kwargs)
