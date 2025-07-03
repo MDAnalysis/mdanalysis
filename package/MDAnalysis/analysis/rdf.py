@@ -633,11 +633,6 @@ class InterRDF_s(AnalysisBase):
         if self.norm == "rdf":
             # Cumulative volume for rdf normalization
             self.volume_cum = 0
-        self._minrange = (
-            self.rdf_settings["range"][0]
-            if self.rdf_settings["range"][0] > 0
-            else 0.0
-        )
         self._maxrange = self.rdf_settings["range"][1]
 
     def _single_frame(self):
@@ -646,7 +641,6 @@ class InterRDF_s(AnalysisBase):
                 ag1.positions,
                 ag2.positions,
                 self._maxrange,
-                self._minrange,
                 box=self._ts.dimensions,
                 backend=self.backend,
             )
@@ -657,12 +651,14 @@ class InterRDF_s(AnalysisBase):
 
             # The following is an optimized version based on the old logic.
             bins = self.rdf_settings["bins"]
-            minv, maxv = self._minrange, self._maxrange
+            minv, maxv = self.rdf_settings["range"][0], self.rdf_settings["range"][1]
             # Calculate bin indices for each value in dist, similar to np.histogram's bin assignment.
             bin_indices = (dist - minv) * bins / (maxv - minv)
             bin_indices = bin_indices.astype(np.int64)
 
             for j, (idx1, idx2) in enumerate(pairs):
+                if bin_indices[j] < 0 or bin_indices[j] >= bins:
+                    continue
                 self.results.count[i][idx1, idx2, bin_indices[j]] += 1
                 # self.results.count[i][0, 0, bin_indices[j]] += 1  # this is necessary to calc rdf
 
