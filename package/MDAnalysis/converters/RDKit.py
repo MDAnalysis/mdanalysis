@@ -64,13 +64,13 @@ can also use alternative builtin algorithms (see the
 to modify the RDKit molecule::
 
     >>> template = Chem.MolFromSmiles("CC(=O)Oc1ccccc1C(=O)O")
-    >>> inferer = mda.converters.RDKitInferring.TemplateInferer(template=template)
-    >>> u.atoms.convert_to.rdkit(inferer=inferer)
+    >>> inferrer = mda.converters.RDKitInferring.TemplateInferrer(template=template)
+    >>> u.atoms.convert_to.rdkit(inferrer=inferrer)
     <rdkit.Chem.rdchem.Mol at 0x7f70ee6f3ca0>
-    >>> def dummy_inferer(mol):
+    >>> def dummy_inferrer(mol):
     ...     # assign bond orders and do any other modification here
     ...     return mol
-    >>> u.atoms.convert_to.rdkit(inferer=dummy_inferer)
+    >>> u.atoms.convert_to.rdkit(inferrer=dummy_inferrer)
     <rdkit.Chem.rdchem.Mol at 0x7f70ee6f2b90>
 
 
@@ -104,7 +104,7 @@ from ..coordinates.PDB import PDBWriter
 from ..core.topologyattrs import _TOPOLOGY_ATTRS
 from ..exceptions import NoDataError
 from . import base
-from .RDKitInferring import RDBONDORDER, MDAnalysisInferer
+from .RDKitInferring import RDBONDORDER, MDAnalysisInferrer
 
 with suppress(ImportError):
     from rdkit import Chem
@@ -120,12 +120,12 @@ RDATTRIBUTES = {
     "segindices": "SegmentNumber",
     "tempfactors": "TempFactor",
 }
-DEFAULT_INFERER = MDAnalysisInferer()
+DEFAULT_INFERER = MDAnalysisInferrer()
 # only here for backwards compatibility
 _infer_bo_and_charges = DEFAULT_INFERER._infer_bo_and_charges
 _standardize_patterns = DEFAULT_INFERER._standardize_patterns
-MONATOMIC_CATION_CHARGES = MDAnalysisInferer.MONATOMIC_CATION_CHARGES
-STANDARDIZATION_REACTIONS = MDAnalysisInferer.STANDARDIZATION_REACTIONS
+MONATOMIC_CATION_CHARGES = MDAnalysisInferrer.MONATOMIC_CATION_CHARGES
+STANDARDIZATION_REACTIONS = MDAnalysisInferrer.STANDARDIZATION_REACTIONS
 
 _deduce_PDB_atom_name = PDBWriter(StringIO())._deduce_PDB_atom_name
 
@@ -257,19 +257,19 @@ class RDKitConverter(base.ConverterBase):
 
     Hydrogens should be explicit in the topology file. If this is not the case,
     use the parameter ``implicit_hydrogens=True`` when using the converter to
-    allow implicit hydrogens, and ``inferer=None`` to disable inferring bond
+    allow implicit hydrogens, and ``inferrer=None`` to disable inferring bond
     orders and charges. You can also pass your own callable function to
-    ``inferer`` to assign bond orders and charges as you see fit::
+    ``inferrer`` to assign bond orders and charges as you see fit::
 
         >>> from rdkit import Chem
         >>> from rdkit.Chem.AllChem import AssignBondOrdersFromTemplate
         >>> template = Chem.MolFromSmiles("NC(Cc1ccccc1)C(=O)O")
         >>> def infer_from_template(mol: Chem.Mol) -> Chem.Mol:
         ...     return AssignBondOrdersFromTemplate(template, mol)
-        >>> mol = u.atoms.convert_to.rdkit(inferer=infer_from_template)
+        >>> mol = u.atoms.convert_to.rdkit(inferrer=infer_from_template)
 
 
-    Note that all builtin inferer functions can be found in the
+    Note that all builtin inferrer functions can be found in the
     :mod:`RDKitInferring` module.
 
     Since one of the main use case of the converter is converting trajectories
@@ -294,7 +294,7 @@ class RDKitConverter(base.ConverterBase):
     * `Slides <https://github.com/rdkit/UGM_2020/blob/master/Presentations/C%C3%A9dricBouysset_From_RDKit_to_the_Universe.pdf>`__
 
     There are some molecules containing specific patterns that the default
-    inferer cannot currently tackle correctly. See
+    inferrer cannot currently tackle correctly. See
     `Issue #3339 <https://github.com/MDAnalysis/mdanalysis/issues/3339>`__ for
     more info.
 
@@ -308,12 +308,12 @@ class RDKitConverter(base.ConverterBase):
         ``atom.GetProp("_MDAnalysis_name")``
 
     .. versionchanged:: 2.10.0
-        Added ``inferer`` to specify a callable that can transform the molecule
+        Added ``inferrer`` to specify a callable that can transform the molecule
         (this operation is cached).
 
     .. deprecated:: 2.10.0
-        Deprecated ``max_iter`` (moved to the inferer class
-        :class:`~MDAnalysis.converters.RDKitInferring.MDAnalysisInferer`) and
+        Deprecated ``max_iter`` (moved to the inferrer class
+        :class:`~MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer`) and
         deprecated ``NoImplicit`` in favor of ``implicit_hydrogens``.
 
     """
@@ -327,7 +327,7 @@ class RDKitConverter(base.ConverterBase):
         cache=True,
         implicit_hydrogens=False,
         force=False,
-        inferer=DEFAULT_INFERER,
+        inferrer=DEFAULT_INFERER,
         **kwargs,
     ):
         """Write selection at current trajectory frame to
@@ -342,14 +342,14 @@ class RDKitConverter(base.ConverterBase):
             used, the cached molecule and the new one have to be made from the
             same AtomGroup selection and with the same arguments passed
             to the converter
-        inferer : Optional[Callable[[Chem.Mol], Chem.Mol]]
+        inferrer : Optional[Callable[[Chem.Mol], Chem.Mol]]
             A callable to infer bond orders and charges for the RDKit molecule
             created by the converter. If ``None``, inferring is skipped.
         implicit_hydrogens : bool
            Whether to allow implicit hydrogens on the molecule or not.
         force : bool
             Force the conversion when no hydrogens were detected but
-            ``inferer`` is not ``None``. Useful for inorganic molecules mostly.
+            ``inferrer`` is not ``None``. Useful for inorganic molecules mostly.
         NoImplicit : bool
             Opposite of ``implicit_hydrogens``.
 
@@ -357,10 +357,10 @@ class RDKitConverter(base.ConverterBase):
                 Use ``implicit_hydrogens`` instead (with an opposite value).
         max_iter : int
             Maximum number of iterations to standardize conjugated systems.
-            See :meth:`~MDAnalysis.converters.RDKitInferring.MDAnalysisInferer._rebuild_conjugated_bonds`.
+            See :meth:`~MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer._rebuild_conjugated_bonds`.
 
             .. deprecated:: 2.10.0
-                Use ``inferer=MDAnalysisInferer(max_iter=...)`` instead.
+                Use ``inferrer=MDAnalysisInferrer(max_iter=...)`` instead.
         """
 
         try:
@@ -383,27 +383,27 @@ class RDKitConverter(base.ConverterBase):
         if (max_iter := kwargs.get("max_iter")) is not None:
             warnings.warn(
                 "Using `max_iter` is deprecated, use "
-                "`inferer=MDAnalysisInferer(max_iter=...)` instead",
+                "`inferrer=MDAnalysisInferrer(max_iter=...)` instead",
                 DeprecationWarning,
             )
-            if isinstance(inferer, MDAnalysisInferer):
-                inferer = MDAnalysisInferer(max_iter=max_iter)
+            if isinstance(inferrer, MDAnalysisInferrer):
+                inferrer = MDAnalysisInferrer(max_iter=max_iter)
 
         if (NoImplicit := kwargs.get("NoImplicit")) is not None:
             warnings.warn(
                 "Using `NoImplicit` is deprecated, use `implicit_hydrogens` "
                 " instead. To disable bond order and formal charge inferring, "
-                "use `inferer=None`",
+                "use `inferrer=None`",
                 DeprecationWarning,
             )
             implicit_hydrogens = not NoImplicit
             # backwards compatibility
             if implicit_hydrogens:
-                inferer = None
+                inferrer = None
 
         # parameters passed to atomgroup_to_mol
         params = dict(
-            implicit_hydrogens=implicit_hydrogens, force=force, inferer=inferer
+            implicit_hydrogens=implicit_hydrogens, force=force, inferrer=inferrer
         )
         if cache:
             mol = atomgroup_to_mol(ag, **params)
@@ -441,7 +441,7 @@ def atomgroup_to_mol(
     ag,
     implicit_hydrogens=False,
     force=False,
-    inferer=DEFAULT_INFERER,
+    inferrer=DEFAULT_INFERER,
     **kwargs,
 ):
     """Converts an AtomGroup to an RDKit molecule without coordinates.
@@ -453,9 +453,9 @@ def atomgroup_to_mol(
     implicit_hydrogens : bool
         Whether to allow implicit hydrogens on the molecule or not.
     force : bool
-        Force the conversion when no hydrogens were detected but ``inferer``
+        Force the conversion when no hydrogens were detected but ``inferrer``
         is not ``None``. Useful for inorganic molecules mostly.
-    inferer : Optional[Callable[[rdkit.Chem.rdchem.Mol], rdkit.Chem.rdchem.Mol]]
+    inferrer : Optional[Callable[[rdkit.Chem.rdchem.Mol], rdkit.Chem.rdchem.Mol]]
         A callable to infer bond orders and charges for the RDKit molecule
         created by the converter. If ``None``, inferring is skipped.
     NoImplicit : bool
@@ -465,20 +465,20 @@ def atomgroup_to_mol(
             Use ``implicit_hydrogens`` instead (with an opposite value).
     max_iter : int
         Maximum number of iterations to standardize conjugated systems.
-        See :meth:`~MDAnalysis.converters.RDKitInferring.MDAnalysisInferer._rebuild_conjugated_bonds`.
+        See :meth:`~MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer._rebuild_conjugated_bonds`.
 
         .. deprecated:: 2.10.0
-            Use ``inferer=MDAnalysisInferer(max_iter=...)`` instead.
+            Use ``inferrer=MDAnalysisInferrer(max_iter=...)`` instead.
 
 
     .. versionchanged:: 2.10.0
-        Added ``inferer`` to specify a callable that can transform the molecule
+        Added ``inferrer`` to specify a callable that can transform the molecule
         (this operation is cached).
 
     .. deprecated:: 2.10.0
         Deprecated ``NoImplicit`` in favor of ``implicit_hydrogens``.
         Deprecated ``max_iter``, replaced by
-        ``inferer=MDAnalysisInferer(max_iter=...)``.
+        ``inferrer=MDAnalysisInferrer(max_iter=...)``.
     """
     try:
         elements = ag.elements
@@ -496,11 +496,11 @@ def atomgroup_to_mol(
                 "No hydrogen atom found in the topology. "
                 "Forcing to continue the conversion."
             )
-        elif inferer is not None:
+        elif inferrer is not None:
             raise AttributeError(
                 "No hydrogen atom could be found in the topology, but the "
                 "converter requires all hydrogens to be explicit. You can use "
-                "the parameter ``inferer=None`` when using the converter "
+                "the parameter ``inferrer=None`` when using the converter "
                 "to disable inferring bond orders and charges. You can also "
                 "use ``force=True`` to ignore this error."
             )
@@ -509,13 +509,13 @@ def atomgroup_to_mol(
         warnings.warn(
             "Using `NoImplicit` is deprecated, use `implicit_hydrogens` "
             "instead. To disable bond order and formal charge inferring, use "
-            "`inferer=None`",
+            "`inferrer=None`",
             DeprecationWarning,
         )
         implicit_hydrogens = not NoImplicit
         # backwards compatibility
         if implicit_hydrogens:
-            inferer = None
+            inferrer = None
     if kwargs:
         raise ValueError(f"Found unexpected arguments: {kwargs}.")
 
@@ -583,9 +583,9 @@ def atomgroup_to_mol(
 
     mol.UpdatePropertyCache(strict=False)
 
-    if inferer is not None:
+    if inferrer is not None:
         # infer bond orders and formal charges
-        mol = inferer(mol)
+        mol = inferrer(mol)
 
     return mol
 

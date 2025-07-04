@@ -38,7 +38,7 @@ Fixes
    directly passing them. (Issue #3520, PR #5006)
 
 Enhancements
- * Added `TemplateInferer` and `RDKitInferer` dataclasses to the
+ * Added `TemplateInferrer` and `RDKitInferrer` dataclasses to the
    `RDKitInferring` module to be used by the RDKit converter. (PR #4305)
  * Improve parsing of topology information from LAMMPS dump files to allow
    reading of mass, charge and element attributes. (Issue #3449, PR #4995)
@@ -63,15 +63,15 @@ Enhancements
 
 Changes
  * Refactored the RDKit converter code to move the inferring code in a separate
-   `RDKitInferring` module. The bond order and charges inferer has been move to
-   an `MDAnalysisInferer` dataclass in there. (PR #4305)
+   `RDKitInferring` module. The bond order and charges inferrer has been move to
+   an `MDAnalysisInferrer` dataclass in there. (PR #4305)
  * Removed undocumented and unused attribute
    `analysis.lineardensity.LinearDensity.totalmass` (PR #5007)
  * Remove `default` channel from RTD conda env. (Issue # 5036, PR # 5037)   
 
 Deprecations
  * The RDKit converter parameter `NoImplicit` has been deprecated in favour of
-   `implicit_hydrogens` and `inferer` parameters. (PR #4305)
+   `implicit_hydrogens` and `inferrer` parameters. (PR #4305)
 
 
 03/11/25 IAlibay, ChiahsinChu, RMeli, tanishy7777, talagayev, tylerjereddy,

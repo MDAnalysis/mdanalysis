@@ -39,20 +39,20 @@ These classes are meant to be passed directly to the RDKit converter::
     >>> from rdkit import Chem
     >>> u = mda.Universe("aspirin.pdb")
     >>> template = Chem.MolFromSmiles("CC(=O)Oc1ccccc1C(=O)O")
-    >>> inferer = mda.converters.RDKitInferring.TemplateInferer(template)
-    >>> rdkit_mol = u.atoms.convert_to.rdkit(inferer=inferer)
+    >>> inferrer = mda.converters.RDKitInferring.TemplateInferrer(template)
+    >>> rdkit_mol = u.atoms.convert_to.rdkit(inferrer=inferrer)
 
 Classes
 -------
 
-.. autoclass:: MDAnalysisInferer
+.. autoclass:: MDAnalysisInferrer
    :members:
    :private-members:
 
-.. autoclass:: TemplateInferer
+.. autoclass:: TemplateInferrer
    :members:
 
-.. autoclass:: RDKitInferer
+.. autoclass:: RDKitInferrer
    :members:
 
 .. autofunction:: sanitize_mol
@@ -116,7 +116,7 @@ def sanitize_mol(mol: "Chem.Mol") -> None:
 
 
 @dataclass(frozen=True)
-class MDAnalysisInferer:
+class MDAnalysisInferrer:
     """Bond order and formal charge inferring as originally implemented for
     the RDKit converter. This algorithm only relies on the topology with
     explicit hydrogens to assign bond orders and formal charges.
@@ -125,7 +125,7 @@ class MDAnalysisInferer:
     ----------
     max_iter : int
         Maximum number of iterations to standardize conjugated systems.
-        See :meth:`~MDAnalysisInferer._rebuild_conjugated_bonds`
+        See :meth:`~MDAnalysisInferrer._rebuild_conjugated_bonds`
     sanitize : bool
         Whether to sanitize the molecule or not.
     MONATOMIC_CATION_CHARGES : ClassVar[Dict[int, int]]
@@ -133,14 +133,14 @@ class MDAnalysisInferer:
         number to  their formal charge. Anion charges are directly handled by
         the code using the typical valence of the atom.
     STANDARDIZATION_REACTIONS : ClassVar[List[str]]
-        Reactions uses by :meth:`~MDAnalysisInferer._standardize_patterns` to
+        Reactions uses by :meth:`~MDAnalysisInferrer._standardize_patterns` to
         fix challenging cases must have single reactant and product, and
         cannot add any atom.
 
     Notes
     -----
     There are some molecules containing specific substructures that this
-    inferer cannot currently tackle correctly. See
+    inferrer cannot currently tackle correctly. See
     `Issue #3339 <https://github.com/MDAnalysis/mdanalysis/issues/3339>`__ for
     more info.
 
@@ -324,7 +324,7 @@ class MDAnalysisInferer:
     ) -> "Chem.Mol":
         """Standardizes functional groups
 
-        Uses :meth:`~MDAnalysisInferer._rebuild_conjugated_bonds` to
+        Uses :meth:`~MDAnalysisInferrer._rebuild_conjugated_bonds` to
         standardize conjugated systems, and SMARTS reactions for other
         functional groups.
         Due to the way reactions work, we first have to split the molecule by
@@ -339,7 +339,7 @@ class MDAnalysisInferer:
             Maximum number of iterations to standardize conjugated systems.
 
             .. deprecated:: 2.10.0
-                Will be removed in 3.0, use ``MDAnalysisInferer(max_iter=...)``
+                Will be removed in 3.0, use ``MDAnalysisInferrer(max_iter=...)``
                 instead.
 
         Returns
@@ -384,7 +384,7 @@ class MDAnalysisInferer:
             warnings.warn(
                 "Specifying `max_iter` is deprecated and will be removed in a "
                 "future update. Directly create an instance of "
-                "`MDAnalysisInferer` with `MDAnalysisInferer(max_iter=...)` "
+                "`MDAnalysisInferrer` with `MDAnalysisInferrer(max_iter=...)` "
                 "instead.",
                 DeprecationWarning,
             )
@@ -441,7 +441,7 @@ class MDAnalysisInferer:
         beginning and end of the conjugated system
 
         Depending on the order in which atoms are read during the conversion,
-        the :meth:`~MDAnalysisInferer._infer_bo_and_charges` function might
+        the :meth:`~MDAnalysisInferrer._infer_bo_and_charges` function might
         write conjugated systems with a double bond less and both edges of the
         system as anions instead of the usual alternating single and double
         bonds. This function corrects this behaviour by using an iterative
@@ -468,7 +468,7 @@ class MDAnalysisInferer:
             Maximum number of iterations to standardize conjugated systems.
 
             .. deprecated:: 2.10.0
-                Will be removed in 3.0, use ``MDAnalysisInferer(max_iter=...)``
+                Will be removed in 3.0, use ``MDAnalysisInferrer(max_iter=...)``
                 instead.
 
         Notes
@@ -623,7 +623,7 @@ class MDAnalysisInferer:
 
 
 @dataclass(frozen=True)
-class TemplateInferer:
+class TemplateInferrer:
     """Infer bond orders and charges by matching the molecule with a template
     molecule containing bond orders and charges.
 
@@ -701,7 +701,7 @@ class TemplateInferer:
 
 
 @dataclass(frozen=True)
-class RDKitInferer:
+class RDKitInferrer:
     """Uses RDKit's :func:`~rdkit.Chem.rdDetermineBonds.DetermineBondOrders`
     to infer bond orders and formal charges. This is the same algorithm used
     by the :ref:`xyz2mol <https://github.com/jensengroup/xyz2mol>` package.
