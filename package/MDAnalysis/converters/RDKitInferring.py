@@ -23,7 +23,24 @@
 
 """RDKit bond order inferring --- :mod:`MDAnalysis.converters.RDKitInferring`
 =============================================================================
-Bond order and formal charge inferring for RDKit molecules.
+Bond order and formal charge inferring for RDKit molecules. Because most MD
+file formats don't preserve bond order information directly (or formal charges
+to some extent), the classes provided here give users different options to
+either provide or infer this information to the RDKit molecule constructed from
+the topology. Having bond orders and formal charges properly defined is a
+requirement for almost all cheminformatics-related task, hence the different
+approaches proposed here to cover most use cases. You can also defined your own
+function if need be, see the :mod:`~MDAnalysis.converters.RDKit` module for an
+example.
+
+These classes are meant to be passed directly to the RDKit converter::
+
+    >>> import MDAnalysis as mda
+    >>> from rdkit import Chem
+    >>> u = mda.Universe("aspirin.pdb")
+    >>> template = Chem.MolFromSmiles("CC(=O)Oc1ccccc1C(=O)O")
+    >>> inferer = mda.converters.RDKitInferring.TemplateInferer(template)
+    >>> rdkit_mol = u.atoms.convert_to.rdkit(inferer=inferer)
 
 Classes
 -------
@@ -101,7 +118,8 @@ def sanitize_mol(mol: "Chem.Mol") -> None:
 @dataclass(frozen=True)
 class MDAnalysisInferer:
     """Bond order and formal charge inferring as originally implemented for
-    the RDKit converter.
+    the RDKit converter. This algorithm only relies on the topology with
+    explicit hydrogens to assign bond orders and formal charges.
 
     Attributes
     ----------
@@ -119,7 +137,14 @@ class MDAnalysisInferer:
         fix challenging cases must have single reactant and product, and
         cannot add any atom.
 
-    .. versionadded:: 2.8.0
+    Notes
+    -----
+    There are some molecules containing specific substructures that this
+    inferer cannot currently tackle correctly. See
+    `Issue #3339 <https://github.com/MDAnalysis/mdanalysis/issues/3339>`__ for
+    more info.
+
+    .. versionadded:: 2.10.0
     """
 
     MONATOMIC_CATION_CHARGES: ClassVar[Dict[int, int]] = {
@@ -311,8 +336,11 @@ class MDAnalysisInferer:
         mol : rdkit.Chem.rdchem.RWMol
             The molecule to standardize
         max_iter : Optional[int]
-            Deprecated, use ``MDAnalysisInferer(max_iter=...)`` instead.
-            Maximum number of iterations to standardize conjugated systems
+            Maximum number of iterations to standardize conjugated systems.
+
+            .. deprecated:: 2.10.0
+                Will be removed in 3.0, use ``MDAnalysisInferer(max_iter=...)``
+                instead.
 
         Returns
         -------
@@ -437,8 +465,11 @@ class MDAnalysisInferer:
         mol : rdkit.Chem.rdchem.RWMol
             The molecule to transform, modified inplace
         max_iter : Optional[int]
-            Deprecated, use ``MDAnalysisInferer(max_iter=...)`` instead.
-            Maximum number of iterations to standardize conjugated systems
+            Maximum number of iterations to standardize conjugated systems.
+
+            .. deprecated:: 2.10.0
+                Will be removed in 3.0, use ``MDAnalysisInferer(max_iter=...)``
+                instead.
 
         Notes
         -----
@@ -605,9 +636,10 @@ class TemplateInferer:
         assign bond orders and charges from the template, then adds them
         back. Useful to avoid adding explicit hydrogens on the template which
         can prevent RDKit from finding a match between the template and the
-        molecule.
+        molecule. Setting this to ``False`` can be useful to speed things up
+        for inorganic molecules that don't have any hydrogens.
 
-    .. versionadded:: 2.8.0
+    .. versionadded:: 2.10.0
     """
 
     template: "Chem.Mol"
@@ -674,7 +706,7 @@ class RDKitInferer:
     to infer bond orders and formal charges. This is the same algorithm used
     by the :ref:`xyz2mol <https://github.com/jensengroup/xyz2mol>` package.
 
-    .. versionadded:: 2.8.0
+    .. versionadded:: 2.10.0
     """
 
     charge: int = 0

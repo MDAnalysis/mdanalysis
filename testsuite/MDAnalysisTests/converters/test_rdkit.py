@@ -436,9 +436,12 @@ class TestRDKitConverter(object):
             mol2.atoms.convert_to.rdkit(max_iter=2)
         assert mock.call_args.kwargs["inferer"].max_iter == 2
 
-    def test_deprecation_NoImplicit(self, mol2):
+    def test_deprecation_NoImplicit(self, mol2, monkeypatch):
+        mock = Mock(wraps=atomgroup_to_mol)
+        monkeypatch.setattr("MDAnalysis.converters.RDKit.atomgroup_to_mol", mock)
         with pytest.warns(DeprecationWarning, match="Using `NoImplicit` is deprecated"):
-            mol2.atoms.convert_to.rdkit(NoImplicit=True)
+            mol2.atoms.convert_to.rdkit(NoImplicit=False)
+        assert mock.call_args.kwargs["inferer"] is None
 
     def test_deprecation_atomgroup_to_mol_NoImplicit(self, mol2):
         with pytest.warns(DeprecationWarning, match="Using `NoImplicit` is deprecated"):
@@ -890,6 +893,19 @@ class TestRDKitMDAnalysisInferer(BaseInferer):
         result = inferrer(mol)
         assert isinstance(result, Chem.Mol)
 
+    @pytest.mark.parametrize(("smi", "expected"), [
+        ("[NH4+]", [0]),
+        ("[NH4]", [-1]),
+        ("[NH3]", [0]),
+        ("[NH2]", [1]),
+        ("[SH2]", [0, 2, 4]),
+        ("[SH2](=O)(=O)", [-4, -2, 0]),
+    ])
+    def test_get_nb_unpaired_electrons(self, smi, expected):
+        mol = Chem.MolFromSmiles(smi, sanitize=False)
+        mol.UpdatePropertyCache(False)
+        atom = mol.GetAtomWithIdx(0)
+        assert MDAnalysisInferer._get_nb_unpaired_electrons(atom) == expected
 
 @requires_rdkit
 class TestRDKitTemplateInferer:

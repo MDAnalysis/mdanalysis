@@ -293,8 +293,8 @@ class RDKitConverter(base.ConverterBase):
     * `Video (4:55 to 8:05) <https://youtu.be/5b5wYmK4URU>`__
     * `Slides <https://github.com/rdkit/UGM_2020/blob/master/Presentations/C%C3%A9dricBouysset_From_RDKit_to_the_Universe.pdf>`__
 
-    There are some molecules containing specific patterns that the converter
-    cannot currently tackle correctly. See
+    There are some molecules containing specific patterns that the default
+    inferer cannot currently tackle correctly. See
     `Issue #3339 <https://github.com/MDAnalysis/mdanalysis/issues/3339>`__ for
     more info.
 
@@ -307,12 +307,14 @@ class RDKitConverter(base.ConverterBase):
         files while the original name is still available through
         ``atom.GetProp("_MDAnalysis_name")``
 
-    .. versionchanged:: 2.8.0
+    .. versionchanged:: 2.10.0
+        Added ``inferer`` to specify a callable that can transform the molecule
+        (this operation is cached).
+
+    .. deprecated:: 2.10.0
         Deprecated ``max_iter`` (moved to the inferer class
         :class:`~MDAnalysis.converters.RDKitInferring.MDAnalysisInferer`) and
-        deprecated ``NoImplicit`` in favor of ``implicit_hydrogens``. Added
-        ``inferer`` to specify a callable that can transform the molecule (this
-        operation is cached).
+        deprecated ``NoImplicit`` in favor of ``implicit_hydrogens``.
 
     """
 
@@ -348,6 +350,17 @@ class RDKitConverter(base.ConverterBase):
         force : bool
             Force the conversion when no hydrogens were detected but
             ``inferer`` is not ``None``. Useful for inorganic molecules mostly.
+        NoImplicit : bool
+            Opposite of ``implicit_hydrogens``.
+
+            .. deprecated:: 2.10.0
+                Use ``implicit_hydrogens`` instead (with an opposite value).
+        max_iter : int
+            Maximum number of iterations to standardize conjugated systems.
+            See :meth:`~MDAnalysis.converters.RDKitInferring.MDAnalysisInferer._rebuild_conjugated_bonds`.
+
+            .. deprecated:: 2.10.0
+                Use ``inferer=MDAnalysisInferer(max_iter=...)`` instead.
         """
 
         try:
@@ -369,8 +382,8 @@ class RDKitConverter(base.ConverterBase):
 
         if (max_iter := kwargs.get("max_iter")) is not None:
             warnings.warn(
-                "Using `max_iter` is deprecated, use `MDAnalysisInferer"
-                "(max_iter=...)` instead",
+                "Using `max_iter` is deprecated, use "
+                "`inferer=MDAnalysisInferer(max_iter=...)` instead",
                 DeprecationWarning,
             )
             if isinstance(inferer, MDAnalysisInferer):
@@ -445,12 +458,27 @@ def atomgroup_to_mol(
     inferer : Optional[Callable[[rdkit.Chem.rdchem.Mol], rdkit.Chem.rdchem.Mol]]
         A callable to infer bond orders and charges for the RDKit molecule
         created by the converter. If ``None``, inferring is skipped.
+    NoImplicit : bool
+        Opposite of ``implicit_hydrogens``.
+
+        .. deprecated:: 2.10.0
+            Use ``implicit_hydrogens`` instead (with an opposite value).
+    max_iter : int
+        Maximum number of iterations to standardize conjugated systems.
+        See :meth:`~MDAnalysis.converters.RDKitInferring.MDAnalysisInferer._rebuild_conjugated_bonds`.
+
+        .. deprecated:: 2.10.0
+            Use ``inferer=MDAnalysisInferer(max_iter=...)`` instead.
 
 
-    .. versionchanged:: 2.8.0
-        Deprecated ``NoImplicit`` in favor of ``implicit_hydrogens``. Added
-        ``inferer`` to specify a callable that can transform the molecule (this
-        operation is cached).
+    .. versionchanged:: 2.10.0
+        Added ``inferer`` to specify a callable that can transform the molecule
+        (this operation is cached).
+
+    .. deprecated:: 2.10.0
+        Deprecated ``NoImplicit`` in favor of ``implicit_hydrogens``.
+        Deprecated ``max_iter``, replaced by
+        ``inferer=MDAnalysisInferer(max_iter=...)``.
     """
     try:
         elements = ag.elements
