@@ -71,7 +71,8 @@ Changes
 
 Deprecations
  * The RDKit converter parameter `NoImplicit` has been deprecated in favour of
-   `implicit_hydrogens` and `inferrer` parameters. (PR #4305)
+   `implicit_hydrogens` and `inferrer` parameters. `max_iter` has been moved
+   under `MDAnalysisInferrer`. (PR #4305)
 
 
 03/11/25 IAlibay, ChiahsinChu, RMeli, tanishy7777, talagayev, tylerjereddy,

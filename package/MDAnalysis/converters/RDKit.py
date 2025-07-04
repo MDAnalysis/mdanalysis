@@ -64,7 +64,9 @@ can also use alternative builtin algorithms (see the
 to modify the RDKit molecule::
 
     >>> template = Chem.MolFromSmiles("CC(=O)Oc1ccccc1C(=O)O")
-    >>> inferrer = mda.converters.RDKitInferring.TemplateInferrer(template=template)
+    >>> inferrer = mda.converters.RDKitInferring.TemplateInferrer(
+    ...     template=template
+    ... )
     >>> u.atoms.convert_to.rdkit(inferrer=inferrer)
     <rdkit.Chem.rdchem.Mol at 0x7f70ee6f3ca0>
     >>> def dummy_inferrer(mol):
@@ -308,8 +310,8 @@ class RDKitConverter(base.ConverterBase):
         ``atom.GetProp("_MDAnalysis_name")``
 
     .. versionchanged:: 2.10.0
-        Added ``inferrer`` to specify a callable that can transform the molecule
-        (this operation is cached).
+        Added ``inferrer`` to specify a callable that can transform the
+        molecule (this operation is cached).
 
     .. deprecated:: 2.10.0
         Deprecated ``max_iter`` (moved to the inferrer class
@@ -349,7 +351,8 @@ class RDKitConverter(base.ConverterBase):
            Whether to allow implicit hydrogens on the molecule or not.
         force : bool
             Force the conversion when no hydrogens were detected but
-            ``inferrer`` is not ``None``. Useful for inorganic molecules mostly.
+            ``inferrer`` is not ``None``. Useful for inorganic molecules
+            mostly.
         NoImplicit : bool
             Opposite of ``implicit_hydrogens``.
 
@@ -403,7 +406,9 @@ class RDKitConverter(base.ConverterBase):
 
         # parameters passed to atomgroup_to_mol
         params = dict(
-            implicit_hydrogens=implicit_hydrogens, force=force, inferrer=inferrer
+            implicit_hydrogens=implicit_hydrogens,
+            force=force,
+            inferrer=inferrer,
         )
         if cache:
             mol = atomgroup_to_mol(ag, **params)
@@ -472,8 +477,8 @@ def atomgroup_to_mol(
 
 
     .. versionchanged:: 2.10.0
-        Added ``inferrer`` to specify a callable that can transform the molecule
-        (this operation is cached).
+        Added ``inferrer`` to specify a callable that can transform the
+        molecule (this operation is cached).
 
     .. deprecated:: 2.10.0
         Deprecated ``NoImplicit`` in favor of ``implicit_hydrogens``.
