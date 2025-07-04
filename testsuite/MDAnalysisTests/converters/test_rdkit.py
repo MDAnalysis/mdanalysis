@@ -923,7 +923,7 @@ class TestRDKitMDAnalysisInferrer(BaseInferrer):
     )
     def test_sanitize(self, sanitize):
         mol = Chem.MolFromSmiles("[H]-[C+](-[H])(-[H])-[H]", sanitize=False)
-        mol.UpdatePropertyCache()
+        mol.UpdatePropertyCache(strict=False)
         inferrer = MDAnalysisInferrer(sanitize=sanitize)
         result = inferrer(mol)
         assert isinstance(result, Chem.Mol)

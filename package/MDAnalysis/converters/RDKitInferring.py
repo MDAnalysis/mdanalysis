@@ -279,8 +279,7 @@ class MDAnalysisInferrer:
                 na_nue = cls._get_nb_unpaired_electrons(na)
                 # smallest common NUE
                 common_nue = min(
-                    *[i for i in nue if i >= 0],
-                    *[i for i in na_nue if i >= 0],
+                    [i for i in [*nue, *na_nue] if i >= 0],
                     default=0,
                 )
                 # a common NUE of 0 means we don't need to do anything
