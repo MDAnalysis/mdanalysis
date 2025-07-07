@@ -16,7 +16,7 @@ from numpy.testing import (
 
 from MDAnalysis.transformations import translate
 import MDAnalysis as mda
-from MDAnalysis.coordinates.IMD import HAS_IMDCLIENT, parse_host_port
+from MDAnalysis.coordinates.IMD import HAS_IMDCLIENT
 
 if HAS_IMDCLIENT:
     import imdclient
