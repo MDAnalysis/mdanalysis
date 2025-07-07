@@ -421,19 +421,3 @@ def test_n_atoms_not_specified():
             f"imd://localhost:{port}",
 
         )
-
-
-def test_parse_host_port():
-    # Test with a valid host and port
-    host, port = parse_host_port("imd://localhost:8889")
-    assert host == "localhost"
-    assert port == 8889
-
-    # Test with a valid host and invalid port
-    with pytest.raises(ValueError, match="IMDReader: Port must be an integer"):
-        host, port = parse_host_port("imd://localhost:abcd")
-
-
-    with pytest.raises(ValueError, match="IMDReader: URL must be in the format 'imd://host:port'"):
-        host, port = parse_host_port("imd://localhost:blah:bleh")
-

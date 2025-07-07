@@ -78,6 +78,7 @@ MIN_IMDCLIENT_VERSION = Version("0.1.4")
 try:
     import imdclient
     from imdclient.IMDClient import IMDClient
+    from imdclient.utils import parse_host_port
 except ImportError:
     HAS_IMDCLIENT = False
     imdclient_version = Version("0.0.0")
@@ -152,7 +153,12 @@ class IMDReader(StreamReaderBase):
             raise ValueError("IMDReader: n_atoms must be specified")
         self.n_atoms = n_atoms
 
-        host, port = parse_host_port(filename)
+        if not isinstance(filename, str):
+            raise TypeError(
+                "IMDReader: filename must be a string of the form 'imd://host:port'"
+            )
+        else:
+            host, port = parse_host_port(filename)
 
         # This starts the simulation
         self._imdclient = IMDClient(host, port, n_atoms, **kwargs)
@@ -200,9 +206,7 @@ class IMDReader(StreamReaderBase):
             self.ts.data["dt"] = imdf.dt
             self.ts.data["step"] = imdf.step
         if imdf.energies is not None:
-            self.ts.data.update(
-                {k: v for k, v in imdf.energies.items() if k != "step"}
-            )
+            self.ts.data.update({k: v for k, v in imdf.energies.items() if k != "step"})
         if imdf.box is not None:
             self.ts.dimensions = core.triclinic_box(*imdf.box)
         if imdf.positions is not None:
@@ -216,11 +220,16 @@ class IMDReader(StreamReaderBase):
 
     @staticmethod
     def _format_hint(thing):
+        if not HAS_IMDCLIENT:
+            return False
         try:
+            # NOTE: maybe this check should be done in parse_host_port?
+            if not isinstance(thing, str):
+                return False
             parse_host_port(thing)
         except ValueError:
             return False
-        return HAS_IMDCLIENT and True
+        return True
 
     def close(self):
         """Gracefully shut down the reader. Stops the producer thread."""
@@ -229,26 +238,3 @@ class IMDReader(StreamReaderBase):
             self._imdclient.stop()
         # NOTE: removeme after testing
         logger.debug("IMDReader shut down gracefully.")
-
-
-# NOTE: think of other edge cases as well- should be robust
-def parse_host_port(filename):
-    if not isinstance(filename, str):
-        raise ValueError("IMDReader: filename must be a string")
-    if not filename.startswith("imd://"):
-        raise ValueError(
-            "IMDReader: URL must be in the format 'imd://host:port'"
-        )
-    # Check if the format is correct
-    parts = filename.split("imd://")[1].split(":")
-    if len(parts) == 2:
-        host = parts[0]
-        try:
-            port = int(parts[1])
-            return (host, port)
-        except ValueError as e:
-            raise ValueError("IMDReader: Port must be an integer") from e
-    else:
-        raise ValueError(
-            "IMDReader: URL must be in the format 'imd://host:port'"
-        )
