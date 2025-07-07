@@ -274,7 +274,8 @@ class TRCReader(base.ReaderBase):
         frameDat = {}
         frameDat["step"] = int(self._frame)
         frameDat["time"] = float(0.0)
-        frameDat["positions"] = None
+        frameDat["positions"] = np.zeros((self.traj_properties["n_atoms"], 3),
+                                         dtype=np.float64)
         frameDat["dimensions"] = None
         self.periodic = False
 
@@ -287,7 +288,7 @@ class TRCReader(base.ReaderBase):
                 frameDat["time"] = float(tmp_time)
 
             elif "POSITIONRED" == line.strip():
-                tmp_buf = []
+                i = 0
                 while True:
                     coords_str = f.readline()
                     if "#" in coords_str:
@@ -295,15 +296,13 @@ class TRCReader(base.ReaderBase):
                     elif "END" in coords_str:
                         break
                     else:
-                        tmp_buf.append(coords_str.split())
+                        #tmp_buf.append(coords_str.split())
+                        frameDat["positions"][i] = coords_str.split()
+                        i += 1
 
-                if np.array(tmp_buf).shape[0] == self.n_atoms:
-                    frameDat["positions"] = np.asarray(
-                        tmp_buf, dtype=np.float64
-                    )
-                else:
+                if i != self.traj_properties["n_atoms"]:
                     raise ValueError(
-                        "The trajectory contains the wrong number of atoms!"
+                        "The trajectory contains the too few atoms!"
                     )
 
             elif "GENBOX" == line.strip():
