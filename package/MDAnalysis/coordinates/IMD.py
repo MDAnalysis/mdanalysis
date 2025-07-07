@@ -78,7 +78,6 @@ MIN_IMDCLIENT_VERSION = Version("0.1.4")
 try:
     import imdclient
     from imdclient.IMDClient import IMDClient
-    from imdclient.utils import parse_host_port
 except ImportError:
     HAS_IMDCLIENT = False
     imdclient_version = Version("0.0.0")
@@ -106,6 +105,8 @@ else:
             category=RuntimeWarning,
         )
         HAS_IMDCLIENT = False
+    # only import parse_host_port if we have imdclient
+    from imdclient.utils import parse_host_port
 
 logger = logging.getLogger("MDAnalysis.coordinates.IMDReader")
 
@@ -206,7 +207,9 @@ class IMDReader(StreamReaderBase):
             self.ts.data["dt"] = imdf.dt
             self.ts.data["step"] = imdf.step
         if imdf.energies is not None:
-            self.ts.data.update({k: v for k, v in imdf.energies.items() if k != "step"})
+            self.ts.data.update(
+                {k: v for k, v in imdf.energies.items() if k != "step"}
+            )
         if imdf.box is not None:
             self.ts.dimensions = core.triclinic_box(*imdf.box)
         if imdf.positions is not None:
@@ -226,7 +229,7 @@ class IMDReader(StreamReaderBase):
             # NOTE: maybe this check should be done in parse_host_port?
             if not isinstance(thing, str):
                 return False
-            parse_host_port(thing)
+            parse_host_port(thing)  # type: ignore
         except ValueError:
             return False
         return True
