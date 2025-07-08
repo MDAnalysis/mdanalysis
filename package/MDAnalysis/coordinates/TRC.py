@@ -196,26 +196,18 @@ class TRCReader(base.ReaderBase):
             for line in iter(f.readline, ""):
                 stripped_line = line.strip()
                 if stripped_line in TRCReader.SUPPORTED_BLOCKS and (stripped_line != "TITLE"):
-                    # Save the name of the first non-title block
+                    print(stripped_line)
+#                    if stripped_line != "TIMESTEP":
+#                        raise ValueError("Input trajectory does not begin with ",
+#                                          " TIMESTEP block as per format specifications")
+#                    # Save the name of the first non-title block
                     # in the trajectory file
                     first_block = stripped_line
                     break
-#
-#                for blockname in TRCReader.SUPPORTED_BLOCKS:
-#                    if (blockname == line.strip()) and (blockname != "TITLE"):
-#                        # Save the name of the first non-title block
-#                        # in the trajectory file
-#                        first_block = blockname
-#
-#                if first_block is not None:
-#                    break  # First block found
 
         #
         # Calculate meta-data of the trajectory
         #
-        in_positionred_block = False
-        lastline_was_timestep = False
-
         n_atoms = 0
         frame_counter = 0
         block_size = {}
@@ -329,6 +321,7 @@ class TRCReader(base.ReaderBase):
 
             elif "POSITIONRED" == stripped_line:
                 i = 0
+                buffer = []
                 while True:
                     coords_str = f.readline()
                     if "#" in coords_str:
@@ -336,8 +329,12 @@ class TRCReader(base.ReaderBase):
                     elif "END" in coords_str:
                         break
                     else:
-                        frameDat["positions"][i] = coords_str.split()
+#                        frameDat["positions"][i] = coords_str.split()
+                        buffer.append(coords_str)
                         i += 1
+
+                data = np.fromstring("".join(buffer), sep=" ", dtype=np.float64)
+                frameDat["positions"] = data.reshape(-1, 3)
 
                 if i != self.traj_properties["n_atoms"]:
                     raise ValueError(
