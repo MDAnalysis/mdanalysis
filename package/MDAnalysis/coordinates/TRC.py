@@ -196,11 +196,7 @@ class TRCReader(base.ReaderBase):
             for line in iter(f.readline, ""):
                 stripped_line = line.strip()
                 if stripped_line in TRCReader.SUPPORTED_BLOCKS and (stripped_line != "TITLE"):
-                    print(stripped_line)
-#                    if stripped_line != "TIMESTEP":
-#                        raise ValueError("Input trajectory does not begin with ",
-#                                          " TIMESTEP block as per format specifications")
-#                    # Save the name of the first non-title block
+                    # Save the name of the first non-title block
                     # in the trajectory file
                     first_block = stripped_line
                     break
@@ -333,7 +329,9 @@ class TRCReader(base.ReaderBase):
                         buffer.append(coords_str)
                         i += 1
 
-                data = np.fromstring("".join(buffer), sep=" ", dtype=np.float64)
+                data = np.fromstring("".join(buffer), sep=" ", dtype=np.float64,
+                                     count=self.n_atoms*3)
+
                 frameDat["positions"] = data.reshape(-1, 3)
 
                 if i != self.traj_properties["n_atoms"]:
@@ -348,30 +346,34 @@ class TRCReader(base.ReaderBase):
                     self.periodic = False
 
                 elif ntb_setting in [1, 2]:
-                    tmp_a, tmp_b, tmp_c = f.readline().split()
-                    tmp_alpha, tmp_beta, tmp_gamma = f.readline().split()
+                    tmp_a, tmp_b, tmp_c = map(float, f.readline().split())
+                    tmp_alpha, tmp_beta, tmp_gamma = map(float, f.readline().split())
                     frameDat["dimensions"] = [
-                        float(tmp_a),
-                        float(tmp_b),
-                        float(tmp_c),
-                        float(tmp_alpha),
-                        float(tmp_beta),
-                        float(tmp_gamma),
+                        tmp_a,
+                        tmp_b,
+                        tmp_c,
+                        tmp_alpha,
+                        tmp_beta,
+                        tmp_gamma,
                     ]
                     self.periodic = True
 
-                    gb_line3 = f.readline().split()
+#                    gb_line3 = np.fromstring(f.readline(), dtype=np.float64,
+#                                            sep=" ", count=3)
+                    # gb_line3
                     if (
-                        np.sum(np.abs(np.array(gb_line3).astype(np.float64)))
+                        sum(abs(float(v)) for v in f.readline().split())
                         > 1e-10
                     ):
                         raise ValueError(
                             "This reader doesnt't support a shifted origin!"
                         )
 
-                    gb_line4 = f.readline().split()
+#                    gb_line4 = f.readline().split()
+                    # gb_line4
                     if (
-                        np.sum(np.abs(np.array(gb_line4).astype(np.float64)))
+                        sum(abs(float(v)) for v in f.readline().split())
+#                        np.sum(np.abs(np.array(gb_line4).astype(np.float64)))
                         > 1e-10
                     ):
                         raise ValueError(
