@@ -216,9 +216,11 @@ class TRCReader(base.ReaderBase):
         in_positionred_block = False
         lastline_was_timestep = False
 
-        atom_counter = 0
         n_atoms = 0
         frame_counter = 0
+        block_size = {}
+        block_size["POSITIONRED"] = None
+        inconsistent_size = False
 
         l_blockstart_offset = []
         l_timestep_timevalues = []
@@ -237,25 +239,54 @@ class TRCReader(base.ReaderBase):
                 # Timestep-block
                 #
                 if "TIMESTEP" == stripped_line:
-                    lastline_was_timestep = True
-
-                elif lastline_was_timestep is True:
-                    l_timestep_timevalues.append(float(line.split()[1]))
-                    lastline_was_timestep = False
-
+                    l_timestep_timevalues.append(float(f.readline().split()[1]))
+                    while stripped_line != "END":
+                        stripped_line = f.readline().strip()
                 #
                 # Coordinates-block
                 #
                 if "POSITIONRED" == stripped_line:
-                    in_positionred_block = True
+                    # Only count the number of atoms in the first block
+                    # Also stores the size of the POSITIONRED block which
+                    # should be consistent in most cases.
+                    if n_atoms == 0:
+                        start = f.tell() - len(line)
+                        while stripped_line != "END":
+                            line = f.readline()
+                            stripped_line = line.strip()
+                            if len(stripped_line.split()) == 3:
+                                n_atoms += 1
+                        end = f.tell() - len(line)
+                        block_size["POSITIONRED"] = end - start
 
-                elif (in_positionred_block is True) and (n_atoms == 0):
-                    if len(line.split()) == 3:
-                        atom_counter += 1
+                    elif inconsistent_size:
+                        while stripped_line != "END":
+                            stripped_line = f.readline().strip()
 
-                if ("END" == stripped_line) and (in_positionred_block is True):
-                    n_atoms = atom_counter
-                    in_positionred_block = False
+                    else:
+                        # While it is allowed for trailing whitespace to exist
+                        # in the trajectories, none of the GROMOS trajectory
+                        # writers do actually produce trailing whitespace.
+                        # By default we try to assume a consistent size of the
+                        # POSITIONRED block. We then try to skip reading subsequent
+                        # occurences of this block.
+                        # If we end up somewhere unexpected, we will throw
+                        # a warning and fall back to iterating over the file.
+
+                        # instead of looping over the file, looking for an END
+                        # we can seek to where the end of the block should be.
+                        current_pos = f.tell() - len(line)
+                        f.seek(f.tell() - len(line) + block_size["POSITIONRED"])
+
+                        # Check if we are at the correct position
+                        # If not, set inconsistent_size to true and seek back
+                        # to where we were before
+                        if f.readline().strip() != "END":
+                           inconsistent_size = True 
+                           warnings.warn("Inconsistent POSITIONRED block size. "
+                                             "Falling back to slow reader.",
+                                         UserWarning)
+                           f.seek(current_pos)
 
         if frame_counter == 0:
             raise ValueError(
