@@ -194,14 +194,21 @@ class TRCReader(base.ReaderBase):
         first_block = None
         with util.anyopen(self.filename) as f:
             for line in iter(f.readline, ""):
-                for blockname in TRCReader.SUPPORTED_BLOCKS:
-                    if (blockname == line.strip()) and (blockname != "TITLE"):
-                        # Save the name of the first non-title block
-                        # in the trajectory file
-                        first_block = blockname
-
-                if first_block is not None:
-                    break  # First block found
+                stripped_line = line.strip()
+                if stripped_line in TRCReader.SUPPORTED_BLOCKS and (stripped_line != "TITLE"):
+                    # Save the name of the first non-title block
+                    # in the trajectory file
+                    first_block = stripped_line
+                    break
+#
+#                for blockname in TRCReader.SUPPORTED_BLOCKS:
+#                    if (blockname == line.strip()) and (blockname != "TITLE"):
+#                        # Save the name of the first non-title block
+#                        # in the trajectory file
+#                        first_block = blockname
+#
+#                if first_block is not None:
+#                    break  # First block found
 
         #
         # Calculate meta-data of the trajectory
@@ -218,17 +225,18 @@ class TRCReader(base.ReaderBase):
 
         with util.anyopen(self.filename) as f:
             for line in iter(f.readline, ""):
+                stripped_line = line.strip()
                 #
                 # First block of frame
                 #
-                if first_block == line.strip():
+                if first_block == stripped_line:
                     l_blockstart_offset.append(f.tell() - len(line))
                     frame_counter += 1
 
                 #
                 # Timestep-block
                 #
-                if "TIMESTEP" == line.strip():
+                if "TIMESTEP" == stripped_line:
                     lastline_was_timestep = True
 
                 elif lastline_was_timestep is True:
@@ -238,14 +246,14 @@ class TRCReader(base.ReaderBase):
                 #
                 # Coordinates-block
                 #
-                if "POSITIONRED" == line.strip():
+                if "POSITIONRED" == stripped_line:
                     in_positionred_block = True
 
                 elif (in_positionred_block is True) and (n_atoms == 0):
                     if len(line.split()) == 3:
                         atom_counter += 1
 
-                if ("END" == line.strip()) and (in_positionred_block is True):
+                if ("END" == stripped_line) and (in_positionred_block is True):
                     n_atoms = atom_counter
                     in_positionred_block = False
 
@@ -282,12 +290,13 @@ class TRCReader(base.ReaderBase):
         # Read the trajectory
         f = self.trcfile
         for line in iter(f.readline, ""):
-            if "TIMESTEP" == line.strip():
+            stripped_line = line.strip()
+            if "TIMESTEP" == stripped_line:
                 tmp_step, tmp_time = f.readline().split()
                 frameDat["step"] = int(tmp_step)
                 frameDat["time"] = float(tmp_time)
 
-            elif "POSITIONRED" == line.strip():
+            elif "POSITIONRED" == stripped_line:
                 i = 0
                 while True:
                     coords_str = f.readline()
@@ -296,7 +305,6 @@ class TRCReader(base.ReaderBase):
                     elif "END" in coords_str:
                         break
                     else:
-                        #tmp_buf.append(coords_str.split())
                         frameDat["positions"][i] = coords_str.split()
                         i += 1
 
@@ -305,7 +313,7 @@ class TRCReader(base.ReaderBase):
                         "The trajectory contains the too few atoms!"
                     )
 
-            elif "GENBOX" == line.strip():
+            elif "GENBOX" == stripped_line:
                 ntb_setting = int(f.readline())
                 if ntb_setting == 0:
                     frameDat["dimensions"] = None
@@ -358,7 +366,7 @@ class TRCReader(base.ReaderBase):
                 for non_supp_bn in TRCReader.NOT_SUPPORTED_BLOCKS
             ):
                 for non_supp_bn in TRCReader.NOT_SUPPORTED_BLOCKS:
-                    if non_supp_bn == line.strip():
+                    if non_supp_bn == stripped_line:
                         warnings.warn(
                             non_supp_bn + " block is not supported!",
                             UserWarning,
