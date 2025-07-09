@@ -217,8 +217,6 @@ class IMDReader(StreamReaderBase):
 
     @staticmethod
     def _format_hint(thing):
-        if not HAS_IMDCLIENT:
-            return False
         try:
             # NOTE: maybe this check should be done in parse_host_port?
             if not isinstance(thing, str):
