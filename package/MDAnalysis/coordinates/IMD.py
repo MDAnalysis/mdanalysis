@@ -176,7 +176,7 @@ class IMDReader(StreamReaderBase):
         self._frame = -1
 
         try:
-            self._read_next_timestep()
+            self.next()
         except StopIteration as e:
             raise RuntimeError("IMDReader: No data found in stream") from e
 

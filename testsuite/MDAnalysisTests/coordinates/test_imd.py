@@ -42,7 +42,7 @@ from MDAnalysisTests.coordinates.base import (
 )
 
 
-def test_HAS_IMDCLIENT_version(monkeypatch):
+def test_IMDCLIENT_import(monkeypatch):
     backup = sys.modules.copy()
 
     try:
@@ -80,9 +80,17 @@ def test_HAS_IMDCLIENT_version(monkeypatch):
 
         mocked_module.__version__ = "0.0.0"
         importlib.reload(MDAnalysis.coordinates.IMD)
-        from MDAnalysis.coordinates.IMD import HAS_IMDCLIENT
+        from MDAnalysis.coordinates.IMD import HAS_IMDCLIENT, IMDReader
 
         assert not HAS_IMDCLIENT
+
+        # test initialization error
+        with pytest.raises(
+            ImportError,
+            match="IMDReader requires the imdclient"
+        ):
+            IMDReader("imd://localhost:12345", n_atoms=5)
+
 
     finally:
         # Restore sys.modules to avoid side effects on other tests
@@ -165,7 +173,8 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
             initial_time=0,
             time_selector=None,
         )
-        return reader
+        yield reader
+        reader.close()
 
     @staticmethod
     @pytest.fixture()
@@ -312,21 +321,23 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
         pytest.skip("IMDReader has independent coordinates")
 
 
+@pytest.fixture
+def universe():
+    return mda.Universe(COORDINATES_TOPOLOGY, COORDINATES_H5MD)
+
+
+@pytest.fixture
+def port():
+    return get_free_port()
+
+
+@pytest.fixture
+def imdsinfo():
+    return create_default_imdsinfo_v3()
+
+
 @pytest.mark.skipif(not HAS_IMDCLIENT, reason="IMDClient not installed")
 class TestStreamIteration:
-
-    @pytest.fixture
-    def port(self):
-        return get_free_port()
-
-    @pytest.fixture
-    def universe(self):
-        return mda.Universe(COORDINATES_TOPOLOGY, COORDINATES_H5MD)
-
-    @pytest.fixture
-    def imdsinfo(self):
-        return create_default_imdsinfo_v3()
-
     @pytest.fixture
     def reader(self, universe, imdsinfo, port):
         server = InThreadIMDServer(universe.trajectory)
@@ -401,11 +412,11 @@ class TestStreamIteration:
 
 
 @pytest.mark.skipif(not HAS_IMDCLIENT, reason="IMDClient not installed")
-def test_n_atoms_mismatch():
-    universe = mda.Universe(COORDINATES_TOPOLOGY, COORDINATES_H5MD)
+def test_n_atoms_mismatch(universe, imdsinfo, port):
     port = get_free_port()
+    imdsinfo = create_default_imdsinfo_v3()
     server = InThreadIMDServer(universe.trajectory)
-    server.set_imdsessioninfo(create_default_imdsinfo_v3())
+    server.set_imdsessioninfo(imdsinfo)
     server.handshake_sequence("localhost", port, first_frame=True)
     with pytest.raises(
         EOFError,
@@ -415,14 +426,15 @@ def test_n_atoms_mismatch():
             f"imd://localhost:{port}",
             n_atoms=universe.trajectory.n_atoms + 1,
         )
+    server.send_frames(1, 5)
+
+    server.cleanup()
 
 
 @pytest.mark.skipif(not HAS_IMDCLIENT, reason="IMDClient not installed")
-def test_n_atoms_not_specified():
-    universe = mda.Universe(COORDINATES_TOPOLOGY, COORDINATES_H5MD)
-    port = get_free_port()
+def test_n_atoms_not_specified(universe, imdsinfo, port):
     server = InThreadIMDServer(universe.trajectory)
-    server.set_imdsessioninfo(create_default_imdsinfo_v3())
+    server.set_imdsessioninfo(imdsinfo)
     server.handshake_sequence("localhost", port, first_frame=True)
     with pytest.raises(
         ValueError,
@@ -431,3 +443,35 @@ def test_n_atoms_not_specified():
         IMDReader(
             f"imd://localhost:{port}",
         )
+    server.cleanup()
+
+
+@pytest.mark.skipif(not HAS_IMDCLIENT, reason="IMDClient not installed")
+def test_imd_stream_empty(universe, imdsinfo, port):
+    server = InThreadIMDServer(universe.trajectory)
+    server.set_imdsessioninfo(imdsinfo)
+    server.handshake_sequence("localhost", port, first_frame=True)
+
+    with pytest.raises(
+        RuntimeError,
+        match="IMDReader: No data found in stream",
+    ):
+        IMDReader(
+            f"imd://localhost:{port}",
+            n_atoms=universe.trajectory.n_atoms,
+        )
+    server.cleanup()
+
+
+@pytest.mark.skipif(not HAS_IMDCLIENT, reason="IMDClient not installed")
+def test_universe_format_hint(universe, imdsinfo, port):
+    server = InThreadIMDServer(universe.trajectory)
+    server.set_imdsessioninfo(imdsinfo)
+    server.handshake_sequence("localhost", port, first_frame=True)
+    u_imd = mda.Universe(
+        COORDINATES_TOPOLOGY,
+        f"imd://localhost:{port}",
+        n_atoms=universe.trajectory.n_atoms,
+    )
+    assert isinstance(u_imd.trajectory, IMDReader)
+    server.cleanup()
