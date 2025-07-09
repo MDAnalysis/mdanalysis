@@ -78,6 +78,7 @@ MIN_IMDCLIENT_VERSION = Version("0.1.4")
 try:
     import imdclient
     from imdclient.IMDClient import IMDClient
+    from imdclient.utils import parse_host_port
 except ImportError:
     HAS_IMDCLIENT = False
     imdclient_version = Version("0.0.0")
@@ -105,8 +106,6 @@ else:
             category=RuntimeWarning,
         )
         HAS_IMDCLIENT = False
-    # only import parse_host_port if we have imdclient
-    from imdclient.utils import parse_host_port
 
 logger = logging.getLogger("MDAnalysis.coordinates.IMDReader")
 
@@ -154,12 +153,7 @@ class IMDReader(StreamReaderBase):
             raise ValueError("IMDReader: n_atoms must be specified")
         self.n_atoms = n_atoms
 
-        if not isinstance(filename, str):
-            raise TypeError(
-                "IMDReader: filename must be a string of the form 'imd://host:port'"
-            )
-        else:
-            host, port = parse_host_port(filename)
+        host, port = parse_host_port(filename)
 
         # This starts the simulation
         self._imdclient = IMDClient(host, port, n_atoms, **kwargs)

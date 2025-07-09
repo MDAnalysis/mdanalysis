@@ -2,6 +2,7 @@
 """
 
 import sys
+import importlib
 import pytest
 import pickle
 from types import ModuleType
@@ -40,46 +41,47 @@ from MDAnalysisTests.coordinates.base import (
     assert_timestep_almost_equal,
 )
 
+def test_HAS_IMDCLIENT_version(monkeypatch):
+    backup = sys.modules.copy()
 
-def test_HAS_IMDCLIENT_too_old():
-    # mock a version of imdclient that is too old
-    module_name = "imdclient"
+    try:
+        module_name = "imdclient"
 
-    sys.modules.pop(module_name, None)
-    sys.modules.pop("MDAnalysis.coordinates.IMD", None)
+        # Create mock modules
+        mocked_module = ModuleType(module_name)
+        IMDClient_module = ModuleType(f"{module_name}.IMDClient")
 
-    mocked_module = ModuleType(module_name)
-    # too old version
-    mocked_module.__version__ = "0.1.0"
-    sys.modules[module_name] = mocked_module
+        class MockIMDClient:
+            pass
 
-    from MDAnalysis.coordinates.IMD import HAS_IMDCLIENT
+        IMDClient_module.IMDClient = MockIMDClient
+        mocked_module.IMDClient = IMDClient_module
+        mocked_module.__version__ = "0.1.4"
 
-    assert not HAS_IMDCLIENT
+        utils_module = ModuleType(f"{module_name}.utils")
+        utils_module.parse_host_port = lambda x: ("localhost", 12345)
+        mocked_module.utils = utils_module
 
+        monkeypatch.setitem(sys.modules, module_name, mocked_module)
+        monkeypatch.setitem(sys.modules, f"{module_name}.IMDClient", IMDClient_module)
+        monkeypatch.setitem(sys.modules, f"{module_name}.utils", utils_module)
 
-def test_HAS_IMDCLIENT_new_enough():
-    module_name = "imdclient"
-    sys.modules.pop(module_name, None)
-    sys.modules.pop("MDAnalysis.coordinates.IMD", None)
+        sys.modules.pop("MDAnalysis.coordinates.IMD", None)
+        import MDAnalysis.coordinates.IMD
+        importlib.reload(MDAnalysis.coordinates.IMD)
 
-    mocked_module = ModuleType(module_name)
-    IMDClient_module = ModuleType(f"{module_name}.IMDClient")
+        from MDAnalysis.coordinates.IMD import HAS_IMDCLIENT
+        assert HAS_IMDCLIENT
 
-    class MockIMDClient:
-        pass
+        mocked_module.__version__ = "0.0.0"
+        importlib.reload(MDAnalysis.coordinates.IMD)
+        from MDAnalysis.coordinates.IMD import HAS_IMDCLIENT
+        assert not HAS_IMDCLIENT
 
-    IMDClient_module.IMDClient = MockIMDClient
-    mocked_module.IMDClient = IMDClient_module
-    # new enough version
-    mocked_module.__version__ = "0.1.4"
-
-    sys.modules[module_name] = mocked_module
-    sys.modules[f"{module_name}.IMDClient"] = IMDClient_module
-
-    from MDAnalysis.coordinates.IMD import HAS_IMDCLIENT
-
-    assert HAS_IMDCLIENT
+    finally:
+        # Restore sys.modules to avoid side effects on other tests
+        sys.modules.clear()
+        sys.modules.update(backup)
 
 
 @pytest.mark.skipif(not HAS_IMDCLIENT, reason="IMDClient not installed")
