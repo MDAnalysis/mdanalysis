@@ -30,6 +30,7 @@ from MDAnalysisTests.datafiles import TRC_CLUSTER_VAC, TRC_EMPTY
 from MDAnalysisTests.datafiles import TRC_GENBOX_ORIGIN, TRC_GENBOX_EULER
 from MDAnalysisTests.datafiles import TRC_PDB_SOLV, TRC_TRAJ_SOLV
 from MDAnalysisTests.datafiles import TRC_TRICLINIC_SOLV, TRC_TRUNCOCT_VAC
+from MDAnalysisTests.datafiles import TRC_TRAJ1_VAC_WHITESPACE
 
 
 class TestTRCReaderVacuumBox:
@@ -123,6 +124,18 @@ class TestTRCReaderVacuumBox:
         TRC_U.trajectory[4]
         assert TRC_U.trajectory.ts.frame == 4
 
+class TestTRCReaderVacuumBoxWhitespace(TestTRCReaderVacuumBox):
+    @pytest.fixture(scope="class")
+    def TRC_U(self):
+        with pytest.warns(
+            UserWarning, match="Inconsistent POSITIONRED block size. "
+            "Falling back to slow reader."
+        ):
+            return mda.Universe(
+                TRC_PDB_VAC,
+                [TRC_TRAJ1_VAC_WHITESPACE, TRC_TRAJ2_VAC],
+                continuous=True
+            )
 
 class TestTRCReaderSolvatedBox:
     @pytest.fixture(scope="class")
