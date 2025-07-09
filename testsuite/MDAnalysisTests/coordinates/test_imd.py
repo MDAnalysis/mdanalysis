@@ -41,6 +41,7 @@ from MDAnalysisTests.coordinates.base import (
     assert_timestep_almost_equal,
 )
 
+
 def test_HAS_IMDCLIENT_version(monkeypatch):
     backup = sys.modules.copy()
 
@@ -63,19 +64,24 @@ def test_HAS_IMDCLIENT_version(monkeypatch):
         mocked_module.utils = utils_module
 
         monkeypatch.setitem(sys.modules, module_name, mocked_module)
-        monkeypatch.setitem(sys.modules, f"{module_name}.IMDClient", IMDClient_module)
+        monkeypatch.setitem(
+            sys.modules, f"{module_name}.IMDClient", IMDClient_module
+        )
         monkeypatch.setitem(sys.modules, f"{module_name}.utils", utils_module)
 
         sys.modules.pop("MDAnalysis.coordinates.IMD", None)
         import MDAnalysis.coordinates.IMD
+
         importlib.reload(MDAnalysis.coordinates.IMD)
 
         from MDAnalysis.coordinates.IMD import HAS_IMDCLIENT
+
         assert HAS_IMDCLIENT
 
         mocked_module.__version__ = "0.0.0"
         importlib.reload(MDAnalysis.coordinates.IMD)
         from MDAnalysis.coordinates.IMD import HAS_IMDCLIENT
+
         assert not HAS_IMDCLIENT
 
     finally:
@@ -139,7 +145,9 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
         # to then send handshake & first frame
         ref.server.handshake_sequence("localhost", ref.port)
         # This will connect to the test IMD Server and read the first frame
-        reader = ref.reader(ref.trajectory, n_atoms=ref.n_atoms, buffer_size=1*1024*1024)
+        reader = ref.reader(
+            ref.trajectory, n_atoms=ref.n_atoms, buffer_size=1 * 1024 * 1024
+        )
         # Send the rest of the frames- small enough to all fit in socket itself
         ref.server.send_frames(1, 5)
 
@@ -166,7 +174,9 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
         # to then send handshake & first frame
         ref.server.handshake_sequence("localhost", ref.port)
         # This will connect to the test IMD Server and read the first frame
-        transformed = ref.reader(ref.trajectory, n_atoms=ref.n_atoms, buffer_size=1*1024*1024)
+        transformed = ref.reader(
+            ref.trajectory, n_atoms=ref.n_atoms, buffer_size=1 * 1024 * 1024
+        )
         # Send the rest of the frames- small enough to all fit in socket itself
         ref.server.send_frames(1, 5)
         transformed.add_transformations(
@@ -214,7 +224,7 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
     def test_transformed(self, ref, transformed):
         # see transformed fixture
         ref_trans = ref.first_frame.positions + 1
-        ref_trans[:, 2]  += 0.33
+        ref_trans[:, 2] += 0.33
         assert_allclose(transformed.ts.positions, ref_trans)
 
     def test_volume(self, ref, reader):
@@ -325,7 +335,7 @@ class TestStreamIteration:
         reader = IMDReader(
             f"imd://localhost:{port}",
             n_atoms=universe.trajectory.n_atoms,
-            buffer_size=1*1024*1024
+            buffer_size=1 * 1024 * 1024,
         )
         server.send_frames(1, 5)
 
@@ -407,7 +417,6 @@ def test_n_atoms_mismatch():
         )
 
 
-
 @pytest.mark.skipif(not HAS_IMDCLIENT, reason="IMDClient not installed")
 def test_n_atoms_not_specified():
     universe = mda.Universe(COORDINATES_TOPOLOGY, COORDINATES_H5MD)
@@ -421,5 +430,4 @@ def test_n_atoms_not_specified():
     ):
         IMDReader(
             f"imd://localhost:{port}",
-
         )
