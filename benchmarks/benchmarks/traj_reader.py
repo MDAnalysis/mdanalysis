@@ -24,7 +24,7 @@ except ImportError:
 
 try:
     from MDAnalysis.coordinates.TRC import TRCReader
-    from MDAnalysisTests.datafiles import TRC_TRICLINIC_SOLV
+    from MDAnalysisTests.datafiles import TRC_TRAJ_SOLV
 except ImportError:
     pass
 
@@ -33,7 +33,7 @@ traj_dict = {
     "TRR": [TRR, TRRReader],
     "DCD": [DCD, DCDReader],
     "NCDF": [NCDF, NCDFReader],
-    "TRC": [TRC_TRICLINIC_SOLV, TRCReader]
+    "TRC": [TRC_TRAJ_SOLV, TRCReader]
 }
 
 class TrajReaderCreation(object):

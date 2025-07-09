@@ -195,7 +195,9 @@ class TRCReader(base.ReaderBase):
         with util.anyopen(self.filename) as f:
             for line in iter(f.readline, ""):
                 stripped_line = line.strip()
-                if stripped_line in TRCReader.SUPPORTED_BLOCKS and (stripped_line != "TITLE"):
+                if stripped_line in TRCReader.SUPPORTED_BLOCKS and (
+                    stripped_line != "TITLE"
+                ):
                     # Save the name of the first non-title block
                     # in the trajectory file
                     first_block = stripped_line
@@ -227,7 +229,9 @@ class TRCReader(base.ReaderBase):
                 # Timestep-block
                 #
                 if "TIMESTEP" == stripped_line:
-                    l_timestep_timevalues.append(float(f.readline().split()[1]))
+                    l_timestep_timevalues.append(
+                        float(f.readline().split()[1])
+                    )
                     while stripped_line != "END":
                         stripped_line = f.readline().strip()
                 #
@@ -264,17 +268,21 @@ class TRCReader(base.ReaderBase):
                         # instead of looping over the file, looking for an END
                         # we can seek to where the end of the block should be.
                         current_pos = f.tell() - len(line)
-                        f.seek(f.tell() - len(line) + block_size["POSITIONRED"])
+                        f.seek(
+                            f.tell() - len(line) + block_size["POSITIONRED"]
+                        )
 
                         # Check if we are at the correct position
                         # If not, set inconsistent_size to true and seek back
                         # to where we were before
                         if f.readline().strip() != "END":
-                           inconsistent_size = True 
-                           warnings.warn("Inconsistent POSITIONRED block size. "
-                                             "Falling back to slow reader.",
-                                         UserWarning)
-                           f.seek(current_pos)
+                            inconsistent_size = True
+                            warnings.warn(
+                                "Inconsistent POSITIONRED block size. "
+                                "Falling back to slow reader.",
+                                UserWarning,
+                            )
+                            f.seek(current_pos)
 
         if frame_counter == 0:
             raise ValueError(
@@ -301,8 +309,9 @@ class TRCReader(base.ReaderBase):
         frameDat = {}
         frameDat["step"] = int(self._frame)
         frameDat["time"] = float(0.0)
-        frameDat["positions"] = np.zeros((self.traj_properties["n_atoms"], 3),
-                                         dtype=np.float64)
+        frameDat["positions"] = np.zeros(
+            (self.traj_properties["n_atoms"], 3), dtype=np.float64
+        )
         frameDat["dimensions"] = None
         self.periodic = False
 
@@ -325,12 +334,15 @@ class TRCReader(base.ReaderBase):
                     elif "END" in coords_str:
                         break
                     else:
-#                        frameDat["positions"][i] = coords_str.split()
                         buffer.append(coords_str)
                         i += 1
 
-                data = np.fromstring("".join(buffer), sep=" ", dtype=np.float64,
-                                     count=self.n_atoms*3)
+                data = np.fromstring(
+                    "".join(buffer),
+                    sep=" ",
+                    dtype=np.float64,
+                    count=self.n_atoms * 3,
+                )
 
                 frameDat["positions"] = data.reshape(-1, 3)
 
@@ -347,7 +359,9 @@ class TRCReader(base.ReaderBase):
 
                 elif ntb_setting in [1, 2]:
                     tmp_a, tmp_b, tmp_c = map(float, f.readline().split())
-                    tmp_alpha, tmp_beta, tmp_gamma = map(float, f.readline().split())
+                    tmp_alpha, tmp_beta, tmp_gamma = map(
+                        float, f.readline().split()
+                    )
                     frameDat["dimensions"] = [
                         tmp_a,
                         tmp_b,
@@ -358,8 +372,6 @@ class TRCReader(base.ReaderBase):
                     ]
                     self.periodic = True
 
-#                    gb_line3 = np.fromstring(f.readline(), dtype=np.float64,
-#                                            sep=" ", count=3)
                     # gb_line3
                     if (
                         sum(abs(float(v)) for v in f.readline().split())
@@ -369,11 +381,9 @@ class TRCReader(base.ReaderBase):
                             "This reader doesnt't support a shifted origin!"
                         )
 
-#                    gb_line4 = f.readline().split()
                     # gb_line4
                     if (
                         sum(abs(float(v)) for v in f.readline().split())
-#                        np.sum(np.abs(np.array(gb_line4).astype(np.float64)))
                         > 1e-10
                     ):
                         raise ValueError(
