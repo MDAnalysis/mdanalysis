@@ -147,7 +147,9 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
     @pytest.fixture(scope="function")
     def ref(self):
         """Not a static method like in base class- need new server for each test"""
-        return IMDReference()
+        reference = IMDReference()
+        yield reference
+        reference.server.cleanup()
 
     @staticmethod
     @pytest.fixture()
