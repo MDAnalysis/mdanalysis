@@ -343,11 +343,12 @@ class TRCReader(base.ReaderBase):
                 )
 
                 frameDat["positions"] = data.reshape(-1, 3)
+                print(i, self.traj_properties['n_atoms'])
 
                 if i != self.traj_properties["n_atoms"]:
-                    raise ValueError(
-                        "The trajectory contains the too few atoms!"
-                    )
+                    errormsg = f"Found {i} atoms in step {self._frame}, but expected {self.traj_properties['n_atoms']}"
+                    logger.error(errormsg)
+                    raise ValueError(errormsg)
 
             elif "GENBOX" == stripped_line:
                 ntb_setting = int(f.readline())
