@@ -283,7 +283,9 @@ class TRCReader(base.ReaderBase):
                             f.seek(current_pos)
 
         if frame_counter == 0:
-            errormsg = "No supported blocks were found within the GROMOS trajectory!"
+            errormsg = (
+                "No supported blocks were found within the GROMOS trajectory!"
+            )
             logger.error(errormsg)
             raise ValueError(errormsg)
 
@@ -375,7 +377,9 @@ class TRCReader(base.ReaderBase):
                         sum(abs(float(v)) for v in f.readline().split())
                         > 1e-10
                     ):
-                        errormsg = "This reader doesnt't support a shifted origin!"
+                        errormsg = (
+                            "This reader doesnt't support a shifted origin!"
+                        )
                         logger.error(errormsg)
                         raise ValueError(errormsg)
 

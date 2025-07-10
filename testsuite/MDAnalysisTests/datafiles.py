@@ -842,9 +842,15 @@ GSD_long = (_data_ref / "example_longer.gsd").as_posix()
 
 TRC_PDB_VAC = (_data_ref / "gromos11/gromos11_traj_vac.pdb.gz").as_posix()
 TRC_TRAJ1_VAC = (_data_ref / "gromos11/gromos11_traj_vac_1.trc.gz").as_posix()
-TRC_TRAJ1_VAC_WHITESPACE = (_data_ref / "gromos11/gromos11_traj_vac_1_whitespace.trc.gz").as_posix()
-TRC_TRAJ1_VAC_MISSING_POS = (_data_ref / "gromos11/gromos11_traj_vac_1_missing_pos.trc.gz").as_posix()
-TRC_TRAJ1_VAC_EXTRA_POS = (_data_ref / "gromos11/gromos11_traj_vac_1_extra_pos.trc.gz").as_posix()
+TRC_TRAJ1_VAC_WHITESPACE = (
+    _data_ref / "gromos11/gromos11_traj_vac_1_whitespace.trc.gz"
+).as_posix()
+TRC_TRAJ1_VAC_MISSING_POS = (
+    _data_ref / "gromos11/gromos11_traj_vac_1_missing_pos.trc.gz"
+).as_posix()
+TRC_TRAJ1_VAC_EXTRA_POS = (
+    _data_ref / "gromos11/gromos11_traj_vac_1_extra_pos.trc.gz"
+).as_posix()
 TRC_TRAJ2_VAC = (_data_ref / "gromos11/gromos11_traj_vac_2.trc.gz").as_posix()
 TRC_PDB_SOLV = (_data_ref / "gromos11/gromos11_traj_solv.pdb.gz").as_posix()
 TRC_TRAJ_SOLV = (_data_ref / "gromos11/gromos11_traj_solv.trc.gz").as_posix()

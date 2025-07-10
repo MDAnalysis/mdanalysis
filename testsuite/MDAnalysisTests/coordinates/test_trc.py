@@ -126,19 +126,19 @@ class TestTRCReaderVacuumBox:
         TRC_U.trajectory[4]
         assert TRC_U.trajectory.ts.frame == 4
 
+
 class TestTRCReaderVacuumBoxWhitespace(TestTRCReaderVacuumBox):
     @pytest.fixture(scope="class")
     def TRC_U(self):
         filename = TRC_TRAJ1_VAC_WHITESPACE
         warnmsg = f"Inconsistent POSITIONRED block size in file {filename}. Falling back to slow reader."
-        with pytest.warns(
-            UserWarning, match=warnmsg
-        ):
+        with pytest.warns(UserWarning, match=warnmsg):
             return mda.Universe(
                 TRC_PDB_VAC,
                 [TRC_TRAJ1_VAC_WHITESPACE, TRC_TRAJ2_VAC],
-                continuous=True
+                continuous=True,
             )
+
 
 class TestTRCReaderSolvatedBox:
     @pytest.fixture(scope="class")
@@ -319,38 +319,32 @@ class TestTRCReaderClusterTrajectory:
             assert TRC_U.trajectory[0].time == 0
             assert TRC_U.trajectory[2].time == 0
 
+
 class TestTRCReaderMissingPositions:
     @pytest.fixture(scope="class")
     def TRC_U(self):
         filename = TRC_TRAJ1_VAC_MISSING_POS
         warnmsg = f"Inconsistent POSITIONRED block size in file {filename}. Falling back to slow reader."
-        with pytest.warns(
-            UserWarning, match=warnmsg
-        ):
+        with pytest.warns(UserWarning, match=warnmsg):
             TRC_U = mda.Universe(TRC_PDB_VAC, TRC_TRAJ1_VAC_MISSING_POS)
         return TRC_U
 
     def test_missing_position(self, TRC_U):
         errormsg = "Found 72 atoms in step 2, but expected 73"
-        with pytest.raises(
-                ValueError,
-            match=errormsg):
+        with pytest.raises(ValueError, match=errormsg):
             TRC_U.trajectory[-1].positions
+
 
 class TestTRCReaderExtraPositions:
     @pytest.fixture(scope="class")
     def TRC_U(self):
         filename = TRC_TRAJ1_VAC_EXTRA_POS
         warnmsg = f"Inconsistent POSITIONRED block size in file {filename}. Falling back to slow reader."
-        with pytest.warns(
-            UserWarning, match=warnmsg
-        ):
+        with pytest.warns(UserWarning, match=warnmsg):
             TRC_U = mda.Universe(TRC_PDB_VAC, TRC_TRAJ1_VAC_EXTRA_POS)
         return TRC_U
 
     def test_missing_position(self, TRC_U):
         errormsg = "Found 74 atoms in step 2, but expected 73"
-        with pytest.raises(
-                ValueError,
-            match=errormsg):
+        with pytest.raises(ValueError, match=errormsg):
             TRC_U.trajectory[-1].positions

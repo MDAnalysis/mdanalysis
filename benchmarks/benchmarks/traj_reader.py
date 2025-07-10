@@ -33,8 +33,9 @@ traj_dict = {
     "TRR": [TRR, TRRReader],
     "DCD": [DCD, DCDReader],
     "NCDF": [NCDF, NCDFReader],
-    "TRC": [TRC_TRAJ_SOLV, TRCReader]
+    "TRC": [TRC_TRAJ_SOLV, TRCReader],
 }
+
 
 class TrajReaderCreation(object):
     """Benchmarks for trajectory file format reading."""
