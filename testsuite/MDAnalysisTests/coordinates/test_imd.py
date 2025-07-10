@@ -421,8 +421,8 @@ def test_n_atoms_mismatch(universe, imdsinfo, port):
     server.set_imdsessioninfo(imdsinfo)
     server.handshake_sequence("localhost", port, first_frame=True)
     with pytest.raises(
-        EOFError,
-        match="IMDProducer: Expected n_atoms value 6, got 5. Ensure you are using the correct topology file.",
+        RuntimeError,
+        match="IMDReader: Read error",
     ):
         IMDReader(
             f"imd://localhost:{port}",
@@ -453,7 +453,7 @@ def test_imd_stream_empty(universe, imdsinfo, port):
     server.handshake_sequence("localhost", port, first_frame=False)
     with pytest.raises(
         RuntimeError,
-        match="IMDReader: No data found in stream",
+        match="IMDReader: Read error",
     ):
         IMDReader(
             f"imd://localhost:{port}",
