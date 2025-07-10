@@ -283,9 +283,9 @@ class TRCReader(base.ReaderBase):
                             f.seek(current_pos)
 
         if frame_counter == 0:
-            raise ValueError(
-                "No supported blocks were found within the GROMOS trajectory!"
-            )
+            errormsg = "No supported blocks were found within the GROMOS trajectory!"
+            logger.error(errormsg)
+            raise ValueError(errormsg)
 
         traj_properties["n_atoms"] = n_atoms
         traj_properties["n_frames"] = frame_counter
@@ -297,9 +297,9 @@ class TRCReader(base.ReaderBase):
             )
         else:
             traj_properties["dt"] = 0
-            warnings.warn(
-                "The trajectory does not contain TIMESTEP blocks!", UserWarning
-            )
+            warnmsg = "The trajectory does not contain TIMESTEP blocks!"
+            warnings.warn(warnmsg, UserWarning)
+            logger.warning(warnmsg)
 
         return traj_properties
 
@@ -375,28 +375,23 @@ class TRCReader(base.ReaderBase):
                         sum(abs(float(v)) for v in f.readline().split())
                         > 1e-10
                     ):
-                        raise ValueError(
-                            "This reader doesnt't support a shifted origin!"
-                        )
+                        errormsg = "This reader doesnt't support a shifted origin!"
+                        logger.error(errormsg)
+                        raise ValueError(errormsg)
 
                     # gb_line4
                     if (
                         sum(abs(float(v)) for v in f.readline().split())
                         > 1e-10
                     ):
-                        raise ValueError(
-                            "This reader "
-                            "doesnt't support "
-                            "yawed, pitched or "
-                            "rolled boxes!"
-                        )
+                        errormsg = "This reader doesnt't support yawed, pitched or rolled boxes!"
+                        logger.error(errormsg)
+                        raise ValueError(errormsg)
 
                 else:
-                    raise ValueError(
-                        "This reader doesn't support "
-                        "truncated-octahedral "
-                        "periodic boundary conditions"
-                    )
+                    errormsg = "This reader does't support truncated-octahedral periodic boundary conditions"
+                    logger.error(errormsg)
+                    raise ValueError(errormsg)
                 break
 
             elif any(
@@ -405,10 +400,9 @@ class TRCReader(base.ReaderBase):
             ):
                 for non_supp_bn in TRCReader.NOT_SUPPORTED_BLOCKS:
                     if non_supp_bn == stripped_line:
-                        warnings.warn(
-                            non_supp_bn + " block is not supported!",
-                            UserWarning,
-                        )
+                        warnmsg = non_supp_bn + " block is not supported!"
+                        warnings.warn(warnmsg, UserWarning)
+                        logger.warning(warnmsg)
 
         return frameDat
 
@@ -426,7 +420,9 @@ class TRCReader(base.ReaderBase):
     def _read_next_timestep(self):
         self._frame += 1
         if self._frame >= self.n_frames:
-            raise IOError("Trying to go over trajectory limit")
+            errormsg = "Trying to go over trajectory limit"
+            logger.error(errormsg)
+            raise IOError(errormsg)
 
         raw_framedata = self._read_GROMOS11_trajectory()
         self._frame_to_ts(raw_framedata, self.ts)
@@ -440,9 +436,9 @@ class TRCReader(base.ReaderBase):
 
     def open_trajectory(self):
         if self.trcfile is not None:
-            raise IOError(
-                errno.EALREADY, "TRC file already opened", self.filename
-            )
+            errormsg = errno.EALREADY, "TRC file already opened", self.filename
+            logger.error(errormsg)
+            raise IOError(errormsg)
 
         # Reload trajectory file
         self.trcfile = util.anyopen(self.filename)

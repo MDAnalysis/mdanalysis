@@ -31,6 +31,8 @@ from MDAnalysisTests.datafiles import TRC_GENBOX_ORIGIN, TRC_GENBOX_EULER
 from MDAnalysisTests.datafiles import TRC_PDB_SOLV, TRC_TRAJ_SOLV
 from MDAnalysisTests.datafiles import TRC_TRICLINIC_SOLV, TRC_TRUNCOCT_VAC
 from MDAnalysisTests.datafiles import TRC_TRAJ1_VAC_WHITESPACE
+from MDAnalysisTests.datafiles import TRC_TRAJ1_VAC_MISSING_POS
+from MDAnalysisTests.datafiles import TRC_TRAJ1_VAC_EXTRA_POS
 
 
 class TestTRCReaderVacuumBox:
@@ -316,3 +318,39 @@ class TestTRCReaderClusterTrajectory:
         ):
             assert TRC_U.trajectory[0].time == 0
             assert TRC_U.trajectory[2].time == 0
+
+class TestTRCReaderMissingPositions:
+    @pytest.fixture(scope="class")
+    def TRC_U(self):
+        filename = TRC_TRAJ1_VAC_MISSING_POS
+        warnmsg = f"Inconsistent POSITIONRED block size in file {filename}. Falling back to slow reader."
+        with pytest.warns(
+            UserWarning, match=warnmsg
+        ):
+            TRC_U = mda.Universe(TRC_PDB_VAC, TRC_TRAJ1_VAC_MISSING_POS)
+        return TRC_U
+
+    def test_missing_position(self, TRC_U):
+        errormsg = "Found 72 atoms in step 2, but expected 73"
+        with pytest.raises(
+                ValueError,
+            match=errormsg):
+            TRC_U.trajectory[-1].positions
+
+class TestTRCReaderExtraPositions:
+    @pytest.fixture(scope="class")
+    def TRC_U(self):
+        filename = TRC_TRAJ1_VAC_EXTRA_POS
+        warnmsg = f"Inconsistent POSITIONRED block size in file {filename}. Falling back to slow reader."
+        with pytest.warns(
+            UserWarning, match=warnmsg
+        ):
+            TRC_U = mda.Universe(TRC_PDB_VAC, TRC_TRAJ1_VAC_EXTRA_POS)
+        return TRC_U
+
+    def test_missing_position(self, TRC_U):
+        errormsg = "Found 74 atoms in step 2, but expected 73"
+        with pytest.raises(
+                ValueError,
+            match=errormsg):
+            TRC_U.trajectory[-1].positions
