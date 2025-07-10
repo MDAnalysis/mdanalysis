@@ -153,7 +153,10 @@ class IMDReader(StreamReaderBase):
             raise ValueError("IMDReader: n_atoms must be specified")
         self.n_atoms = n_atoms
 
-        host, port = parse_host_port(filename)
+        try:
+            host, port = parse_host_port(filename)
+        except ValueError as e:
+            raise ValueError(f"IMDReader: Invalid IMD URL '{filename}': {e}")
 
         # This starts the simulation
         self._imdclient = IMDClient(host, port, n_atoms, **kwargs)
@@ -217,14 +220,13 @@ class IMDReader(StreamReaderBase):
 
     @staticmethod
     def _format_hint(thing):
-        try:
-            # NOTE: maybe this check should be done in parse_host_port?
-            if not isinstance(thing, str):
-                return False
-            parse_host_port(thing)  # type: ignore
-        except ValueError:
+        if not isinstance(thing, str):
             return False
-        return True
+        # a weaker check for type hint
+        if thing.startswith("imd://"):
+            return True
+        else:
+            return False
 
     def close(self):
         """Gracefully shut down the reader. Stops the producer thread."""

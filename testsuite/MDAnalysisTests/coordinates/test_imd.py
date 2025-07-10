@@ -41,7 +41,10 @@ from MDAnalysisTests.coordinates.base import (
     assert_timestep_almost_equal,
 )
 
-@pytest.mark.skip(reason="The test interferes with sys.modules and can cause side effects")
+
+@pytest.mark.skip(
+    reason="The test interferes with sys.modules and can cause side effects"
+)
 def test_IMDCLIENT_import(monkeypatch):
     backup = sys.modules.copy()
 
@@ -460,7 +463,7 @@ def test_imd_stream_empty(universe, imdsinfo, port):
 
 
 @pytest.mark.skipif(not HAS_IMDCLIENT, reason="IMDClient not installed")
-def test_universe_format_hint(universe, imdsinfo, port):
+def test_create_imd_universe(universe, imdsinfo, port):
     server = InThreadIMDServer(universe.trajectory)
     server.set_imdsessioninfo(imdsinfo)
     server.handshake_sequence("localhost", port, first_frame=True)
@@ -470,4 +473,18 @@ def test_universe_format_hint(universe, imdsinfo, port):
         n_atoms=universe.trajectory.n_atoms,
     )
     assert type(u_imd.trajectory).__name__ == "IMDReader"
+    with pytest.raises(ValueError, match="IMDReader: Invalid IMD URL"):
+        u_imd = mda.Universe(
+            COORDINATES_TOPOLOGY,
+            f"imd://localhost:{port}/invalid",
+            n_atoms=universe.trajectory.n_atoms,
+        )
     server.cleanup()
+
+
+def test_imd_format_hint():
+    assert IMDReader._format_hint("imd://localhost:12345")
+    assert IMDReader._format_hint("imd://localhost:12345/invalid")
+    assert not IMDReader._format_hint("not_a_valid_imd_url")
+    assert not IMDReader._format_hint(12345)
+    assert not IMDReader._format_hint(None)
