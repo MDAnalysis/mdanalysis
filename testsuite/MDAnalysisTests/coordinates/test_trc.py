@@ -127,9 +127,10 @@ class TestTRCReaderVacuumBox:
 class TestTRCReaderVacuumBoxWhitespace(TestTRCReaderVacuumBox):
     @pytest.fixture(scope="class")
     def TRC_U(self):
+        filename = TRC_TRAJ1_VAC_WHITESPACE
+        warnmsg = f"Inconsistent POSITIONRED block size in file {filename}. Falling back to slow reader."
         with pytest.warns(
-            UserWarning, match="Inconsistent POSITIONRED block size. "
-            "Falling back to slow reader."
+            UserWarning, match=warnmsg
         ):
             return mda.Universe(
                 TRC_PDB_VAC,

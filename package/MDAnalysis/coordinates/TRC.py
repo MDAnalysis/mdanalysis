@@ -277,11 +277,9 @@ class TRCReader(base.ReaderBase):
                         # to where we were before
                         if f.readline().strip() != "END":
                             inconsistent_size = True
-                            warnings.warn(
-                                "Inconsistent POSITIONRED block size. "
-                                "Falling back to slow reader.",
-                                UserWarning,
-                            )
+                            warnmsg = f"Inconsistent POSITIONRED block size in file {f.name}. Falling back to slow reader."
+                            warnings.warn(warnmsg, UserWarning)
+                            logger.warning(warnmsg)
                             f.seek(current_pos)
 
         if frame_counter == 0:
