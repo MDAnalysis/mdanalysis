@@ -343,7 +343,6 @@ class TRCReader(base.ReaderBase):
                 )
 
                 frameDat["positions"] = data.reshape(-1, 3)
-                print(i, self.traj_properties['n_atoms'])
 
                 if i != self.traj_properties["n_atoms"]:
                     errormsg = f"Found {i} atoms in step {self._frame}, but expected {self.traj_properties['n_atoms']}"
