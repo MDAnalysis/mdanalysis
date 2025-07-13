@@ -524,7 +524,7 @@ class TestStreamReader(_Stream):
             len(sliced)
         with pytest.raises(RuntimeError, match="does not support indexing"):
             sliced[0]
-            
+
         for i, ts in enumerate(sliced):
             assert ts.frame == i * 2
 
