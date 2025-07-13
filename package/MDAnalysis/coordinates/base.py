@@ -1865,6 +1865,7 @@ class StreamReaderBase(ReaderBase):
         self._init_scope = True
         self._reopen_called = False
         self._first_ts = None
+        self._frame = -1
 
     def _read_next_timestep(self):
         # No rewinding- to both load the first frame after  __init__

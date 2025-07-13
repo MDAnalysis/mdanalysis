@@ -176,8 +176,6 @@ class IMDReader(StreamReaderBase):
             **self._ts_kwargs,
         )
 
-        self._frame = -1
-
         try:
             self._read_next_timestep()
         except EOFError as e:
