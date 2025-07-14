@@ -186,7 +186,8 @@ class AnalysisBase(object):
 
     .. Note::
        The instance attributes are created during and on conclusion of
-       calling the :meth:`AnalysisBase.run` method.
+       calling the :meth:`AnalysisBase.run` method. Accessing an attribute
+       before it has been created will raise an :exc:`AttributeError`.
 
 
     Parameters
