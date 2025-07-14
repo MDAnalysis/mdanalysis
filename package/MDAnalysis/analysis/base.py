@@ -185,7 +185,7 @@ class AnalysisBase(object):
     :class:`MDAnalysis.analysis.results.Results` container.
 
     .. Note::
-       The instance attributes are populated during and on conclusion of
+       The instance attributes are created during and on conclusion of
        calling the :meth:`AnalysisBase.run` method.
 
 
@@ -219,7 +219,7 @@ class AnalysisBase(object):
         Frame index of the last trajectory frame that was analyzed.
         Only exists after calling :meth:`AnalysisBase.run`.
     step: int
-        Every `step` frame was analyzed, as ``trajectory[star:stop:step]``.
+        Every `step` frame was analyzed, as ``trajectory[start:stop:step]``.
         Only exists after calling :meth:`AnalysisBase.run`.
 
 
