@@ -33,9 +33,9 @@ Parses data_ or dump_ files produced by LAMMPS_.
     read from the input file. This may change in release 3.0.
     See :ref:`Guessers` for more information.
 
-.. _LAMMPS: http://lammps.sandia.gov/
-.. _data: DATA file format: :http://lammps.sandia.gov/doc/2001/data_format.html
-.. _dump: http://lammps.sandia.gov/doc/dump.html
+.. _LAMMPS: https://www.lammps.org/
+.. _data: DATA file format: :https://docs.lammps.org/2001/data_format.html
+.. _dump: https://docs.lammps.org/dump.html
 
 .. versionchanged:: 1.0.0
    Deprecated :class:`LAMMPSDataConverter` has now been removed.
@@ -67,7 +67,7 @@ The following code could be used::
   >>> u = mda.Universe('myfile.data', atom_style='id type x y z')
 
 
-.. _`atom_style`: http://lammps.sandia.gov/doc/atom_style.html
+.. _`atom_style`: https://docs.lammps.org/atom_style.html
 
 Classes
 -------
@@ -469,7 +469,7 @@ class DATAParser(TopologyReaderBase):
         Lammps atoms can have lots of different formats,
         and even custom formats
 
-        http://lammps.sandia.gov/doc/atom_style.html
+        https://docs.lammps.org/atom_style.html
 
         Treated here are
         - atoms with 7 fields (with charge) "full"
