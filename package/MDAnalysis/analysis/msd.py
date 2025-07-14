@@ -342,6 +342,7 @@ class EinsteinMSD(AnalysisBase):
         # result
         self.results.msds_by_particle = None
         self.results.timeseries = None
+        self.results.delta_t_values = None
 
     def _prepare(self):
         # self.n_frames only available here
@@ -431,8 +432,8 @@ class EinsteinMSD(AnalysisBase):
 
     def _conclude_non_linear(self):
         
-        dump_times = [ts.time for ts in self._trajectory]
-        n_frames = len(dump_times)
+        dump_times = self.times
+        n_frames = self.n_frames
         n_atoms = self.n_particles
         positions = self._position_array.astype(np.float64)
 
@@ -462,5 +463,5 @@ class EinsteinMSD(AnalysisBase):
             delta_t_values.append(delta_t)
             avg_msds.append(avg_msd)
         
-        self.results.timeseries = delta_t_values
-        self.results.msds_by_particle = avg_msds
+        self.results.timeseries = np.array(avg_msds, dtype=np.float64)
+        self.results.delta_t_values = np.array(delta_t_values, dtype=np.float64)
