@@ -290,6 +290,12 @@ and <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase._
 <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase._prepare" title="MDAnalysis.analysis.base.AnalysisBase._prepare"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_prepare()</span></code></a> and <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase._conclude" title="MDAnalysis.analysis.base.AnalysisBase._conclude"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_conclude()</span></code></a> for pre- and post-processing.
 All results should be stored as attributes of the
 <a class="reference internal" href="results.html#MDAnalysis.analysis.results.Results" title="MDAnalysis.analysis.results.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.results.Results</span></code></a> container.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The instance attributes are created during and on conclusion of
+calling the <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase.run" title="MDAnalysis.analysis.base.AnalysisBase.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AnalysisBase.run()</span></code></a> method. Accessing an attribute
+before it has been created will raise an <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AttributeError" title="(in Python v3.13)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">AttributeError</span></code></a>.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -301,8 +307,8 @@ All results should be stored as attributes of the
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.base.AnalysisBase.times">
 <span class="sig-name descname"><span class="pre">times</span></span><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisBase.times" title="Link to this definition"></a></dt>
-<dd><p>array of Timestep times. Only exists after calling
-<a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase.run" title="MDAnalysis.analysis.base.AnalysisBase.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AnalysisBase.run()</span></code></a></p>
+<dd><p>Array of times of the Timesteps that were analyzed.
+Only exists after calling <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase.run" title="MDAnalysis.analysis.base.AnalysisBase.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AnalysisBase.run()</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)">numpy.ndarray</a></p>
@@ -313,8 +319,8 @@ All results should be stored as attributes of the
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.base.AnalysisBase.frames">
 <span class="sig-name descname"><span class="pre">frames</span></span><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisBase.frames" title="Link to this definition"></a></dt>
-<dd><p>array of Timestep frame indices. Only exists after calling
-<a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase.run" title="MDAnalysis.analysis.base.AnalysisBase.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AnalysisBase.run()</span></code></a></p>
+<dd><p>Array of frame indices that were analyzed.
+Only exists after calling <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase.run" title="MDAnalysis.analysis.base.AnalysisBase.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AnalysisBase.run()</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)">numpy.ndarray</a></p>
@@ -325,11 +331,61 @@ All results should be stored as attributes of the
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.base.AnalysisBase.results">
 <span class="sig-name descname"><span class="pre">results</span></span><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisBase.results" title="Link to this definition"></a></dt>
-<dd><p>results of calculation are stored after call
-to <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase.run" title="MDAnalysis.analysis.base.AnalysisBase.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AnalysisBase.run()</span></code></a></p>
+<dd><p>Results of calculation are stored here, after call
+to <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase.run" title="MDAnalysis.analysis.base.AnalysisBase.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AnalysisBase.run()</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.base.AnalysisBase.n_frames">
+<span class="sig-name descname"><span class="pre">n_frames</span></span><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisBase.n_frames" title="Link to this definition"></a></dt>
+<dd><p>number of <em>analyzed</em> frames, i.e., after taking into account
+the <cite>start</cite>, <cite>stop</cite>, and <cite>step</cite> values from
+<a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase.run" title="MDAnalysis.analysis.base.AnalysisBase.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AnalysisBase.run()</span></code></a>.
+Only exists after calling <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase.run" title="MDAnalysis.analysis.base.AnalysisBase.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AnalysisBase.run()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.base.AnalysisBase.start">
+<span class="sig-name descname"><span class="pre">start</span></span><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisBase.start" title="Link to this definition"></a></dt>
+<dd><p>Frame index of the first trajectory frame that was analyzed.
+Only exists after calling <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase.run" title="MDAnalysis.analysis.base.AnalysisBase.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AnalysisBase.run()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.base.AnalysisBase.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisBase.stop" title="Link to this definition"></a></dt>
+<dd><p>Frame index of the last trajectory frame that was analyzed.
+Only exists after calling <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase.run" title="MDAnalysis.analysis.base.AnalysisBase.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AnalysisBase.run()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.base.AnalysisBase.step">
+<span class="sig-name descname"><span class="pre">step</span></span><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisBase.step" title="Link to this definition"></a></dt>
+<dd><p>Every <cite>step</cite> frame was analyzed, as <code class="docutils literal notranslate"><span class="pre">trajectory[start:stop:step]</span></code>.
+Only exists after calling <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase.run" title="MDAnalysis.analysis.base.AnalysisBase.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AnalysisBase.run()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a></p>
 </dd>
 </dl>
 </dd></dl>

@@ -328,6 +328,12 @@
 <span class="sd">    All results should be stored as attributes of the</span>
 <span class="sd">    :class:`MDAnalysis.analysis.results.Results` container.</span>
 
+<span class="sd">    .. Note::</span>
+<span class="sd">       The instance attributes are created during and on conclusion of</span>
+<span class="sd">       calling the :meth:`AnalysisBase.run` method. Accessing an attribute</span>
+<span class="sd">       before it has been created will raise an :exc:`AttributeError`.</span>
+
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    trajectory : MDAnalysis.coordinates.base.ReaderBase</span>
@@ -338,14 +344,28 @@
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
 <span class="sd">    times: numpy.ndarray</span>
-<span class="sd">        array of Timestep times. Only exists after calling</span>
-<span class="sd">        :meth:`AnalysisBase.run`</span>
+<span class="sd">        Array of times of the Timesteps that were analyzed.</span>
+<span class="sd">        Only exists after calling :meth:`AnalysisBase.run`.</span>
 <span class="sd">    frames: numpy.ndarray</span>
-<span class="sd">        array of Timestep frame indices. Only exists after calling</span>
-<span class="sd">        :meth:`AnalysisBase.run`</span>
+<span class="sd">        Array of frame indices that were analyzed.</span>
+<span class="sd">        Only exists after calling :meth:`AnalysisBase.run`.</span>
 <span class="sd">    results: :class:`Results`</span>
-<span class="sd">        results of calculation are stored after call</span>
-<span class="sd">        to :meth:`AnalysisBase.run`</span>
+<span class="sd">        Results of calculation are stored here, after call</span>
+<span class="sd">        to :meth:`AnalysisBase.run`.</span>
+<span class="sd">    n_frames: int</span>
+<span class="sd">        number of *analyzed* frames, i.e., after taking into account</span>
+<span class="sd">        the `start`, `stop`, and `step` values from</span>
+<span class="sd">        :meth:`AnalysisBase.run`.</span>
+<span class="sd">        Only exists after calling :meth:`AnalysisBase.run`.</span>
+<span class="sd">    start: int</span>
+<span class="sd">        Frame index of the first trajectory frame that was analyzed.</span>
+<span class="sd">        Only exists after calling :meth:`AnalysisBase.run`.</span>
+<span class="sd">    stop: int</span>
+<span class="sd">        Frame index of the last trajectory frame that was analyzed.</span>
+<span class="sd">        Only exists after calling :meth:`AnalysisBase.run`.</span>
+<span class="sd">    step: int</span>
+<span class="sd">        Every `step` frame was analyzed, as ``trajectory[start:stop:step]``.</span>
+<span class="sd">        Only exists after calling :meth:`AnalysisBase.run`.</span>
 
 
 <span class="sd">    Example</span>
