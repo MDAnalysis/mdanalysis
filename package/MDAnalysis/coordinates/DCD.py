@@ -353,12 +353,36 @@ class DCDWriter(base.WriterBase):
     in Å and angle-cosines, ``[A, cos(gamma), B, cos(beta), cos(alpha), C]``)
     and writes positions in Å and time in AKMA time units.
 
+    .. warning::
+    
+       Multiple conventions exist for how unit cells are written to DCD
+       files. Until 2.10.0 MDAnalysis followed the old CHARMM/NAMD (≤2.5)
+       convention of storing ``[A, gamma, B, beta, alpha, C]`` while wrongly
+       stating that the new NAMD/VMD convention would be followed. In 2.10.0,
+       MDAnalysis switched to following the documented behavior and now stores
+       the box with angle cosines, as described above. The MDAnalysis
+       :class:`DCDReader` can correctly read either format but *if you have code
+       that relies on a specific format for the box information in the raw DCD
+       file, please check your results.*
+
+       Furthermore, modern versions of CHARMM store box vectors and not box
+       length/angles. When reading MDAnalysis-generated DCD files *in CHARMM*,
+       carefully check your results.
 
     .. note::
         When writing out timesteps without ``dimensions`` (i.e. set ``None``)
         the :class:`DCDWriter` will write out a zeroed unitcell (i.e.
         ``[0, 0, 0, 0, 0, 0]``). As this behaviour is poorly defined, it may
         not match the expectations of other software.
+
+    .. versionchanged:: 2.10.0    
+       Up to 2.10.0 the :class:`DCDWriter` wrote a unit cell following old NAMD
+       (≤2.5) convention, even though the docs stated that the new NAMD
+       convention was being used. Now the modern NAMD > 2.5 format is
+       written. See `Issue #5069`_ for details.
+
+
+    .. _`Issue #5069`: https://github.com/MDAnalysis/mdanalysis/issues/5069
 
     """
     format = 'DCD'
