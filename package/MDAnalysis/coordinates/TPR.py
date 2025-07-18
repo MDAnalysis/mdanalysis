@@ -7,6 +7,9 @@ from .timestep import Timestep
 import MDAnalysis.topology.tpr.utils as tpr_utils
 import MDAnalysis.topology.tpr.setting as S
 
+import logging
+
+logger = logging.getLogger("MDAnalysis.coordinates.TPR")
 
 import numpy as np
 
@@ -30,7 +33,7 @@ class TPRReader(base.SingleFrameReaderBase):
         try:
             th = tpr_utils.read_tpxheader(data)  # tpxheader
         except (EOFError, ValueError):
-            msg = f"{self.filename}: Invalid tpr file or cannot be recognized"
+            msg = f"{self.filename}: Invalid tpr coordinate file or cannot be recognized"
             logger.critical(msg)
             raise IOError(msg)
 
@@ -63,7 +66,9 @@ class TPRReader(base.SingleFrameReaderBase):
             )  # relevant to Berendsen tcoupl_lambda
 
         if th.bTop:
-            tpr_top = tpr_utils.do_mtop(data, th.fver, tpr_resid_from_one=True)
+            tpr_top = tpr_utils.do_mtop(
+                data, th.fver, tpr_resid_from_one=True, precision=th.precision
+            )
         else:
             msg = f"{self.filename}: No topology found in tpr file"
             logger.critical(msg)

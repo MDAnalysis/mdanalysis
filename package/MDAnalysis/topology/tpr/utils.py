@@ -74,8 +74,6 @@ from ...core.topologyattrs import (
     Impropers,
 )
 
-global_precision = 4
-
 
 class TPXUnpacker(xdrlib.Unpacker):
     """
@@ -226,12 +224,10 @@ def read_tpxheader(data):
     """this function is now compatible with do_tpxheader in tpxio.cpp
     """
     # Last compatibility check with gromacs-2016
-    global global_precision
     ver_str = data.do_string()  # version string e.g. VERSION 4.0.5
     if not ver_str.startswith(b'VERSION'):
         raise ValueError('Input does not look like a TPR file.')
     precision = data.unpack_int()  # e.g. 4
-    global_precision = precision
     define_unpack_real(precision, data)
     fileVersion = data.unpack_int()  # version of tpx file
     fileVersion_err(fileVersion)
@@ -290,7 +286,7 @@ def extract_box_info(data, fver):
     return obj.Box(box, box_rel, box_v)
 
 
-def do_mtop(data, fver, tpr_resid_from_one=False):
+def do_mtop(data, fver, tpr_resid_from_one=False, precision=4):
     # mtop: the topology of the whole system
     symtab = do_symtab(data)
     do_symstr(data, symtab)  # system_name
@@ -448,7 +444,7 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
         SimulationAtomGroupType_size = 10
         n_atoms = data.unpack_int()
         if fver < 116:
-            for i in range(3 * atnr * int(global_precision / 4)):
+            for i in range(3 * atnr * int(precision / 4)):
                 data.unpack_int()
         if fver < 129:
             # NOTE: speculative, Tyler did this by
@@ -460,7 +456,7 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
                 data.unpack_int()
 
         if 58 < fver <= 83:
-            for i in range(atnr * int(global_precision / 4) * 2):
+            for i in range(atnr * int(precision / 4) * 2):
                 data.unpack_int()
         if fver > 83:
             interm = data.unpack_uchar()

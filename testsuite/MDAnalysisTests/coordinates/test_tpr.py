@@ -41,6 +41,7 @@ from MDAnalysisTests.datafiles import (
     TPR455Double,
     TPR_xvf_2024_4,
     TPR_NNPOT_2025_0,
+    INPCRD,
 )
 import MDAnalysis as mda
 
@@ -418,3 +419,8 @@ def test_basic_read_tpr(
     assert_allclose(u.atoms.velocities[0, ...], exp_vel_first_atom)
     assert_allclose(u.atoms.velocities[-1, ...], exp_vel_last_atom)
     assert_equal(u.atoms.velocities.shape, exp_shape)
+
+
+def test_error_handling_incorrect_format():
+    with pytest.raises(IOError, match="Invalid tpr coordinate file"):
+        u = mda.Universe(TPR2024_4_bonded, INPCRD, format="TPR")
