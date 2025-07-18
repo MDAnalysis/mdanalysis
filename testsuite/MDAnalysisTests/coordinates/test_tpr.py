@@ -1,3 +1,26 @@
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+#
+# MDAnalysis --- https://www.mdanalysis.org
+# Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
+#
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
+#
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
+#
+
 from MDAnalysisTests.datafiles import (
     TPR2024_4_bonded,
     TPR_EXTRA_2024_4,
@@ -41,6 +64,7 @@ from MDAnalysisTests.datafiles import (
     TPR455Double,
     TPR_xvf_2024_4,
     TPR_NNPOT_2025_0,
+    TPR2020B2,
     INPCRD,
 )
 import MDAnalysis as mda
@@ -401,6 +425,7 @@ from numpy.testing import assert_allclose, assert_equal
         ),
     ],
 )
+@pytest.mark.parametrize("double_incantation", [True, False])
 def test_basic_read_tpr(
     tpr_file,
     exp_first_atom,
@@ -408,11 +433,15 @@ def test_basic_read_tpr(
     exp_shape,
     exp_vel_first_atom,
     exp_vel_last_atom,
+    double_incantation,
 ):
     # verify basic ability to read positions and
     # velocities from GMX .tpr files
     # expected values are from gmx dump
-    u = mda.Universe(tpr_file)
+    if double_incantation:
+        u = mda.Universe(tpr_file, tpr_file)
+    else:
+        u = mda.Universe(tpr_file)
     assert_allclose(u.atoms.positions[0, ...], exp_first_atom)
     assert_allclose(u.atoms.positions[-1, ...], exp_last_atom)
     assert_equal(u.atoms.positions.shape, exp_shape)
@@ -424,3 +453,26 @@ def test_basic_read_tpr(
 def test_error_handling_incorrect_format():
     with pytest.raises(IOError, match="Invalid tpr coordinate file"):
         u = mda.Universe(TPR2024_4_bonded, INPCRD, format="TPR")
+
+
+def test_2020B2_unsupported():
+    with pytest.raises(IOError, match="beta versions of gromacs 2020"):
+        u = mda.Universe(TPR2020, TPR2020B2)
+
+
+def test_different_versions():
+    # for now, we only have crude testing for
+    # reading topology and positions/velocities
+    # for the same system with different TPR
+    # file versions
+    exp_first_atom = [3.25000e-01, 1.00400e00, 1.03800e00]
+    exp_last_atom = [-2.56000e-01, 1.37300e00, 3.59800e00]
+    exp_shape = (2263, 3)
+    exp_vel = np.zeros(3)
+    u = mda.Universe(TPR2020, TPR2024_4)
+    assert_allclose(u.atoms.positions[0, ...], exp_first_atom)
+    assert_allclose(u.atoms.positions[-1, ...], exp_last_atom)
+    assert_allclose(u.atoms.velocities[0, ...], exp_vel)
+    assert_allclose(u.atoms.velocities[-1, ...], exp_vel)
+    assert_equal(u.atoms.positions.shape, exp_shape)
+    assert_equal(u.atoms.velocities.shape, exp_shape)

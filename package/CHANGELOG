@@ -16,7 +16,7 @@ The rules for this file:
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, orbeckst, BHM-Bob, TRY-ER, Abdulrahman-PROG, pbuslaev,
          yuxuanzhuang, yuyuan871111, tanishy7777, tulga-rdn, Gareth-elliott,
-         hmacdope
+         hmacdope, tylerjereddy
 
 
  * 2.10.0
@@ -38,6 +38,9 @@ Fixes
    directly passing them. (Issue #3520, PR #5006)
 
 Enhancements
+ * Support has been added for reading positions and velocities
+   from GROMACS TPR files, between GROMACS version 4.x and 2025
+   (Issue #464, PR #4873)
  * Improve speed of GROMOS11 (TRC) reader (Issue #5079, PR #5080)
  * Improve parsing of topology information from LAMMPS dump files to allow
    reading of mass, charge and element attributes. (Issue #3449, PR #4995)

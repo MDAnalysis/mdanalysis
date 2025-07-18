@@ -441,6 +441,7 @@ def do_mtop(data, fver, tpr_resid_from_one=False, precision=4):
         # api/legacy/include/gromacs/topology/topology_enums.h
         # worst case scenario we hard code it based on
         # tpx/GMX version?
+        # for details, see gh-4873
         SimulationAtomGroupType_size = 10
         n_atoms = data.unpack_int()
         if fver < 116:
