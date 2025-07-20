@@ -22,7 +22,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>8.7. AtomGroup accessors — MDAnalysis.core.accessors &mdash; MDAnalysis 2.10.0-dev0 documentation</title>
+  <title>8.8. AtomGroup accessors — MDAnalysis.core.accessors &mdash; MDAnalysis 2.10.0-dev0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/site.css" />
 
@@ -39,8 +39,8 @@
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="8.8. Base classes — MDAnalysis.converters.base" href="../converters/base.html" />
-    <link rel="prev" title="8.5. OpenMM topology parser MDAnalysis.converters.OpenMMParser" href="../converters/OpenMM.html" /> 
+    <link rel="next" title="8.9. Base classes — MDAnalysis.converters.base" href="../converters/base.html" />
+    <link rel="prev" title="8.6. OpenMM topology parser MDAnalysis.converters.OpenMMParser" href="../converters/OpenMM.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -109,13 +109,14 @@
 <li class="toctree-l2"><a class="reference internal" href="../converters/ParmEd.html#parmed-structure-i-o-mdanalysis-converters-parmed">8.2. ParmEd structure I/O — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.ParmEd</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../converters/RDKit.html">8.3. RDKit topology parser — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.RDKitParser</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../converters/RDKit.html#rdkit-molecule-i-o-mdanalysis-converters-rdkit">8.4. RDKit molecule I/O — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.RDKit</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../converters/OpenMM.html">8.5. OpenMM topology parser <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.OpenMMParser</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../converters/OpenMM.html#openmm-structure-i-o-mdanalysis-converters-openmm">8.6. OpenMM structure I/O — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.OpenMM</span></code></a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">8.7. AtomGroup accessors — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.accessors</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#classes">8.7.1. Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../converters/RDKit.html#rdkit-bond-order-inferring-mdanalysis-converters-rdkitinferring">8.5. RDKit bond order inferring — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.RDKitInferring</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../converters/OpenMM.html">8.6. OpenMM topology parser <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.OpenMMParser</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../converters/OpenMM.html#openmm-structure-i-o-mdanalysis-converters-openmm">8.7. OpenMM structure I/O — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.OpenMM</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">8.8. AtomGroup accessors — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.accessors</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#classes">8.8.1. Classes</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../converters/base.html">8.8. Base classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../converters/base.html">8.9. Base classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.base</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">9. Trajectory transformations (“on-the-fly” transformations)</a></li>
@@ -146,7 +147,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../converters.html"><span class="section-number">8. </span>Converter modules</a></li>
-      <li class="breadcrumb-item active"><span class="section-number">8.7. </span>AtomGroup accessors — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.accessors</span></code></li>
+      <li class="breadcrumb-item active"><span class="section-number">8.8. </span>AtomGroup accessors — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.accessors</span></code></li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/documentation_pages/core/accessors.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -157,7 +158,7 @@
            <div itemprop="articleBody">
              
   <section id="atomgroup-accessors-mdanalysis-core-accessors">
-<span id="module-MDAnalysis.core.accessors"></span><h1><span class="section-number">8.7. </span>AtomGroup accessors — <a class="reference internal" href="#module-MDAnalysis.core.accessors" title="MDAnalysis.core.accessors"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.accessors</span></code></a><a class="headerlink" href="#atomgroup-accessors-mdanalysis-core-accessors" title="Link to this heading"></a></h1>
+<span id="module-MDAnalysis.core.accessors"></span><h1><span class="section-number">8.8. </span>AtomGroup accessors — <a class="reference internal" href="#module-MDAnalysis.core.accessors" title="MDAnalysis.core.accessors"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.accessors</span></code></a><a class="headerlink" href="#atomgroup-accessors-mdanalysis-core-accessors" title="Link to this heading"></a></h1>
 <p>This module provides classes for accessing and converting <a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>
 objects. It is used for the <a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup.convert_to" title="MDAnalysis.core.groups.AtomGroup.convert_to"><code class="xref py py-meth docutils literal notranslate"><span class="pre">convert_to()</span></code></a>
 method to make it usable in two different ways: <code class="docutils literal notranslate"><span class="pre">ag.convert_to(&quot;PACKAGE&quot;)</span></code> or
@@ -184,7 +185,7 @@ method to make it usable in two different ways: <code class="docutils literal no
 </pre></div>
 </div>
 <section id="classes">
-<h2><span class="section-number">8.7.1. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
+<h2><span class="section-number">8.8.1. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.core.accessors.Accessor">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.accessors.</span></span><span class="sig-name descname"><span class="pre">Accessor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">accessor</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/accessors.html#Accessor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.accessors.Accessor" title="Link to this definition"></a></dt>
@@ -276,8 +277,8 @@ be accessed as a method with the name of the package in lowercase, i.e.
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../converters/OpenMM.html" class="btn btn-neutral float-left" title="8.5. OpenMM topology parser MDAnalysis.converters.OpenMMParser" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../converters/base.html" class="btn btn-neutral float-right" title="8.8. Base classes — MDAnalysis.converters.base" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../converters/OpenMM.html" class="btn btn-neutral float-left" title="8.6. OpenMM topology parser MDAnalysis.converters.OpenMMParser" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../converters/base.html" class="btn btn-neutral float-right" title="8.9. Base classes — MDAnalysis.converters.base" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
