@@ -16,12 +16,14 @@ The rules for this file:
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, orbeckst, BHM-Bob, TRY-ER, Abdulrahman-PROG, pbuslaev,
          yuxuanzhuang, yuyuan871111, tanishy7777, tulga-rdn, Gareth-elliott,
-         hmacdope
+         hmacdope, tylerjereddy
 
 
  * 2.10.0
 
 Fixes
+ * Fixed an integer overflow in large DCD file seeks on Windows
+   (Issue #4879, PR #5086)
  * Fix compile failure due to numpy issues in transformations.c (Issue #5061, PR #5068)
  * Fix incorrect `self.atom` assignment in SingleFrameReaderBase (Issue #5052, PR #5055)
  * Fixes bug in `analysis/hydrogenbonds.py`: `_donors` and `_hydrogens`
