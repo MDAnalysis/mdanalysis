@@ -194,65 +194,100 @@ class TRCReader(base.ReaderBase):
         first_block = None
         with util.anyopen(self.filename) as f:
             for line in iter(f.readline, ""):
-                for blockname in TRCReader.SUPPORTED_BLOCKS:
-                    if (blockname == line.strip()) and (blockname != "TITLE"):
-                        # Save the name of the first non-title block
-                        # in the trajectory file
-                        first_block = blockname
-
-                if first_block is not None:
-                    break  # First block found
+                stripped_line = line.strip()
+                if stripped_line in TRCReader.SUPPORTED_BLOCKS and (
+                    stripped_line != "TITLE"
+                ):
+                    # Save the name of the first non-title block
+                    # in the trajectory file
+                    first_block = stripped_line
+                    break
 
         #
         # Calculate meta-data of the trajectory
         #
-        in_positionred_block = False
-        lastline_was_timestep = False
-
-        atom_counter = 0
         n_atoms = 0
         frame_counter = 0
+        block_size = {}
+        block_size["POSITIONRED"] = None
+        inconsistent_size = False
 
         l_blockstart_offset = []
         l_timestep_timevalues = []
 
         with util.anyopen(self.filename) as f:
             for line in iter(f.readline, ""):
+                stripped_line = line.strip()
                 #
                 # First block of frame
                 #
-                if first_block == line.strip():
+                if first_block == stripped_line:
                     l_blockstart_offset.append(f.tell() - len(line))
                     frame_counter += 1
 
                 #
                 # Timestep-block
                 #
-                if "TIMESTEP" == line.strip():
-                    lastline_was_timestep = True
-
-                elif lastline_was_timestep is True:
-                    l_timestep_timevalues.append(float(line.split()[1]))
-                    lastline_was_timestep = False
-
+                if "TIMESTEP" == stripped_line:
+                    l_timestep_timevalues.append(
+                        float(f.readline().split()[1])
+                    )
+                    while stripped_line != "END":
+                        stripped_line = f.readline().strip()
                 #
                 # Coordinates-block
                 #
-                if "POSITIONRED" == line.strip():
-                    in_positionred_block = True
+                if "POSITIONRED" == stripped_line:
+                    # Only count the number of atoms in the first block
+                    # Also stores the size of the POSITIONRED block which
+                    # should be consistent in most cases.
+                    if n_atoms == 0:
+                        start = f.tell() - len(line)
+                        while stripped_line != "END":
+                            line = f.readline()
+                            stripped_line = line.strip()
+                            if len(stripped_line.split()) == 3:
+                                n_atoms += 1
+                        end = f.tell() - len(line)
+                        block_size["POSITIONRED"] = end - start
 
-                elif (in_positionred_block is True) and (n_atoms == 0):
-                    if len(line.split()) == 3:
-                        atom_counter += 1
+                    elif inconsistent_size:
+                        while stripped_line != "END":
+                            stripped_line = f.readline().strip()
 
-                if ("END" == line.strip()) and (in_positionred_block is True):
-                    n_atoms = atom_counter
-                    in_positionred_block = False
+                    else:
+                        # While it is allowed for trailing whitespace to exist
+                        # in the trajectories, none of the GROMOS trajectory
+                        # writers do actually produce trailing whitespace.
+                        # By default we try to assume a consistent size of the
+                        # POSITIONRED block. We then try to skip reading subsequent
+                        # occurences of this block.
+                        # If we end up somewhere unexpected, we will throw
+                        # a warning and fall back to iterating over the file.
+
+                        # instead of looping over the file, looking for an END
+                        # we can seek to where the end of the block should be.
+                        current_pos = f.tell() - len(line)
+                        f.seek(
+                            f.tell() - len(line) + block_size["POSITIONRED"]
+                        )
+
+                        # Check if we are at the correct position
+                        # If not, set inconsistent_size to true and seek back
+                        # to where we were before
+                        if f.readline().strip() != "END":
+                            inconsistent_size = True
+                            warnmsg = f"Inconsistent POSITIONRED block size in file {f.name}. Falling back to slow reader."
+                            warnings.warn(warnmsg, UserWarning)
+                            logger.warning(warnmsg)
+                            f.seek(current_pos)
 
         if frame_counter == 0:
-            raise ValueError(
+            errormsg = (
                 "No supported blocks were found within the GROMOS trajectory!"
             )
+            logger.error(errormsg)
+            raise ValueError(errormsg)
 
         traj_properties["n_atoms"] = n_atoms
         traj_properties["n_frames"] = frame_counter
@@ -264,9 +299,9 @@ class TRCReader(base.ReaderBase):
             )
         else:
             traj_properties["dt"] = 0
-            warnings.warn(
-                "The trajectory does not contain TIMESTEP blocks!", UserWarning
-            )
+            warnmsg = "The trajectory does not contain TIMESTEP blocks!"
+            warnings.warn(warnmsg, UserWarning)
+            logger.warning(warnmsg)
 
         return traj_properties
 
@@ -274,20 +309,24 @@ class TRCReader(base.ReaderBase):
         frameDat = {}
         frameDat["step"] = int(self._frame)
         frameDat["time"] = float(0.0)
-        frameDat["positions"] = None
+        frameDat["positions"] = np.zeros(
+            (self.traj_properties["n_atoms"], 3), dtype=np.float64
+        )
         frameDat["dimensions"] = None
         self.periodic = False
 
         # Read the trajectory
         f = self.trcfile
         for line in iter(f.readline, ""):
-            if "TIMESTEP" == line.strip():
+            stripped_line = line.strip()
+            if "TIMESTEP" == stripped_line:
                 tmp_step, tmp_time = f.readline().split()
                 frameDat["step"] = int(tmp_step)
                 frameDat["time"] = float(tmp_time)
 
-            elif "POSITIONRED" == line.strip():
-                tmp_buf = []
+            elif "POSITIONRED" == stripped_line:
+                i = 0
+                buffer = []
                 while True:
                     coords_str = f.readline()
                     if "#" in coords_str:
@@ -295,63 +334,68 @@ class TRCReader(base.ReaderBase):
                     elif "END" in coords_str:
                         break
                     else:
-                        tmp_buf.append(coords_str.split())
+                        buffer.append(coords_str)
+                        i += 1
 
-                if np.array(tmp_buf).shape[0] == self.n_atoms:
-                    frameDat["positions"] = np.asarray(
-                        tmp_buf, dtype=np.float64
-                    )
-                else:
-                    raise ValueError(
-                        "The trajectory contains the wrong number of atoms!"
-                    )
+                data = np.fromstring(
+                    "".join(buffer),
+                    sep=" ",
+                    dtype=np.float64,
+                    count=self.n_atoms * 3,
+                )
 
-            elif "GENBOX" == line.strip():
+                frameDat["positions"] = data.reshape(-1, 3)
+
+                if i != self.traj_properties["n_atoms"]:
+                    errormsg = f"Found {i} atoms in step {self._frame}, but expected {self.traj_properties['n_atoms']}"
+                    logger.error(errormsg)
+                    raise ValueError(errormsg)
+
+            elif "GENBOX" == stripped_line:
                 ntb_setting = int(f.readline())
                 if ntb_setting == 0:
                     frameDat["dimensions"] = None
                     self.periodic = False
 
                 elif ntb_setting in [1, 2]:
-                    tmp_a, tmp_b, tmp_c = f.readline().split()
-                    tmp_alpha, tmp_beta, tmp_gamma = f.readline().split()
+                    tmp_a, tmp_b, tmp_c = map(float, f.readline().split())
+                    tmp_alpha, tmp_beta, tmp_gamma = map(
+                        float, f.readline().split()
+                    )
                     frameDat["dimensions"] = [
-                        float(tmp_a),
-                        float(tmp_b),
-                        float(tmp_c),
-                        float(tmp_alpha),
-                        float(tmp_beta),
-                        float(tmp_gamma),
+                        tmp_a,
+                        tmp_b,
+                        tmp_c,
+                        tmp_alpha,
+                        tmp_beta,
+                        tmp_gamma,
                     ]
                     self.periodic = True
 
-                    gb_line3 = f.readline().split()
+                    # gb_line3
                     if (
-                        np.sum(np.abs(np.array(gb_line3).astype(np.float64)))
+                        sum(abs(float(v)) for v in f.readline().split())
                         > 1e-10
                     ):
-                        raise ValueError(
+                        errormsg = (
                             "This reader doesnt't support a shifted origin!"
                         )
+                        logger.error(errormsg)
+                        raise ValueError(errormsg)
 
-                    gb_line4 = f.readline().split()
+                    # gb_line4
                     if (
-                        np.sum(np.abs(np.array(gb_line4).astype(np.float64)))
+                        sum(abs(float(v)) for v in f.readline().split())
                         > 1e-10
                     ):
-                        raise ValueError(
-                            "This reader "
-                            "doesnt't support "
-                            "yawed, pitched or "
-                            "rolled boxes!"
-                        )
+                        errormsg = "This reader doesnt't support yawed, pitched or rolled boxes!"
+                        logger.error(errormsg)
+                        raise ValueError(errormsg)
 
                 else:
-                    raise ValueError(
-                        "This reader doesn't support "
-                        "truncated-octahedral "
-                        "periodic boundary conditions"
-                    )
+                    errormsg = "This reader does't support truncated-octahedral periodic boundary conditions"
+                    logger.error(errormsg)
+                    raise ValueError(errormsg)
                 break
 
             elif any(
@@ -359,11 +403,10 @@ class TRCReader(base.ReaderBase):
                 for non_supp_bn in TRCReader.NOT_SUPPORTED_BLOCKS
             ):
                 for non_supp_bn in TRCReader.NOT_SUPPORTED_BLOCKS:
-                    if non_supp_bn == line.strip():
-                        warnings.warn(
-                            non_supp_bn + " block is not supported!",
-                            UserWarning,
-                        )
+                    if non_supp_bn == stripped_line:
+                        warnmsg = non_supp_bn + " block is not supported!"
+                        warnings.warn(warnmsg, UserWarning)
+                        logger.warning(warnmsg)
 
         return frameDat
 
@@ -381,7 +424,9 @@ class TRCReader(base.ReaderBase):
     def _read_next_timestep(self):
         self._frame += 1
         if self._frame >= self.n_frames:
-            raise IOError("Trying to go over trajectory limit")
+            errormsg = "Trying to go over trajectory limit"
+            logger.error(errormsg)
+            raise IOError(errormsg)
 
         raw_framedata = self._read_GROMOS11_trajectory()
         self._frame_to_ts(raw_framedata, self.ts)
@@ -395,9 +440,9 @@ class TRCReader(base.ReaderBase):
 
     def open_trajectory(self):
         if self.trcfile is not None:
-            raise IOError(
-                errno.EALREADY, "TRC file already opened", self.filename
-            )
+            errormsg = errno.EALREADY, "TRC file already opened", self.filename
+            logger.error(errormsg)
+            raise IOError(errormsg)
 
         # Reload trajectory file
         self.trcfile = util.anyopen(self.filename)
