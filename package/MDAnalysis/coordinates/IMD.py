@@ -73,7 +73,7 @@ from MDAnalysis.coordinates.base import StreamReaderBase
 
 from packaging.version import Version
 
-MIN_IMDCLIENT_VERSION = Version("0.1.4")
+MIN_IMDCLIENT_VERSION = Version("0.2.2")
 
 try:
     import imdclient
@@ -97,7 +97,7 @@ else:
     HAS_IMDCLIENT = True
     imdclient_version = Version(imdclient.__version__)
 
-    # Check for compatibility: currently needs to be >=0.1.4
+    # Check for compatibility: currently needs to be >=0.2.2
     if imdclient_version < MIN_IMDCLIENT_VERSION:
         warnings.warn(
             f"imdclient version {imdclient_version} is too old; "
