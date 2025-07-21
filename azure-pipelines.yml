@@ -113,7 +113,7 @@ jobs:
       pytng>=0.2.3
       rdkit>=2020.03.1
       tidynamics>=1.0.0
-      imdclient==0.2.0b0
+      imdclient>=0.2.2
 
     # remove from azure to avoid test hanging #4707
     # "gsd>3.0.0"
