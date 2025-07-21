@@ -34,7 +34,7 @@ def test_IMDCLIENT_import(monkeypatch):
 
         IMDClient_module.IMDClient = MockIMDClient
         mocked_module.IMDClient = IMDClient_module
-        mocked_module.__version__ = MIN_IMDCLIENT_VERSION
+        mocked_module.__version__ = str(MIN_IMDCLIENT_VERSION)
 
         utils_module = ModuleType(f"{module_name}.utils")
         utils_module.parse_host_port = lambda x: ("localhost", 12345)
