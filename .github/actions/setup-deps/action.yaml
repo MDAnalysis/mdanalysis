@@ -82,8 +82,8 @@ inputs:
     default: 'seaborn>=0.7.0'
   tidynamics:
     default: 'tidynamics>=1.0.0'
-  # imdclient:
-  #   default: 'imdclient'
+  imdclient:
+    default: 'imdclient>=0.2.2'
   # pip-installed min dependencies
   coverage:
     default: 'coverage'
@@ -108,8 +108,6 @@ inputs:
     default: 'pyedr>=0.7.0'
   waterdynamics:
     default: 'waterdynamics'
-  imdclient:
-    default: 'imdclient==0.2.0b0'
 
 runs:
   using: "composite"
@@ -151,6 +149,7 @@ runs:
           ${{ inputs.scikit-learn }}
           ${{ inputs.seaborn }}
           ${{ inputs.tidynamics }}
+          ${{ inputs.imdclient }}
 
       run: |
         # setup full variable
@@ -182,7 +181,6 @@ runs:
           ${{ inputs.duecredit }}
           ${{ inputs.parmed }}
           ${{ inputs.pyedr }}
-          ${{ inputs.imdclient}}
       run: |
         # setup full variable
         if [ ${{ inputs.full-deps }} = "true" ]; then
