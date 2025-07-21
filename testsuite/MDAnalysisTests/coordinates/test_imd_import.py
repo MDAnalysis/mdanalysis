@@ -6,7 +6,7 @@ import importlib
 import pytest
 from types import ModuleType
 
-from MDAnalysis.coordinates.IMD import HAS_IMDCLIENT
+from MDAnalysis.coordinates.IMD import HAS_IMDCLIENT, MIN_IMDCLIENT_VERSION
 
 if HAS_IMDCLIENT:
     import imdclient
@@ -34,7 +34,7 @@ def test_IMDCLIENT_import(monkeypatch):
 
         IMDClient_module.IMDClient = MockIMDClient
         mocked_module.IMDClient = IMDClient_module
-        mocked_module.__version__ = "0.1.4"
+        mocked_module.__version__ = MIN_IMDCLIENT_VERSION
 
         utils_module = ModuleType(f"{module_name}.utils")
         utils_module.parse_host_port = lambda x: ("localhost", 12345)
