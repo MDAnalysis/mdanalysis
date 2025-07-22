@@ -376,7 +376,9 @@ class UnWrapUniverse(object):
         if reference is not None:
             ref = reference.lower()
             if ref not in ["com", "cog"]:
-                raise ValueError("Unknown unwrap reference: {}" "".format(reference))
+                raise ValueError(
+                    "Unknown unwrap reference: {}" "".format(reference)
+                )
         comp = compound.lower()
         if comp not in [
             "group",

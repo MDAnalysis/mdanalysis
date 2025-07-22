@@ -168,7 +168,9 @@ def dist(A, B, offset=0, box=None):
     """
 
     if A.atoms.n_atoms != B.atoms.n_atoms:
-        raise ValueError("AtomGroups A and B do not have the same number of atoms")
+        raise ValueError(
+            "AtomGroups A and B do not have the same number of atoms"
+        )
     try:
         off_A, off_B = offset
     except (TypeError, ValueError):

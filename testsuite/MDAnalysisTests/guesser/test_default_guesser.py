@@ -57,7 +57,9 @@ class TestGuessMasses(object):
         u = mda.Universe(topology)
 
         assert isinstance(u.atoms.masses, np.ndarray)
-        assert_allclose(u.atoms.masses, np.array([12.011, 12.011, 1.008]), atol=0)
+        assert_allclose(
+            u.atoms.masses, np.array([12.011, 12.011, 1.008]), atol=0
+        )
 
     def test_guess_masses_from_guesser_object(self, default_guesser):
         elements = ["H", "Ca", "Am"]
@@ -88,7 +90,9 @@ class TestGuessMasses(object):
 
     def test_guess_masses_with_no_reference_elements(self):
         u = mda.Universe.empty(3)
-        with pytest.raises(NoDataError, match=("there is no reference attributes ")):
+        with pytest.raises(
+            NoDataError, match=("there is no reference attributes ")
+        ):
             u.guess_TopologyAttrs("default", ["masses"])
 
 
@@ -123,7 +127,10 @@ class TestGuessTypes(object):
 
     def test_guess_elements_from_no_data(self):
         top = Topology(5)
-        msg = "there is no reference attributes in this " "universe to guess types from"
+        msg = (
+            "there is no reference attributes in this "
+            "universe to guess types from"
+        )
         with pytest.warns(UserWarning, match=msg):
             mda.Universe(top, to_guess=["types"])
 
@@ -205,7 +212,9 @@ def test_guess_dihedrals_with_no_angles():
 def test_guess_impropers_with_angles():
     "Test guessing impropers for atoms with angles"
     "and bonds information "
-    u = mda.Universe(datafiles.two_water_gro, to_guess=["bonds", "angles", "impropers"])
+    u = mda.Universe(
+        datafiles.two_water_gro, to_guess=["bonds", "angles", "impropers"]
+    )
     u.guess_TopologyAttrs(to_guess=["impropers"])
     assert hasattr(u, "impropers")
     assert hasattr(u, "angles")
@@ -236,12 +245,16 @@ def bond_sort(arr):
 def test_guess_bonds_water():
     u = mda.Universe(datafiles.two_water_gro)
     bonds = bond_sort(
-        DefaultGuesser(None, box=u.dimensions).guess_bonds(u.atoms, u.atoms.positions)
+        DefaultGuesser(None, box=u.dimensions).guess_bonds(
+            u.atoms, u.atoms.positions
+        )
     )
     assert_equal(bonds, ((0, 1), (0, 2), (3, 4), (3, 5)))
 
 
-@pytest.mark.parametrize("fudge_factor, n_bonds", [(0, 0), (0.55, 4), (200, 6)])
+@pytest.mark.parametrize(
+    "fudge_factor, n_bonds", [(0, 0), (0.55, 4), (200, 6)]
+)
 def test_guess_bonds_water_fudge_factor_passed(fudge_factor, n_bonds):
     u = mda.Universe(
         datafiles.two_water_gro,
@@ -317,6 +330,8 @@ def test_guess_gasteiger_charges(smi):
 
 @requires_rdkit
 def test_aromaticity():
-    u = mda.Universe(datafiles.PDB_small, to_guess=["elements", "aromaticities"])
+    u = mda.Universe(
+        datafiles.PDB_small, to_guess=["elements", "aromaticities"]
+    )
     c_aromatic = u.select_atoms("resname PHE and name CD1")
     assert_equal(c_aromatic.aromaticities[0], True)

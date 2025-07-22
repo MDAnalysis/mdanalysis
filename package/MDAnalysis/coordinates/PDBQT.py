@@ -157,9 +157,13 @@ class PDBQTReader(base.SingleFrameReaderBase):
                     break
                 if line.startswith("CRYST1"):
                     # lengths
-                    x, y, z = np.float32((line[6:15], line[15:24], line[24:33]))
+                    x, y, z = np.float32(
+                        (line[6:15], line[15:24], line[24:33])
+                    )
                     # angles
-                    A, B, G = np.float32((line[33:40], line[40:47], line[47:54]))
+                    A, B, G = np.float32(
+                        (line[33:40], line[40:47], line[47:54])
+                    )
                     unitcell[:] = x, y, z, A, B, G
                 if line.startswith(("ATOM", "HETATM")):
                     # convert all entries at the end once for optimal speed
@@ -264,7 +268,9 @@ class PDBQTWriter(base.WriterBase):
                 frame = 0  # should catch cases when we are analyzing a single PDB (?)
 
         atoms = selection.atoms  # make sure to use atoms (Issue 46)
-        coor = atoms.positions  # can write from selection == Universe (Issue 49)
+        coor = (
+            atoms.positions
+        )  # can write from selection == Universe (Issue 49)
 
         # Check attributes
         attrs = {}
@@ -313,7 +319,9 @@ class PDBQTWriter(base.WriterBase):
             raise ValueError(
                 "PDB files must have coordinate values between {0:.3f}"
                 " and {1:.3f} Angstroem: No file was written."
-                "".format(self.pdb_coor_limits["min"], self.pdb_coor_limits["max"])
+                "".format(
+                    self.pdb_coor_limits["min"], self.pdb_coor_limits["max"]
+                )
             )
 
         # Write title record

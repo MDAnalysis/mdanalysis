@@ -248,7 +248,9 @@ class TestHydrogenBondAutocorrel(object):
             tau2 = 1
             tau3 = 0.1
             return (
-                A1 * np.exp(-t / tau1) + A2 * np.exp(-t / tau2) + A3 * np.exp(-t / tau3)
+                A1 * np.exp(-t / tau1)
+                + A2 * np.exp(-t / tau2)
+                + A3 * np.exp(-t / tau3)
             )
 
         hbond.solution["time"] = time = np.arange(0, 6.0, 0.01)
@@ -322,7 +324,9 @@ class TestHydrogenBondAutocorrel(object):
             hbond.solve()
 
     @mock.patch("MDAnalysis.coordinates.TRZ.TRZReader._read_frame")
-    def test_unslicable_traj_VE(self, mock_read, u, hydrogens, oxygens, nitrogens):
+    def test_unslicable_traj_VE(
+        self, mock_read, u, hydrogens, oxygens, nitrogens
+    ):
         mock_read.side_effect = TypeError
 
         with pytest.raises(ValueError):

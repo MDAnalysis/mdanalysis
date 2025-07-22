@@ -295,7 +295,9 @@ class Dihedral(AnalysisBase):
             If any atomgroups do not contain 4 atoms
 
         """
-        super(Dihedral, self).__init__(atomgroups[0].universe.trajectory, **kwargs)
+        super(Dihedral, self).__init__(
+            atomgroups[0].universe.trajectory, **kwargs
+        )
         self.atomgroups = atomgroups
 
         if any([len(ag) != 4 for ag in atomgroups]):
@@ -423,7 +425,9 @@ class Ramachandran(AnalysisBase):
         check_protein=True,
         **kwargs,
     ):
-        super(Ramachandran, self).__init__(atomgroup.universe.trajectory, **kwargs)
+        super(Ramachandran, self).__init__(
+            atomgroup.universe.trajectory, **kwargs
+        )
         self.atomgroup = atomgroup
         residues = self.atomgroup.residues
 
@@ -450,7 +454,8 @@ class Ramachandran(AnalysisBase):
 
         if not np.all(keep):
             warnings.warn(
-                "Some residues in selection do not have " "phi or psi selections"
+                "Some residues in selection do not have "
+                "phi or psi selections"
             )
         prev = sum(prev[keep])
         nxt = sum(nxt[keep])
@@ -459,7 +464,9 @@ class Ramachandran(AnalysisBase):
         # find n, c, ca
         keep_prev = [sum(r.atoms.names == c_name) == 1 for r in prev]
         rnames = [n_name, c_name, ca_name]
-        keep_res = [all(sum(r.atoms.names == n) == 1 for n in rnames) for r in residues]
+        keep_res = [
+            all(sum(r.atoms.names == n) == 1 for n in rnames) for r in residues
+        ]
         keep_next = [sum(r.atoms.names == n_name) == 1 for r in nxt]
 
         # alright we'll keep these
@@ -538,16 +545,22 @@ class Ramachandran(AnalysisBase):
             xlabel=r"$\phi$",
             ylabel=r"$\psi$",
         )
-        degree_formatter = plt.matplotlib.ticker.StrMethodFormatter(r"{x:g}$\degree$")
+        degree_formatter = plt.matplotlib.ticker.StrMethodFormatter(
+            r"{x:g}$\degree$"
+        )
         ax.xaxis.set_major_formatter(degree_formatter)
         ax.yaxis.set_major_formatter(degree_formatter)
 
         if ref:
-            X, Y = np.meshgrid(np.arange(-180, 180, 4), np.arange(-180, 180, 4))
+            X, Y = np.meshgrid(
+                np.arange(-180, 180, 4), np.arange(-180, 180, 4)
+            )
             levels = [1, 17, 15000]
             colors = ["#A1D4FF", "#35A1FF"]
             ax.contourf(X, Y, np.load(Rama_ref), levels=levels, colors=colors)
-        a = self.results.angles.reshape(np.prod(self.results.angles.shape[:2]), 2)
+        a = self.results.angles.reshape(
+            np.prod(self.results.angles.shape[:2]), 2
+        )
         ax.scatter(a[:, 0], a[:, 1], **kwargs)
         return ax
 
@@ -624,7 +637,9 @@ class Janin(Ramachandran):
            :attr:`angles` results are now stored in a
            :class:`MDAnalysis.analysis.base.Results` instance.
         """
-        super(Ramachandran, self).__init__(atomgroup.universe.trajectory, **kwargs)
+        super(Ramachandran, self).__init__(
+            atomgroup.universe.trajectory, **kwargs
+        )
         self.atomgroup = atomgroup
         residues = atomgroup.residues
         protein = atomgroup.select_atoms(select_protein).residues
@@ -654,7 +669,8 @@ class Janin(Ramachandran):
         # must be removed before using the class, or the file is missing atoms
         # for some residues which must also be removed
         if any(
-            len(self.ag1) != len(ag) for ag in [self.ag2, self.ag3, self.ag4, self.ag5]
+            len(self.ag1) != len(ag)
+            for ag in [self.ag2, self.ag3, self.ag4, self.ag5]
         ):
             raise ValueError(
                 "Too many or too few atoms selected. Check for "
@@ -662,7 +678,9 @@ class Janin(Ramachandran):
             )
 
     def _conclude(self):
-        self.results.angles = (np.rad2deg(np.array(self.results.angles)) + 360) % 360
+        self.results.angles = (
+            np.rad2deg(np.array(self.results.angles)) + 360
+        ) % 360
 
     def plot(self, ax=None, ref=False, **kwargs):
         """Plots data into standard Janin plot.
@@ -700,7 +718,9 @@ class Janin(Ramachandran):
             xlabel=r"$\chi_1$",
             ylabel=r"$\chi_2$",
         )
-        degree_formatter = plt.matplotlib.ticker.StrMethodFormatter(r"{x:g}$\degree$")
+        degree_formatter = plt.matplotlib.ticker.StrMethodFormatter(
+            r"{x:g}$\degree$"
+        )
         ax.xaxis.set_major_formatter(degree_formatter)
         ax.yaxis.set_major_formatter(degree_formatter)
 
@@ -709,6 +729,8 @@ class Janin(Ramachandran):
             levels = [1, 6, 600]
             colors = ["#A1D4FF", "#35A1FF"]
             ax.contourf(X, Y, np.load(Janin_ref), levels=levels, colors=colors)
-        a = self.results.angles.reshape(np.prod(self.results.angles.shape[:2]), 2)
+        a = self.results.angles.reshape(
+            np.prod(self.results.angles.shape[:2]), 2
+        )
         ax.scatter(a[:, 0], a[:, 1], **kwargs)
         return ax

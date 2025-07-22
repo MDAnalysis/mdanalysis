@@ -100,7 +100,9 @@ class fit_translation(TransformationBase):
         max_threads=None,
         parallelizable=True,
     ):
-        super().__init__(max_threads=max_threads, parallelizable=parallelizable)
+        super().__init__(
+            max_threads=max_threads, parallelizable=parallelizable
+        )
 
         self.ag = ag
         self.reference = reference
@@ -112,7 +114,9 @@ class fit_translation(TransformationBase):
             try:
                 self.plane = axes[self.plane]
             except (TypeError, KeyError):
-                raise ValueError(f"{self.plane} is not a valid plane") from None
+                raise ValueError(
+                    f"{self.plane} is not a valid plane"
+                ) from None
         try:
             if self.ag.atoms.n_residues != self.reference.atoms.n_residues:
                 errmsg = (
@@ -122,7 +126,10 @@ class fit_translation(TransformationBase):
 
                 raise ValueError(errmsg)
         except AttributeError:
-            errmsg = f"{self.ag} or {self.reference} is not valid" f"Universe/AtomGroup"
+            errmsg = (
+                f"{self.ag} or {self.reference} is not valid"
+                f"Universe/AtomGroup"
+            )
             raise AttributeError(errmsg) from None
         self.ref, self.mobile = align.get_matching_atoms(
             self.reference.atoms, self.ag.atoms
@@ -131,7 +138,9 @@ class fit_translation(TransformationBase):
         self.ref_com = self.ref.center(self.weights)
 
     def _transform(self, ts):
-        mobile_com = np.asarray(self.mobile.atoms.center(self.weights), np.float32)
+        mobile_com = np.asarray(
+            self.mobile.atoms.center(self.weights), np.float32
+        )
         vector = self.ref_com - mobile_com
         if self.plane is not None:
             vector[self.plane] = 0
@@ -210,7 +219,9 @@ class fit_rot_trans(TransformationBase):
         max_threads=1,
         parallelizable=True,
     ):
-        super().__init__(max_threads=max_threads, parallelizable=parallelizable)
+        super().__init__(
+            max_threads=max_threads, parallelizable=parallelizable
+        )
 
         self.ag = ag
         self.reference = reference
@@ -222,7 +233,9 @@ class fit_rot_trans(TransformationBase):
             try:
                 self.plane = axes[self.plane]
             except (TypeError, KeyError):
-                raise ValueError(f"{self.plane} is not a valid plane") from None
+                raise ValueError(
+                    f"{self.plane} is not a valid plane"
+                ) from None
         try:
             if self.ag.atoms.n_residues != self.reference.atoms.n_residues:
                 errmsg = (
@@ -232,7 +245,8 @@ class fit_rot_trans(TransformationBase):
                 raise ValueError(errmsg)
         except AttributeError:
             errmsg = (
-                f"{self.ag} or {self.reference} is not valid " f"Universe/AtomGroup"
+                f"{self.ag} or {self.reference} is not valid "
+                f"Universe/AtomGroup"
             )
             raise AttributeError(errmsg) from None
         self.ref, self.mobile = align.get_matching_atoms(
@@ -252,9 +266,13 @@ class fit_rot_trans(TransformationBase):
         if self.plane is not None:
             matrix = np.r_[rotation, np.zeros(3).reshape(1, 3)]
             matrix = np.c_[matrix, np.zeros(4)]
-            euler_angs = np.asarray(euler_from_matrix(matrix, axes="sxyz"), np.float32)
+            euler_angs = np.asarray(
+                euler_from_matrix(matrix, axes="sxyz"), np.float32
+            )
             for i in range(0, euler_angs.size):
-                euler_angs[i] = euler_angs[self.plane] if i == self.plane else 0
+                euler_angs[i] = (
+                    euler_angs[self.plane] if i == self.plane else 0
+                )
             rotation = euler_matrix(
                 euler_angs[0], euler_angs[1], euler_angs[2], axes="sxyz"
             )[:3, :3]

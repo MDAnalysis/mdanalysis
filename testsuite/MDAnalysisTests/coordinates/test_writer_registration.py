@@ -47,7 +47,9 @@ class TestWriterCreation(object):
 
     def test_singleframe(self):
         # check that singleframe=False has been respected
-        assert isinstance(mda.Writer("this.magic", multiframe=False), self.MagicWriter)
+        assert isinstance(
+            mda.Writer("this.magic", multiframe=False), self.MagicWriter
+        )
 
     def test_multiframe_magic2(self):
         # this will work as we go for multiframe

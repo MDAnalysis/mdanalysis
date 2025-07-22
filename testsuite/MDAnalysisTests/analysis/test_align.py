@@ -99,10 +99,14 @@ class TestGetMatchingAtoms(object):
     @staticmethod
     @pytest.fixture()
     def reference_small(reference):
-        return mda.Merge(reference.select_atoms("not name H* and not atom 4AKE 1 CA"))
+        return mda.Merge(
+            reference.select_atoms("not name H* and not atom 4AKE 1 CA")
+        )
 
     @pytest.mark.parametrize("strict", (True, False))
-    def test_match(self, universe, reference, strict, selection="protein and backbone"):
+    def test_match(
+        self, universe, reference, strict, selection="protein and backbone"
+    ):
         ref = reference.select_atoms(selection)
         mobile = universe.select_atoms(selection)
         groups = align.get_matching_atoms(ref, mobile, strict=strict)
@@ -122,7 +126,9 @@ class TestGetMatchingAtoms(object):
         else:
             with pytest.warns(SelectionWarning):
                 with pytest.raises(SelectionError):
-                    groups = align.get_matching_atoms(ref, mobile, strict=strict)
+                    groups = align.get_matching_atoms(
+                        ref, mobile, strict=strict
+                    )
 
     @pytest.mark.parametrize("strict", (True, False))
     def test_nomatch_residues_raise_empty(
@@ -143,7 +149,9 @@ class TestGetMatchingAtoms(object):
         else:
             with pytest.warns(SelectionWarning):
                 with pytest.raises(SelectionError):
-                    groups = align.get_matching_atoms(ref, mobile, strict=strict)
+                    groups = align.get_matching_atoms(
+                        ref, mobile, strict=strict
+                    )
 
     def test_toggle_atom_mismatch_default_error(self, universe, reference):
         selection = ("resname ALA and name CA", "resname ALA and name O")
@@ -159,7 +167,9 @@ class TestGetMatchingAtoms(object):
 
     def test_toggle_atom_nomatch(self, universe, reference):
         selection = ("resname ALA and name CA", "resname ALA and name O")
-        rmsd = align.alignto(universe, reference, select=selection, match_atoms=False)
+        rmsd = align.alignto(
+            universe, reference, select=selection, match_atoms=False
+        )
         assert rmsd[0] > 0.01
 
     def test_toggle_atom_nomatch_mismatch_atoms(self, universe, reference):
@@ -181,20 +191,28 @@ class TestGetMatchingAtoms(object):
             (1234, pytest.raises(TypeError)),
         ],
     )
-    def test_subselection_alignto(self, universe, reference, subselection, expectation):
+    def test_subselection_alignto(
+        self, universe, reference, subselection, expectation
+    ):
 
         with expectation:
-            rmsd = align.alignto(universe, reference, subselection=subselection)
+            rmsd = align.alignto(
+                universe, reference, subselection=subselection
+            )
             assert_allclose(rmsd[1], 0.0, rtol=0, atol=1.5e-9)
 
     def test_no_atom_masses(self, universe):
         # if no masses are present
-        u = mda.Universe.empty(6, 2, atom_resindex=[0, 0, 0, 1, 1, 1], trajectory=True)
+        u = mda.Universe.empty(
+            6, 2, atom_resindex=[0, 0, 0, 1, 1, 1], trajectory=True
+        )
         with pytest.warns(SelectionWarning):
             align.get_matching_atoms(u.atoms, u.atoms)
 
     def test_one_universe_has_masses(self, universe):
-        u = mda.Universe.empty(6, 2, atom_resindex=[0, 0, 0, 1, 1, 1], trajectory=True)
+        u = mda.Universe.empty(
+            6, 2, atom_resindex=[0, 0, 0, 1, 1, 1], trajectory=True
+        )
         ref = mda.Universe.empty(
             6, 2, atom_resindex=[0, 0, 0, 1, 1, 1], trajectory=True
         )
@@ -259,7 +277,9 @@ class TestAlign(object):
         last_atoms_weight = universe.atoms.masses
         A = universe.trajectory[0]
         B = reference.trajectory[-1]
-        rmsd = align.alignto(universe, reference, weights=reference.atoms.masses)
+        rmsd = align.alignto(
+            universe, reference, weights=reference.atoms.masses
+        )
         rmsd_sup_weight = rms.rmsd(
             A, B, weights=last_atoms_weight, center=True, superposition=True
         )
@@ -282,7 +302,9 @@ class TestAlign(object):
             finally:
                 x._writer.close()
 
-    def test_AlignTraj_outfile_default_exists(self, universe, reference, tmpdir):
+    def test_AlignTraj_outfile_default_exists(
+        self, universe, reference, tmpdir
+    ):
         reference.trajectory[-1]
         outfile = str(tmpdir.join("align_test.dcd"))
         align.AlignTraj(universe, reference, filename=outfile).run()
@@ -334,12 +356,16 @@ class TestAlign(object):
 
     def test_AlignTraj_weighted(self, universe, reference, tmpdir):
         outfile = str(tmpdir.join("align_test.dcd"))
-        x = align.AlignTraj(universe, reference, filename=outfile, weights="mass").run()
+        x = align.AlignTraj(
+            universe, reference, filename=outfile, weights="mass"
+        ).run()
         fitted = mda.Universe(PSF, outfile)
         assert_allclose(x.results.rmsd[0], 0, rtol=0, atol=1.5e-3)
         assert_allclose(x.results.rmsd[-1], 6.9033, rtol=0, atol=1.5e-3)
 
-        self._assert_rmsd(reference, fitted, 0, 0.0, weights=universe.atoms.masses)
+        self._assert_rmsd(
+            reference, fitted, 0, 0.0, weights=universe.atoms.masses
+        )
         self._assert_rmsd(
             reference,
             fitted,
@@ -362,7 +388,9 @@ class TestAlign(object):
             universe, reference, filename=outfile, weights=weights
         ).run()
 
-        assert_allclose(x.results.rmsd, x_weights.results.rmsd, rtol=0, atol=1.5e-7)
+        assert_allclose(
+            x.results.rmsd, x_weights.results.rmsd, rtol=0, atol=1.5e-7
+        )
 
     def test_AlignTraj_custom_mass_weights(self, universe, reference, tmpdir):
         outfile = str(tmpdir.join("align_test.dcd"))
@@ -376,7 +404,9 @@ class TestAlign(object):
         assert_allclose(x.results.rmsd[0], 0, rtol=0, atol=1.5e-3)
         assert_allclose(x.results.rmsd[-1], 6.9033, rtol=0, atol=1.5e-3)
 
-        self._assert_rmsd(reference, fitted, 0, 0.0, weights=universe.atoms.masses)
+        self._assert_rmsd(
+            reference, fitted, 0, 0.0, weights=universe.atoms.masses
+        )
         self._assert_rmsd(
             reference,
             fitted,
@@ -400,7 +430,9 @@ class TestAlign(object):
     def test_AlignTraj_in_memory(self, universe, reference, tmpdir):
         outfile = str(tmpdir.join("align_test.dcd"))
         reference.trajectory[-1]
-        x = align.AlignTraj(universe, reference, filename=outfile, in_memory=True).run()
+        x = align.AlignTraj(
+            universe, reference, filename=outfile, in_memory=True
+        ).run()
         assert x.filename is None
         assert_allclose(x.results.rmsd[0], 6.9290, rtol=0, atol=1.5e-3)
         assert_allclose(x.results.rmsd[-1], 5.2797e-07, rtol=0, atol=1.5e-3)
@@ -435,7 +467,8 @@ class TestAlign(object):
             desired,
             rtol=0,
             atol=1.5e-5,
-            err_msg="frame {0:d} of fit does not have " "expected RMSD".format(frame),
+            err_msg="frame {0:d} of fit does not have "
+            "expected RMSD".format(frame),
         )
 
     def test_alignto_checks_selections(self, universe, reference):
@@ -469,7 +502,9 @@ class TestAlign(object):
         segB_free.translate(segB_bound.centroid() - segB_free.centroid())
 
         align.alignto(u_free, u_bound, select=selection)
-        assert_allclose(segB_bound.positions, segB_free.positions, rtol=0, atol=1.5e-3)
+        assert_allclose(
+            segB_bound.positions, segB_free.positions, rtol=0, atol=1.5e-3
+        )
 
 
 def _get_aligned_average_positions(ref_files, ref, select="all", **kwargs):
@@ -515,7 +550,9 @@ class TestAverageStructure(object):
     def test_average_structure(self, universe, reference):
         ref, rmsd = _get_aligned_average_positions(self.ref_files, reference)
         avg = align.AverageStructure(universe, reference).run()
-        assert_allclose(avg.results.universe.atoms.positions, ref, rtol=0, atol=1.5e-4)
+        assert_allclose(
+            avg.results.universe.atoms.positions, ref, rtol=0, atol=1.5e-4
+        )
         assert_allclose(avg.results.rmsd, rmsd, rtol=0, atol=1.5e-7)
 
     def test_average_structure_mass_weighted(self, universe, reference):
@@ -523,7 +560,9 @@ class TestAverageStructure(object):
             self.ref_files, reference, weights="mass"
         )
         avg = align.AverageStructure(universe, reference, weights="mass").run()
-        assert_allclose(avg.results.universe.atoms.positions, ref, rtol=0, atol=1.5e-4)
+        assert_allclose(
+            avg.results.universe.atoms.positions, ref, rtol=0, atol=1.5e-4
+        )
         assert_allclose(avg.results.rmsd, rmsd, rtol=0, atol=1.5e-7)
 
     def test_average_structure_select(self, universe, reference):
@@ -532,13 +571,17 @@ class TestAverageStructure(object):
             self.ref_files, reference, select=select
         )
         avg = align.AverageStructure(universe, reference, select=select).run()
-        assert_allclose(avg.results.universe.atoms.positions, ref, rtol=0, atol=1.5e-4)
+        assert_allclose(
+            avg.results.universe.atoms.positions, ref, rtol=0, atol=1.5e-4
+        )
         assert_allclose(avg.results.rmsd, rmsd, rtol=0, atol=1.5e-7)
 
     def test_average_structure_no_ref(self, universe):
         ref, rmsd = _get_aligned_average_positions(self.ref_files, universe)
         avg = align.AverageStructure(universe).run()
-        assert_allclose(avg.results.universe.atoms.positions, ref, rtol=0, atol=1.5e-4)
+        assert_allclose(
+            avg.results.universe.atoms.positions, ref, rtol=0, atol=1.5e-4
+        )
         assert_allclose(avg.results.rmsd, rmsd, rtol=0, atol=1.5e-7)
 
     def test_average_structure_no_msf(self, universe):
@@ -562,7 +605,9 @@ class TestAverageStructure(object):
         universe.trajectory[0]
         ref, rmsd = _get_aligned_average_positions(self.ref_files, u)
         avg = align.AverageStructure(universe, ref_frame=ref_frame).run()
-        assert_allclose(avg.results.universe.atoms.positions, ref, rtol=0, atol=1.5e-4)
+        assert_allclose(
+            avg.results.universe.atoms.positions, ref, rtol=0, atol=1.5e-4
+        )
         assert_allclose(avg.results.rmsd, rmsd, rtol=0, atol=1.5e-7)
 
     def test_average_structure_in_memory(self, universe):

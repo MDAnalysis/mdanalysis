@@ -601,7 +601,10 @@ class Topology(object):
                 missing = (
                     attr.singular
                     for attr in self.attrs
-                    if (attr.per_object == "residue" and attr.singular not in new_attrs)
+                    if (
+                        attr.per_object == "residue"
+                        and attr.singular not in new_attrs
+                    )
                 )
                 raise NoDataError(
                     "Missing the following attributes for the new"

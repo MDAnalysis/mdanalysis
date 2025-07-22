@@ -128,7 +128,9 @@ class TriangularMatrix(object):
                 raise TypeError
             self.metadata = loaded["metadata"]
         else:
-            if self.size * (self.size - 1) / 2 + self.size != len(loaded["elements"]):
+            if self.size * (self.size - 1) / 2 + self.size != len(
+                loaded["elements"]
+            ):
                 raise TypeError
         self._elements = loaded["elements"]
 
@@ -239,7 +241,9 @@ class ParallelCalculation(object):
         if not hasattr(self.functions, "__iter__"):
             self.functions = [self.functions] * len(args)
         if len(self.functions) != len(args):
-            self.functions = self.functions[:] * (len(args) // len(self.functions))
+            self.functions = self.functions[:] * (
+                len(args) // len(self.functions)
+            )
 
         # Arguments should be present
         if args is None:
@@ -275,7 +279,9 @@ class ParallelCalculation(object):
             if i == "STOP":
                 return
 
-            results.put((i, self.functions[i](*self.args[i], **self.kwargs[i])))
+            results.put(
+                (i, self.functions[i](*self.args[i], **self.kwargs[i]))
+            )
 
     def run(self):
         r"""

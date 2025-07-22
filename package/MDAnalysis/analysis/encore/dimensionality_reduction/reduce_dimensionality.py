@@ -187,7 +187,9 @@ def reduce_dimensionality(
     if distance_matrix:
         if not hasattr(distance_matrix, "__iter__"):
             distance_matrix = [distance_matrix]
-        if ensembles is not None and len(distance_matrix) != len(merged_ensembles):
+        if ensembles is not None and len(distance_matrix) != len(
+            merged_ensembles
+        ):
             raise ValueError(
                 "Dimensions of provided list of distance matrices "
                 "does not match that of provided list of "
@@ -202,7 +204,9 @@ def reduce_dimensionality(
             distance_matrix = []
             for merged_ensemble in merged_ensembles:
                 distance_matrix.append(
-                    get_distance_matrix(merged_ensemble, select=select, **kwargs)
+                    get_distance_matrix(
+                        merged_ensemble, select=select, **kwargs
+                    )
                 )
 
     args = []
@@ -211,10 +215,14 @@ def reduce_dimensionality(
             args += [(d,) for d in distance_matrix]
         else:
             for merged_ensemble in merged_ensembles:
-                coordinates = merged_ensemble.trajectory.timeseries(order="fac")
+                coordinates = merged_ensemble.trajectory.timeseries(
+                    order="fac"
+                )
 
                 # Flatten coordinate matrix into n_frame x n_coordinates
-                coordinates = np.reshape(coordinates, (coordinates.shape[0], -1))
+                coordinates = np.reshape(
+                    coordinates, (coordinates.shape[0], -1)
+                )
 
                 args.append((coordinates,))
 

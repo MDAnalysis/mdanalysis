@@ -90,12 +90,16 @@ expected_xcharge_atoms = np.array(
 )
 
 # test data for grouping='residues'
-expected_masses_residues = np.array([18.0154, 18.0154, 18.0154, 18.0154, 18.0154])
+expected_masses_residues = np.array(
+    [18.0154, 18.0154, 18.0154, 18.0154, 18.0154]
+)
 expected_charges_residues = np.array([0, 0, 0, 0, 0])
 expected_xmass_residues = np.array(
     [0.0, 0.0, 0.0, 0.00717967, 0.00478644, 0.0, 0.0, 0.0, 0.0, 0.0]
 )
-expected_xcharge_residues = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+expected_xcharge_residues = np.array(
+    [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+)
 
 # test data for grouping='segments'
 expected_masses_segments = np.array([90.0770])
@@ -103,10 +107,14 @@ expected_charges_segments = np.array([0])
 expected_xmass_segments = np.array(
     [0.0, 0.0, 0.0, 0.01196611, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 )
-expected_xcharge_segments = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+expected_xcharge_segments = np.array(
+    [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+)
 
 # test data for grouping='fragments'
-expected_masses_fragments = np.array([18.0154, 18.0154, 18.0154, 18.0154, 18.0154])
+expected_masses_fragments = np.array(
+    [18.0154, 18.0154, 18.0154, 18.0154, 18.0154]
+)
 expected_charges_fragments = np.array([0, 0, 0, 0, 0])
 expected_xmass_fragments = np.array(
     [0.0, 0.0, 0.0, 0.00717967, 0.00478644, 0.0, 0.0, 0.0, 0.0, 0.0]
@@ -160,7 +168,9 @@ def test_lineardensity(
     universe = mda.Universe(waterPSF, waterDCD)
     sel_string = "all"
     selection = universe.select_atoms(sel_string)
-    ld = LinearDensity(selection, grouping, binsize=5).run(**client_LinearDensity)
+    ld = LinearDensity(selection, grouping, binsize=5).run(
+        **client_LinearDensity
+    )
     assert_allclose(ld.masses, expected_masses)
     assert_allclose(ld.charges, expected_charges)
     # rtol changed here due to floating point imprecision
@@ -231,9 +241,13 @@ def test_old_name_deprecations():
         assert_allclose(ld.results.x.pos, ld.results.x.mass_density)
         assert_allclose(ld.results.x.pos_std, ld.results.x.mass_density_stddev)
         assert_allclose(ld.results.x.char, ld.results.x.charge_density)
-        assert_allclose(ld.results.x.char_std, ld.results.x.charge_density_stddev)
+        assert_allclose(
+            ld.results.x.char_std, ld.results.x.charge_density_stddev
+        )
         for key in testdict.keys():
-            assert_allclose(ld.results["x"][key], ld.results["x"][testdict[key]])
+            assert_allclose(
+                ld.results["x"][key], ld.results["x"][testdict[key]]
+            )
 
     # Check that no DeprecationWarning is raised with new attributes
     with no_deprecated_call():
@@ -257,10 +271,16 @@ def test_parallel_analysis(testing_Universe):
     ld1 = LinearDensity(selection1, binsize=1).run()
     ld2 = LinearDensity(selection2, binsize=1).run()
     ld_whole = LinearDensity(selection_whole, binsize=1).run()
-    with pytest.warns(DeprecationWarning, match="`_add_other_results` is deprecated!"):
+    with pytest.warns(
+        DeprecationWarning, match="`_add_other_results` is deprecated!"
+    ):
         ld1._add_other_results(ld2)
-    assert_allclose(ld1.results.z.mass_density, ld_whole.results.z.mass_density)
-    assert_allclose(ld1.results.x.mass_density, ld_whole.results.x.mass_density)
+    assert_allclose(
+        ld1.results.z.mass_density, ld_whole.results.z.mass_density
+    )
+    assert_allclose(
+        ld1.results.x.mass_density, ld_whole.results.x.mass_density
+    )
 
 
 def test_class_is_parallelizable():
@@ -271,8 +291,11 @@ def test_class_is_parallelizable():
 
 
 def test_supported_backends():
-    assert mda.analysis.lineardensity.LinearDensity.get_supported_backends() == (
-        "serial",
-        "multiprocessing",
-        "dask",
+    assert (
+        mda.analysis.lineardensity.LinearDensity.get_supported_backends()
+        == (
+            "serial",
+            "multiprocessing",
+            "dask",
+        )
     )

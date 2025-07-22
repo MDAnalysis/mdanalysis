@@ -52,7 +52,9 @@ class CustomTransformation(TransformationBase):
     """Custom value for max_threads and parallelizable"""
 
     def __init__(self, max_threads=1, parallelizable=False):
-        super().__init__(max_threads=max_threads, parallelizable=parallelizable)
+        super().__init__(
+            max_threads=max_threads, parallelizable=parallelizable
+        )
 
     def _transform(self, ts):
         self.runtime_info = threadpool_info()

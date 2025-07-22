@@ -42,7 +42,9 @@ from MDAnalysis.lib.util import NamedStream
 class _SelectionWriter(object):
 
     filename = None
-    max_number = 357  # to keep fixtures smallish, only select CAs up to number 357
+    max_number = (
+        357  # to keep fixtures smallish, only select CAs up to number 357
+    )
 
     @staticmethod
     @pytest.fixture()
@@ -227,7 +229,9 @@ class TestSelectionWriter_Jmol(_SelectionWriter):
 
     def _assert_selectionstring(self, namedfile):
         header, indices = spt2array(namedfile.readline())
-        assert_equal(header, self.ref_name, err_msg="SPT file has wrong selection name")
+        assert_equal(
+            header, self.ref_name, err_msg="SPT file has wrong selection name"
+        )
         assert_array_equal(
             indices,
             self.ref_indices,

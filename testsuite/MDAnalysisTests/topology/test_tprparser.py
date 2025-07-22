@@ -114,7 +114,9 @@ class TPRAttrs(ParserBase):
 
     def test_chainIDs(self, top):
         if hasattr(self, "ref_chainIDs"):
-            assert_equal(self.ref_chainIDs, getattr(top, "chainIDs").name_lookup)
+            assert_equal(
+                self.ref_chainIDs, getattr(top, "chainIDs").name_lookup
+            )
 
 
 class TestTPR(TPRAttrs):
@@ -341,7 +343,9 @@ def bonds_water(request):
     # The index of the first water atom is 1960
     first = 1960
     bonds = [
-        bond for bond in parser.bonds.values if bond[0] >= first and bond[1] >= first
+        bond
+        for bond in parser.bonds.values
+        if bond[0] >= first and bond[1] >= first
     ]
     return bonds
 

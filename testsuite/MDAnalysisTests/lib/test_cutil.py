@@ -99,5 +99,7 @@ def test_in2d():
     ],
 )
 def test_in2d_VE(arr1, arr2):
-    with pytest.raises(ValueError, match=r"Both arrays must be \(n, 2\) arrays"):
+    with pytest.raises(
+        ValueError, match=r"Both arrays must be \(n, 2\) arrays"
+    ):
         _in2d(arr1, arr2)

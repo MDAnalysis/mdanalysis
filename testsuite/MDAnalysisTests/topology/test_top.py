@@ -90,12 +90,18 @@ class TOPBase(ParserBase):
     def test_dihedrals_atom_counts(self, filename):
         u = mda.Universe(filename)
         assert len(u.atoms[[0]].dihedrals) == self.expected_n_zero_dihedrals
-        assert len(u.atoms[[self.atom_i]].dihedrals) == self.expected_n_i_dihedrals
+        assert (
+            len(u.atoms[[self.atom_i]].dihedrals)
+            == self.expected_n_i_dihedrals
+        )
 
     def test_impropers_atom_counts(self, filename):
         u = mda.Universe(filename)
         assert len(u.atoms[[0]].impropers) == self.expected_n_zero_impropers
-        assert len(u.atoms[[self.atom_i]].impropers) == self.expected_n_i_impropers
+        assert (
+            len(u.atoms[[self.atom_i]].impropers)
+            == self.expected_n_i_impropers
+        )
 
     def test_bonds_identity(self, top):
         vals = top.bonds.values
@@ -144,7 +150,10 @@ class TOPBase(ParserBase):
             backward = ((imp[0], imp[1]), (imp[1], imp[2]), (imp[1], imp[3]))
             for a, b in zip(forward, backward):
                 assert (
-                    (b in vals) or (b[::-1] in vals) or (a in vals) or (a[::-1] in vals)
+                    (b in vals)
+                    or (b[::-1] in vals)
+                    or (a in vals)
+                    or (a[::-1] in vals)
                 )
 
     def test_elements(self, top):
@@ -394,7 +403,9 @@ class TestPRMChainidParser(TOPBase):
 
         u = mda.Universe(filename)
         if hasattr(self, "expected_chainIDs"):
-            reschainIDs = [atomchainIDs[0] for atomchainIDs in u.residues.chainIDs]
+            reschainIDs = [
+                atomchainIDs[0] for atomchainIDs in u.residues.chainIDs
+            ]
             assert_equal(
                 reschainIDs, self.expected_chainIDs, "unexpected element match"
             )
@@ -779,9 +790,7 @@ class TestPRMEP(TOPBase):
 
 class TestErrorsAndWarnings(object):
 
-    ATOMIC_NUMBER_MSG = (
-        "ATOMIC_NUMBER record not found, elements attribute will not be populated"
-    )
+    ATOMIC_NUMBER_MSG = "ATOMIC_NUMBER record not found, elements attribute will not be populated"
     MISSING_ELEM_MSG = (
         "Unknown ATOMIC_NUMBER value found for some atoms, "
         "these have been given an empty element record"

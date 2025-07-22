@@ -72,7 +72,8 @@ class Testrmsd(object):
     def test_p_frames(self, p_first, p_last):
         # check that these fixtures are really different
         assert (
-            p_first.universe.trajectory.ts.frame != p_last.universe.trajectory.ts.frame
+            p_first.universe.trajectory.ts.frame
+            != p_last.universe.trajectory.ts.frame
         )
         assert not np.allclose(p_first.positions, p_last.positions)
 
@@ -116,7 +117,9 @@ class Testrmsd(object):
             weights=weights,
             superposition=True,
         )
-        firstCoords = rms.rmsd(u.trajectory[0], u.trajectory[1], superposition=True)
+        firstCoords = rms.rmsd(
+            u.trajectory[0], u.trajectory[1], superposition=True
+        )
         assert_almost_equal(weighted, firstCoords, decimal=5)
 
     def test_weights_and_superposition_2(self, u):
@@ -216,7 +219,9 @@ class TestRMSD(object):
             err_msg="error: rmsd profile should match" + "test values",
         )
 
-    def test_rmsd_unicode_selection(self, universe, correct_values, client_RMSD):
+    def test_rmsd_unicode_selection(
+        self, universe, correct_values, client_RMSD
+    ):
         RMSD = MDAnalysis.analysis.rms.RMSD(universe, select="name CA")
         RMSD.run(step=49, **client_RMSD)
         assert_almost_equal(
@@ -228,9 +233,9 @@ class TestRMSD(object):
 
     def test_rmsd_atomgroup_selections(self, universe, client_RMSD):
         # see Issue #1684
-        R1 = MDAnalysis.analysis.rms.RMSD(universe.atoms, select="resid 1-30").run(
-            **client_RMSD
-        )
+        R1 = MDAnalysis.analysis.rms.RMSD(
+            universe.atoms, select="resid 1-30"
+        ).run(**client_RMSD)
         R2 = MDAnalysis.analysis.rms.RMSD(
             universe.atoms.select_atoms("name CA"), select="resid 1-30"
         ).run(**client_RMSD)
@@ -290,11 +295,13 @@ class TestRMSD(object):
             "and universe.atoms.masses",
         )
 
-    def test_custom_weighted_list(self, universe, correct_values_mass, client_RMSD):
+    def test_custom_weighted_list(
+        self, universe, correct_values_mass, client_RMSD
+    ):
         weights = universe.atoms.masses
-        RMSD = MDAnalysis.analysis.rms.RMSD(universe, weights=list(weights)).run(
-            step=49, **client_RMSD
-        )
+        RMSD = MDAnalysis.analysis.rms.RMSD(
+            universe, weights=list(weights)
+        ).run(step=49, **client_RMSD)
         assert_almost_equal(
             RMSD.results.rmsd,
             correct_values_mass,
@@ -354,7 +361,9 @@ class TestRMSD(object):
                 universe, weights=universe.atoms.masses[:-1]
             )
 
-    def test_rmsd_misuse_weights_for_groupselection_raises_TypeError(self, universe):
+    def test_rmsd_misuse_weights_for_groupselection_raises_TypeError(
+        self, universe
+    ):
         with pytest.raises(TypeError):
             RMSD = MDAnalysis.analysis.rms.RMSD(
                 universe,
@@ -382,7 +391,9 @@ class TestRMSD(object):
                 weights_groupselections=[None],
             )
 
-    def test_rmsd_group_selections(self, universe, correct_values_group, client_RMSD):
+    def test_rmsd_group_selections(
+        self, universe, correct_values_group, client_RMSD
+    ):
         RMSD = MDAnalysis.analysis.rms.RMSD(
             universe, groupselections=["backbone", "name CA"]
         ).run(step=49, **client_RMSD)
@@ -508,7 +519,9 @@ class TestRMSF(object):
         )
 
     def test_rmsf_attr_warning(self, universe, client_RMSF):
-        rmsfs = rms.RMSF(universe.select_atoms("name CA")).run(stop=2, **client_RMSF)
+        rmsfs = rms.RMSF(universe.select_atoms("name CA")).run(
+            stop=2, **client_RMSF
+        )
 
         wmsg = "The `rmsf` attribute was deprecated in MDAnalysis 2.0.0"
         with pytest.warns(DeprecationWarning, match=wmsg):

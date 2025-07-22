@@ -71,7 +71,9 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
         )
 
     def test_numres(self):
-        assert_equal(self.universe.atoms.n_residues, 214, "wrong number of residues")
+        assert_equal(
+            self.universe.atoms.n_residues, 214, "wrong number of residues"
+        )
 
     def test_n_frames(self):
         assert_equal(
@@ -81,13 +83,16 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
         )
 
     def test_time(self):
-        assert_equal(self.universe.trajectory.time, 0.0, "wrong time of the frame")
+        assert_equal(
+            self.universe.trajectory.time, 0.0, "wrong time of the frame"
+        )
 
     def test_frame(self):
         assert_equal(
             self.universe.trajectory.frame,
             0,
-            "wrong frame number (0-based, should be 0 for single frame " "readers)",
+            "wrong frame number (0-based, should be 0 for single frame "
+            "readers)",
         )
 
     def test_frame_index_0(self):
@@ -201,7 +206,9 @@ class BaseReference(object):
             [2**8],  # frame 4 = 4ps = step 8
         ]
         self.aux_highf_n_steps = 10
-        self.aux_highf_all_data = [[2**i] for i in range(self.aux_highf_n_steps)]
+        self.aux_highf_all_data = [
+            [2**i] for i in range(self.aux_highf_n_steps)
+        ]
 
         self.aux_offset_by = 0.25
 
@@ -232,7 +239,9 @@ class BaseReference(object):
         self.jump_to_frame.aux.lowf = self.aux_lowf_data[3]
         self.jump_to_frame.aux.highf = self.aux_highf_data[3]
 
-        self.dimensions = np.array([81.1, 82.2, 83.3, 75, 80, 85], dtype=np.float32)
+        self.dimensions = np.array(
+            [81.1, 82.2, 83.3, 75, 80, 85], dtype=np.float32
+        )
         self.dimensions_second_frame = np.array(
             [82.1, 83.2, 84.3, 75.1, 80.1, 85.1], dtype=np.float32
         )
@@ -276,7 +285,9 @@ class BaseReaderTest(object):
     @pytest.fixture()
     def transformed(ref):
         transformed = ref.reader(ref.trajectory)
-        transformed.add_transformations(translate([1, 1, 1]), translate([0, 0, 0.33]))
+        transformed.add_transformations(
+            translate([1, 1, 1]), translate([0, 0, 0.33])
+        )
         return transformed
 
     def test_n_atoms(self, ref, reader):
@@ -287,7 +298,9 @@ class BaseReaderTest(object):
 
     def test_first_frame(self, ref, reader):
         reader.rewind()
-        assert_timestep_almost_equal(reader.ts, ref.first_frame, decimal=ref.prec)
+        assert_timestep_almost_equal(
+            reader.ts, ref.first_frame, decimal=ref.prec
+        )
 
     def test_double_close(self, reader):
         reader.close()
@@ -377,7 +390,8 @@ class BaseReaderTest(object):
             assert_almost_equal(
                 auxstep.data,
                 ref.aux_highf_all_data[i],
-                err_msg="Auxiliary data does not match for " "step {}".format(i),
+                err_msg="Auxiliary data does not match for "
+                "step {}".format(i),
             )
 
     def test_get_aux_attribute(self, ref, reader):
@@ -400,7 +414,8 @@ class BaseReaderTest(object):
         assert_equal(
             num_frames,
             0,
-            "iter_as_aux should iterate over 0 frames," " not {}".format(num_frames),
+            "iter_as_aux should iterate over 0 frames,"
+            " not {}".format(num_frames),
         )
 
     def test_reload_auxiliaries_from_description(self, ref, reader):
@@ -438,7 +453,9 @@ class BaseReaderTest(object):
         v2 = np.float32((0, 0, 0.33))
         for i, ts in enumerate(transformed):
             idealcoords = ref.iter_ts(i).positions + v1 + v2
-            assert_array_almost_equal(ts.positions, idealcoords, decimal=ref.prec)
+            assert_array_almost_equal(
+                ts.positions, idealcoords, decimal=ref.prec
+            )
 
     def test_transformations_2iter(self, ref, transformed):
         # Are the transformations applied and
@@ -448,7 +465,9 @@ class BaseReaderTest(object):
         idealcoords = []
         for i, ts in enumerate(transformed):
             idealcoords.append(ref.iter_ts(i).positions + v1 + v2)
-            assert_array_almost_equal(ts.positions, idealcoords[i], decimal=ref.prec)
+            assert_array_almost_equal(
+                ts.positions, idealcoords[i], decimal=ref.prec
+            )
 
         for i, ts in enumerate(transformed):
             assert_almost_equal(ts.positions, idealcoords[i], decimal=ref.prec)
@@ -459,7 +478,9 @@ class BaseReaderTest(object):
         v2 = np.float32((0, 0, 0.33))
         for i, ts in enumerate(transformed[2:3:1]):
             idealcoords = ref.iter_ts(ts.frame).positions + v1 + v2
-            assert_array_almost_equal(ts.positions, idealcoords, decimal=ref.prec)
+            assert_array_almost_equal(
+                ts.positions, idealcoords, decimal=ref.prec
+            )
 
     def test_transformations_switch_frame(self, ref, transformed):
         # This test checks if the transformations are applied and if the coordinates
@@ -515,7 +536,9 @@ class BaseReaderTest(object):
         )
         for i, ts in enumerate(new):
             ideal_coords = ref.iter_ts(i).positions + v1 + v2
-            assert_array_almost_equal(ts.positions, ideal_coords, decimal=ref.prec)
+            assert_array_almost_equal(
+                ts.positions, ideal_coords, decimal=ref.prec
+            )
 
     def test_add_another_transformations_raises_ValueError(self, transformed):
         # After defining the transformations, the workflow cannot be changed
@@ -525,7 +548,9 @@ class BaseReaderTest(object):
     def test_pickle_reader(self, reader):
         reader_p = pickle.loads(pickle.dumps(reader))
         assert_equal(len(reader), len(reader_p))
-        assert_equal(reader.ts, reader_p.ts, "Timestep is changed after pickling")
+        assert_equal(
+            reader.ts, reader_p.ts, "Timestep is changed after pickling"
+        )
         reader_p_p = pickle.loads(pickle.dumps(reader_p))
         assert_equal(len(reader), len(reader_p_p))
         assert_equal(
@@ -559,7 +584,9 @@ class BaseReaderTest(object):
         for array in collected_ts:
             assert_allclose(array, collected_ts[0])
 
-    @pytest.mark.parametrize("order", ("fac", "fca", "afc", "acf", "caf", "cfa"))
+    @pytest.mark.parametrize(
+        "order", ("fac", "fca", "afc", "acf", "caf", "cfa")
+    )
     def test_timeseries_shape(self, reader, order):
         timeseries = reader.timeseries(order=order)
         a_index = order.index("a")
@@ -601,7 +628,9 @@ class BaseReaderTest(object):
             UserWarning,
             match="Empty string to select atoms, empty group returned.",
         ):
-            atoms = mda.Universe(reader.filename, to_guess=()).select_atoms(None)
+            atoms = mda.Universe(reader.filename, to_guess=()).select_atoms(
+                None
+            )
         with pytest.raises(ValueError, match="Timeseries requires at least"):
             reader.timeseries(asel=atoms)
 
@@ -610,23 +639,33 @@ class BaseReaderTest(object):
             UserWarning,
             match="Empty string to select atoms, empty group returned.",
         ):
-            atoms = mda.Universe(reader.filename, to_guess=()).select_atoms(None)
+            atoms = mda.Universe(reader.filename, to_guess=()).select_atoms(
+                None
+            )
         with pytest.raises(ValueError, match="Timeseries requires at least"):
             reader.timeseries(atomgroup=atoms)
 
     def test_timeseries_asel_warns_deprecation(self, reader):
-        atoms = mda.Universe(reader.filename, to_guess=()).select_atoms("index 1")
+        atoms = mda.Universe(reader.filename, to_guess=()).select_atoms(
+            "index 1"
+        )
         with pytest.warns(DeprecationWarning, match="asel argument to"):
             timeseries = reader.timeseries(asel=atoms, order="fac")
 
     def test_timeseries_atomgroup(self, reader):
-        atoms = mda.Universe(reader.filename, to_guess=()).select_atoms("index 1")
+        atoms = mda.Universe(reader.filename, to_guess=()).select_atoms(
+            "index 1"
+        )
         timeseries = reader.timeseries(atomgroup=atoms, order="fac")
 
     def test_timeseries_atomgroup_asel_mutex(self, reader):
-        atoms = mda.Universe(reader.filename, to_guess=()).select_atoms("index 1")
+        atoms = mda.Universe(reader.filename, to_guess=()).select_atoms(
+            "index 1"
+        )
         with pytest.raises(ValueError, match="Cannot provide both"):
-            timeseries = reader.timeseries(atomgroup=atoms, asel=atoms, order="fac")
+            timeseries = reader.timeseries(
+                atomgroup=atoms, asel=atoms, order="fac"
+            )
 
 
 class MultiframeReaderTest(BaseReaderTest):
@@ -729,7 +768,9 @@ class MultiframeReaderTest(BaseReaderTest):
             len(reader_p),
             "Last timestep is changed after pickling",
         )
-        assert_equal(reader.ts, reader_p.ts, "Last timestep is changed after pickling")
+        assert_equal(
+            reader.ts, reader_p.ts, "Last timestep is changed after pickling"
+        )
 
 
 class BaseWriterTest(object):
@@ -919,7 +960,9 @@ def assert_timestep_almost_equal(A, B, decimal=6, verbose=True):
     if A.has_forces != B.has_forces:
         raise AssertionError(
             "Only one Timestep has forces:"
-            "A.has_forces = {}, B.has_forces = {}".format(A.has_forces, B.has_forces)
+            "A.has_forces = {}, B.has_forces = {}".format(
+                A.has_forces, B.has_forces
+            )
         )
     if A.has_forces:
         assert_array_almost_equal(

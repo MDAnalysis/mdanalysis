@@ -41,7 +41,9 @@ def test_coordinate_converterbase_warning():
             pass
 
     assert issubclass(DerivedConverter, ConverterBase)
-    assert not issubclass(DerivedConverter, MDAnalysis.converters.base.ConverterBase)
+    assert not issubclass(
+        DerivedConverter, MDAnalysis.converters.base.ConverterBase
+    )
 
 
 def test_converters_converterbase_no_warning():

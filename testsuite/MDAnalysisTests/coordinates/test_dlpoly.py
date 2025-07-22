@@ -58,7 +58,9 @@ class _DLPConfig(object):
                 [0.0000000000, 0.0000000000, 18.6960000000],
             ]
         )
-        assert_allclose(ts.dimensions, mda.coordinates.core.triclinic_box(*ref))
+        assert_allclose(
+            ts.dimensions, mda.coordinates.core.triclinic_box(*ref)
+        )
 
     def test_positions(self, ts):
         ref = np.array([-7.608595309, -7.897790000, -7.892053559])
@@ -218,7 +220,9 @@ class _DLHistory(object):
             ]
         )
         for ts, r in zip(u.trajectory, [ref1, ref2, ref3]):
-            assert_allclose(ts.dimensions, mda.coordinates.core.triclinic_box(*r))
+            assert_allclose(
+                ts.dimensions, mda.coordinates.core.triclinic_box(*r)
+            )
 
 
 class TestDLPolyHistory(_DLHistory):

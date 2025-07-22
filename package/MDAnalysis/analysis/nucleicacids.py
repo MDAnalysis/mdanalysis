@@ -182,7 +182,9 @@ class NucPairDist(AnalysisBase):
         selection2: List[mda.AtomGroup],
         **kwargs,
     ) -> None:
-        super(NucPairDist, self).__init__(selection1[0].universe.trajectory, **kwargs)
+        super(NucPairDist, self).__init__(
+            selection1[0].universe.trajectory, **kwargs
+        )
 
         if len(selection1) != len(selection2):
             raise ValueError("Selections must be same length")
@@ -266,7 +268,9 @@ class NucPairDist(AnalysisBase):
             elif pair[0].resname[0] in purines:
                 a1, a2 = a1_name, a2_name
             else:
-                raise ValueError(f"AtomGroup in {pair} is not a valid nucleic acid")
+                raise ValueError(
+                    f"AtomGroup in {pair} is not a valid nucleic acid"
+                )
 
             ag1 = pair[0].atoms.select_atoms(f"name {a1}")
             ag2 = pair[1].atoms.select_atoms(f"name {a2}")
@@ -289,7 +293,9 @@ class NucPairDist(AnalysisBase):
         return (sel1, sel2)
 
     def _prepare(self) -> None:
-        self.results.distances: np.ndarray = np.zeros([self.n_frames, self._n_sel])
+        self.results.distances: np.ndarray = np.zeros(
+            [self.n_frames, self._n_sel]
+        )
 
     def _single_frame(self) -> None:
         dist: np.ndarray = calc_bonds(self._s1.positions, self._s2.positions)
@@ -575,7 +581,9 @@ class MinorPairDist(NucPairDist):
             )
         )
 
-        super(MinorPairDist, self).__init__(selections[0], selections[1], **kwargs)
+        super(MinorPairDist, self).__init__(
+            selections[0], selections[1], **kwargs
+        )
 
 
 class MajorPairDist(NucPairDist):
@@ -671,4 +679,6 @@ class MajorPairDist(NucPairDist):
             )
         )
 
-        super(MajorPairDist, self).__init__(selections[0], selections[1], **kwargs)
+        super(MajorPairDist, self).__init__(
+            selections[0], selections[1], **kwargs
+        )

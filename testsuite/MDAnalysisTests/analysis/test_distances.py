@@ -96,28 +96,36 @@ class TestContactMatrix(object):
         contacts = MDAnalysis.analysis.distances.contact_matrix(
             coord, cutoff=1, returntype="numpy"
         )
-        assert contacts.shape == shape, "wrong shape (should be {0})".format(shape)
+        assert contacts.shape == shape, "wrong shape (should be {0})".format(
+            shape
+        )
         assert_equal(contacts, res_no_pbc)
 
     def test_sparse(self, coord, shape, res_no_pbc):
         contacts = MDAnalysis.analysis.distances.contact_matrix(
             coord, cutoff=1.5, returntype="sparse"
         )
-        assert contacts.shape == shape, "wrong shape (should be {0})".format(shape)
+        assert contacts.shape == shape, "wrong shape (should be {0})".format(
+            shape
+        )
         assert_equal(contacts.toarray(), res_no_pbc)
 
     def test_box_numpy(self, coord, box, shape, res_pbc):
         contacts = MDAnalysis.analysis.distances.contact_matrix(
             coord, box=box, cutoff=1
         )
-        assert contacts.shape == shape, "wrong shape (should be {0})".format(shape)
+        assert contacts.shape == shape, "wrong shape (should be {0})".format(
+            shape
+        )
         assert_equal(contacts, res_pbc)
 
     def test_box_sparse(self, coord, box, shape, res_pbc):
         contacts = MDAnalysis.analysis.distances.contact_matrix(
             coord, box=box, cutoff=1, returntype="sparse"
         )
-        assert contacts.shape == shape, "wrong shape (should be {0})".format(shape)
+        assert contacts.shape == shape, "wrong shape (should be {0})".format(
+            shape
+        )
         assert_equal(contacts.toarray(), res_pbc)
 
 
@@ -145,7 +153,9 @@ class TestDist(object):
     @pytest.fixture()
     def expected(ag, ag2):
 
-        return np.diag(scipy.spatial.distance.cdist(ag.positions, ag2.positions))
+        return np.diag(
+            scipy.spatial.distance.cdist(ag.positions, ag2.positions)
+        )
 
     @staticmethod
     @pytest.fixture()
@@ -177,7 +187,9 @@ class TestDist(object):
     def test_offset_calculation(self, ag, ag2):
         """Test that offsets fed to dist() are correctly calculated."""
         actual = MDAnalysis.analysis.distances.dist(ag, ag2, offset=33)[:2]
-        assert_equal(actual, np.array([ag.atoms.resids + 33, ag2.atoms.resids + 33]))
+        assert_equal(
+            actual, np.array([ag.atoms.resids + 33, ag2.atoms.resids + 33])
+        )
 
     def test_mismatch_exception(self, ag, ag2, expected):
         """A ValueError should be raised if the two atomgroups
@@ -211,7 +223,9 @@ class TestBetween(object):
 
     @pytest.fixture()
     def expected(self, group, ag, ag2):
-        distance_matrix_1 = scipy.spatial.distance.cdist(group.positions, ag.positions)
+        distance_matrix_1 = scipy.spatial.distance.cdist(
+            group.positions, ag.positions
+        )
         mask_1 = np.unique(np.where(distance_matrix_1 <= self.distance)[0])
         group_filtered = group[mask_1]
         distance_matrix_2 = scipy.spatial.distance.cdist(

@@ -116,7 +116,9 @@ def get_distance_matrix_bootstrap_samples(
     confdistmatrix : list of encore.utils.TriangularMatrix
     """
 
-    bs_args = [([distance_matrix, ensemble_assignment]) for i in range(samples)]
+    bs_args = [
+        ([distance_matrix, ensemble_assignment]) for i in range(samples)
+    ]
 
     pc = ParallelCalculation(ncores, bootstrapped_matrix, bs_args)
 

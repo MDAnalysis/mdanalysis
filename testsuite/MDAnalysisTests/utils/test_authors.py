@@ -26,4 +26,6 @@ import MDAnalysis
 
 
 def test_package_authors():
-    assert len(MDAnalysis.__authors__) > 0, "Could not find the list of authors"
+    assert (
+        len(MDAnalysis.__authors__) > 0
+    ), "Could not find the list of authors"

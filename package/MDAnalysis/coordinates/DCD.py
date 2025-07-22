@@ -117,10 +117,9 @@ class DCDReader(base.ReaderBase):
     .. _DCDplugin: http://www.ks.uiuc.edu/Research/vmd/plugins/doxygen/dcdplugin_8c-source.html#l00947
     .. _wiki: https://github.com/MDAnalysis/mdanalysis/wiki/FileFormats#dcd
     """
-
-    format = "DCD"
-    flavor = "CHARMM"
-    units = {"time": "AKMA", "length": "Angstrom"}
+    format = 'DCD'
+    flavor = 'CHARMM'
+    units = {'time': 'AKMA', 'length': 'Angstrom'}
 
     @store_init_arguments
     def __init__(self, filename, convert_units=True, dt=None, **kwargs):
@@ -140,16 +139,18 @@ class DCDReader(base.ReaderBase):
         .. versionchanged:: 0.17.0
            Changed to use libdcd.pyx library and removed the correl function
         """
-        super(DCDReader, self).__init__(filename, convert_units=convert_units, **kwargs)
+        super(DCDReader, self).__init__(
+            filename, convert_units=convert_units, **kwargs)
         self._file = DCDFile(self.filename)
-        self.n_atoms = self._file.header["natoms"]
+        self.n_atoms = self._file.header['natoms']
 
-        delta = mdaunits.convert(self._file.header["delta"], self.units["time"], "ps")
+        delta = mdaunits.convert(self._file.header['delta'],
+                                 self.units['time'], 'ps')
         if dt is None:
-            dt = delta * self._file.header["nsavc"]
-        self.skip_timestep = self._file.header["nsavc"]
+            dt = delta * self._file.header['nsavc']
+        self.skip_timestep = self._file.header['nsavc']
 
-        self._ts_kwargs["dt"] = dt
+        self._ts_kwargs['dt'] = dt
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
         frame = self._file.read()
         # reset trajectory
@@ -161,20 +162,18 @@ class DCDReader(base.ReaderBase):
         self.ts = self._frame_to_ts(frame, self.ts)
         # these should only be initialized once
         self.ts.dt = dt
-        warnings.warn(
-            "DCDReader currently makes independent timesteps"
-            " by copying self.ts while other readers update"
-            " self.ts inplace. This behavior will be changed in"
-            " 3.0 to be the same as other readers. Read more at"
-            " https://github.com/MDAnalysis/mdanalysis/issues/3889"
-            " to learn if this change in behavior might affect you.",
-            category=DeprecationWarning,
-        )
+        warnings.warn("DCDReader currently makes independent timesteps"
+                      " by copying self.ts while other readers update"
+                      " self.ts inplace. This behavior will be changed in"
+                      " 3.0 to be the same as other readers. Read more at"
+                      " https://github.com/MDAnalysis/mdanalysis/issues/3889"
+                      " to learn if this change in behavior might affect you.",
+                       category=DeprecationWarning)
 
     @staticmethod
     def parse_n_atoms(filename, **kwargs):
         with DCDFile(filename) as f:
-            n_atoms = f.header["natoms"]
+            n_atoms = f.header['natoms']
         return n_atoms
 
     def close(self):
@@ -191,7 +190,7 @@ class DCDReader(base.ReaderBase):
         self.ts.frame = 0
         self._frame = -1
         self._file.close()
-        self._file.open("r")
+        self._file.open('r')
 
     def _read_frame(self, i):
         """read frame i"""
@@ -202,9 +201,9 @@ class DCDReader(base.ReaderBase):
     def _read_next_timestep(self, ts=None):
         """copy next frame into timestep"""
         if self._frame == self.n_frames - 1:
-            raise IOError("trying to go over trajectory limit")
+            raise IOError('trying to go over trajectory limit')
         if ts is None:
-            # TODO remove copying the ts in 3.0
+            #TODO remove copying the ts in 3.0 
             ts = self.ts.copy()
         frame = self._file.read()
         self._frame += 1
@@ -221,23 +220,21 @@ class DCDReader(base.ReaderBase):
             n_atoms=n_atoms,
             dt=self.ts.dt,
             convert_units=self.convert_units,
-            **kwargs
-        )
+            **kwargs)
 
     def _frame_to_ts(self, frame, ts):
         """convert a dcd-frame to a :class:`TimeStep`"""
         ts.frame = self._frame
-        ts.time = (
-            ts.frame + self._file.header["istart"] / self._file.header["nsavc"]
-        ) * self.ts.dt
-        ts.data["step"] = self._file.tell()
+        ts.time = (ts.frame + self._file.header['istart']/self._file.header['nsavc']) * self.ts.dt
+        ts.data['step'] = self._file.tell()
 
         # The original unitcell is read as ``[A, gamma, B, beta, alpha, C]``
         _ts_order = [0, 2, 5, 4, 3, 1]
         uc = np.take(frame.unitcell, _ts_order)
 
         pi_2 = np.pi / 2
-        if (-1.0 <= uc[3] <= 1.0) and (-1.0 <= uc[4] <= 1.0) and (-1.0 <= uc[5] <= 1.0):
+        if (-1.0 <= uc[3] <= 1.0) and (-1.0 <= uc[4] <= 1.0) and (
+                -1.0 <= uc[5] <= 1.0):
             # This file was generated by Charmm, or by NAMD > 2.5, with the
             # angle cosines of the periodic cell angles written to the DCD
             # file. This formulation improves rounding behavior for orthogonal
@@ -248,7 +245,7 @@ class DCDReader(base.ReaderBase):
             uc[4] = 90.0 - np.arcsin(uc[4]) * 90.0 / pi_2
             uc[5] = 90.0 - np.arcsin(uc[5]) * 90.0 / pi_2
         # heuristic sanity check: uc = A,B,C,alpha,beta,gamma
-        elif np.any(uc < 0.0) or np.any(uc[3:] > 180.0):
+        elif np.any(uc < 0.) or np.any(uc[3:] > 180.):
             # might be new CHARMM: box matrix vectors
             H = frame.unitcell.copy()
             e1, e2, e3 = H[[0, 1, 3]], H[[1, 2, 4]], H[[3, 4, 5]]
@@ -270,7 +267,8 @@ class DCDReader(base.ReaderBase):
 
     @property
     def dimensions(self):
-        """unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)"""
+        """unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
+        """
         return self.ts.dimensions
 
     @property
@@ -278,9 +276,13 @@ class DCDReader(base.ReaderBase):
         """timestep between frames"""
         return self.ts.dt
 
-    def timeseries(
-        self, asel=None, atomgroup=None, start=None, stop=None, step=None, order="afc"
-    ):
+    def timeseries(self,
+                   asel=None,
+                   atomgroup=None,
+                   start=None,
+                   stop=None,
+                   step=None,
+                   order='afc'):
         """Return a subset of coordinate data for an AtomGroup
 
         Parameters
@@ -289,7 +291,7 @@ class DCDReader(base.ReaderBase):
             The :class:`~MDAnalysis.core.groups.AtomGroup` to read the
             coordinates from. Defaults to None, in which case the full set of
             coordinate data is returned.
-
+        
             .. deprecated:: 2.7.0
                asel argument will be renamed to atomgroup in 3.0.0
 
@@ -324,8 +326,7 @@ class DCDReader(base.ReaderBase):
             warnings.warn(
                 "asel argument to timeseries will be renamed to"
                 "'atomgroup' in 3.0, see #3911",
-                category=DeprecationWarning,
-            )
+                category=DeprecationWarning)
             if atomgroup:
                 raise ValueError("Cannot provide both asel and atomgroup kwargs")
             atomgroup = asel
@@ -334,14 +335,14 @@ class DCDReader(base.ReaderBase):
 
         if atomgroup is not None:
             if len(atomgroup) == 0:
-                raise ValueError("Timeseries requires at least one atom to analyze")
+                raise ValueError(
+                    "Timeseries requires at least one atom to analyze")
             atom_numbers = list(atomgroup.indices)
         else:
             atom_numbers = list(range(self.n_atoms))
 
         frames = self._file.readframes(
-            start, stop, step, order=order, indices=atom_numbers
-        )
+            start, stop, step, order=order, indices=atom_numbers)
         return frames.xyz
 
 
@@ -360,24 +361,21 @@ class DCDWriter(base.WriterBase):
         not match the expectations of other software.
 
     """
-
-    format = "DCD"
+    format = 'DCD'
     multiframe = True
-    flavor = "NAMD"
-    units = {"time": "AKMA", "length": "Angstrom"}
+    flavor = 'NAMD'
+    units = {'time': 'AKMA', 'length': 'Angstrom'}
 
-    def __init__(
-        self,
-        filename,
-        n_atoms,
-        convert_units=True,
-        step=1,
-        dt=1,
-        remarks="",
-        nsavc=1,
-        istart=0,
-        **kwargs
-    ):
+    def __init__(self,
+                 filename,
+                 n_atoms,
+                 convert_units=True,
+                 step=1,
+                 dt=1,
+                 remarks='',
+                 nsavc=1,
+                 istart=0,
+                 **kwargs):
         """Parameters
         ----------
         filename : str
@@ -414,10 +412,10 @@ class DCDWriter(base.WriterBase):
         if n_atoms is None:
             raise ValueError("n_atoms argument is required")
         self.n_atoms = n_atoms
-        self._file = DCDFile(self.filename, "w")
+        self._file = DCDFile(self.filename, 'w')
         self.step = step
         self.dt = dt
-        dt = mdaunits.convert(dt, "ps", self.units["time"])
+        dt = mdaunits.convert(dt, 'ps', self.units['time'])
         delta = float(dt) / nsavc
         istart = istart if istart is not None else nsavc
         self._file.write_header(
@@ -426,8 +424,7 @@ class DCDWriter(base.WriterBase):
             nsavc=nsavc,
             delta=delta,
             is_periodic=1,
-            istart=istart,
-        )
+            istart=istart)
 
     def _write_next_frame(self, ag):
         """Write information associated with ``obj`` at current frame into trajectory
@@ -461,10 +458,8 @@ class DCDWriter(base.WriterBase):
         try:
             dimensions = ts.dimensions.copy()
         except AttributeError:
-            wmsg = (
-                "No dimensions set for current frame, zeroed unitcell "
-                "will be written"
-            )
+            wmsg = ('No dimensions set for current frame, zeroed unitcell '
+                    'will be written')
             warnings.warn(wmsg)
             dimensions = np.zeros(6)
 

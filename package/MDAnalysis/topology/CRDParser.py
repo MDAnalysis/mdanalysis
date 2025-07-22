@@ -103,7 +103,9 @@ class CRDParser(TopologyReaderBase):
         ----
         Could use the resnum and temp factor better
         """
-        extformat = FORTRANReader("2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10")
+        extformat = FORTRANReader(
+            "2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10"
+        )
         stdformat = FORTRANReader("2I5,1X,A4,1X,A4,3F10.5,1X,A4,1X,A4,F10.5")
 
         atomids = []
@@ -122,7 +124,10 @@ class CRDParser(TopologyReaderBase):
                 elif line.split()[-1] == "EXT" and int(line.split()[0]):
                     r = extformat
                     continue
-                elif line.split()[0] == line.split()[-1] and line.split()[0] != "*":
+                elif (
+                    line.split()[0] == line.split()[-1]
+                    and line.split()[0] != "*"
+                ):
                     r = stdformat
                     continue
                 # anything else should be an atom
@@ -141,7 +146,8 @@ class CRDParser(TopologyReaderBase):
                     ) = r.read(line)
                 except Exception:
                     errmsg = (
-                        f"Check CRD format at line {linenum + 1}: " f"{line.rstrip()}"
+                        f"Check CRD format at line {linenum + 1}: "
+                        f"{line.rstrip()}"
                     )
                     raise ValueError(errmsg) from None
 
@@ -163,7 +169,9 @@ class CRDParser(TopologyReaderBase):
         segids = np.array(segids, dtype=object)
 
         atom_residx, (res_resids, res_resnames, res_resnums, res_segids) = (
-            change_squash((resids, resnames), (resids, resnames, resnums, segids))
+            change_squash(
+                (resids, resnames), (resids, resnames, resnums, segids)
+            )
         )
         res_segidx, (seg_segids,) = change_squash((res_segids,), (res_segids,))
 

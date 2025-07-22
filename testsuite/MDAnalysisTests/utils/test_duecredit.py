@@ -40,7 +40,10 @@ pytest.importorskip("duecredit")
 
 
 @pytest.mark.skipif(
-    (os.environ.get("DUECREDIT_ENABLE", "yes").lower() in ("no", "0", "false")),
+    (
+        os.environ.get("DUECREDIT_ENABLE", "yes").lower()
+        in ("no", "0", "false")
+    ),
     reason="duecredit is explicitly disabled with DUECREDIT_ENABLE=no",
 )
 class TestDuecredit(object):

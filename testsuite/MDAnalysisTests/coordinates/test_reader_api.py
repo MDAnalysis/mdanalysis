@@ -103,7 +103,9 @@ class _TestReader(object):
             "units",
             "format",
         ]:
-            assert_equal(hasattr(reader, attr), True, "Missing attr: {0}".format(attr))
+            assert_equal(
+                hasattr(reader, attr), True, "Missing attr: {0}".format(attr)
+            )
 
     def test_iter(self, reader):
         l = [ts for ts in reader]

@@ -264,7 +264,8 @@ class InterRDF(AnalysisBase):
 
         if self.norm not in ["rdf", "density", "none"]:
             raise ValueError(
-                f"'{self.norm}' is an invalid norm. " "Use 'rdf', 'density' or 'none'."
+                f"'{self.norm}' is an invalid norm. "
+                "Use 'rdf', 'density' or 'none'."
             )
 
         self.backend = backend
@@ -588,7 +589,9 @@ class InterRDF_s(AnalysisBase):
         backend="serial",
         **kwargs,
     ):
-        super(InterRDF_s, self).__init__(ags[0][0].universe.trajectory, **kwargs)
+        super(InterRDF_s, self).__init__(
+            ags[0][0].universe.trajectory, **kwargs
+        )
 
         warnings.warn(
             "The `u` attribute is superflous and will be removed "
@@ -602,7 +605,8 @@ class InterRDF_s(AnalysisBase):
 
         if self.norm not in ["rdf", "density", "none"]:
             raise ValueError(
-                f"'{self.norm}' is an invalid norm. " "Use 'rdf', 'density' or 'none'."
+                f"'{self.norm}' is an invalid norm. "
+                "Use 'rdf', 'density' or 'none'."
             )
 
         if density:

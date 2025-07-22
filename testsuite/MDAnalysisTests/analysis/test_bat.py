@@ -70,7 +70,9 @@ class TestBAT(object):
         )
 
     def test_bat_number_of_frames(self, bat):
-        assert_equal(len(bat), 2, err_msg="error: list is not length of trajectory")
+        assert_equal(
+            len(bat), 2, err_msg="error: list is not length of trajectory"
+        )
 
     def test_bat_coordinates(self, bat):
         test_bat = np.load(BATArray)
@@ -83,7 +85,11 @@ class TestBAT(object):
         )
 
     def test_bat_coordinates_single_frame(self, selected_residues, client_BAT):
-        bat = BAT(selected_residues).run(start=1, stop=2, **client_BAT).results.bat
+        bat = (
+            BAT(selected_residues)
+            .run(start=1, stop=2, **client_BAT)
+            .results.bat
+        )
         test_bat = [np.load(BATArray)[1]]
         assert_allclose(
             bat,
@@ -129,7 +135,9 @@ class TestBAT(object):
 
     def test_bat_disconnected_atom_group(self):
         u = mda.Universe(PSF, DCD)
-        selected_residues = u.select_atoms("resid 1-3") + u.select_atoms("resid 5-7")
+        selected_residues = u.select_atoms("resid 1-3") + u.select_atoms(
+            "resid 5-7"
+        )
         errmsg = "Additional torsions not found."
         with pytest.raises(ValueError, match=errmsg):
             R = BAT(selected_residues)

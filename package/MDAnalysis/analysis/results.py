@@ -101,7 +101,9 @@ class Results(UserDict):
 
     def _validate_key(self, key):
         if key in dir(self):
-            raise AttributeError(f"'{key}' is a protected dictionary attribute")
+            raise AttributeError(
+                f"'{key}' is a protected dictionary attribute"
+            )
         elif isinstance(key, str) and not key.isidentifier():
             raise ValueError(f"'{key}' is not a valid attribute")
 
@@ -126,13 +128,17 @@ class Results(UserDict):
         try:
             return self[attr]
         except KeyError as err:
-            raise AttributeError(f"'Results' object has no attribute '{attr}'") from err
+            raise AttributeError(
+                f"'Results' object has no attribute '{attr}'"
+            ) from err
 
     def __delattr__(self, attr):
         try:
             del self[attr]
         except KeyError as err:
-            raise AttributeError(f"'Results' object has no attribute '{attr}'") from err
+            raise AttributeError(
+                f"'Results' object has no attribute '{attr}'"
+            ) from err
 
     def __getstate__(self):
         return self.data

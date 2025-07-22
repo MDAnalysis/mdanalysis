@@ -134,7 +134,9 @@ class rotateby(TransformationBase):
         max_threads=1,
         parallelizable=True,
     ):
-        super().__init__(max_threads=max_threads, parallelizable=parallelizable)
+        super().__init__(
+            max_threads=max_threads, parallelizable=parallelizable
+        )
 
         self.angle = angle
         self.direction = direction
@@ -147,12 +149,16 @@ class rotateby(TransformationBase):
         try:
             self.direction = np.asarray(self.direction, np.float32)
             if self.direction.shape != (3,) and self.direction.shape != (1, 3):
-                raise ValueError("{} is not a valid direction".format(self.direction))
+                raise ValueError(
+                    "{} is not a valid direction".format(self.direction)
+                )
             self.direction = self.direction.reshape(
                 3,
             )
         except ValueError:
-            raise ValueError(f"{self.direction} is not a valid direction") from None
+            raise ValueError(
+                f"{self.direction} is not a valid direction"
+            ) from None
         if self.point is not None:
             self.point = np.asarray(self.point, np.float32)
             if self.point.shape != (3,) and self.point.shape != (1, 3):
@@ -164,10 +170,14 @@ class rotateby(TransformationBase):
             try:
                 self.atoms = self.ag.atoms
             except AttributeError:
-                raise ValueError(f"{self.ag} is not an AtomGroup object") from None
+                raise ValueError(
+                    f"{self.ag} is not an AtomGroup object"
+                ) from None
             else:
                 try:
-                    self.weights = get_weights(self.atoms, weights=self.weights)
+                    self.weights = get_weights(
+                        self.atoms, weights=self.weights
+                    )
                 except (ValueError, TypeError):
                     errmsg = (
                         "weights must be {'mass', None} or an iterable "

@@ -234,6 +234,8 @@ def test_hydroxyl(u, seg, i, expected_value):
         (8, 9, 10, "RNAA", "RNAA", "RNAA", 34.50106),
     ),
 )
-def test_pseudo_dihe_baseflip(u, bp1, bp2, i, seg1, seg2, seg3, expected_value):
+def test_pseudo_dihe_baseflip(
+    u, bp1, bp2, i, seg1, seg2, seg3, expected_value
+):
     val = nuclinfo.pseudo_dihe_baseflip(u, bp1, bp2, i, seg1, seg2, seg3)
     assert_almost_equal(val, expected_value, decimal=3)

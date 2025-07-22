@@ -42,7 +42,9 @@ def test_search(universe):
     """simply check that for a centered protein in a large box periodic
     and non-periodic return the same result"""
     ns = NeighborSearch.AtomNeighborSearch(universe.atoms)
-    pns = NeighborSearch.AtomNeighborSearch(universe.atoms, universe.atoms.dimensions)
+    pns = NeighborSearch.AtomNeighborSearch(
+        universe.atoms, universe.atoms.dimensions
+    )
 
     ns_res = ns.search(universe.atoms[20], 20)
     pns_res = pns.search(universe.atoms[20], 20)

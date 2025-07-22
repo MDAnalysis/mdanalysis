@@ -6,7 +6,9 @@ from MDAnalysis.topology.base import squash_by, change_squash
 
 class TestSquash(object):
     atom_resids = np.array([2, 2, 1, 1, 5, 5, 4, 4])
-    atom_resnames = np.array(["A", "A", "B", "B", "C", "C", "D", "D"], dtype=object)
+    atom_resnames = np.array(
+        ["A", "A", "B", "B", "C", "C", "D", "D"], dtype=object
+    )
 
     def test_squash(self):
         atom_residx, resids, (resnames,) = squash_by(

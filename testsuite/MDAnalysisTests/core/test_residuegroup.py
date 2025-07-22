@@ -56,7 +56,9 @@ class TestSequence:
 
     def test_string(self, u):
         p = u.select_atoms("protein")
-        assert_equal(p.residues.sequence(format="string"), self.ref_adk_sequence)
+        assert_equal(
+            p.residues.sequence(format="string"), self.ref_adk_sequence
+        )
 
     def test_SeqRecord(self, u):
         p = u.select_atoms("protein")
@@ -188,7 +190,8 @@ class TestResidueGroup(object):
         assert_equal(
             rg.resids,
             resids,
-            err_msg="old selection was not changed in place " "after set_resid",
+            err_msg="old selection was not changed in place "
+            "after set_resid",
         )
 
     def test_set_resnum_single(self, universe):
@@ -294,7 +297,9 @@ class TestResidueGroup(object):
         assert_equal(
             [a.mass for a in rg.atoms],
             mass * np.ones(rg.n_atoms),
-            err_msg="failed to set_mass H* atoms in resid 12:42 to {0}".format(mass),
+            err_msg="failed to set_mass H* atoms in resid 12:42 to {0}".format(
+                mass
+            ),
         )
 
     # VALID

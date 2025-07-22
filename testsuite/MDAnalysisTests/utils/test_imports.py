@@ -61,5 +61,7 @@ def test_relative_import(testing_module):
             ):
                 raise AssertionError(
                     "A relative import statement was found in "
-                    "module {testing_module} at linenumber {lineno}.".format(**vars())
+                    "module {testing_module} at linenumber {lineno}.".format(
+                        **vars()
+                    )
                 )

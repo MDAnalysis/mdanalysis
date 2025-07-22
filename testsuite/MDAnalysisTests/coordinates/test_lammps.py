@@ -222,14 +222,18 @@ class TestLAMMPSDATAWriter(object):
             err_msg="attributes different after writing",
         )
 
-    @pytest.mark.parametrize("attr", ["bonds", "angles", "dihedrals", "impropers"])
+    @pytest.mark.parametrize(
+        "attr", ["bonds", "angles", "dihedrals", "impropers"]
+    )
     def test_Writer_atoms(self, attr, LAMMPSDATAWriter):
         u_ref, u_new = LAMMPSDATAWriter
         ref = getattr(u_ref.atoms, attr)
         new = getattr(u_new.atoms, attr)
         assert ref == new, "attributes different after writing"
 
-    @pytest.mark.parametrize("attr", ["masses", "charges", "velocities", "positions"])
+    @pytest.mark.parametrize(
+        "attr", ["masses", "charges", "velocities", "positions"]
+    )
     def test_Writer_numerical_attrs(self, attr, LAMMPSDATAWriter):
         u_ref, u_new = LAMMPSDATAWriter
         try:
@@ -256,7 +260,9 @@ class TestLAMMPSDATAWriter_molecule_tag(object):
         )
 
 
-@pytest.mark.parametrize("filename", ["out.data", "out.data.bz2", "out.data.gz"])
+@pytest.mark.parametrize(
+    "filename", ["out.data", "out.data.bz2", "out.data.gz"]
+)
 def test_datawriter_universe(filename, tmpdir):
     """
     Test roundtrip on datawriter, and also checks compressed files
@@ -294,7 +300,9 @@ class TestLAMMPSDATAWriter_data_partial(TestLAMMPSDATAWriter):
 
         return u, u_new
 
-    @pytest.mark.parametrize("attr", ["masses", "charges", "velocities", "positions"])
+    @pytest.mark.parametrize(
+        "attr", ["masses", "charges", "velocities", "positions"]
+    )
     def test_Writer_atoms(self, attr, LAMMPSDATA_partial):
         u_ref, u_new = LAMMPSDATA_partial
         if hasattr(u_ref.atoms, attr):
@@ -342,7 +350,9 @@ class TestLAMMPSDCDReader(RefLAMMPSDataDCD):
         assert_equal(u.trajectory.n_frames, self.n_frames)
 
     def test_dimensions(self, u):
-        mean_dimensions = np.mean([ts.dimensions.copy() for ts in u.trajectory], axis=0)
+        mean_dimensions = np.mean(
+            [ts.dimensions.copy() for ts in u.trajectory], axis=0
+        )
         assert_allclose(mean_dimensions, self.mean_dimensions)
 
     def test_dt(self, u):
@@ -357,11 +367,15 @@ class TestLAMMPSDCDReader(RefLAMMPSDataDCD):
         assert_allclose(
             u.trajectory[iframe].time,
             iframe * self.dt,
-            err_msg="Time for frame {0} (dt={1}) is wrong.".format(iframe, self.dt),
+            err_msg="Time for frame {0} (dt={1}) is wrong.".format(
+                iframe, self.dt
+            ),
         )
 
     def test_LAMMPSDCDReader_set_dt(self, u, dt=1500.0):
-        u = mda.Universe(self.topology, self.trajectory, format=self.format, dt=dt)
+        u = mda.Universe(
+            self.topology, self.trajectory, format=self.format, dt=dt
+        )
         iframe = self.get_frame_from_end(1, u)
         assert_allclose(
             u.trajectory[iframe].time,
@@ -405,14 +419,18 @@ class TestLAMMPSDCDWriter(RefLAMMPSDataDCD):
     def test_Writer_is_LAMMPS(self, u, tmpdir):
         ext = os.path.splitext(self.trajectory)[1]
         outfile = str(tmpdir.join("lammps-writer-test" + ext))
-        with mda.Writer(outfile, n_atoms=u.atoms.n_atoms, format=self.format) as W:
+        with mda.Writer(
+            outfile, n_atoms=u.atoms.n_atoms, format=self.format
+        ) as W:
             assert W.flavor, self.flavor
 
     def test_Writer(self, u, tmpdir, n_frames=3):
         ext = os.path.splitext(self.trajectory)[1]
         outfile = str(tmpdir.join("lammps-writer-test" + ext))
 
-        with mda.Writer(outfile, n_atoms=u.atoms.n_atoms, format=self.format) as w:
+        with mda.Writer(
+            outfile, n_atoms=u.atoms.n_atoms, format=self.format
+        ) as w:
             for ts in u.trajectory[:n_frames]:
                 w.write(u)
 
@@ -488,7 +506,9 @@ class TestLAMMPSDCDWriterClass(object):
     def test_wrong_time_unit(self, tmpdir):
         outfile = str(tmpdir.join("lammps-writer-test.dcd"))
         with pytest.raises(TypeError):
-            with mda.coordinates.LAMMPS.DCDWriter(outfile, n_atoms=10, timeunit="nm"):
+            with mda.coordinates.LAMMPS.DCDWriter(
+                outfile, n_atoms=10, timeunit="nm"
+            ):
                 pass
 
     def test_wrong_unit(self, tmpdir):
@@ -563,7 +583,9 @@ class TestLammpsDumpReader(object):
                 with gzip.GzipFile(f, "wb") as fout:
                     fout.write(data)
 
-        yield mda.Universe(f, format="LAMMPSDUMP", lammps_coordinate_convention="auto")
+        yield mda.Universe(
+            f, format="LAMMPSDUMP", lammps_coordinate_convention="auto"
+        )
 
     @pytest.fixture()
     def u_additional_columns_true(self):
@@ -681,9 +703,15 @@ class TestLammpsDumpReader(object):
         u.trajectory[1]
 
         assert_allclose(u.dimensions, reference_positions["box"][1], atol=1e-5)
-        pos = reference_positions["atom1_pos"][1] - reference_positions["mins"][1]
+        pos = (
+            reference_positions["atom1_pos"][1]
+            - reference_positions["mins"][1]
+        )
         assert_allclose(u.atoms[0].position, pos, atol=1e-5)
-        pos = reference_positions["atom13_pos"][1] - reference_positions["mins"][1]
+        pos = (
+            reference_positions["atom13_pos"][1]
+            - reference_positions["mins"][1]
+        )
         assert_allclose(u.atoms[12].position, pos, atol=1e-5)
 
     def test_boxsize(self, u, reference_positions):
@@ -714,7 +742,9 @@ class TestLammpsDumpReader(object):
         u = request.getfixturevalue(system)
         for field in fields:
             data = u.trajectory[0].data[field]
-            assert_allclose(data, getattr(RefLAMMPSDataAdditionalColumns, field))
+            assert_allclose(
+                data, getattr(RefLAMMPSDataAdditionalColumns, field)
+            )
 
     @pytest.mark.parametrize(
         "system",
@@ -723,7 +753,9 @@ class TestLammpsDumpReader(object):
         ],
     )
     def test_wrong_format_additional_colums(self, system, request):
-        with pytest.raises(ValueError, match="Please provide an iterable containing"):
+        with pytest.raises(
+            ValueError, match="Please provide an iterable containing"
+        ):
             request.getfixturevalue(system)
 
     @pytest.mark.parametrize(
@@ -737,7 +769,9 @@ class TestLammpsDumpReader(object):
             request.getfixturevalue(system)
 
 
-@pytest.mark.parametrize("convention", ["unscaled", "unwrapped", "scaled_unwrapped"])
+@pytest.mark.parametrize(
+    "convention", ["unscaled", "unwrapped", "scaled_unwrapped"]
+)
 def test_open_absent_convention_fails(convention):
     with pytest.raises(ValueError, match="No coordinates following"):
         mda.Universe(
@@ -749,7 +783,9 @@ def test_open_absent_convention_fails(convention):
 
 def test_open_incorrect_convention_fails():
     with pytest.raises(ValueError, match="is not a valid option"):
-        mda.Universe(LAMMPSDUMP, format="LAMMPSDUMP", lammps_coordinate_convention="42")
+        mda.Universe(
+            LAMMPSDUMP, format="LAMMPSDUMP", lammps_coordinate_convention="42"
+        )
 
 
 @pytest.mark.parametrize(
@@ -851,7 +887,9 @@ class TestCoordinateMatches(object):
             ]
         )
 
-    def test_unwrapped_scaled_reference(self, universes, reference_unwrapped_positions):
+    def test_unwrapped_scaled_reference(
+        self, universes, reference_unwrapped_positions
+    ):
         atom_340 = universes["unwrapped"].atoms[339]
         for i, ts_u in enumerate(universes["unwrapped"].trajectory[0:3]):
             assert_allclose(
@@ -860,10 +898,14 @@ class TestCoordinateMatches(object):
                 atol=1e-5,
             )
 
-    def test_unwrapped_scaled_reference(self, universes, reference_unwrapped_positions):
+    def test_unwrapped_scaled_reference(
+        self, universes, reference_unwrapped_positions
+    ):
         # NOTE use of unscaled positions here due to S->R transform
         atom_340 = universes["scaled_unwrapped"].atoms[339]
-        for i, ts_u in enumerate(universes["scaled_unwrapped"].trajectory[0:3]):
+        for i, ts_u in enumerate(
+            universes["scaled_unwrapped"].trajectory[0:3]
+        ):
             assert_allclose(
                 atom_340.position,
                 reference_unwrapped_positions[i, :],
@@ -943,6 +985,8 @@ class TestLammpsTriclinic(object):
             assert_allclose(ts.dimensions, reference_box, rtol=1e-5, atol=0)
 
         for ts in u_dump.trajectory:
-            assert_allclose(ts.dimensions, u_data.dimensions, rtol=1e-5, atol=0)
+            assert_allclose(
+                ts.dimensions, u_data.dimensions, rtol=1e-5, atol=0
+            )
 
         assert_allclose(u_data.dimensions, reference_box, rtol=1e-5, atol=0)

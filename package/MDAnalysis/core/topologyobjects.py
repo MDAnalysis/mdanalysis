@@ -603,7 +603,9 @@ class TopologyGroup(object):
             # guess what I am
             # difference between dihedral and improper
             # not really important
-            self.btype = {2: "bond", 3: "angle", 4: "dihedral"}[len(bondidx[0])]
+            self.btype = {2: "bond", 3: "angle", 4: "dihedral"}[
+                len(bondidx[0])
+            ]
         elif btype in _BTYPE_TO_SHAPE:
             self.btype = btype
         else:
@@ -636,7 +638,8 @@ class TopologyGroup(object):
 
             # Create vertical AtomGroups
             self._ags = [
-                universe.atoms[self._bix[:, i]] for i in range(self._bix.shape[1])
+                universe.atoms[self._bix[:, i]]
+                for i in range(self._bix.shape[1])
             ]
         else:
             # Empty TopologyGroup
@@ -813,11 +816,15 @@ class TopologyGroup(object):
                     np.concatenate([self.indices, other.indices[None, :]]),
                     self.universe,
                     btype=self.btype,
-                    type=np.concatenate([self._bondtypes, np.array([other._bondtype])]),
+                    type=np.concatenate(
+                        [self._bondtypes, np.array([other._bondtype])]
+                    ),
                     guessed=np.concatenate(
                         [self._guessed, np.array([other.is_guessed])]
                     ),
-                    order=np.concatenate([self._order, np.array([other.order])]),
+                    order=np.concatenate(
+                        [self._order, np.array([other.order])]
+                    ),
                 )
             else:
                 # add TG to me

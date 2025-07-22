@@ -56,7 +56,9 @@ class FrameAnalysis(base.AnalysisBase):
         self.found_frames = list(self.results.found_frames)
 
     def _get_aggregator(self):
-        return base.ResultsGroup({"found_frames": base.ResultsGroup.ndarray_hstack})
+        return base.ResultsGroup(
+            {"found_frames": base.ResultsGroup.ndarray_hstack}
+        )
 
 
 class IncompleteAnalysis(base.AnalysisBase):
@@ -171,7 +173,9 @@ def test_n_workers_conflict_raises_value_error(u):
 def test_backend_configuration_fails(u, run_class, backend, n_workers):
     u = mda.Universe(TPR, XTC)  # dt = 100
     with pytest.raises(ValueError):
-        _ = run_class(u.trajectory).run(backend=backend, n_workers=n_workers, stop=0)
+        _ = run_class(u.trajectory).run(
+            backend=backend, n_workers=n_workers, stop=0
+        )
 
 
 @pytest.mark.parametrize(
@@ -217,7 +221,9 @@ def test_custom_backend_works(u, run_class, backend, n_workers):
         (ParallelizableWithDaskOnly, object, 1),
     ],
 )
-def test_fails_incorrect_custom_backend(u, run_class, backend_instance, n_workers):
+def test_fails_incorrect_custom_backend(
+    u, run_class, backend_instance, n_workers
+):
     u = mda.Universe(TPR, XTC)  # dt = 100
     with pytest.raises(ValueError):
         _ = run_class(u.trajectory).run(
@@ -227,7 +233,9 @@ def test_fails_incorrect_custom_backend(u, run_class, backend_instance, n_worker
         )
 
     with pytest.raises(ValueError):
-        _ = run_class(u.trajectory).run(backend=backend_instance, n_workers=n_workers)
+        _ = run_class(u.trajectory).run(
+            backend=backend_instance, n_workers=n_workers
+        )
 
 
 @pytest.mark.parametrize(
@@ -281,7 +289,9 @@ def test_reset_n_parts_to_n_frames(u):
     """
     a = FrameAnalysis(u.trajectory)
     with pytest.warns(UserWarning, match="Set `n_parts` to"):
-        a.run(backend="multiprocessing", start=0, stop=1, n_workers=2, n_parts=2)
+        a.run(
+            backend="multiprocessing", start=0, stop=1, n_workers=2, n_parts=2
+        )
 
 
 @pytest.mark.parametrize(
@@ -298,7 +308,9 @@ def test_start_stop_step(u, run_kwargs, frames):
     assert an.n_frames == len(frames)
     assert_equal(an.found_frames, frames)
     assert_equal(an.frames, frames, err_msg=FRAMES_ERR)
-    assert_allclose(an.times, frames + 1, rtol=0, atol=1.5e-4, err_msg=TIMES_ERR)
+    assert_allclose(
+        an.times, frames + 1, rtol=0, atol=1.5e-4, err_msg=TIMES_ERR
+    )
 
 
 @pytest.mark.parametrize(
@@ -426,7 +438,9 @@ def test_frame_bool_fail(client_FrameAnalysis):
 
 def test_rewind(client_FrameAnalysis):
     u = mda.Universe(TPR, XTC)  # dt = 100
-    an = FrameAnalysis(u.trajectory).run(**client_FrameAnalysis, frames=[0, 2, 3, 5, 9])
+    an = FrameAnalysis(u.trajectory).run(
+        **client_FrameAnalysis, frames=[0, 2, 3, 5, 9]
+    )
     assert_equal(u.trajectory.ts.frame, 0)
 
 
@@ -439,7 +453,9 @@ def test_frames_times(client_FrameAnalysis):
     assert an.n_frames == len(frames)
     assert_equal(an.found_frames, frames)
     assert_equal(an.frames, frames, err_msg=FRAMES_ERR)
-    assert_allclose(an.times, frames * 100, rtol=0, atol=1.5e-4, err_msg=TIMES_ERR)
+    assert_allclose(
+        an.times, frames * 100, rtol=0, atol=1.5e-4, err_msg=TIMES_ERR
+    )
 
 
 def test_verbose(u):
@@ -482,7 +498,9 @@ def test_verbose_progressbar_run(u, capsys):
 
 
 def test_verbose_progressbar_run_with_kwargs(u, capsys):
-    FrameAnalysis(u.trajectory).run(verbose=True, progressbar_kwargs={"desc": "custom"})
+    FrameAnalysis(u.trajectory).run(
+        verbose=True, progressbar_kwargs={"desc": "custom"}
+    )
     _, err = capsys.readouterr()
     expected = "custom: 100%|██████████"
     actual = err.strip().split("\r")[-1]
@@ -491,7 +509,9 @@ def test_verbose_progressbar_run_with_kwargs(u, capsys):
 
 def test_progressbar_multiprocessing(u):
     with pytest.raises(ValueError):
-        FrameAnalysis(u.trajectory).run(backend="multiprocessing", verbose=True)
+        FrameAnalysis(u.trajectory).run(
+            backend="multiprocessing", verbose=True
+        )
 
 
 def test_incomplete_defined_analysis(u):
@@ -606,7 +626,9 @@ def test_analysis_class(client_AnalysisFromFunctionAnalysisClass):
 
     u = mda.Universe(PSF, DCD)
     step = 2
-    ana = ana_class(u.atoms).run(step=step, **client_AnalysisFromFunctionAnalysisClass)
+    ana = ana_class(u.atoms).run(
+        step=step, **client_AnalysisFromFunctionAnalysisClass
+    )
 
     results = []
     for ts in u.trajectory[::step]:

@@ -125,7 +125,9 @@ class TestAtomGroupTrajAccess(object):
         else:
             with pytest.raises(NoDataError):
                 getattr(ag, "velocities")
-            assert_correct_errormessage((getattr, ag, "velocities"), "velocities")
+            assert_correct_errormessage(
+                (getattr, ag, "velocities"), "velocities"
+            )
 
     def test_atomgroup_forces_access(self, u, force):
         ag = u.atoms[10:20]
@@ -165,7 +167,9 @@ class TestAtomGroupTrajAccess(object):
         else:
             with pytest.raises(NoDataError):
                 getattr(at, "velocity")
-            assert_correct_errormessage((getattr, at, "velocity"), "velocities")
+            assert_correct_errormessage(
+                (getattr, at, "velocity"), "velocities"
+            )
 
     def test_atom_force_access(self, u, force):
         at = u.atoms[55]
@@ -185,18 +189,25 @@ class TestAtomGroupTrajAccess(object):
     def test_atomgroup_positions_setting(self, u):
         ag = u.atoms[[101, 107, 109]]
 
-        new = np.array([[72.4, 64.5, 74.7], [124.6, 15.6, -1.11], [25.2, -66.6, 0]])
+        new = np.array(
+            [[72.4, 64.5, 74.7], [124.6, 15.6, -1.11], [25.2, -66.6, 0]]
+        )
 
         ag.positions = new
 
         assert_almost_equal(ag.positions, new, decimal=5)
-        assert_almost_equal(u.trajectory.ts.positions[[101, 107, 109]], new, decimal=5)
+        assert_almost_equal(
+            u.trajectory.ts.positions[[101, 107, 109]], new, decimal=5
+        )
 
     def test_atomgroup_velocities_setting(self, u, vel):
         ag = u.atoms[[101, 107, 109]]
 
         new = (
-            np.array([[72.4, 64.5, 74.7], [124.6, 15.6, -1.11], [25.2, -66.6, 0]]) + 0.1
+            np.array(
+                [[72.4, 64.5, 74.7], [124.6, 15.6, -1.11], [25.2, -66.6, 0]]
+            )
+            + 0.1
         )
 
         if vel:
@@ -209,20 +220,27 @@ class TestAtomGroupTrajAccess(object):
         else:
             with pytest.raises(NoDataError):
                 setattr(ag, "velocities", new)
-            assert_correct_errormessage((setattr, ag, "velocities", new), "velocities")
+            assert_correct_errormessage(
+                (setattr, ag, "velocities", new), "velocities"
+            )
 
     def test_atomgroup_forces_setting(self, u, force):
         ag = u.atoms[[101, 107, 109]]
 
         new = (
-            np.array([[72.4, 64.5, 74.7], [124.6, 15.6, -1.11], [25.2, -66.6, 0]]) + 0.2
+            np.array(
+                [[72.4, 64.5, 74.7], [124.6, 15.6, -1.11], [25.2, -66.6, 0]]
+            )
+            + 0.2
         )
 
         if force:
             ag.forces = new
 
             assert_almost_equal(ag.forces, new, decimal=5)
-            assert_almost_equal(u.trajectory.ts.forces[[101, 107, 109]], new, decimal=5)
+            assert_almost_equal(
+                u.trajectory.ts.forces[[101, 107, 109]], new, decimal=5
+            )
         else:
             with pytest.raises(NoDataError):
                 setattr(ag, "forces", new)
@@ -251,7 +269,9 @@ class TestAtomGroupTrajAccess(object):
         else:
             with pytest.raises(NoDataError):
                 setattr(at, "velocity", new)
-            assert_correct_errormessage((setattr, at, "velocity", new), "velocities")
+            assert_correct_errormessage(
+                (setattr, at, "velocity", new), "velocities"
+            )
 
     def test_atom_force_setting(self, u, force):
         at = u.atoms[94]
@@ -459,7 +479,9 @@ class TestAtomGroupVelocities(object):
             ]
         )
         v = ag.velocities
-        assert_almost_equal(v, ref_v, err_msg="velocities were not read correctly")
+        assert_almost_equal(
+            v, ref_v, err_msg="velocities were not read correctly"
+        )
 
     def test_set_velocities(self, ag):
         ag = ag
@@ -494,4 +516,6 @@ class TestAtomGroupForces(object):
     def test_set_forces(self, ag):
         v = ag.forces - 2.7271
         ag.forces = v
-        assert_almost_equal(ag.forces, v, err_msg="messages were not set to new value")
+        assert_almost_equal(
+            ag.forces, v, err_msg="messages were not set to new value"
+        )

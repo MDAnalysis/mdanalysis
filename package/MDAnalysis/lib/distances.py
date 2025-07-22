@@ -161,7 +161,9 @@ from ._distopia import HAS_DISTOPIA
 import importlib
 
 _distances = {}
-_distances["serial"] = importlib.import_module(".c_distances", package="MDAnalysis.lib")
+_distances["serial"] = importlib.import_module(
+    ".c_distances", package="MDAnalysis.lib"
+)
 try:
     _distances["openmp"] = importlib.import_module(
         ".c_distances_openmp", package="MDAnalysis.lib"
@@ -224,7 +226,9 @@ from .c_distances import (
 from .c_distances_openmp import OPENMP_ENABLED as USED_OPENMP
 
 
-def _check_result_array(result: Optional[npt.NDArray], shape: tuple) -> npt.NDArray:
+def _check_result_array(
+    result: Optional[npt.NDArray], shape: tuple
+) -> npt.NDArray:
     """Check if the result array is ok to use.
 
     The `result` array must meet the following requirements:
@@ -708,8 +712,12 @@ def _determine_method(
         return methods["nsgrid"]
     else:
         if box is None:
-            min_dim = np.array([reference.min(axis=0), configuration.min(axis=0)])
-            max_dim = np.array([reference.max(axis=0), configuration.max(axis=0)])
+            min_dim = np.array(
+                [reference.min(axis=0), configuration.min(axis=0)]
+            )
+            max_dim = np.array(
+                [reference.max(axis=0), configuration.max(axis=0)]
+            )
             size = max_dim.max(axis=0) - min_dim.min(axis=0)
         elif np.all(box[3:] == 90.0):
             size = box[:3]
@@ -806,9 +814,13 @@ def _bruteforce_capped(
     distances = np.empty((0,), dtype=np.float64)
 
     if len(reference) > 0 and len(configuration) > 0:
-        _distances = distance_array(reference, configuration, box=box, backend=backend)
+        _distances = distance_array(
+            reference, configuration, box=box, backend=backend
+        )
         if min_cutoff is not None:
-            mask = np.where((_distances <= max_cutoff) & (_distances > min_cutoff))
+            mask = np.where(
+                (_distances <= max_cutoff) & (_distances > min_cutoff)
+            )
         else:
             mask = np.where((_distances <= max_cutoff))
         if mask[0].size > 0:
@@ -1032,7 +1044,9 @@ def _nsgrid_capped(
             # Extra padding near the origin
             shiftref -= lmin - 0.1 * max_cutoff
             shiftconf -= lmin - 0.1 * max_cutoff
-            gridsearch = FastNS(max_cutoff, shiftconf, box=pseudobox, pbc=False)
+            gridsearch = FastNS(
+                max_cutoff, shiftconf, box=pseudobox, pbc=False
+            )
             results = gridsearch.search(shiftref)
         else:
             gridsearch = FastNS(max_cutoff, configuration, box=box)

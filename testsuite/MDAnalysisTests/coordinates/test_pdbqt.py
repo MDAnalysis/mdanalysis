@@ -79,7 +79,9 @@ class TestPDBQT(object):
         assert_equal(len(residue_neighbors), 80)
 
     def test_n_frames(self, universe):
-        assert_equal(universe.trajectory.n_frames, 1, "wrong number of frames in pdb")
+        assert_equal(
+            universe.trajectory.n_frames, 1, "wrong number of frames in pdb"
+        )
 
     def test_time(self, universe):
         assert_equal(universe.trajectory.time, 0.0, "wrong time of the frame")

@@ -197,7 +197,9 @@ class MOL2Parser(TopologyReaderBase):
         for a in atom_lines:
             columns = a.split()
             if len(columns) >= 9:
-                aid, name, x, y, z, atom_type, resid, resname, charge = columns[:9]
+                aid, name, x, y, z, atom_type, resid, resname, charge = (
+                    columns[:9]
+                )
             elif len(columns) < 6:
                 raise ValueError(
                     f"The @<TRIPOS>ATOM block in mol2 file"
@@ -303,6 +305,8 @@ class MOL2Parser(TopologyReaderBase):
                 bonds.append(bond)
             attrs.append(Bonds(bonds, order=bondorder))
 
-        top = Topology(n_atoms, n_residues, 1, attrs=attrs, atom_resindex=residx)
+        top = Topology(
+            n_atoms, n_residues, 1, attrs=attrs, atom_resindex=residx
+        )
 
         return top

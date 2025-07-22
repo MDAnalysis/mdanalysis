@@ -142,7 +142,9 @@ class TestGroupProperties(object):
 
         # check if caches of group.sorted_unique have been set correctly:
         assert group.sorted_unique._cache["isunique"] is True
-        assert group.sorted_unique._cache["sorted_unique"] is group.sorted_unique
+        assert (
+            group.sorted_unique._cache["sorted_unique"] is group.sorted_unique
+        )
         # assert that repeated access yields the same object (not a copy):
         unique_group = group.sorted_unique
         assert unique_group is group.sorted_unique
@@ -507,7 +509,9 @@ class TestGroupAddition(object):
         assert_equal(
             len(summed), len(self.itr(a)) + len(self.itr(b)) + len(self.itr(c))
         )
-        for x, y in zip(summed, itertools.chain(self.itr(a), self.itr(b), self.itr(c))):
+        for x, y in zip(
+            summed, itertools.chain(self.itr(a), self.itr(b), self.itr(c))
+        ):
             assert x == y
 
     @pytest.mark.parametrize(
@@ -527,7 +531,11 @@ class TestGroupAddition(object):
 
     @pytest.mark.parametrize(
         "one_level, other_level",
-        [(l1, l2) for l1, l2 in itertools.product(levels, repeat=2) if l1 != l2],
+        [
+            (l1, l2)
+            for l1, l2 in itertools.product(levels, repeat=2)
+            if l1 != l2
+        ],
     )
     def test_contains_wronglevel(self, one_level, other_level):
         group = self.group_dict[one_level]
@@ -985,7 +993,8 @@ class TestReprs(object):
     def test_atom_repr(self, u):
         at = u.atoms[0]
         assert (
-            repr(at) == "<Atom 1: N of type 56 of resname MET, resid 1 and segid 4AKE>"
+            repr(at)
+            == "<Atom 1: N of type 56 of resname MET, resid 1 and segid 4AKE>"
         )
 
     def test_residue_repr(self, u):
@@ -1009,7 +1018,9 @@ class TestReprs(object):
 
     def test_atomgroup_str_long(self, u):
         ag = u.atoms[:11]
-        assert str(ag).startswith("<AtomGroup [<Atom 1: N of type 56 of resname MET,")
+        assert str(ag).startswith(
+            "<AtomGroup [<Atom 1: N of type 56 of resname MET,"
+        )
         assert "..." in str(ag)
         assert str(ag).endswith(", resid 1 and segid 4AKE>]>")
 
@@ -1111,7 +1122,9 @@ class TestGroupBaseOperators(object):
         assert_equal(len(d), 0)
         assert_equal(len(e), 3)
 
-    def test_len_duplicated_and_scrambled(self, groups_duplicated_and_scrambled):
+    def test_len_duplicated_and_scrambled(
+        self, groups_duplicated_and_scrambled
+    ):
         a, b, c, d, e = groups_duplicated_and_scrambled
         assert_equal(len(a), 7)
         assert_equal(len(b), 8)
@@ -1124,9 +1137,13 @@ class TestGroupBaseOperators(object):
         assert a == a
         assert a != b
         assert not a == b
-        assert not a[0:1] == a[0], "Element should not equal single element group."
+        assert (
+            not a[0:1] == a[0]
+        ), "Element should not equal single element group."
 
-    @pytest.mark.parametrize("group", (u.atoms[:2], u.residues[:2], u.segments[:2]))
+    @pytest.mark.parametrize(
+        "group", (u.atoms[:2], u.residues[:2], u.segments[:2])
+    )
     def test_copy(self, group):
         # make sure uniqueness caches of group are empty:
         with pytest.raises(KeyError):
@@ -1382,7 +1399,9 @@ class TestGroupHash(object):
         b = getattr(u, level)[1:]
         assert hash(a) != hash(b)
 
-    @pytest.mark.parametrize("level_a, level_b", itertools.permutations(levels, 2))
+    @pytest.mark.parametrize(
+        "level_a, level_b", itertools.permutations(levels, 2)
+    )
     def test_hash_difference_cross(self, u, level_a, level_b):
         a = getattr(u, level_a)[0:-1]
         b = getattr(u, level_b)[0:-1]
@@ -1560,7 +1579,9 @@ class TestAttributeGetting(object):
     def test_get_absent_attr_method(self, universe):
         with pytest.raises(NoDataError) as exc:
             universe.atoms.total_charge()
-        err = "AtomGroup.total_charge() not available; " "this requires charges"
+        err = (
+            "AtomGroup.total_charge() not available; " "this requires charges"
+        )
         assert str(exc.value) == err
 
     def test_get_absent_attrprop(self, universe):
@@ -1585,7 +1606,9 @@ class TestAttributeGetting(object):
     def test_wrong_name(self, universe, attr):
         with pytest.raises(AttributeError) as exc:
             getattr(universe.atoms, attr)
-        err = ("AtomGroup has no attribute {}. " "Did you mean altLocs?").format(attr)
+        err = (
+            "AtomGroup has no attribute {}. " "Did you mean altLocs?"
+        ).format(attr)
         assert str(exc.value) == err
 
 
@@ -1662,7 +1685,9 @@ class TestDecorator(object):
                 # deprecation. We need to tell the linter.
                 assert (
                     # pylint: disable-next=unexpected-keyword-arg
-                    self.dummy_funtion(compound=compound, pbc=pbc, unwrap=unwrap)
+                    self.dummy_funtion(
+                        compound=compound, pbc=pbc, unwrap=unwrap
+                    )
                     == 0
                 )
 
@@ -1677,7 +1702,10 @@ class TestDecorator(object):
             with pytest.raises(ValueError):
                 self.dummy_funtion(compound=compound, wrap=wrap, unwrap=unwrap)
         else:
-            assert self.dummy_funtion(compound=compound, wrap=wrap, unwrap=unwrap) == 0
+            assert (
+                self.dummy_funtion(compound=compound, wrap=wrap, unwrap=unwrap)
+                == 0
+            )
 
 
 @pytest.fixture()
@@ -1690,7 +1718,9 @@ def tpr():
 class TestGetConnectionsAtoms(object):
     """Test Atom and AtomGroup.get_connections"""
 
-    @pytest.mark.parametrize("typename", ["bonds", "angles", "dihedrals", "impropers"])
+    @pytest.mark.parametrize(
+        "typename", ["bonds", "angles", "dihedrals", "impropers"]
+    )
     def test_connection_from_atom_not_outside(self, tpr, typename):
         cxns = tpr.atoms[1].get_connections(typename, outside=False)
         assert len(cxns) == 0
@@ -1788,7 +1818,9 @@ class TestGetConnectionsResidues(object):
             ("dihedrals", 351),
         ],
     )
-    def test_connection_from_residues_not_outside(self, tpr, typename, n_atoms):
+    def test_connection_from_residues_not_outside(
+        self, tpr, typename, n_atoms
+    ):
         ag = tpr.residues[:10]
         cxns = ag.get_connections(typename, outside=False)
         assert len(cxns) == n_atoms

@@ -58,7 +58,9 @@ class TestDielectric(object):
 
     def test_non_charges(self):
         u = mda.Universe(DCD_TRICLINIC, to_guess=())
-        with pytest.raises(NoDataError, match="No charges defined given atomgroup."):
+        with pytest.raises(
+            NoDataError, match="No charges defined given atomgroup."
+        ):
             DielectricConstant(u.atoms).run()
 
     def test_non_neutral(self, ag):

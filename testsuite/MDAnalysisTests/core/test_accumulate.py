@@ -41,7 +41,9 @@ class TestAccumulate(object):
         return getattr(u, request.param)
 
     def test_accumulate_str_attribute(self, group):
-        assert_almost_equal(group.accumulate("masses"), np.sum(group.atoms.masses))
+        assert_almost_equal(
+            group.accumulate("masses"), np.sum(group.atoms.masses)
+        )
 
     def test_accumulate_different_func(self, group):
         assert_almost_equal(
@@ -112,7 +114,9 @@ class TestAccumulate(object):
             for a in group.atoms.groupby(name).values()
         ]
         assert_equal(
-            group.accumulate(np.ones((len(group.atoms), 2, 5)), compound=compound),
+            group.accumulate(
+                np.ones((len(group.atoms), 2, 5)), compound=compound
+            ),
             ref,
         )
 
@@ -263,7 +267,9 @@ class TestMultipole(object):
 
     def test_dipole_moment_segment(self, methane):
         compound = "segments"
-        (_, _, n_compounds) = methane.atoms._split_by_compound_indices(compound)
+        (_, _, n_compounds) = methane.atoms._split_by_compound_indices(
+            compound
+        )
         dipoles = methane.dipole_moment(compound=compound, unwrap=True)
         assert_almost_equal(dipoles, [0.0]) and len(dipoles) == n_compounds
 
@@ -307,9 +313,13 @@ class TestMultipole(object):
 
     def test_quadrupole_moment_segment(self, methane):
         compound = "segments"
-        (_, _, n_compounds) = methane.atoms._split_by_compound_indices(compound)
+        (_, _, n_compounds) = methane.atoms._split_by_compound_indices(
+            compound
+        )
         quadrupoles = methane.quadrupole_moment(compound=compound, unwrap=True)
-        assert_almost_equal(quadrupoles, [0.0]) and len(quadrupoles) == n_compounds
+        assert_almost_equal(quadrupoles, [0.0]) and len(
+            quadrupoles
+        ) == n_compounds
 
     def test_quadrupole_moment_fragments(self, group):
         compound = "fragments"

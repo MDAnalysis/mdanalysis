@@ -66,7 +66,9 @@ class NAMDBINReader(base.SingleFrameReaderBase):
             coord_double = np.fromfile(
                 namdbin, dtype=np.float64, count=self.n_atoms * 3
             )
-            self.ts._pos[:] = np.array(coord_double, float).reshape(self.n_atoms, 3)
+            self.ts._pos[:] = np.array(coord_double, float).reshape(
+                self.n_atoms, 3
+            )
 
     @staticmethod
     def parse_n_atoms(filename, **kwargs):

@@ -316,7 +316,9 @@ class EDRReader(base.AuxReader):
 
     def __init__(self, filename: str, convert_units: bool = True, **kwargs):
         if not HAS_PYEDR:
-            raise ImportError("EDRReader: To read EDR files please install " "pyedr.")
+            raise ImportError(
+                "EDRReader: To read EDR files please install " "pyedr."
+            )
         self._auxdata = Path(filename).resolve()
         self.data_dict = pyedr.edr_to_dict(filename)
         self.unit_dict = pyedr.get_unit_dictionary(filename)
@@ -346,7 +348,8 @@ class EDRReader(base.AuxReader):
             self.unit_dict[term] = units.MDANALYSIS_BASE_UNITS[unit_type]
         if unknown_units:
             warnings.warn(
-                "Could not find unit type for the following " f"units: {unknown_units}"
+                "Could not find unit type for the following "
+                f"units: {unknown_units}"
             )
 
     def _memory_usage(self):
@@ -372,7 +375,8 @@ class EDRReader(base.AuxReader):
         new_step = self.step + 1
         if new_step < self.n_steps:
             auxstep._data = {
-                term: self.data_dict[term][self.step + 1] for term in self.terms
+                term: self.data_dict[term][self.step + 1]
+                for term in self.terms
             }
             auxstep.step = new_step
             return auxstep

@@ -108,7 +108,9 @@ class SelectionWriterBase(metaclass=_Selectionmeta):
     commentfmt = None
     default_numterms = 8
 
-    def __init__(self, filename, mode="w", numterms=None, preamble=None, **kwargs):
+    def __init__(
+        self, filename, mode="w", numterms=None, preamble=None, **kwargs
+    ):
         """Set up for writing to *filename*.
 
         Parameters
@@ -128,7 +130,9 @@ class SelectionWriterBase(metaclass=_Selectionmeta):
         """
         self.filename = util.filename(filename, ext=self.ext)
         if not mode in ("a", "w"):
-            raise ValueError("mode must be one of 'w', 'a', not {0!r}".format(mode))
+            raise ValueError(
+                "mode must be one of 'w', 'a', not {0!r}".format(mode)
+            )
         self.mode = mode
         self._current_mode = mode[0]
         if numterms is None or numterms < 0:
@@ -208,7 +212,9 @@ class SelectionWriterBase(metaclass=_Selectionmeta):
             out.write(" ".join(line))
             if len(line) == step and not iatom + step == len(selection.atoms):
                 out.write(" " + self.continuation + "\n")
-        out.write(" ")  # safe so that we don't have to put a space at the start of tail
+        out.write(
+            " "
+        )  # safe so that we don't have to put a space at the start of tail
         self._write_tail(out)
         out.write("\n")  # always terminate with newline
 

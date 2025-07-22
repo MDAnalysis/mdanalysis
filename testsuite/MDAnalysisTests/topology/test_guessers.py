@@ -160,7 +160,9 @@ def bond_sort(arr):
 
 def test_guess_bonds_water():
     u = mda.Universe(datafiles.two_water_gro)
-    bonds = bond_sort(guessers.guess_bonds(u.atoms, u.atoms.positions, u.dimensions))
+    bonds = bond_sort(
+        guessers.guess_bonds(u.atoms, u.atoms.positions, u.dimensions)
+    )
     assert_equal(bonds, ((0, 1), (0, 2), (3, 4), (3, 5)))
 
 

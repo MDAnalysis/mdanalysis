@@ -194,7 +194,9 @@ class OpenMMTopologyParser(TopologyReaderBase):
                         " but it will be removed in 3.0)."
                     )
 
-                attrs.append(Elements(np.array(validated_elements, dtype=object)))
+                attrs.append(
+                    Elements(np.array(validated_elements, dtype=object))
+                )
 
             else:
                 wmsg = (

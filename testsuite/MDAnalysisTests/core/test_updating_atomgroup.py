@@ -44,7 +44,9 @@ class TestUpdatingSelection(object):
 
     @pytest.fixture()
     def ag_updating(self, u):
-        return u.select_atoms("prop x < 5 and prop y < 5 and prop z < 5", updating=True)
+        return u.select_atoms(
+            "prop x < 5 and prop y < 5 and prop z < 5", updating=True
+        )
 
     @pytest.fixture()
     def ag_updating_compounded(self, u, ag):
@@ -52,7 +54,9 @@ class TestUpdatingSelection(object):
 
     @pytest.fixture()
     def ag_updating_chained(self, u, ag_updating):
-        return u.select_atoms("around 2 group sele", sele=ag_updating, updating=True)
+        return u.select_atoms(
+            "around 2 group sele", sele=ag_updating, updating=True
+        )
 
     @pytest.fixture()
     def ag_updating_chained2(self, ag_updating):
@@ -87,7 +91,9 @@ class TestUpdatingSelection(object):
         assert ag_updating._lastupdate is None
 
     def test_compounded_update(self, u, ag_updating_compounded):
-        target_idxs0 = np.array([3650, 7406, 22703, 31426, 40357, 40360, 41414])
+        target_idxs0 = np.array(
+            [3650, 7406, 22703, 31426, 40357, 40360, 41414]
+        )
         target_idxs1 = np.array(
             [3650, 8146, 23469, 23472, 31426, 31689, 31692, 34326, 41414]
         )
@@ -95,9 +101,13 @@ class TestUpdatingSelection(object):
         next(u.trajectory)
         assert_equal(ag_updating_compounded.indices, target_idxs1)
 
-    def test_chained_update(self, u, ag_updating_chained, ag_updating_compounded):
+    def test_chained_update(
+        self, u, ag_updating_chained, ag_updating_compounded
+    ):
         target_idxs = np.array([4471, 7406, 11973, 11975, 34662, 44042])
-        assert_equal(ag_updating_chained.indices, ag_updating_compounded.indices)
+        assert_equal(
+            ag_updating_chained.indices, ag_updating_compounded.indices
+        )
         next(u.trajectory)
         assert_equal(ag_updating_chained.indices, target_idxs)
 
@@ -285,7 +295,9 @@ def test_representations():
     rep = repr(ag_updating)
     assert "1 atom," in rep
 
-    ag_updating = u.atoms[:-1].select_atoms("bynum 1", "bynum 2", updating=True)
+    ag_updating = u.atoms[:-1].select_atoms(
+        "bynum 1", "bynum 2", updating=True
+    )
     rep = repr(ag_updating)
     assert "2 atoms," in rep
     assert "selections 'bynum 1' + 'bynum 2'" in rep

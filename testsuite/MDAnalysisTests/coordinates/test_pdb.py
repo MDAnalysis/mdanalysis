@@ -64,7 +64,9 @@ from numpy.testing import (
     assert_allclose,
 )
 
-IGNORE_NO_INFORMATION_WARNING = "ignore:Found no information for attr:UserWarning"
+IGNORE_NO_INFORMATION_WARNING = (
+    "ignore:Found no information for attr:UserWarning"
+)
 
 
 @pytest.fixture
@@ -114,7 +116,8 @@ class TestPDBReader(_SingleFrameReader):
 class TestPDBMetadata(object):
     header = "HYDROLASE                               11-MAR-12   4E43"
     title = [
-        "HIV PROTEASE (PR) DIMER WITH ACETATE IN EXO SITE AND PEPTIDE " "IN ACTIVE",
+        "HIV PROTEASE (PR) DIMER WITH ACETATE IN EXO SITE AND PEPTIDE "
+        "IN ACTIVE",
         "2 SITE",
     ]
     compnd = [
@@ -162,7 +165,9 @@ class TestPDBMetadata(object):
             len(self.title),
             err_msg="TITLE does not contain same number of lines",
         )
-        for lineno, (parsed, reference) in enumerate(zip(title, self.title), start=1):
+        for lineno, (parsed, reference) in enumerate(
+            zip(title, self.title), start=1
+        ):
             assert_equal(
                 parsed,
                 reference,
@@ -173,7 +178,9 @@ class TestPDBMetadata(object):
         try:
             compound = universe.trajectory.compound
         except AttributeError:
-            raise AssertionError("Reader does not have a 'compound' attribute.")
+            raise AssertionError(
+                "Reader does not have a 'compound' attribute."
+            )
         assert_equal(
             len(compound),
             len(self.compnd),
@@ -200,7 +207,9 @@ class TestPDBMetadata(object):
         )
         # only look at the first 5 entries
         for lineno, (parsed, reference) in enumerate(
-            zip(remarks[: self.nmax_remarks], self.remarks[: self.nmax_remarks]),
+            zip(
+                remarks[: self.nmax_remarks], self.remarks[: self.nmax_remarks]
+            ),
             start=1,
         ):
             assert_equal(
@@ -214,7 +223,9 @@ class TestExtendedPDBReader(_SingleFrameReader):
     __test__ = True
 
     def setUp(self):
-        self.universe = mda.Universe(PDB_small, topology_format="XPDB", format="XPDB")
+        self.universe = mda.Universe(
+            PDB_small, topology_format="XPDB", format="XPDB"
+        )
         # 3 decimals in PDB spec
         # http://www.wwpdb.org/documentation/format32/sect9.html#ATOM
         self.prec = 3
@@ -266,7 +277,9 @@ class TestPDBWriter(object):
 
     @pytest.fixture
     def outfile(self, tmpdir):
-        return str(tmpdir.mkdir("PDBWriter").join("primitive-pdb-writer" + self.ext))
+        return str(
+            tmpdir.mkdir("PDBWriter").join("primitive-pdb-writer" + self.ext)
+        )
 
     @pytest.fixture
     def u_no_ids(self):
@@ -285,7 +298,9 @@ class TestPDBWriter(object):
             trajectory=True,
         )
         universe.add_TopologyAttr("icodes", [" "] * len(universe.residues))
-        universe.add_TopologyAttr("record_types", ["ATOM"] * len(universe.atoms))
+        universe.add_TopologyAttr(
+            "record_types", ["ATOM"] * len(universe.atoms)
+        )
         universe.dimensions = [10, 10, 10, 90, 90, 90]
         return universe
 
@@ -392,7 +407,8 @@ class TestPDBWriter(object):
             u.atoms.positions,
             self.prec,
             err_msg="Written coordinates do not "
-            "agree with original coordinates from frame %d" % u.trajectory.frame,
+            "agree with original coordinates from frame %d"
+            % u.trajectory.frame,
         )
 
     def test_write_nodims(self, universe_and_expected_dims, outfile):
@@ -412,9 +428,7 @@ class TestPDBWriter(object):
         else:
             assert np.allclose(u.dimensions, expected_dims)
 
-        expected_msg = (
-            "Unit cell dimensions not found. CRYST1 record set to unitary values."
-        )
+        expected_msg = "Unit cell dimensions not found. CRYST1 record set to unitary values."
 
         with pytest.warns(UserWarning, match=expected_msg):
             u.atoms.write(outfile)
@@ -437,7 +451,8 @@ class TestPDBWriter(object):
             uout.atoms.positions,
             self.prec,
             err_msg="Written coordinates do not "
-            "agree with original coordinates from frame %d" % u.trajectory.frame,
+            "agree with original coordinates from frame %d"
+            % u.trajectory.frame,
         )
 
     def test_check_coordinate_limits_min(self, universe, outfile):
@@ -480,7 +495,9 @@ class TestPDBWriter(object):
                     assert got_title <= 1, "There should be only one TITLE."
 
     @pytest.mark.parametrize("startframe,maxframes", [(0, 12), (9997, 12)])
-    def test_check_MODEL_multiframe(self, universe2, outfile, startframe, maxframes):
+    def test_check_MODEL_multiframe(
+        self, universe2, outfile, startframe, maxframes
+    ):
         """Check whether MODEL number is in the right column (Issue #1950)"""
         u = universe2
         protein = u.select_atoms("protein and name CA")
@@ -550,12 +567,18 @@ class TestPDBWriter(object):
 
         u.atoms.write(outfile)
         written = mda.Universe(outfile)
-        written_atoms = written.select_atoms("resname ETA and " "record_type HETATM")
+        written_atoms = written.select_atoms(
+            "resname ETA and " "record_type HETATM"
+        )
 
         assert len(u_hetatms) == len(written_atoms), "mismatched HETATM number"
-        assert_almost_equal(u_hetatms.atoms.positions, written_atoms.atoms.positions)
+        assert_almost_equal(
+            u_hetatms.atoms.positions, written_atoms.atoms.positions
+        )
 
-    def test_default_atom_record_type_written(self, universe5, tmpdir, outfile):
+    def test_default_atom_record_type_written(
+        self, universe5, tmpdir, outfile
+    ):
         """
         Checks that ATOM record types are written when there is no
         record_type attribute.
@@ -1002,7 +1025,9 @@ class TestPDBReaderBig(RefAdK):
 
     def test_load_pdb(self, universe):
         U = universe
-        assert_equal(len(U.atoms), self.ref_n_atoms, "load Universe from big PDB")
+        assert_equal(
+            len(U.atoms), self.ref_n_atoms, "load Universe from big PDB"
+        )
         assert_equal(
             U.atoms.select_atoms("resid 150 and name HA2").atoms[0],
             U.atoms[self.ref_E151HA2_index],
@@ -1298,9 +1323,9 @@ def test_deduce_PDB_atom_name(atom, refname):
     # The Pair named tuple is used to mock atoms as we only need them to have a
     # ``resname`` and a ``name`` attribute.
     dummy_file = StringIO()
-    name = mda.coordinates.PDB.PDBWriter(dummy_file, n_atoms=1)._deduce_PDB_atom_name(
-        atom.name, atom.resname
-    )
+    name = mda.coordinates.PDB.PDBWriter(
+        dummy_file, n_atoms=1
+    )._deduce_PDB_atom_name(atom.name, atom.resname)
     assert_equal(name, refname)
 
 
@@ -1340,7 +1365,9 @@ class TestCrystModelOrder(object):
     def test_order(self, pdbfile):
         u = mda.Universe(pdbfile)
 
-        for ts, refbox, refpos in zip(u.trajectory, self.boxsize, self.position):
+        for ts, refbox, refpos in zip(
+            u.trajectory, self.boxsize, self.position
+        ):
             assert_almost_equal(u.dimensions[0], refbox)
             assert_almost_equal(u.atoms[0].position[0], refpos)
 
@@ -1384,7 +1411,9 @@ def test_write_pdb_zero_atoms(tmpdir):
 
 def test_atom_not_match(tmpdir):
     # issue 1998
-    outfile = str(tmpdir.mkdir("PDBReader").join("test_atom_not_match" + ".pdb"))
+    outfile = str(
+        tmpdir.mkdir("PDBReader").join("test_atom_not_match" + ".pdb")
+    )
     u = mda.Universe(PSF, DCD)
     # select two groups of atoms
     protein = u.select_atoms("protein and name CA")
@@ -1408,7 +1437,11 @@ def test_partially_missing_cryst():
     # mangle the cryst lines so that only box angles are left
     # this mimics '6edu' from PDB
     raw = [
-        (line if not line.startswith("CRYST") else line[:6] + " " * 28 + line[34:])
+        (
+            line
+            if not line.startswith("CRYST")
+            else line[:6] + " " * 28 + line[34:]
+        )
         for line in raw
     ]
 
@@ -1430,7 +1463,9 @@ def test_write_no_atoms_elements(dummy_universe_without_elements):
         writer.write(dummy_universe_without_elements.atoms)
         content = destination.getvalue()
     element_symbols = [
-        line[76:78].strip() for line in content.splitlines() if line[:6] == "ATOM  "
+        line[76:78].strip()
+        for line in content.splitlines()
+        if line[:6] == "ATOM  "
     ]
     expectation = ["", "", "", "", ""]
     assert element_symbols == expectation
@@ -1452,7 +1487,9 @@ def test_write_atom_elements(dummy_universe_without_elements):
         writer.write(dummy_universe_without_elements.atoms)
         content = destination.getvalue()
     element_symbols = [
-        line[76:78].strip() for line in content.splitlines() if line[:6] == "ATOM  "
+        line[76:78].strip()
+        for line in content.splitlines()
+        if line[:6] == "ATOM  "
     ]
     assert element_symbols == expectation
 
@@ -1476,7 +1513,9 @@ def test_elements_roundtrip(tmpdir):
 def test_cryst_meaningless_warning():
     # issue 2599
     # FIXME: This message might change with Issue #2698
-    with pytest.warns(UserWarning, match="Unit cell dimensions will be set to None."):
+    with pytest.warns(
+        UserWarning, match="Unit cell dimensions will be set to None."
+    ):
         mda.Universe(PDB_CRYOEM_BOX)
 
 
@@ -1549,7 +1588,9 @@ ATOM    664  CG2 THR A 315      22.874  15.310   1.747  1.00 17.32        B  C
 ATOM    665  OG1 THR A 315      21.047  13.922   1.304  1.00 15.14        B  O
 """
 
-    u_invalid_segid = mda.Universe(StringIO(invalid_seg_format_str), format="PDB")
+    u_invalid_segid = mda.Universe(
+        StringIO(invalid_seg_format_str), format="PDB"
+    )
     u_acceptable = mda.Universe(StringIO(acceptable_format_str), format="PDB")
     u_standard = mda.Universe(StringIO(standard_format_str), format="PDB")
 
@@ -1557,7 +1598,9 @@ ATOM    665  OG1 THR A 315      21.047  13.922   1.304  1.00 15.14        B  O
     # Thus, segids existed and were set to "B" for all atoms.
     # After version 2.10.0, segid is read from column 73-76.
     # segid is expected to set by chainID "A" for all atoms.
-    assert_equal(u_invalid_segid.atoms.segids, ["A"] * len(u_invalid_segid.atoms))
+    assert_equal(
+        u_invalid_segid.atoms.segids, ["A"] * len(u_invalid_segid.atoms)
+    )
 
     # Before version 2.10.0, segid was set to read from column 67-76.
     # Due to misalignment in b-factor column,

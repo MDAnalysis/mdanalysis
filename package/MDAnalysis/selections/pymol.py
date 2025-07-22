@@ -59,4 +59,6 @@ class SelectionWriter(base.SelectionWriterBase):
 
     def _write_head(self, out, **kwargs):
         out.write(self.comment("MDAnalysis PyMol selection"))
-        out.write("select {name!s}, ".format(**kwargs) + self.continuation + "\n")
+        out.write(
+            "select {name!s}, ".format(**kwargs) + self.continuation + "\n"
+        )
