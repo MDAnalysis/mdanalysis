@@ -63,6 +63,11 @@ Enhancements
    (PR #5038)
  * Moved distopia checking function to common import location in
    MDAnalysisTest.util (PR #5038)
+ * Added new method '_conclude_non_linear` to calculate time-averaged
+   mean square displacement in `package/MDAnalysis/analysis/msd.py`,
+   new bool keyword argument `non_linear=True` under `EinsteinMSD`
+   enables execution of this method.
+   (Issue #5028, PR #5066)
 
 Changes
  * Refactored the RDKit converter code to move the inferring code in a separate

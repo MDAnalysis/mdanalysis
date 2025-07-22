@@ -906,6 +906,7 @@ PDBX = (_data_ref / "4x8u.pdbx").as_posix()
 
 SURFACE_PDB = (_data_ref / "surface.pdb.bz2").as_posix()
 SURFACE_TRR = (_data_ref / "surface.trr").as_posix()
+LAMMPSDUMP_non_linear = (_data_ref / "custom_non_linear/test_non_linear.dump").as_posix()
 
 # DSSP testing: from https://github.com/ShintaroMinami/PyDSSP
 DSSP = (_data_ref / "dssp").as_posix()

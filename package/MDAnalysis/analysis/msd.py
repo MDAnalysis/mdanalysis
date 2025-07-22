@@ -173,7 +173,7 @@ is used to demonstrate selection of a MSD segment.
     start_index = int(start_time/timestep)
     end_time = 60
     linear_model = linregress(lagtimes[start_index:end_index],
-    				  		  msd[start_index:end_index])
+                                                  msd[start_index:end_index])
     slope = linear_model.slope
     error = linear_model.stderr
     # dim_fac is 3 as we computed a 3D msd with 'xyz'
@@ -264,9 +264,7 @@ due.cite(
 del Doi
 
 
-
 class EinsteinMSD(AnalysisBase):
-
     r"""Class to calculate Mean Squared Displacement by the Einstein relation.
 
     Parameters
@@ -284,6 +282,10 @@ class EinsteinMSD(AnalysisBase):
         the MSD. Otherwise, use the simple "windowed" algorithm.
         The tidynamics package is required for `fft=True`.
         Defaults to ``True``.
+    non_linear : bool
+        If ``True``, calculates MSD for trajectory where frames are
+        non-linearly dumped. To use this set `fft=False`.
+        Defaults to ``False``.
 
     Attributes
     ----------
@@ -293,6 +295,8 @@ class EinsteinMSD(AnalysisBase):
         The averaged MSD over all the particles with respect to lag-time.
     results.msds_by_particle : :class:`numpy.ndarray`
         The MSD of each individual particle with respect to lag-time.
+    results.delta_t_values : :class:`numpy.ndarray`
+        Array of unique Δt (time differences) at which time-averaged MSD values are computed.
     ag : :class:`AtomGroup`
         The :class:`AtomGroup` resulting from your selection
     n_frames : int
@@ -301,10 +305,12 @@ class EinsteinMSD(AnalysisBase):
         Number of particles MSD was calculated over.
 
 
-    .. versionadded:: 2.0.0
+    .. versionadded:: 2.10.0
     """
 
-    def __init__(self, u, select="all", msd_type="xyz", fft=True, non_linear = False, **kwargs):
+    def __init__(
+        self, u, select="all", msd_type="xyz", fft=True, non_linear=False, **kwargs
+    ):
         r"""
         Parameters
         ----------
@@ -319,11 +325,12 @@ class EinsteinMSD(AnalysisBase):
             If ``True``, uses a fast FFT based algorithm for computation of
             the MSD. Otherwise, use the simple "windowed" algorithm.
             The tidynamics package is required for `fft=True`.
+        non_linear : bool
+            If ``True``, calculates MSD for trajectory where frames are
+            non-linearly dumped. To use this set `fft=False`.
         """
         if isinstance(u, groups.UpdatingAtomGroup):
-            raise TypeError(
-                "UpdatingAtomGroups are not valid for MSD " "computation"
-            )
+            raise TypeError("UpdatingAtomGroups are not valid for MSD " "computation")
 
         super(EinsteinMSD, self).__init__(u.universe.trajectory, **kwargs)
 
@@ -347,12 +354,8 @@ class EinsteinMSD(AnalysisBase):
     def _prepare(self):
         # self.n_frames only available here
         # these need to be zeroed prior to each run() call
-        self.results.msds_by_particle = np.zeros(
-            (self.n_frames, self.n_particles)
-        )
-        self._position_array = np.zeros(
-            (self.n_frames, self.n_particles, self.dim_fac)
-        )
+        self.results.msds_by_particle = np.zeros((self.n_frames, self.n_particles))
+        self._position_array = np.zeros((self.n_frames, self.n_particles, self.dim_fac))
         # self.results.timeseries not set here
 
     def _parse_msd_type(self):
@@ -383,17 +386,16 @@ class EinsteinMSD(AnalysisBase):
         r"""Constructs array of positions for MSD calculation."""
         # shape of position array set here, use span in last dimension
         # from this point on
-        self._position_array[self._frame_index] = self.ag.positions[
-            :, self._dim
-        ]
+        self._position_array[self._frame_index] = self.ag.positions[:, self._dim]
 
     def _conclude(self):
-        if self.fft == True:
-            self._conclude_fft()
-        elif self.non_linear != True:
-            self._conclude_simple()
-        elif self.non_linear:
+        if self.non_linear:
             self._conclude_non_linear()
+        else:
+            if self.fft:
+                self._conclude_fft()
+            else:
+                self._conclude_simple()
 
     def _conclude_simple(self):
         r"""Calculates the MSD via the simple "windowed" algorithm."""
@@ -424,20 +426,19 @@ class EinsteinMSD(AnalysisBase):
 
         positions = self._position_array.astype(np.float64)
         for n in tqdm(range(self.n_particles)):
-            self.results.msds_by_particle[:, n] = tidynamics.msd(
-                positions[:, n, :]
-            )
+            self.results.msds_by_particle[:, n] = tidynamics.msd(positions[:, n, :])
         self.results.timeseries = self.results.msds_by_particle.mean(axis=1)
-    
 
     def _conclude_non_linear(self):
-        
+
         dump_times = self.times
         n_frames = self.n_frames
         n_atoms = self.n_particles
         positions = self._position_array.astype(np.float64)
 
-        msd_dict = collections.defaultdict(list) # Dictionary to collect MSDs: {Δt: [msd1, msd2, ...]}
+        msd_dict = collections.defaultdict(
+            list
+        )  # Dictionary to collect MSDs: {Δt: [msd1, msd2, ...]}
 
         # Looping over all the frames as if the referenced gets shifted frame to frame
         for i in range(n_frames):
@@ -446,7 +447,7 @@ class EinsteinMSD(AnalysisBase):
 
                 # Compute displacement and squared displacement
                 disp = positions[j] - positions[i]
-                squared_disp = np.sum(disp ** 2, axis=1)
+                squared_disp = np.sum(disp**2, axis=1)
                 msd = np.mean(squared_disp)
 
                 # Store MSD under corresponding Δt
@@ -462,6 +463,6 @@ class EinsteinMSD(AnalysisBase):
             avg_msd = np.mean(msd_list)
             delta_t_values.append(delta_t)
             avg_msds.append(avg_msd)
-        
+
         self.results.timeseries = np.array(avg_msds, dtype=np.float64)
         self.results.delta_t_values = np.array(delta_t_values, dtype=np.float64)

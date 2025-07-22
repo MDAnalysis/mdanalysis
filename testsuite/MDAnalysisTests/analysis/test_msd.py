@@ -28,7 +28,13 @@ import MDAnalysis as mda
 from numpy.testing import assert_almost_equal, assert_equal
 import numpy as np
 
-from MDAnalysisTests.datafiles import PSF, DCD, RANDOM_WALK, RANDOM_WALK_TOPO
+from MDAnalysisTests.datafiles import (
+    PSF,
+    DCD,
+    RANDOM_WALK,
+    RANDOM_WALK_TOPO,
+    LAMMPSDUMP_non_linear,
+)
 from MDAnalysisTests.util import block_import, import_not_available
 
 import pytest
@@ -124,9 +130,7 @@ class TestMSDSimple(object):
             ("z", 1),
         ],
     )
-    def test_simple_step_traj_all_dims(
-        self, step_traj, NSTEP, dim, dim_factor
-    ):
+    def test_simple_step_traj_all_dims(self, step_traj, NSTEP, dim, dim_factor):
         # testing the "simple" algorithm on constant velocity trajectory
         # should fit the polynomial y=dim_factor*x**2
         m_simple = MSD(step_traj, "all", msd_type=dim, fft=False)
@@ -146,18 +150,14 @@ class TestMSDSimple(object):
             ("z", 1),
         ],
     )
-    def test_simple_start_stop_step_all_dims(
-        self, step_traj, NSTEP, dim, dim_factor
-    ):
+    def test_simple_start_stop_step_all_dims(self, step_traj, NSTEP, dim, dim_factor):
         # testing the "simple" algorithm on constant velocity trajectory
         # test start stop step is working correctly
         m_simple = MSD(step_traj, "all", msd_type=dim, fft=False)
         m_simple.run(start=10, stop=1000, step=10)
         poly = characteristic_poly(NSTEP, dim_factor)
         # polynomial must take offset start into account
-        assert_almost_equal(
-            m_simple.results.timeseries, poly[0:990:10], decimal=4
-        )
+        assert_almost_equal(m_simple.results.timeseries, poly[0:990:10], decimal=4)
 
     def test_random_walk_u_simple(self, random_walk_u):
         # regress against random_walk test data
@@ -252,18 +252,14 @@ class TestMSDFFT(object):
             ("z", 1),
         ],
     )
-    def test_fft_start_stop_step_all_dims(
-        self, step_traj, NSTEP, dim, dim_factor
-    ):
+    def test_fft_start_stop_step_all_dims(self, step_traj, NSTEP, dim, dim_factor):
         # testing the fft algorithm on constant velocity trajectory
         # test start stop step is working correctly
         m_simple = MSD(step_traj, "all", msd_type=dim, fft=True)
         m_simple.run(start=10, stop=1000, step=10)
         poly = characteristic_poly(NSTEP, dim_factor)
         # polynomial must take offset start into account
-        assert_almost_equal(
-            m_simple.results.timeseries, poly[0:990:10], decimal=3
-        )
+        assert_almost_equal(m_simple.results.timeseries, poly[0:990:10], decimal=3)
 
     def test_random_walk_u_fft(self, random_walk_u):
         # regress against random_walk test data
@@ -272,3 +268,144 @@ class TestMSDFFT(object):
         norm = np.linalg.norm(msd_rw.results.timeseries)
         val = 3932.39927487146
         assert_almost_equal(norm, val, decimal=5)
+
+
+def test_msd_non_linear():
+    u = mda.Universe(LAMMPSDUMP_non_linear, format="LAMMPSDUMP")
+
+    msd = MSD(u, select="all", msd_type="xyz", non_linear=True)
+    msd.run()
+
+    result_msd = msd.results.timeseries
+    result_delta_t = msd.results.delta_t_values
+
+    assert result_msd.ndim == 1
+    assert result_msd.shape[0] > 0
+
+    assert result_delta_t.ndim == 1
+    assert result_delta_t.shape[0] > 0
+
+    expected_msd = np.array(
+        [
+            0.00000000e00,
+            7.70976963e-05,
+            2.90842662e-04,
+            6.55040347e-04,
+            1.20610926e-03,
+            2.52547250e-03,
+            3.31645965e-03,
+            5.38852795e-03,
+            1.01941562e-02,
+            1.24745603e-02,
+            1.35380300e-02,
+            1.57475527e-02,
+            2.85165801e-02,
+            3.50591021e-02,
+            3.81292797e-02,
+            3.96176470e-02,
+            3.83551274e-02,
+            5.51041371e-02,
+            5.95049433e-02,
+            6.07026502e-02,
+            6.14434181e-02,
+            6.19512436e-02,
+            6.61293773e-02,
+            9.46607497e-02,
+            1.01300585e-01,
+            9.96583811e-02,
+            9.81112279e-02,
+            9.72780657e-02,
+            9.69221886e-02,
+            1.29442431e-01,
+            1.80752226e-01,
+            1.86358673e-01,
+            1.98140564e-01,
+            2.00603000e-01,
+            1.99094789e-01,
+            1.97272787e-01,
+            1.96156023e-01,
+            2.67664446e-01,
+            4.50987076e-01,
+            4.02344442e-01,
+            3.91458056e-01,
+            4.10370922e-01,
+            4.22997445e-01,
+            4.26217251e-01,
+            4.26484034e-01,
+            4.26360794e-01,
+            6.91315347e-01,
+            9.94317423e-01,
+            1.19622365e00,
+            1.04919180e00,
+            1.06437594e00,
+            1.09426432e00,
+            1.10194082e00,
+            1.10275424e00,
+            1.10383947e00,
+            1.10493159e00,
+        ]
+    )
+
+    expected_delta_t = np.array(
+        [
+            0.000e00,
+            1.000e00,
+            2.000e00,
+            3.000e00,
+            4.000e00,
+            6.000e00,
+            7.000e00,
+            8.000e00,
+            1.200e01,
+            1.400e01,
+            1.500e01,
+            1.600e01,
+            2.400e01,
+            2.800e01,
+            3.000e01,
+            3.100e01,
+            3.200e01,
+            4.800e01,
+            5.600e01,
+            6.000e01,
+            6.200e01,
+            6.300e01,
+            6.400e01,
+            9.600e01,
+            1.120e02,
+            1.200e02,
+            1.240e02,
+            1.260e02,
+            1.270e02,
+            1.280e02,
+            1.920e02,
+            2.240e02,
+            2.400e02,
+            2.480e02,
+            2.520e02,
+            2.540e02,
+            2.550e02,
+            2.560e02,
+            3.840e02,
+            4.480e02,
+            4.800e02,
+            4.960e02,
+            5.040e02,
+            5.080e02,
+            5.100e02,
+            5.110e02,
+            5.120e02,
+            7.680e02,
+            8.960e02,
+            9.600e02,
+            9.920e02,
+            1.008e03,
+            1.016e03,
+            1.020e03,
+            1.022e03,
+            1.023e03,
+        ]
+    )
+
+    np.testing.assert_allclose(result_msd, expected_msd, rtol=1e-5)
+    np.testing.assert_allclose(result_delta_t, expected_delta_t, rtol=1e-5)
