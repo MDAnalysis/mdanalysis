@@ -48,9 +48,7 @@ class TestDihedral(object):
     @pytest.fixture()
     def atomgroup(self):
         u = mda.Universe(GRO, XTC)
-        ag = u.select_atoms(
-            "(resid 4 and name N CA C) or (resid 5 and name N)"
-        )
+        ag = u.select_atoms("(resid 4 and name N CA C) or (resid 5 and name N)")
         return ag
 
     def test_dihedral(self, atomgroup, client_Dihedral):
@@ -72,9 +70,7 @@ class TestDihedral(object):
         )
 
     def test_dihedral_single_frame(self, atomgroup, client_Dihedral):
-        dihedral = Dihedral([atomgroup]).run(
-            start=5, stop=6, **client_Dihedral
-        )
+        dihedral = Dihedral([atomgroup]).run(start=5, stop=6, **client_Dihedral)
         test_dihedral = [np.load(DihedralArray)[5]]
 
         assert_allclose(
@@ -120,9 +116,7 @@ class TestRamachandran(object):
         return np.load(RamaArray)
 
     def test_ramachandran(self, universe, rama_ref_array, client_Ramachandran):
-        rama = Ramachandran(universe.select_atoms("protein")).run(
-            **client_Ramachandran
-        )
+        rama = Ramachandran(universe.select_atoms("protein")).run(**client_Ramachandran)
 
         assert_allclose(
             rama.results.angles,
@@ -147,9 +141,7 @@ class TestRamachandran(object):
             err_msg="error: dihedral angles should " "match test values",
         )
 
-    def test_ramachandran_residue_selections(
-        self, universe, client_Ramachandran
-    ):
+    def test_ramachandran_residue_selections(self, universe, client_Ramachandran):
         rama = Ramachandran(universe.select_atoms("resname GLY")).run(
             **client_Ramachandran
         )
@@ -187,11 +179,7 @@ class TestRamachandran(object):
             rama = Ramachandran(u.select_atoms("protein").residues[1:-1])
 
     def test_plot(self, universe):
-        ax = (
-            Ramachandran(universe.select_atoms("resid 5-10"))
-            .run()
-            .plot(ref=True)
-        )
+        ax = Ramachandran(universe.select_atoms("resid 5-10")).run().plot(ref=True)
         assert isinstance(
             ax, matplotlib.axes.Axes
         ), "Ramachandran.plot() did not return and Axes instance"
@@ -272,9 +260,7 @@ class TestJanin(object):
         with pytest.raises(ValueError):
             u = mda.Universe(PDB_janin)
             janin = Janin(
-                u.select_atoms(
-                    "protein and not resname ALA CYS GLY " "PRO SER THR VAL"
-                )
+                u.select_atoms("protein and not resname ALA CYS GLY " "PRO SER THR VAL")
             )
 
     def test_plot(self, universe):

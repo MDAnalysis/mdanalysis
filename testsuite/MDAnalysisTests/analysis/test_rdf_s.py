@@ -120,9 +120,7 @@ def test_density(u, sels, density, value):
     assert_almost_equal(max(rdf.results.rdf[0][0][0]), value)
     if not density:
         s1 = u.select_atoms("name ZND and resid 289")
-        s2 = u.select_atoms(
-            "name OD1 and resid 51 and sphzone 5.0 (resid 289)"
-        )
+        s2 = u.select_atoms("name OD1 and resid 51 and sphzone 5.0 (resid 289)")
         rdf_ref = InterRDF(s1, s2).run()
         assert_almost_equal(rdf_ref.results.rdf, rdf.results.rdf[0][0][0])
 
@@ -145,9 +143,7 @@ def test_norm(u, sels, norm, value):
     assert_allclose(max(rdf.results.rdf[0][0][0]), value)
     if norm == "rdf":
         s1 = u.select_atoms("name ZND and resid 289")
-        s2 = u.select_atoms(
-            "name OD1 and resid 51 and sphzone 5.0 (resid 289)"
-        )
+        s2 = u.select_atoms("name OD1 and resid 51 and sphzone 5.0 (resid 289)")
         rdf_ref = InterRDF(s1, s2).run()
         assert_almost_equal(rdf_ref.results.rdf, rdf.results.rdf[0][0][0])
 

@@ -224,9 +224,7 @@ def test_bond_orders():
 def test_elements():
     u = mda.Universe(mol2_molecule)
 
-    assert_equal(
-        u.atoms.elements[:5], np.array(["N", "S", "N", "N", "O"], dtype="U3")
-    )
+    assert_equal(u.atoms.elements[:5], np.array(["N", "S", "N", "N", "O"], dtype="U3"))
 
 
 # Test for #2927
@@ -305,9 +303,7 @@ def test_partial_optional_columns():
 
 
 def test_mol2_wo_required_columns():
-    with pytest.raises(
-        ValueError, match="The @<TRIPOS>ATOM block in mol2 file"
-    ):
+    with pytest.raises(ValueError, match="The @<TRIPOS>ATOM block in mol2 file"):
         u = mda.Universe(StringIO(mol2_wo_required_col), format="MOL2")
 
 

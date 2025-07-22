@@ -377,17 +377,11 @@ def rotation_from_matrix(matrix):
     # rotation angle depending on direction
     cosa = (np.trace(R33) - 1.0) / 2.0
     if abs(direction[2]) > 1e-8:
-        sina = (
-            R[1, 0] + (cosa - 1.0) * direction[0] * direction[1]
-        ) / direction[2]
+        sina = (R[1, 0] + (cosa - 1.0) * direction[0] * direction[1]) / direction[2]
     elif abs(direction[1]) > 1e-8:
-        sina = (
-            R[0, 2] + (cosa - 1.0) * direction[0] * direction[2]
-        ) / direction[1]
+        sina = (R[0, 2] + (cosa - 1.0) * direction[0] * direction[2]) / direction[1]
     else:
-        sina = (
-            R[2, 1] + (cosa - 1.0) * direction[1] * direction[2]
-        ) / direction[0]
+        sina = (R[2, 1] + (cosa - 1.0) * direction[1] * direction[2]) / direction[0]
     angle = math.atan2(sina, cosa)
     return angle, direction, point
 
@@ -482,9 +476,7 @@ def scale_from_matrix(matrix):
     return factor, origin, direction
 
 
-def projection_matrix(
-    point, normal, direction=None, perspective=None, pseudo=False
-):
+def projection_matrix(point, normal, direction=None, perspective=None, pseudo=False):
     """Return matrix to project onto plane defined by point and normal.
 
     Using either perspective point, projection direction, or none of both.
@@ -536,9 +528,7 @@ def projection_matrix(
         M[3, 3] = np.dot(perspective, normal)
     elif direction is not None:
         # parallel projection
-        direction = np.array(
-            direction[:3], dtype=np.float64, copy=no_copy_shim
-        )
+        direction = np.array(direction[:3], dtype=np.float64, copy=no_copy_shim)
         scale = np.dot(direction, normal)
         M[:3, :3] -= np.outer(direction, normal) / scale
         M[:3, 3] = direction * (np.dot(point, normal) / scale)
@@ -614,9 +604,7 @@ def projection_from_matrix(matrix, pseudo=False):
         # perspective projection
         i = np.where(abs(np.real(l)) > 1e-8)[0]
         if not len(i):
-            raise ValueError(
-                "no eigenvector not corresponding to eigenvalue 0"
-            )
+            raise ValueError("no eigenvector not corresponding to eigenvalue 0")
         point = np.real(V[:, i[-1]]).squeeze()
         point /= point[3]
         normal = -M[3, :3]
@@ -742,9 +730,7 @@ def shear_from_matrix(matrix):
     l, V = np.linalg.eig(M33)
     i = np.where(abs(np.real(l) - 1.0) < 1e-4)[0]
     if len(i) < 2:
-        raise ValueError(
-            "no two linear independent eigenvectors found {0!s}".format(l)
-        )
+        raise ValueError("no two linear independent eigenvectors found {0!s}".format(l))
     V = np.real(V[:, i]).squeeze().T
     lenorm = -1.0
     for i0, i1 in ((0, 1), (0, 2), (1, 2)):

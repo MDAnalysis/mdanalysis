@@ -249,10 +249,7 @@ class LeafletFinder(object):
     def sizes(self):
         """Dict of component index with size of component."""
         return dict(
-            (
-                (idx, len(component))
-                for idx, component in enumerate(self.components)
-            )
+            ((idx, len(component)) for idx, component in enumerate(self.components))
         )
 
     def groups(self, component_index=None):

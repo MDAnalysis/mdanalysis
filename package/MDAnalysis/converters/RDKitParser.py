@@ -215,9 +215,7 @@ class RDKitParser(TopologyReaderBase):
             return top
 
         # check if multiple charges present
-        if atom.HasProp("_GasteigerCharge") and (
-            atom.HasProp("_TriposPartialCharge")
-        ):
+        if atom.HasProp("_GasteigerCharge") and (atom.HasProp("_TriposPartialCharge")):
             warnings.warn(
                 "Both _GasteigerCharge and _TriposPartialCharge properties "
                 "are present. Using Gasteiger charges by default."
@@ -259,9 +257,7 @@ class RDKitParser(TopologyReaderBase):
                 except KeyError:
                     # partial charge (MOL2 only)
                     try:
-                        charges.append(
-                            atom.GetDoubleProp("_TriposPartialCharge")
-                        )
+                        charges.append(atom.GetDoubleProp("_TriposPartialCharge"))
                     except KeyError:
                         pass
 

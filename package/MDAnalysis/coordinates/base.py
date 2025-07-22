@@ -132,7 +132,8 @@ from typing import Any, Union, Optional, List, Dict
 from .timestep import Timestep
 from . import core
 from .. import (
-    _READERS, _READER_HINTS,
+    _READERS,
+    _READER_HINTS,
     _SINGLEFRAME_WRITERS,
     _MULTIFRAME_WRITERS,
     _CONVERTERS,  # remove in 3.0.0 (Issue #3404)
@@ -158,6 +159,7 @@ class FrameIteratorBase(object):
     .. versionadded:: 0.19.0
 
     """
+
     def __init__(self, trajectory):
         self._trajectory = trajectory
 
@@ -193,6 +195,7 @@ class FrameIteratorSliced(FrameIteratorBase):
     .. versionadded:: 0.19.0
 
     """
+
     def __init__(self, trajectory, frames):
         # It would be easier to store directly a range object, as it would
         # store its parameters in a single place, calculate its length, and
@@ -200,7 +203,9 @@ class FrameIteratorSliced(FrameIteratorBase):
         # with python 2 where xrange (or range with six) is only an iterator.
         super(FrameIteratorSliced, self).__init__(trajectory)
         self._start, self._stop, self._step = trajectory.check_slice_indices(
-            frames.start, frames.stop, frames.step,
+            frames.start,
+            frames.stop,
+            frames.step,
         )
 
     def __len__(self):
@@ -215,8 +220,11 @@ class FrameIteratorSliced(FrameIteratorBase):
         if isinstance(frame, numbers.Integral):
             length = len(self)
             if not -length < frame < length:
-                raise IndexError('Index {} is out of range of the range of length {}.'
-                                 .format(frame, length))
+                raise IndexError(
+                    "Index {} is out of range of the range of length {}.".format(
+                        frame, length
+                    )
+                )
             if frame < 0:
                 frame = len(self) + frame
             frame = self.start + frame * self.step
@@ -285,6 +293,7 @@ class FrameIteratorAll(FrameIteratorBase):
     .. versionadded:: 0.19.0
 
     """
+
     def __init__(self, trajectory):
         super(FrameIteratorAll, self).__init__(trajectory)
 
@@ -313,6 +322,7 @@ class FrameIteratorIndices(FrameIteratorBase):
     --------
     FrameIteratorBase
     """
+
     def __init__(self, trajectory, frames):
         super(FrameIteratorIndices, self).__init__(trajectory)
         self._frames = []
@@ -354,7 +364,7 @@ class IOBase(object):
 
     #: dict with units of of *time* and *length* (and *velocity*, *force*,
     #: ... for formats that support it)
-    units = {'time': None, 'length': None, 'velocity': None}
+    units = {"time": None, "length": None, "velocity": None}
 
     def convert_pos_from_native(self, x, inplace=True):
         """Conversion of coordinate array x from native units to base units.
@@ -380,9 +390,8 @@ class IOBase(object):
            returned.
 
         """
-        f = units.get_conversion_factor('length',
-                                        self.units['length'], 'Angstrom')
-        if f == 1.:
+        f = units.get_conversion_factor("length", self.units["length"], "Angstrom")
+        if f == 1.0:
             return x
         if not inplace:
             return f * x
@@ -408,9 +417,8 @@ class IOBase(object):
 
         .. versionadded:: 0.7.5
         """
-        f = units.get_conversion_factor(
-            'speed', self.units['velocity'], 'Angstrom/ps')
-        if f == 1.:
+        f = units.get_conversion_factor("speed", self.units["velocity"], "Angstrom/ps")
+        if f == 1.0:
             return v
         if not inplace:
             return f * v
@@ -436,8 +444,9 @@ class IOBase(object):
         .. versionadded:: 0.7.7
         """
         f = units.get_conversion_factor(
-            'force', self.units['force'], 'kJ/(mol*Angstrom)')
-        if f == 1.:
+            "force", self.units["force"], "kJ/(mol*Angstrom)"
+        )
+        if f == 1.0:
             return force
         if not inplace:
             return f * force
@@ -470,9 +479,8 @@ class IOBase(object):
            returned.
 
         """
-        f = units.get_conversion_factor(
-            'time', self.units['time'], 'ps')
-        if f == 1.:
+        f = units.get_conversion_factor("time", self.units["time"], "ps")
+        if f == 1.0:
             return t
         if not inplace:
             return f * t
@@ -503,9 +511,8 @@ class IOBase(object):
            returned.
 
         """
-        f = units.get_conversion_factor(
-            'length', 'Angstrom', self.units['length'])
-        if f == 1.:
+        f = units.get_conversion_factor("length", "Angstrom", self.units["length"])
+        if f == 1.0:
             return x
         if not inplace:
             return f * x
@@ -531,9 +538,8 @@ class IOBase(object):
 
         .. versionadded:: 0.7.5
         """
-        f = units.get_conversion_factor(
-            'speed', 'Angstrom/ps', self.units['velocity'])
-        if f == 1.:
+        f = units.get_conversion_factor("speed", "Angstrom/ps", self.units["velocity"])
+        if f == 1.0:
             return v
         if not inplace:
             return f * v
@@ -560,8 +566,9 @@ class IOBase(object):
         .. versionadded:: 0.7.7
         """
         f = units.get_conversion_factor(
-            'force', 'kJ/(mol*Angstrom)', self.units['force'])
-        if f == 1.:
+            "force", "kJ/(mol*Angstrom)", self.units["force"]
+        )
+        if f == 1.0:
             return force
         if not inplace:
             return f * force
@@ -592,9 +599,8 @@ class IOBase(object):
            returned.
 
         """
-        f = units.get_conversion_factor(
-            'time', 'ps', self.units['time'])
-        if f == 1.:
+        f = units.get_conversion_factor("time", "ps", self.units["time"])
+        if f == 1.0:
             return t
         if not inplace:
             return f * t
@@ -603,7 +609,7 @@ class IOBase(object):
 
     def close(self):
         """Close the trajectory file."""
-        pass # pylint: disable=unnecessary-pass
+        pass  # pylint: disable=unnecessary-pass
 
     def __enter__(self):
         return self
@@ -620,11 +626,14 @@ class _Readermeta(abc.ABCMeta):
     .. versionchanged:: 1.0.0
        Added _format_hint functionality
     """
+
     # Auto register upon class creation
     def __init__(cls, name, bases, classdict):
-        type.__init__(type, name, bases, classdict)  # pylint: disable=non-parent-init-called
+        type.__init__(
+            type, name, bases, classdict
+        )  # pylint: disable=non-parent-init-called
         try:
-            fmt = asiterable(classdict['format'])
+            fmt = asiterable(classdict["format"])
         except KeyError:
             pass
         else:
@@ -632,9 +641,9 @@ class _Readermeta(abc.ABCMeta):
                 fmt_name = fmt_name.upper()
                 _READERS[fmt_name] = cls
 
-                if '_format_hint' in classdict:
+                if "_format_hint" in classdict:
                     # isn't bound yet, so access __func__
-                    _READER_HINTS[fmt_name] = classdict['_format_hint'].__func__
+                    _READER_HINTS[fmt_name] = classdict["_format_hint"].__func__
 
 
 class ProtoReader(IOBase, metaclass=_Readermeta):
@@ -676,7 +685,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         # initialise list to store added auxiliary readers in
         # subclasses should now call super
         self._auxs = {}
-        self._transformations=[]
+        self._transformations = []
 
     def __len__(self) -> int:
         return self.n_frames
@@ -695,8 +704,9 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         NotImplementedError
           when the number of atoms can't be deduced
         """
-        raise NotImplementedError("{} cannot deduce the number of atoms"
-                                  "".format(cls.__name__))
+        raise NotImplementedError(
+            "{} cannot deduce the number of atoms" "".format(cls.__name__)
+        )
 
     def next(self) -> Timestep:
         """Forward one step to next frame."""
@@ -766,7 +776,8 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         raise NotImplementedError(
             "Sorry, there is no Writer for this format in MDAnalysis. "
             "Please file an enhancement request at "
-            "https://github.com/MDAnalysis/mdanalysis/issues")
+            "https://github.com/MDAnalysis/mdanalysis/issues"
+        )
 
     def OtherWriter(self, filename, **kwargs):
         """Returns a writer appropriate for *filename*.
@@ -780,10 +791,10 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         :meth:`Reader.Writer` and :func:`MDAnalysis.Writer`
 
         """
-        kwargs['n_atoms'] = self.n_atoms  # essential
-        kwargs.setdefault('start', self.frame)
+        kwargs["n_atoms"] = self.n_atoms  # essential
+        kwargs.setdefault("start", self.frame)
         try:
-            kwargs.setdefault('dt', self.dt)
+            kwargs.setdefault("dt", self.dt)
         except KeyError:
             pass
         return core.writer(filename, **kwargs)
@@ -798,7 +809,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         ...
 
     def __iter__(self):
-        """ Iterate over trajectory frames. """
+        """Iterate over trajectory frames."""
         self._reopen()
         return self
 
@@ -808,14 +819,16 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
 
         Calling next after this should return the first frame
         """
-        pass # pylint: disable=unnecessary-pass
+        pass  # pylint: disable=unnecessary-pass
 
     def _apply_limits(self, frame):
         if frame < 0:
             frame += len(self)
         if frame < 0 or frame >= len(self):
-            raise IndexError("Index {} exceeds length of trajectory ({})."
-                             "".format(frame, len(self)))
+            raise IndexError(
+                "Index {} exceeds length of trajectory ({})."
+                "".format(frame, len(self))
+            )
         return frame
 
     def __getitem__(self, frame):
@@ -843,19 +856,24 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             return FrameIteratorIndices(self, frame)
         elif isinstance(frame, slice):
             start, stop, step = self.check_slice_indices(
-                frame.start, frame.stop, frame.step)
+                frame.start, frame.stop, frame.step
+            )
             if start == 0 and stop == len(self) and step == 1:
                 return FrameIteratorAll(self)
             else:
                 return FrameIteratorSliced(self, frame)
         else:
-            raise TypeError("Trajectories must be an indexed using an integer,"
-                            " slice or list of indices")
+            raise TypeError(
+                "Trajectories must be an indexed using an integer,"
+                " slice or list of indices"
+            )
 
     def _read_frame(self, frame):
         """Move to *frame* and fill timestep with data."""
-        raise TypeError("{0} does not support direct frame indexing."
-                        "".format(self.__class__.__name__))
+        raise TypeError(
+            "{0} does not support direct frame indexing."
+            "".format(self.__class__.__name__)
+        )
         # Example implementation in the DCDReader:
         # self._jump_to_frame(frame)
         # ts = self.ts
@@ -941,18 +959,18 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
 
         """
 
-        slice_dict = {'start': start, 'stop': stop, 'step': step}
+        slice_dict = {"start": start, "stop": stop, "step": step}
         for varname, var in slice_dict.items():
             if isinstance(var, numbers.Integral):
                 slice_dict[varname] = int(var)
-            elif (var is None):
+            elif var is None:
                 pass
             else:
                 raise TypeError("{0} is not an integer".format(varname))
 
-        start = slice_dict['start']
-        stop = slice_dict['stop']
-        step = slice_dict['step']
+        start = slice_dict["start"]
+        stop = slice_dict["stop"]
+        step = slice_dict["step"]
 
         if step == 0:
             raise ValueError("Step size is zero")
@@ -981,19 +999,22 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         return start, stop, step
 
     def __repr__(self):
-        return ("<{cls} {fname} with {nframes} frames of {natoms} atoms>"
-                "".format(
+        return "<{cls} {fname} with {nframes} frames of {natoms} atoms>" "".format(
             cls=self.__class__.__name__,
             fname=self.filename,
             nframes=self.n_frames,
-            natoms=self.n_atoms
-        ))
+            natoms=self.n_atoms,
+        )
 
-    def timeseries(self, asel: Optional['AtomGroup']=None,
-                   atomgroup: Optional['Atomgroup']=None,
-                   start: Optional[int]=None, stop: Optional[int]=None,
-                   step: Optional[int]=None,
-                   order: Optional[str]='fac') -> np.ndarray:
+    def timeseries(
+        self,
+        asel: Optional["AtomGroup"] = None,
+        atomgroup: Optional["Atomgroup"] = None,
+        start: Optional[int] = None,
+        stop: Optional[int] = None,
+        step: Optional[int] = None,
+        order: Optional[str] = "fac",
+    ) -> np.ndarray:
         """Return a subset of coordinate data for an AtomGroup
 
         Parameters
@@ -1037,7 +1058,8 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             warnings.warn(
                 "asel argument to timeseries will be renamed to"
                 "'atomgroup' in 3.0, see #3911",
-                category=DeprecationWarning)
+                category=DeprecationWarning,
+            )
             if atomgroup:
                 raise ValueError("Cannot provide both asel and atomgroup kwargs")
             atomgroup = asel
@@ -1046,8 +1068,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
 
         if atomgroup is not None:
             if len(atomgroup) == 0:
-                raise ValueError(
-                    "Timeseries requires at least one atom to analyze")
+                raise ValueError("Timeseries requires at least one atom to analyze")
             atom_numbers = atomgroup.indices
             natoms = len(atom_numbers)
         else:
@@ -1060,28 +1081,34 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             coordinates[i, :] = ts.positions[atom_numbers]
 
         # switch axes around
-        default_order = 'fac'
+        default_order = "fac"
         if order != default_order:
             try:
                 newidx = [default_order.index(i) for i in order]
             except ValueError:
-                raise ValueError(f"Unrecognized order key in {order}, "
-                                 "must be permutation of 'fac'")
+                raise ValueError(
+                    f"Unrecognized order key in {order}, "
+                    "must be permutation of 'fac'"
+                )
 
             try:
                 coordinates = np.moveaxis(coordinates, newidx, [0, 1, 2])
             except ValueError:
-                errmsg = ("Repeated or missing keys passed to argument "
-                          f"`order`: {order}, each key must be used once")
+                errmsg = (
+                    "Repeated or missing keys passed to argument "
+                    f"`order`: {order}, each key must be used once"
+                )
                 raise ValueError(errmsg)
         return coordinates
 
-# TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
-    def add_auxiliary(self,
-                      aux_spec: Union[str, Dict[str, str]] = None,
-                      auxdata: Union[str, AuxReader] = None,
-                      format: str = None,
-                      **kwargs) -> None:
+    # TODO: Change order of aux_spec and auxdata for 3.0 release, cf. Issue #3811
+    def add_auxiliary(
+        self,
+        aux_spec: Union[str, Dict[str, str]] = None,
+        auxdata: Union[str, AuxReader] = None,
+        format: str = None,
+        **kwargs,
+    ) -> None:
         """Add auxiliary data to be read alongside trajectory.
 
         Auxiliary data may be any data timeseries from the trajectory
@@ -1144,8 +1171,9 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         the :ref:`Auxiliary API`.
         """
         if auxdata is None:
-            raise ValueError("No input `auxdata` specified, but it needs "
-                             "to be provided.")
+            raise ValueError(
+                "No input `auxdata` specified, but it needs " "to be provided."
+            )
         if type(auxdata) not in list(_AUXREADERS.values()):
             # i.e. if auxdata is a file, not an instance of an AuxReader
             reader_type = get_auxreader_for(auxdata)
@@ -1169,11 +1197,11 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
 
     @property
     def aux_list(self):
-        """ Lists the names of added auxiliary data. """
+        """Lists the names of added auxiliary data."""
         return self._auxs.keys()
 
     def _check_for_aux(self, auxname):
-        """ Check for the existance of an auxiliary *auxname*. If present,
+        """Check for the existance of an auxiliary *auxname*. If present,
         return the AuxReader; if not, raise ValueError
         """
         if auxname in self.aux_list:
@@ -1182,7 +1210,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             raise ValueError("No auxiliary named {name}".format(name=auxname))
 
     def next_as_aux(self, auxname):
-        """ Move to the next timestep for which there is at least one step from
+        """Move to the next timestep for which there is at least one step from
         the auxiliary *auxname* within the cutoff specified in *auxname*.
 
         This allows progression through the trajectory without encountering
@@ -1214,7 +1242,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             raise StopIteration
         # some readers set self._frame to -1, rather than self.frame, on
         # _reopen; catch here or doesn't read first frame
-        while self.frame != next_frame or getattr(self, '_frame', 0) == -1:
+        while self.frame != next_frame or getattr(self, "_frame", 0) == -1:
             # iterate trajectory until frame is reached
             ts = self.next()
         return ts
@@ -1237,9 +1265,8 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             except StopIteration:
                 return
 
-    def iter_auxiliary(self, auxname, start=None, stop=None, step=None,
-                       selected=None):
-        """ Iterate through the auxiliary *auxname* independently of the trajectory.
+    def iter_auxiliary(self, auxname, start=None, stop=None, step=None, selected=None):
+        """Iterate through the auxiliary *auxname* independently of the trajectory.
 
         Will iterate over the specified steps of the auxiliary (defaults to all
         steps). Allows to access all values in an auxiliary, including those out
@@ -1292,7 +1319,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         return getattr(aux, attrname)
 
     def set_aux_attribute(self, auxname, attrname, new):
-        """ Set the value of *attrname* in the auxiliary *auxname*.
+        """Set the value of *attrname* in the auxiliary *auxname*.
 
         Parameters
         ----------
@@ -1309,13 +1336,13 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         :meth:`rename_aux` - to change the *auxname* attribute
         """
         aux = self._check_for_aux(auxname)
-        if attrname == 'auxname':
+        if attrname == "auxname":
             self.rename_aux(auxname, new)
         else:
             setattr(aux, attrname, new)
 
     def rename_aux(self, auxname, new):
-        """ Change the name of the auxiliary *auxname* to *new*.
+        """Change the name of the auxiliary *auxname* to *new*.
 
         Provided there is not already an auxiliary named *new*, the auxiliary
         name will be changed in ts.aux namespace, the trajectory's
@@ -1335,8 +1362,9 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         """
         aux = self._check_for_aux(auxname)
         if new in self.aux_list:
-            raise ValueError("Auxiliary data with name {name} already "
-                             "exists".format(name=new))
+            raise ValueError(
+                "Auxiliary data with name {name} already " "exists".format(name=new)
+            )
         aux.auxname = new
         self._auxs[new] = self._auxs.pop(auxname)
         setattr(self.ts.aux, new, self.ts.aux[auxname])
@@ -1373,7 +1401,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
 
     @property
     def transformations(self):
-        """ Returns the list of transformations"""
+        """Returns the list of transformations"""
         return self._transformations
 
     @transformations.setter
@@ -1427,18 +1455,19 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         try:
             self.transformations = transformations
         except ValueError:
-            errmsg = ("Can't add transformations again. Please create a new "
-                      "Universe object")
+            errmsg = (
+                "Can't add transformations again. Please create a new "
+                "Universe object"
+            )
             raise ValueError(errmsg) from None
         else:
             self.ts = self._apply_transformations(self.ts)
-
 
         # call reader here to apply the newly added transformation on the
         # current loaded frame?
 
     def _apply_transformations(self, ts):
-        """Applies all the transformations given by the user """
+        """Applies all the transformations given by the user"""
 
         for transform in self.transformations:
             ts = transform(ts)
@@ -1474,6 +1503,7 @@ class ReaderBase(ProtoReader):
        Removed deprecated flags functionality, use convert_units kwarg instead
 
     """
+
     @store_init_arguments
     def __init__(self, filename, convert_units=True, **kwargs):
         super(ReaderBase, self).__init__()
@@ -1485,7 +1515,7 @@ class ReaderBase(ProtoReader):
         self.convert_units = convert_units
 
         ts_kwargs = {}
-        for att in ('dt', 'time_offset'):
+        for att in ("dt", "time_offset"):
             try:
                 val = kwargs[att]
             except KeyError:
@@ -1538,14 +1568,14 @@ class _Writermeta(type):
         try:
             # grab the string which describes this format
             # could be either 'PDB' or ['PDB', 'ENT'] for multiple formats
-            fmt = asiterable(classdict['format'])
+            fmt = asiterable(classdict["format"])
         except KeyError:
             # not required however
             pass
         else:
             # does the Writer support single and multiframe writing?
-            single = classdict.get('singleframe', True)
-            multi = classdict.get('multiframe', False)
+            single = classdict.get("singleframe", True)
+            multi = classdict.get("multiframe", False)
 
             if single:
                 for f in fmt:
@@ -1612,7 +1642,9 @@ class WriterBase(IOBase, metaclass=_Writermeta):
 
     def __repr__(self):
         try:
-            return "< {0!s} {1!r} for {2:d} atoms >".format(self.__class__.__name__, self.filename, self.n_atoms)
+            return "< {0!s} {1!r} for {2:d} atoms >".format(
+                self.__class__.__name__, self.filename, self.n_atoms
+            )
         except (TypeError, AttributeError):
             # no trajectory loaded yet or a Writer that does not need e.g.
             # self.n_atoms
@@ -1659,6 +1691,7 @@ class SingleFrameReaderBase(ProtoReader):
        Fixed a typo in the attribute assignment (`self.atom` → `self.atoms`),
        which may affect subclasses relying on this value.
     """
+
     _err = "{0} only contains a single frame"
 
     @store_init_arguments
@@ -1672,7 +1705,7 @@ class SingleFrameReaderBase(ProtoReader):
         self.n_atoms = n_atoms
 
         ts_kwargs = {}
-        for att in ('dt', 'time_offset'):
+        for att in ("dt", "time_offset"):
             try:
                 val = kwargs[att]
             except KeyError:
@@ -1747,7 +1780,7 @@ class SingleFrameReaderBase(ProtoReader):
         pass
 
     def add_transformations(self, *transformations):
-        """ Add all transformations to be applied to the trajectory.
+        """Add all transformations to be applied to the trajectory.
 
         This function take as list of transformations as an argument. These
         transformations are functions that will be called by the Reader and given
@@ -1773,17 +1806,17 @@ class SingleFrameReaderBase(ProtoReader):
         --------
         :mod:`MDAnalysis.transformations`
         """
-        #Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`
-        #to avoid unintended behaviour where the coordinates of each frame are transformed
-        #multiple times when iterating over the trajectory.
-        #In this method, the trajectory is modified all at once and once only.
+        # Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`
+        # to avoid unintended behaviour where the coordinates of each frame are transformed
+        # multiple times when iterating over the trajectory.
+        # In this method, the trajectory is modified all at once and once only.
 
         super(SingleFrameReaderBase, self).add_transformations(*transformations)
         for transform in self.transformations:
             self.ts = transform(self.ts)
 
     def _apply_transformations(self, ts):
-        """ Applies the transformations to the timestep."""
+        """Applies the transformations to the timestep."""
         # Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`
         # to avoid applying the same transformations multiple times on each frame
 
@@ -1791,15 +1824,16 @@ class SingleFrameReaderBase(ProtoReader):
 
 
 def range_length(start, stop, step):
-    if (step > 0 and start < stop):
+    if step > 0 and start < stop:
         # We go from a lesser number to a larger one.
         return int(1 + (stop - 1 - start) // step)
-    elif (step < 0 and start > stop):
+    elif step < 0 and start > stop:
         # We count backward from a larger number to a lesser one.
         return int(1 + (start - 1 - stop) // (-step))
     else:
         # The range is empty.
         return 0
+
 
 # Verbatim copy of code from converters/base.py
 # Needed to avoid circular imports before removal in
@@ -1810,7 +1844,7 @@ class _Convertermeta(type):
     def __init__(cls, name, bases, classdict):
         type.__init__(type, name, bases, classdict)
         try:
-            fmt = asiterable(classdict['lib'])
+            fmt = asiterable(classdict["lib"])
         except KeyError:
             pass
         else:
@@ -1833,10 +1867,12 @@ class ConverterBase(IOBase, metaclass=_Convertermeta):
     """
 
     def __init_subclass__(cls):
-        wmsg = ("ConverterBase moved from coordinates.base."
-                "ConverterBase to converters.base.ConverterBase "
-                "and will be removed from coordinates.base "
-                "in MDAnalysis release 3.0.0")
+        wmsg = (
+            "ConverterBase moved from coordinates.base."
+            "ConverterBase to converters.base.ConverterBase "
+            "and will be removed from coordinates.base "
+            "in MDAnalysis release 3.0.0"
+        )
         warnings.warn(wmsg, DeprecationWarning, stacklevel=2)
 
     def __repr__(self):

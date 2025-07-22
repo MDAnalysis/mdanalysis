@@ -70,17 +70,13 @@ class TestUnwrap(object):
         if compound == "group":
             ref_unwrapped_pos = ref_unwrapped_pos[39:47]  # molecule 12
         elif compound == "segments":
-            ref_unwrapped_pos = ref_unwrapped_pos[
-                23:47
-            ]  # molecules 10, 11, 12
+            ref_unwrapped_pos = ref_unwrapped_pos[23:47]  # molecules 10, 11, 12
         # first, do the unwrapping out-of-place:
         unwrapped_pos = group.unwrap(
             compound=compound, reference=reference, inplace=False
         )
         # check for correct result:
-        assert_almost_equal(
-            unwrapped_pos, ref_unwrapped_pos, decimal=self.precision
-        )
+        assert_almost_equal(unwrapped_pos, ref_unwrapped_pos, decimal=self.precision)
         # make sure atom positions are unchanged:
         assert_array_equal(group.atoms.positions, orig_pos)
         # now, do the unwrapping inplace:
@@ -143,9 +139,7 @@ class TestUnwrap(object):
         # first, do the unwrapping out-of-place:
         group.unwrap(compound=compound, reference=reference, inplace=True)
         # check for correct result:
-        assert_almost_equal(
-            group.positions, ref_unwrapped_pos, decimal=self.precision
-        )
+        assert_almost_equal(group.positions, ref_unwrapped_pos, decimal=self.precision)
         # make sure the position of molecule 12's last atom is unchanged:
         assert_array_equal(u.atoms[46].position, orig_pos)
 
@@ -155,9 +149,7 @@ class TestUnwrap(object):
     )
     @pytest.mark.parametrize("reference", ("com", "cog", None))
     @pytest.mark.parametrize("is_triclinic", (False, True))
-    def test_unwrap_empty_group(
-        self, level, compound, reference, is_triclinic
-    ):
+    def test_unwrap_empty_group(self, level, compound, reference, is_triclinic):
         # get a pristine test universe:
         u = UnWrapUniverse(is_triclinic=is_triclinic)
         if level == "atoms":
@@ -168,9 +160,7 @@ class TestUnwrap(object):
             group = mda.SegmentGroup([], u)
         group.unwrap(compound=compound, reference=reference, inplace=True)
         # check for correct (empty) result:
-        assert_array_equal(
-            group.atoms.positions, np.empty((0, 3), dtype=np.float32)
-        )
+        assert_array_equal(group.atoms.positions, np.empty((0, 3), dtype=np.float32))
 
     @pytest.mark.parametrize("level", ("atoms", "residues", "segments"))
     @pytest.mark.parametrize(
@@ -350,9 +340,7 @@ class TestUnwrap(object):
         "compound", ("fragments", "molecules", "residues", "group", "segments")
     )
     @pytest.mark.parametrize("reference", ("com", "cog", None))
-    def test_unwrap_no_bonds_exception_safety(
-        self, level, compound, reference
-    ):
+    def test_unwrap_no_bonds_exception_safety(self, level, compound, reference):
         # universe without bonds:
         u = UnWrapUniverse(have_bonds=False)
         # select group appropriate for compound:
@@ -394,9 +382,7 @@ class TestUnwrap(object):
         # store original positions:
         orig_pos = group.atoms.positions
         with pytest.raises(NoDataError):
-            group.unwrap(
-                compound="molecules", reference=reference, inplace=True
-            )
+            group.unwrap(compound="molecules", reference=reference, inplace=True)
         assert_array_equal(group.atoms.positions, orig_pos)
 
 
@@ -421,6 +407,4 @@ def test_uncontiguous():
     )
     # Ok, let's make it whole again and check that we're good
     u.atoms.unwrap()
-    assert_almost_equal(
-        ref_pos, ag.positions + displacement_vec, decimal=precision
-    )
+    assert_almost_equal(ref_pos, ag.positions + displacement_vec, decimal=precision)

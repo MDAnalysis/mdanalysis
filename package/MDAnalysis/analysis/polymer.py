@@ -83,14 +83,11 @@ def sort_backbone(backbone):
             "".format(",".join(str(a) for a in branches))
         )
 
-    caps = [
-        atom for atom in backbone if len(atom.bonded_atoms & backbone) == 1
-    ]
+    caps = [atom for atom in backbone if len(atom.bonded_atoms & backbone) == 1]
     if not caps:
         # cyclical structure
         raise ValueError(
-            "Could not find starting point of backbone, "
-            "is the backbone cyclical?"
+            "Could not find starting point of backbone, " "is the backbone cyclical?"
         )
 
     # arbitrarily choose one of the capping atoms to be the startpoint

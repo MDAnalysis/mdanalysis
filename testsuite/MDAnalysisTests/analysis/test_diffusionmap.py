@@ -55,9 +55,7 @@ def test_eg(dist, dmap):
 def test_dist_weights(u):
     backbone = u.select_atoms("backbone")
     weights_atoms = np.ones(len(backbone.atoms))
-    dist = diffusionmap.DistanceMatrix(
-        u, select="backbone", weights=weights_atoms
-    )
+    dist = diffusionmap.DistanceMatrix(u, select="backbone", weights=weights_atoms)
     dist.run(step=3)
     dmap = diffusionmap.DiffusionMap(dist)
     dmap.run()
@@ -79,9 +77,7 @@ def test_dist_weights(u):
 def test_dist_weights_frames(u):
     backbone = u.select_atoms("backbone")
     weights_atoms = np.ones(len(backbone.atoms))
-    dist = diffusionmap.DistanceMatrix(
-        u, select="backbone", weights=weights_atoms
-    )
+    dist = diffusionmap.DistanceMatrix(u, select="backbone", weights=weights_atoms)
     frames = np.arange(len(u.trajectory))
     dist.run(frames=frames[::3])
     dmap = diffusionmap.DiffusionMap(dist)
@@ -105,18 +101,14 @@ def test_distvalues_ag_universe(u):
     dist_universe = diffusionmap.DistanceMatrix(u, select="backbone").run()
     ag = u.select_atoms("backbone")
     dist_ag = diffusionmap.DistanceMatrix(ag).run()
-    assert_allclose(
-        dist_universe.results.dist_matrix, dist_ag.results.dist_matrix
-    )
+    assert_allclose(dist_universe.results.dist_matrix, dist_ag.results.dist_matrix)
 
 
 def test_distvalues_ag_select(u):
     dist_universe = diffusionmap.DistanceMatrix(u, select="backbone").run()
     ag = u.select_atoms("protein")
     dist_ag = diffusionmap.DistanceMatrix(ag, select="backbone").run()
-    assert_allclose(
-        dist_universe.results.dist_matrix, dist_ag.results.dist_matrix
-    )
+    assert_allclose(dist_universe.results.dist_matrix, dist_ag.results.dist_matrix)
 
 
 def test_different_steps(u):

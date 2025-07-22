@@ -411,14 +411,10 @@ def anyopen(datasource, mode="rt", reset=True):
             if stream is None:
                 raise IOError(
                     errno.EIO,
-                    "Cannot open file or stream in mode={mode!r}.".format(
-                        **vars()
-                    ),
+                    "Cannot open file or stream in mode={mode!r}.".format(**vars()),
                     repr(filename),
                 )
-    elif mode.startswith("w") or mode.startswith(
-        "a"
-    ):  # append 'a' not tested...
+    elif mode.startswith("w") or mode.startswith("a"):  # append 'a' not tested...
         if isstream(datasource):
             stream = datasource
             try:
@@ -438,9 +434,7 @@ def anyopen(datasource, mode="rt", reset=True):
             if stream is None:
                 raise IOError(
                     errno.EIO,
-                    "Cannot open file or stream in mode={mode!r}.".format(
-                        **vars()
-                    ),
+                    "Cannot open file or stream in mode={mode!r}.".format(**vars()),
                     repr(filename),
                 )
     else:
@@ -705,9 +699,7 @@ class NamedStream(io.IOBase, os.PathLike):
         # on __del__ and super on python 3. Let's warn the user and ensure the
         # class works normally.
         if isinstance(stream, NamedStream):
-            warnings.warn(
-                "Constructed NamedStream from a NamedStream", RuntimeWarning
-            )
+            warnings.warn("Constructed NamedStream from a NamedStream", RuntimeWarning)
             stream = stream.stream
         self.stream = stream
         self.name = filename
@@ -959,9 +951,7 @@ def realpath(*args):
     """
     if None in args:
         return None
-    return os.path.realpath(
-        os.path.expanduser(os.path.expandvars(os.path.join(*args)))
-    )
+    return os.path.realpath(os.path.expanduser(os.path.expandvars(os.path.join(*args))))
 
 
 def get_ext(filename):
@@ -1179,10 +1169,7 @@ class FixedcolumnEntry(object):
         try:
             return self.convertor(line[self.start : self.stop])
         except ValueError:
-            errmsg = (
-                f"{self}: Failed to read&convert "
-                f"{line[self.start:self.stop]}"
-            )
+            errmsg = f"{self}: Failed to read&convert " f"{line[self.start:self.stop]}"
             raise ValueError(errmsg) from None
 
     def __len__(self):
@@ -1233,18 +1220,14 @@ class FORTRANReader(object):
 
         """
         self.fmt = fmt.split(",")
-        descriptors = [
-            self.parse_FORTRAN_format(descriptor) for descriptor in self.fmt
-        ]
+        descriptors = [self.parse_FORTRAN_format(descriptor) for descriptor in self.fmt]
         start = 0
         self.entries = []
         for d in descriptors:
             if d["format"] != "X":
                 for x in range(d["repeat"]):
                     stop = start + d["length"]
-                    self.entries.append(
-                        FixedcolumnEntry(start, stop, d["format"])
-                    )
+                    self.entries.append(FixedcolumnEntry(start, stop, d["format"]))
                     start = stop
             else:
                 start += d["totallength"]
@@ -1315,9 +1298,7 @@ class FORTRANReader(object):
         m = _FORTRAN_format_pattern.match(edit_descriptor.upper())
         if m is None:
             try:
-                m = _FORTRAN_format_pattern.match(
-                    "1" + edit_descriptor.upper()
-                )
+                m = _FORTRAN_format_pattern.match("1" + edit_descriptor.upper())
                 if m is None:
                     raise ValueError  # really no idea what the descriptor is supposed to mean
             except:
@@ -1480,9 +1461,7 @@ canonical_inverse_aa_codes = {
 }
 #: translation table for 1-letter codes --> *canonical* 3-letter codes.
 #: The table is used for :func:`convert_aa_code`.
-amino_acid_codes = {
-    one: three for three, one in canonical_inverse_aa_codes.items()
-}
+amino_acid_codes = {one: three for three, one in canonical_inverse_aa_codes.items()}
 #: non-default charge state amino acids or special charge state descriptions
 #: (Not fully synchronized with :class:`MDAnalysis.core.selection.ProteinSelection`.)
 # fmt: off
@@ -1757,9 +1736,7 @@ def unique_rows(arr, return_index=False):
         )
         return u.view(arr.dtype).reshape(-1, m), r_idx
     else:
-        u = np.unique(
-            arr.view(dtype=np.dtype([(str(i), arr.dtype) for i in range(m)]))
-        )
+        u = np.unique(arr.view(dtype=np.dtype([(str(i), arr.dtype) for i in range(m)])))
         return u.view(arr.dtype).reshape(-1, m)
 
 
@@ -2026,9 +2003,7 @@ def warn_if_not_unique(groupmethod):
         if group.isunique or warn_if_not_unique.warned:
             return groupmethod(group, *args, **kwargs)
         # Otherwise, throw a DuplicateWarning and execute the method.
-        method_name = ".".join(
-            (group.__class__.__name__, groupmethod.__name__)
-        )
+        method_name = ".".join((group.__class__.__name__, groupmethod.__name__))
         # Try to get the group's variable name(s):
         caller_locals = inspect.currentframe().f_back.f_locals.items()
         group_names = []
@@ -2045,9 +2020,8 @@ def warn_if_not_unique(groupmethod):
         else:
             group_name = " a.k.a. ".join(sorted(group_names))
         group_repr = repr(group)
-        msg = (
-            "{}(): {} {} contains duplicates. Results might be biased!"
-            "".format(method_name, group_name, group_repr)
+        msg = "{}(): {} {} contains duplicates. Results might be biased!" "".format(
+            method_name, group_name, group_repr
         )
         warnings.warn(message=msg, category=DuplicateWarning, stacklevel=2)
         warn_if_not_unique.warned = True
@@ -2183,14 +2157,11 @@ def check_coords(*coord_names, **options):
     allow_single = options.get("allow_single", True)
     convert_single = options.get("convert_single", True)
     reduce_result_if_single = options.get("reduce_result_if_single", True)
-    check_lengths_match = options.get(
-        "check_lengths_match", len(coord_names) > 1
-    )
+    check_lengths_match = options.get("check_lengths_match", len(coord_names) > 1)
     allow_atomgroup = options.get("allow_atomgroup", False)
     if not coord_names:
         raise ValueError(
-            "Decorator check_coords() cannot be used without "
-            "positional arguments."
+            "Decorator check_coords() cannot be used without " "positional arguments."
         )
 
     def check_coords_decorator(func):
@@ -2236,9 +2207,7 @@ def check_coords(*coord_names, **options):
                         raise ValueError(errmsg)
                 if enforce_dtype:
                     try:
-                        coords = coords.astype(
-                            np.float32, order="C", copy=enforce_copy
-                        )
+                        coords = coords.astype(np.float32, order="C", copy=enforce_copy)
                     except ValueError:
                         errmsg = (
                             f"{fname}(): {argname}.dtype must be"
@@ -2298,15 +2267,11 @@ def check_coords(*coord_names, **options):
             for name in coord_names:
                 idx = posargnames.index(name)
                 if idx < len(args):
-                    args[idx], is_single, ncoord = _check_coords(
-                        args[idx], name
-                    )
+                    args[idx], is_single, ncoord = _check_coords(args[idx], name)
                     all_single &= is_single
                     ncoords.append(ncoord)
                 else:
-                    kwargs[name], is_single, ncoord = _check_coords(
-                        kwargs[name], name
-                    )
+                    kwargs[name], is_single, ncoord = _check_coords(kwargs[name], name)
                     all_single &= is_single
                     ncoords.append(ncoord)
             if check_lengths_match and ncoords:
@@ -2394,8 +2359,7 @@ class _Deprecate(object):
         self.new_name = new_name
         if release is None:
             raise ValueError(
-                "deprecate: provide release in which "
-                "feature was deprecated."
+                "deprecate: provide release in which " "feature was deprecated."
             )
         self.release = str(release)
         self.remove = str(remove) if remove is not None else remove

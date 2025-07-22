@@ -179,9 +179,7 @@ def test_closeContactGNMAnalysis_weights_None(universe, client_GNMAnalysis):
 
 def test_closeContactGNMAnalysis_select_CA(universe, client_GNMAnalysis):
     # Issue #4924 fix the bug of CA selection
-    gnm = mda.analysis.gnm.closeContactGNMAnalysis(
-        universe, "name CA", weights=None
-    )
+    gnm = mda.analysis.gnm.closeContactGNMAnalysis(universe, "name CA", weights=None)
     gnm.run(stop=2, **client_GNMAnalysis)
     result = gnm.results
     assert len(result.times) == 2

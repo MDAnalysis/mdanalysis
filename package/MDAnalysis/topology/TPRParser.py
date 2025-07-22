@@ -242,9 +242,7 @@ class TPRParser(TopologyReaderBase):
         if state_ngtc > 0:
             if th.fver < 69:  # redundancy due to  different versions
                 tpr_utils.ndo_real(data, state_ngtc)
-            tpr_utils.ndo_real(
-                data, state_ngtc
-            )  # relevant to Berendsen tcoupl_lambda
+            tpr_utils.ndo_real(data, state_ngtc)  # relevant to Berendsen tcoupl_lambda
 
         if th.bTop:
             tpr_top = tpr_utils.do_mtop(

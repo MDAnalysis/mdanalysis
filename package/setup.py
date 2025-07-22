@@ -78,9 +78,7 @@ try:
         print(
             "Cython version {0} was found but won't be used: version {1} "
             "or greater is required because it offers a handy "
-            "parallelization module".format(
-                Cython.__version__, required_version
-            )
+            "parallelization module".format(Cython.__version__, required_version)
         )
         cython_found = False
     cython_linetrace = bool(os.environ.get("CYTHON_TRACE_NOGIL", False))
@@ -179,9 +177,7 @@ def get_numpy_include():
         import numpy as np
     except ImportError:
         print('*** package "numpy" not found ***')
-        print(
-            "MDAnalysis requires a version of NumPy (>=1.21.0), even for setup."
-        )
+        print("MDAnalysis requires a version of NumPy (>=1.21.0), even for setup.")
         print(
             "Please get it from http://numpy.scipy.org/ or install it through "
             "your package manager."
@@ -456,12 +452,10 @@ def extensions(config):
     ap_clustering = MDAExtension(
         "MDAnalysis.analysis.encore.clustering.affinityprop",
         sources=[
-            "MDAnalysis/analysis/encore/clustering/affinityprop"
-            + source_suffix,
+            "MDAnalysis/analysis/encore/clustering/affinityprop" + source_suffix,
             "MDAnalysis/analysis/encore/clustering/src/ap.c",
         ],
-        include_dirs=include_dirs
-        + ["MDAnalysis/analysis/encore/clustering/include"],
+        include_dirs=include_dirs + ["MDAnalysis/analysis/encore/clustering/include"],
         libraries=mathlib,
         define_macros=define_macros,
         extra_compile_args=encore_compile_args,
@@ -605,9 +599,7 @@ def dynamic_author_list():
 
         # Write the list of authors as a python list
         template = "__authors__ = [\n{}\n]"
-        author_string = ",\n".join(
-            '    u"{}"'.format(name) for name in authors
-        )
+        author_string = ",\n".join('    u"{}"'.format(name) for name in authors)
         print(template.format(author_string), file=outfile)
 
 
@@ -617,9 +609,7 @@ def long_description(readme):
     with open(abspath(readme)) as summary:
         buffer = summary.read()
     # remove top heading that messes up pypi display
-    m = re.search(
-        "====*\n[^\n]*README[^\n]*\n=====*\n", buffer, flags=re.DOTALL
-    )
+    m = re.search("====*\n[^\n]*README[^\n]*\n=====*\n", buffer, flags=re.DOTALL)
     assert m, "README.rst does not contain a level-1 heading"
     return buffer[m.end() :]
 
@@ -656,10 +646,7 @@ if __name__ == "__main__":
     )
 
     # Releases keep their cythonized stuff for shipping.
-    if (
-        not config.get("keep_cythonized", default=is_release)
-        and not cython_linetrace
-    ):
+    if not config.get("keep_cythonized", default=is_release) and not cython_linetrace:
         for cythonized in cythonfiles:
             try:
                 os.unlink(cythonized)

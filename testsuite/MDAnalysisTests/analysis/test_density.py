@@ -51,9 +51,7 @@ class TestDensity(object):
     def h_and_edges(self, bins):
         return np.histogramdd(
             self.Lmax
-            * np.sin(np.linspace(0, 1, self.counts * 3)).reshape(
-                self.counts, 3
-            ),
+            * np.sin(np.linspace(0, 1, self.counts * 3)).reshape(self.counts, 3),
             bins=bins,
         )
 
@@ -241,9 +239,7 @@ class DensityParameters(object):
 
     @pytest.fixture()
     def universe(self):
-        return mda.Universe(
-            self.topology, self.trajectory, tpr_resid_from_one=False
-        )
+        return mda.Universe(self.topology, self.trajectory, tpr_resid_from_one=False)
 
 
 class TestDensityAnalysis(DensityParameters):
@@ -369,9 +365,7 @@ class TestDensityAnalysis(DensityParameters):
         self, universe, client_DensityAnalysis
     ):
         # Test len(gridcenter) != 3
-        with pytest.raises(
-            ValueError, match="Gridcenter must be a 3D coordinate"
-        ):
+        with pytest.raises(ValueError, match="Gridcenter must be a 3D coordinate"):
             D = density.DensityAnalysis(
                 universe.select_atoms(self.selections["static"]),
                 delta=self.delta,
@@ -385,9 +379,7 @@ class TestDensityAnalysis(DensityParameters):
         self, universe, client_DensityAnalysis
     ):
         # Test gridcenter includes non-numeric strings
-        with pytest.raises(
-            ValueError, match="Gridcenter must be a 3D coordinate"
-        ):
+        with pytest.raises(ValueError, match="Gridcenter must be a 3D coordinate"):
             D = density.DensityAnalysis(
                 universe.select_atoms(self.selections["static"]),
                 delta=self.delta,
@@ -411,13 +403,9 @@ class TestDensityAnalysis(DensityParameters):
                 zdim=10.0,
             ).run(step=5, **client_DensityAnalysis)
 
-    def test_ValueError_userdefn_xdim_type(
-        self, universe, client_DensityAnalysis
-    ):
+    def test_ValueError_userdefn_xdim_type(self, universe, client_DensityAnalysis):
         # Test xdim != int or float
-        with pytest.raises(
-            ValueError, match="xdim, ydim, and zdim must be numbers"
-        ):
+        with pytest.raises(ValueError, match="xdim, ydim, and zdim must be numbers"):
             D = density.DensityAnalysis(
                 universe.select_atoms(self.selections["static"]),
                 delta=self.delta,
@@ -427,9 +415,7 @@ class TestDensityAnalysis(DensityParameters):
                 gridcenter=self.gridcenters["static_defined"],
             ).run(step=5, **client_DensityAnalysis)
 
-    def test_ValueError_userdefn_xdim_nanvalue(
-        self, universe, client_DensityAnalysis
-    ):
+    def test_ValueError_userdefn_xdim_nanvalue(self, universe, client_DensityAnalysis):
         # Test  xdim set to NaN value
         regex = "Gridcenter or grid dimensions have NaN element"
         with pytest.raises(ValueError, match=regex):
@@ -476,9 +462,7 @@ class TestDensityAnalysis(DensityParameters):
             ).run(step=5, **client_DensityAnalysis)
 
     def test_warn_results_deprecated(self, universe, client_DensityAnalysis):
-        D = density.DensityAnalysis(
-            universe.select_atoms(self.selections["static"])
-        )
+        D = density.DensityAnalysis(universe.select_atoms(self.selections["static"]))
         D.run(stop=1, **client_DensityAnalysis)
         wmsg = "The `density` attribute was deprecated in MDAnalysis 2.0.0"
         with pytest.warns(DeprecationWarning, match=wmsg):

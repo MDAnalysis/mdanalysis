@@ -216,9 +216,7 @@ def _find_torsions(root, atoms):
         for a1 in selected_atoms:
             # Find a0, which is a new atom connected to the selected atom
             a0_list = _sort_atoms_by_mass(
-                a
-                for a in a1.bonded_atoms
-                if (a in atoms) and (a not in selected_atoms)
+                a for a in a1.bonded_atoms if (a in atoms) and (a not in selected_atoms)
             )
             for a0 in a0_list:
                 # Find a2, which is connected to a1, is not a terminal atom,
@@ -381,9 +379,7 @@ class BAT(AnalysisBase):
         self._primary_torsion_indices = [
             prior_atoms.index(prior_atoms[n]) for n in range(len(prior_atoms))
         ]
-        self._unique_primary_torsion_indices = list(
-            set(self._primary_torsion_indices)
-        )
+        self._unique_primary_torsion_indices = list(set(self._primary_torsion_indices))
 
         self._ag1 = mda.AtomGroup([ag[0] for ag in self._torsions])
         self._ag2 = mda.AtomGroup([ag[1] for ag in self._torsions])
@@ -422,8 +418,7 @@ class BAT(AnalysisBase):
                     1.0,
                     np.einsum("i,i->", v01, v21)
                     / np.sqrt(
-                        np.einsum("i,i->", v01, v01)
-                        * np.einsum("i,i->", v21, v21)
+                        np.einsum("i,i->", v01, v01) * np.einsum("i,i->", v21, v21)
                     ),
                 ),
             )
@@ -437,9 +432,7 @@ class BAT(AnalysisBase):
         sp = np.sin(phi)
         ct = np.cos(theta)
         st = np.sin(theta)
-        Rz = np.array(
-            [[cp * ct, ct * sp, -st], [-sp, cp, 0], [cp * st, sp * st, ct]]
-        )
+        Rz = np.array([[cp * ct, ct * sp, -st], [-sp, cp, 0], [cp * st, sp * st, ct]])
         pos2 = Rz.dot(p2 - p1)
         # Angle about the rotation axis
         omega = np.arctan2(pos2[1], pos2[0])
@@ -576,9 +569,7 @@ class BAT(AnalysisBase):
         ct = np.cos(theta)
         st = np.sin(theta)
         # $R_Z(\phi) R_Y(\theta)$
-        Re = np.array(
-            [[cp * ct, -sp, cp * st], [ct * sp, cp, sp * st], [-st, 0, ct]]
-        )
+        Re = np.array([[cp * ct, -sp, cp * st], [ct * sp, cp, sp * st], [-st, 0, ct]])
         p1 = Re.dot(p1)
         p2 = Re.dot(p2)
         # Translate the first three atoms by the origin

@@ -180,9 +180,7 @@ def guess_types(atom_names):
     -------
     atom_types : np.ndarray dtype object
     """
-    return np.array(
-        [guess_atom_element(name) for name in atom_names], dtype=object
-    )
+    return np.array([guess_atom_element(name) for name in atom_names], dtype=object)
 
 
 @deprecate(release="2.8.0", remove="3.0.0", message=deprecation_msg)
@@ -426,9 +424,7 @@ def guess_dihedrals(angles):
         a_tup = tuple([a.index for a in b])  # angle as tuple of numbers
         # if searching with b[0], want tuple of (b[2], b[1], b[0], +new)
         # search the first and last atom of each angle
-        for atom, prefix in zip(
-            [b.atoms[0], b.atoms[-1]], [a_tup[::-1], a_tup]
-        ):
+        for atom, prefix in zip([b.atoms[0], b.atoms[-1]], [a_tup[::-1], a_tup]):
             for other_b in atom.bonds:
                 if not other_b.partner(atom) in b:
                     third_a = other_b.partner(atom)

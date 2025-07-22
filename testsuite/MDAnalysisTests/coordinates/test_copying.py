@@ -288,9 +288,7 @@ def test_timestep_copied(ref_reader):
     assert new.ts.positions.dtype == np.float32
 
 
-@pytest.mark.skipif(
-    shares_memory == False, reason="old numpy lacked shares_memory"
-)
+@pytest.mark.skipif(shares_memory == False, reason="old numpy lacked shares_memory")
 def test_positions_share_memory(original_and_copy):
     # check that the memory in Timestep objects is unique
     original, copy = original_and_copy

@@ -238,9 +238,7 @@ class ParmEdConverter(base.ConverterBase):
                 "id",
             ):
                 try:
-                    akwargs[MDA2PMD.get(attrname, attrname)] = getattr(
-                        atom, attrname
-                    )
+                    akwargs[MDA2PMD.get(attrname, attrname)] = getattr(atom, attrname)
                 except AttributeError:
                     pass
             try:
@@ -260,9 +258,7 @@ class ParmEdConverter(base.ConverterBase):
                 chain_seg["inscode"] = atom.icode
             except AttributeError:
                 pass
-            atom_kwargs.append(
-                (akwargs, resname, atom.resid, chain_seg, xyz, vel)
-            )
+            atom_kwargs.append((akwargs, resname, atom.resid, chain_seg, xyz, vel))
 
         struct = pmd.Structure()
 
@@ -288,9 +284,7 @@ class ParmEdConverter(base.ConverterBase):
             struct.box = None
 
         if hasattr(ag_or_ts, "universe"):
-            atomgroup = {
-                atom: index for index, atom in enumerate(list(ag_or_ts))
-            }
+            atomgroup = {atom: index for index, atom in enumerate(list(ag_or_ts))}
             get_atom_indices = functools.partial(
                 get_indices_from_subset,
                 atomgroup=atomgroup,
@@ -306,9 +300,7 @@ class ParmEdConverter(base.ConverterBase):
             pass
         else:
             for p in params:
-                atoms = [
-                    struct.atoms[i] for i in map(get_atom_indices, p.indices)
-                ]
+                atoms = [struct.atoms[i] for i in map(get_atom_indices, p.indices)]
                 try:
                     for obj in p.type:
                         bond = pmd.Bond(*atoms, type=obj.type, order=obj.order)
@@ -328,16 +320,12 @@ class ParmEdConverter(base.ConverterBase):
 
         # dihedrals
         try:
-            params = ag_or_ts.dihedrals.atomgroup_intersection(
-                ag_or_ts, strict=True
-            )
+            params = ag_or_ts.dihedrals.atomgroup_intersection(ag_or_ts, strict=True)
         except AttributeError:
             pass
         else:
             for p in params:
-                atoms = [
-                    struct.atoms[i] for i in map(get_atom_indices, p.indices)
-                ]
+                atoms = [struct.atoms[i] for i in map(get_atom_indices, p.indices)]
                 try:
                     for obj in p.type:
                         imp = getattr(obj, "improper", False)
@@ -353,9 +341,7 @@ class ParmEdConverter(base.ConverterBase):
                     btype = getattr(p.type, "type", None)
                     imp = getattr(p.type, "improper", False)
                     ign = getattr(p.type, "ignore_end", False)
-                    dih = pmd.Dihedral(
-                        *atoms, type=btype, improper=imp, ignore_end=ign
-                    )
+                    dih = pmd.Dihedral(*atoms, type=btype, improper=imp, ignore_end=ign)
                     struct.dihedrals.append(dih)
                     if isinstance(dih.type, pmd.DihedralType):
                         struct.dihedral_types.append(dih.type)
@@ -392,10 +378,7 @@ class ParmEdConverter(base.ConverterBase):
                 pass
             else:
                 for v in values:
-                    atoms = [
-                        struct.atoms[i]
-                        for i in map(get_atom_indices, v.indices)
-                    ]
+                    atoms = [struct.atoms[i] for i in map(get_atom_indices, v.indices)]
 
                     try:
                         for parmed_obj in v.type:

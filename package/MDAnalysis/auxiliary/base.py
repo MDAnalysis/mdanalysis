@@ -193,9 +193,7 @@ class AuxStep(object):
             select = self._select_time
         except AttributeError:
             warnings.warn(
-                "{} does not support time selection".format(
-                    self.__class__.__name__
-                )
+                "{} does not support time selection".format(self.__class__.__name__)
             )
         else:
             # check *new* is valid before setting; _select_time should raise
@@ -234,9 +232,7 @@ class AuxStep(object):
             select = self._select_data
         except AttributeError:
             warnings.warn(
-                "{} does not support data selection".format(
-                    self.__class__.__name__
-                )
+                "{} does not support data selection".format(self.__class__.__name__)
             )
         else:
             # check *new* is valid before setting; _select_data should raise an
@@ -329,9 +325,7 @@ class AuxReader(metaclass=_AuxReaderMeta):
         "_auxdata",
     ]
 
-    def __init__(
-        self, represent_ts_as="closest", auxname=None, cutoff=None, **kwargs
-    ):
+    def __init__(self, represent_ts_as="closest", auxname=None, cutoff=None, **kwargs):
         # allow auxname to be optional for when using reader separate from
         # trajectory.
         self.auxname = auxname
@@ -631,9 +625,7 @@ class AuxReader(metaclass=_AuxReaderMeta):
             return None
         time_frame_0 = ts.time - ts.frame * ts.dt  # assumes ts.dt is constant
         time_step = self.step_to_time(step)
-        frame_index = int(
-            math.floor((time_step - time_frame_0 + ts.dt / 2.0) / ts.dt)
-        )
+        frame_index = int(math.floor((time_step - time_frame_0 + ts.dt / 2.0) / ts.dt))
         if not return_time_diff:
             return frame_index
         else:
@@ -658,9 +650,7 @@ class AuxReader(metaclass=_AuxReaderMeta):
         # figure out what step we want to end up at
         if self.constant_dt:
             # if dt constant, calculate from dt/offset/etc
-            step = int(
-                math.floor((ts.time - ts.dt / 2 - self.initial_time) / self.dt)
-            )
+            step = int(math.floor((ts.time - ts.dt / 2 - self.initial_time) / self.dt))
             # if we're out of range of the number of steps, reset back
             step = max(min(step, self.n_steps - 1), -1)
         else:
@@ -749,11 +739,7 @@ class AuxReader(metaclass=_AuxReaderMeta):
             stop = (
                 i.stop
                 if i.stop == self.n_steps
-                else (
-                    self._check_index(i.stop)
-                    if i.stop is not None
-                    else self.n_steps
-                )
+                else (self._check_index(i.stop) if i.stop is not None else self.n_steps)
             )
             step = i.step or 1
             if not isinstance(step, numbers.Integral) or step < 1:
@@ -787,9 +773,7 @@ class AuxReader(metaclass=_AuxReaderMeta):
     def _go_to_step(self, i):
         """Move to and read i-th auxiliary step."""
         # Need to define in each auxiliary reader
-        raise NotImplementedError(
-            "BUG: Override _go_to_step() in auxiliary reader!"
-        )
+        raise NotImplementedError("BUG: Override _go_to_step() in auxiliary reader!")
 
     def _reset_frame_data(self):
         self.frame_data = {}
@@ -853,9 +837,7 @@ class AuxReader(metaclass=_AuxReaderMeta):
                 value = cutoff_data[min_diff]
         elif self.represent_ts_as == "average":
             try:
-                value = np.mean(
-                    np.array([val for val in cutoff_data.values()]), axis=0
-                )
+                value = np.mean(np.array([val for val in cutoff_data.values()]), axis=0)
             except TypeError:
                 # for readers like EDRReader, the above does not work
                 # because each step contains a dictionary of numpy arrays
@@ -967,8 +949,7 @@ class AuxReader(metaclass=_AuxReaderMeta):
             AuxReader.
         """
         description = {
-            attr.strip("_"): getattr(self, attr)
-            for attr in self.required_attrs
+            attr.strip("_"): getattr(self, attr) for attr in self.required_attrs
         }
         return description
 

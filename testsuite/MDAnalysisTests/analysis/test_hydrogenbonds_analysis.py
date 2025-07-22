@@ -89,18 +89,10 @@ class TestHydrogenBondAnalysisTIP3P(object):
             "angle": {"mean": 158.9038039, "std": 12.0362826},
         }
 
-        assert_allclose(
-            np.mean(h.results.hbonds[:, 4]), reference["distance"]["mean"]
-        )
-        assert_allclose(
-            np.std(h.results.hbonds[:, 4]), reference["distance"]["std"]
-        )
-        assert_allclose(
-            np.mean(h.results.hbonds[:, 5]), reference["angle"]["mean"]
-        )
-        assert_allclose(
-            np.std(h.results.hbonds[:, 5]), reference["angle"]["std"]
-        )
+        assert_allclose(np.mean(h.results.hbonds[:, 4]), reference["distance"]["mean"])
+        assert_allclose(np.std(h.results.hbonds[:, 4]), reference["distance"]["std"])
+        assert_allclose(np.mean(h.results.hbonds[:, 5]), reference["angle"]["mean"])
+        assert_allclose(np.std(h.results.hbonds[:, 5]), reference["angle"]["std"])
 
     def test_count_by_time(self, h):
 
@@ -211,9 +203,7 @@ class TestHydrogenBondAnalysisIdeal(object):
     @staticmethod
     @pytest.fixture(scope="class")
     def hydrogen_bonds(universe, client_HydrogenBondAnalysis):
-        h = HydrogenBondAnalysis(
-            universe, **TestHydrogenBondAnalysisIdeal.kwargs
-        )
+        h = HydrogenBondAnalysis(universe, **TestHydrogenBondAnalysisIdeal.kwargs)
         h.run(**client_HydrogenBondAnalysis)
         return h
 
@@ -289,9 +279,7 @@ class TestHydrogenBondAnalysisIdeal(object):
         assert_array_equal(timeseries, [1, 0, 0])
 
     def test_hydrogen_bond_lifetime_intermittency(self, hydrogen_bonds):
-        tau_timeseries, timeseries = hydrogen_bonds.lifetime(
-            tau_max=2, intermittency=1
-        )
+        tau_timeseries, timeseries = hydrogen_bonds.lifetime(tau_max=2, intermittency=1)
         assert_array_equal(timeseries, 1)
 
     def test_no_attr_hbonds(self, universe):
@@ -300,9 +288,7 @@ class TestHydrogenBondAnalysisIdeal(object):
         with pytest.raises(NoDataError, match=".hbonds attribute is None"):
             hbonds.lifetime(tau_max=2, intermittency=1)
 
-    def test_logging_step_not_1(
-        self, universe, caplog, client_HydrogenBondAnalysis
-    ):
+    def test_logging_step_not_1(self, universe, caplog, client_HydrogenBondAnalysis):
         hbonds = HydrogenBondAnalysis(universe, **self.kwargs)
         # using step 2
         hbonds.run(**client_HydrogenBondAnalysis, step=2)
@@ -310,9 +296,7 @@ class TestHydrogenBondAnalysisIdeal(object):
         caplog.set_level(logging.WARNING)
         hbonds.lifetime(tau_max=2, intermittency=1)
 
-        warning = (
-            "Autocorrelation: Hydrogen bonds were computed with " "step > 1."
-        )
+        warning = "Autocorrelation: Hydrogen bonds were computed with " "step > 1."
         assert any(warning in rec.getMessage() for rec in caplog.records)
 
 
@@ -387,9 +371,7 @@ class TestHydrogenBondAnalysisNoRes(TestHydrogenBondAnalysisIdeal):
     @staticmethod
     @pytest.fixture(scope="class")
     def hydrogen_bonds(universe, client_HydrogenBondAnalysis):
-        h = HydrogenBondAnalysis(
-            universe, **TestHydrogenBondAnalysisNoRes.kwargs
-        )
+        h = HydrogenBondAnalysis(universe, **TestHydrogenBondAnalysisNoRes.kwargs)
         h.run(**client_HydrogenBondAnalysis)
         return h
 
@@ -497,9 +479,7 @@ class TestHydrogenBondAnalysisBetween(object):
             [6, 7, 8],  # protein-protein
         ]
         expected_hbond_distances = [2.5, 3.0, 3.0]
-        assert_array_equal(
-            hbonds.results.hbonds[:, 1:4], expected_hbond_indices
-        )
+        assert_array_equal(hbonds.results.hbonds[:, 1:4], expected_hbond_indices)
         assert_allclose(hbonds.results.hbonds[:, 4], expected_hbond_distances)
 
     def test_between_PW(self, universe, client_HydrogenBondAnalysis):
@@ -512,9 +492,7 @@ class TestHydrogenBondAnalysisBetween(object):
         # indices of [donor, hydrogen, acceptor] for each hydrogen bond
         expected_hbond_indices = [[3, 4, 6]]  # protein-water
         expected_hbond_distances = [3.0]
-        assert_array_equal(
-            hbonds.results.hbonds[:, 1:4], expected_hbond_indices
-        )
+        assert_array_equal(hbonds.results.hbonds[:, 1:4], expected_hbond_indices)
         assert_allclose(hbonds.results.hbonds[:, 4], expected_hbond_distances)
 
     def test_between_PW_PP(self, universe, client_HydrogenBondAnalysis):
@@ -536,9 +514,7 @@ class TestHydrogenBondAnalysisBetween(object):
             [6, 7, 8],  # protein-protein
         ]
         expected_hbond_distances = [3.0, 3.0]
-        assert_array_equal(
-            hbonds.results.hbonds[:, 1:4], expected_hbond_indices
-        )
+        assert_array_equal(hbonds.results.hbonds[:, 1:4], expected_hbond_indices)
         assert_allclose(hbonds.results.hbonds[:, 4], expected_hbond_distances)
 
 
@@ -629,9 +605,7 @@ class TestHydrogenBondAnalysisTIP3P_GuessHydrogens_NoTopology(object):
 
     def test_guess_hydrogens(self, h):
 
-        ref_hydrogens = (
-            "(resname TIP3 and name H1) or (resname TIP3 and name H2)"
-        )
+        ref_hydrogens = "(resname TIP3 and name H1) or (resname TIP3 and name H2)"
         hydrogens = h.guess_hydrogens(select="all")
         assert hydrogens == ref_hydrogens
 
@@ -689,18 +663,10 @@ class TestHydrogenBondAnalysisTIP3PStartStep(object):
             "angle": {"mean": 157.07768079, "std": 9.72636682},
         }
 
-        assert_allclose(
-            np.mean(h.results.hbonds[:, 4]), reference["distance"]["mean"]
-        )
-        assert_allclose(
-            np.std(h.results.hbonds[:, 4]), reference["distance"]["std"]
-        )
-        assert_allclose(
-            np.mean(h.results.hbonds[:, 5]), reference["angle"]["mean"]
-        )
-        assert_allclose(
-            np.std(h.results.hbonds[:, 5]), reference["angle"]["std"]
-        )
+        assert_allclose(np.mean(h.results.hbonds[:, 4]), reference["distance"]["mean"])
+        assert_allclose(np.std(h.results.hbonds[:, 4]), reference["distance"]["std"])
+        assert_allclose(np.mean(h.results.hbonds[:, 5]), reference["angle"]["mean"])
+        assert_allclose(np.std(h.results.hbonds[:, 5]), reference["angle"]["std"])
 
     def test_count_by_time(self, h):
 

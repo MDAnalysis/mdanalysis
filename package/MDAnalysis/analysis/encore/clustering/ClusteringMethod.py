@@ -96,9 +96,7 @@ class ClusteringMethod(object):
 
         """
         raise NotImplementedError(
-            "Class {0} doesn't implement __call__()".format(
-                self.__class__.__name__
-            )
+            "Class {0} doesn't implement __call__()".format(self.__class__.__name__)
         )
 
 
@@ -247,17 +245,13 @@ if sklearn:
                This method no longer returns ``details``
             """
             logging.info(
-                "Starting Affinity Propagation: {0}".format(
-                    self.ap.get_params()
-                )
+                "Starting Affinity Propagation: {0}".format(self.ap.get_params())
             )
 
             # Convert from distance matrix to similarity matrix
             similarity_matrix = distance_matrix.as_array() * -1
             clusters = self.ap.fit_predict(similarity_matrix)
-            clusters = encode_centroid_info(
-                clusters, self.ap.cluster_centers_indices_
-            )
+            clusters = encode_centroid_info(clusters, self.ap.cluster_centers_indices_)
 
             return clusters
 
@@ -332,9 +326,7 @@ if sklearn:
             .. versionchanged:: 1.0.0
                This method no longer returns ``details``
             """
-            logging.info(
-                "Starting DBSCAN: {0}".format(self.dbscan.get_params())
-            )
+            logging.info("Starting DBSCAN: {0}".format(self.dbscan.get_params()))
             clusters = self.dbscan.fit_predict(distance_matrix.as_array())
             if np.min(clusters == -1):
                 clusters += 1
@@ -444,9 +436,7 @@ if sklearn:
             .. versionchanged:: 1.0.0
                This method no longer returns ``details``
             """
-            logging.info(
-                "Starting Kmeans: {0}".format((self.kmeans.get_params()))
-            )
+            logging.info("Starting Kmeans: {0}".format((self.kmeans.get_params())))
             clusters = self.kmeans.fit_predict(coordinates)
             distances = self.kmeans.transform(coordinates)
             cluster_center_indices = np.argmin(distances, axis=0)

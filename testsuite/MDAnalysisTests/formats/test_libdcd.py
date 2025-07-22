@@ -397,16 +397,13 @@ def write_dcd(in_name, out_name, remarks="testing", header=None):
 
 
 @pytest.mark.xfail(
-    (os.name == "nt" and sys.maxsize <= 2**32)
-    or platform.machine() == "aarch64",
+    (os.name == "nt" and sys.maxsize <= 2**32) or platform.machine() == "aarch64",
     reason="occasional fail on 32-bit windows and ARM",
 )
 # occasionally fails due to unreliable test timings
 @hypothesis.settings(deadline=None)  # see Issue 3096
 @given(
-    remarks=strategies.text(
-        alphabet=string.printable, min_size=0, max_size=239
-    )
+    remarks=strategies.text(alphabet=string.printable, min_size=0, max_size=239)
 )  # handle the printable ASCII strings
 @example(remarks="")
 def test_written_remarks_property(remarks, tmpdir_factory):
@@ -647,9 +644,7 @@ def test_readframes_order(order, shape, dcd):
     assert x.shape == shape
 
 
-@pytest.mark.parametrize(
-    "indices", [[1, 2, 3, 4], [5, 10, 15, 19], [9, 4, 2, 0, 50]]
-)
+@pytest.mark.parametrize("indices", [[1, 2, 3, 4], [5, 10, 15, 19], [9, 4, 2, 0, 50]])
 def test_readframes_atomindices(indices, dcd):
     allframes = dcd.readframes(order="afc").xyz
     frames = dcd.readframes(indices=indices, order="afc")

@@ -100,9 +100,7 @@ class TestUniverseCreation(object):
 
     def test_load_topology_stringio(self):
         u = mda.Universe(StringIO(CHOL_GRO), format="GRO")
-        assert_equal(
-            len(u.atoms), 8, "Loading universe from StringIO failed somehow"
-        )
+        assert_equal(len(u.atoms), 8, "Loading universe from StringIO failed somehow")
         assert_equal(
             u.trajectory.ts.positions[0],
             np.array([65.580002, 29.360001, 40.050003], dtype=np.float32),
@@ -115,9 +113,7 @@ class TestUniverseCreation(object):
             format="GRO",
             topology_format="GRO",
         )
-        assert_equal(
-            len(u.atoms), 8, "Loading universe from StringIO failed somehow"
-        )
+        assert_equal(len(u.atoms), 8, "Loading universe from StringIO failed somehow")
 
     def test_make_universe_stringio_no_format(self):
         # Loading from StringIO without format arg should raise TypeError
@@ -177,9 +173,7 @@ class TestUniverseCreation(object):
             else:
                 raise AssertionError
 
-    @pytest.mark.skipif(
-        get_userid() == 0, reason="cannot permisssionerror as root"
-    )
+    @pytest.mark.skipif(get_userid() == 0, reason="cannot permisssionerror as root")
     def test_Universe_invalidpermissionfile_IE_msg(self, tmpdir):
         # check for file with invalid permissions (eg. no read access)
         with tmpdir.as_cwd():
@@ -189,9 +183,7 @@ class TestUniverseCreation(object):
 
             if os.name == "nt":
                 subprocess.call(
-                    "icacls {filename} /deny Users:RX".format(
-                        filename=temp_file
-                    ),
+                    "icacls {filename} /deny Users:RX".format(filename=temp_file),
                     shell=True,
                 )
             else:
@@ -212,9 +204,7 @@ class TestUniverseCreation(object):
         prot = u.select_atoms("protein")
         u2 = mda.Merge(prot)
         assert (
-            u2.load_new(
-                [prot.positions], format=mda.coordinates.memory.MemoryReader
-            )
+            u2.load_new([prot.positions], format=mda.coordinates.memory.MemoryReader)
             is u2
         )
 
@@ -223,9 +213,7 @@ class TestUniverseCreation(object):
             u = mda.Universe(GRO)
             prot = u.select_atoms("protein")
             u2 = mda.Merge(prot)
-            u2.load_new(
-                [[prot.positions]], format=mda.coordinates.memory.MemoryReader
-            )
+            u2.load_new([[prot.positions]], format=mda.coordinates.memory.MemoryReader)
 
         with pytest.raises(TypeError):
             load()
@@ -311,9 +299,7 @@ class TestUniverseFromSmiles(object):
         u1 = mda.Universe.from_smiles("C", rdkit_kwargs=dict(randomSeed=42))
         u2 = mda.Universe.from_smiles("C", rdkit_kwargs=dict(randomSeed=51))
         with pytest.raises(AssertionError) as e:
-            assert_equal(
-                u1.trajectory.coordinate_array, u2.trajectory.coordinate_array
-            )
+            assert_equal(u1.trajectory.coordinate_array, u2.trajectory.coordinate_array)
             assert "Mismatched elements: 15 / 15 (100%)" in str(e.value)
 
     def test_coordinates(self):
@@ -330,9 +316,7 @@ class TestUniverseFromSmiles(object):
         expected = [c.GetPositions() for c in mol.GetConformers()]
 
         # now the mda way
-        u = mda.Universe.from_smiles(
-            "C", numConfs=2, rdkit_kwargs=dict(randomSeed=42)
-        )
+        u = mda.Universe.from_smiles("C", numConfs=2, rdkit_kwargs=dict(randomSeed=42))
         assert u.trajectory.n_frames == 2
         assert_allclose(u.trajectory.coordinate_array, expected, rtol=1e-7)
 
@@ -645,9 +629,7 @@ class TestInMemoryUniverse(object):
         array1 = universe1.trajectory.timeseries(step=10)
         universe2 = mda.Universe(PSF, DCD, in_memory=True, in_memory_step=10)
         array2 = universe2.trajectory.timeseries()
-        assert_equal(
-            array1, array2, err_msg="Unexpected differences between arrays."
-        )
+        assert_equal(array1, array2, err_msg="Unexpected differences between arrays.")
 
     def test_slicing_with_start_stop(self):
         universe = MDAnalysis.Universe(PDB_small, DCD)
@@ -752,17 +734,13 @@ class TestCustomReaders(object):
 
     def test_custom_reader(self):
         # check that reader passing works
-        u = mda.Universe(
-            TRZ_psf, TRZ, format=MDAnalysis.coordinates.TRZ.TRZReader
-        )
+        u = mda.Universe(TRZ_psf, TRZ, format=MDAnalysis.coordinates.TRZ.TRZReader)
         assert_equal(len(u.atoms), 8184)
 
     def test_custom_reader_singleframe(self):
         T = MDAnalysis.topology.GROParser.GROParser
         R = MDAnalysis.coordinates.GRO.GROReader
-        u = mda.Universe(
-            two_water_gro, two_water_gro, topology_format=T, format=R
-        )
+        u = mda.Universe(two_water_gro, two_water_gro, topology_format=T, format=R)
         assert_equal(len(u.atoms), 6)
 
     def test_custom_reader_singleframe_2(self):
@@ -889,9 +867,7 @@ class TestAddTopologyAttr(object):
 
     def test_add_attr_length_error(self, universe):
         with pytest.raises(ValueError):
-            universe.add_TopologyAttr(
-                "masses", np.array([1, 2, 3], dtype=np.float64)
-            )
+            universe.add_TopologyAttr("masses", np.array([1, 2, 3], dtype=np.float64))
 
 
 class TestDelTopologyAttr(object):
@@ -1058,20 +1034,14 @@ class TestAddTopologyObjects(object):
         self._check_valid_added_to_populated(universe, attr, values, ag)
 
     @pytest.mark.parametrize("attr,values", small_atom_indices)
-    def test_add_atomgroup_wrong_universe_error(
-        self, universe, empty, attr, values
-    ):
+    def test_add_atomgroup_wrong_universe_error(self, universe, empty, attr, values):
         ag = [empty.atoms[x] for x in values]
         self._check_invalid_addition(universe, attr, ag, "different Universes")
 
     @pytest.mark.parametrize("attr,values", large_atom_indices)
     def test_add_topologyobjects_to_populated(self, universe, attr, values):
-        topologyobjects = [
-            getattr(universe.atoms[x], attr[:-1]) for x in values
-        ]
-        self._check_valid_added_to_populated(
-            universe, attr, values, topologyobjects
-        )
+        topologyobjects = [getattr(universe.atoms[x], attr[:-1]) for x in values]
+        self._check_valid_added_to_populated(universe, attr, values, topologyobjects)
 
     @pytest.mark.parametrize("attr,values", small_atom_indices)
     def test_add_topologyobjects_wrong_universe_error(
@@ -1085,9 +1055,7 @@ class TestAddTopologyObjects(object):
         topologygroup = mda.core.topologyobjects.TopologyGroup(
             np.array(values), universe
         )
-        self._check_valid_added_to_populated(
-            universe, attr, values, topologygroup
-        )
+        self._check_valid_added_to_populated(universe, attr, values, topologygroup)
 
     @pytest.mark.parametrize("attr,values", small_atom_indices)
     def test_add_topologygroup_wrong_universe_error(
@@ -1097,9 +1065,7 @@ class TestAddTopologyObjects(object):
         self._check_invalid_addition(empty, attr, tg, "different Universes")
 
     @pytest.mark.parametrize("attr,values", small_atom_indices)
-    def test_add_topologygroup_different_universe(
-        self, universe, empty, attr, values
-    ):
+    def test_add_topologygroup_different_universe(self, universe, empty, attr, values):
         tg = mda.core.topologyobjects.TopologyGroup(np.array(values), universe)
         self._check_valid_added_to_empty(empty, attr, values, tg.to_indices())
 
@@ -1115,9 +1081,7 @@ class TestAddTopologyObjects(object):
     def test_add_wrong_topologygroup_error(self, universe, attr, values):
         arr = np.array(values)
         tg = mda.core.topologyobjects.TopologyGroup(arr, universe)
-        self._check_invalid_addition(
-            universe, attr, tg, "iterable of tuples with"
-        )
+        self._check_invalid_addition(universe, attr, tg, "iterable of tuples with")
 
     @pytest.mark.parametrize(
         "attr,values",
@@ -1132,9 +1096,7 @@ class TestAddTopologyObjects(object):
         ),
     )
     def test_add_nonexistent_indices_error(self, universe, attr, values):
-        self._check_invalid_addition(
-            universe, attr, values, "nonexistent atom indices"
-        )
+        self._check_invalid_addition(universe, attr, values, "nonexistent atom indices")
 
     @pytest.mark.parametrize(
         "attr,n",
@@ -1146,9 +1108,9 @@ class TestAddTopologyObjects(object):
         ),
     )
     def test_add_wrong_number_of_atoms_error(self, universe, attr, n):
-        errmsg = (
-            "{} must be an iterable of " "tuples with {} atom indices"
-        ).format(attr, n)
+        errmsg = ("{} must be an iterable of " "tuples with {} atom indices").format(
+            attr, n
+        )
         idx = [(0, 1), (0, 1, 2), (8, 22, 1, 3), (5, 3, 4, 2)]
         self._check_invalid_addition(universe, attr, idx, errmsg)
 
@@ -1234,10 +1196,7 @@ class TestDeleteTopologyObjects(object):
 
         not_deleted = [x for x in self.TOP[attr] if list(x) not in values]
         assert all(
-            [
-                x in u_attr.indices or x[::-1] in u_attr.indices
-                for x in not_deleted
-            ]
+            [x in u_attr.indices or x[::-1] in u_attr.indices for x in not_deleted]
         )
 
     def _check_invalid_deleted(self, u, attr, to_delete, err_msg):
@@ -1255,9 +1214,7 @@ class TestDeleteTopologyObjects(object):
 
     @pytest.mark.parametrize("attr,values", nonexisting_atom_indices)
     def test_delete_missing_indices(self, universe, attr, values):
-        self._check_invalid_deleted(
-            universe, attr, values, "Cannot delete nonexistent"
-        )
+        self._check_invalid_deleted(universe, attr, values, "Cannot delete nonexistent")
 
     @pytest.mark.parametrize("attr,values", existing_atom_indices)
     def test_delete_valid_atomgroup(self, universe, attr, values):
@@ -1274,9 +1231,7 @@ class TestDeleteTopologyObjects(object):
     @pytest.mark.parametrize("attr,values", nonexisting_atom_indices)
     def test_delete_missing_atomgroup(self, universe, attr, values):
         ag = [universe.atoms[x] for x in values]
-        self._check_invalid_deleted(
-            universe, attr, ag, "Cannot delete nonexistent"
-        )
+        self._check_invalid_deleted(universe, attr, ag, "Cannot delete nonexistent")
 
     @pytest.mark.parametrize("attr,values", existing_atom_indices)
     def test_delete_mixed_type(self, universe, attr, values):
@@ -1294,9 +1249,7 @@ class TestDeleteTopologyObjects(object):
     ):
         u1 = [getattr(universe.atoms[x], attr[:-1]) for x in values[:-1]]
         u2 = [getattr(universe2.atoms[values[-1]], attr[:-1])]
-        self._check_invalid_deleted(
-            universe, attr, u1 + u2, "different Universes"
-        )
+        self._check_invalid_deleted(universe, attr, u1 + u2, "different Universes")
 
     @pytest.mark.parametrize("attr,values", existing_atom_indices)
     def test_delete_valid_topologygroup(self, universe, attr, values):
@@ -1331,9 +1284,9 @@ class TestDeleteTopologyObjects(object):
     )
     def test_delete_wrong_number_of_atoms_error(self, universe, attr, n):
         idx = [(0, 1), (0, 1, 2), (8, 22, 1, 3), (5, 3, 4, 2)]
-        errmsg = (
-            "{} must be an iterable of " "tuples with {} atom indices"
-        ).format(attr, n)
+        errmsg = ("{} must be an iterable of " "tuples with {} atom indices").format(
+            attr, n
+        )
         self._check_invalid_deleted(universe, attr, idx, errmsg)
 
     @pytest.mark.parametrize("attr,values", existing_atom_indices)
@@ -1350,9 +1303,7 @@ class TestDeleteTopologyObjects(object):
         universe.delete_bonds([universe.atoms[[2, 3]]])
         assert len(universe.atoms.fragments) == n_fragments + 1
 
-    @pytest.mark.parametrize(
-        "filename, n_bonds", [(CONECT, 72), (PDB_conect, 8)]
-    )
+    @pytest.mark.parametrize("filename, n_bonds", [(CONECT, 72), (PDB_conect, 8)])
     def test_delete_all_bonds(self, filename, n_bonds):
         u = mda.Universe(filename)
         assert len(u.bonds) == n_bonds
@@ -1393,16 +1344,12 @@ class TestAllCoordinatesKwarg(object):
 
     def test_all_coordinates_length(self, u_GRO_TRR, u_GRO_TRR_allcoords):
         # length with all_coords should be +1
-        assert len(u_GRO_TRR.trajectory) + 1 == len(
-            u_GRO_TRR_allcoords.trajectory
-        )
+        assert len(u_GRO_TRR.trajectory) + 1 == len(u_GRO_TRR_allcoords.trajectory)
 
     def test_all_coordinates_frame(self, u_GRO_TRR_allcoords, u_GRO):
         # check that first frame in u(GRO, TRR, allcords)
         # are the coordinates from GRO
-        assert_array_equal(
-            u_GRO_TRR_allcoords.atoms.positions, u_GRO.atoms.positions
-        )
+        assert_array_equal(u_GRO_TRR_allcoords.atoms.positions, u_GRO.atoms.positions)
 
     def test_second_frame(self, u_GRO_TRR_allcoords, u_GRO_TRR):
         # check that second frame in u(GRO, TRR, allcoords)
@@ -1614,20 +1561,14 @@ Written by MDAnalysis
         assert_equal(["A", "", "A", "B", ""], bad_seg.segments.segids)
         assert len(bad_seg.residues) == 5  # 5 residues
         assert_equal([315, 315, 316, 314, 315], bad_seg.residues.resids)
-        assert_equal(
-            ["THR", "THR", "THR", "THR", "THR"], bad_seg.residues.resnames
-        )
+        assert_equal(["THR", "THR", "THR", "THR", "THR"], bad_seg.residues.resnames)
         assert_equal(["A", "", "A", "B", ""], bad_seg.residues.segids)
         assert len(bad_seg.atoms) == 7  # 7 atoms
         assert_equal([315, 315, 315, 316, 314, 315, 315], bad_seg.atoms.resids)
         assert_equal(["THR"] * 7, bad_seg.atoms.resnames)
         assert_equal(["A", "", "", "A", "B", "", ""], bad_seg.atoms.segids)
-        assert_equal(
-            ["N", "CA", "C", "O", "CB", "CG2", "OG1"], bad_seg.atoms.names
-        )
-        assert_equal(
-            ["A", "A", "A", "A", "B", "B", "B"], bad_seg.atoms.chainIDs
-        )
+        assert_equal(["N", "CA", "C", "O", "CB", "CG2", "OG1"], bad_seg.atoms.names)
+        assert_equal(["A", "A", "A", "A", "B", "B", "B"], bad_seg.atoms.chainIDs)
         original_attrs = bad_seg._topology.attrs
 
         # [ACT] set new segids
@@ -1774,9 +1715,7 @@ Written by MDAnalysis
     def test_with_TPR(self, tpr):
         # [BEFORE]
         assert len(tpr.segments) == 3
-        assert_equal(
-            ["seg_0_AKeco", "seg_1_SOL", "seg_2_NA+"], tpr.segments.segids
-        )
+        assert_equal(["seg_0_AKeco", "seg_1_SOL", "seg_2_NA+"], tpr.segments.segids)
         assert len(tpr.residues) == 11302
         assert_equal(range(1, 11303, 1), tpr.residues.resids)
         orignial_res_molnums = tpr.residues.molnums

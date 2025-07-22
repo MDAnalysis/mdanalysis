@@ -300,9 +300,7 @@ def test_interpret_atom_style():
 
 
 def test_interpret_atom_style_missing():
-    with pytest.raises(
-        ValueError, match="atom_style string missing required.+?"
-    ):
+    with pytest.raises(ValueError, match="atom_style string missing required.+?"):
         style = mda.topology.LAMMPSParser.DATAParser._interpret_atom_style(
             "id charge z y x"
         )

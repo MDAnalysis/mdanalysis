@@ -155,9 +155,7 @@ def test_fit_translation_all_options(fit_universe):
     test_u = fit_universe[0]
     ref_u = fit_universe[1]
     # translate the test universe on the x and y coordinates only
-    fit_translation(test_u, ref_u, plane="xy", weights="mass")(
-        test_u.trajectory.ts
-    )
+    fit_translation(test_u, ref_u, plane="xy", weights="mass")(test_u.trajectory.ts)
     # the reference is 10 angstrom in the z coordinate above the test universe
     shiftz = np.asanyarray([0, 0, -10], np.float32)
     ref_coordinates = ref_u.trajectory.ts.positions + shiftz

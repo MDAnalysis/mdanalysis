@@ -76,9 +76,7 @@ class MMTFReader(base.SingleFrameReaderBase):
         )
         warnings.warn(wmsg, DeprecationWarning)
 
-        super(MMTFReader, self).__init__(
-            filename, convert_units, n_atoms, **kwargs
-        )
+        super(MMTFReader, self).__init__(filename, convert_units, n_atoms, **kwargs)
 
     @staticmethod
     def _format_hint(thing):

@@ -228,9 +228,7 @@ class RefTRZ(object):
 class RefLAMMPSData(object):
     filename = LAMMPSdata
     n_atoms = 18364
-    pos_atom1 = np.array(
-        [11.89985657, 48.4455719, 19.09719849], dtype=np.float32
-    )
+    pos_atom1 = np.array([11.89985657, 48.4455719, 19.09719849], dtype=np.float32)
     vel_atom1 = np.array(
         [-0.005667593, 0.00791380978, -0.00300779533], dtype=np.float32
     )
@@ -256,15 +254,11 @@ class RefLAMMPSDataDCD(object):
 class RefLAMMPSDataMini(object):
     filename = LAMMPSdata_mini
     n_atoms = 1
-    pos_atom1 = np.array(
-        [11.89985657, 48.4455719, 19.09719849], dtype=np.float32
-    )
+    pos_atom1 = np.array([11.89985657, 48.4455719, 19.09719849], dtype=np.float32)
     vel_atom1 = np.array(
         [-0.005667593, 0.00791380978, -0.00300779533], dtype=np.float32
     )
-    dimensions = np.array(
-        [60.0, 50.0, 30.0, 90.0, 90.0, 90.0], dtype=np.float32
-    )
+    dimensions = np.array([60.0, 50.0, 30.0, 90.0, 90.0, 90.0], dtype=np.float32)
 
 
 class RefLAMMPSDataAdditionalColumns(object):

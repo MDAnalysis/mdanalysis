@@ -204,12 +204,7 @@ class MMTFParser(base.TopologyReaderBase):
             attrs.append(Atomids(np.arange(natoms), guessed=True))
         if mtop.alt_loc_list:
             attrs.append(
-                AltLocs(
-                    [
-                        val.replace("\x00", "").strip()
-                        for val in mtop.alt_loc_list
-                    ]
-                )
+                AltLocs([val.replace("\x00", "").strip() for val in mtop.alt_loc_list])
             )
         else:
             attrs.append(AltLocs([""] * natoms))
@@ -234,12 +229,7 @@ class MMTFParser(base.TopologyReaderBase):
         # mmtf empty icode is '\x00' rather than ''
         if mtop.ins_code_list:
             attrs.append(
-                ICodes(
-                    [
-                        val.replace("\x00", "").strip()
-                        for val in mtop.ins_code_list
-                    ]
-                )
+                ICodes([val.replace("\x00", "").strip() for val in mtop.ins_code_list])
             )
         else:
             attrs.append(ICodes([""] * nresidues))
@@ -286,9 +276,7 @@ class MMTFParser(base.TopologyReaderBase):
             offset += groupID_2_natoms[gtype]
         # add inter group bonds
         if not mtop.bond_atom_list is None:  # optional field
-            for x, y in zip(
-                mtop.bond_atom_list[1::2], mtop.bond_atom_list[::2]
-            ):
+            for x, y in zip(mtop.bond_atom_list[1::2], mtop.bond_atom_list[::2]):
                 if x > y:
                     x, y = y, x
                 bonds.append((x, y))

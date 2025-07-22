@@ -172,9 +172,7 @@ def test_per_core_work_2D(membrane_xtc, univ):
     ymin = univ.atoms.positions[..., 1].min()
     ymax = univ.atoms.positions[..., 1].max()
     tuple_of_limits = (xmin, xmax, ymin, ymax)
-    grid = streamlines.produce_grid(
-        tuple_of_limits=tuple_of_limits, grid_spacing=20
-    )
+    grid = streamlines.produce_grid(tuple_of_limits=tuple_of_limits, grid_spacing=20)
     (
         list_square_vertex_arrays_per_core,
         list_parent_index_values,
@@ -184,9 +182,7 @@ def test_per_core_work_2D(membrane_xtc, univ):
     values = streamlines.per_core_work(
         topology_file_path=Martini_membrane_gro,
         trajectory_file_path=membrane_xtc,
-        list_square_vertex_arrays_this_core=list_square_vertex_arrays_per_core[
-            0
-        ],
+        list_square_vertex_arrays_this_core=list_square_vertex_arrays_per_core[0],
         MDA_selection="name PO4",
         start_frame=1,
         end_frame=2,

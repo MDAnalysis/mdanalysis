@@ -330,9 +330,7 @@ class BaseX3DNA(object):
         """
         import cPickle
 
-        cPickle.dump(
-            self.profiles, open(filename, "wb"), cPickle.HIGHEST_PROTOCOL
-        )
+        cPickle.dump(self.profiles, open(filename, "wb"), cPickle.HIGHEST_PROTOCOL)
 
     def mean_std(self):
         """Returns the mean and standard deviation of base parameters.
@@ -673,9 +671,7 @@ class X3DNA(BaseX3DNA):
         self.x3dna_param = kwargs.pop("x3dna_param", True)
         self.exe["xdna_ensemble"] = which(x3dna_exe_name)
         if self.exe["xdna_ensemble"] is None:
-            errmsg = "X3DNA binary {x3dna_exe_name!r} not found.".format(
-                **vars()
-            )
+            errmsg = "X3DNA binary {x3dna_exe_name!r} not found.".format(**vars())
             logger.fatal(errmsg)
             logger.fatal(
                 "%(x3dna_exe_name)r must be on the PATH or provided as keyword argument 'executable'.",
@@ -719,9 +715,7 @@ class X3DNA(BaseX3DNA):
                 f.write(inp)
             logger.debug("Wrote X3DNA input file %r for inspection", inpname)
 
-        logger.info(
-            "Starting X3DNA on %(filename)r (trajectory: %(dcd)r)", x3dnaargs
-        )
+        logger.info("Starting X3DNA on %(filename)r (trajectory: %(dcd)r)", x3dnaargs)
         logger.debug("%s", self.exe["xdna_ensemble"])
         with open(outname, "w") as output:
             x3dna = subprocess.call([inp], shell=True)
@@ -772,20 +766,18 @@ class X3DNA(BaseX3DNA):
         outdir = kwargs.pop("outdir", os.path.curdir)
 
         logger.info("Collecting X3DNA profiles for run with id %s", run)
-        length = 1  # length of trajectory --- is this really needed?? No... just for info
+        length = (
+            1  # length of trajectory --- is this really needed?? No... just for info
+        )
         if "*" in self.filename:
             import glob
 
             filenames = glob.glob(self.filename)
             length = len(filenames)
             if length == 0:
-                logger.error(
-                    "Glob pattern %r did not find any files.", self.filename
-                )
+                logger.error("Glob pattern %r did not find any files.", self.filename)
                 raise ValueError(
-                    "Glob pattern {0!r} did not find any files.".format(
-                        self.filename
-                    )
+                    "Glob pattern {0!r} did not find any files.".format(self.filename)
                 )
             logger.info(
                 "Found %d input files based on glob pattern %s",
@@ -842,9 +834,7 @@ class X3DNA(BaseX3DNA):
                                     run,
                                     line.strip(),
                                 )
-                                logger.exception(
-                                    "Check input file %r.", x3dna_output
-                                )
+                                logger.exception("Check input file %r.", x3dna_output)
                                 raise
                             records.append(
                                 [
@@ -894,9 +884,7 @@ class X3DNA(BaseX3DNA):
                                     run,
                                     line.strip(),
                                 )
-                                logger.exception(
-                                    "Check input file %r.", x3dna_output
-                                )
+                                logger.exception("Check input file %r.", x3dna_output)
                                 raise
                             records.append(
                                 [
@@ -941,9 +929,7 @@ class X3DNA(BaseX3DNA):
                     os.makedirs(rundir)
                 frame_x3dna_txt = os.path.join(
                     rundir,
-                    "bp_step_{0!s}_{1:04d}.dat.gz".format(
-                        run, x3dna_profile_no
-                    ),
+                    "bp_step_{0!s}_{1:04d}.dat.gz".format(run, x3dna_profile_no),
                 )
                 np.savetxt(frame_x3dna_txt, frame_x3dna_output)
                 logger.debug(
@@ -953,9 +939,7 @@ class X3DNA(BaseX3DNA):
                 )
                 # if we get here then we haven't found anything interesting
         if len(self.profiles) == length:
-            logger.info(
-                "Collected X3DNA profiles for %d frames", len(self.profiles)
-            )
+            logger.info("Collected X3DNA profiles for %d frames", len(self.profiles))
         else:
             logger.warning(
                 "Missing data: Found %d X3DNA profiles from %d frames.",
@@ -1073,8 +1057,10 @@ class X3DNAtraj(BaseX3DNA):
                 except OSError:
                     pass
             if len(x3dna_profiles) != 1:
-                err_msg = "Got {0} profiles ({1}) --- should be 1 (time step {2})".format(
-                    len(x3dna_profiles), x3dna_profiles.keys(), ts
+                err_msg = (
+                    "Got {0} profiles ({1}) --- should be 1 (time step {2})".format(
+                        len(x3dna_profiles), x3dna_profiles.keys(), ts
+                    )
                 )
                 logger.error(err_msg)
                 warnings.warn(err_msg)

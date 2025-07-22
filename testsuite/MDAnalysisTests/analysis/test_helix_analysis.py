@@ -160,9 +160,7 @@ def test_local_screw_angles_plane_circle():
     """
     angdeg = np.arange(0, 360, 12, dtype=np.int32)
     angrad = np.deg2rad(angdeg, dtype=np.float64)
-    xyz = np.array(
-        [[np.cos(a), np.sin(a), 0] for a in angrad], dtype=np.float64
-    )
+    xyz = np.array([[np.cos(a), np.sin(a), 0] for a in angrad], dtype=np.float64)
     xyz[15, 1] = 0  # because np.sin(np.deg2rad(180)) = 1e-16 ?!
     screw = hel.local_screw_angles([1, 0, 0], [0, 1, 0], xyz)
     correct = np.zeros_like(angdeg)
@@ -178,9 +176,7 @@ def test_local_screw_angles_ortho_circle():
     """
     angdeg = np.arange(0, 360, 12, dtype=np.int32)
     angrad = np.deg2rad(angdeg, dtype=np.float64)
-    xyz = np.array(
-        [[np.cos(a), np.sin(a), 0] for a in angrad], dtype=np.float64
-    )
+    xyz = np.array([[np.cos(a), np.sin(a), 0] for a in angrad], dtype=np.float64)
     xyz[15, 1] = 0  # because np.sin(np.deg2rad(180)) = 1e-16 ?!
     screw = hel.local_screw_angles([1, 0, 0], [0, 0, 1], xyz)
     correct = np.zeros_like(angdeg)
@@ -246,9 +242,7 @@ def zigzag():
       x    x    x    x    x
     """
     n_atoms = 100
-    u = mda.Universe.empty(
-        100, atom_resindex=np.arange(n_atoms), trajectory=True
-    )
+    u = mda.Universe.empty(100, atom_resindex=np.arange(n_atoms), trajectory=True)
     xyz = np.array(
         list(
             zip(
@@ -307,9 +301,7 @@ def test_helix_analysis_zigzag(zigzag, ref_axis, screw_angles):
     origins = zigzag.atoms.positions[1:-1].copy()
     origins[:, 0] = 0
     assert_almost_equal(properties["local_origins"], origins, decimal=4)
-    assert_almost_equal(
-        properties["local_screw_angles"], screw_angles * 49, decimal=4
-    )
+    assert_almost_equal(properties["local_screw_angles"], screw_angles * 49, decimal=4)
 
 
 def square_oct(n_rep=10):
@@ -348,9 +340,7 @@ def test_helix_analysis_square_oct():
     properties = hel.helix_analysis(u.atoms.positions, ref_axis=[0, 0, 1])
     twist_trans = [102.76438, 32.235607]
     twists = ([90] * 2 + twist_trans + [45] * 6 + twist_trans[::-1]) * n_rep
-    assert_almost_equal(
-        properties["local_twists"], twists[: n_atoms - 3], decimal=4
-    )
+    assert_almost_equal(properties["local_twists"], twists[: n_atoms - 3], decimal=4)
     res_trans = [3.503159, 11.167775]
     res = ([4] * 2 + res_trans + [8] * 6 + res_trans[::-1]) * n_rep
     assert_almost_equal(
@@ -418,9 +408,7 @@ def test_helix_analysis_square_oct():
     ] * n_rep
 
     # not quite 0, comes out as 1.32e-06
-    assert_almost_equal(
-        properties["local_screw_angles"], screw[:-2], decimal=3
-    )
+    assert_almost_equal(properties["local_screw_angles"], screw[:-2], decimal=3)
 
 
 class TestHELANAL(object):
@@ -433,17 +421,13 @@ class TestHELANAL(object):
 
     @pytest.fixture()
     def helanal(self, psf_ca):
-        ha = hel.HELANAL(
-            psf_ca, select="resnum 161-187", flatten_single_helix=True
-        )
+        ha = hel.HELANAL(psf_ca, select="resnum 161-187", flatten_single_helix=True)
         return ha.run(start=10, stop=80)
 
     def test_regression_summary(self, helanal):
         bends = helanal.results.summary["all_bends"]
         old_helanal = read_bending_matrix(HELANAL_BENDING_MATRIX_SUBSET)
-        assert_almost_equal(
-            np.triu(bends["mean"], 1), old_helanal["Mean"], decimal=1
-        )
+        assert_almost_equal(np.triu(bends["mean"], 1), old_helanal["Mean"], decimal=1)
         assert_almost_equal(
             np.triu(bends["sample_sd"], 1), old_helanal["SD"], decimal=1
         )
@@ -470,9 +454,7 @@ class TestHELANAL(object):
                 calculated = ha.results[key][0]
 
             msg = "Mismatch between calculated and reference {}"
-            assert_almost_equal(
-                calculated, value, decimal=4, err_msg=msg.format(key)
-            )
+            assert_almost_equal(calculated, value, decimal=4, err_msg=msg.format(key))
 
     def test_multiple_selections(self, psf_ca):
         ha = hel.HELANAL(

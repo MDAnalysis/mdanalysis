@@ -282,18 +282,14 @@ class TestGeometryFunctions(object):
         v = r * np.array([np.cos(x), np.sin(x), 0])
         assert_almost_equal(mdamath.norm(v), r, 6)
 
-    @pytest.mark.parametrize(
-        "vec1, vec2, value", [(e1, e2, e3), (e1, null, 0.0)]
-    )
+    @pytest.mark.parametrize("vec1, vec2, value", [(e1, e2, e3), (e1, null, 0.0)])
     def test_normal(self, vec1, vec2, value):
         assert_allclose(mdamath.normal(vec1, vec2), value)
         # add more non-trivial tests
 
     def test_angle_lower_clip(self):
         a = np.array([0.1, 0, 0.2])
-        x = np.dot(a**0.5, -(a**0.5)) / (
-            mdamath.norm(a**0.5) * mdamath.norm(-(a**0.5))
-        )
+        x = np.dot(a**0.5, -(a**0.5)) / (mdamath.norm(a**0.5) * mdamath.norm(-(a**0.5)))
         assert x < -1.0
         assert mdamath.angle(a, -(a)) == np.pi
         assert mdamath.angle(a**0.5, -(a**0.5)) == np.pi
@@ -383,9 +379,7 @@ class TestMatrixOperations(object):
         return box
 
     @pytest.mark.parametrize("lengths", comb_wr([-1, 0, 1, 2], 3))
-    @pytest.mark.parametrize(
-        "angles", comb_wr([-10, 0, 20, 70, 90, 120, 180], 3)
-    )
+    @pytest.mark.parametrize("angles", comb_wr([-10, 0, 20, 70, 90, 120, 180], 3))
     def test_triclinic_vectors(self, lengths, angles):
         box = lengths + angles
         ref = self.ref_trivecs(box)
@@ -461,9 +455,7 @@ class TestMatrixOperations(object):
             for b in range(10, 91, 10):
                 for g in range(10, 91, 10):
                     ref = np.array([1, 1, 1, a, b, g], dtype=np.float32)
-                    res = mdamath.triclinic_box(
-                        *mdamath.triclinic_vectors(ref)
-                    )
+                    res = mdamath.triclinic_box(*mdamath.triclinic_vectors(ref))
                     if not np.all(res == 0.0):
                         assert_almost_equal(res, ref, 5)
 
@@ -486,9 +478,7 @@ class TestMatrixOperations(object):
         assert_allclose(res, ref)
 
     @pytest.mark.parametrize("lengths", comb_wr([-1, 0, 1, 2], 3))
-    @pytest.mark.parametrize(
-        "angles", comb_wr([-10, 0, 20, 70, 90, 120, 180], 3)
-    )
+    @pytest.mark.parametrize("angles", comb_wr([-10, 0, 20, 70, 90, 120, 180], 3))
     def test_triclinic_box(self, lengths, angles):
         tri_vecs = self.ref_trivecs_unsafe(lengths + angles)
         ref = self.ref_tribox(tri_vecs)
@@ -497,9 +487,7 @@ class TestMatrixOperations(object):
         assert res.dtype == ref.dtype
 
     @pytest.mark.parametrize("lengths", comb_wr([-1, 0, 1, 2], 3))
-    @pytest.mark.parametrize(
-        "angles", comb_wr([-10, 0, 20, 70, 90, 120, 180], 3)
-    )
+    @pytest.mark.parametrize("angles", comb_wr([-10, 0, 20, 70, 90, 120, 180], 3))
     def test_box_volume(self, lengths, angles):
         box = np.array(lengths + angles, dtype=np.float32)
         assert_almost_equal(
@@ -777,15 +765,11 @@ class TestMakeWhole(object):
         blengths = u.atoms.bonds.values()
         # kaboom
         u.atoms[::2].translate([u.dimensions[0], -2 * u.dimensions[1], 0.0])
-        u.atoms[1::2].translate(
-            [0.0, 7 * u.dimensions[1], -5 * u.dimensions[2]]
-        )
+        u.atoms[1::2].translate([0.0, 7 * u.dimensions[1], -5 * u.dimensions[2]])
 
         mdamath.make_whole(u.atoms)
 
-        assert_array_almost_equal(
-            u.atoms.bonds.values(), blengths, decimal=self.prec
-        )
+        assert_array_almost_equal(u.atoms.bonds.values(), blengths, decimal=self.prec)
 
     def test_make_whole_multiple_molecules(self):
         u = mda.Universe(two_water_gro, guess_bonds=True)
@@ -1307,9 +1291,7 @@ class TestGuessFormat(object):
         ],
     )
     @pytest.mark.parametrize("compression_extention", compressed_extensions)
-    def test_get_parser_compressed(
-        self, extention, parser, compression_extention
-    ):
+    def test_get_parser_compressed(self, extention, parser, compression_extention):
         file_name = "file.{0}{1}".format(extention, compression_extention)
         a = mda.topology.core.get_parser_for(file_name)
 
@@ -1351,9 +1333,7 @@ class TestGuessFormat(object):
         ],
     )
     @pytest.mark.parametrize("compression_extention", compressed_extensions)
-    def test_get_reader_compressed(
-        self, extention, reader, compression_extention
-    ):
+    def test_get_reader_compressed(self, extention, reader, compression_extention):
         file_name = "file.{0}{1}".format(extention, compression_extention)
         a = mda.coordinates.core.get_reader_for(file_name)
 
@@ -1396,16 +1376,12 @@ class TestUniqueRows(object):
     def test_unique_rows_2(self):
         a = np.array([[0, 1], [1, 2], [2, 1], [0, 1], [0, 1], [2, 1]])
 
-        assert_array_equal(
-            util.unique_rows(a), np.array([[0, 1], [1, 2], [2, 1]])
-        )
+        assert_array_equal(util.unique_rows(a), np.array([[0, 1], [1, 2], [2, 1]]))
 
     def test_unique_rows_3(self):
         a = np.array([[0, 1, 2], [0, 1, 2], [2, 3, 4], [0, 1, 2]])
 
-        assert_array_equal(
-            util.unique_rows(a), np.array([[0, 1, 2], [2, 3, 4]])
-        )
+        assert_array_equal(util.unique_rows(a), np.array([[0, 1, 2], [2, 3, 4]]))
 
     def test_unique_rows_with_view(self):
         # unique_rows doesn't work when flags['OWNDATA'] is False,
@@ -1451,9 +1427,7 @@ class TestGetWriterFor(object):
     def test_wrong_format(self):
         # Make sure ``get_writer_for`` fails if the format is unknown
         with pytest.raises(TypeError):
-            mda.coordinates.core.get_writer_for(
-                filename="fail_me", format="UNK"
-            )
+            mda.coordinates.core.get_writer_for(filename="fail_me", format="UNK")
 
     def test_compressed_extension(self):
         for ext in (".gz", ".bz2"):
@@ -1472,9 +1446,7 @@ class TestGetWriterFor(object):
     def test_non_string_filename(self):
         # Does ``get_writer_for`` fails with non string filename, no format
         with pytest.raises(ValueError):
-            mda.coordinates.core.get_writer_for(
-                filename=StringIO(), format=None
-            )
+            mda.coordinates.core.get_writer_for(filename=StringIO(), format=None)
 
     def test_multiframe_failure(self):
         # does ``get_writer_for`` fail with invalid format and multiframe not None
@@ -1522,9 +1494,7 @@ class TestGetWriterFor(object):
     )
     def test_singleframe(self, format, writer):
         assert (
-            mda.coordinates.core.get_writer_for(
-                "this", format=format, multiframe=False
-            )
+            mda.coordinates.core.get_writer_for("this", format=format, multiframe=False)
             == writer
         )
 
@@ -1538,9 +1508,7 @@ class TestGetWriterFor(object):
     )
     def test_singleframe_fails(self, format):
         with pytest.raises(TypeError):
-            mda.coordinates.core.get_writer_for(
-                "this", format=format, multiframe=False
-            )
+            mda.coordinates.core.get_writer_for("this", format=format, multiframe=False)
 
     @pytest.mark.parametrize(
         "format, writer",
@@ -1552,49 +1520,33 @@ class TestGetWriterFor(object):
     )
     def test_multiframe(self, format, writer):
         assert (
-            mda.coordinates.core.get_writer_for(
-                "this", format=format, multiframe=True
-            )
+            mda.coordinates.core.get_writer_for("this", format=format, multiframe=True)
             == writer
         )
 
     @pytest.mark.parametrize(
         "format",
-        [
-            format_tuple[0]
-            for format_tuple in formats
-            if format_tuple[3] is False
-        ],
+        [format_tuple[0] for format_tuple in formats if format_tuple[3] is False],
     )
     def test_multiframe_fails(self, format):
         with pytest.raises(TypeError):
-            mda.coordinates.core.get_writer_for(
-                "this", format=format, multiframe=True
-            )
+            mda.coordinates.core.get_writer_for("this", format=format, multiframe=True)
 
     def test_get_writer_for_pdb(self):
         assert (
-            mda.coordinates.core.get_writer_for(
-                "this", format="PDB", multiframe=False
-            )
+            mda.coordinates.core.get_writer_for("this", format="PDB", multiframe=False)
             == mda.coordinates.PDB.PDBWriter
         )
         assert (
-            mda.coordinates.core.get_writer_for(
-                "this", format="PDB", multiframe=True
-            )
+            mda.coordinates.core.get_writer_for("this", format="PDB", multiframe=True)
             == mda.coordinates.PDB.MultiPDBWriter
         )
         assert (
-            mda.coordinates.core.get_writer_for(
-                "this", format="ENT", multiframe=False
-            )
+            mda.coordinates.core.get_writer_for("this", format="ENT", multiframe=False)
             == mda.coordinates.PDB.PDBWriter
         )
         assert (
-            mda.coordinates.core.get_writer_for(
-                "this", format="ENT", multiframe=True
-            )
+            mda.coordinates.core.get_writer_for("this", format="ENT", multiframe=True)
             == mda.coordinates.PDB.MultiPDBWriter
         )
 
@@ -1606,9 +1558,7 @@ class TestBlocksOf(object):
         view = util.blocks_of(arr, 1, 1)
 
         assert view.shape == (4, 1, 1)
-        assert_array_almost_equal(
-            view, np.array([[[0]], [[5]], [[10]], [[15]]])
-        )
+        assert_array_almost_equal(view, np.array([[[0]], [[5]], [[10]], [[15]]]))
 
         # Change my view, check changes are reflected in arr
         view[:] = 1001
@@ -1831,14 +1781,11 @@ class TestWarnIfNotUnique(object):
     """Tests concerning the decorator @warn_if_not_unique"""
 
     def warn_msg(self, func, group, group_name):
-        msg = (
-            "{}.{}(): {} {} contains duplicates. Results might be "
-            "biased!".format(
-                group.__class__.__name__,
-                func.__name__,
-                group_name,
-                group.__repr__(),
-            )
+        msg = "{}.{}(): {} {} contains duplicates. Results might be " "biased!".format(
+            group.__class__.__name__,
+            func.__name__,
+            group_name,
+            group.__repr__(),
         )
         return msg
 
@@ -2211,9 +2158,7 @@ class TestCheckCoords(object):
         ag1 = u.select_atoms("index 0 to 10")
         ag2 = u.atoms
 
-        @check_coords(
-            "ag1", "ag2", check_lengths_match=True, allow_atomgroup=True
-        )
+        @check_coords("ag1", "ag2", check_lengths_match=True, allow_atomgroup=True)
         def func(ag1, ag2):
 
             return ag1, ag2
@@ -2243,21 +2188,16 @@ class TestCheckCoords(object):
         with pytest.raises(TypeError) as err:
             func(a_inv_type)
             assert err.msg == (
-                "func(): Parameter 'a' must be a numpy.ndarray, "
-                "got <class 'list'>."
+                "func(): Parameter 'a' must be a numpy.ndarray, " "got <class 'list'>."
             )
 
         with pytest.raises(ValueError) as err:
             func(a_inv_shape_1d)
-            assert err.msg == (
-                "func(): a.shape must be (3,) or (n, 3), got " "(6,)."
-            )
+            assert err.msg == ("func(): a.shape must be (3,) or (n, 3), got " "(6,).")
 
         with pytest.raises(ValueError) as err:
             func(a_inv_shape_2d)
-            assert err.msg == (
-                "func(): a.shape must be (3,) or (n, 3), got " "(3, 2)."
-            )
+            assert err.msg == ("func(): a.shape must be (3,) or (n, 3), got " "(3, 2).")
 
     def test_usage_with_kwargs(self):
 
@@ -2419,9 +2359,7 @@ def test_deprecate(old_name, new_name, remove, message, release="2.7.1"):
     assert re.search(deprecation_line_2, doc)
 
     if remove:
-        deprecation_line_3 = "`{0}` will be removed in release {1}".format(
-            name, remove
-        )
+        deprecation_line_3 = "`{0}` will be removed in release {1}".format(name, remove)
         assert re.search(deprecation_line_3, doc)
 
     # check that the old docs are still present
@@ -2475,9 +2413,7 @@ class TestCheckBox(object):
             np.array(["1", "1", 1, 90, "90", "90"]),
             np.array([1, 1, 1, 90, 90, 90], dtype=np.float32),
             np.array([1, 1, 1, 90, 90, 90], dtype=np.float64),
-            np.array(
-                [1, 1, 1, 1, 1, 1, 90, 90, 90, 90, 90, 90], dtype=np.float32
-            )[::2],
+            np.array([1, 1, 1, 1, 1, 1, 90, 90, 90, 90, 90, 90], dtype=np.float32)[::2],
         ),
     )
     def test_check_box_ortho(self, box):
@@ -2501,9 +2437,7 @@ class TestCheckBox(object):
             np.array(["1", "1", 2, 45, "90", "90"]),
             np.array([1, 1, 2, 45, 90, 90], dtype=np.float32),
             np.array([1, 1, 2, 45, 90, 90], dtype=np.float64),
-            np.array(
-                [1, 1, 1, 1, 2, 2, 45, 45, 90, 90, 90, 90], dtype=np.float32
-            )[::2],
+            np.array([1, 1, 1, 1, 2, 2, 45, 45, 90, 90, 90, 90], dtype=np.float32)[::2],
         ),
     )
     def test_check_box_tri_vecs(self, box):

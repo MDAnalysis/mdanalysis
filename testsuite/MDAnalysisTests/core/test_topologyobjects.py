@@ -221,9 +221,7 @@ class TestTopologyObjects(object):
         assert ub.partner(PSFDCD.atoms[10]) == PSFDCD.atoms[30]
 
     def test_ureybradley_distance(self, b):
-        assert_almost_equal(
-            b.atoms.ureybradley.distance(), b.length(), self.precision
-        )
+        assert_almost_equal(b.atoms.ureybradley.distance(), b.length(), self.precision)
 
     def test_cmap_repr(self, PSFDCD):
         cmap = PSFDCD.atoms[[4, 7, 8, 1, 2]].cmap
@@ -299,9 +297,7 @@ class TestTopologyGroup(object):
         bondtypes = PSFDCD.atoms.bonds.types()
         # check that a key doesn't appear in reversed format in keylist
         # have to exclude case of b[::-1] == b as this is false positive
-        assert not any(
-            [b[::-1] in bondtypes for b in bondtypes if b[::-1] != b]
-        )
+        assert not any([b[::-1] in bondtypes for b in bondtypes if b[::-1] != b])
 
     def test_bond_reversal(self, PSFDCD, b_td):
         bondtypes = PSFDCD.atoms.bonds.types()
@@ -439,9 +435,7 @@ class TestTopologyGroup(object):
         res1_tg2 = res1.atoms.bonds.select_bonds(("23", "3"))
         assert res1_tg == res1_tg2
 
-    @pytest.mark.parametrize(
-        "attr", ["bonds", "angles", "dihedrals", "impropers"]
-    )
+    @pytest.mark.parametrize("attr", ["bonds", "angles", "dihedrals", "impropers"])
     def test_TG_loose_intersection(self, PSFDCD, attr):
         """Pull bonds from a TG which are at least partially in an AG"""
         ag = PSFDCD.atoms[10:60]
@@ -486,9 +480,7 @@ class TestTopologyGroup(object):
         # dihedrals
         assert check_strict_intersection(PSFDCD.atoms.dihedrals, testinput)
         assert manual(PSFDCD.atoms.dihedrals, testinput) == set(
-            PSFDCD.atoms.dihedrals.atomgroup_intersection(
-                testinput, strict=True
-            )
+            PSFDCD.atoms.dihedrals.atomgroup_intersection(testinput, strict=True)
         )
 
     def test_add_TopologyGroups(self, res1, res2, PSFDCD):
