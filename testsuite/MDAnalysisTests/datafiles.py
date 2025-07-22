@@ -389,6 +389,7 @@ __all__ = [
     "SURFACE_PDB",  # 111 FCC lattice topology for NSGrid bug #2345
     "SURFACE_TRR",  # full precision coordinates for NSGrid bug #2345
     "DSSP",  # DSSP test suite
+    "LAMMPSDUMP_non_linear"
 ]
 
 from importlib import resources
