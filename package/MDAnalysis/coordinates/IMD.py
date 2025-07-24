@@ -119,7 +119,7 @@ class IMDReader(StreamReaderBase):
     allocates to its internal buffer. For analyses that periodically perform
     some heavier computation at some fixed interval, i.e., once every 200 received frames, 
     increasing this value will decrease the amount of time the simulation engine spends in 
-    a paused state and potentially decreasing total analysis time, but will require more RAM.
+    a paused state and potentially decrease total analysis time, but will require more RAM.
 
     Parameters
     ----------
