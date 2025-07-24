@@ -2,14 +2,23 @@
 IMDReader --- :mod:`MDAnalysis.coordinates.IMD`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-:class:`MDAnalysis.coordinates.IMD.IMDReader` is a class that implements the Interactive Molecular Dynamics (IMD) protocol for reading simulation
+:class:`MDAnalysis.coordinates.IMD.IMDReader` is a class that implements the
+`Interactive Molecular Dynamics (IMD) protocol <https://imdclient.readthedocs.io/en/latest/protocol_v3.html>`_ for reading simulation
 data using the IMDClient (see `imdclient <https://github.com/Becksteinlab/imdclient>`_).
 The protocol allows two-way communicating molecular simulation data through a socket.
 Via IMD, a simulation engine sends data to a receiver (in this case, the IMDClient) and the receiver can send forces and specific control
-requests (such as pausing, resuming, or terminating the simulation) back to the simulation engine. It currently supports
-simulation running with GROMACS, LAMMPS, or NAMD.
+requests (such as pausing, resuming, or terminating the simulation) back to the simulation engine. 
 
-For example, when running a simulation with GROMACS that supports streaming, use the following commands:
+IMDv3, the newest version of the protocol, is the one supported by this reader class and is implemented in GROMACS, LAMMPS, and NAMD at varying
+stages of development. See the `imdclient simulation engine docs <https://imdclient.readthedocs.io/en/latest/usage.html>`_ for more.
+
+IMDv2, the first version to be broadly adopted, is currently available as a part of official releases of GROMACS, LAMMPS, and NAMD. However,
+this reader class does not currently provide support for it since it was designed for visualization and gaps are allowed in the stream
+(i.e., an inconsistent number of integrator time steps between transmitted coordinate arrays is allowed)
+
+As an example of reading a stream, after configuring GROMACS to run a simulation with IMDv3 enabled
+(see the `imdclient simulation engine docs <https://imdclient.readthedocs.io/en/latest/usage.html>`_ for 
+up-to-date resources on configuring each simulation engine), use the following commands:
 
 .. code-block:: bash
 
