@@ -3,6 +3,7 @@
 
 import sys
 import importlib
+from weakref import ref
 import pytest
 import pickle
 from types import ModuleType
@@ -46,7 +47,6 @@ from MDAnalysisTests.coordinates.base import (
 class IMDReference(BaseReference):
     def __init__(self):
         super(IMDReference, self).__init__()
-        self.port = get_free_port()
         # Serve TRR traj data via the server
         traj = mda.coordinates.TRR.TRRReader(COORDINATES_TRR)
         self.server = InThreadIMDServer(traj)
@@ -55,7 +55,7 @@ class IMDReference(BaseReference):
         self.n_atoms = traj.n_atoms
         self.prec = 3
 
-        self.trajectory = f"imd://localhost:{self.port}"
+        self.trajectory = "imd://localhost"
         self.topology = COORDINATES_TOPOLOGY
         self.changing_dimensions = True
         self.reader = IMDReader
@@ -97,10 +97,10 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
     def reader(ref):
         # This will start the test IMD Server, waiting for a connection
         # to then send handshake & first frame
-        ref.server.handshake_sequence("localhost", ref.port)
+        ref.server.handshake_sequence("localhost")
         # This will connect to the test IMD Server and read the first frame
         reader = ref.reader(
-            ref.trajectory, n_atoms=ref.n_atoms, buffer_size=1 * 1024 * 1024
+            ref.trajectory + ref.server.port, n_atoms=ref.n_atoms, buffer_size=1 * 1024 * 1024
         )
         # Send the rest of the frames- small enough to all fit in socket itself
         ref.server.send_frames(1, 5)
@@ -127,10 +127,10 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
     def transformed(ref):
         # This will start the test IMD Server, waiting for a connection
         # to then send handshake & first frame
-        ref.server.handshake_sequence("localhost", ref.port)
+        ref.server.handshake_sequence("localhost")
         # This will connect to the test IMD Server and read the first frame
         transformed = ref.reader(
-            ref.trajectory, n_atoms=ref.n_atoms, buffer_size=1 * 1024 * 1024
+            ref.trajectory + ref.server.port, n_atoms=ref.n_atoms, buffer_size=1 * 1024 * 1024
         )
         # Send the rest of the frames- small enough to all fit in socket itself
         ref.server.send_frames(1, 5)
@@ -285,12 +285,12 @@ def imdsinfo():
 @pytest.mark.skipif(not HAS_IMDCLIENT, reason="IMDClient not installed")
 class TestStreamIteration:
     @pytest.fixture
-    def reader(self, universe, imdsinfo, port):
+    def reader(self, universe, imdsinfo):
         server = InThreadIMDServer(universe.trajectory)
         server.set_imdsessioninfo(imdsinfo)
-        server.handshake_sequence("localhost", port, first_frame=True)
+        server.handshake_sequence("localhost", first_frame=True)
         reader = IMDReader(
-            f"imd://localhost:{port}",
+            f"imd://localhost:{server.port}",
             n_atoms=universe.trajectory.n_atoms,
             buffer_size=1 * 1024 * 1024,
         )
@@ -359,60 +359,60 @@ class TestStreamIteration:
 
 
 @pytest.mark.skipif(not HAS_IMDCLIENT, reason="IMDClient not installed")
-def test_n_atoms_mismatch(universe, imdsinfo, port):
+def test_n_atoms_mismatch(universe, imdsinfo):
     server = InThreadIMDServer(universe.trajectory)
     server.set_imdsessioninfo(imdsinfo)
-    server.handshake_sequence("localhost", port, first_frame=True)
+    server.handshake_sequence("localhost", first_frame=True)
     with pytest.raises(
         RuntimeError,
         match="IMDReader: Read error",
     ):
         IMDReader(
-            f"imd://localhost:{port}",
+            f"imd://localhost:{server.port}",
             n_atoms=universe.trajectory.n_atoms + 1,
         )
     server.cleanup()
 
 
 @pytest.mark.skipif(not HAS_IMDCLIENT, reason="IMDClient not installed")
-def test_n_atoms_not_specified(universe, imdsinfo, port):
+def test_n_atoms_not_specified(universe, imdsinfo):
     server = InThreadIMDServer(universe.trajectory)
     server.set_imdsessioninfo(imdsinfo)
-    server.handshake_sequence("localhost", port, first_frame=True)
+    server.handshake_sequence("localhost", first_frame=True)
     with pytest.raises(
         ValueError,
         match="IMDReader: n_atoms must be specified",
     ):
         IMDReader(
-            f"imd://localhost:{port}",
+            f"imd://localhost:{server.port}",
         )
     server.cleanup()
 
 
 @pytest.mark.skipif(not HAS_IMDCLIENT, reason="IMDClient not installed")
-def test_imd_stream_empty(universe, imdsinfo, port):
+def test_imd_stream_empty(universe, imdsinfo):
     server = InThreadIMDServer(universe.trajectory)
     server.set_imdsessioninfo(imdsinfo)
-    server.handshake_sequence("localhost", port, first_frame=False)
+    server.handshake_sequence("localhost", first_frame=False)
     with pytest.raises(
         RuntimeError,
         match="IMDReader: Read error",
     ):
         IMDReader(
-            f"imd://localhost:{port}",
+            f"imd://localhost:{server.port}",
             n_atoms=universe.trajectory.n_atoms,
         )
     server.cleanup()
 
 
 @pytest.mark.skipif(not HAS_IMDCLIENT, reason="IMDClient not installed")
-def test_create_imd_universe(universe, imdsinfo, port):
+def test_create_imd_universe(universe, imdsinfo):
     server = InThreadIMDServer(universe.trajectory)
     server.set_imdsessioninfo(imdsinfo)
-    server.handshake_sequence("localhost", port, first_frame=True)
+    server.handshake_sequence("localhost", first_frame=True)
     u_imd = mda.Universe(
         COORDINATES_TOPOLOGY,
-        f"imd://localhost:{port}",
+        f"imd://localhost:{server.port}",
         n_atoms=universe.trajectory.n_atoms,
     )
     assert type(u_imd.trajectory).__name__ == "IMDReader"
