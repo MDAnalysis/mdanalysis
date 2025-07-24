@@ -115,14 +115,23 @@ class IMDReader(StreamReaderBase):
     Reader that supports the Interactive Molecular Dynamics (IMD) protocol for reading simulation
     data using the IMDClient.
 
+    By using the keyword `buffer_size`, you can change the amount of memory the :class:`IMDClient`
+    allocates to its internal buffer. For analyses that periodically perform
+    some heavier computation at some fixed interval, i.e., once every 200 received frames, 
+    increasing this value will decrease the amount of time the simulation engine spends in 
+    a paused state and potentially decreasing total analysis time, but will require more RAM.
+
     Parameters
     ----------
     filename : a string of the form "imd://host:port" where host is the hostname
-        or IP address of the listening GROMACS server and port
+        or IP address of the listening simultion engine's IMD server and port
         is the port number.
     n_atoms : int (optional)
         number of atoms in the system. defaults to number of atoms
         in the topology. Don't set this unless you know what you're doing.
+    buffer_size: int (optional) default=10*(1024**2)
+        number of bytes of memory to allocate to the :class:`IMDClient`'s
+        internal buffer. Defaults to 10 megabytes.
     kwargs : dict (optional)
         keyword arguments passed to the constructed :class:`IMDClient`
     """
@@ -133,8 +142,8 @@ class IMDReader(StreamReaderBase):
     def __init__(
         self,
         filename,
-        convert_units=True,
         n_atoms=None,
+        buffer_size=10*(1012**2),
         **kwargs,
     ):
         if not HAS_IMDCLIENT:
@@ -158,7 +167,7 @@ class IMDReader(StreamReaderBase):
             raise ValueError(f"IMDReader: Invalid IMD URL '{filename}': {e}")
 
         # This starts the simulation
-        self._imdclient = IMDClient(host, port, n_atoms, **kwargs)
+        self._imdclient = IMDClient(host, port, n_atoms, buffer_size=buffer_size, **kwargs)
 
         imdsinfo = self._imdclient.get_imdsessioninfo()
         if imdsinfo.version != 3:
