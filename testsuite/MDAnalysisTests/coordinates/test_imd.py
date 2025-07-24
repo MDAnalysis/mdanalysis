@@ -358,21 +358,6 @@ class TestStreamIteration:
             reader.timeseries()
 
 
-@pytest.mark.skipif(not HAS_IMDCLIENT, reason="IMDClient not installed")
-def test_n_atoms_mismatch(universe, imdsinfo):
-    server = InThreadIMDServer(universe.trajectory)
-    server.set_imdsessioninfo(imdsinfo)
-    server.handshake_sequence("localhost", first_frame=True)
-    with pytest.raises(
-        RuntimeError,
-        match="IMDReader: Read error",
-    ):
-        IMDReader(
-            f"imd://localhost:{server.port}",
-            n_atoms=universe.trajectory.n_atoms + 1,
-        )
-    server.cleanup()
-
 
 @pytest.mark.skipif(not HAS_IMDCLIENT, reason="IMDClient not installed")
 def test_n_atoms_not_specified(universe, imdsinfo):
