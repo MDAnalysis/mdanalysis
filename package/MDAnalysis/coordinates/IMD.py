@@ -125,15 +125,17 @@ class IMDReader(StreamReaderBase):
     data using the IMDClient.
 
     By using the keyword `buffer_size`, you can change the amount of memory the :class:`IMDClient`
-    allocates to its internal buffer. For analyses that periodically perform
-    some heavier computation at some fixed interval, i.e., once every 200 received frames, 
-    increasing this value will decrease the amount of time the simulation engine spends in 
-    a paused state and potentially decrease total analysis time, but will require more RAM.
+    allocates to its internal buffer. The buffer size determines how many frames can be stored
+    in memory as data is received from the socket and awaits reading by the client. For analyses
+    that periodically perform heavier computation at fixed intervals, say for example once every
+    200 received frames, increasing this value will decrease the amount of time the simulation
+    engine spends in a paused state and potentially decrease total analysis time, but will require
+    more RAM.
 
     Parameters
     ----------
     filename : a string of the form "imd://host:port" where host is the hostname
-        or IP address of the listening simultion engine's IMD server and port
+        or IP address of the listening simulation engine's IMD server and port
         is the port number.
     n_atoms : int (optional)
         number of atoms in the system. defaults to number of atoms
