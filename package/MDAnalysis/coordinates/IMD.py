@@ -154,7 +154,7 @@ class IMDReader(StreamReaderBase):
         self,
         filename,
         n_atoms=None,
-        buffer_size=10*(1024**2),
+        buffer_size=10 * (1024**2),
         **kwargs,
     ):
         if not HAS_IMDCLIENT:
@@ -178,7 +178,9 @@ class IMDReader(StreamReaderBase):
             raise ValueError(f"IMDReader: Invalid IMD URL '{filename}': {e}")
 
         # This starts the simulation
-        self._imdclient = IMDClient(host, port, n_atoms, buffer_size=buffer_size, **kwargs)
+        self._imdclient = IMDClient(
+            host, port, n_atoms, buffer_size=buffer_size, **kwargs
+        )
 
         imdsinfo = self._imdclient.get_imdsessioninfo()
         if imdsinfo.version != 3:
