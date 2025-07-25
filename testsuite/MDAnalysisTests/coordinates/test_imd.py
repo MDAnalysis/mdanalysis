@@ -100,7 +100,9 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
         ref.server.handshake_sequence("localhost")
         # This will connect to the test IMD Server and read the first frame
         reader = ref.reader(
-            f"{ref.trajectory}:{ref.server.port}", n_atoms=ref.n_atoms, buffer_size=1 * 1024 * 1024
+            f"{ref.trajectory}:{ref.server.port}",
+            n_atoms=ref.n_atoms,
+            buffer_size=1 * 1024 * 1024,
         )
         # Send the rest of the frames- small enough to all fit in socket itself
         ref.server.send_frames(1, 5)
@@ -130,7 +132,9 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
         ref.server.handshake_sequence("localhost")
         # This will connect to the test IMD Server and read the first frame
         transformed = ref.reader(
-            f"{ref.trajectory}:{ref.server.port}", n_atoms=ref.n_atoms, buffer_size=1 * 1024 * 1024
+            f"{ref.trajectory}:{ref.server.port}",
+            n_atoms=ref.n_atoms,
+            buffer_size=1 * 1024 * 1024,
         )
         # Send the rest of the frames- small enough to all fit in socket itself
         ref.server.send_frames(1, 5)
@@ -356,7 +360,6 @@ class TestStreamIteration:
             match="cannot access timeseries for streamed trajectories",
         ):
             reader.timeseries()
-
 
 
 @pytest.mark.skipif(not HAS_IMDCLIENT, reason="IMDClient not installed")
