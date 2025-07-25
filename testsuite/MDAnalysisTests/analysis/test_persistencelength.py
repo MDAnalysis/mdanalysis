@@ -41,13 +41,10 @@ def test_class_is_parallelizable():
 
 
 def test_supported_backends():
-    assert (
-        polymer.PersistenceLength.get_supported_backends()
-        == (
-            "serial",
-            "multiprocessing",
-            "dask",
-        )
+    assert polymer.PersistenceLength.get_supported_backends() == (
+        "serial",
+        "multiprocessing",
+        "dask",
     )
 
 
@@ -107,7 +104,7 @@ class TestPersistenceLength(object):
 
     @pytest.mark.parametrize("attr", ("lb", "lp", "fit"))
     def test(self, p_run, attr):
-        #p_run = p.run(step=3)
+        # p_run = p.run(step=3)
         wmsg = f"The `{attr}` attribute was deprecated in MDAnalysis 2.0.0"
         with pytest.warns(DeprecationWarning, match=wmsg):
             getattr(p_run, attr) is p_run.results[attr]
