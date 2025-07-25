@@ -36,6 +36,21 @@ from numpy.testing import assert_almost_equal, assert_equal
 from MDAnalysisTests.datafiles import Plength, TRZ_psf, TRZ
 
 
+def test_class_is_parallelizable():
+    assert polymer.PersistenceLength._analysis_algorithm_is_parallelizable
+
+
+def test_supported_backends():
+    assert (
+        polymer.PersistenceLength.get_supported_backends()
+        == (
+            "serial",
+            "multiprocessing",
+            "dask",
+        )
+    )
+
+
 class TestPersistenceLength(object):
     @staticmethod
     @pytest.fixture()
