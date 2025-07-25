@@ -154,7 +154,7 @@ class IMDReader(StreamReaderBase):
         self,
         filename,
         n_atoms=None,
-        buffer_size=10*(1012**2),
+        buffer_size=10*(1024**2),
         **kwargs,
     ):
         if not HAS_IMDCLIENT:
