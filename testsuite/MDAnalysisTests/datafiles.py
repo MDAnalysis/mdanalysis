@@ -784,7 +784,9 @@ LAMMPSdata_additional_columns = (
 LAMMPSDUMP_additional_columns = (
     _data_ref / "lammps/additional_columns.lammpstrj"
 ).as_posix()
-LAMMPSDUMP_non_linear = (_data_ref / "custom_non_linear/test_non_linear.dump.bz2").as_posix()
+LAMMPSDUMP_non_linear = (
+    _data_ref / "custom_non_linear/test_non_linear.dump.bz2"
+).as_posix()
 
 unordered_res = (_data_ref / "unordered_res.pdb").as_posix()
 
