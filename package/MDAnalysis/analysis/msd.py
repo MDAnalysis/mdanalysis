@@ -103,8 +103,7 @@ The MSD can then be accessed as
 
     msd =  MSD.results.timeseries
 
-Visual inspection of the MSD is important, so let's take a look at it with a
- simple plot.
+Visual inspection of the MSD is important, so let's take a look at it with a simple plot.
 
 .. code-block:: python
 
@@ -327,24 +326,6 @@ class EinsteinMSD(AnalysisBase):
         non_linear=False,
         **kwargs,
     ):
-        r"""
-        Parameters
-        ----------
-        u : Universe or AtomGroup
-            An MDAnalysis :class:`Universe` or :class:`AtomGroup`.
-        select : str
-            A selection string. Defaults to "all" in which case
-            all atoms are selected.
-        msd_type : {'xyz', 'xy', 'yz', 'xz', 'x', 'y', 'z'}
-            Desired dimensions to be included in the MSD.
-        fft : bool
-            If ``True``, uses a fast FFT based algorithm for computation of
-            the MSD. Otherwise, use the simple "windowed" algorithm.
-            The tidynamics package is required for `fft=True`.
-        non_linear : bool
-            If ``True``, calculates MSD for trajectory where frames are
-            non-linearly dumped. To use this set `fft=False`.
-        """
         if isinstance(u, groups.UpdatingAtomGroup):
             raise TypeError(
                 "UpdatingAtomGroups are not valid for MSD " "computation"
