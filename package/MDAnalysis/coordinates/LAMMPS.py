@@ -616,9 +616,9 @@ class DumpReader(base.ReaderBase):
        Other keyword arguments used in :class:`~MDAnalysis.coordinates.base.ReaderBase`
 
 
-    .. versionchanged:: 2.7.0
+    .. versionchanged:: 2.8.0
        Reading of arbitrary, additional columns is now supported.
-       (Issue #3608)
+       (Issue `#3504 <https://github.com/MDAnalysis/mdanalysis/issues/3504>`__)
     .. versionchanged:: 2.4.0
        Now imports velocities and forces, translates the box to the origin,
        and optionally unwraps trajectories with image flags upon loading.
