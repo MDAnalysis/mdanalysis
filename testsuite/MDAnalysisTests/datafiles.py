@@ -273,6 +273,7 @@ __all__ = [
     "LAMMPSDUMP_chain2",  # Lammps dump file with chain reader
     "LAMMPS_chain",  # Lammps data file with chain reader
     "LAMMPSDUMP_additional_columns",  # lammpsdump file with additional data (an additional charge column)
+    "LAMMPSDUMP_non_linear",  # lammpsdump file to test calculating non-linear msd method
     "unordered_res",  # pdb file with resids non sequential
     "GMS_ASYMOPT",  # GAMESS C1  optimization
     "GMS_SYMOPT",  # GAMESS D4h optimization
@@ -389,7 +390,6 @@ __all__ = [
     "SURFACE_PDB",  # 111 FCC lattice topology for NSGrid bug #2345
     "SURFACE_TRR",  # full precision coordinates for NSGrid bug #2345
     "DSSP",  # DSSP test suite
-    "LAMMPSDUMP_non_linear"
 ]
 
 from importlib import resources
@@ -784,6 +784,7 @@ LAMMPSdata_additional_columns = (
 LAMMPSDUMP_additional_columns = (
     _data_ref / "lammps/additional_columns.lammpstrj"
 ).as_posix()
+LAMMPSDUMP_non_linear = (_data_ref / "custom_non_linear/test_non_linear.dump.bz2").as_posix()
 
 unordered_res = (_data_ref / "unordered_res.pdb").as_posix()
 
@@ -907,7 +908,6 @@ PDBX = (_data_ref / "4x8u.pdbx").as_posix()
 
 SURFACE_PDB = (_data_ref / "surface.pdb.bz2").as_posix()
 SURFACE_TRR = (_data_ref / "surface.trr").as_posix()
-LAMMPSDUMP_non_linear = (_data_ref / "custom_non_linear/test_non_linear.dump").as_posix()
 
 # DSSP testing: from https://github.com/ShintaroMinami/PyDSSP
 DSSP = (_data_ref / "dssp").as_posix()

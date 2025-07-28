@@ -287,6 +287,9 @@ class EinsteinMSD(AnalysisBase):
         non-linearly dumped. To use this set `fft=False`.
         Defaults to ``False``.
 
+        .. versionadded:: 2.10.0
+
+
     Attributes
     ----------
     dim_fac : int
@@ -296,7 +299,11 @@ class EinsteinMSD(AnalysisBase):
     results.msds_by_particle : :class:`numpy.ndarray`
         The MSD of each individual particle with respect to lag-time.
     results.delta_t_values : :class:`numpy.ndarray`
-        Array of unique Δt (time differences) at which time-averaged MSD values are computed.
+        Array of unique Δt (time differences) at which time-averaged MSD values are
+        computed.
+
+        .. versionadded:: 2.10.0
+
     ag : :class:`AtomGroup`
         The :class:`AtomGroup` resulting from your selection
     n_frames : int
@@ -305,7 +312,10 @@ class EinsteinMSD(AnalysisBase):
         Number of particles MSD was calculated over.
 
 
+    .. versionadded:: 2.0.0
     .. versionadded:: 2.10.0
+       Added ability to calculate MSD from samples that are not linearly spaced with the
+       new `non_linear` keyword argument.
     """
 
     def __init__(
