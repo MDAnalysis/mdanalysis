@@ -319,7 +319,13 @@ class EinsteinMSD(AnalysisBase):
     """
 
     def __init__(
-        self, u, select="all", msd_type="xyz", fft=True, non_linear=False, **kwargs
+        self,
+        u,
+        select="all",
+        msd_type="xyz",
+        fft=True,
+        non_linear=False,
+        **kwargs,
     ):
         r"""
         Parameters
@@ -340,7 +346,9 @@ class EinsteinMSD(AnalysisBase):
             non-linearly dumped. To use this set `fft=False`.
         """
         if isinstance(u, groups.UpdatingAtomGroup):
-            raise TypeError("UpdatingAtomGroups are not valid for MSD " "computation")
+            raise TypeError(
+                "UpdatingAtomGroups are not valid for MSD " "computation"
+            )
 
         super(EinsteinMSD, self).__init__(u.universe.trajectory, **kwargs)
 
@@ -364,8 +372,12 @@ class EinsteinMSD(AnalysisBase):
     def _prepare(self):
         # self.n_frames only available here
         # these need to be zeroed prior to each run() call
-        self.results.msds_by_particle = np.zeros((self.n_frames, self.n_particles))
-        self._position_array = np.zeros((self.n_frames, self.n_particles, self.dim_fac))
+        self.results.msds_by_particle = np.zeros(
+            (self.n_frames, self.n_particles)
+        )
+        self._position_array = np.zeros(
+            (self.n_frames, self.n_particles, self.dim_fac)
+        )
         # self.results.timeseries not set here
 
     def _parse_msd_type(self):
@@ -396,7 +408,9 @@ class EinsteinMSD(AnalysisBase):
         r"""Constructs array of positions for MSD calculation."""
         # shape of position array set here, use span in last dimension
         # from this point on
-        self._position_array[self._frame_index] = self.ag.positions[:, self._dim]
+        self._position_array[self._frame_index] = self.ag.positions[
+            :, self._dim
+        ]
 
     def _conclude(self):
         if self.non_linear:
@@ -436,7 +450,9 @@ class EinsteinMSD(AnalysisBase):
 
         positions = self._position_array.astype(np.float64)
         for n in tqdm(range(self.n_particles)):
-            self.results.msds_by_particle[:, n] = tidynamics.msd(positions[:, n, :])
+            self.results.msds_by_particle[:, n] = tidynamics.msd(
+                positions[:, n, :]
+            )
         self.results.timeseries = self.results.msds_by_particle.mean(axis=1)
 
     def _conclude_non_linear(self):
@@ -475,4 +491,6 @@ class EinsteinMSD(AnalysisBase):
             avg_msds.append(avg_msd)
 
         self.results.timeseries = np.array(avg_msds, dtype=np.float64)
-        self.results.delta_t_values = np.array(delta_t_values, dtype=np.float64)
+        self.results.delta_t_values = np.array(
+            delta_t_values, dtype=np.float64
+        )
