@@ -369,7 +369,7 @@ class PersistenceLength(AnalysisBase):
         import matplotlib.pyplot as plt
 
         if ax is None:
-            _fig, ax = plt.subplots()
+            _, ax = plt.subplots()
         ax.plot(
             self.results.x,
             self.results.bond_autocorrelation,

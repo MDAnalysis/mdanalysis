@@ -58,7 +58,7 @@ Enhancements
    (PR #5038)
  * Moved distopia checking function to common import location in
    MDAnalysisTest.util (PR #5038)
- * Enables parallelization for `analysis.polymer.PersistenceLength`. (PR #5074)
+ * Enables parallelization for `analysis.polymer.PersistenceLength` (Issue #4671, PR #5074)
 
 
 Changes
