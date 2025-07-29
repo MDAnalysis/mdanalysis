@@ -37,11 +37,6 @@ jobs:
               python-version: "3.13"
               full-deps: false
               codecov: true
-            - name: macOS_monterey_py311
-              os: macos-13
-              python-version: "3.12"
-              full-deps: true
-              codecov: true
             - name: macOS_14_arm64_py312
               os: macOS-14
               python-version: "3.12"

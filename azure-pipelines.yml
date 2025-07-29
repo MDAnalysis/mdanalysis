@@ -111,7 +111,7 @@ jobs:
       networkx
       parmed
       pytng>=0.2.3
-      rdkit>=2020.03.1
+      rdkit>=2024.03.4
       tidynamics>=1.0.0
     # remove from azure to avoid test hanging #4707
     # "gsd>3.0.0"
