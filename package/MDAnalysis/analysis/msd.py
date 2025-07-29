@@ -446,32 +446,37 @@ class EinsteinMSD(AnalysisBase):
         msd_dict = collections.defaultdict(
             list
         )  # Dictionary to collect MSDs: {Δt: [msd1, msd2, ...]}
+        msds_by_particle_dict = collections.defaultdict(list)
 
+        # TODO: optimize the code
         # Looping over all the frames as if the referenced gets shifted frame to frame
         for i in range(n_frames):
             for j in range(i + 1, n_frames):
                 delta_t = dump_times[j] - dump_times[i]
-
                 # Compute displacement and squared displacement
                 disp = positions[j] - positions[i]
                 squared_disp = np.sum(disp**2, axis=1)
                 msd = np.mean(squared_disp)
-
                 # Store MSD under corresponding Δt
                 msd_dict[delta_t].append(msd)
+                msds_by_particle_dict[delta_t].append(squared_disp)
 
         msd_dict[0] = [0]
+        msds_by_particle_dict[0.0] = [np.zeros(n_atoms)]
 
-        # Prepare averaged results
-        delta_t_values = []
-        avg_msds = []
-        for delta_t in sorted(msd_dict.keys()):
-            msd_list = msd_dict[delta_t]
-            avg_msd = np.mean(msd_list)
-            delta_t_values.append(delta_t)
-            avg_msds.append(avg_msd)
+        # For each delta_t, stacked all squared_disp arrays and averaging over axis=0 (time origins)
+        delta_t_values = sorted(msd_dict.keys())
+        avg_msds = [np.mean(msd_dict[dt]) for dt in delta_t_values]
+        msds_by_particle_array = np.zeros((len(delta_t_values), n_atoms))
+        for idx, dt in enumerate(delta_t_values):
+            # Stack list of arrays like -- (n_time_origins, n_atoms)
+            arr = np.vstack(msds_by_particle_dict[dt])
+            msds_by_particle_array[idx, :] = np.mean(arr, axis=0)
 
         self.results.timeseries = np.array(avg_msds, dtype=np.float64)
         self.results.delta_t_values = np.array(
             delta_t_values, dtype=np.float64
+        )
+        self.results.msds_by_particle = np.array(
+            msds_by_particle_array, dtype=np.float64
         )
