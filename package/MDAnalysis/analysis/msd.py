@@ -312,7 +312,7 @@ class EinsteinMSD(AnalysisBase):
 
 
     .. versionadded:: 2.0.0
-    .. versionadded:: 2.10.0
+    .. versionchanged:: 2.10.0
        Added ability to calculate MSD from samples that are not linearly spaced with the
        new `non_linear` keyword argument.
     """
