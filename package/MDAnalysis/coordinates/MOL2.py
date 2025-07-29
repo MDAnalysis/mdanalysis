@@ -145,8 +145,9 @@ class MOL2Reader(base.ReaderBase):
     .. versionchanged:: 2.2.0
        Read MOL2 files with optional columns omitted.
     """
-    format = 'MOL2'
-    units = {'time': None, 'length': 'Angstrom'}
+
+    format = "MOL2"
+    units = {"time": None, "length": "Angstrom"}
 
     @store_init_arguments
     def __init__(self, filename, **kwargs):
@@ -195,8 +196,10 @@ class MOL2Reader(base.ReaderBase):
 
         atom_lines = sections["atom"]
         if not len(atom_lines):
-            raise Exception("The mol2 (starting at line {0}) block has no atoms"
-                            "".format(block["start_line"]))
+            raise Exception(
+                "The mol2 (starting at line {0}) block has no atoms"
+                "".format(block["start_line"])
+            )
         elif self.n_atoms is None:
             # First time round, remember the number of atoms
             self.n_atoms = len(atom_lines)
@@ -205,13 +208,14 @@ class MOL2Reader(base.ReaderBase):
                 "MOL2Reader assumes that the number of atoms remains unchanged"
                 " between frames; the current "
                 "frame has {0}, the next frame has {1} atoms"
-                "".format(self.n_atoms, len(atom_lines)))
+                "".format(self.n_atoms, len(atom_lines))
+            )
 
         coords = np.zeros((self.n_atoms, 3), dtype=np.float32)
         for i, a in enumerate(atom_lines):
             aid, name, x, y, z, atom_type = a.split()[:6]
 
-            #x, y, z = float(x), float(y), float(z)
+            # x, y, z = float(x), float(y), float(z)
             coords[i, :] = x, y, z
 
         return sections, coords
@@ -229,13 +233,15 @@ class MOL2Reader(base.ReaderBase):
         try:
             block = self.frames[frame]
         except IndexError:
-            errmsg = (f"Invalid frame {frame} for trajectory with length "
-                      f"{len(self)}")
+            errmsg = (
+                f"Invalid frame {frame} for trajectory with length "
+                f"{len(self)}"
+            )
             raise IOError(errmsg) from None
 
         sections, coords = self.parse_block(block)
 
-        for sect in ['molecule', 'substructure']:
+        for sect in ["molecule", "substructure"]:
             try:
                 self.ts.data[sect] = sections[sect]
             except KeyError:
@@ -285,9 +291,10 @@ class MOL2Writer(base.WriterBase):
        Frames now 0-based instead of 1-based
 
     """
-    format = 'MOL2'
+
+    format = "MOL2"
     multiframe = True
-    units = {'time': None, 'length': 'Angstrom'}
+    units = {"time": None, "length": "Angstrom"}
 
     def __init__(self, filename, n_atoms=None, convert_units=True):
         """Create a new MOL2Writer
@@ -300,11 +307,13 @@ class MOL2Writer(base.WriterBase):
             units are converted to the MDAnalysis base format; [``True``]
         """
         self.filename = filename
-        self.convert_units = convert_units  # convert length and time to base units
+        self.convert_units = (
+            convert_units  # convert length and time to base units
+        )
 
         self.frames_written = 0
 
-        self.file = util.anyopen(self.filename, 'w')  # open file on init
+        self.file = util.anyopen(self.filename, "w")  # open file on init
 
     def close(self):
         self.file.close()
@@ -326,7 +335,7 @@ class MOL2Writer(base.WriterBase):
         ts = traj.ts
 
         try:
-            molecule = ts.data['molecule']
+            molecule = ts.data["molecule"]
         except KeyError:
             errmsg = "MOL2Writer cannot currently write non MOL2 data"
             raise NotImplementedError(errmsg) from None
@@ -341,11 +350,12 @@ class MOL2Writer(base.WriterBase):
             bondgroup = obj.intra_bonds
             bonds = sorted((b[0], b[1], b.order) for b in bondgroup)
             bond_lines = ["@<TRIPOS>BOND"]
-            bls = ["{0:>5} {1:>5} {2:>5} {3:>2}".format(bid,
-                                                        mapping[atom1],
-                                                        mapping[atom2],
-                                                        order)
-                   for bid, (atom1, atom2, order) in enumerate(bonds, start=1)]
+            bls = [
+                "{0:>5} {1:>5} {2:>5} {3:>2}".format(
+                    bid, mapping[atom1], mapping[atom2], order
+                )
+                for bid, (atom1, atom2, order) in enumerate(bonds, start=1)
+            ]
             bond_lines.extend(bls)
             bond_lines.append("\n")
             bond_lines = "\n".join(bond_lines)
@@ -354,23 +364,29 @@ class MOL2Writer(base.WriterBase):
             bond_lines = ""
 
         atom_lines = ["@<TRIPOS>ATOM"]
-        atom_lines.extend("{0:>4} {1:>4} {2:>13.4f} {3:>9.4f} {4:>9.4f}"
-                          " {5:>4} {6} {7} {8:>7.4f}"
-                          "".format(mapping[a],
-                                    a.name,
-                                    a.position[0],
-                                    a.position[1],
-                                    a.position[2],
-                                    a.type,
-                                    a.resid,
-                                    a.resname,
-                                    a.charge)
-                          for a in obj.atoms)
+        atom_lines.extend(
+            "{0:>4} {1:>4} {2:>13.4f} {3:>9.4f} {4:>9.4f}"
+            " {5:>4} {6} {7} {8:>7.4f}"
+            "".format(
+                mapping[a],
+                a.name,
+                a.position[0],
+                a.position[1],
+                a.position[2],
+                a.type,
+                a.resid,
+                a.resname,
+                a.charge,
+            )
+            for a in obj.atoms
+        )
         atom_lines.append("\n")
         atom_lines = "\n".join(atom_lines)
 
         try:
-            substructure = ["@<TRIPOS>SUBSTRUCTURE\n"] + ts.data['substructure']
+            substructure = ["@<TRIPOS>SUBSTRUCTURE\n"] + ts.data[
+                "substructure"
+            ]
         except KeyError:
             substructure = ""
 
@@ -385,8 +401,9 @@ class MOL2Writer(base.WriterBase):
         molecule[1] = "{0}\n".format(" ".join(check_sums))
         molecule.insert(0, "@<TRIPOS>MOLECULE\n")
 
-        return_val = ("".join(molecule) + atom_lines +
-                      bond_lines + "".join(substructure))
+        return_val = (
+            "".join(molecule) + atom_lines + bond_lines + "".join(substructure)
+        )
 
         molecule[0] = molecule_0_store
         molecule[1] = molecule_1_store

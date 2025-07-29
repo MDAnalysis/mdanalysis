@@ -249,12 +249,19 @@ class MemoryReader(base.ProtoReader):
        :meth:`MemoryReader.timeseries` has now been removed.
     """
 
-    format = 'MEMORY'
+    format = "MEMORY"
 
-    def __init__(self, coordinate_array, order='fac',
-                 dimensions=None, dt=1, filename=None,
-                 velocities=None, forces=None,
-                 **kwargs):
+    def __init__(
+        self,
+        coordinate_array,
+        order="fac",
+        dimensions=None,
+        dt=1,
+        filename=None,
+        velocities=None,
+        forces=None,
+        **kwargs,
+    ):
         """
         Parameters
         ----------
@@ -317,31 +324,36 @@ class MemoryReader(base.ProtoReader):
             if coordinate_array.ndim == 2 and coordinate_array.shape[1] == 3:
                 coordinate_array = coordinate_array[np.newaxis, :, :]
         except AttributeError:
-            errmsg = ("The input has to be a numpy.ndarray that corresponds "
-                      "to the layout specified by the 'order' keyword.")
+            errmsg = (
+                "The input has to be a numpy.ndarray that corresponds "
+                "to the layout specified by the 'order' keyword."
+            )
             raise TypeError(errmsg) from None
 
         self.set_array(coordinate_array, order)
-        self.n_frames = \
-            self.coordinate_array.shape[self.stored_order.find('f')]
-        self.n_atoms = \
-            self.coordinate_array.shape[self.stored_order.find('a')]
+        self.n_frames = self.coordinate_array.shape[
+            self.stored_order.find("f")
+        ]
+        self.n_atoms = self.coordinate_array.shape[self.stored_order.find("a")]
 
         if velocities is not None:
             try:
                 velocities = np.asarray(velocities, dtype=np.float32)
             except ValueError:
-                errmsg = (f"'velocities' must be array-like got "
-                          f"{type(velocities)}")
+                errmsg = (
+                    f"'velocities' must be array-like got "
+                    f"{type(velocities)}"
+                )
                 raise TypeError(errmsg) from None
             # if single frame, make into array of 1 frame
             if velocities.ndim == 2:
                 velocities = velocities[np.newaxis, :, :]
             if not velocities.shape == self.coordinate_array.shape:
-                raise ValueError('Velocities has wrong shape {} '
-                                 'to match coordinates {}'
-                                 ''.format(velocities.shape,
-                                           self.coordinate_array.shape))
+                raise ValueError(
+                    "Velocities has wrong shape {} "
+                    "to match coordinates {}"
+                    "".format(velocities.shape, self.coordinate_array.shape)
+                )
             self.velocity_array = velocities.astype(np.float32, copy=False)
         else:
             self.velocity_array = None
@@ -355,18 +367,17 @@ class MemoryReader(base.ProtoReader):
             if forces.ndim == 2:
                 forces = forces[np.newaxis, :, :]
             if not forces.shape == self.coordinate_array.shape:
-                raise ValueError('Forces has wrong shape {} '
-                                 'to match coordinates {}'
-                                 ''.format(forces.shape,
-                                           self.coordinate_array.shape))
+                raise ValueError(
+                    "Forces has wrong shape {} "
+                    "to match coordinates {}"
+                    "".format(forces.shape, self.coordinate_array.shape)
+                )
             self.force_array = forces.astype(np.float32, copy=False)
         else:
             self.force_array = None
 
         provided_n_atoms = kwargs.pop("n_atoms", None)
-        if (provided_n_atoms is not None and
-            provided_n_atoms != self.n_atoms
-        ):
+        if provided_n_atoms is not None and provided_n_atoms != self.n_atoms:
             raise ValueError(
                 "The provided value for n_atoms ({}) "
                 "does not match the shape of the coordinate "
@@ -377,22 +388,28 @@ class MemoryReader(base.ProtoReader):
         self.ts.dt = dt
 
         if dimensions is None:
-            self.dimensions_array = np.zeros((self.n_frames, 6), dtype=np.float32)
+            self.dimensions_array = np.zeros(
+                (self.n_frames, 6), dtype=np.float32
+            )
         else:
             try:
                 dimensions = np.asarray(dimensions, dtype=np.float32)
             except ValueError:
-                errmsg = (f"'dimensions' must be array-like got "
-                          f"{type(dimensions)}")
+                errmsg = (
+                    f"'dimensions' must be array-like got "
+                    f"{type(dimensions)}"
+                )
                 raise TypeError(errmsg) from None
             if dimensions.shape == (6,):
                 # single box, tile this to trajectory length
                 # allows modifying the box of some frames
                 dimensions = np.tile(dimensions, (self.n_frames, 1))
             elif dimensions.shape != (self.n_frames, 6):
-                raise ValueError("Provided dimensions array has shape {}. "
-                                 "This must be a array of shape (6,) or "
-                                 "(n_frames, 6)".format(dimensions.shape))
+                raise ValueError(
+                    "Provided dimensions array has shape {}. "
+                    "This must be a array of shape (6,) or "
+                    "(n_frames, 6)".format(dimensions.shape)
+                )
             self.dimensions_array = dimensions
 
         self.ts.frame = -1
@@ -408,7 +425,7 @@ class MemoryReader(base.ProtoReader):
         return isinstance(thing, np.ndarray)
 
     @staticmethod
-    def parse_n_atoms(filename, order='fac', **kwargs):
+    def parse_n_atoms(filename, order="fac", **kwargs):
         """Deduce number of atoms in a given array of coordinates
 
         Parameters
@@ -428,14 +445,18 @@ class MemoryReader(base.ProtoReader):
           number of atoms in system
         """
         # assume filename is a numpy array
-        return filename.shape[order.find('a')]
+        return filename.shape[order.find("a")]
 
     def copy(self):
         """Return a copy of this Memory Reader"""
-        vels = (self.velocity_array.copy()
-                if self.velocity_array is not None else None)
-        fors = (self.force_array.copy()
-                if self.force_array is not None else None)
+        vels = (
+            self.velocity_array.copy()
+            if self.velocity_array is not None
+            else None
+        )
+        fors = (
+            self.force_array.copy() if self.force_array is not None else None
+        )
         dims = self.dimensions_array.copy()
 
         new = self.__class__(
@@ -446,7 +467,7 @@ class MemoryReader(base.ProtoReader):
             forces=fors,
             dt=self.ts.dt,
             filename=self.filename,
-            **self._kwargs
+            **self._kwargs,
         )
         new[self.ts.frame]
 
@@ -458,7 +479,7 @@ class MemoryReader(base.ProtoReader):
 
         return new
 
-    def set_array(self, coordinate_array, order='fac'):
+    def set_array(self, coordinate_array, order="fac"):
         """
         Set underlying array in desired column order.
 
@@ -474,7 +495,7 @@ class MemoryReader(base.ProtoReader):
             coordinates).
         """
         # Only make copy if not already in float32 format
-        self.coordinate_array = coordinate_array.astype('float32', copy=False)
+        self.coordinate_array = coordinate_array.astype("float32", copy=False)
         self.stored_format = order
 
     def get_array(self):
@@ -488,7 +509,9 @@ class MemoryReader(base.ProtoReader):
         self.ts.frame = -1
         self.ts.time = -1
 
-    def timeseries(self, asel=None, atomgroup=None, start=0, stop=-1, step=1, order='afc'):
+    def timeseries(
+        self, asel=None, atomgroup=None, start=0, stop=-1, step=1, order="afc"
+    ):
         """Return a subset of coordinate data for an AtomGroup in desired
         column order. If no selection is given, it will return a view of the
         underlying array, while a copy is returned otherwise.
@@ -513,7 +536,7 @@ class MemoryReader(base.ProtoReader):
 
             .. deprecated:: 2.4.0
                Note that `stop` is currently *inclusive* but will be
-               changed in favour of being *exclusive* in version 3.0.  
+               changed in favour of being *exclusive* in version 3.0.
 
         step : int (optional)
             the number of trajectory frames to skip
@@ -535,16 +558,21 @@ class MemoryReader(base.ProtoReader):
             warnings.warn(
                 "asel argument to timeseries will be renamed to"
                 "'atomgroup' in 3.0, see #3911",
-                category=DeprecationWarning)
+                category=DeprecationWarning,
+            )
             if atomgroup:
-                raise ValueError("Cannot provide both asel and atomgroup kwargs")
+                raise ValueError(
+                    "Cannot provide both asel and atomgroup kwargs"
+                )
             atomgroup = asel
 
-
         if stop != -1:
-            warnings.warn("MemoryReader.timeseries inclusive `stop` "
-                      "indexing will be removed in 3.0 in favour of exclusive "
-                      "indexing", category=DeprecationWarning)
+            warnings.warn(
+                "MemoryReader.timeseries inclusive `stop` "
+                "indexing will be removed in 3.0 in favour of exclusive "
+                "indexing",
+                category=DeprecationWarning,
+            )
 
         array = self.get_array()
         if order == self.stored_order:
@@ -562,44 +590,51 @@ class MemoryReader(base.ProtoReader):
             array = np.swapaxes(array, 2, 0)
             array = np.swapaxes(array, 1, 2)
 
-        a_index = order.find('a')
-        f_index = order.find('f')
-        stop_index = stop+1
+        a_index = order.find("a")
+        f_index = order.find("f")
+        stop_index = stop + 1
         if stop_index == 0:
             stop_index = None
-        basic_slice = ([slice(None)] * f_index +
-                       [slice(start, stop_index, step)] +
-                       [slice(None)] * (2-f_index))
+        basic_slice = (
+            [slice(None)] * f_index
+            + [slice(start, stop_index, step)]
+            + [slice(None)] * (2 - f_index)
+        )
 
         # Return a view if either:
         #   1) atomgroup is None
         #   2) atomgroup corresponds to the selection of all atoms.
         array = array[tuple(basic_slice)]
-        if (atomgroup is None or atomgroup is atomgroup.universe.atoms):
+        if atomgroup is None or atomgroup is atomgroup.universe.atoms:
             return array
         else:
             if len(atomgroup) == 0:
-                raise ValueError("Timeseries requires at least one atom "
-                                  "to analyze")
+                raise ValueError(
+                    "Timeseries requires at least one atom " "to analyze"
+                )
             # If selection is specified, return a copy
             return array.take(asel.indices, a_index)
 
     def _read_next_timestep(self, ts=None):
         """copy next frame into timestep"""
 
-        if self.ts.frame >= self.n_frames-1:
-            raise IOError(errno.EIO, 'trying to go over trajectory limit')
+        if self.ts.frame >= self.n_frames - 1:
+            raise IOError(errno.EIO, "trying to go over trajectory limit")
         if ts is None:
             ts = self.ts
         ts.frame += 1
-        f_index = self.stored_order.find('f')
-        basic_slice = ([slice(None)]*(f_index) +
-                       [self.ts.frame] +
-                       [slice(None)]*(2-f_index))
+        f_index = self.stored_order.find("f")
+        basic_slice = (
+            [slice(None)] * (f_index)
+            + [self.ts.frame]
+            + [slice(None)] * (2 - f_index)
+        )
         _replace_positions_array(ts, self.coordinate_array[tuple(basic_slice)])
         _replace_dimensions(ts, self.dimensions_array[self.ts.frame])
         if self.velocity_array is not None:
-            _replace_velocities_array(ts, self.velocity_array[tuple(basic_slice)])
+            _replace_velocities_array(
+                ts, self.velocity_array[tuple(basic_slice)]
+            )
         if self.force_array is not None:
             _replace_forces_array(ts, self.force_array[tuple(basic_slice)])
 
@@ -614,15 +649,14 @@ class MemoryReader(base.ProtoReader):
 
     def __repr__(self):
         """String representation"""
-        return ("<{cls} with {nframes} frames of {natoms} atoms>"
-                "".format(
-                    cls=self.__class__.__name__,
-                    nframes=self.n_frames,
-                    natoms=self.n_atoms
-                ))
+        return "<{cls} with {nframes} frames of {natoms} atoms>" "".format(
+            cls=self.__class__.__name__,
+            nframes=self.n_frames,
+            natoms=self.n_atoms,
+        )
 
     def add_transformations(self, *transformations):
-        """ Add all transformations to be applied to the trajectory.
+        """Add all transformations to be applied to the trajectory.
 
         This function take as list of transformations as an argument. These
         transformations are functions that will be called by the Reader and given
@@ -648,10 +682,10 @@ class MemoryReader(base.ProtoReader):
         --------
         :mod:`MDAnalysis.transformations`
         """
-        #Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`
-        #to avoid unintended behaviour where the coordinates of each frame are transformed
-        #multiple times when iterating over the trajectory.
-        #In this method, the trajectory is modified all at once and once only.
+        # Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`
+        # to avoid unintended behaviour where the coordinates of each frame are transformed
+        # multiple times when iterating over the trajectory.
+        # In this method, the trajectory is modified all at once and once only.
 
         super(MemoryReader, self).add_transformations(*transformations)
         for i, ts in enumerate(self):
@@ -659,7 +693,7 @@ class MemoryReader(base.ProtoReader):
                 ts = transform(ts)
 
     def _apply_transformations(self, ts):
-        """ Applies the transformations to the timestep."""
+        """Applies the transformations to the timestep."""
         # Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`
         # to avoid applying the same transformations multiple times on each frame
 
