@@ -328,7 +328,7 @@ class EinsteinMSD(AnalysisBase):
     ):
         if isinstance(u, groups.UpdatingAtomGroup):
             raise TypeError(
-                "UpdatingAtomGroups are not valid for MSD " "computation"
+                "UpdatingAtomGroups are not valid for MSD computation"
             )
 
         super(EinsteinMSD, self).__init__(u.universe.trajectory, **kwargs)
@@ -473,10 +473,6 @@ class EinsteinMSD(AnalysisBase):
             arr = np.vstack(msds_by_particle_dict[dt])
             msds_by_particle_array[idx, :] = np.mean(arr, axis=0)
 
-        self.results.timeseries = np.array(avg_msds, dtype=np.float64)
-        self.results.delta_t_values = np.array(
-            delta_t_values, dtype=np.float64
-        )
-        self.results.msds_by_particle = np.array(
-            msds_by_particle_array, dtype=np.float64
-        )
+        self.results.timeseries = np.array(avg_msds)
+        self.results.delta_t_values = np.array(delta_t_values)
+        self.results.msds_by_particle = msds_by_particle_array
