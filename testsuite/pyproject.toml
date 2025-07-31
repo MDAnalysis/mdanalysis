@@ -116,6 +116,7 @@ MDAnalysisTests = [
     "data/*.mmtf",
     "data/*.mmtf.gz",
     "data/analysis/*",
+    "data/analysis/msd/*",
     "data/*.gsd",
     "data/windows/*",
     "data/*.itp",
