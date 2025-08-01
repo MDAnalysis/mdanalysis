@@ -294,12 +294,18 @@ class EinsteinMSD(AnalysisBase):
     dim_fac : int
         Dimensionality :math:`d` of the MSD.
     results.timeseries : :class:`numpy.ndarray`
-        The averaged MSD over all the particles with respect to lag-time.
+        The averaged MSD over all the particles with respect to constant lag-time or
+        unique Δt intervals.
     results.msds_by_particle : :class:`numpy.ndarray`
-        The MSD of each individual particle with respect to lag-time.
+        The MSD of each individual particle with respect to constant lag-time or
+        unique Δt intervals.
+        - for `non_linear=False`: a 2D array of shape (n_lagtimes, n_atoms)
+        - for `non_linear=True`: a 2D array of shape (n_delta_t_values, n_atoms)
     results.delta_t_values : :class:`numpy.ndarray`
-        Array of unique Δt (time differences) at which time-averaged MSD values are
-        computed.
+        - Array of unique Δt (time differences) at which time-averaged MSD values are
+        computed (for `non_linear=True`).
+        - For `non_linear=False` it is Null array. Time differences are same as the lag-times.
+          (To access: `lagtimes = np.arange(nframes)*timestep`)
 
         .. versionadded:: 2.10.0
 
