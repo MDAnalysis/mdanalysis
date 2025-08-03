@@ -119,9 +119,9 @@ For citations of included algorithms and sub-modules please see the references_.
 
 
 .. _NumFOCUS: https://numfocus.org/
-.. _open governance model: https://www.mdanalysis.org/about/#governance
+.. _open governance model: https://www.mdanalysis.org/pages/governance/
 .. _tax-deductible donation: https://numfocus.org/donate-to-mdanalysis
-.. _`Code of Conduct`: https://www.mdanalysis.org/pages/conduct/
+.. _`Code of Conduct`: https://www.mdanalysis.org/conduct/
 .. _trajectory formats: https://docs.mdanalysis.org/documentation_pages/coordinates/init.html#id1
 .. _topology formats: https://docs.mdanalysis.org/documentation_pages/topology/init.html#supported-topology-formats
 .. _MDAnalysis: https://www.mdanalysis.org
