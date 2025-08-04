@@ -296,32 +296,35 @@ def test_reader_set_dt():
     )
 
 
-@pytest.mark.parametrize("ext, decimal", (("dcd", 4), ("xtc", 3)))
-def test_writer_dt(tmpdir, ext, decimal):
-    dt = 5.0  # set time step to 5 ps
-    universe_dcd = mda.Universe(PSF, DCD, dt=dt)
+def test_writer_dt(tmpdir):
+    dt = 5.0  # set time step to 5 ps for the written trajectory
+    universe_dcd = mda.Universe(PSF, DCD)
     t = universe_dcd.trajectory
-    outfile = str(tmpdir.join("test.{}".format(ext)))
-    # use istart=None explicitly so that both dcd and xtc start with time 1*dt
-    # (XTC ignores istart, DCD will set istart = nsavc)
+    outfile = str(tmpdir.join("test.dcd"))
+    # use istart=None explicitly so that dcd start with time 1*dt
+    # (DCD will set istart = nsavc)
     with mda.Writer(outfile, n_atoms=t.n_atoms, dt=dt, istart=None) as W:
         for ts in universe_dcd.trajectory:
             W.write(universe_dcd.atoms)
 
     uw = mda.Universe(PSF, outfile)
+
+    # check that we actually changed dt
+    assert not uw.trajectory.dt == pytest.approx(t.dt)
+
     assert_almost_equal(
         uw.trajectory.totaltime,
         (uw.trajectory.n_frames - 1) * dt,
-        decimal=decimal,
-        err_msg="Total time  mismatch for ext={}".format(ext),
+        decimal=4,
+        err_msg="Total time mismatch for DCD",
     )
     times = np.array([uw.trajectory.time for ts in uw.trajectory])
     frames = np.arange(1, uw.trajectory.n_frames + 1)  # traj starts at 1*dt
     assert_array_almost_equal(
         times,
         frames * dt,
-        decimal=decimal,
-        err_msg="Times mismatch for ext={}".format(ext),
+        decimal=4,
+        err_msg="Times mismatch for DCD",
     )
 
 

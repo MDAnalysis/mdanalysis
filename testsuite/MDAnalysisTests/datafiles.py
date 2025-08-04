@@ -262,6 +262,8 @@ __all__ = [
     "LAMMPSdata_additional_columns",  # structure for the additional column lammpstrj
     "LAMMPSDUMP",
     "LAMMPSDUMP_long",  # lammpsdump file with a few zeros sprinkled in the first column first frame
+    "LAMMPSDUMP_allinfo",  # lammpsdump file with resids, masses, charges and element symbols
+    "LAMMPSDUMP_nomass_elemx",  # lammps dump file with no masses, but with element symbols and one symbol 'X'
     "LAMMPSDUMP_allcoords",  # lammpsdump file with all coordinate conventions (x,xs,xu,xsu) present, from LAMMPS rdf example
     "LAMMPSDUMP_nocoords",  # lammpsdump file with no coordinates
     "LAMMPSDUMP_triclinic",  # lammpsdump file to test triclinic dimension parsing, albite with most atoms deleted
@@ -334,6 +336,9 @@ __all__ = [
     "GSD_long",
     "TRC_PDB_VAC",
     "TRC_TRAJ1_VAC",
+    "TRC_TRAJ1_VAC_WHITESPACE",  # contains inconsistent trailing whitespace in POSITIONRED
+    "TRC_TRAJ1_VAC_MISSING_POS",  # contains one missing position in the last frame
+    "TRC_TRAJ1_VAC_EXTRA_POS",  # contains one extra position in the last frame
     "TRC_TRAJ2_VAC",  # 2x 3 frames of vacuum trajectory from GROMOS11 tutorial
     "TRC_CLUSTER_VAC",  # three frames without TIMESTEP and GENBOX block but with unsupported POSITION block
     "TRC_TRICLINIC_SOLV",
@@ -753,6 +758,10 @@ LAMMPSdata_triclinic = (_data_ref / "lammps/albite_triclinic.data").as_posix()
 LAMMPSdata_PairIJ = (_data_ref / "lammps/pairij_coeffs.data.bz2").as_posix()
 LAMMPSDUMP = (_data_ref / "lammps/wat.lammpstrj.bz2").as_posix()
 LAMMPSDUMP_long = (_data_ref / "lammps/wat.lammpstrj_long.bz2").as_posix()
+LAMMPSDUMP_allinfo = (_data_ref / "lammps/mass_q_elem.lammpstrj").as_posix()
+LAMMPSDUMP_nomass_elemx = (
+    _data_ref / "lammps/nomass_elemx.lammpstrj"
+).as_posix()
 LAMMPSDUMP_allcoords = (
     _data_ref / "lammps/spce_all_coords.lammpstrj.bz2"
 ).as_posix()
@@ -833,6 +842,15 @@ GSD_long = (_data_ref / "example_longer.gsd").as_posix()
 
 TRC_PDB_VAC = (_data_ref / "gromos11/gromos11_traj_vac.pdb.gz").as_posix()
 TRC_TRAJ1_VAC = (_data_ref / "gromos11/gromos11_traj_vac_1.trc.gz").as_posix()
+TRC_TRAJ1_VAC_WHITESPACE = (
+    _data_ref / "gromos11/gromos11_traj_vac_1_whitespace.trc.gz"
+).as_posix()
+TRC_TRAJ1_VAC_MISSING_POS = (
+    _data_ref / "gromos11/gromos11_traj_vac_1_missing_pos.trc.gz"
+).as_posix()
+TRC_TRAJ1_VAC_EXTRA_POS = (
+    _data_ref / "gromos11/gromos11_traj_vac_1_extra_pos.trc.gz"
+).as_posix()
 TRC_TRAJ2_VAC = (_data_ref / "gromos11/gromos11_traj_vac_2.trc.gz").as_posix()
 TRC_PDB_SOLV = (_data_ref / "gromos11/gromos11_traj_solv.pdb.gz").as_posix()
 TRC_TRAJ_SOLV = (_data_ref / "gromos11/gromos11_traj_solv.trc.gz").as_posix()

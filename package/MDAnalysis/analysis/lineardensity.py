@@ -36,6 +36,7 @@ import warnings
 from MDAnalysis.analysis.base import AnalysisBase, Results
 from MDAnalysis.units import constants
 from MDAnalysis.lib.util import deprecate
+from MDAnalysis.analysis.results import ResultsGroup
 
 
 # TODO: Remove in version 3.0.0
@@ -188,6 +189,10 @@ class LinearDensity(AnalysisBase):
           It contains the bin edges of the histrogram bins for calculated
           densities and can be used for easier plotting of histogram data.
 
+    .. versionchanged:: 2.10.0
+       *  Introduced :meth:`get_supported_backends` allowing for parallel execution
+          on :mod:`multiprocessing` and :mod:`dask` backends.
+       *  Removed undocumented and unused attribute :attr:`totalmass`.
 
     .. deprecated:: 2.2.0
        The `results` dictionary has been changed and the attributes
@@ -197,6 +202,16 @@ class LinearDensity(AnalysisBase):
        :attr:`results.x.mass_density_stddev`, :attr:`results.x.charge_density`,
        and :attr:`results.x.charge_density_stddev` instead.
     """
+
+    _analysis_algorithm_is_parallelizable = True
+
+    @classmethod
+    def get_supported_backends(cls):
+        return (
+            "serial",
+            "multiprocessing",
+            "dask",
+        )
 
     def __init__(self, select, grouping="atoms", binsize=0.25, **kwargs):
         super(LinearDensity, self).__init__(
@@ -242,13 +257,7 @@ class LinearDensity(AnalysisBase):
             for key in self.keys:
                 self.results[dim][key] = np.zeros(self.nbins)
 
-        # Variables later defined in _single_frame() method
-        self.masses = None
-        self.charges = None
-        self.totalmass = None
-
-    def _single_frame(self):
-        # Get masses and charges for the selection
+        # Get masses and charges for the selection (e.g. UpdatingAtomGroup)
         if self.grouping == "atoms":
             self.masses = self._ags[0].masses
             self.charges = self._ags[0].charges
@@ -262,11 +271,57 @@ class LinearDensity(AnalysisBase):
                 f"{self.grouping} is not a valid value for grouping."
             )
 
-        self.totalmass = np.sum(self.masses)
+    @staticmethod
+    def _custom_aggregator(results):
+        # NB: the *stddev values here are not the standard deviation,
+        # but the variance. The stddev is calculated in _conclude()
+        mass_density = np.sum(
+            [entry["mass_density"] for entry in results], axis=0
+        )
+        mass_density_stddev = np.sum(
+            [entry["mass_density_stddev"] for entry in results], axis=0
+        )
+        charge_density = np.sum(
+            [entry["charge_density"] for entry in results], axis=0
+        )
+        charge_density_stddev = np.sum(
+            [entry["charge_density_stddev"] for entry in results], axis=0
+        )
+        return Results(
+            dim=results[0]["dim"],
+            slice_volume=results[0]["slice_volume"],
+            hist_bin_edges=results[0]["hist_bin_edges"],
+            mass_density=mass_density,
+            mass_density_stddev=mass_density_stddev,
+            charge_density=charge_density,
+            charge_density_stddev=charge_density_stddev,
+        )
+
+    def _get_aggregator(self):
+        return ResultsGroup(
+            lookup={
+                "x": self._custom_aggregator,
+                "y": self._custom_aggregator,
+                "z": self._custom_aggregator,
+            }
+        )
+
+    def _single_frame(self):
+        if self.grouping == "atoms":
+            self.masses = self._ags[0].masses
+            self.charges = self._ags[0].charges
+
+        elif self.grouping in ["residues", "segments", "fragments"]:
+            self.masses = self._ags[0].total_mass(compound=self.grouping)
+            self.charges = self._ags[0].total_charge(compound=self.grouping)
+
+        else:
+            raise AttributeError(
+                f"{self.grouping} is not a valid value for grouping."
+            )
 
         self.group = getattr(self._ags[0], self.grouping)
         self._ags[0].wrap(compound=self.grouping)
-
         # Find position of atom/group of atoms
         if self.grouping == "atoms":
             positions = self._ags[0].positions  # faster for atoms

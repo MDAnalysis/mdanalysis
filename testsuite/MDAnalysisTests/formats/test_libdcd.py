@@ -34,6 +34,7 @@ from numpy.testing import (
     assert_almost_equal,
 )
 
+import MDAnalysis as mda
 from MDAnalysis.lib.formats.libdcd import (
     DCDFile,
     DCD_IS_CHARMM,
@@ -41,6 +42,7 @@ from MDAnalysis.lib.formats.libdcd import (
 )
 
 from MDAnalysisTests.datafiles import (
+    PSF,
     DCD,
     DCD_NAMD_TRICLINIC,
     legacy_DCD_ADK_coords,
@@ -671,3 +673,19 @@ def test_write_random_unitcell(tmpdir):
     with DCDFile(testname) as test:
         for index, frame in enumerate(test):
             assert_array_almost_equal(frame.unitcell, random_unitcells[index])
+
+
+@pytest.mark.skipif(
+    not os.environ.get("LARGEDCD", False), reason="Skipping large file test"
+)
+def test_gh_4879(tmpdir):
+    # NOTE: we really only need a trajectory with a frame
+    # count that is large enough to overflow a 32-bit signed
+    # integer in the DCD frame seeking arithmetic to reproduce
+    # the original issue
+    u = mda.Universe(PSF, 800 * [DCD])
+    with tmpdir.as_cwd():
+        f = "large.dcd"
+        u.atoms.write(f, frames="all")
+        u = mda.Universe(f)
+        u.trajectory[-2]
