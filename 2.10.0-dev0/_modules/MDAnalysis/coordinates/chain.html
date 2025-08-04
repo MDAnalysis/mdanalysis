@@ -247,28 +247,40 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Special cases</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span>
+        <span class="p">]</span>
     <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">times</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
             <span class="k">return</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
         <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">times</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]):</span>
-            <span class="k">return</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">]</span>
+            <span class="k">return</span> <span class="p">[</span>
+                <span class="mi">1</span><span class="p">,</span>
+            <span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">]</span>
+            <span class="k">return</span> <span class="p">[</span>
+                <span class="mi">0</span><span class="p">,</span>
+            <span class="p">]</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">times</span><span class="p">)</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="p">]</span>
 
     <span class="c1"># more then 2 unique time entries</span>
 
-    <span class="n">used_idx</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">]</span>
+    <span class="n">used_idx</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="mi">0</span><span class="p">,</span>
+    <span class="p">]</span>
 
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">middle</span><span class="p">,</span> <span class="n">last</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">times</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">times</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">times</span><span class="p">[</span><span class="mi">2</span><span class="p">:]),</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">middle</span><span class="p">,</span> <span class="n">last</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+        <span class="nb">zip</span><span class="p">(</span><span class="n">times</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">times</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">times</span><span class="p">[</span><span class="mi">2</span><span class="p">:]),</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span>
+    <span class="p">):</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">first</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">middle</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
             <span class="n">used_idx</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">middle</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">middle</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dt</span><span class="p">):</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">middle</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">first</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="ow">and</span> <span class="p">(</span><span class="n">last</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">middle</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
                 <span class="n">used_idx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="p">(</span><span class="n">middle</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">first</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="k">elif</span> <span class="n">middle</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">first</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
             <span class="n">used_idx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
 
     <span class="c1"># take care of first special case</span>
@@ -289,15 +301,19 @@
 <span class="sd">    allowed : list of allowed formats</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">classname</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">readers</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="n">only_one_reader</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">([</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span>  <span class="n">classname</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">readers</span><span class="p">])</span>
+    <span class="n">only_one_reader</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">([</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">classname</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">readers</span><span class="p">])</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">only_one_reader</span><span class="p">:</span>
         <span class="n">readernames</span> <span class="o">=</span> <span class="p">[</span><span class="nb">type</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">readers</span><span class="p">]</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;ChainReader: continuous=true only supported&quot;</span>
-                         <span class="s2">&quot; when all files are using the same reader. &quot;</span>
-                         <span class="s2">&quot;Found: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">readernames</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;ChainReader: continuous=true only supported&quot;</span>
+            <span class="s2">&quot; when all files are using the same reader. &quot;</span>
+            <span class="s2">&quot;Found: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">readernames</span><span class="p">)</span>
+        <span class="p">)</span>
     <span class="k">if</span> <span class="n">readers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">format</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allowed</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;ChainReader: continuous=True only &quot;</span>
-                                  <span class="s2">&quot;supported for formats: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">allowed</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+            <span class="s2">&quot;ChainReader: continuous=True only &quot;</span>
+            <span class="s2">&quot;supported for formats: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">allowed</span><span class="p">)</span>
+        <span class="p">)</span>
 
 
 <div class="viewcode-block" id="ChainReader">
@@ -359,11 +375,19 @@
 <span class="sd">       current timestep is retained.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;CHAIN&#39;</span>
+
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;CHAIN&quot;</span>
 
     <span class="nd">@store_init_arguments</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filenames</span><span class="p">,</span> <span class="n">skip</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">continuous</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                 <span class="n">convert_units</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">filenames</span><span class="p">,</span>
+        <span class="n">skip</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">dt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">continuous</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">convert_units</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up the chain reader.</span>
 
 <span class="sd">        Parameters</span>
@@ -400,19 +424,23 @@
 <span class="sd">            unchanged</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">ChainReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;CHAIN&#39;</span><span class="p">,</span>
-                                          <span class="n">skip</span><span class="o">=</span><span class="n">skip</span><span class="p">,</span>
-                                          <span class="n">convert_units</span><span class="o">=</span><span class="n">convert_units</span><span class="p">,</span>
-                                          <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span>
-                                          <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ChainReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;CHAIN&quot;</span><span class="p">,</span>
+            <span class="n">skip</span><span class="o">=</span><span class="n">skip</span><span class="p">,</span>
+            <span class="n">convert_units</span><span class="o">=</span><span class="n">convert_units</span><span class="p">,</span>
+            <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="n">filenames</span> <span class="o">=</span> <span class="n">asiterable</span><span class="p">(</span><span class="n">filenames</span><span class="p">)</span>
         <span class="c1"># Override here because single frame readers handle this argument as a</span>
         <span class="c1"># kwarg to a timestep which behaves differently if dt is present or not.</span>
         <span class="k">if</span> <span class="n">dt</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;dt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dt</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">readers</span> <span class="o">=</span> <span class="p">[</span><span class="n">core</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="n">convert_units</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-                        <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">]</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;dt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">readers</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">core</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="n">convert_units</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">filenames</span>
+        <span class="p">]</span>
         <span class="c1"># Iterate through all filenames, appending NoneType None for ndarrays</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filenames</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">:</span>
@@ -428,7 +456,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__active_reader_index</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">skip</span> <span class="o">=</span> <span class="n">skip</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_same</span><span class="p">(</span><span class="s1">&#39;n_atoms&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_same</span><span class="p">(</span><span class="s2">&quot;n_atoms&quot;</span><span class="p">)</span>
 
         <span class="c1"># Translation between virtual frames and frames in individual</span>
         <span class="c1"># trajectories. Assumes that individual trajectories i contain frames</span>
@@ -441,25 +469,28 @@
         <span class="c1"># trajectory i and local frame f (i.e. readers[i][f] will correspond to</span>
         <span class="c1"># ChainReader[k]).</span>
         <span class="c1"># build map &#39;start_frames&#39;, which is used by _get_local_frame()</span>
-        <span class="n">n_frames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;n_frames&#39;</span><span class="p">)</span>
+        <span class="n">n_frames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s2">&quot;n_frames&quot;</span><span class="p">)</span>
         <span class="c1"># [0]: frames are 0-indexed internally</span>
         <span class="c1"># (see Timestep.check_slice_indices())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_start_frames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">n_frames</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">n_frames</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;dt&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s2">&quot;dt&quot;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">total_times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dts</span> <span class="o">*</span> <span class="n">n_frames</span>
 
         <span class="c1"># calculate new start_frames to have a time continuous trajectory.</span>
         <span class="k">if</span> <span class="n">continuous</span><span class="p">:</span>
-            <span class="n">check_allowed_filetypes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">readers</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;XTC&#39;</span><span class="p">,</span> <span class="s1">&#39;TRR&#39;</span><span class="p">,</span> <span class="s1">&#39;LAMMPSDUMP&#39;</span><span class="p">,</span>
-                                                   <span class="s1">&#39;TRC&#39;</span><span class="p">])</span>
+            <span class="n">check_allowed_filetypes</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">readers</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;XTC&quot;</span><span class="p">,</span> <span class="s2">&quot;TRR&quot;</span><span class="p">,</span> <span class="s2">&quot;LAMMPSDUMP&quot;</span><span class="p">,</span> <span class="s2">&quot;TRC&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">n_frames</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;ChainReader: Need at least two frames in &quot;</span>
-                                   <span class="s2">&quot;every trajectory with continuous=True&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="s2">&quot;ChainReader: Need at least two frames in &quot;</span>
+                    <span class="s2">&quot;every trajectory with continuous=True&quot;</span>
+                <span class="p">)</span>
             <span class="c1"># TODO: allow floating point precision in dt check</span>
-            <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_same</span><span class="p">(</span><span class="s1">&#39;dt&#39;</span><span class="p">)</span>
-            <span class="n">n_frames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s1">&#39;n_frames&#39;</span><span class="p">))</span>
+            <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_same</span><span class="p">(</span><span class="s2">&quot;dt&quot;</span><span class="p">)</span>
+            <span class="n">n_frames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="s2">&quot;n_frames&quot;</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">dts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dts</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">*</span> <span class="n">dt</span>
 
             <span class="c1"># the sorting needs to happen on two levels. The first major level</span>
@@ -491,7 +522,9 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">total_times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dts</span><span class="p">[</span><span class="n">used_idx</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_frames</span><span class="p">[</span><span class="n">used_idx</span><span class="p">]</span>
 
             <span class="c1"># rebuild lookup table</span>
-            <span class="n">sf</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">]</span>
+            <span class="n">sf</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="mi">0</span><span class="p">,</span>
+            <span class="p">]</span>
             <span class="n">n_frames</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">for</span> <span class="n">r1</span><span class="p">,</span> <span class="n">r2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">readers</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">readers</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
                 <span class="n">r2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">r1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -499,13 +532,17 @@
                 <span class="n">start_time</span> <span class="o">=</span> <span class="n">r2</span><span class="o">.</span><span class="n">time</span>
                 <span class="n">r1</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
                 <span class="k">if</span> <span class="n">r1</span><span class="o">.</span><span class="n">time</span> <span class="o">&lt;</span> <span class="n">start_time</span><span class="p">:</span>
-                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Missing frame in continuous chain&quot;</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">)</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                        <span class="s2">&quot;Missing frame in continuous chain&quot;</span><span class="p">,</span> <span class="ne">UserWarning</span>
+                    <span class="p">)</span>
 
                 <span class="c1"># check for interleaving</span>
                 <span class="n">r1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
                 <span class="k">if</span> <span class="n">r1_start_time</span> <span class="o">&lt;</span> <span class="n">start_time</span> <span class="o">&lt;</span> <span class="n">r1</span><span class="o">.</span><span class="n">time</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;ChainReader: Interleaving not supported &quot;</span>
-                                       <span class="s2">&quot;with continuous=True.&quot;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                        <span class="s2">&quot;ChainReader: Interleaving not supported &quot;</span>
+                        <span class="s2">&quot;with continuous=True.&quot;</span>
+                    <span class="p">)</span>
 
                 <span class="c1"># find end where trajectory was restarted from</span>
                 <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">r1</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
@@ -531,9 +568,11 @@
 
 <span class="sd">        .. versionadded:: 1.0.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">thing</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span>
-                <span class="n">util</span><span class="o">.</span><span class="n">iterable</span><span class="p">(</span><span class="n">thing</span><span class="p">)</span> <span class="ow">and</span>
-                <span class="ow">not</span> <span class="n">util</span><span class="o">.</span><span class="n">isstream</span><span class="p">(</span><span class="n">thing</span><span class="p">))</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">thing</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">util</span><span class="o">.</span><span class="n">iterable</span><span class="p">(</span><span class="n">thing</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="ow">not</span> <span class="n">util</span><span class="o">.</span><span class="n">isstream</span><span class="p">(</span><span class="n">thing</span><span class="p">)</span>
+        <span class="p">)</span>
 
 <div class="viewcode-block" id="ChainReader._get_local_frame">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader._get_local_frame">[docs]</a>
@@ -573,7 +612,9 @@
         <span class="c1"># trajectory index i</span>
         <span class="n">i</span> <span class="o">=</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_right</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_start_frames</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Cannot find trajectory for virtual frame </span><span class="si">{0:d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span>
+                <span class="s2">&quot;Cannot find trajectory for virtual frame </span><span class="si">{0:d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+            <span class="p">)</span>
         <span class="c1"># local frame index f in trajectory i (frame indices are 0-based)</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">k</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_frames</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">i</span><span class="p">,</span> <span class="n">f</span></div>
@@ -582,16 +623,16 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="c1">#  save ts temporarily otherwise it will be changed during rewinding.</span>
-        <span class="n">state</span><span class="p">[</span><span class="s1">&#39;ts&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">__deepcopy__</span><span class="p">()</span>
+        <span class="n">state</span><span class="p">[</span><span class="s2">&quot;ts&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">__deepcopy__</span><span class="p">()</span>
 
         <span class="c1">#  the ts.frame of each reader is set to the chained frame index during</span>
         <span class="c1">#  iteration, thus we need to rewind the readers that have been used.</span>
         <span class="c1">#  PR #2723</span>
-        <span class="k">for</span> <span class="n">reader</span> <span class="ow">in</span> <span class="n">state</span><span class="p">[</span><span class="s1">&#39;readers&#39;</span><span class="p">][:</span><span class="bp">self</span><span class="o">.</span><span class="n">__active_reader_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">reader</span> <span class="ow">in</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;readers&quot;</span><span class="p">][:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__active_reader_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]:</span>
             <span class="n">reader</span><span class="o">.</span><span class="n">rewind</span><span class="p">()</span>
 
         <span class="c1">#  retrieve the current ts</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s1">&#39;ts&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;ts&quot;</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">state</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
@@ -665,13 +706,18 @@
         <span class="c1"># Now each reader is either already instantiated with a common dt, or</span>
         <span class="c1">#  left at its default dt. In any case, we sum over individual times.</span>
         <span class="n">trajindex</span><span class="p">,</span> <span class="n">subframe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_local_frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_times</span><span class="p">[:</span><span class="n">trajindex</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">+</span> <span class="n">subframe</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dts</span><span class="p">[</span><span class="n">trajindex</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">total_times</span><span class="p">[:</span><span class="n">trajindex</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">+</span> <span class="n">subframe</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dts</span><span class="p">[</span><span class="n">trajindex</span><span class="p">]</span>
+        <span class="p">)</span>
 
 <div class="viewcode-block" id="ChainReader._apply">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader._apply">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute `method` with `kwargs` for all readers.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">reader</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">method</span><span class="p">)(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">reader</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">readers</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">reader</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">method</span><span class="p">)(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">reader</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">readers</span>
+        <span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="ChainReader._get">
@@ -705,8 +751,10 @@
         <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
             <span class="n">bad_traj</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filenames</span><span class="p">)[</span><span class="n">values</span> <span class="o">!=</span> <span class="n">value</span><span class="p">]</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The following trajectories do not have the correct </span><span class="si">{0}</span><span class="s2"> &quot;</span>
-                             <span class="s2">&quot; (</span><span class="si">{1}</span><span class="s2">):</span><span class="se">\n</span><span class="si">{2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">bad_traj</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;The following trajectories do not have the correct </span><span class="si">{0}</span><span class="s2"> &quot;</span>
+                <span class="s2">&quot; (</span><span class="si">{1}</span><span class="s2">):</span><span class="se">\n</span><span class="si">{2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">bad_traj</span><span class="p">)</span>
+            <span class="p">)</span>
         <span class="k">return</span> <span class="n">value</span></div>
 
 
@@ -714,7 +762,9 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Make reader `i` the active reader.&quot;&quot;&quot;</span>
         <span class="c1"># private method, not to be used by user to avoid a total mess</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">readers</span><span class="p">)):</span>
-            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Reader index must be 0 &lt;= i &lt; </span><span class="si">{0:d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">readers</span><span class="p">)))</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span>
+                <span class="s2">&quot;Reader index must be 0 &lt;= i &lt; </span><span class="si">{0:d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">readers</span><span class="p">))</span>
+            <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__active_reader_index</span> <span class="o">=</span> <span class="n">i</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filenames</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
@@ -771,30 +821,40 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_reopen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal method: Rewind trajectories themselves and trj pointer.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__current_frame</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_apply</span><span class="p">(</span><span class="s1">&#39;rewind&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_apply</span><span class="p">(</span><span class="s2">&quot;rewind&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ChainReader.close">
 <a class="viewcode-back" href="../../../documentation_pages/coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader.close">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_apply</span><span class="p">(</span><span class="s1">&#39;close&#39;</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_apply</span><span class="p">(</span><span class="s2">&quot;close&quot;</span><span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filenames</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
-            <span class="n">fname</span> <span class="o">=</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filenames</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filenames</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">else</span> <span class="s2">&quot;numpy.ndarray&quot;</span><span class="p">)</span>
+            <span class="n">fname</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filenames</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filenames</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">else</span> <span class="s2">&quot;numpy.ndarray&quot;</span>
+            <span class="p">)</span>
             <span class="n">fnames</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{fname}</span><span class="s2"> and </span><span class="si">{nfnames}</span><span class="s2"> more&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="n">fname</span><span class="o">=</span><span class="n">fname</span><span class="p">,</span>
-                    <span class="n">nfnames</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filenames</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">fname</span><span class="o">=</span><span class="n">fname</span><span class="p">,</span> <span class="n">nfnames</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filenames</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">fnames</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span> <span class="k">if</span> <span class="n">fn</span> <span class="k">else</span> <span class="s2">&quot;numpy.ndarray&quot;</span>
-                                <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">filenames</span><span class="p">])</span>
-        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;&lt;</span><span class="si">{clsname}</span><span class="s2"> containing </span><span class="si">{fname}</span><span class="s2"> with </span><span class="si">{nframes}</span><span class="s2"> frames of </span><span class="si">{natoms}</span><span class="s2"> atoms&gt;&quot;</span>
-                <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="n">clsname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
-                    <span class="n">fname</span><span class="o">=</span><span class="n">fnames</span><span class="p">,</span>
-                    <span class="n">nframes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span>
-                    <span class="n">natoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">))</span></div>
+            <span class="n">fnames</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span> <span class="k">if</span> <span class="n">fn</span> <span class="k">else</span> <span class="s2">&quot;numpy.ndarray&quot;</span>
+                    <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">filenames</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="s2">&quot;&lt;</span><span class="si">{clsname}</span><span class="s2"> containing </span><span class="si">{fname}</span><span class="s2"> with </span><span class="si">{nframes}</span><span class="s2"> frames of </span><span class="si">{natoms}</span><span class="s2"> atoms&gt;&quot;</span>
+            <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">clsname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                <span class="n">fname</span><span class="o">=</span><span class="n">fnames</span><span class="p">,</span>
+                <span class="n">nframes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span>
+                <span class="n">natoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
 
 </pre></div>
 

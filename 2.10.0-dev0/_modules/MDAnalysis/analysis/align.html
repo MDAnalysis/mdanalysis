@@ -354,13 +354,13 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.rms</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rms</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.coordinates.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">MemoryReader</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.lib.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_weights</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.lib.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">deprecate</span>   <span class="c1"># remove 3.0</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.lib.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">deprecate</span>  <span class="c1"># remove 3.0</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.lib.log</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProgressBar</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..due</span><span class="w"> </span><span class="kn">import</span> <span class="n">due</span><span class="p">,</span> <span class="n">Doi</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnalysisBase</span>
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;MDAnalysis.analysis.align&#39;</span><span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.analysis.align&quot;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="rotation_matrix">
@@ -424,7 +424,6 @@
 <span class="sd">    AlignTraj: Fit a whole trajectory.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-
     <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
     <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 
@@ -454,8 +453,14 @@
 
 <div class="viewcode-block" id="_fit_to">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/align.html#MDAnalysis.analysis.align._fit_to">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">_fit_to</span><span class="p">(</span><span class="n">mobile_coordinates</span><span class="p">,</span> <span class="n">ref_coordinates</span><span class="p">,</span> <span class="n">mobile_atoms</span><span class="p">,</span>
-            <span class="n">mobile_com</span><span class="p">,</span> <span class="n">ref_com</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_fit_to</span><span class="p">(</span>
+    <span class="n">mobile_coordinates</span><span class="p">,</span>
+    <span class="n">ref_coordinates</span><span class="p">,</span>
+    <span class="n">mobile_atoms</span><span class="p">,</span>
+    <span class="n">mobile_com</span><span class="p">,</span>
+    <span class="n">ref_com</span><span class="p">,</span>
+    <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Perform an rmsd-fitting to determine rotation matrix and align atoms</span>
 
 <span class="sd">    Parameters</span>
@@ -503,8 +508,9 @@
 <span class="sd">       where :math:`\bar{X}` is the center.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">R</span><span class="p">,</span> <span class="n">min_rmsd</span> <span class="o">=</span> <span class="n">rotation_matrix</span><span class="p">(</span><span class="n">mobile_coordinates</span><span class="p">,</span> <span class="n">ref_coordinates</span><span class="p">,</span>
-                                  <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
+    <span class="n">R</span><span class="p">,</span> <span class="n">min_rmsd</span> <span class="o">=</span> <span class="n">rotation_matrix</span><span class="p">(</span>
+        <span class="n">mobile_coordinates</span><span class="p">,</span> <span class="n">ref_coordinates</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span>
+    <span class="p">)</span>
 
     <span class="n">mobile_atoms</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="o">-</span><span class="n">mobile_com</span><span class="p">)</span>
     <span class="n">mobile_atoms</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
@@ -516,9 +522,16 @@
 
 <div class="viewcode-block" id="alignto">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/align.html#MDAnalysis.analysis.align.alignto">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">alignto</span><span class="p">(</span><span class="n">mobile</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="n">subselection</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol_mass</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-            <span class="n">match_atoms</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">alignto</span><span class="p">(</span>
+    <span class="n">mobile</span><span class="p">,</span>
+    <span class="n">reference</span><span class="p">,</span>
+    <span class="n">select</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">subselection</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">tol_mass</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">match_atoms</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Perform a spatial superposition by minimizing the RMSD.</span>
 
 <span class="sd">    Spatially align the group of atoms `mobile` to `reference` by</span>
@@ -644,7 +657,7 @@
 <span class="sd">    .. versionchanged:: 0.17.0</span>
 <span class="sd">       Deprecated keyword `mass_weighted` was removed.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">select</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">select</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
         <span class="c1"># keep the EXACT order in the input AtomGroups; select_atoms(&#39;all&#39;)</span>
         <span class="c1"># orders them by index, which can lead to wrong results if the user</span>
         <span class="c1"># has crafted mobile and reference to match atom by atom</span>
@@ -652,14 +665,16 @@
         <span class="n">ref_atoms</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">atoms</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">select</span> <span class="o">=</span> <span class="n">rms</span><span class="o">.</span><span class="n">process_selection</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
-        <span class="n">mobile_atoms</span> <span class="o">=</span> <span class="n">mobile</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">select</span><span class="p">[</span><span class="s1">&#39;mobile&#39;</span><span class="p">])</span>
-        <span class="n">ref_atoms</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">select</span><span class="p">[</span><span class="s1">&#39;reference&#39;</span><span class="p">])</span>
+        <span class="n">mobile_atoms</span> <span class="o">=</span> <span class="n">mobile</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">select</span><span class="p">[</span><span class="s2">&quot;mobile&quot;</span><span class="p">])</span>
+        <span class="n">ref_atoms</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">select</span><span class="p">[</span><span class="s2">&quot;reference&quot;</span><span class="p">])</span>
 
-
-    <span class="n">ref_atoms</span><span class="p">,</span> <span class="n">mobile_atoms</span> <span class="o">=</span> <span class="n">get_matching_atoms</span><span class="p">(</span><span class="n">ref_atoms</span><span class="p">,</span> <span class="n">mobile_atoms</span><span class="p">,</span>
-                                                <span class="n">tol_mass</span><span class="o">=</span><span class="n">tol_mass</span><span class="p">,</span>
-                                                <span class="n">strict</span><span class="o">=</span><span class="n">strict</span><span class="p">,</span>
-                                                <span class="n">match_atoms</span><span class="o">=</span><span class="n">match_atoms</span><span class="p">)</span>
+    <span class="n">ref_atoms</span><span class="p">,</span> <span class="n">mobile_atoms</span> <span class="o">=</span> <span class="n">get_matching_atoms</span><span class="p">(</span>
+        <span class="n">ref_atoms</span><span class="p">,</span>
+        <span class="n">mobile_atoms</span><span class="p">,</span>
+        <span class="n">tol_mass</span><span class="o">=</span><span class="n">tol_mass</span><span class="p">,</span>
+        <span class="n">strict</span><span class="o">=</span><span class="n">strict</span><span class="p">,</span>
+        <span class="n">match_atoms</span><span class="o">=</span><span class="n">match_atoms</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="n">weights</span> <span class="o">=</span> <span class="n">get_weights</span><span class="p">(</span><span class="n">ref_atoms</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
 
@@ -682,15 +697,21 @@
             <span class="c1"># treat subselection as AtomGroup</span>
             <span class="n">mobile_atoms</span> <span class="o">=</span> <span class="n">subselection</span><span class="o">.</span><span class="n">atoms</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="n">err</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;subselection must be a selection string, an&quot;</span>
-                   <span class="s2">&quot; AtomGroup or Universe or None&quot;</span><span class="p">)</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s2">&quot;subselection must be a selection string, an&quot;</span>
+                <span class="s2">&quot; AtomGroup or Universe or None&quot;</span>
+            <span class="p">)</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
 
-
     <span class="c1"># _fit_to DOES subtract center of mass, will provide proper min_rmsd</span>
-    <span class="n">mobile_atoms</span><span class="p">,</span> <span class="n">new_rmsd</span> <span class="o">=</span> <span class="n">_fit_to</span><span class="p">(</span><span class="n">mobile_coordinates</span><span class="p">,</span> <span class="n">ref_coordinates</span><span class="p">,</span>
-                                     <span class="n">mobile_atoms</span><span class="p">,</span> <span class="n">mobile_com</span><span class="p">,</span> <span class="n">ref_com</span><span class="p">,</span>
-                                     <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
+    <span class="n">mobile_atoms</span><span class="p">,</span> <span class="n">new_rmsd</span> <span class="o">=</span> <span class="n">_fit_to</span><span class="p">(</span>
+        <span class="n">mobile_coordinates</span><span class="p">,</span>
+        <span class="n">ref_coordinates</span><span class="p">,</span>
+        <span class="n">mobile_atoms</span><span class="p">,</span>
+        <span class="n">mobile_com</span><span class="p">,</span>
+        <span class="n">ref_com</span><span class="p">,</span>
+        <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="k">return</span> <span class="n">old_rmsd</span><span class="p">,</span> <span class="n">new_rmsd</span></div>
 
 
@@ -698,13 +719,19 @@
 <div class="viewcode-block" id="iterative_average">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/align.html#MDAnalysis.analysis.align.iterative_average">[docs]</a>
 <span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
-        <span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1021/acs.jpcb.7b11988&quot;</span><span class="p">),</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Iterative Calculation of Opimal Reference&quot;</span><span class="p">,</span>
-        <span class="n">path</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.analysis.align.iterative_average&quot;</span>
+    <span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1021/acs.jpcb.7b11988&quot;</span><span class="p">),</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Iterative Calculation of Opimal Reference&quot;</span><span class="p">,</span>
+    <span class="n">path</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.analysis.align.iterative_average&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">iterative_average</span><span class="p">(</span>
-    <span class="n">mobile</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">niter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-    <span class="n">eps</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="n">mobile</span><span class="p">,</span>
+    <span class="n">reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">select</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
+    <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">niter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">eps</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Iteratively calculate an optimal reference that is also the average</span>
 <span class="sd">    structure after an RMSD alignment.</span>
@@ -771,8 +798,8 @@
         <span class="n">reference</span> <span class="o">=</span> <span class="n">mobile</span>
 
     <span class="n">select</span> <span class="o">=</span> <span class="n">rms</span><span class="o">.</span><span class="n">process_selection</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
-    <span class="n">ref</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Merge</span><span class="p">(</span><span class="n">reference</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">select</span><span class="p">[</span><span class="s1">&#39;reference&#39;</span><span class="p">]))</span>
-    <span class="n">sel_mobile</span> <span class="o">=</span> <span class="n">select</span><span class="p">[</span><span class="s1">&#39;mobile&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">ref</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Merge</span><span class="p">(</span><span class="n">reference</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">select</span><span class="p">[</span><span class="s2">&quot;reference&quot;</span><span class="p">]))</span>
+    <span class="n">sel_mobile</span> <span class="o">=</span> <span class="n">select</span><span class="p">[</span><span class="s2">&quot;mobile&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="n">weights</span> <span class="o">=</span> <span class="n">get_weights</span><span class="p">(</span><span class="n">ref</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
 
@@ -783,13 +810,15 @@
             <span class="k">break</span>
 
         <span class="n">avg_struc</span> <span class="o">=</span> <span class="n">AverageStructure</span><span class="p">(</span>
-            <span class="n">mobile</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="n">ref</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="p">{</span>
-                <span class="s1">&#39;mobile&#39;</span><span class="p">:</span> <span class="n">sel_mobile</span><span class="p">,</span> <span class="s1">&#39;reference&#39;</span><span class="p">:</span> <span class="s1">&#39;all&#39;</span>
-                <span class="p">},</span>
-            <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+            <span class="n">mobile</span><span class="p">,</span>
+            <span class="n">reference</span><span class="o">=</span><span class="n">ref</span><span class="p">,</span>
+            <span class="n">select</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;mobile&quot;</span><span class="p">:</span> <span class="n">sel_mobile</span><span class="p">,</span> <span class="s2">&quot;reference&quot;</span><span class="p">:</span> <span class="s2">&quot;all&quot;</span><span class="p">},</span>
+            <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
         <span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-        <span class="n">drmsd</span> <span class="o">=</span> <span class="n">rms</span><span class="o">.</span><span class="n">rmsd</span><span class="p">(</span><span class="n">ref</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">avg_struc</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
-                         <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
+        <span class="n">drmsd</span> <span class="o">=</span> <span class="n">rms</span><span class="o">.</span><span class="n">rmsd</span><span class="p">(</span>
+            <span class="n">ref</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">avg_struc</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span>
+        <span class="p">)</span>
         <span class="n">ref</span> <span class="o">=</span> <span class="n">avg_struc</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">universe</span>
 
         <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
@@ -834,11 +863,22 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mobile</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;rmsfit_&#39;</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">tol_mass</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">match_atoms</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                 <span class="n">writer_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">mobile</span><span class="p">,</span>
+        <span class="n">reference</span><span class="p">,</span>
+        <span class="n">select</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
+        <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;rmsfit_&quot;</span><span class="p">,</span>
+        <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">tol_mass</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">match_atoms</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">in_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">writer_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        mobile : Universe</span>
@@ -944,8 +984,8 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">select</span> <span class="o">=</span> <span class="n">rms</span><span class="o">.</span><span class="n">process_selection</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">select</span><span class="p">[</span><span class="s1">&#39;reference&#39;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span> <span class="o">=</span> <span class="n">mobile</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">select</span><span class="p">[</span><span class="s1">&#39;mobile&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">select</span><span class="p">[</span><span class="s2">&quot;reference&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span> <span class="o">=</span> <span class="n">mobile</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">select</span><span class="p">[</span><span class="s2">&quot;mobile&quot;</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">in_memory</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mobile</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">MemoryReader</span><span class="p">):</span>
             <span class="n">mobile</span><span class="o">.</span><span class="n">transfer_to_memory</span><span class="p">()</span>
             <span class="n">filename</span> <span class="o">=</span> <span class="kc">None</span>
@@ -954,13 +994,16 @@
             <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">mobile</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">filename</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
                 <span class="n">filename</span> <span class="o">=</span> <span class="n">prefix</span> <span class="o">+</span> <span class="n">fn</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;filename of rms_align with no filename given&#39;</span>
-                            <span class="s1">&#39;: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s2">&quot;filename of rms_align with no filename given&quot;</span>
+                    <span class="s2">&quot;: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+                <span class="p">)</span>
 
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span>
-                    <span class="s1">&#39;Filename already exists in path and force is not set&#39;</span>
-                    <span class="s1">&#39; to True&#39;</span><span class="p">)</span>
+                    <span class="s2">&quot;Filename already exists in path and force is not set&quot;</span>
+                    <span class="s2">&quot; to True&quot;</span>
+                <span class="p">)</span>
 
         <span class="c1"># do this after setting the memory reader to have a reference to the</span>
         <span class="c1"># right reader.</span>
@@ -975,8 +1018,12 @@
 
         <span class="n">natoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile</span><span class="o">.</span><span class="n">n_atoms</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span> <span class="o">=</span> <span class="n">get_matching_atoms</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="p">,</span> <span class="n">tol_mass</span><span class="o">=</span><span class="n">tol_mass</span><span class="p">,</span>
-            <span class="n">strict</span><span class="o">=</span><span class="n">strict</span><span class="p">,</span> <span class="n">match_atoms</span><span class="o">=</span><span class="n">match_atoms</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="p">,</span>
+            <span class="n">tol_mass</span><span class="o">=</span><span class="n">tol_mass</span><span class="p">,</span>
+            <span class="n">strict</span><span class="o">=</span><span class="n">strict</span><span class="p">,</span>
+            <span class="n">match_atoms</span><span class="o">=</span><span class="n">match_atoms</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">writer_kwargs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">writer_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
@@ -1001,11 +1048,13 @@
         <span class="n">mobile_com</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_weights</span><span class="p">)</span>
         <span class="n">mobile_coordinates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span> <span class="n">mobile_com</span>
         <span class="n">mobile_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">rmsd</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">_fit_to</span><span class="p">(</span>
-                <span class="n">mobile_coordinates</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_ref_coordinates</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">mobile</span><span class="p">,</span>
-                <span class="n">mobile_com</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_ref_com</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weights</span><span class="p">)</span>
+            <span class="n">mobile_coordinates</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ref_coordinates</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mobile</span><span class="p">,</span>
+            <span class="n">mobile_com</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ref_com</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_weights</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="c1"># write whole aligned input trajectory system</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">mobile_atoms</span><span class="p">)</span>
 
@@ -1016,9 +1065,11 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">rmsd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `rmsd` attribute was deprecated in MDAnalysis 2.0.0 and &quot;</span>
-                <span class="s2">&quot;will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
-                <span class="s2">&quot;`results.rmsd` instead.&quot;</span><span class="p">)</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;The `rmsd` attribute was deprecated in MDAnalysis 2.0.0 and &quot;</span>
+            <span class="s2">&quot;will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
+            <span class="s2">&quot;`results.rmsd` instead.&quot;</span>
+        <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">rmsd</span></div>
 
@@ -1055,10 +1106,21 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mobile</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">tol_mass</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">match_atoms</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                 <span class="n">ref_frame</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">mobile</span><span class="p">,</span>
+        <span class="n">reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">select</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
+        <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">tol_mass</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">match_atoms</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">in_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">ref_frame</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        mobile : Universe</span>
@@ -1176,18 +1238,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">reference</span> <span class="o">=</span> <span class="n">reference</span> <span class="k">if</span> <span class="n">reference</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">mobile</span>
 
         <span class="n">select</span> <span class="o">=</span> <span class="n">rms</span><span class="o">.</span><span class="n">process_selection</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">select</span><span class="p">[</span><span class="s1">&#39;reference&#39;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span> <span class="o">=</span> <span class="n">mobile</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">select</span><span class="p">[</span><span class="s1">&#39;mobile&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">select</span><span class="p">[</span><span class="s2">&quot;reference&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span> <span class="o">=</span> <span class="n">mobile</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">select</span><span class="p">[</span><span class="s2">&quot;mobile&quot;</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="p">):</span>
-            <span class="n">err</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Reference and trajectory atom selections do &quot;</span>
-                   <span class="s2">&quot;not contain the same number of atoms: &quot;</span>
-                   <span class="s2">&quot;N_ref=</span><span class="si">{0:d}</span><span class="s2">, N_traj=</span><span class="si">{1:d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span>
-                                                      <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">))</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s2">&quot;Reference and trajectory atom selections do &quot;</span>
+                <span class="s2">&quot;not contain the same number of atoms: &quot;</span>
+                <span class="s2">&quot;N_ref=</span><span class="si">{0:d}</span><span class="s2">, N_traj=</span><span class="si">{1:d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="o">.</span><span class="n">n_atoms</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
             <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;RMS calculation &quot;</span>
-                    <span class="s2">&quot;for </span><span class="si">{0:d}</span><span class="s2"> atoms.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="p">)))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="s2">&quot;RMS calculation &quot;</span> <span class="s2">&quot;for </span><span class="si">{0:d}</span><span class="s2"> atoms.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="p">))</span>
+        <span class="p">)</span>
 
         <span class="c1"># store reference to mobile atoms</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mobile</span> <span class="o">=</span> <span class="n">mobile</span><span class="o">.</span><span class="n">atoms</span>
@@ -1198,8 +1264,12 @@
 
         <span class="n">natoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span> <span class="o">=</span> <span class="n">get_matching_atoms</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="p">,</span> <span class="n">tol_mass</span><span class="o">=</span><span class="n">tol_mass</span><span class="p">,</span>
-            <span class="n">strict</span><span class="o">=</span><span class="n">strict</span><span class="p">,</span> <span class="n">match_atoms</span><span class="o">=</span><span class="n">match_atoms</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="p">,</span>
+            <span class="n">tol_mass</span><span class="o">=</span><span class="n">tol_mass</span><span class="p">,</span>
+            <span class="n">strict</span><span class="o">=</span><span class="n">strict</span><span class="p">,</span>
+            <span class="n">match_atoms</span><span class="o">=</span><span class="n">match_atoms</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="c1"># with self.filename == None (in_memory), the NullWriter is chosen</span>
         <span class="c1"># (which just ignores input) and so only the in_memory trajectory is</span>
@@ -1231,18 +1301,22 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">mobile_com</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_weights</span><span class="p">)</span>
         <span class="n">mobile_coordinates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span> <span class="n">mobile_com</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">rmsd</span> <span class="o">+=</span> <span class="n">_fit_to</span><span class="p">(</span><span class="n">mobile_coordinates</span><span class="p">,</span>
-                                     <span class="bp">self</span><span class="o">.</span><span class="n">_ref_coordinates</span><span class="p">,</span>
-                                     <span class="bp">self</span><span class="o">.</span><span class="n">mobile</span><span class="p">,</span>
-                                     <span class="n">mobile_com</span><span class="p">,</span>
-                                     <span class="bp">self</span><span class="o">.</span><span class="n">_ref_com</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weights</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">rmsd</span> <span class="o">+=</span> <span class="n">_fit_to</span><span class="p">(</span>
+            <span class="n">mobile_coordinates</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ref_coordinates</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mobile</span><span class="p">,</span>
+            <span class="n">mobile_com</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ref_com</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_weights</span><span class="p">,</span>
+        <span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">positions</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="o">.</span><span class="n">positions</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">positions</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">rmsd</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">load_new</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span><span class="p">:</span>
@@ -1250,35 +1324,50 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">universe</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `universe` attribute was deprecated in MDAnalysis 2.0.0 &quot;</span>
-                <span class="s2">&quot;and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
-                <span class="s2">&quot;`results.universe` instead.&quot;</span><span class="p">)</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;The `universe` attribute was deprecated in MDAnalysis 2.0.0 &quot;</span>
+            <span class="s2">&quot;and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
+            <span class="s2">&quot;`results.universe` instead.&quot;</span>
+        <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">universe</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">positions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `positions` attribute was deprecated in MDAnalysis 2.0.0 &quot;</span>
-                <span class="s2">&quot;and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
-                <span class="s2">&quot;`results.positions` instead.&quot;</span><span class="p">)</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;The `positions` attribute was deprecated in MDAnalysis 2.0.0 &quot;</span>
+            <span class="s2">&quot;and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
+            <span class="s2">&quot;`results.positions` instead.&quot;</span>
+        <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">positions</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">rmsd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `rmsd` attribute was deprecated in MDAnalysis 2.0.0 &quot;</span>
-                <span class="s2">&quot;and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
-                <span class="s2">&quot;`results.rmsd` instead.&quot;</span><span class="p">)</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;The `rmsd` attribute was deprecated in MDAnalysis 2.0.0 &quot;</span>
+            <span class="s2">&quot;and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
+            <span class="s2">&quot;`results.rmsd` instead.&quot;</span>
+        <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">rmsd</span></div>
 
 
 
-<span class="nd">@deprecate</span><span class="p">(</span><span class="n">release</span><span class="o">=</span><span class="s2">&quot;2.4.0&quot;</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="s2">&quot;3.0&quot;</span><span class="p">,</span>
-           <span class="n">message</span><span class="o">=</span><span class="s2">&quot;See the documentation under Notes on how to directly use&quot;</span>
-                   <span class="s2">&quot;Bio.Align.PairwiseAligner with ResidueGroups.&quot;</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">sequence_alignment</span><span class="p">(</span><span class="n">mobile</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">match_score</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">mismatch_penalty</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
-                       <span class="n">gap_penalty</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span> <span class="n">gapextension_penalty</span><span class="o">=-</span><span class="mf">0.1</span><span class="p">):</span>
+<span class="nd">@deprecate</span><span class="p">(</span>
+    <span class="n">release</span><span class="o">=</span><span class="s2">&quot;2.4.0&quot;</span><span class="p">,</span>
+    <span class="n">remove</span><span class="o">=</span><span class="s2">&quot;3.0&quot;</span><span class="p">,</span>
+    <span class="n">message</span><span class="o">=</span><span class="s2">&quot;See the documentation under Notes on how to directly use&quot;</span>
+    <span class="s2">&quot;Bio.Align.PairwiseAligner with ResidueGroups.&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sequence_alignment</span><span class="p">(</span>
+    <span class="n">mobile</span><span class="p">,</span>
+    <span class="n">reference</span><span class="p">,</span>
+    <span class="n">match_score</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">mismatch_penalty</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">gap_penalty</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">gapextension_penalty</span><span class="o">=-</span><span class="mf">0.1</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a global sequence alignment between two residue groups.</span>
 
 <span class="sd">    The residues in `reference` and `mobile` will be globally aligned.</span>
@@ -1361,9 +1450,11 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">HAS_BIOPYTHON</span><span class="p">:</span>
-        <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `sequence_alignment` method requires an installation &quot;</span>
-                  <span class="s2">&quot;of `Biopython`. Please install `Biopython` to use this &quot;</span>
-                  <span class="s2">&quot;method: https://biopython.org/wiki/Download&quot;</span><span class="p">)</span>
+        <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;The `sequence_alignment` method requires an installation &quot;</span>
+            <span class="s2">&quot;of `Biopython`. Please install `Biopython` to use this &quot;</span>
+            <span class="s2">&quot;method: https://biopython.org/wiki/Download&quot;</span>
+        <span class="p">)</span>
         <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
 
     <span class="n">aligner</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">Align</span><span class="o">.</span><span class="n">PairwiseAligner</span><span class="p">(</span>
@@ -1371,30 +1462,44 @@
         <span class="n">match_score</span><span class="o">=</span><span class="n">match_score</span><span class="p">,</span>
         <span class="n">mismatch_score</span><span class="o">=</span><span class="n">mismatch_penalty</span><span class="p">,</span>
         <span class="n">open_gap_score</span><span class="o">=</span><span class="n">gap_penalty</span><span class="p">,</span>
-        <span class="n">extend_gap_score</span><span class="o">=</span><span class="n">gapextension_penalty</span><span class="p">)</span>
-    <span class="n">aln</span> <span class="o">=</span> <span class="n">aligner</span><span class="o">.</span><span class="n">align</span><span class="p">(</span><span class="n">reference</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">sequence</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;Seq&quot;</span><span class="p">),</span>
-                        <span class="n">mobile</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">sequence</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;Seq&quot;</span><span class="p">))</span>
+        <span class="n">extend_gap_score</span><span class="o">=</span><span class="n">gapextension_penalty</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">aln</span> <span class="o">=</span> <span class="n">aligner</span><span class="o">.</span><span class="n">align</span><span class="p">(</span>
+        <span class="n">reference</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">sequence</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;Seq&quot;</span><span class="p">),</span>
+        <span class="n">mobile</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">sequence</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;Seq&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
     <span class="c1"># choose top alignment with highest score</span>
     <span class="n">topalignment</span> <span class="o">=</span> <span class="n">aln</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="c1"># reconstruct the results tuple that used to be of type Bio.pairwise2.Alignment</span>
     <span class="n">AlignmentTuple</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span>
-        <span class="s2">&quot;Alignment&quot;</span><span class="p">,</span>
-        <span class="p">[</span><span class="s2">&quot;seqA&quot;</span><span class="p">,</span> <span class="s2">&quot;seqB&quot;</span><span class="p">,</span> <span class="s2">&quot;score&quot;</span><span class="p">,</span> <span class="s2">&quot;start&quot;</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">])</span>
+        <span class="s2">&quot;Alignment&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;seqA&quot;</span><span class="p">,</span> <span class="s2">&quot;seqB&quot;</span><span class="p">,</span> <span class="s2">&quot;score&quot;</span><span class="p">,</span> <span class="s2">&quot;start&quot;</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
     <span class="c1"># start/stop are not particularly meaningful and there&#39;s no obvious way to</span>
     <span class="c1"># get the old pairwise2 start/stop from the new PairwiseAligner output.</span>
-    <span class="k">return</span> <span class="n">AlignmentTuple</span><span class="p">(</span><span class="n">topalignment</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">topalignment</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                          <span class="n">topalignment</span><span class="o">.</span><span class="n">score</span><span class="p">,</span>
-                          <span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">reference</span><span class="o">.</span><span class="n">n_residues</span><span class="p">,</span> <span class="n">mobile</span><span class="o">.</span><span class="n">n_residues</span><span class="p">))</span>
-
+    <span class="k">return</span> <span class="n">AlignmentTuple</span><span class="p">(</span>
+        <span class="n">topalignment</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">topalignment</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">topalignment</span><span class="o">.</span><span class="n">score</span><span class="p">,</span>
+        <span class="mi">0</span><span class="p">,</span>
+        <span class="nb">max</span><span class="p">(</span><span class="n">reference</span><span class="o">.</span><span class="n">n_residues</span><span class="p">,</span> <span class="n">mobile</span><span class="o">.</span><span class="n">n_residues</span><span class="p">),</span>
+    <span class="p">)</span>
 
 
 <div class="viewcode-block" id="fasta2select">
 <a class="viewcode-back" href="../../../documentation_pages/analysis/align.html#MDAnalysis.analysis.align.fasta2select">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">fasta2select</span><span class="p">(</span><span class="n">fastafilename</span><span class="p">,</span> <span class="n">is_aligned</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                 <span class="n">ref_resids</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target_resids</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">ref_offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">target_offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">verbosity</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-                 <span class="n">alnfilename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">treefilename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clustalw</span><span class="o">=</span><span class="s2">&quot;clustalw2&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fasta2select</span><span class="p">(</span>
+    <span class="n">fastafilename</span><span class="p">,</span>
+    <span class="n">is_aligned</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">ref_resids</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">target_resids</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">ref_offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">target_offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">verbosity</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">alnfilename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">treefilename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">clustalw</span><span class="o">=</span><span class="s2">&quot;clustalw2&quot;</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return selection strings that will select equivalent residues.</span>
 
 <span class="sd">    The function aligns two sequences provided in a FASTA file and</span>
@@ -1469,7 +1574,7 @@
 <span class="sd">    :func:`sequence_alignment`, which does not require external</span>
 <span class="sd">    programs.</span>
 
-<span class="sd">    </span>
+
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    ImportError</span>
@@ -1487,53 +1592,61 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">HAS_BIOPYTHON</span><span class="p">:</span>
-        <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `fasta2select` method requires an installation &quot;</span>
-                  <span class="s2">&quot;of `Biopython`. Please install `Biopython` to use this &quot;</span>
-                  <span class="s2">&quot;method: https://biopython.org/wiki/Download&quot;</span><span class="p">)</span>
+        <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;The `fasta2select` method requires an installation &quot;</span>
+            <span class="s2">&quot;of `Biopython`. Please install `Biopython` to use this &quot;</span>
+            <span class="s2">&quot;method: https://biopython.org/wiki/Download&quot;</span>
+        <span class="p">)</span>
         <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">is_aligned</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using provided alignment </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fastafilename</span><span class="p">))</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fastafilename</span><span class="p">)</span> <span class="k">as</span> <span class="n">fasta</span><span class="p">:</span>
-            <span class="n">alignment</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">AlignIO</span><span class="o">.</span><span class="n">read</span><span class="p">(</span>
-                <span class="n">fasta</span><span class="p">,</span> <span class="s2">&quot;fasta&quot;</span><span class="p">)</span>
+            <span class="n">alignment</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">AlignIO</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">fasta</span><span class="p">,</span> <span class="s2">&quot;fasta&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">alnfilename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">filepath</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">fastafilename</span><span class="p">)</span>
-            <span class="n">alnfilename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.aln&#39;</span>
+            <span class="n">alnfilename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.aln&quot;</span>
         <span class="k">if</span> <span class="n">treefilename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">filepath</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">alnfilename</span><span class="p">)</span>
-            <span class="n">treefilename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.dnd&#39;</span>
+            <span class="n">treefilename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.dnd&quot;</span>
         <span class="n">run_clustalw</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">Align</span><span class="o">.</span><span class="n">Applications</span><span class="o">.</span><span class="n">ClustalwCommandline</span><span class="p">(</span>
             <span class="n">clustalw</span><span class="p">,</span>
             <span class="n">infile</span><span class="o">=</span><span class="n">fastafilename</span><span class="p">,</span>
             <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;protein&quot;</span><span class="p">,</span>
             <span class="n">align</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">outfile</span><span class="o">=</span><span class="n">alnfilename</span><span class="p">,</span>
-            <span class="n">newtree</span><span class="o">=</span><span class="n">treefilename</span><span class="p">)</span>
+            <span class="n">newtree</span><span class="o">=</span><span class="n">treefilename</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
             <span class="s2">&quot;Aligning sequences in </span><span class="si">%(fastafilename)r</span><span class="s2"> with </span><span class="si">%(clustalw)r</span><span class="s2">.&quot;</span><span class="p">,</span>
-            <span class="nb">vars</span><span class="p">())</span>
+            <span class="nb">vars</span><span class="p">(),</span>
+        <span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;ClustalW commandline: </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">run_clustalw</span><span class="p">))</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> <span class="n">run_clustalw</span><span class="p">()</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;ClustalW </span><span class="si">%(clustalw)r</span><span class="s2"> failed&quot;</span><span class="p">,</span> <span class="nb">vars</span><span class="p">())</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="s2">&quot;(You can get clustalw2 from http://www.clustal.org/clustal2/)&quot;</span><span class="p">)</span>
+                <span class="s2">&quot;(You can get clustalw2 from http://www.clustal.org/clustal2/)&quot;</span>
+            <span class="p">)</span>
             <span class="k">raise</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">alnfilename</span><span class="p">)</span> <span class="k">as</span> <span class="n">aln</span><span class="p">:</span>
-            <span class="n">alignment</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">AlignIO</span><span class="o">.</span><span class="n">read</span><span class="p">(</span>
-                <span class="n">aln</span><span class="p">,</span> <span class="s2">&quot;clustal&quot;</span><span class="p">)</span>
+            <span class="n">alignment</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">AlignIO</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">aln</span><span class="p">,</span> <span class="s2">&quot;clustal&quot;</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="s2">&quot;Using clustalw sequence alignment </span><span class="si">{0!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">alnfilename</span><span class="p">))</span>
+            <span class="s2">&quot;Using clustalw sequence alignment </span><span class="si">{0!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">alnfilename</span><span class="p">)</span>
+        <span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="s2">&quot;ClustalW Newick guide tree was also produced: </span><span class="si">{0!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">treefilename</span><span class="p">))</span>
+            <span class="s2">&quot;ClustalW Newick guide tree was also produced: </span><span class="si">{0!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">treefilename</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
 
     <span class="n">nseq</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">alignment</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">nseq</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;Only two sequences in the alignment can be processed.&quot;</span><span class="p">)</span>
+            <span class="s2">&quot;Only two sequences in the alignment can be processed.&quot;</span>
+        <span class="p">)</span>
 
     <span class="c1"># implict assertion that we only have two sequences in the alignment</span>
     <span class="n">orig_resids</span> <span class="o">=</span> <span class="p">[</span><span class="n">ref_resids</span><span class="p">,</span> <span class="n">target_resids</span><span class="p">]</span>
@@ -1549,8 +1662,9 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">orig_resids</span><span class="p">[</span><span class="n">iseq</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">orig_resids</span><span class="p">[</span><span class="n">iseq</span><span class="p">])</span>
     <span class="c1"># add offsets to the sequence &lt;--&gt; resid translation table</span>
-    <span class="n">seq2resids</span> <span class="o">=</span> <span class="p">[</span><span class="n">resids</span> <span class="o">+</span> <span class="n">offset</span> <span class="k">for</span> <span class="n">resids</span><span class="p">,</span> <span class="n">offset</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
-        <span class="n">orig_resids</span><span class="p">,</span> <span class="n">offsets</span><span class="p">)]</span>
+    <span class="n">seq2resids</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">resids</span> <span class="o">+</span> <span class="n">offset</span> <span class="k">for</span> <span class="n">resids</span><span class="p">,</span> <span class="n">offset</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">orig_resids</span><span class="p">,</span> <span class="n">offsets</span><span class="p">)</span>
+    <span class="p">]</span>
     <span class="k">del</span> <span class="n">orig_resids</span>
     <span class="k">del</span> <span class="n">offsets</span>
 
@@ -1586,8 +1700,9 @@
         <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nseq</span><span class="p">,</span> <span class="n">alignment</span><span class="o">.</span><span class="n">get_alignment_length</span><span class="p">()),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">iseq</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">alignment</span><span class="p">):</span>
             <span class="n">GAP</span> <span class="o">=</span> <span class="s2">&quot;-&quot;</span>
-            <span class="n">t</span><span class="p">[</span><span class="n">iseq</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">seq2resids</span><span class="p">[</span><span class="n">iseq</span><span class="p">][</span><span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
-                <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">seq</span><span class="p">))</span> <span class="o">==</span> <span class="n">GAP</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">t</span><span class="p">[</span><span class="n">iseq</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">seq2resids</span><span class="p">[</span><span class="n">iseq</span><span class="p">][</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">seq</span><span class="p">))</span> <span class="o">==</span> <span class="n">GAP</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="p">]</span>
             <span class="c1"># -1 because seq2resid is index-1 based (resids start at 1)</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">resid</span><span class="p">(</span><span class="n">nseq</span><span class="p">,</span> <span class="n">ipos</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="p">):</span>
@@ -1606,7 +1721,7 @@
         <span class="k">if</span> <span class="n">GAP</span> <span class="ow">in</span> <span class="n">aligned</span><span class="p">:</span>
             <span class="k">continue</span>  <span class="c1"># skip residue</span>
         <span class="n">template</span> <span class="o">=</span> <span class="s2">&quot;resid </span><span class="si">%i</span><span class="s2">&quot;</span>
-        <span class="k">if</span> <span class="s1">&#39;G&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">aligned</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">&quot;G&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">aligned</span><span class="p">:</span>
             <span class="c1"># can use CB</span>
             <span class="n">template</span> <span class="o">+=</span> <span class="s2">&quot; and ( backbone or name CB )&quot;</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1619,7 +1734,7 @@
 
     <span class="n">ref_selection</span> <span class="o">=</span> <span class="s2">&quot; or &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sel</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="n">target_selection</span> <span class="o">=</span> <span class="s2">&quot; or &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sel</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;reference&#39;</span><span class="p">:</span> <span class="n">ref_selection</span><span class="p">,</span> <span class="s1">&#39;mobile&#39;</span><span class="p">:</span> <span class="n">target_selection</span><span class="p">}</span></div>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;reference&quot;</span><span class="p">:</span> <span class="n">ref_selection</span><span class="p">,</span> <span class="s2">&quot;mobile&quot;</span><span class="p">:</span> <span class="n">target_selection</span><span class="p">}</span></div>
 
 
 
@@ -1700,34 +1815,39 @@
 
     <span class="k">if</span> <span class="n">ag1</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">!=</span> <span class="n">ag2</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">match_atoms</span><span class="p">:</span>
-            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Mobile and reference atom selections do not &quot;</span>
-                      <span class="s2">&quot;contain the same number of atoms and atom &quot;</span>
-                      <span class="s2">&quot;matching is turned off. To match atoms based &quot;</span>
-                      <span class="s2">&quot;on residue and mass, try match_atoms=True&quot;</span><span class="p">)</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s2">&quot;Mobile and reference atom selections do not &quot;</span>
+                <span class="s2">&quot;contain the same number of atoms and atom &quot;</span>
+                <span class="s2">&quot;matching is turned off. To match atoms based &quot;</span>
+                <span class="s2">&quot;on residue and mass, try match_atoms=True&quot;</span>
+            <span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
             <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">ag1</span><span class="o">.</span><span class="n">n_residues</span> <span class="o">!=</span> <span class="n">ag2</span><span class="o">.</span><span class="n">n_residues</span><span class="p">:</span>
-            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Reference and trajectory atom selections do not contain &quot;</span>
-                    <span class="s2">&quot;the same number of atoms: </span><span class="se">\n</span><span class="s2">&quot;</span>
-                    <span class="s2">&quot;atoms:    N_ref=</span><span class="si">{0}</span><span class="s2">, N_traj=</span><span class="si">{1}</span><span class="se">\n</span><span class="s2">&quot;</span>
-                    <span class="s2">&quot;and also not the same number of residues:</span><span class="se">\n</span><span class="s2">&quot;</span>
-                    <span class="s2">&quot;residues: N_ref=</span><span class="si">{2}</span><span class="s2">, N_traj=</span><span class="si">{3}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="n">ag1</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">ag2</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span>
-                        <span class="n">ag1</span><span class="o">.</span><span class="n">n_residues</span><span class="p">,</span> <span class="n">ag2</span><span class="o">.</span><span class="n">n_residues</span><span class="p">)</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s2">&quot;Reference and trajectory atom selections do not contain &quot;</span>
+                <span class="s2">&quot;the same number of atoms: </span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;atoms:    N_ref=</span><span class="si">{0}</span><span class="s2">, N_traj=</span><span class="si">{1}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;and also not the same number of residues:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;residues: N_ref=</span><span class="si">{2}</span><span class="s2">, N_traj=</span><span class="si">{3}</span><span class="s2">&quot;</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ag1</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">ag2</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">ag1</span><span class="o">.</span><span class="n">n_residues</span><span class="p">,</span> <span class="n">ag2</span><span class="o">.</span><span class="n">n_residues</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
             <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Reference and trajectory atom selections do not contain &quot;</span>
-                   <span class="s2">&quot;the same number of atoms: </span><span class="se">\n</span><span class="s2">&quot;</span>
-                   <span class="s2">&quot;atoms:    N_ref=</span><span class="si">{0}</span><span class="s2">, N_traj=</span><span class="si">{1}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                       <span class="n">ag1</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">ag2</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s2">&quot;Reference and trajectory atom selections do not contain &quot;</span>
+                <span class="s2">&quot;the same number of atoms: </span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;atoms:    N_ref=</span><span class="si">{0}</span><span class="s2">, N_traj=</span><span class="si">{1}</span><span class="s2">&quot;</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ag1</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">ag2</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">strict</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
             <span class="c1"># continue with trying to create a valid selection</span>
-            <span class="n">msg</span> <span class="o">+=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">but we attempt to create a valid selection &quot;</span> <span class="o">+</span>
-                    <span class="s2">&quot;(use strict=True to disable this heuristic).&quot;</span><span class="p">)</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="p">(</span>
+                <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">but we attempt to create a valid selection &quot;</span>
+                <span class="o">+</span> <span class="s2">&quot;(use strict=True to disable this heuristic).&quot;</span>
+            <span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">SelectionWarning</span><span class="p">)</span>
 
@@ -1755,7 +1875,7 @@
         <span class="n">rsize1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">ag1</span><span class="o">.</span><span class="n">residues</span><span class="p">])</span>
         <span class="n">rsize2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">ag2</span><span class="o">.</span><span class="n">residues</span><span class="p">])</span>
         <span class="n">rsize_mismatches</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">rsize1</span> <span class="o">-</span> <span class="n">rsize2</span><span class="p">)</span>
-        <span class="n">mismatch_mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">rsize_mismatches</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">mismatch_mask</span> <span class="o">=</span> <span class="n">rsize_mismatches</span> <span class="o">&gt;</span> <span class="mi">0</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mismatch_mask</span><span class="p">):</span>
 
             <span class="k">def</span><span class="w"> </span><span class="nf">get_atoms_byres</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">match_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -1765,7 +1885,7 @@
                     <span class="n">match_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">mismatch_mask</span><span class="p">)</span>
                 <span class="n">ag</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">atoms</span>
                 <span class="n">good</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">resids</span><span class="p">[</span><span class="n">match_mask</span><span class="p">]</span>  <span class="c1"># resid for each residue</span>
-                <span class="n">resids</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">resids</span>                     <span class="c1"># resid for each atom</span>
+                <span class="n">resids</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">resids</span>  <span class="c1"># resid for each atom</span>
                 <span class="c1"># boolean array for all matching atoms</span>
                 <span class="n">ix_good</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">resids</span><span class="p">,</span> <span class="n">good</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">ag</span><span class="p">[</span><span class="n">ix_good</span><span class="p">]</span>
@@ -1777,12 +1897,21 @@
 
             <span class="c1"># diagnostics</span>
             <span class="n">mismatch_resindex</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">ag1</span><span class="o">.</span><span class="n">n_residues</span><span class="p">)[</span><span class="n">mismatch_mask</span><span class="p">]</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Removed </span><span class="si">{0}</span><span class="s2"> residues with non-matching numbers of atoms&quot;</span>
-                           <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mismatch_mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()))</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Removed residue ids: group 1: </span><span class="si">{0}</span><span class="s2">&quot;</span>
-                         <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ag1</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">resids</span><span class="p">[</span><span class="n">mismatch_resindex</span><span class="p">]))</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Removed residue ids: group 2: </span><span class="si">{0}</span><span class="s2">&quot;</span>
-                         <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ag2</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">resids</span><span class="p">[</span><span class="n">mismatch_resindex</span><span class="p">]))</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;Removed </span><span class="si">{0}</span><span class="s2"> residues with non-matching numbers of atoms&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">mismatch_mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s2">&quot;Removed residue ids: group 1: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">ag1</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">resids</span><span class="p">[</span><span class="n">mismatch_resindex</span><span class="p">]</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s2">&quot;Removed residue ids: group 2: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">ag2</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">resids</span><span class="p">[</span><span class="n">mismatch_resindex</span><span class="p">]</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
             <span class="c1"># replace after logging (still need old ag1 and ag2 for</span>
             <span class="c1"># diagnostics)</span>
             <span class="n">ag1</span> <span class="o">=</span> <span class="n">_ag1</span>
@@ -1791,8 +1920,10 @@
 
             <span class="c1"># stop if we created empty selections (by removing ALL residues...)</span>
             <span class="k">if</span> <span class="n">ag1</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">ag2</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Failed to automatically find matching atoms: created empty selections. &quot;</span>
-                          <span class="s2">&quot;Try to improve your selections for mobile and reference.&quot;</span><span class="p">)</span>
+                <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="s2">&quot;Failed to automatically find matching atoms: created empty selections. &quot;</span>
+                    <span class="s2">&quot;Try to improve your selections for mobile and reference.&quot;</span>
+                <span class="p">)</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
 
@@ -1801,17 +1932,20 @@
         <span class="c1"># good and can easily be misled (e.g., when one of the selections</span>
         <span class="c1"># had fewer atoms but the residues in mobile and reference have</span>
         <span class="c1"># each the same number)</span>
-        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ag1</span><span class="p">,</span> <span class="s1">&#39;masses&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ag2</span><span class="p">,</span> <span class="s1">&#39;masses&#39;</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ag1</span><span class="p">,</span> <span class="s2">&quot;masses&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ag2</span><span class="p">,</span> <span class="s2">&quot;masses&quot;</span><span class="p">):</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Atoms could not be matched since they don&#39;t contain masses.&quot;</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">SelectionWarning</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">mass_mismatches</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">ag1</span><span class="o">.</span><span class="n">masses</span> <span class="o">-</span> <span class="n">ag2</span><span class="o">.</span><span class="n">masses</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">tol_mass</span><span class="p">)</span>
+                <span class="n">mass_mismatches</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">ag1</span><span class="o">.</span><span class="n">masses</span> <span class="o">-</span> <span class="n">ag2</span><span class="o">.</span><span class="n">masses</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">tol_mass</span>
+                <span class="p">)</span>
             <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Failed to find matching atoms: len(reference) = </span><span class="si">{}</span><span class="s2">, len(mobile) = </span><span class="si">{}</span><span class="s2"> &quot;</span>
-                          <span class="s2">&quot;Try to improve your selections for mobile and reference.&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                            <span class="n">ag1</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">ag2</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span>
+                <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="s2">&quot;Failed to find matching atoms: len(reference) = </span><span class="si">{}</span><span class="s2">, len(mobile) = </span><span class="si">{}</span><span class="s2"> &quot;</span>
+                    <span class="s2">&quot;Try to improve your selections for mobile and reference.&quot;</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ag1</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">ag2</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
 
@@ -1831,9 +1965,13 @@
                             <span class="n">at</span><span class="o">.</span><span class="n">resid</span><span class="p">,</span>
                             <span class="n">at</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span>
                             <span class="n">at</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-                            <span class="n">at</span><span class="o">.</span><span class="n">mass</span><span class="p">))</span>
-                <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Inconsistent selections, masses differ by more than </span><span class="si">{0}</span><span class="s2">; &quot;</span>
-                           <span class="s2">&quot;mis-matching atoms are shown above.&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tol_mass</span><span class="p">)</span>
+                            <span class="n">at</span><span class="o">.</span><span class="n">mass</span><span class="p">,</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="s2">&quot;Inconsistent selections, masses differ by more than </span><span class="si">{0}</span><span class="s2">; &quot;</span>
+                    <span class="s2">&quot;mis-matching atoms are shown above.&quot;</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tol_mass</span><span class="p">)</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
 

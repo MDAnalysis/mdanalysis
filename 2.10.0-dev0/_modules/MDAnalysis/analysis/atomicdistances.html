@@ -294,15 +294,16 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag1</span><span class="p">,</span> <span class="n">ag2</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># check ag1 and ag2 have the same number of atoms</span>
         <span class="k">if</span> <span class="n">ag1</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">!=</span> <span class="n">ag2</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;AtomGroups do not &quot;</span>
-                             <span class="s2">&quot;have the same number of atoms&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;AtomGroups do not &quot;</span> <span class="s2">&quot;have the same number of atoms&quot;</span>
+            <span class="p">)</span>
         <span class="c1"># check ag1 and ag2 are from the same trajectory</span>
         <span class="k">elif</span> <span class="n">ag1</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span> <span class="o">!=</span> <span class="n">ag2</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;AtomGroups are not &quot;</span>
-                             <span class="s2">&quot;from the same trajectory&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;AtomGroups are not &quot;</span> <span class="s2">&quot;from the same trajectory&quot;</span><span class="p">)</span>
 
-        <span class="nb">super</span><span class="p">(</span><span class="n">AtomicDistances</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">ag1</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span>
-                                              <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">AtomicDistances</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">ag1</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_ag1</span> <span class="o">=</span> <span class="n">ag1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ag2</span> <span class="o">=</span> <span class="n">ag2</span>
@@ -315,9 +316,9 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># if PBCs considered, get box size</span>
         <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ag1</span><span class="o">.</span><span class="n">dimensions</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pbc</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">calc_bonds</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ag1</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
-                                                     <span class="bp">self</span><span class="o">.</span><span class="n">_ag2</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
-                                                     <span class="n">box</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">calc_bonds</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ag1</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ag2</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">box</span>
+        <span class="p">)</span></div>
 
 </pre></div>
 
