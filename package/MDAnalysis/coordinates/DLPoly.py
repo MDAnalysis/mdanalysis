@@ -35,7 +35,8 @@ from . import core
 from ..lib import util
 from ..lib.util import cached, store_init_arguments
 
-_DLPOLY_UNITS = {"length": "Angstrom", "velocity": "Angstrom/ps", "time": "ps"}
+_DLPOLY_UNITS = {"length": "Angstrom", "velocity": "Da*Angstrom/ps", "time": "ps",
+                 'force': "Da*Angstrom/ps"}
 
 
 class ConfigReader(base.SingleFrameReaderBase):
@@ -46,6 +47,8 @@ class ConfigReader(base.SingleFrameReaderBase):
     .. versionchanged:: 2.0.0
        coordinates, velocities, and forces are no longer stored in 'F' memory
        layout, instead now using the numpy default of 'C'.
+    .. versionchanged:: 2.10.0
+        Forces are now converted to 10 J/(mol.Å) as per DL_Poly
     """
 
     format = "CONFIG"
@@ -100,7 +103,10 @@ class ConfigReader(base.SingleFrameReaderBase):
         if has_vels:
             velocities = np.array(velocities, dtype=np.float32)
         if has_forces:
-            forces = np.array(forces, dtype=np.float32) / 100.0
+            # DL_POLY forces are in units of 10 J/(mol.Å)
+            forces = np.array(forces, dtype=np.float32)
+            if self.convert_units:
+                forces = self.convert_forces_from_native(forces)
         self.n_atoms = len(coords)
 
         if ids:
@@ -132,6 +138,8 @@ class HistoryReader(base.ReaderBase):
     """Reads DLPoly format HISTORY files
 
     .. versionadded:: 0.11.0
+    .. versionchanged:: 2.10.0
+        Forces are now converted to 10 J/(mol.Å) as per DL_Poly
     """
 
     format = "HISTORY"
@@ -212,6 +220,9 @@ class HistoryReader(base.ReaderBase):
                     ts._velocities[:] = ts._velocities[order]
                 if self._has_forces:
                     ts._forces[:] = ts._forces[order]
+        
+        if self._has_forces and self.convert_units:
+            ts._forces = self.convert_forces_from_native(ts._forces)
 
         ts.frame += 1
         return ts

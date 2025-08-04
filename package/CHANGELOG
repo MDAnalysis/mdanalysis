@@ -20,6 +20,7 @@ The rules for this file:
  * 2.10.0
 
 Fixes
+* fixed force unit conversion in DL_Poly ConfigReader and HistoryReader to account for conversion to 10 J/mol.A
 
 Enhancements
 
