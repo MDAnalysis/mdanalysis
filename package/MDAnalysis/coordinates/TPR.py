@@ -47,6 +47,7 @@ Classes
 
 .. autoclass:: TPRReader
    :members:
+   :inherited-members:
 
 """
 
