@@ -1966,17 +1966,35 @@ class StreamReaderBase(ReaderBase):
         )
 
     def __getitem__(self, frame):
-        """Return the Timestep corresponding to *frame*.
+        """Return an iterator for slicing a streaming trajectory.
 
-        If `frame` is a integer then the corresponding frame is
-        returned. Negative numbers are counted from the end.
+        Parameters
+        ----------
+        frame : slice
+            Slice object. Only the step parameter is meaningful for streams.
 
-        If frame is a :class:`slice` then an iterator is returned that
-        allows iteration over that part of the trajectory.
+        Returns
+        -------
+        FrameIteratorAll or StreamFrameIteratorSliced
+            Iterator for the requested slice.
 
-        Note
-        ----
-        *frame* is a 0-based frame index.
+        Raises
+        ------
+        TypeError
+            If frame is not a slice object.
+        ValueError
+            If slice contains start or stop values.
+
+        Examples
+        --------
+        >>> for ts in traj[:]:          # All frames sequentially
+        ...     process(ts)
+        >>> for ts in traj[::5]:        # Every 5th frame
+        ...     process(ts)
+
+        See Also
+        --------
+        StreamFrameIteratorSliced
         """
         if isinstance(frame, slice):
             _, _, step = self.check_slice_indices(
