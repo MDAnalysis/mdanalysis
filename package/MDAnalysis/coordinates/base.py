@@ -90,7 +90,6 @@ case, :class:`ProtoReader` should be used.
 
 .. autoclass:: StreamReaderBase
    :members:
-
    
 .. _WritersBase:
 
