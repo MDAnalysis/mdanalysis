@@ -394,7 +394,10 @@
 
         <span class="k">if</span> <span class="n">th</span><span class="o">.</span><span class="n">bTop</span><span class="p">:</span>
             <span class="n">tpr_top</span> <span class="o">=</span> <span class="n">tpr_utils</span><span class="o">.</span><span class="n">do_mtop</span><span class="p">(</span>
-                <span class="n">data</span><span class="p">,</span> <span class="n">th</span><span class="o">.</span><span class="n">fver</span><span class="p">,</span> <span class="n">tpr_resid_from_one</span><span class="o">=</span><span class="n">tpr_resid_from_one</span>
+                <span class="n">data</span><span class="p">,</span>
+                <span class="n">th</span><span class="o">.</span><span class="n">fver</span><span class="p">,</span>
+                <span class="n">tpr_resid_from_one</span><span class="o">=</span><span class="n">tpr_resid_from_one</span><span class="p">,</span>
+                <span class="n">precision</span><span class="o">=</span><span class="n">th</span><span class="o">.</span><span class="n">precision</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2">: No topology found in tpr file&quot;</span>
