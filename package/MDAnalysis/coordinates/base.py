@@ -2063,16 +2063,15 @@ class StreamReaderBase(ReaderBase):
 class StreamFrameIteratorSliced(FrameIteratorBase):
     """Iterator for sliced frames in a streamed trajectory.
     
-    This iterator is created when slicing a streaming trajectory with a step
-    parameter (e.g., ``trajectory[::n]``). It reads every nth frame from the 
-    continuous stream, where n is the step size, discarding intermediate frames
-    for performance.
+    Created when slicing a streaming trajectory with a step parameter 
+    (e.g., ``trajectory[::n]``). Reads every nth frame from the continuous 
+    stream, discarding intermediate frames for performance.
     
     This differs from iterating over all frames (``trajectory[:]``) which uses
     :class:`FrameIteratorAll` and processes every frame sequentially without 
     skipping.
     
-    Streaming constraints apply:
+    Streaming constraints apply to the sliced iterator:
     
     - Frames cannot be accessed randomly (no indexing support)
     - The total number of frames is unknown until streaming ends  
@@ -2092,11 +2091,6 @@ class StreamFrameIteratorSliced(FrameIteratorBase):
     --------
     StreamReaderBase
     FrameIteratorBase
-        
-    Note
-    ----
-    This iterator is automatically selected when using slice notation with
-    a step parameter on streaming trajectories.
     """
 
     def __init__(self, trajectory, step):
