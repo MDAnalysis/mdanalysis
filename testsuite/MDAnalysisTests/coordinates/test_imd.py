@@ -1,47 +1,43 @@
 """Test for MDAnalysis trajectory reader expectations
 """
 
-import sys
 import importlib
-from weakref import ref
-import pytest
 import pickle
+import sys
 from types import ModuleType
+from weakref import ref
 
+import pytest
 import numpy as np
 from numpy.testing import (
+    assert_allclose,
     assert_almost_equal,
     assert_array_almost_equal,
     assert_equal,
-    assert_allclose,
 )
 
-from MDAnalysis.transformations import translate
 import MDAnalysis as mda
-from MDAnalysis.coordinates.IMD import HAS_IMDCLIENT
+from MDAnalysis.coordinates.IMD import HAS_IMDCLIENT, IMDReader
+from MDAnalysis.transformations import translate
 
 if HAS_IMDCLIENT:
     import imdclient
-    from imdclient.tests.utils import (
-        get_free_port,
-        create_default_imdsinfo_v3,
-    )
     from imdclient.tests.server import InThreadIMDServer
-
-from MDAnalysis.coordinates.IMD import IMDReader
-
-from MDAnalysisTests.datafiles import (
-    COORDINATES_TOPOLOGY,
-    COORDINATES_TRR,
-    COORDINATES_H5MD,
-)
+    from imdclient.tests.utils import (
+        create_default_imdsinfo_v3,
+        get_free_port,
+    )
 
 from MDAnalysisTests.coordinates.base import (
-    MultiframeReaderTest,
-    BaseReference,
     assert_timestep_almost_equal,
+    BaseReference,
+    MultiframeReaderTest,
 )
-
+from MDAnalysisTests.datafiles import (
+    COORDINATES_H5MD,
+    COORDINATES_TOPOLOGY,
+    COORDINATES_TRR,
+)
 
 @pytest.mark.skipif(not HAS_IMDCLIENT, reason="IMDClient not installed")
 class IMDReference(BaseReference):
