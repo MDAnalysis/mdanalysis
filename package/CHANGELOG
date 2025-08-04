@@ -22,6 +22,7 @@ The rules for this file:
  * 2.10.0
 
 Fixes
+ * Fixed force unit conversion in DL_Poly ConfigReader and HistoryReader to account for conversion to 10 J/mol.A (Issue #2393, PR #4983)
  * Fixed an integer overflow in large DCD file seeks on Windows
    (Issue #4879, PR #5086)
  * Fix compile failure due to numpy issues in transformations.c (Issue #5061, PR #5068)

@@ -35,7 +35,8 @@ from . import core
 from ..lib import util
 from ..lib.util import cached, store_init_arguments
 
-_DLPOLY_UNITS = {'length': 'Angstrom', 'velocity': 'Angstrom/ps', 'time': 'ps'}
+_DLPOLY_UNITS = {"length": "Angstrom", "velocity": "Da*Angstrom/ps", "time": "ps",
+                 'force': "Da*Angstrom/ps"}
 
 
 class ConfigReader(base.SingleFrameReaderBase):
@@ -46,14 +47,17 @@ class ConfigReader(base.SingleFrameReaderBase):
     .. versionchanged:: 2.0.0
        coordinates, velocities, and forces are no longer stored in 'F' memory
        layout, instead now using the numpy default of 'C'.
+    .. versionchanged:: 2.10.0
+        Forces are now converted to 10 J/(mol.Å) as per DL_Poly
     """
-    format = 'CONFIG'
+
+    format = "CONFIG"
     units = _DLPOLY_UNITS
 
     def _read_first_frame(self):
         unitcell = np.zeros((3, 3), dtype=np.float32)
 
-        with open(self.filename, 'r') as inf:
+        with open(self.filename, "r") as inf:
             self.title = inf.readline().strip()
             levcfg, imcon, megatm = np.int64(inf.readline().split()[:3])
             if not imcon == 0:
@@ -99,7 +103,10 @@ class ConfigReader(base.SingleFrameReaderBase):
         if has_vels:
             velocities = np.array(velocities, dtype=np.float32)
         if has_forces:
+            # DL_POLY forces are in units of 10 J/(mol.Å)
             forces = np.array(forces, dtype=np.float32)
+            if self.convert_units:
+                forces = self.convert_forces_from_native(forces)
         self.n_atoms = len(coords)
 
         if ids:
@@ -113,10 +120,9 @@ class ConfigReader(base.SingleFrameReaderBase):
             if has_forces:
                 forces = forces[order]
 
-        ts = self.ts = self._Timestep(self.n_atoms,
-                                      velocities=has_vels,
-                                      forces=has_forces,
-                                      **self._ts_kwargs)
+        ts = self.ts = self._Timestep(
+            self.n_atoms, velocities=has_vels, forces=has_forces, **self._ts_kwargs
+        )
         ts._pos = coords
         if has_vels:
             ts._velocities = velocities
@@ -132,8 +138,11 @@ class HistoryReader(base.ReaderBase):
     """Reads DLPoly format HISTORY files
 
     .. versionadded:: 0.11.0
+    .. versionchanged:: 2.10.0
+        Forces are now converted to 10 J/(mol.Å) as per DL_Poly
     """
-    format = 'HISTORY'
+
+    format = "HISTORY"
     units = _DLPOLY_UNITS
 
     @store_init_arguments
@@ -142,7 +151,7 @@ class HistoryReader(base.ReaderBase):
         self._cache = {}
 
         # "private" file handle
-        self._file = util.anyopen(self.filename, 'r')
+        self._file = util.anyopen(self.filename, "r")
         self.title = self._file.readline().strip()
         header = np.int64(self._file.readline().split()[:3])
         self._levcfg, self._imcon, self.n_atoms = header
@@ -157,10 +166,12 @@ class HistoryReader(base.ReaderBase):
             self._has_cell = False
         self._file.seek(rwnd)
 
-        self.ts = self._Timestep(self.n_atoms,
-                                 velocities=self._has_vels,
-                                 forces=self._has_forces,
-                                 **self._ts_kwargs)
+        self.ts = self._Timestep(
+            self.n_atoms,
+            velocities=self._has_vels,
+            forces=self._has_forces,
+            **self._ts_kwargs
+        )
         self._read_next_timestep()
 
     def _read_next_timestep(self, ts=None):
@@ -168,7 +179,7 @@ class HistoryReader(base.ReaderBase):
             ts = self.ts
 
         line = self._file.readline()  # timestep line
-        if not line.startswith('timestep'):
+        if not line.startswith("timestep"):
             raise IOError
 
         if self._has_cell:
@@ -176,7 +187,7 @@ class HistoryReader(base.ReaderBase):
             unitcell[0] = self._file.readline().split()
             unitcell[1] = self._file.readline().split()
             unitcell[2] = self._file.readline().split()
-            ts.dimensions = core.triclinic_box(*unitcell)            
+            ts.dimensions = core.triclinic_box(*unitcell)
 
         # If ids are given, put them in here
         # and later sort by them
@@ -209,6 +220,9 @@ class HistoryReader(base.ReaderBase):
                     ts._velocities[:] = ts._velocities[order]
                 if self._has_forces:
                     ts._forces[:] = ts._forces[order]
+        
+        if self._has_forces and self.convert_units:
+            ts._forces = self.convert_forces_from_native(ts._forces)
 
         ts.frame += 1
         return ts
@@ -220,17 +234,17 @@ class HistoryReader(base.ReaderBase):
         return self._read_next_timestep()
 
     @property
-    @cached('n_frames')
+    @cached("n_frames")
     def n_frames(self):
         # Second line is traj_key, imcom, n_atoms, n_frames, n_records
         offsets = []
 
-        with open(self.filename, 'r') as f:
+        with open(self.filename, "r") as f:
             f.readline()
             f.readline()
             position = f.tell()
             line = f.readline()
-            while line.startswith('timestep'):
+            while line.startswith("timestep"):
                 offsets.append(position)
                 if self._has_cell:
                     f.readline()
@@ -251,7 +265,7 @@ class HistoryReader(base.ReaderBase):
 
     def _reopen(self):
         self.close()
-        self._file = open(self.filename, 'r')
+        self._file = open(self.filename, "r")
         self._file.readline()  # header is 2 lines
         self._file.readline()
         self.ts.frame = -1

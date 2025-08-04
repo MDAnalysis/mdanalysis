@@ -71,7 +71,7 @@ class _DLPConfig(object):
         assert_allclose(ts._velocities[0], ref)
 
     def test_forces(self, ts):
-        ref = np.array([-1979.558687, 739.7961625, 1027.996603])
+        ref = np.array([-197955.8687, 73979.61625, 102799.6603])
         assert_allclose(ts._forces[0], ref)
 
 
@@ -119,7 +119,7 @@ class _DLPConfig2(object):
         assert_allclose(u.atoms[2].velocity, ref)
 
     def test_for(self, u):
-        ref = np.array([150.3309776, -812.6932914, 1429.413120])
+        ref = np.array([15033.09776, -81269.32914, 142941.3120])
         assert_allclose(u.atoms[2].force, ref)
 
     def test_number(self, u):
@@ -189,9 +189,9 @@ class _DLHistory(object):
     def test_force(self, u):
         ref = np.array(
             [
-                [-2621.386432, 1579.334443, 1041.103241],
-                [-1472.262341, 2450.379615, -8149.916193],
-                [2471.802059, -3828.467296, 3596.679326],
+                [-262138.6432, 157933.4443, 104110.3241],
+                [-147226.2341, 245037.9615, -814991.6193],
+                [247180.2059, -382846.7296, 359667.9326],
             ]
         )
         for ts, r in zip(u.trajectory, ref):
