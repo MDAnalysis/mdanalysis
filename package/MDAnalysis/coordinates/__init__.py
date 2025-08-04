@@ -53,7 +53,7 @@ attribute :attr:`Universe.trajectory` that points to the actual
 :class:`~MDAnalysis.coordinates.base.ProtoReader` object; all Readers are accessible
 through this entry point in the same manner ("`duck typing`_").
 
-There are three types of base Reader which act as starting points for each
+There are four types of base Reader which act as starting points for each
 specific format. These are:
 
 :class:`~MDAnalysis.coordinates.base.ReaderBase`
@@ -65,6 +65,12 @@ specific format. These are:
    A simplified Reader which reads a file containing only a single
    frame of information.  This is used with formats such as GRO
    and CRD
+
+:class:`~MDAnalysis.coordinates.base.StreamReaderBase`
+   A specialized Reader for continuous data streams such as live 
+   simulation feeds. Unlike standard readers, streaming readers cannot
+   randomly access frames, rewind, or determine total length. This is
+   used for real-time trajectory data from simulations via IMD connections.
 
 :class:`~MDAnalysis.coordinates.chain.ChainReader`
    An advanced Reader designed to read a sequence of files, to
