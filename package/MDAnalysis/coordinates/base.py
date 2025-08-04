@@ -1851,9 +1851,34 @@ class ConverterBase(IOBase, metaclass=_Convertermeta):
 class StreamReaderBase(ReaderBase):
     """Base class for readers that read a continuous stream of data.
 
-    This class is used for readers that read a continuous stream of data,
-    such as a live feed from a simulation. This places some constraints on the
-    reader, such as not being able to rewind or iterate more than once.
+    This class is designed for readers that process continuous data streams,
+    such as live feeds from simulations. Unlike traditional trajectory readers
+    that can randomly access frames, streaming readers have fundamental constraints:
+
+    - **No random access**: Cannot seek to arbitrary frames (no ``traj[5]``)
+    - **No rewinding**: Cannot restart or rewind the stream
+    - **No length**: Total number of frames is unknown until stream ends
+    - **Forward-only**: Can only iterate sequentially through frames
+    - **No copying**: Cannot create independent copies of the reader
+
+    The reader raises ``RuntimeError`` for operations that require random
+    access or rewinding, including ``rewind()``, ``copy()``, ``timeseries()``,
+    and ``len()``. Only slice notation is supported for iteration.
+
+    Parameters
+    ----------
+    filename : str or file-like
+        Source of the streaming data
+    convert_units : bool, optional
+        Whether to convert units from native to MDAnalysis units (default: True)
+    **kwargs
+        Additional keyword arguments passed to the parent ReaderBase
+
+    See Also
+    --------
+    StreamFrameIteratorSliced : Iterator for stepped streaming access
+    ReaderBase : Base class for standard trajectory readers
+
 
     .. versionadded:: 2.10.0 
     """
