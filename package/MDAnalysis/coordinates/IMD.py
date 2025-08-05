@@ -121,16 +121,16 @@ logger = logging.getLogger("MDAnalysis.coordinates.IMDReader")
 
 class IMDReader(StreamReaderBase):
     """
-    Reader that supports the Interactive Molecular Dynamics (IMD) protocol for reading simulation
-    data using the IMDClient.
+    Reader that supports the Interactive Molecular Dynamics (IMD) protocol v3 for reading
+    simulation data using the IMDClient.
 
-    By using the keyword `buffer_size`, you can change the amount of memory the :class:`IMDClient`
-    allocates to its internal buffer. The buffer size determines how many frames can be stored
-    in memory as data is received from the socket and awaits reading by the client. For analyses
-    that periodically perform heavier computation at fixed intervals, say for example once every
-    200 received frames, increasing this value will decrease the amount of time the simulation
-    engine spends in a paused state and potentially decrease total analysis time, but will require
-    more RAM.
+    By using the keyword `buffer_size`, you can change the amount of memory the 
+    :class:`~imdclient.IMDClient.IMDClient` allocates to its internal buffer.
+    The buffer size determines how many frames can be stored in memory as data is received
+    from the socket and awaits reading by the client. For analyses that periodically perform
+    heavier computation at fixed intervals, say for example once every 200 received frames,
+    increasing this value will decrease the amount of time the simulation engine spends in a
+    paused state and potentially decrease total analysis time, but will require more RAM.
 
     Parameters
     ----------
@@ -141,10 +141,26 @@ class IMDReader(StreamReaderBase):
         number of atoms in the system. defaults to number of atoms
         in the topology. Don't set this unless you know what you're doing.
     buffer_size: int (optional) default=10*(1024**2)
-        number of bytes of memory to allocate to the :class:`IMDClient`'s
+        number of bytes of memory to allocate to the :class:`~imdclient.IMDClient.IMDClient`'s
         internal buffer. Defaults to 10 megabytes.
     kwargs : dict (optional)
-        keyword arguments passed to the constructed :class:`IMDClient`
+        keyword arguments passed to the constructed :class:`~imdclient.IMDClient.IMDClient`
+
+    Notes
+    -----
+    The IMDReader provides access to additional simulation data through the timestep's
+    `data` attribute (`ts.data`). The following keys may be available depending on
+    what the simulation engine transmits:
+
+    * `dt` : float
+        Time step size in picoseconds (`IMD_TIME`_ of IMDv3 protocol)
+    * `step` : int
+        Current simulation step number (`IMD_TIME`_ of IMDv3 protocol)
+    * Energy terms : float
+        Various energy components (e.g., 'potential', 'kinetic', 'total', etc.)
+        (`IMD_ENERGIES` of the IMDv3 protocol).
+
+    .. versionadded:: 2.10.0
     """
 
     format = "IMD"
