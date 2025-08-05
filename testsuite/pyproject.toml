@@ -158,26 +158,10 @@ line-length = 79
 target-version = ['py310', 'py311', 'py312', 'py313']
 extend-exclude = '''
 (
-__pycache__
-| testsuite/MDAnalysisTests/core/test_atomselections\.py
-| testsuite/MDAnalysisTests/analysis/test_atomicdistances\.py
-| testsuite/MDAnalysisTests/core/test_atomselections\.py
-| testsuite/MDAnalysisTests/datafiles\.py
+testsuite/MDAnalysisTests/datafiles\.py
 | testsuite/MDAnalysisTests/analysis/conftest\.py
-| testsuite/MDAnalysisTests/analysis/test_diffusionmap\.py
-| testsuite/MDAnalysisTests/analysis/conftest\.py
-| testsuite/MDAnalysisTests/analysis/test_align\.py
 | testsuite/MDAnalysisTests/coordinates/test_mmcif\.py
-| testsuite/MDAnalysisTests/datafiles\.py
 | testsuite/MDAnalysisTests/topology/test_mmcif\.py
-| testsuite/MDAnalysisTests/coordinates/test_cif\.py
-| testsuite/MDAnalysisTests/analysis/test_encore\.py
-| testsuite/MDAnalysisTests/parallelism/test_multiprocessing\.py
-| testsuite/MDAnalysisTests/coordinates/base\.py
-| testsuite/MDAnalysisTests/coordinates/test_gro\.py
-| testsuite/MDAnalysisTests/topology/base\.py
-| testsuite/MDAnalysisTests/analysis/test_hydrogenbonds_analysis\.py
-| testsuite/MDAnalysisTests/analysis/test_sasa\.py
 )
 '''
 required-version = '24'
