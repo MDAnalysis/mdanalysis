@@ -173,7 +173,7 @@
 <span class="sd">:class:`DCDReader`) although there can be issues with the unitcell (simulation</span>
 <span class="sd">box) representation (see :attr:`DCDReader.dimensions`). DCDs can also be</span>
 <span class="sd">written but the :class:`DCDWriter` follows recent NAMD/VMD convention for the</span>
-<span class="sd">unitcell but still writes AKMA time. Reading and writing these trajectories</span>
+<span class="sd">unitcell while still writing AKMA time. Reading and writing these trajectories</span>
 <span class="sd">within MDAnalysis will work seamlessly but if you process those trajectories</span>
 <span class="sd">with other tools you might need to watch out that time and unitcell dimensions</span>
 <span class="sd">are correctly interpreted.</span>
@@ -224,21 +224,26 @@
 <span class="sd">    dimensions**, especially for triclinic unitcells (see `Issue 187`_). DCD</span>
 <span class="sd">    trajectories produced by CHARMM and NAMD( &gt;2.5) record time in AKMA units.</span>
 <span class="sd">    If other units have been recorded (e.g., ps) then employ the configurable</span>
-<span class="sd">    :class:MDAnalysis.coordinates.LAMMPS.DCDReader and set the time unit as a</span>
+<span class="sd">    :class:`MDAnalysis.coordinates.LAMMPS.DCDReader` and set the time unit as a</span>
 <span class="sd">    optional argument. You can find a list of units used in the DCD formats on</span>
 <span class="sd">    the MDAnalysis `wiki`_.</span>
 
-
-<span class="sd">    MDAnalysis always uses ``(*A*, *B*, *C*, *alpha*, *beta*, *gamma*)`` to</span>
-<span class="sd">    represent the unit cell. Lengths *A*, *B*, *C* are in the MDAnalysis length</span>
-<span class="sd">    unit (Å), and angles are in degrees.</span>
+<span class="sd">    MDAnalysis always uses (*A*, *B*, *C*, α, β, γ) to represent the unit</span>
+<span class="sd">    cell. Lengths *A*, *B*, *C* are in the MDAnalysis length unit (Å), and</span>
+<span class="sd">    angles α, β, γ are in degrees.</span>
 
 <span class="sd">    The ordering of the angles in the unitcell is the same as in recent</span>
 <span class="sd">    versions of VMD&#39;s DCDplugin_ (2013), namely the `X-PLOR DCD format`_: The</span>
 <span class="sd">    original unitcell is read as ``[A, gamma, B, beta, alpha, C]`` from the DCD</span>
-<span class="sd">    file. If any of these values are &lt; 0 or if any of the angles are &gt; 180</span>
-<span class="sd">    degrees then it is assumed it is a new-style CHARMM unitcell (at least</span>
-<span class="sd">    since c36b2) in which box vectors were recorded.</span>
+<span class="sd">    file. If any of these values are &lt; 0 or if any of the angles are &gt; 180º</span>
+<span class="sd">    then it is assumed it is a new-style CHARMM unitcell (possibly ≥22, at</span>
+<span class="sd">    least since c36b2) in which symmetric box vectors were recorded. If all</span>
+<span class="sd">    angles are numbers between -1 and +1, then they are treated as cosines of</span>
+<span class="sd">    the angle (following the modern NAMD &gt; 2.5/VMD convention).</span>
+
+<span class="sd">    Ultimately, all unitcell representations are converted to the MDAnalysis</span>
+<span class="sd">    standard unit cell representation in :attr:`DCDReader.dimensions`.</span>
+
 
 <span class="sd">    .. deprecated:: 2.4.0</span>
 <span class="sd">        DCDReader currently makes independent timesteps</span>
@@ -260,6 +265,7 @@
 <span class="sd">    .. _Issue 187: https://github.com/MDAnalysis/mdanalysis/issues/187</span>
 <span class="sd">    .. _DCDplugin: http://www.ks.uiuc.edu/Research/vmd/plugins/doxygen/dcdplugin_8c-source.html#l00947</span>
 <span class="sd">    .. _wiki: https://github.com/MDAnalysis/mdanalysis/wiki/FileFormats#dcd</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;DCD&#39;</span>
     <span class="n">flavor</span> <span class="o">=</span> <span class="s1">&#39;CHARMM&#39;</span>
@@ -512,12 +518,36 @@
 <span class="sd">    in Å and angle-cosines, ``[A, cos(gamma), B, cos(beta), cos(alpha), C]``)</span>
 <span class="sd">    and writes positions in Å and time in AKMA time units.</span>
 
+<span class="sd">    .. warning::</span>
+<span class="sd">    </span>
+<span class="sd">       Multiple conventions exist for how unit cells are written to DCD</span>
+<span class="sd">       files. Until 2.10.0 MDAnalysis followed the old X-PLOR/CHARMM/NAMD</span>
+<span class="sd">       (≤2.5) convention of storing ``[A, gamma, B, beta, alpha, C]`` while</span>
+<span class="sd">       wrongly stating that the new NAMD/VMD convention would be followed. In</span>
+<span class="sd">       2.10.0, MDAnalysis switched to following the documented behavior and now</span>
+<span class="sd">       stores the box with angle cosines, as described above. The MDAnalysis</span>
+<span class="sd">       :class:`DCDReader` can correctly read either format but *if you have</span>
+<span class="sd">       code that relies on a specific format for the box information in the raw</span>
+<span class="sd">       DCD file, please check your results.*</span>
+
+<span class="sd">       Furthermore, modern versions of CHARMM store box vectors and not box</span>
+<span class="sd">       length/angles. When reading MDAnalysis-generated DCD files *in CHARMM*,</span>
+<span class="sd">       carefully check your results.</span>
 
 <span class="sd">    .. note::</span>
 <span class="sd">        When writing out timesteps without ``dimensions`` (i.e. set ``None``)</span>
 <span class="sd">        the :class:`DCDWriter` will write out a zeroed unitcell (i.e.</span>
 <span class="sd">        ``[0, 0, 0, 0, 0, 0]``). As this behaviour is poorly defined, it may</span>
 <span class="sd">        not match the expectations of other software.</span>
+
+<span class="sd">    .. versionchanged:: 2.10.0    </span>
+<span class="sd">       Up to 2.10.0 the :class:`DCDWriter` wrote a unit cell following old NAMD</span>
+<span class="sd">       (≤2.5) convention, even though the docs stated that the new NAMD</span>
+<span class="sd">       convention was being used. Now the modern NAMD &gt; 2.5 format is</span>
+<span class="sd">       written. See `Issue #5069`_ for details.</span>
+
+
+<span class="sd">    .. _`Issue #5069`: https://github.com/MDAnalysis/mdanalysis/issues/5069</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;DCD&#39;</span>
@@ -626,10 +656,14 @@
             <span class="n">xyz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_to_native</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">dimensions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_dimensions_to_unitcell</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="c1"># we only support writing charmm format unit cell info</span>
-        <span class="c1"># The DCD unitcell is written as ``[A, gamma, B, beta, alpha, C]``</span>
+        <span class="c1"># Convert angles to cosines following NAMD/VMD convention</span>
+        <span class="c1"># The DCD unitcell is written as [A, cos(gamma), B, cos(beta), cos(alpha), C]</span>
         <span class="n">_ts_order</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
         <span class="n">box</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">dimensions</span><span class="p">,</span> <span class="n">_ts_order</span><span class="p">)</span>
+        
+        <span class="c1"># Convert angles (indices 1, 3, 4) from degrees to the special cosine format</span>
+        <span class="c1"># used by NAMD/VMD: cos(angle) = sin(90 - angle); see Issue 5069</span>
+        <span class="n">box</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="mf">90.0</span> <span class="o">-</span> <span class="n">box</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]]))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">xyz</span><span class="o">=</span><span class="n">xyz</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
 
