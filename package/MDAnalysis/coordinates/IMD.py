@@ -268,5 +268,4 @@ class IMDReader(StreamReaderBase):
         logger.debug("IMDReader close() called")
         if self._imdclient is not None:
             self._imdclient.stop()
-        # NOTE: removeme after testing
         logger.debug("IMDReader shut down gracefully.")
