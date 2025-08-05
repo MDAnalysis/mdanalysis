@@ -184,7 +184,7 @@ class IMDReader(StreamReaderBase):
 
         imdsinfo = self._imdclient.get_imdsessioninfo()
         if imdsinfo.version != 3:
-            raise NotImplementedError(
+            raise ValueError(
                 f"IMDReader: Detected IMD version v{imdsinfo.version}, "
                 + "but IMDReader is only compatible with v3"
             )
