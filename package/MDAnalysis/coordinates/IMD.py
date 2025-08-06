@@ -153,13 +153,17 @@ class IMDReader(StreamReaderBase):
     what the simulation engine transmits:
 
     * `dt` : float
-        Time step size in picoseconds (`IMD_TIME`_ of IMDv3 protocol)
+        Time step size in picoseconds (from the `IMD_TIME`_ packet of the IMDv3 protocol)
     * `step` : int
-        Current simulation step number (`IMD_TIME`_ of IMDv3 protocol)
+        Current simulation step number (from the `IMD_TIME`_ packet of the IMDv3 prtotocol)
     * Energy terms : float
         Various energy components (e.g., 'potential', 'kinetic', 'total', etc.)
-        (`IMD_ENERGIES` of the IMDv3 protocol).
+        from the `IMD_ENERGIES`_ packet of the IMDv3 protocol.
 
+    .. _IMD_TIME: https://imdclient.readthedocs.io/en/latest/protocol_v3.html#time
+    .. _IMD_ENERGIES: https://imdclient.readthedocs.io/en/latest/protocol_v3.html#energies
+        
+    
     .. versionadded:: 2.10.0
     """
 
