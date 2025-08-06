@@ -59,8 +59,8 @@ MDAnalysis supports different :ref:`backends <backends>` for the parallel execut
 As a special case, serial execution is handled by the default  ``backend='serial'``, i.e.,
 by default, none of the analysis tools run in parallel and one has to explicitly request 
 parallel execution. Without any additionally installed dependencies, only one parallel backend
-is supported -- the Python :mod:`multiprocessing` (which is available in the Python standar 
-library), that processes each slice of a trajectory by running a separate *process* on a 
+is supported -- Python :mod:`multiprocessing` (which is available in the Python standard 
+library), which processes each slice of a trajectory by running a separate *process* on a 
 different core of a multi-core CPU.
 
 .. _dask: https://dask.org/
