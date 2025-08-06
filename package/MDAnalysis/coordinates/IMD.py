@@ -236,10 +236,7 @@ class IMDReader(StreamReaderBase):
 
     def _read_frame(self, frame):
 
-        try:
-            imdf = self._imdclient.get_imdframe()
-        except EOFError as e:
-            raise e
+        imdf = self._imdclient.get_imdframe()
 
         self._frame = frame
         self._load_imdframe_into_ts(imdf)
