@@ -41,26 +41,7 @@ Details about the IMD protocol and usage examples can be found in the
 `imdclient <https://github.com/Becksteinlab/imdclient>`_ repository.
 
 
-Units
------
-The units in IMDv3 are fixed.
 
-.. list-table::
-   :widths: 10 10
-   :header-rows: 1
-
-   * - Measurement
-     - Unit
-   * - Length
-     - angstrom
-   * - Velocity
-     - angstrom/picosecond
-   * - Force
-     - kilojoules/(mol*angstrom)
-   * - Time
-     - picosecond
-   * - Energy
-     - kilojoules/mol
 
 Classes
 -------
