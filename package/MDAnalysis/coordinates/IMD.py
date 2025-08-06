@@ -2,19 +2,25 @@
 IMDReader --- :mod:`MDAnalysis.coordinates.IMD`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-:class:`MDAnalysis.coordinates.IMD.IMDReader` is a class that implements the
-`Interactive Molecular Dynamics (IMD) protocol <https://imdclient.readthedocs.io/en/latest/protocol_v3.html>`_ for reading simulation
-data using the IMDClient (see `imdclient <https://github.com/Becksteinlab/imdclient>`_).
-The protocol allows two-way communicating molecular simulation data through a socket.
+This module provides support for reading molecular dynamics simulation data via the 
+`Interactive Molecular Dynamics (IMD) protocol v3 <https://imdclient.readthedocs.io/en/latest/protocol_v3.html>`_.
+The IMD protocol allows two-way communicating molecular simulation data through a socket.
 Via IMD, a simulation engine sends data to a receiver (in this case, the IMDClient) and the receiver can send forces and specific control
 requests (such as pausing, resuming, or terminating the simulation) back to the simulation engine. 
 
-IMDv3, the newest version of the protocol, is the one supported by this reader class and is implemented in GROMACS, LAMMPS, and NAMD at varying
-stages of development. See the `imdclient simulation engine docs <https://imdclient.readthedocs.io/en/latest/usage.html>`_ for more.
+.. note::
+   This reader only supports IMDv3, which is implemented in GROMACS, LAMMPS, and NAMD at varying
+   stages of development. See the `imdclient simulation engine docs <https://imdclient.readthedocs.io/en/latest/usage.html>`_ for more. 
+   While IMDv2 is widely available in simulation engines, it was designed primarily for visualization
+   and gaps are allowed in the stream (i.e., an inconsistent number of integrator time steps between transmitted coordinate arrays is allowed)
 
-IMDv2, the first version to be broadly adopted, is currently available as a part of official releases of GROMACS, LAMMPS, and NAMD. However,
-this reader class does not currently provide support for it since it was designed for visualization and gaps are allowed in the stream
-(i.e., an inconsistent number of integrator time steps between transmitted coordinate arrays is allowed)
+The :class:`IMDReader` connects to a simulation via a socket and receives coordinate,
+velocity, force, and energy data as the simulation progresses. This allows for real-time
+monitoring and analysis of ongoing simulations. It uses the `imdclient package <https://github.com/Becksteinlab/imdclient>`_ 
+(dependency) to implement the IMDv3 protocol and manage the socket connection and data parsing.
+
+Usage Example
+-------------
 
 As an example of reading a stream, after configuring GROMACS to run a simulation with IMDv3 enabled
 (see the `imdclient simulation engine docs <https://imdclient.readthedocs.io/en/latest/usage.html>`_ for 
@@ -37,14 +43,30 @@ The :class:`~MDAnalysis.coordinates.IMD.IMDReader` can then connect to the runni
     for ts in u.trajectory:
         print(f'{ts.time:8.3f} {sel[0].position} {sel[0].velocity} {sel[0].force} {u.dimensions[0:3]}')
 
+Important Limitations
+---------------------
+
+Since IMD streams data in real-time from a running simulation, there are some key 
+limitations to be aware of:
+
+* **Forward-only access**: You can only move forward through frames as they arrive
+* **No random access**: Cannot jump to arbitrary frame numbers or seek backwards  
+* **No trajectory length**: The total number of frames is unknown until the simulation ends
+* **Timing dependent**: Analysis must keep up with the simulation's data rate
+
+.. warning::  
+   The IMDReader has some important limitations that are inherent in streaming data.  
+   See :class:`~MDAnalysis.coordinates.base.StreamReaderBase` for technical details.  
+
 .. seealso::
-   `imdclient documentation`_ and `github.com/Becksteinlab/imdclient`_ source code repository
-
-.. _`imdclient documentation`: https://imdclient.readthedocs.io/
-.. _`github.com/Becksteinlab/imdclient`: https://github.com/Becksteinlab/imdclient
-
-
-
+   :class:`IMDReader`
+      Technical details and parameter options for the reader class
+   
+   `imdclient documentation <https://imdclient.readthedocs.io/>`_
+      Complete documentation for the IMDClient package
+      
+   `IMDClient GitHub repository <https://github.com/Becksteinlab/imdclient>`_
+      Source code and development resources
 
 
 Classes
@@ -106,16 +128,16 @@ logger = logging.getLogger("MDAnalysis.coordinates.IMDReader")
 
 class IMDReader(StreamReaderBase):
     """
-    Reader that supports the Interactive Molecular Dynamics (IMD) protocol v3 for reading
-    simulation data using the IMDClient.
+    Coordinate reader implementing the IMDv3 protocol for streaming simulation data.
+    
+    This class handles the technical aspects of connecting to IMD-enabled simulation
+    engines and processing the incoming data stream. For usage examples and protocol
+    overview, see the module documentation above.
 
-    By using the keyword `buffer_size`, you can change the amount of memory the 
-    :class:`~imdclient.IMDClient.IMDClient` allocates to its internal buffer.
-    The buffer size determines how many frames can be stored in memory as data is received
-    from the socket and awaits reading by the client. For analyses that periodically perform
-    heavier computation at fixed intervals, say for example once every 200 received frames,
-    increasing this value will decrease the amount of time the simulation engine spends in a
-    paused state and potentially decrease total analysis time, but will require more RAM.
+    The reader manages socket connections, data buffering, and frame parsing according
+    to the IMDv3 specification. It automatically handles different data packet types
+    (coordinates, velocities, forces, energies, timing) and populates MDAnalysis
+    timestep objects accordingly.
 
     Parameters
     ----------
@@ -127,8 +149,9 @@ class IMDReader(StreamReaderBase):
         in the topology. Don't set this unless you know what you're doing.
     buffer_size: int (optional) default=10*(1024**2)
         number of bytes of memory to allocate to the :class:`~imdclient.IMDClient.IMDClient`'s
-        internal buffer. Defaults to 10 megabytes.
-    kwargs : dict (optional)
+        internal buffer. Defaults to 10 megabytes. Larger buffers can improve
+        performance for analyses with periodic heavy computation.
+    **kwargs : dict (optional)
         keyword arguments passed to the constructed :class:`~imdclient.IMDClient.IMDClient`
 
     Notes
@@ -140,7 +163,7 @@ class IMDReader(StreamReaderBase):
     * `dt` : float
         Time step size in picoseconds (from the `IMD_TIME`_ packet of the IMDv3 protocol)
     * `step` : int
-        Current simulation step number (from the `IMD_TIME`_ packet of the IMDv3 prtotocol)
+        Current simulation step number (from the `IMD_TIME`_ packet of the IMDv3 protocol)
     * Energy terms : float
         Various energy components (e.g., 'potential', 'kinetic', 'total', etc.)
         from the `IMD_ENERGIES`_ packet of the IMDv3 protocol.
@@ -148,11 +171,10 @@ class IMDReader(StreamReaderBase):
     .. _IMD_TIME: https://imdclient.readthedocs.io/en/latest/protocol_v3.html#time
     .. _IMD_ENERGIES: https://imdclient.readthedocs.io/en/latest/protocol_v3.html#energies
 
-    .. seealso::  
-       The IMDReader has some important limitations that are inherent in streaming data.  
-       See :class:`~MDAnalysis.coordinates.base.StreamReaderBase` for details.
-        
-       
+    .. note::
+       For important limitations inherent to streaming data, see the module documentation above
+       and :class:`~MDAnalysis.coordinates.base.StreamReaderBase` for more technical details.
+
     .. versionadded:: 2.10.0
     """
 
