@@ -63,9 +63,11 @@ Enhancements
    (PR #5038)
  * Moved distopia checking function to common import location in
    MDAnalysisTest.util (PR #5038)
+ * Added support for reading and processing streamed data in `coordinates.base`
+   with new `StreamFrameIteratorSliced` and `StreamReaderBase` (Issue #4827, PR #4923)
  * New coordinate reader: Added `IMDReader` for reading real-time streamed
    molecular dynamics simulation data using the IMDv3 protocol - requires
-   `imdclient` package (Issue #4827, PR #4923)
+   `imdclient` package (Issue #4827, PR #4923)  
 
 Changes
  * Refactored the RDKit converter code to move the inferring code in a separate
