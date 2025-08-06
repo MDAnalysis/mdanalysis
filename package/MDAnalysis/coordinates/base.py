@@ -2091,6 +2091,9 @@ class StreamFrameIteratorSliced(FrameIteratorBase):
     --------
     StreamReaderBase
     FrameIteratorBase
+
+
+    .. versionadded:: 2.10.0
     """
 
     def __init__(self, trajectory, step):
