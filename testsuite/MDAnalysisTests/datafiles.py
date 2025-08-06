@@ -96,6 +96,7 @@ __all__ = [
     "PDB_xvf",
     "TPR_xvf",
     "TRR_xvf",  # Gromacs coords/veloc/forces (cobrotoxin, OPLS-AA, Gromacs 4.5.5 tpr)
+    "TPR_xvf_2024_4",
     "H5MD_xvf",  # TPR_xvf + TRR_xvf converted to h5md format
     "H5MD_energy",  # H5MD trajectory with observables/atoms/energy
     "H5MD_malformed",  # H5MD trajectory with malformed observable group
@@ -527,6 +528,7 @@ TNG_traj_vels_forces = (
 ).as_posix()
 PDB_xvf = (_data_ref / "cobrotoxin.pdb").as_posix()
 TPR_xvf = (_data_ref / "cobrotoxin.tpr").as_posix()
+TPR_xvf_2024_4 = (_data_ref / "cobrotoxin_2024_4.tpr").as_posix()
 TRR_xvf = (_data_ref / "cobrotoxin.trr").as_posix()
 H5MD_xvf = (_data_ref / "cobrotoxin.h5md").as_posix()
 H5MD_energy = (_data_ref / "cu.h5md").as_posix()

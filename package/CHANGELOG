@@ -16,12 +16,14 @@ The rules for this file:
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, orbeckst, BHM-Bob, TRY-ER, Abdulrahman-PROG, pbuslaev,
          yuxuanzhuang, yuyuan871111, tanishy7777, tulga-rdn, Gareth-elliott,
-         hmacdope, tylerjereddy, cbouy
+         hmacdope, tylerjereddy, cbouy, talagayev, DrDomenicoMarson, amruthesht
 
 
  * 2.10.0
 
 Fixes
+ * Fix DCDWriter to correctly write unit cell angles as cosines following 
+   NAMD/VMD convention (Issue #5069)
  * Fixed an integer overflow in large DCD file seeks on Windows
    (Issue #4879, PR #5086)
  * Fix compile failure due to numpy issues in transformations.c (Issue #5061, PR #5068)
@@ -40,6 +42,9 @@ Fixes
    directly passing them. (Issue #3520, PR #5006)
 
 Enhancements
+ * Support has been added for reading positions and velocities
+   from GROMACS TPR files, between GROMACS version 4.x and 2025
+   (Issue #464, PR #4873)
  * Added `TemplateInferrer` and `RDKitInferrer` dataclasses to the
    `RDKitInferring` module to be used by the RDKit converter. (PR #4305)
  * Improve speed of GROMOS11 (TRC) reader (Issue #5079, PR #5080)
@@ -68,6 +73,8 @@ Enhancements
  * New coordinate reader: Added `IMDReader` for reading real-time streamed
    molecular dynamics simulation data using the IMDv3 protocol - requires
    `imdclient` package (Issue #4827, PR #4923)  
+ * Enables parallelization for `analysis.polymer.PersistenceLength` (Issue #4671, PR #5074)
+
 
 Changes
  * Refactored the RDKit converter code to move the inferring code in a separate
