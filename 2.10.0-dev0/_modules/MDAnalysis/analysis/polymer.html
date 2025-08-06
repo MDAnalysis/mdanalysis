@@ -182,7 +182,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">NoDataError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..core.groups</span><span class="w"> </span><span class="kn">import</span> <span class="n">requires</span><span class="p">,</span> <span class="n">AtomGroup</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..lib.distances</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_bonds</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnalysisBase</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnalysisBase</span><span class="p">,</span> <span class="n">ResultsGroup</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -383,7 +383,19 @@
 <span class="sd">       Former ``results`` are now stored as ``results.bond_autocorrelation``.</span>
 <span class="sd">       :attr:`lb`, :attr:`lp`, :attr:`fit` are now stored in a</span>
 <span class="sd">       :class:`MDAnalysis.analysis.base.Results` instance.</span>
+<span class="sd">    .. versionchanged:: 2.10.0</span>
+<span class="sd">       introduced :meth:`get_supported_backends` allowing for parallel</span>
+<span class="sd">       execution on ``multiprocessing`` and ``dask`` backends.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_analysis_algorithm_is_parallelizable</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="PersistenceLength.get_supported_backends">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/polymer.html#MDAnalysis.analysis.polymer.PersistenceLength.get_supported_backends">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_supported_backends</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s2">&quot;serial&quot;</span><span class="p">,</span> <span class="s2">&quot;multiprocessing&quot;</span><span class="p">,</span> <span class="s2">&quot;dask&quot;</span><span class="p">)</span></div>
+
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroups</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">PersistenceLength</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
@@ -396,15 +408,18 @@
         <span class="n">chainlength</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">atomgroups</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">l</span> <span class="o">==</span> <span class="n">chainlength</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">lens</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Not all AtomGroups were the same size&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chainlength</span> <span class="o">=</span> <span class="n">chainlength</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_results</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">chainlength</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">raw_bond_autocorr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">chainlength</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span>
+        <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># could optimise this by writing a &quot;self dot array&quot;</span>
         <span class="c1"># we&#39;re only using the upper triangle of np.inner</span>
         <span class="c1"># function would accept a bunch of coordinates and spit out the</span>
         <span class="c1"># decorrel for that</span>
-        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_atomgroups</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
         <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atomgroups</span><span class="p">:</span>
             <span class="c1"># Vector from each atom to next</span>
@@ -413,8 +428,17 @@
             <span class="n">vecs</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">vecs</span> <span class="o">*</span> <span class="n">vecs</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))[:,</span> <span class="kc">None</span><span class="p">]</span>
 
             <span class="n">inner_pr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inner</span><span class="p">(</span><span class="n">vecs</span><span class="p">,</span> <span class="n">vecs</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[:</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">inner_pr</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">:]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chainlength</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">raw_bond_autocorr</span><span class="p">[</span>
+                    <span class="p">:</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chainlength</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">i</span>
+                <span class="p">]</span> <span class="o">+=</span> <span class="n">inner_pr</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">:]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_aggregator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span>
+            <span class="n">lookup</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;raw_bond_autocorr&quot;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_sum</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">lb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -447,14 +471,12 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">fit</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_atomgroups</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-
-        <span class="n">norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">norm</span> <span class="o">*=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_atomgroups</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bond_autocorrelation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_results</span> <span class="o">/</span> <span class="n">norm</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chainlength</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">chainlength</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">norm</span> <span class="o">*=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_atomgroups</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="o">.</span><span class="n">n_frames</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bond_autocorrelation</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">raw_bond_autocorr</span> <span class="o">/</span> <span class="n">norm</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_calc_bond_length</span><span class="p">()</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">_perform_fit</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_calc_bond_length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -499,7 +521,7 @@
         <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
         <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bond_autocorrelation</span><span class="p">,</span>
