@@ -25,7 +25,7 @@ up-to-date resources on configuring each simulation engine), use the following c
     gmx grompp -f run-NPT_imd-v3.mdp -c conf.gro -p topol.top -o topol.tpr
     gmx mdrun -v -nt 4 -imdwait -imdport 8889
 
-The :class:`MDAnalysis.coordinates.IMD.IMDReader` can then connect to the running simulation and stream data in real time:
+The :class:`~MDAnalysis.coordinates.IMD.IMDReader` can then connect to the running simulation and stream data in real time:
 
 .. code-block:: python
 
