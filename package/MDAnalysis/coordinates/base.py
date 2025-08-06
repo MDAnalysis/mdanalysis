@@ -1860,7 +1860,8 @@ class StreamReaderBase(ReaderBase):
     - **Forward-only**: Can only iterate sequentially through frames
     - **No copying**: Cannot create independent copies of the reader
 
-    The reader raises ``RuntimeError`` for operations that require random
+
+    The reader raises :exc:`RuntimeError` for operations that require random
     access or rewinding, including ``rewind()``, ``copy()``, ``timeseries()``,
     and ``len()``. Only slice notation is supported for iteration.
 
