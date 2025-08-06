@@ -37,8 +37,12 @@ The :class:`~MDAnalysis.coordinates.IMD.IMDReader` can then connect to the runni
     for ts in u.trajectory:
         print(f'{ts.time:8.3f} {sel[0].position} {sel[0].velocity} {sel[0].force} {u.dimensions[0:3]}')
 
-Details about the IMD protocol and usage examples can be found in the
-`imdclient <https://github.com/Becksteinlab/imdclient>`_ repository.
+.. seealso::
+   `imdclient documentation`_ and `github.com/Becksteinlab/imdclient`_ source code repository
+
+.. _`imdclient documentation`: https://imdclient.readthedocs.io/
+.. _`github.com/Becksteinlab/imdclient`: https://github.com/Becksteinlab/imdclient
+
 
 
 
