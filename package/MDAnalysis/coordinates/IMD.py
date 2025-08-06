@@ -147,8 +147,12 @@ class IMDReader(StreamReaderBase):
 
     .. _IMD_TIME: https://imdclient.readthedocs.io/en/latest/protocol_v3.html#time
     .. _IMD_ENERGIES: https://imdclient.readthedocs.io/en/latest/protocol_v3.html#energies
+
+    .. seealso::  
+       The IMDReader has some important limitations that are inherent in streaming data.  
+       See :class:`~MDAnalysis.coordinates.base.StreamReaderBase` for details.
         
-    
+       
     .. versionadded:: 2.10.0
     """
 
