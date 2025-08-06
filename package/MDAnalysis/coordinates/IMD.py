@@ -10,7 +10,7 @@ requests (such as pausing, resuming, or terminating the simulation) back to the 
 
 .. note::
    This reader only supports IMDv3, which is implemented in GROMACS, LAMMPS, and NAMD at varying
-   stages of development. See the `imdclient simulation engine docs <https://imdclient.readthedocs.io/en/latest/usage.html>`_ for more. 
+   stages of development. See the `imdclient simulation engine docs`_ for more. 
    While IMDv2 is widely available in simulation engines, it was designed primarily for visualization
    and gaps are allowed in the stream (i.e., an inconsistent number of integrator time steps between transmitted coordinate arrays is allowed)
 
@@ -23,7 +23,7 @@ Usage Example
 -------------
 
 As an example of reading a stream, after configuring GROMACS to run a simulation with IMDv3 enabled
-(see the `imdclient simulation engine docs <https://imdclient.readthedocs.io/en/latest/usage.html>`_ for 
+(see the `imdclient simulation engine docs`_ for 
 up-to-date resources on configuring each simulation engine), use the following commands:
 
 .. code-block:: bash
@@ -66,6 +66,8 @@ limitations to be aware of:
       
    `IMDClient GitHub repository <https://github.com/Becksteinlab/imdclient>`_
       Source code and development resources
+
+.. _`imdclient simulation engine docs`: https://imdclient.readthedocs.io/en/latest/usage.html
 
 
 Classes
