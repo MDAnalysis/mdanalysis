@@ -1943,7 +1943,16 @@ class StreamReaderBase(ReaderBase):
         return ts
 
     def rewind(self):
-        """Raise error on rewind"""
+        """Rewinding is not supported for streaming trajectories.
+        
+        Streaming readers process data continuously from streams
+        and cannot restart or go backward in the stream once consumed.
+
+        Raises
+        ------
+        RuntimeError
+            Always raised, as rewinding is not supported for streaming trajectories
+        """
         raise RuntimeError(
             "{}: Stream-based readers can't be rewound".format(
                 self.__class__.__name__
