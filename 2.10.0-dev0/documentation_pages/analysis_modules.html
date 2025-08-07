@@ -103,8 +103,9 @@
 <li class="toctree-l1"><a class="reference internal" href="selections.html">3. Selection commands</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">4. Analysis modules</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#getting-started-with-analysis">4.1. Getting started with analysis</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#using-parallelization-for-built-in-analysis-runs">4.1.1. Using parallelization for built-in analysis runs</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#additional-dependencies">4.1.2. Additional dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#general-usage-pattern">4.1.1. General usage pattern</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-parallelization-for-analysis-tools">4.1.2. Using parallelization for analysis tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#additional-dependencies">4.1.3. Additional dependencies</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#building-blocks-for-analysis">4.2. Building blocks for Analysis</a><ul>
@@ -234,6 +235,8 @@ class that follows a standard interface.</p>
 <p>See the <a class="reference external" href="https://userguide.mdanalysis.org/stable/examples/analysis/README.html">User Guide Analysis section</a> for interactive examples and additional context.</p>
 <section id="getting-started-with-analysis">
 <h2><span class="section-number">4.1. </span>Getting started with analysis<a class="headerlink" href="#getting-started-with-analysis" title="Link to this heading"></a></h2>
+<section id="general-usage-pattern">
+<h3><span class="section-number">4.1.1. </span>General usage pattern<a class="headerlink" href="#general-usage-pattern" title="Link to this heading"></a></h3>
 <p>Most analysis tools are implemented as single classes and follow this usage pattern:</p>
 <ol class="arabic simple">
 <li><p>Import the module (e.g., <a class="reference internal" href="analysis/rms.html#module-MDAnalysis.analysis.rms" title="MDAnalysis.analysis.rms"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rms</span></code></a>).</p></li>
@@ -249,28 +252,39 @@ class that follows a standard interface.</p>
 </div>
 <p>Please see the individual module documentation for any specific caveats
 and also read and cite the reference papers associated with these algorithms.</p>
-<section id="using-parallelization-for-built-in-analysis-runs">
-<h3><span class="section-number">4.1.1. </span>Using parallelization for built-in analysis runs<a class="headerlink" href="#using-parallelization-for-built-in-analysis-runs" title="Link to this heading"></a></h3>
+</section>
+<section id="using-parallelization-for-analysis-tools">
+<h3><span class="section-number">4.1.2. </span>Using parallelization for analysis tools<a class="headerlink" href="#using-parallelization-for-analysis-tools" title="Link to this heading"></a></h3>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 2.8.0.</span></p>
 </div>
-<p><a class="reference internal" href="analysis/base.html#MDAnalysis.analysis.base.AnalysisBase" title="MDAnalysis.analysis.base.AnalysisBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code></a> subclasses can run on a backend
-that supports parallelization (see <a class="reference internal" href="analysis/backends.html#module-MDAnalysis.analysis.backends" title="MDAnalysis.analysis.backends"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.backends</span></code></a>). All
-analysis runs use <code class="docutils literal notranslate"><span class="pre">backend='serial'</span></code> by default, i.e., they do not use
-parallelization by default, which has been standard before release 2.8.0 of
-MDAnalysis.</p>
-<p>Without any dependencies, only one backend is supported – built-in
-<a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#module-multiprocessing" title="(in Python v3.13)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multiprocessing</span></code></a>, that processes parts of a trajectory running separate
-<em>processes</em>, i.e. utilizing multi-core processors properly.</p>
+<p>Many analysis tools (based on <a class="reference internal" href="analysis/base.html#MDAnalysis.analysis.base.AnalysisBase" title="MDAnalysis.analysis.base.AnalysisBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code></a>)
+can be <a class="reference internal" href="analysis/parallelization.html#parallel-analysis"><span class="std std-ref">run in parallel</span></a> using a simple
+split-apply-combine scheme whereby slices of the trajectory (“split”) are analyzed in
+parallel (“apply” the analysis function) and the data from the parallel executions
+are “combined” at the end.</p>
+<p>MDAnalysis supports different <a class="reference internal" href="analysis/backends.html#backends"><span class="std std-ref">backends</span></a> for the parallel execution such as
+<a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#module-multiprocessing" title="(in Python v3.13)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multiprocessing</span></code></a> or <a class="reference external" href="https://dask.org/">dask</a> (see <a class="reference internal" href="analysis/backends.html#module-MDAnalysis.analysis.backends" title="MDAnalysis.analysis.backends"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.backends</span></code></a>).
+As a special case, serial execution is handled by the default  <code class="docutils literal notranslate"><span class="pre">backend='serial'</span></code>, i.e.,
+by default, none of the analysis tools run in parallel and one has to explicitly request
+parallel execution. Without any additionally installed dependencies, only one parallel backend
+is supported – Python <a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#module-multiprocessing" title="(in Python v3.13)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multiprocessing</span></code></a> (which is available in the Python standard
+library), which processes each slice of a trajectory by running a separate <em>process</em> on a
+different core of a multi-core CPU.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>For now, parallelization has only been added to
-<a class="reference internal" href="analysis/rms.html#MDAnalysis.analysis.rms.RMSD" title="MDAnalysis.analysis.rms.RMSD"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rms.RMSD</span></code></a>, but by release 3.0 version it will be
-introduced to all subclasses that can support it.</p>
+<p>Not all analysis tools in MDAnalysis can be parallelized and others have
+not yet been updated to make use of the <a class="reference internal" href="analysis/parallelization.html#parallel-analysis"><span class="std std-ref">parallelization framework</span></a>,
+which was introduced in release 2.8.0. MDAnalysis aims to have parallelization enabled for
+all analysis tools that support it by release 3.0.</p>
 </div>
-<p>In order to use that feature, simply add <code class="docutils literal notranslate"><span class="pre">backend='multiprocessing'</span></code> to your
-run, and supply it with proper <code class="docutils literal notranslate"><span class="pre">n_workers</span></code> (use <code class="docutils literal notranslate"><span class="pre">multiprocessing.cpu_count()</span></code>
-for maximum available on your machine):</p>
+<p>In order to use parallelization, add <code class="docutils literal notranslate"><span class="pre">backend='multiprocessing'</span></code> to the arguments of the
+<a class="reference internal" href="analysis/base.html#MDAnalysis.analysis.base.AnalysisBase.run" title="MDAnalysis.analysis.base.AnalysisBase.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code></a> method together with  <code class="docutils literal notranslate"><span class="pre">n_workers=N</span></code> where
+<code class="docutils literal notranslate"><span class="pre">N</span></code> is the number of CPUs that you want to use for parallelization.
+(You can use <code class="docutils literal notranslate"><span class="pre">multiprocessing.cpu_count()</span></code> to get the maximum available number of CPUs on your
+machine but this may not always lead to the best performance because of computational overheads and
+the fact that parallel access to a single trajectory file is often a performance bottleneck.) As an
+example we show how to run an RMSD calculation in parallel:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">multiprocessing</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysisTests.datafiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span>
@@ -292,9 +306,13 @@ for maximum available on your machine):</p>
 <p>Be explicit and specify both <code class="docutils literal notranslate"><span class="pre">backend</span></code> and <code class="docutils literal notranslate"><span class="pre">n_workers</span></code>. Choosing too many
 workers or using large trajectory frames may lead to an out-of-memory error.</p>
 <p>You can also implement your own backends – see <a class="reference internal" href="analysis/backends.html#module-MDAnalysis.analysis.backends" title="MDAnalysis.analysis.backends"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.backends</span></code></a>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="analysis/parallelization.html#parallel-analysis"><span class="std std-ref">Parallel analysis</span></a> for technical details</p>
+</div>
 </section>
 <section id="additional-dependencies">
-<h3><span class="section-number">4.1.2. </span>Additional dependencies<a class="headerlink" href="#additional-dependencies" title="Link to this heading"></a></h3>
+<h3><span class="section-number">4.1.3. </span>Additional dependencies<a class="headerlink" href="#additional-dependencies" title="Link to this heading"></a></h3>
 <p>Some of the modules in <a class="reference internal" href="#module-MDAnalysis.analysis" title="MDAnalysis.analysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis</span></code></a> require additional Python
 packages to enable full functionality. For example,
 <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code> provides more options if <a class="reference external" href="http://scikit-learn.org/">scikit-learn</a> is

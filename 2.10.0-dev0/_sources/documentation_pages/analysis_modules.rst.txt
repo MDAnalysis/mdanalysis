@@ -22,6 +22,9 @@ See the `User Guide Analysis section`_ for interactive examples and additional c
 Getting started with analysis
 =============================
 
+General usage pattern
+---------------------
+
 Most analysis tools are implemented as single classes and follow this usage pattern:
 
 #. Import the module (e.g., :mod:`MDAnalysis.analysis.rms`).
@@ -40,30 +43,42 @@ Please see the individual module documentation for any specific caveats
 and also read and cite the reference papers associated with these algorithms.
 
 
-Using parallelization for built-in analysis runs
-------------------------------------------------
+Using parallelization for analysis tools
+----------------------------------------
 
 .. versionadded:: 2.8.0
 
-:class:`~MDAnalysis.analysis.base.AnalysisBase` subclasses can run on a backend
-that supports parallelization (see :mod:`MDAnalysis.analysis.backends`). All
-analysis runs use ``backend='serial'`` by default, i.e., they do not use
-parallelization by default, which has been standard before release 2.8.0 of
-MDAnalysis.
+Many analysis tools (based on :class:`~MDAnalysis.analysis.base.AnalysisBase`)
+can be :ref:`run in parallel <parallel-analysis>` using a simple
+split-apply-combine scheme whereby slices of the trajectory ("split") are analyzed in
+parallel ("apply" the analysis function) and the data from the parallel executions
+are "combined" at the end.
 
-Without any dependencies, only one backend is supported -- built-in
-:mod:`multiprocessing`, that processes parts of a trajectory running separate
-*processes*, i.e. utilizing multi-core processors properly.
+MDAnalysis supports different :ref:`backends <backends>` for the parallel execution such as
+:mod:`multiprocessing` or `dask`_ (see :mod:`MDAnalysis.analysis.backends`).
+As a special case, serial execution is handled by the default  ``backend='serial'``, i.e.,
+by default, none of the analysis tools run in parallel and one has to explicitly request 
+parallel execution. Without any additionally installed dependencies, only one parallel backend
+is supported -- Python :mod:`multiprocessing` (which is available in the Python standard 
+library), which processes each slice of a trajectory by running a separate *process* on a 
+different core of a multi-core CPU.
+
+.. _dask: https://dask.org/
 
 .. Note::
 
-   For now, parallelization has only been added to
-   :class:`MDAnalysis.analysis.rms.RMSD`, but by release 3.0 version it will be
-   introduced to all subclasses that can support it.
+   Not all analysis tools in MDAnalysis can be parallelized and others have 
+   not yet been updated to make use of the :ref:`parallelization framework <parallel-analysis>`,
+   which was introduced in release 2.8.0. MDAnalysis aims to have parallelization enabled for
+   all analysis tools that support it by release 3.0.
 
-In order to use that feature, simply add ``backend='multiprocessing'`` to your
-run, and supply it with proper ``n_workers`` (use ``multiprocessing.cpu_count()``
-for maximum available on your machine):
+In order to use parallelization, add ``backend='multiprocessing'`` to the arguments of the
+:meth:`~MDAnalysis.analysis.base.AnalysisBase.run` method together with  ``n_workers=N`` where
+``N`` is the number of CPUs that you want to use for parallelization. 
+(You can use ``multiprocessing.cpu_count()`` to get the maximum available number of CPUs on your 
+machine but this may not always lead to the best performance because of computational overheads and
+the fact that parallel access to a single trajectory file is often a performance bottleneck.) As an
+example we show how to run an RMSD calculation in parallel:
 
 .. code-block:: python
 
@@ -88,6 +103,10 @@ Be explicit and specify both ``backend`` and ``n_workers``. Choosing too many
 workers or using large trajectory frames may lead to an out-of-memory error.
 
 You can also implement your own backends -- see :mod:`MDAnalysis.analysis.backends`.
+
+.. SeeAlso::
+   :ref:`parallel-analysis` for technical details
+   
 
 
 Additional dependencies
