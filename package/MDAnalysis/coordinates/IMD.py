@@ -45,13 +45,19 @@ The :class:`~MDAnalysis.coordinates.IMD.IMDReader` can then connect to the runni
 Important Limitations
 ---------------------
 
-Since IMD streams data in real-time from a running simulation, there are some key 
-limitations to be aware of:
+Since IMD streams data in real-time from a running simulation, it has fundamental 
+constraints that differ from traditional trajectory readers:
 
-* **Forward-only access**: You can only move forward through frames as they arrive
 * **No random access**: Cannot jump to arbitrary frame numbers or seek backwards  
+* **Forward-only access**: You can only move forward through frames as they arrive
 * **No trajectory length**: The total number of frames is unknown until the simulation ends
-* **Timing dependent**: Analysis must keep up with the simulation's data rate
+* **Single-use iteration**: Cannot restart or rewind once the stream has been consumed
+* **No independent copies**: Cannot create separate reader instances for the same stream
+* **No stream restart**: Cannot reconnect or reopen once the connection is closed
+* **No bulk operations**: Cannot extract all data at once using timeseries methods
+* **Limited multiprocessing**: Cannot split reader across processes for parallel analysis
+* **Single client connection**: Only one reader can connect to an IMD stream at a time
+* **No trajectory Writing**: Complimentary IMD Writer class is not available for streaming data
 
 .. warning::  
    The IMDReader has some important limitations that are inherent in streaming data.  

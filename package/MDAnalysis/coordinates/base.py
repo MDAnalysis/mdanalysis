@@ -1855,10 +1855,14 @@ class StreamReaderBase(ReaderBase):
     that can randomly access frames, streaming readers have fundamental constraints:
 
     - **No random access**: Cannot seek to arbitrary frames (no ``traj[5]``)
-    - **No rewinding**: Cannot restart or rewind the stream
-    - **No length**: Total number of frames is unknown until stream ends
     - **Forward-only**: Can only iterate sequentially through frames
+    - **No length**: Total number of frames is unknown until stream ends
+    - **No rewinding**: Cannot restart or rewind the stream
     - **No copying**: Cannot create independent copies of the reader
+    - **No reopening**: Cannot restart iteration once stream is consumed
+    - **No timeseries**: Cannot use ``timeseries()`` or bulk data extraction
+    - **No pickling**: Cannot serialize reader instances (limits multiprocessing)
+    - **No WriterBase**: No complementary Writer class available for streaming data
 
 
     The reader raises :exc:`RuntimeError` for operations that require random
