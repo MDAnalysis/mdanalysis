@@ -1965,6 +1965,23 @@ class StreamReaderBase(ReaderBase):
         self._reopen_called = True
 
     def timeseries(self, **kwargs):
+        """Timeseries extraction is not supported for streaming trajectories.
+        
+        Streaming readers cannot randomly access frames or store bulk coordinate
+        data in memory, which ``timeseries()`` requires. Use sequential frame
+        iteration instead.
+                    
+        Parameters
+        ----------
+        **kwargs
+            Any keyword arguments (ignored, as method is not supported)
+            
+        Raises
+        ------
+        RuntimeError
+            Always raised, as timeseries extraction is not supported for 
+            streaming trajectories
+        """
         raise RuntimeError(
             "{}: cannot access timeseries for streamed trajectories".format(self.__class__.__name__)
         )
