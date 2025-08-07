@@ -136,7 +136,7 @@ logger = logging.getLogger("MDAnalysis.coordinates.IMDReader")
 class IMDReader(StreamReaderBase):
     """
     Coordinate reader implementing the IMDv3 protocol for streaming simulation data.
-    
+
     This class handles the technical aspects of connecting to IMD-enabled simulation
     engines and processing the incoming data stream. For usage examples and protocol
     overview, see the module documentation above.
