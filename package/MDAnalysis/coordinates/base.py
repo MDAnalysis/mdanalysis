@@ -1926,8 +1926,20 @@ class StreamReaderBase(ReaderBase):
         )
 
     def next(self):
-        """Don't rewind after iteration. When _reopen() is called,
-        an error will be raised
+        """Advance to the next timestep in the streaming trajectory.
+        
+        Streaming readers process frames sequentially and cannot rewind
+        once iteration completes. Use ``for ts in trajectory`` for iteration.
+        
+        Returns
+        -------
+        Timestep
+            The next timestep in the stream
+            
+        Raises
+        ------
+        StopIteration
+            When the stream ends or no more frames are available
         """
         try:
             ts = self._read_next_timestep()
