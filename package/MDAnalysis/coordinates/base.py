@@ -1952,6 +1952,17 @@ class StreamReaderBase(ReaderBase):
 
     # Incompatible methods
     def copy(self):
+        """Reader copying is not supported for streaming trajectories.
+        
+        Streaming readers maintain internal state and connection resources
+        that cannot be duplicated. Each stream connection is unique and
+        cannot be copied.
+        
+        Raises
+        ------
+        RuntimeError
+            Always raised, as copying is not supported for streaming trajectories
+        """
         raise RuntimeError(
             "{} does not support copying".format(self.__class__.__name__)
         )
