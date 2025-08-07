@@ -39,6 +39,7 @@ from MDAnalysisTests.datafiles import (
     COORDINATES_TRR,
 )
 
+
 @pytest.mark.skipif(not HAS_IMDCLIENT, reason="IMDClient not installed")
 class IMDReference(BaseReference):
     def __init__(self):
