@@ -2014,6 +2014,62 @@ class StreamReaderBase(ReaderBase):
             )
 
     def check_slice_indices(self, start, stop, step):
+        """Check and validate slice indices for streaming trajectories.
+        
+        Streaming trajectories have fundamental constraints that differ from 
+        traditional trajectory files:
+        
+        * **No start/stop indices**: Since streams process data continuously
+          without knowing the total length, ``start`` and ``stop`` must be ``None``
+        * **Step-only slicing**: Only the ``step`` parameter is meaningful,
+          controlling how many frames to skip during iteration
+        * **Forward-only**: ``step`` must be positive (> 0) as streams cannot
+          be processed backward in time
+          
+        Parameters
+        ----------
+        start : int or None
+            Starting frame index. Must be ``None`` for streaming readers.
+        stop : int or None
+            Ending frame index. Must be ``None`` for streaming readers.
+        step : int or None
+            Step size for iteration. Must be positive integer or ``None`` 
+            (equivalent to 1).
+            
+        Returns
+        -------
+        tuple
+            (start, stop, step) with validated values
+            
+        Raises
+        ------
+        ValueError
+            If ``start`` or ``stop`` are not ``None``, or if ``step`` is 
+            not a positive integer.
+            
+        Examples
+        --------
+        Valid streaming slices::
+        
+            traj[:]        # All frames (step=None, equivalent to step=1)
+            traj[::2]      # Every 2nd frame 
+            traj[::10]     # Every 10th frame
+            
+        Invalid streaming slices::
+        
+            traj[5:]       # Cannot specify start index
+            traj[:100]     # Cannot specify stop index  
+            traj[5:100:2]  # Cannot specify start or stop indices
+            traj[::-1]     # Cannot go backwards (negative step)
+            
+        See Also
+        --------
+        __getitem__
+        StreamFrameIteratorSliced
+
+
+        .. versionadded:: 2.10.0
+        """
         if start is not None:
             raise ValueError(
                 "{}: Cannot expect a start index from a stream, 'start' must be None".format(
