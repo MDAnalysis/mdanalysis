@@ -1989,6 +1989,17 @@ class StreamReaderBase(ReaderBase):
         )
 
     def _reopen(self):
+        """Prepare stream for iteration - can only be called once.
+        
+        Streaming readers cannot be reopened once iteration begins.
+        This method is called internally during iteration setup and
+        will raise an error if called multiple times.
+        
+        Raises
+        ------
+        RuntimeError
+            If the stream has already been opened for iteration
+        """
         if self._reopen_called:
             raise RuntimeError(
                 "{}: Cannot reopen stream".format(self.__class__.__name__)
