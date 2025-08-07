@@ -2,8 +2,13 @@ import numpy as np
 import pytest
 
 from MDAnalysis.lib import mdamath
-from numpy.testing import assert_array_equal, assert_almost_equal, assert_allclose
+from numpy.testing import (
+    assert_array_equal,
+    assert_almost_equal,
+    assert_allclose,
+)
 from itertools import combinations_with_replacement as comb_wr
+
 
 class TestGeometryFunctions:
     e1, e2, e3 = np.eye(3)
