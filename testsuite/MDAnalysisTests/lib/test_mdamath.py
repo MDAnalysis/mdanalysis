@@ -3,6 +3,7 @@ import pytest
 
 from MDAnalysis.lib import mdamath
 
+
 class TestGeometryFunctions:
     e1, e2, e3 = np.eye(3)
     a = np.array([np.cos(np.pi / 3), np.sin(np.pi / 3), 0])
@@ -101,6 +102,7 @@ class TestGeometryFunctions:
         result = mdamath.pnorm(a)
         np.testing.assert_allclose(result, [5, 5])
 
+
 class TestMatrixOperations:
     def test_triclinic_vectors_box_cycle(self):
         box = np.array([10.0, 20.0, 30.0, 90.0, 90.0, 90.0])
@@ -128,7 +130,11 @@ class TestMatrixOperations:
         assert np.allclose(mdamath.sarrus_det(m), 1.0)
         m = np.zeros((3, 3))
         assert np.allclose(mdamath.sarrus_det(m), 0.0)
-        m = np.array([[[1, 2, 3], [4, 5, 6], [7, 8, 9]],
-                      [[2, 0, 1], [3, 0, 0], [5, 1, 1]]])
+        m = np.array(
+            [
+                [[1, 2, 3], [4, 5, 6], [7, 8, 9]],
+                [[2, 0, 1], [3, 0, 0], [5, 1, 1]],
+            ]
+        )
         dets = mdamath.sarrus_det(m)
         assert dets.shape == (2,)

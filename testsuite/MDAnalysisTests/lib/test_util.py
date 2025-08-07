@@ -43,7 +43,6 @@ from itertools import combinations_with_replacement as comb_wr
 
 import MDAnalysis as mda
 import MDAnalysis.lib.util as util
-import MDAnalysis.lib.mdamath as mdamath
 from MDAnalysis.lib.util import (
     cached,
     static_variables,
@@ -228,97 +227,6 @@ class TestFilename(object):
             pytest.fail("fn and ns are different")
         assert str(fn) == self.filename2
         assert ns.name == self.filename2
-
-
-class TestGeometryFunctions(object):
-    e1, e2, e3 = np.eye(3)
-    a = np.array([np.cos(np.pi / 3), np.sin(np.pi / 3), 0])
-    null = np.zeros(3)
-
-    @pytest.mark.parametrize(
-        "x_axis, y_axis, value",
-        [
-            # Unit vectors
-            (e1, e2, np.pi / 2),
-            (e1, a, np.pi / 3),
-            # Angle vectors
-            (2 * e1, e2, np.pi / 2),
-            (-2 * e1, e2, np.pi - np.pi / 2),
-            (23.3 * e1, a, np.pi / 3),
-            # Null vector
-            (e1, null, np.nan),
-            # Coleniar
-            (a, a, 0.0),
-        ],
-    )
-    def test_vectors(self, x_axis, y_axis, value):
-        assert_allclose(mdamath.angle(x_axis, y_axis), value)
-
-    @pytest.mark.parametrize(
-        "x_axis, y_axis, value",
-        [
-            (-2.3456e7 * e1, 3.4567e-6 * e1, np.pi),
-            (2.3456e7 * e1, 3.4567e-6 * e1, 0.0),
-        ],
-    )
-    def test_angle_pi(self, x_axis, y_axis, value):
-        assert_almost_equal(mdamath.angle(x_axis, y_axis), value)
-
-    @pytest.mark.parametrize("x", np.linspace(0, np.pi, 20))
-    def test_angle_range(self, x):
-        r = 1000.0
-        v = r * np.array([np.cos(x), np.sin(x), 0])
-        assert_almost_equal(mdamath.angle(self.e1, v), x, 6)
-
-    @pytest.mark.parametrize(
-        "vector, value", [(e3, 1), (a, np.linalg.norm(a)), (null, 0.0)]
-    )
-    def test_norm(self, vector, value):
-        assert mdamath.norm(vector) == value
-
-    @pytest.mark.parametrize("x", np.linspace(0, np.pi, 20))
-    def test_norm_range(self, x):
-        r = 1000.0
-        v = r * np.array([np.cos(x), np.sin(x), 0])
-        assert_almost_equal(mdamath.norm(v), r, 6)
-
-    @pytest.mark.parametrize(
-        "vec1, vec2, value", [(e1, e2, e3), (e1, null, 0.0)]
-    )
-    def test_normal(self, vec1, vec2, value):
-        assert_allclose(mdamath.normal(vec1, vec2), value)
-        # add more non-trivial tests
-
-    def test_angle_lower_clip(self):
-        a = np.array([0.1, 0, 0.2])
-        x = np.dot(a**0.5, -(a**0.5)) / (
-            mdamath.norm(a**0.5) * mdamath.norm(-(a**0.5))
-        )
-        assert x < -1.0
-        assert mdamath.angle(a, -(a)) == np.pi
-        assert mdamath.angle(a**0.5, -(a**0.5)) == np.pi
-
-    def test_stp(self):
-        assert mdamath.stp(self.e1, self.e2, self.e3) == 1.0
-        # add more non-trivial tests
-
-    def test_dihedral(self):
-        ab = self.e1
-        bc = ab + self.e2
-        cd = bc + self.e3
-        assert_almost_equal(mdamath.dihedral(ab, bc, cd), -np.pi / 2)
-
-    def test_pdot(self):
-        arr = np.random.rand(4, 3)
-        matrix_dot = mdamath.pdot(arr, arr)
-        list_dot = [np.dot(a, a) for a in arr]
-        assert_almost_equal(matrix_dot, list_dot)
-
-    def test_pnorm(self):
-        arr = np.random.rand(4, 3)
-        matrix_norm = mdamath.pnorm(arr)
-        list_norm = [np.linalg.norm(a) for a in arr]
-        assert_almost_equal(matrix_norm, list_norm)
 
 
 class TestMatrixOperations(object):
