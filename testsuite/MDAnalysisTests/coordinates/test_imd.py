@@ -186,7 +186,7 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
         # don't rewind here as in inherited base test
         vol = reader.ts.volume
         # Here we can only be sure about the numbers upto the decimal point due
-        # to floating point impressions.
+        # to limited floating point precision.
         assert_allclose(vol, ref.volume, rtol=0, atol=1.5e0)
 
     def test_reload_auxiliaries_from_description(self, ref, reader):
