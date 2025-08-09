@@ -554,7 +554,7 @@ class TestMakeWhole(object):
 
     def test_double_frag_short_bonds(self, universe, ag):
         # previous bug where if two fragments are given
-        # but all 
+        # but all
         # were short, the algorithm didn't
         # complain
         mdamath.make_whole(ag)
