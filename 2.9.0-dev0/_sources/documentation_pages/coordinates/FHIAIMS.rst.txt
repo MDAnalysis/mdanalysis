@@ -1,2 +1,0 @@
-.. automodule:: MDAnalysis.coordinates.FHIAIMS
-

@@ -1,0 +1,3 @@
+MDAnalysis==2.9.0-dev0
+pytest>=3.3.0
+hypothesis

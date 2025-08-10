@@ -1,0 +1,1421 @@
+2025-07-19 06:49:04,109 MDAnalysis   INFO     MDAnalysis 2.10.0-dev0 STARTED logging to 'MDAnalysis.log'
+2025-07-19 06:49:04,109 MDAnalysis   INFO     Using the MDAnalysis logger works
+2025-07-19 06:49:04,109 MDAnalysis   INFO     MDAnalysis STOPPED logging
+2025-07-19 06:49:04,117 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c092e10bd70> to topology
+2025-07-19 06:49:04,117 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c092e1083b0> to topology
+2025-07-19 06:49:04,117 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c09385c96a0> to topology
+2025-07-19 06:49:04,117 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c09385cb800> to topology
+2025-07-19 06:49:04,117 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c09385c90d0> to topology
+2025-07-19 06:49:04,117 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c09385c9a00> to topology
+2025-07-19 06:49:04,117 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c09385caf30> to topology
+2025-07-19 06:49:04,118 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c09385cb230> to topology
+2025-07-19 06:49:04,118 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c09385caae0> to topology
+2025-07-19 06:49:04,120 MDAnalysis.core.universe DEBUG    Universe.load_new(): loading /home/ialibay/github/mdanalysis/testsuite/MDAnalysisTests/data/capping/aaqaa.gro...
+2025-07-19 06:49:04,122 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c092e108470> to topology
+2025-07-19 06:49:04,122 MDAnalysis.core.universe INFO     attribute types has been guessed successfully.
+2025-07-19 06:49:04,123 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c092e108260> to topology
+2025-07-19 06:49:04,123 MDAnalysis.core.universe INFO     attribute masses has been guessed successfully.
+2025-07-19 06:49:04,124 MDAnalysis.topology.PDBParser INFO     Setting segids from chainIDs because no segids found in the PDB file.
+2025-07-19 06:49:04,124 MDAnalysis.topology.PDBParser INFO     Segment/chain ID is empty, setting segids to default value 'SYSTEM'.
+2025-07-19 06:49:04,125 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c09385caba0> to topology
+2025-07-19 06:49:04,125 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.AltLocs object at 0x7c09385cb560> to topology
+2025-07-19 06:49:04,125 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ChainIDs object at 0x7c0931a33410> to topology
+2025-07-19 06:49:04,125 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.RecordTypes object at 0x7c09385cbbf0> to topology
+2025-07-19 06:49:04,125 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c09385ca6c0> to topology
+2025-07-19 06:49:04,125 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Tempfactors object at 0x7c09385c9310> to topology
+2025-07-19 06:49:04,125 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Occupancies object at 0x7c09385c9cd0> to topology
+2025-07-19 06:49:04,125 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c09385ca090> to topology
+2025-07-19 06:49:04,125 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Elements object at 0x7c09385ca060> to topology
+2025-07-19 06:49:04,125 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c09385caf00> to topology
+2025-07-19 06:49:04,125 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c09385cb200> to topology
+2025-07-19 06:49:04,125 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ICodes object at 0x7c09385cb6e0> to topology
+2025-07-19 06:49:04,125 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c09385c8b30> to topology
+2025-07-19 06:49:04,126 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c09385caa80> to topology
+2025-07-19 06:49:04,126 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c09385cbd70> to topology
+2025-07-19 06:49:04,126 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c09385cb9b0> to topology
+2025-07-19 06:49:04,126 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c09385c8470> to topology
+2025-07-19 06:49:04,126 MDAnalysis.core.universe DEBUG    Universe.load_new(): loading /home/ialibay/github/mdanalysis/testsuite/MDAnalysisTests/data/capping/maestro_aaqaa_capped.pdb...
+2025-07-19 06:49:04,128 MDAnalysis.core.universe INFO     The attribute(s) types have already been read from the topology file. The guesser will only guess empty values for this attribute, if any exists. To overwrite it by completely guessed values, you can pass the attribute to the force_guess parameter instead of the to_guess one
+2025-07-19 06:49:04,128 MDAnalysis.guesser.base INFO     There is no empty types values. Guesser did not guess any new values for types attribute
+2025-07-19 06:49:04,128 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c09385cab40> to topology
+2025-07-19 06:49:04,128 MDAnalysis.core.universe INFO     attribute masses has been guessed successfully.
+2025-07-19 06:49:04,129 MDAnalysis.topology.PDBParser DEBUG    Segment IDs and Chain IDs are not completely equal.
+2025-07-19 06:49:04,129 MDAnalysis.topology.PDBParser INFO     Setting segids from chainIDs because no segids found in the PDB file.
+2025-07-19 06:49:04,130 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c09385cb650> to topology
+2025-07-19 06:49:04,130 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.AltLocs object at 0x7c09385cb4a0> to topology
+2025-07-19 06:49:04,130 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ChainIDs object at 0x7c09385ca330> to topology
+2025-07-19 06:49:04,130 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.RecordTypes object at 0x7c09385ca270> to topology
+2025-07-19 06:49:04,130 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c09385cbe60> to topology
+2025-07-19 06:49:04,130 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Tempfactors object at 0x7c09385ca8a0> to topology
+2025-07-19 06:49:04,130 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Occupancies object at 0x7c09385cb0b0> to topology
+2025-07-19 06:49:04,130 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c09385c9af0> to topology
+2025-07-19 06:49:04,131 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Elements object at 0x7c09385c9e20> to topology
+2025-07-19 06:49:04,131 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c09385c8350> to topology
+2025-07-19 06:49:04,131 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c09385c8200> to topology
+2025-07-19 06:49:04,131 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ICodes object at 0x7c09385cb770> to topology
+2025-07-19 06:49:04,131 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c09385cba10> to topology
+2025-07-19 06:49:04,131 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c09385cac60> to topology
+2025-07-19 06:49:04,131 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c09385c9070> to topology
+2025-07-19 06:49:04,131 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c09385ca990> to topology
+2025-07-19 06:49:04,131 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c09385ca300> to topology
+2025-07-19 06:49:04,132 MDAnalysis.core.universe DEBUG    Universe.load_new(): loading /home/ialibay/github/mdanalysis/testsuite/MDAnalysisTests/data/capping/ace.pdb...
+2025-07-19 06:49:04,133 MDAnalysis.core.universe INFO     The attribute(s) types have already been read from the topology file. The guesser will only guess empty values for this attribute, if any exists. To overwrite it by completely guessed values, you can pass the attribute to the force_guess parameter instead of the to_guess one
+2025-07-19 06:49:04,133 MDAnalysis.guesser.base INFO     There is no empty types values. Guesser did not guess any new values for types attribute
+2025-07-19 06:49:04,133 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c09396a7410> to topology
+2025-07-19 06:49:04,133 MDAnalysis.core.universe INFO     attribute masses has been guessed successfully.
+2025-07-19 06:49:04,134 MDAnalysis.topology.PDBParser INFO     Setting segids from chainIDs because no segids found in the PDB file.
+2025-07-19 06:49:04,134 MDAnalysis.topology.PDBParser INFO     Segment/chain ID is empty, setting segids to default value 'SYSTEM'.
+2025-07-19 06:49:04,135 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c092fe56660> to topology
+2025-07-19 06:49:04,135 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.AltLocs object at 0x7c092fe56450> to topology
+2025-07-19 06:49:04,135 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ChainIDs object at 0x7c092fe55a60> to topology
+2025-07-19 06:49:04,135 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.RecordTypes object at 0x7c092fe576e0> to topology
+2025-07-19 06:49:04,135 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c092fe56120> to topology
+2025-07-19 06:49:04,135 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Tempfactors object at 0x7c092fe564e0> to topology
+2025-07-19 06:49:04,135 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Occupancies object at 0x7c092fe55880> to topology
+2025-07-19 06:49:04,135 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c092fe57c80> to topology
+2025-07-19 06:49:04,135 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Elements object at 0x7c092fe54980> to topology
+2025-07-19 06:49:04,135 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c092fe54d40> to topology
+2025-07-19 06:49:04,135 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c092fe547d0> to topology
+2025-07-19 06:49:04,135 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ICodes object at 0x7c092fe56390> to topology
+2025-07-19 06:49:04,135 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c092fe57bf0> to topology
+2025-07-19 06:49:04,135 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c092fe543e0> to topology
+2025-07-19 06:49:04,135 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c092fe57200> to topology
+2025-07-19 06:49:04,135 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c092fe55610> to topology
+2025-07-19 06:49:04,135 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c092fe56720> to topology
+2025-07-19 06:49:04,136 MDAnalysis.core.universe DEBUG    Universe.load_new(): loading /home/ialibay/github/mdanalysis/testsuite/MDAnalysisTests/data/capping/nma.pdb...
+2025-07-19 06:49:04,137 MDAnalysis.core.universe INFO     The attribute(s) types have already been read from the topology file. The guesser will only guess empty values for this attribute, if any exists. To overwrite it by completely guessed values, you can pass the attribute to the force_guess parameter instead of the to_guess one
+2025-07-19 06:49:04,137 MDAnalysis.guesser.base INFO     There is no empty types values. Guesser did not guess any new values for types attribute
+2025-07-19 06:49:04,137 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c0931a30f50> to topology
+2025-07-19 06:49:04,137 MDAnalysis.core.universe INFO     attribute masses has been guessed successfully.
+2025-07-19 06:49:04,143 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c09396a6d20> to topology
+2025-07-19 06:49:04,143 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c0929d7a7e0> to topology
+2025-07-19 06:49:04,143 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c0929d79be0> to topology
+2025-07-19 06:49:04,143 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c0929d7b0e0> to topology
+2025-07-19 06:49:04,143 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c0929d7a6c0> to topology
+2025-07-19 06:49:04,143 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c0931a305c0> to topology
+2025-07-19 06:49:04,143 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c092e770b00> to topology
+2025-07-19 06:49:04,143 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c092e772030> to topology
+2025-07-19 06:49:04,143 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c092e773380> to topology
+2025-07-19 06:49:04,143 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c092e773e60> to topology
+2025-07-19 06:49:04,143 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c092e770350> to topology
+2025-07-19 06:49:04,147 MDAnalysis.core.universe DEBUG    Universe.load_new(): loading [[[23.369997 18.636139 17.952534]
+  [24.234612 18.972864 18.527586]
+  [23.072945 17.637934 18.280602]
+  [23.633503 18.587809 16.893135]
+  [22.252174 19.613949 18.137617]
+  [22.051428 20.534111 17.345362]
+  [21.259998 19.25     19.17    ]
+  [20.739998 20.52     19.51    ]
+  [21.23     21.199999 18.97    ]
+  [19.199999 20.59     19.25    ]
+  [18.86     21.49     19.5     ]
+  [19.02     20.42     18.279999]
+  [18.74     19.89     19.8     ]
+  [20.94     20.59     21.      ]
+  [21.429998 21.56     21.45    ]
+  [20.43     19.630001 21.82    ]
+  [20.02     18.84     21.37    ]
+  [20.43     19.61     23.3     ]
+  [20.24     20.57     23.5     ]
+  [19.43     18.539999 23.72    ]
+  [19.39     18.49     24.72    ]
+  [18.52     18.76     23.369999]
+  [19.72     17.65     23.36    ]
+  [21.72     19.19     24.02    ]
+  [21.77     18.91     25.24    ]
+  [22.78     19.25     23.239998]
+  [22.67     19.38     22.26    ]
+  [24.09     19.14     23.78    ]
+  [23.970001 19.21     24.77    ]
+  [24.73     17.76     23.26    ]
+  [24.14     17.       23.529999]
+  [24.81     17.79     22.27    ]
+  [26.18     17.52     23.880001]
+  [26.53     16.65     23.54    ]
+  [26.779999 18.27     23.59    ]
+  [26.240002 17.460001 25.45    ]
+  [27.29     16.970001 25.9     ]
+  [25.380001 17.84     26.35    ]
+  [24.51     18.24     26.08    ]
+  [25.59     17.72     27.320002]
+  [24.960001 20.29     23.310001]
+  [25.96     20.720001 23.98    ]
+  [24.519999 20.8      22.119999]
+  [23.89     20.25     21.56    ]
+  [24.949999 22.119999 21.65    ]
+  [25.93     21.960001 21.71    ]
+  [24.37     22.420002 20.27    ]
+  [24.68     23.33     19.97    ]
+  [24.69     21.74     19.62    ]
+  [23.369999 22.41     20.31    ]
+  [24.67     23.34     22.47    ]
+  [25.56     24.130001 22.630001]
+  [23.45     23.49     22.92    ]
+  [22.74     22.84     22.62    ]
+  [23.099998 24.519999 23.789999]
+  [23.619999 25.31     23.48    ]
+  [21.5      24.6      23.740002]
+  [21.189999 25.32     24.349998]
+  [21.210001 24.79     22.81    ]
+  [21.119999 23.72     24.04    ]
+  [23.570002 24.31     25.17    ]
+  [23.829998 25.33     25.79    ]
+  [23.73     23.039999 25.510002]
+  [23.52     22.349998 24.820002]
+  [24.2      22.579998 26.800001]
+  [23.73     23.23     27.41    ]
+  [23.78     21.170002 26.91    ]
+  [24.07     20.8      27.79    ]
+  [22.78     21.119999 26.84    ]
+  [24.189999 20.650002 26.170002]
+  [25.62     22.78     27.29    ]
+  [25.92     22.38     28.4     ]
+  [26.44     23.010002 26.259998]
+  [26.02     23.06     25.35    ]
+  [27.85     23.19     26.32    ]
+  [28.02     23.740002 27.15    ]
+  [28.49     21.779999 26.329998]
+  [29.489998 21.87     26.37    ]
+  [28.169998 21.28     27.130001]
+  [28.239998 21.300001 25.5     ]
+  [28.39     24.04     25.23    ]
+  [28.92     25.060001 25.5     ]
+  [28.26     23.41     23.99    ]
+  [27.650002 22.630001 23.929998]
+  [29.       23.84     22.720001]
+  [29.93     23.85     23.07    ]
+  [28.75     22.83     21.57    ]
+  [27.81     22.490002 21.61    ]
+  [28.91     23.269999 20.69    ]
+  [29.72     21.64     21.74    ]
+  [30.63     21.960001 21.470001]
+  [29.73     21.400002 22.71    ]
+  [29.400002 20.34     20.92    ]
+  [30.23     19.45     20.83    ]
+  [28.25     20.33     20.28    ]
+  [27.64     21.119999 20.34    ]
+  [27.980001 19.529999 19.74    ]
+  [28.95     25.28     22.21    ]
+  [29.75     26.18     22.439999]
+  [27.84     25.529999 21.5     ]
+  [27.07     24.9      21.51    ]
+  [27.81     26.760002 20.699999]
+  [28.789999 26.91     20.769999]
+  [27.3      26.65     19.21    ]
+  [27.33     27.560001 18.78    ]
+  [27.89     26.029999 18.7     ]
+  [26.359999 26.310001 19.199999]
+  [26.93     27.89     21.300001]
+  [27.47     28.929998 21.66    ]
+  [25.669998 27.490002 21.7     ]
+  [25.4      26.53     21.61    ]
+  [24.75     28.48     22.27    ]
+  [24.939999 29.419998 22.      ]
+  [23.310001 27.980001 21.77    ]
+  [22.609999 28.61     22.119999]
+  [23.28     27.97     20.769999]
+  [23.13     27.060001 22.119999]
+  [24.949999 28.44     23.75    ]
+  [24.330002 27.509998 24.31    ]
+  [25.83     29.16     24.41    ]
+  [26.259998 29.93     23.929998]
+  [26.189999 28.92     25.769999]
+  [26.16     27.939999 25.94    ]
+  [27.6      29.519999 25.95    ]
+  [27.9      29.38     26.89    ]
+  [28.23     29.08     25.32    ]
+  [27.57     30.5      25.75    ]
+  [25.19     29.65     26.68    ]
+  [25.550001 30.69     27.279999]
+  [23.96     29.14     26.82    ]
+  [23.78     28.23     26.429998]
+  [22.85     29.83     27.53    ]
+  [22.93     30.75     27.15    ]
+  [21.66     28.99     27.23    ]
+  [20.85     29.39     27.67    ]
+  [21.52     28.96     26.240002]
+  [21.81     28.07     27.579998]
+  [22.8      30.02     29.08    ]
+  [22.26     31.05     29.519999]
+  [23.48     29.189999 29.83    ]
+  [23.91     28.41     29.36    ]
+  [23.68     29.289999 31.259998]
+  [22.939999 29.849998 31.64    ]
+  [23.599998 27.91     31.830002]
+  [23.58     28.010002 32.82    ]
+  [22.74     27.52     31.51    ]
+  [24.72     26.900002 31.49    ]
+  [25.510002 27.16     32.04    ]
+  [24.39     26.       31.779999]
+  [25.2      26.75     30.050001]
+  [24.64     26.380001 29.05    ]
+  [26.46     27.19     30.02    ]
+  [26.900002 27.53     30.85    ]
+  [26.970001 27.17     29.16    ]
+  [24.920002 30.050001 31.64    ]
+  [24.86     30.62     32.73    ]
+  [26.       29.97     30.82    ]
+  [26.       29.36     30.03    ]
+  [27.15     30.79     31.140001]
+  [27.29     30.699999 32.13    ]
+  [28.34     30.27     30.34    ]
+  [29.15     30.83     30.539999]
+  [28.52     29.32     30.580002]
+  [28.13     30.33     29.36    ]
+  [26.91     32.27     30.84    ]
+  [27.439999 33.14     31.56    ]
+  [28.808289 32.63111  30.570282]
+  [29.169058 34.020805 30.8089  ]
+  [29.462196 32.010876 30.114471]
+  [28.319508 34.529343 31.317446]
+  [30.075455 34.068695 31.453403]
+  [29.385345 34.52553  29.840828]]]...
+2025-07-19 06:49:04,147 MDAnalysis.core.universe INFO     The attribute(s) masses, types have already been read from the topology file. The guesser will only guess empty values for this attribute, if any exists. To overwrite it by completely guessed values, you can pass the attribute to the force_guess parameter instead of the to_guess one
+2025-07-19 06:49:04,148 MDAnalysis.guesser.base INFO     There is no empty types values. Guesser did not guess any new values for types attribute
+2025-07-19 06:49:04,148 MDAnalysis.guesser.base INFO     There is no empty masses values. Guesser did not guess any new values for masses attribute
+2025-07-19 06:49:04,153 MDAnalysis.topology.PDBParser DEBUG    Segment IDs and Chain IDs are not completely equal.
+2025-07-19 06:49:04,154 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c0933b7f140> to topology
+2025-07-19 06:49:04,154 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.AltLocs object at 0x7c0933b7fb90> to topology
+2025-07-19 06:49:04,154 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ChainIDs object at 0x7c0933b7c0b0> to topology
+2025-07-19 06:49:04,154 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.RecordTypes object at 0x7c0933b7f1a0> to topology
+2025-07-19 06:49:04,154 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c0933b7fe60> to topology
+2025-07-19 06:49:04,154 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Tempfactors object at 0x7c0933b7e7b0> to topology
+2025-07-19 06:49:04,154 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Occupancies object at 0x7c0933b7fbf0> to topology
+2025-07-19 06:49:04,154 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c0928d37530> to topology
+2025-07-19 06:49:04,154 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c0928d34f50> to topology
+2025-07-19 06:49:04,154 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ICodes object at 0x7c0928d34950> to topology
+2025-07-19 06:49:04,154 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c0928d351f0> to topology
+2025-07-19 06:49:04,155 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c0928d34530> to topology
+2025-07-19 06:49:04,155 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c0928d35d90> to topology
+2025-07-19 06:49:04,155 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c0928d34a10> to topology
+2025-07-19 06:49:04,155 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c0928d359a0> to topology
+2025-07-19 06:49:04,156 MDAnalysis.core.universe DEBUG    Universe.load_new(): loading /tmp/pytest-of-ialibay/pytest-8/popen-gw7/test_capping_file0/test.pdb...
+2025-07-19 06:49:04,158 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c0928d34050> to topology
+2025-07-19 06:49:04,158 MDAnalysis.core.universe INFO     attribute types has been guessed successfully.
+2025-07-19 06:49:04,158 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c0928d357c0> to topology
+2025-07-19 06:49:04,158 MDAnalysis.core.universe INFO     attribute masses has been guessed successfully.
+2025-07-19 06:49:04,164 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c092e7a45f0> to topology
+2025-07-19 06:49:04,164 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c092e7a5100> to topology
+2025-07-19 06:49:04,164 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c0933b7f710> to topology
+2025-07-19 06:49:04,164 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c0933b7c110> to topology
+2025-07-19 06:49:04,164 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c0933b7deb0> to topology
+2025-07-19 06:49:04,165 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c0933b7c3b0> to topology
+2025-07-19 06:49:04,165 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c0933b7d700> to topology
+2025-07-19 06:49:04,165 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c0933b7c590> to topology
+2025-07-19 06:49:04,165 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c0933b7cef0> to topology
+2025-07-19 06:49:04,166 MDAnalysis.core.universe DEBUG    Universe.load_new(): loading /home/ialibay/github/mdanalysis/testsuite/MDAnalysisTests/data/capping/aaqaa.gro...
+2025-07-19 06:49:04,168 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c0933b6a150> to topology
+2025-07-19 06:49:04,168 MDAnalysis.core.universe INFO     attribute types has been guessed successfully.
+2025-07-19 06:49:04,169 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c0933b6b770> to topology
+2025-07-19 06:49:04,169 MDAnalysis.core.universe INFO     attribute masses has been guessed successfully.
+2025-07-19 06:49:04,170 MDAnalysis.topology.PDBParser INFO     Setting segids from chainIDs because no segids found in the PDB file.
+2025-07-19 06:49:04,170 MDAnalysis.topology.PDBParser INFO     Segment/chain ID is empty, setting segids to default value 'SYSTEM'.
+2025-07-19 06:49:04,171 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c0933b7f800> to topology
+2025-07-19 06:49:04,171 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.AltLocs object at 0x7c0933b7d6a0> to topology
+2025-07-19 06:49:04,171 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ChainIDs object at 0x7c0933b7fc50> to topology
+2025-07-19 06:49:04,171 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.RecordTypes object at 0x7c0933b7d940> to topology
+2025-07-19 06:49:04,171 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c0933b7dca0> to topology
+2025-07-19 06:49:04,171 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Tempfactors object at 0x7c0933b7c920> to topology
+2025-07-19 06:49:04,171 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Occupancies object at 0x7c0933b7fa40> to topology
+2025-07-19 06:49:04,171 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c0933b7f1d0> to topology
+2025-07-19 06:49:04,171 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Elements object at 0x7c0933b7e630> to topology
+2025-07-19 06:49:04,171 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c0933b7f050> to topology
+2025-07-19 06:49:04,171 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c0933b7f500> to topology
+2025-07-19 06:49:04,171 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ICodes object at 0x7c0933b7eea0> to topology
+2025-07-19 06:49:04,171 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c0933b7e1b0> to topology
+2025-07-19 06:49:04,172 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c0933b7eba0> to topology
+2025-07-19 06:49:04,172 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c0933b7d310> to topology
+2025-07-19 06:49:04,172 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c0933b7dd60> to topology
+2025-07-19 06:49:04,172 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c0933b7c080> to topology
+2025-07-19 06:49:04,172 MDAnalysis.core.universe DEBUG    Universe.load_new(): loading /home/ialibay/github/mdanalysis/testsuite/MDAnalysisTests/data/capping/maestro_aaqaa_capped.pdb...
+2025-07-19 06:49:04,174 MDAnalysis.core.universe INFO     The attribute(s) types have already been read from the topology file. The guesser will only guess empty values for this attribute, if any exists. To overwrite it by completely guessed values, you can pass the attribute to the force_guess parameter instead of the to_guess one
+2025-07-19 06:49:04,174 MDAnalysis.guesser.base INFO     There is no empty types values. Guesser did not guess any new values for types attribute
+2025-07-19 06:49:04,174 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c0933b7da30> to topology
+2025-07-19 06:49:04,174 MDAnalysis.core.universe INFO     attribute masses has been guessed successfully.
+2025-07-19 06:49:04,175 MDAnalysis.topology.PDBParser DEBUG    Segment IDs and Chain IDs are not completely equal.
+2025-07-19 06:49:04,175 MDAnalysis.topology.PDBParser INFO     Setting segids from chainIDs because no segids found in the PDB file.
+2025-07-19 06:49:04,176 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c0933b7ec60> to topology
+2025-07-19 06:49:04,176 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.AltLocs object at 0x7c0933b7f0b0> to topology
+2025-07-19 06:49:04,176 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ChainIDs object at 0x7c0933b7d0a0> to topology
+2025-07-19 06:49:04,176 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.RecordTypes object at 0x7c0933b7f260> to topology
+2025-07-19 06:49:04,176 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c0933b7d7c0> to topology
+2025-07-19 06:49:04,176 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Tempfactors object at 0x7c0933b7f980> to topology
+2025-07-19 06:49:04,176 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Occupancies object at 0x7c0933b7fec0> to topology
+2025-07-19 06:49:04,176 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c0933b7e6f0> to topology
+2025-07-19 06:49:04,176 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Elements object at 0x7c0933b7d4f0> to topology
+2025-07-19 06:49:04,176 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c0933b7c5f0> to topology
+2025-07-19 06:49:04,176 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c0933b7d5e0> to topology
+2025-07-19 06:49:04,176 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ICodes object at 0x7c0933b7e3c0> to topology
+2025-07-19 06:49:04,176 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c0933b7e9c0> to topology
+2025-07-19 06:49:04,176 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c0933b7f890> to topology
+2025-07-19 06:49:04,177 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c0933b7d040> to topology
+2025-07-19 06:49:04,177 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c0933b7f920> to topology
+2025-07-19 06:49:04,177 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c0933b7fd70> to topology
+2025-07-19 06:49:04,177 MDAnalysis.core.universe DEBUG    Universe.load_new(): loading /home/ialibay/github/mdanalysis/testsuite/MDAnalysisTests/data/capping/ace.pdb...
+2025-07-19 06:49:04,178 MDAnalysis.core.universe INFO     The attribute(s) types have already been read from the topology file. The guesser will only guess empty values for this attribute, if any exists. To overwrite it by completely guessed values, you can pass the attribute to the force_guess parameter instead of the to_guess one
+2025-07-19 06:49:04,178 MDAnalysis.guesser.base INFO     There is no empty types values. Guesser did not guess any new values for types attribute
+2025-07-19 06:49:04,179 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c0933b6bc20> to topology
+2025-07-19 06:49:04,179 MDAnalysis.core.universe INFO     attribute masses has been guessed successfully.
+2025-07-19 06:49:04,179 MDAnalysis.topology.PDBParser INFO     Setting segids from chainIDs because no segids found in the PDB file.
+2025-07-19 06:49:04,180 MDAnalysis.topology.PDBParser INFO     Segment/chain ID is empty, setting segids to default value 'SYSTEM'.
+2025-07-19 06:49:04,180 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c0938b895b0> to topology
+2025-07-19 06:49:04,180 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.AltLocs object at 0x7c0938b88620> to topology
+2025-07-19 06:49:04,180 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ChainIDs object at 0x7c0938b8b5c0> to topology
+2025-07-19 06:49:04,180 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.RecordTypes object at 0x7c0938b8a150> to topology
+2025-07-19 06:49:04,180 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c0938b89be0> to topology
+2025-07-19 06:49:04,180 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Tempfactors object at 0x7c0938b8a4e0> to topology
+2025-07-19 06:49:04,181 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Occupancies object at 0x7c0938b88530> to topology
+2025-07-19 06:49:04,181 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c0938b88bc0> to topology
+2025-07-19 06:49:04,181 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Elements object at 0x7c0938b8a1e0> to topology
+2025-07-19 06:49:04,181 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c0938b89070> to topology
+2025-07-19 06:49:04,181 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c0938b8a2a0> to topology
+2025-07-19 06:49:04,181 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ICodes object at 0x7c0938b8ab40> to topology
+2025-07-19 06:49:04,181 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c0938b8a9f0> to topology
+2025-07-19 06:49:04,181 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c0938b8b9b0> to topology
+2025-07-19 06:49:04,181 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c0938b8af00> to topology
+2025-07-19 06:49:04,181 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c0938b8a8d0> to topology
+2025-07-19 06:49:04,181 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c0938b8be90> to topology
+2025-07-19 06:49:04,182 MDAnalysis.core.universe DEBUG    Universe.load_new(): loading /home/ialibay/github/mdanalysis/testsuite/MDAnalysisTests/data/capping/nma.pdb...
+2025-07-19 06:49:04,183 MDAnalysis.core.universe INFO     The attribute(s) types have already been read from the topology file. The guesser will only guess empty values for this attribute, if any exists. To overwrite it by completely guessed values, you can pass the attribute to the force_guess parameter instead of the to_guess one
+2025-07-19 06:49:04,183 MDAnalysis.guesser.base INFO     There is no empty types values. Guesser did not guess any new values for types attribute
+2025-07-19 06:49:04,183 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c0938b8b5f0> to topology
+2025-07-19 06:49:04,183 MDAnalysis.core.universe INFO     attribute masses has been guessed successfully.
+2025-07-19 06:49:04,188 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c09376ccfe0> to topology
+2025-07-19 06:49:04,188 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c09376cf530> to topology
+2025-07-19 06:49:04,188 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c09376cd6d0> to topology
+2025-07-19 06:49:04,188 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c09376cd3d0> to topology
+2025-07-19 06:49:04,188 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c09376ced80> to topology
+2025-07-19 06:49:04,188 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c09376ceb70> to topology
+2025-07-19 06:49:04,188 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c09376cf770> to topology
+2025-07-19 06:49:04,188 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c09376cf950> to topology
+2025-07-19 06:49:04,188 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c09376cfe30> to topology
+2025-07-19 06:49:04,188 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c09376cd9a0> to topology
+2025-07-19 06:49:04,188 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c09376ce570> to topology
+2025-07-19 06:49:04,191 MDAnalysis.core.universe DEBUG    Universe.load_new(): loading [[[23.369997 18.636139 17.952534]
+  [24.234612 18.972864 18.527586]
+  [23.072945 17.637934 18.280602]
+  [23.633503 18.587809 16.893135]
+  [22.252174 19.613949 18.137617]
+  [22.051428 20.534111 17.345362]
+  [21.259998 19.25     19.17    ]
+  [20.739998 20.52     19.51    ]
+  [21.23     21.199999 18.97    ]
+  [19.199999 20.59     19.25    ]
+  [18.86     21.49     19.5     ]
+  [19.02     20.42     18.279999]
+  [18.74     19.89     19.8     ]
+  [20.94     20.59     21.      ]
+  [21.429998 21.56     21.45    ]
+  [20.43     19.630001 21.82    ]
+  [20.02     18.84     21.37    ]
+  [20.43     19.61     23.3     ]
+  [20.24     20.57     23.5     ]
+  [19.43     18.539999 23.72    ]
+  [19.39     18.49     24.72    ]
+  [18.52     18.76     23.369999]
+  [19.72     17.65     23.36    ]
+  [21.72     19.19     24.02    ]
+  [21.77     18.91     25.24    ]
+  [22.78     19.25     23.239998]
+  [22.67     19.38     22.26    ]
+  [24.09     19.14     23.78    ]
+  [23.970001 19.21     24.77    ]
+  [24.73     17.76     23.26    ]
+  [24.14     17.       23.529999]
+  [24.81     17.79     22.27    ]
+  [26.18     17.52     23.880001]
+  [26.53     16.65     23.54    ]
+  [26.779999 18.27     23.59    ]
+  [26.240002 17.460001 25.45    ]
+  [27.29     16.970001 25.9     ]
+  [25.380001 17.84     26.35    ]
+  [24.51     18.24     26.08    ]
+  [25.59     17.72     27.320002]
+  [24.960001 20.29     23.310001]
+  [25.96     20.720001 23.98    ]
+  [24.519999 20.8      22.119999]
+  [23.89     20.25     21.56    ]
+  [24.949999 22.119999 21.65    ]
+  [25.93     21.960001 21.71    ]
+  [24.37     22.420002 20.27    ]
+  [24.68     23.33     19.97    ]
+  [24.69     21.74     19.62    ]
+  [23.369999 22.41     20.31    ]
+  [24.67     23.34     22.47    ]
+  [25.56     24.130001 22.630001]
+  [23.45     23.49     22.92    ]
+  [22.74     22.84     22.62    ]
+  [23.099998 24.519999 23.789999]
+  [23.619999 25.31     23.48    ]
+  [21.5      24.6      23.740002]
+  [21.189999 25.32     24.349998]
+  [21.210001 24.79     22.81    ]
+  [21.119999 23.72     24.04    ]
+  [23.570002 24.31     25.17    ]
+  [23.829998 25.33     25.79    ]
+  [23.73     23.039999 25.510002]
+  [23.52     22.349998 24.820002]
+  [24.2      22.579998 26.800001]
+  [23.73     23.23     27.41    ]
+  [23.78     21.170002 26.91    ]
+  [24.07     20.8      27.79    ]
+  [22.78     21.119999 26.84    ]
+  [24.189999 20.650002 26.170002]
+  [25.62     22.78     27.29    ]
+  [25.92     22.38     28.4     ]
+  [26.44     23.010002 26.259998]
+  [26.02     23.06     25.35    ]
+  [27.85     23.19     26.32    ]
+  [28.02     23.740002 27.15    ]
+  [28.49     21.779999 26.329998]
+  [29.489998 21.87     26.37    ]
+  [28.169998 21.28     27.130001]
+  [28.239998 21.300001 25.5     ]
+  [28.39     24.04     25.23    ]
+  [28.92     25.060001 25.5     ]
+  [28.26     23.41     23.99    ]
+  [27.650002 22.630001 23.929998]
+  [29.       23.84     22.720001]
+  [29.93     23.85     23.07    ]
+  [28.75     22.83     21.57    ]
+  [27.81     22.490002 21.61    ]
+  [28.91     23.269999 20.69    ]
+  [29.72     21.64     21.74    ]
+  [30.63     21.960001 21.470001]
+  [29.73     21.400002 22.71    ]
+  [29.400002 20.34     20.92    ]
+  [30.23     19.45     20.83    ]
+  [28.25     20.33     20.28    ]
+  [27.64     21.119999 20.34    ]
+  [27.980001 19.529999 19.74    ]
+  [28.95     25.28     22.21    ]
+  [29.75     26.18     22.439999]
+  [27.84     25.529999 21.5     ]
+  [27.07     24.9      21.51    ]
+  [27.81     26.760002 20.699999]
+  [28.789999 26.91     20.769999]
+  [27.3      26.65     19.21    ]
+  [27.33     27.560001 18.78    ]
+  [27.89     26.029999 18.7     ]
+  [26.359999 26.310001 19.199999]
+  [26.93     27.89     21.300001]
+  [27.47     28.929998 21.66    ]
+  [25.669998 27.490002 21.7     ]
+  [25.4      26.53     21.61    ]
+  [24.75     28.48     22.27    ]
+  [24.939999 29.419998 22.      ]
+  [23.310001 27.980001 21.77    ]
+  [22.609999 28.61     22.119999]
+  [23.28     27.97     20.769999]
+  [23.13     27.060001 22.119999]
+  [24.949999 28.44     23.75    ]
+  [24.330002 27.509998 24.31    ]
+  [25.83     29.16     24.41    ]
+  [26.259998 29.93     23.929998]
+  [26.189999 28.92     25.769999]
+  [26.16     27.939999 25.94    ]
+  [27.6      29.519999 25.95    ]
+  [27.9      29.38     26.89    ]
+  [28.23     29.08     25.32    ]
+  [27.57     30.5      25.75    ]
+  [25.19     29.65     26.68    ]
+  [25.550001 30.69     27.279999]
+  [23.96     29.14     26.82    ]
+  [23.78     28.23     26.429998]
+  [22.85     29.83     27.53    ]
+  [22.93     30.75     27.15    ]
+  [21.66     28.99     27.23    ]
+  [20.85     29.39     27.67    ]
+  [21.52     28.96     26.240002]
+  [21.81     28.07     27.579998]
+  [22.8      30.02     29.08    ]
+  [22.26     31.05     29.519999]
+  [23.48     29.189999 29.83    ]
+  [23.91     28.41     29.36    ]
+  [23.68     29.289999 31.259998]
+  [22.939999 29.849998 31.64    ]
+  [23.599998 27.91     31.830002]
+  [23.58     28.010002 32.82    ]
+  [22.74     27.52     31.51    ]
+  [24.72     26.900002 31.49    ]
+  [25.510002 27.16     32.04    ]
+  [24.39     26.       31.779999]
+  [25.2      26.75     30.050001]
+  [24.64     26.380001 29.05    ]
+  [26.46     27.19     30.02    ]
+  [26.900002 27.53     30.85    ]
+  [26.970001 27.17     29.16    ]
+  [24.920002 30.050001 31.64    ]
+  [24.86     30.62     32.73    ]
+  [26.       29.97     30.82    ]
+  [26.       29.36     30.03    ]
+  [27.15     30.79     31.140001]
+  [27.29     30.699999 32.13    ]
+  [28.34     30.27     30.34    ]
+  [29.15     30.83     30.539999]
+  [28.52     29.32     30.580002]
+  [28.13     30.33     29.36    ]
+  [26.91     32.27     30.84    ]
+  [27.439999 33.14     31.56    ]
+  [28.808289 32.63111  30.570282]
+  [29.169058 34.020805 30.8089  ]
+  [29.462196 32.010876 30.114471]
+  [28.319508 34.529343 31.317446]
+  [30.075455 34.068695 31.453403]
+  [29.385345 34.52553  29.840828]]]...
+2025-07-19 06:49:04,192 MDAnalysis.core.universe INFO     The attribute(s) masses, types have already been read from the topology file. The guesser will only guess empty values for this attribute, if any exists. To overwrite it by completely guessed values, you can pass the attribute to the force_guess parameter instead of the to_guess one
+2025-07-19 06:49:04,192 MDAnalysis.guesser.base INFO     There is no empty types values. Guesser did not guess any new values for types attribute
+2025-07-19 06:49:04,192 MDAnalysis.guesser.base INFO     There is no empty masses values. Guesser did not guess any new values for masses attribute
+2025-07-19 06:49:04,204 MDAnalysis.topology.PDBParser DEBUG    Segment IDs and Chain IDs are not completely equal.
+2025-07-19 06:49:04,204 MDAnalysis.topology.PDBParser INFO     Setting segids from chainIDs because no segids found in the PDB file.
+2025-07-19 06:49:04,209 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c092bf11400> to topology
+2025-07-19 06:49:04,209 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.AltLocs object at 0x7c092bf12e40> to topology
+2025-07-19 06:49:04,209 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ChainIDs object at 0x7c092bf12f00> to topology
+2025-07-19 06:49:04,209 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.RecordTypes object at 0x7c092bf13f80> to topology
+2025-07-19 06:49:04,209 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c092bf114f0> to topology
+2025-07-19 06:49:04,209 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Tempfactors object at 0x7c092bf113d0> to topology
+2025-07-19 06:49:04,209 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Occupancies object at 0x7c092bf10800> to topology
+2025-07-19 06:49:04,209 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c092bf10ce0> to topology
+2025-07-19 06:49:04,209 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Elements object at 0x7c092bf12ed0> to topology
+2025-07-19 06:49:04,209 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c092bf12bd0> to topology
+2025-07-19 06:49:04,209 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c092bf11a00> to topology
+2025-07-19 06:49:04,209 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ICodes object at 0x7c092bf11340> to topology
+2025-07-19 06:49:04,209 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c092bf109b0> to topology
+2025-07-19 06:49:04,209 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c092bf10560> to topology
+2025-07-19 06:49:04,209 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c092bf12630> to topology
+2025-07-19 06:49:04,210 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c092bf109e0> to topology
+2025-07-19 06:49:04,210 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c092bf11490> to topology
+2025-07-19 06:49:04,210 MDAnalysis.core.universe DEBUG    Universe.load_new(): loading /home/ialibay/github/mdanalysis/testsuite/MDAnalysisTests/data/merge/2zmm/protein.pdb...
+2025-07-19 06:49:04,218 MDAnalysis.core.universe INFO     The attribute(s) types have already been read from the topology file. The guesser will only guess empty values for this attribute, if any exists. To overwrite it by completely guessed values, you can pass the attribute to the force_guess parameter instead of the to_guess one
+2025-07-19 06:49:04,218 MDAnalysis.guesser.base INFO     There is no empty types values. Guesser did not guess any new values for types attribute
+2025-07-19 06:49:04,218 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c0933b7f920> to topology
+2025-07-19 06:49:04,218 MDAnalysis.core.universe INFO     attribute masses has been guessed successfully.
+2025-07-19 06:49:04,220 MDAnalysis.topology.PDBParser DEBUG    Segment IDs and Chain IDs are not completely equal.
+2025-07-19 06:49:04,220 MDAnalysis.topology.PDBParser INFO     Setting segids from chainIDs because no segids found in the PDB file.
+2025-07-19 06:49:04,220 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c0933b7d880> to topology
+2025-07-19 06:49:04,220 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.AltLocs object at 0x7c0933b7c440> to topology
+2025-07-19 06:49:04,221 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ChainIDs object at 0x7c0933b7f3e0> to topology
+2025-07-19 06:49:04,221 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.RecordTypes object at 0x7c0933b7c470> to topology
+2025-07-19 06:49:04,221 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c0933b7c710> to topology
+2025-07-19 06:49:04,221 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Tempfactors object at 0x7c0933b7d6d0> to topology
+2025-07-19 06:49:04,221 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Occupancies object at 0x7c0933b7c6b0> to topology
+2025-07-19 06:49:04,221 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c0933b7e900> to topology
+2025-07-19 06:49:04,221 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Elements object at 0x7c0933b7f2c0> to topology
+2025-07-19 06:49:04,221 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c0933b7c320> to topology
+2025-07-19 06:49:04,221 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c0933b7f770> to topology
+2025-07-19 06:49:04,221 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ICodes object at 0x7c0933b7c350> to topology
+2025-07-19 06:49:04,221 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c0933b7d940> to topology
+2025-07-19 06:49:04,221 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c0933b7dca0> to topology
+2025-07-19 06:49:04,221 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c0933b7f7a0> to topology
+2025-07-19 06:49:04,221 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c0933b7e630> to topology
+2025-07-19 06:49:04,221 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c0933b7ce90> to topology
+2025-07-19 06:49:04,222 MDAnalysis.core.universe DEBUG    Universe.load_new(): loading /home/ialibay/github/mdanalysis/testsuite/MDAnalysisTests/data/merge/2zmm/ligand.pdb...
+2025-07-19 06:49:04,223 MDAnalysis.core.universe INFO     The attribute(s) types have already been read from the topology file. The guesser will only guess empty values for this attribute, if any exists. To overwrite it by completely guessed values, you can pass the attribute to the force_guess parameter instead of the to_guess one
+2025-07-19 06:49:04,223 MDAnalysis.guesser.base INFO     There is no empty types values. Guesser did not guess any new values for types attribute
+2025-07-19 06:49:04,223 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c09396a69f0> to topology
+2025-07-19 06:49:04,223 MDAnalysis.core.universe INFO     attribute masses has been guessed successfully.
+2025-07-19 06:49:04,225 MDAnalysis.topology.PDBParser DEBUG    Segment IDs and Chain IDs are not completely equal.
+2025-07-19 06:49:04,225 MDAnalysis.topology.PDBParser INFO     Setting segids from chainIDs because no segids found in the PDB file.
+2025-07-19 06:49:04,226 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c0928ba90d0> to topology
+2025-07-19 06:49:04,227 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.AltLocs object at 0x7c0928baa210> to topology
+2025-07-19 06:49:04,227 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ChainIDs object at 0x7c0928ba8890> to topology
+2025-07-19 06:49:04,227 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.RecordTypes object at 0x7c0928ba8e00> to topology
+2025-07-19 06:49:04,227 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c0928ba9190> to topology
+2025-07-19 06:49:04,227 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Tempfactors object at 0x7c0928babb30> to topology
+2025-07-19 06:49:04,227 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Occupancies object at 0x7c0928ba9850> to topology
+2025-07-19 06:49:04,227 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c0928ba95e0> to topology
+2025-07-19 06:49:04,227 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Elements object at 0x7c0928ba9430> to topology
+2025-07-19 06:49:04,227 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c0929376fc0> to topology
+2025-07-19 06:49:04,227 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c0929376810> to topology
+2025-07-19 06:49:04,227 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ICodes object at 0x7c0929376d20> to topology
+2025-07-19 06:49:04,227 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c0929374bc0> to topology
+2025-07-19 06:49:04,227 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c0929375ac0> to topology
+2025-07-19 06:49:04,227 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c0929377e00> to topology
+2025-07-19 06:49:04,227 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c0929374560> to topology
+2025-07-19 06:49:04,227 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c09293769f0> to topology
+2025-07-19 06:49:04,228 MDAnalysis.core.universe DEBUG    Universe.load_new(): loading /home/ialibay/github/mdanalysis/testsuite/MDAnalysisTests/data/merge/2zmm/water.pdb...
+2025-07-19 06:49:04,230 MDAnalysis.core.universe INFO     The attribute(s) types have already been read from the topology file. The guesser will only guess empty values for this attribute, if any exists. To overwrite it by completely guessed values, you can pass the attribute to the force_guess parameter instead of the to_guess one
+2025-07-19 06:49:04,230 MDAnalysis.guesser.base INFO     There is no empty types values. Guesser did not guess any new values for types attribute
+2025-07-19 06:49:04,230 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c09385cb710> to topology
+2025-07-19 06:49:04,230 MDAnalysis.core.universe INFO     attribute masses has been guessed successfully.
+2025-07-19 06:49:04,246 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Occupancies object at 0x7c09385cbcb0> to topology
+2025-07-19 06:49:04,246 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c09385ca660> to topology
+2025-07-19 06:49:04,246 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c09385c9e50> to topology
+2025-07-19 06:49:04,247 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c09385cb6e0> to topology
+2025-07-19 06:49:04,247 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Tempfactors object at 0x7c09385caa80> to topology
+2025-07-19 06:49:04,247 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ICodes object at 0x7c09385c8470> to topology
+2025-07-19 06:49:04,247 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c09385c9970> to topology
+2025-07-19 06:49:04,247 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c09385cbc20> to topology
+2025-07-19 06:49:04,247 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c09385c8b90> to topology
+2025-07-19 06:49:04,247 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c09385ca750> to topology
+2025-07-19 06:49:04,247 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.AltLocs object at 0x7c09385c88f0> to topology
+2025-07-19 06:49:04,247 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.RecordTypes object at 0x7c09385c8560> to topology
+2025-07-19 06:49:04,247 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Elements object at 0x7c09385caa50> to topology
+2025-07-19 06:49:04,247 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c09385ca180> to topology
+2025-07-19 06:49:04,247 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ChainIDs object at 0x7c09385c9880> to topology
+2025-07-19 06:49:04,247 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c09385c9a60> to topology
+2025-07-19 06:49:04,247 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c09385c8a70> to topology
+2025-07-19 06:49:04,247 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c09385cb4d0> to topology
+2025-07-19 06:49:04,248 MDAnalysis.core.universe DEBUG    Universe.load_new(): loading [[[70.008 14.114 20.138]
+  [69.297 15.336 20.498]
+  [68.738 16.032 19.261]
+  ...
+  [47.055 26.777  0.255]
+  [44.021 25.183  7.011]
+  [43.984 16.877  4.8  ]]]...
+2025-07-19 06:49:04,248 MDAnalysis.core.universe INFO     The attribute(s) masses, types have already been read from the topology file. The guesser will only guess empty values for this attribute, if any exists. To overwrite it by completely guessed values, you can pass the attribute to the force_guess parameter instead of the to_guess one
+2025-07-19 06:49:04,248 MDAnalysis.guesser.base INFO     There is no empty types values. Guesser did not guess any new values for types attribute
+2025-07-19 06:49:04,248 MDAnalysis.guesser.base INFO     There is no empty masses values. Guesser did not guess any new values for masses attribute
+2025-07-19 06:49:04,347 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c093884a660> to topology
+2025-07-19 06:49:04,347 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.AltLocs object at 0x7c093863c7a0> to topology
+2025-07-19 06:49:04,347 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ChainIDs object at 0x7c093863eae0> to topology
+2025-07-19 06:49:04,347 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.RecordTypes object at 0x7c093863fa70> to topology
+2025-07-19 06:49:04,347 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c093863eea0> to topology
+2025-07-19 06:49:04,347 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Tempfactors object at 0x7c093863e600> to topology
+2025-07-19 06:49:04,347 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Occupancies object at 0x7c093cc89ca0> to topology
+2025-07-19 06:49:04,347 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c09385c95b0> to topology
+2025-07-19 06:49:04,347 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Elements object at 0x7c093cc8a960> to topology
+2025-07-19 06:49:04,347 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c09388497f0> to topology
+2025-07-19 06:49:04,347 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c0938849160> to topology
+2025-07-19 06:49:04,347 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ICodes object at 0x7c093884bbf0> to topology
+2025-07-19 06:49:04,348 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c093884b560> to topology
+2025-07-19 06:49:04,348 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c093884bb00> to topology
+2025-07-19 06:49:04,348 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c09388497c0> to topology
+2025-07-19 06:49:04,348 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c093884b290> to topology
+2025-07-19 06:49:04,348 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c0938849010> to topology
+2025-07-19 06:49:04,349 MDAnalysis.core.universe DEBUG    Universe.load_new(): loading /tmp/pytest-of-ialibay/pytest-8/popen-gw7/test_merge0/test.pdb...
+2025-07-19 06:49:04,356 MDAnalysis.core.universe INFO     The attribute(s) types have already been read from the topology file. The guesser will only guess empty values for this attribute, if any exists. To overwrite it by completely guessed values, you can pass the attribute to the force_guess parameter instead of the to_guess one
+2025-07-19 06:49:04,356 MDAnalysis.guesser.base INFO     There is no empty types values. Guesser did not guess any new values for types attribute
+2025-07-19 06:49:04,357 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c092e12b740> to topology
+2025-07-19 06:49:04,357 MDAnalysis.core.universe INFO     attribute masses has been guessed successfully.
+2025-07-19 06:49:04,407 MDAnalysis.topology.PDBParser DEBUG    Segment IDs and Chain IDs are not completely equal.
+2025-07-19 06:49:04,407 MDAnalysis.topology.PDBParser INFO     Setting segids from chainIDs because no segids found in the PDB file.
+2025-07-19 06:49:04,414 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c092f4ef9b0> to topology
+2025-07-19 06:49:04,414 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.AltLocs object at 0x7c092f4eff20> to topology
+2025-07-19 06:49:04,414 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ChainIDs object at 0x7c092f4eda60> to topology
+2025-07-19 06:49:04,414 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.RecordTypes object at 0x7c092f4ee180> to topology
+2025-07-19 06:49:04,414 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c092f4efda0> to topology
+2025-07-19 06:49:04,414 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Tempfactors object at 0x7c092f4eea20> to topology
+2025-07-19 06:49:04,414 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Occupancies object at 0x7c092f4ed700> to topology
+2025-07-19 06:49:04,414 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c092f4edca0> to topology
+2025-07-19 06:49:04,414 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Elements object at 0x7c092f4eeea0> to topology
+2025-07-19 06:49:04,414 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c092f4ef800> to topology
+2025-07-19 06:49:04,414 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c092f4ed2e0> to topology
+2025-07-19 06:49:04,414 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ICodes object at 0x7c092f4ee8d0> to topology
+2025-07-19 06:49:04,414 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c092f4ecc80> to topology
+2025-07-19 06:49:04,414 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c092f4efb90> to topology
+2025-07-19 06:49:04,414 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c092f4ed880> to topology
+2025-07-19 06:49:04,414 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c092f4ed1f0> to topology
+2025-07-19 06:49:04,415 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c092f4ec890> to topology
+2025-07-19 06:49:04,415 MDAnalysis.core.universe DEBUG    Universe.load_new(): loading /home/ialibay/github/mdanalysis/testsuite/MDAnalysisTests/data/merge/2zmm/protein.pdb...
+2025-07-19 06:49:04,422 MDAnalysis.core.universe INFO     The attribute(s) types have already been read from the topology file. The guesser will only guess empty values for this attribute, if any exists. To overwrite it by completely guessed values, you can pass the attribute to the force_guess parameter instead of the to_guess one
+2025-07-19 06:49:04,423 MDAnalysis.guesser.base INFO     There is no empty types values. Guesser did not guess any new values for types attribute
+2025-07-19 06:49:04,423 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c0931a31460> to topology
+2025-07-19 06:49:04,423 MDAnalysis.core.universe INFO     attribute masses has been guessed successfully.
+2025-07-19 06:49:04,439 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Occupancies object at 0x7c0931a329c0> to topology
+2025-07-19 06:49:04,439 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c0931a31100> to topology
+2025-07-19 06:49:04,439 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c0931a308f0> to topology
+2025-07-19 06:49:04,439 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c0931a33f20> to topology
+2025-07-19 06:49:04,439 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Tempfactors object at 0x7c0931a33740> to topology
+2025-07-19 06:49:04,439 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ICodes object at 0x7c0931a30fb0> to topology
+2025-07-19 06:49:04,439 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c0931a31c70> to topology
+2025-07-19 06:49:04,439 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c0931a31b20> to topology
+2025-07-19 06:49:04,439 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c0931a32960> to topology
+2025-07-19 06:49:04,439 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c0931a31a00> to topology
+2025-07-19 06:49:04,440 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.AltLocs object at 0x7c0931a320f0> to topology
+2025-07-19 06:49:04,440 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.RecordTypes object at 0x7c0931a31a60> to topology
+2025-07-19 06:49:04,440 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Elements object at 0x7c0931a33500> to topology
+2025-07-19 06:49:04,440 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c0931a33aa0> to topology
+2025-07-19 06:49:04,440 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ChainIDs object at 0x7c0931a30530> to topology
+2025-07-19 06:49:04,440 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c0931a33a40> to topology
+2025-07-19 06:49:04,440 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c0931a31cd0> to topology
+2025-07-19 06:49:04,440 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c09382adf70> to topology
+2025-07-19 06:49:04,440 MDAnalysis.core.universe DEBUG    Universe.load_new(): loading [[[70.008 14.114 20.138]
+  [69.297 15.336 20.498]
+  [68.738 16.032 19.261]
+  ...
+  [45.458 41.    17.185]
+  [44.358 40.48  17.471]
+  [46.39  41.118 18.01 ]]]...
+2025-07-19 06:49:04,440 MDAnalysis.core.universe INFO     The attribute(s) masses, types have already been read from the topology file. The guesser will only guess empty values for this attribute, if any exists. To overwrite it by completely guessed values, you can pass the attribute to the force_guess parameter instead of the to_guess one
+2025-07-19 06:49:04,441 MDAnalysis.guesser.base INFO     There is no empty types values. Guesser did not guess any new values for types attribute
+2025-07-19 06:49:04,441 MDAnalysis.guesser.base INFO     There is no empty masses values. Guesser did not guess any new values for masses attribute
+2025-07-19 06:49:04,449 MDAnalysis.topology.PDBParser DEBUG    Segment IDs and Chain IDs are not completely equal.
+2025-07-19 06:49:04,449 MDAnalysis.topology.PDBParser INFO     Setting segids from chainIDs because no segids found in the PDB file.
+2025-07-19 06:49:04,455 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c0937b62000> to topology
+2025-07-19 06:49:04,455 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.AltLocs object at 0x7c0937b60740> to topology
+2025-07-19 06:49:04,455 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ChainIDs object at 0x7c0937b614f0> to topology
+2025-07-19 06:49:04,455 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.RecordTypes object at 0x7c0937b63770> to topology
+2025-07-19 06:49:04,455 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c0937b60500> to topology
+2025-07-19 06:49:04,455 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Tempfactors object at 0x7c0937b60290> to topology
+2025-07-19 06:49:04,455 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Occupancies object at 0x7c0937b63890> to topology
+2025-07-19 06:49:04,456 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c0937b61130> to topology
+2025-07-19 06:49:04,456 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Elements object at 0x7c0937b62690> to topology
+2025-07-19 06:49:04,456 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c0937b63ce0> to topology
+2025-07-19 06:49:04,456 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c0937b61070> to topology
+2025-07-19 06:49:04,456 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ICodes object at 0x7c0937b61190> to topology
+2025-07-19 06:49:04,456 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c0937b62510> to topology
+2025-07-19 06:49:04,456 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c0937b633b0> to topology
+2025-07-19 06:49:04,456 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c0937b60b30> to topology
+2025-07-19 06:49:04,456 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c0937b60a70> to topology
+2025-07-19 06:49:04,456 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c0937b607a0> to topology
+2025-07-19 06:49:04,457 MDAnalysis.core.universe DEBUG    Universe.load_new(): loading /home/ialibay/github/mdanalysis/testsuite/MDAnalysisTests/data/merge/2zmm/protein.pdb...
+2025-07-19 06:49:04,462 MDAnalysis.core.universe INFO     The attribute(s) types have already been read from the topology file. The guesser will only guess empty values for this attribute, if any exists. To overwrite it by completely guessed values, you can pass the attribute to the force_guess parameter instead of the to_guess one
+2025-07-19 06:49:04,462 MDAnalysis.guesser.base INFO     There is no empty types values. Guesser did not guess any new values for types attribute
+2025-07-19 06:49:04,463 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c0931a69940> to topology
+2025-07-19 06:49:04,463 MDAnalysis.core.universe INFO     attribute masses has been guessed successfully.
+2025-07-19 06:49:04,464 MDAnalysis.topology.PDBParser DEBUG    Segment IDs and Chain IDs are not completely equal.
+2025-07-19 06:49:04,464 MDAnalysis.topology.PDBParser INFO     Setting segids from chainIDs because no segids found in the PDB file.
+2025-07-19 06:49:04,465 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c0931a6a0c0> to topology
+2025-07-19 06:49:04,465 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.AltLocs object at 0x7c0931a68d10> to topology
+2025-07-19 06:49:04,465 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ChainIDs object at 0x7c0931a68d40> to topology
+2025-07-19 06:49:04,465 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.RecordTypes object at 0x7c0931a69250> to topology
+2025-07-19 06:49:04,465 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c0931a6ae70> to topology
+2025-07-19 06:49:04,465 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Tempfactors object at 0x7c0931a69970> to topology
+2025-07-19 06:49:04,465 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Occupancies object at 0x7c0931a6af60> to topology
+2025-07-19 06:49:04,465 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c0931a69d00> to topology
+2025-07-19 06:49:04,465 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Elements object at 0x7c0931a68890> to topology
+2025-07-19 06:49:04,465 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c0931a695b0> to topology
+2025-07-19 06:49:04,465 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c0931a6b980> to topology
+2025-07-19 06:49:04,465 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ICodes object at 0x7c0931a6a780> to topology
+2025-07-19 06:49:04,465 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c0931a6a330> to topology
+2025-07-19 06:49:04,465 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c0931a682c0> to topology
+2025-07-19 06:49:04,466 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c0931a687a0> to topology
+2025-07-19 06:49:04,466 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c0931a6bdd0> to topology
+2025-07-19 06:49:04,466 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c0931a6a1e0> to topology
+2025-07-19 06:49:04,466 MDAnalysis.core.universe DEBUG    Universe.load_new(): loading /home/ialibay/github/mdanalysis/testsuite/MDAnalysisTests/data/merge/2zmm/ligand.pdb...
+2025-07-19 06:49:04,467 MDAnalysis.core.universe INFO     The attribute(s) types have already been read from the topology file. The guesser will only guess empty values for this attribute, if any exists. To overwrite it by completely guessed values, you can pass the attribute to the force_guess parameter instead of the to_guess one
+2025-07-19 06:49:04,467 MDAnalysis.guesser.base INFO     There is no empty types values. Guesser did not guess any new values for types attribute
+2025-07-19 06:49:04,468 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c0931a68ef0> to topology
+2025-07-19 06:49:04,468 MDAnalysis.core.universe INFO     attribute masses has been guessed successfully.
+2025-07-19 06:49:04,474 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Occupancies object at 0x7c0931a6a810> to topology
+2025-07-19 06:49:04,474 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c0931a6a420> to topology
+2025-07-19 06:49:04,474 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c0931a6a3f0> to topology
+2025-07-19 06:49:04,474 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c0931a69190> to topology
+2025-07-19 06:49:04,474 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Tempfactors object at 0x7c0931a6a4b0> to topology
+2025-07-19 06:49:04,474 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ICodes object at 0x7c0931a69e20> to topology
+2025-07-19 06:49:04,474 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c0931a68d70> to topology
+2025-07-19 06:49:04,474 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c0931a68b30> to topology
+2025-07-19 06:49:04,474 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c0931a6ac30> to topology
+2025-07-19 06:49:04,474 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c0931a68650> to topology
+2025-07-19 06:49:04,474 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.AltLocs object at 0x7c0931a68980> to topology
+2025-07-19 06:49:04,474 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.RecordTypes object at 0x7c0931a6b920> to topology
+2025-07-19 06:49:04,474 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Elements object at 0x7c0931a6b830> to topology
+2025-07-19 06:49:04,474 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c0931a6a2d0> to topology
+2025-07-19 06:49:04,474 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ChainIDs object at 0x7c0931a68bc0> to topology
+2025-07-19 06:49:04,475 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c0931a69880> to topology
+2025-07-19 06:49:04,475 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c0931a681a0> to topology
+2025-07-19 06:49:04,475 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c0931a6bda0> to topology
+2025-07-19 06:49:04,475 MDAnalysis.core.universe DEBUG    Universe.load_new(): loading [[[70.008 14.114 20.138]
+  [69.297 15.336 20.498]
+  [68.738 16.032 19.261]
+  ...
+  [46.751 17.008  5.422]
+  [48.758 17.588  4.516]
+  [47.423 12.586  3.586]]]...
+2025-07-19 06:49:04,475 MDAnalysis.core.universe INFO     The attribute(s) masses, types have already been read from the topology file. The guesser will only guess empty values for this attribute, if any exists. To overwrite it by completely guessed values, you can pass the attribute to the force_guess parameter instead of the to_guess one
+2025-07-19 06:49:04,475 MDAnalysis.guesser.base INFO     There is no empty types values. Guesser did not guess any new values for types attribute
+2025-07-19 06:49:04,475 MDAnalysis.guesser.base INFO     There is no empty masses values. Guesser did not guess any new values for masses attribute
+2025-07-19 06:49:04,482 MDAnalysis.topology.PDBParser DEBUG    Segment IDs and Chain IDs are not completely equal.
+2025-07-19 06:49:04,482 MDAnalysis.topology.PDBParser INFO     Setting segids from chainIDs because no segids found in the PDB file.
+2025-07-19 06:49:04,487 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c092f4ec980> to topology
+2025-07-19 06:49:04,487 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.AltLocs object at 0x7c092f4efa70> to topology
+2025-07-19 06:49:04,487 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ChainIDs object at 0x7c092f4edd00> to topology
+2025-07-19 06:49:04,487 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.RecordTypes object at 0x7c092f4ec380> to topology
+2025-07-19 06:49:04,487 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c092f4ecf80> to topology
+2025-07-19 06:49:04,487 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Tempfactors object at 0x7c092f4ed670> to topology
+2025-07-19 06:49:04,488 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Occupancies object at 0x7c092f4eecc0> to topology
+2025-07-19 06:49:04,488 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c092f4ef890> to topology
+2025-07-19 06:49:04,488 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Elements object at 0x7c092f4eec30> to topology
+2025-07-19 06:49:04,488 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c092f4ee0c0> to topology
+2025-07-19 06:49:04,488 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c092f4ef770> to topology
+2025-07-19 06:49:04,488 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ICodes object at 0x7c092f4ee5a0> to topology
+2025-07-19 06:49:04,488 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c092f4edb20> to topology
+2025-07-19 06:49:04,488 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c092f4ee600> to topology
+2025-07-19 06:49:04,488 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c092f4ee6f0> to topology
+2025-07-19 06:49:04,488 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c092f4ee5d0> to topology
+2025-07-19 06:49:04,488 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c092f4ef950> to topology
+2025-07-19 06:49:04,489 MDAnalysis.core.universe DEBUG    Universe.load_new(): loading /home/ialibay/github/mdanalysis/testsuite/MDAnalysisTests/data/merge/2zmm/protein.pdb...
+2025-07-19 06:49:04,494 MDAnalysis.core.universe INFO     The attribute(s) types have already been read from the topology file. The guesser will only guess empty values for this attribute, if any exists. To overwrite it by completely guessed values, you can pass the attribute to the force_guess parameter instead of the to_guess one
+2025-07-19 06:49:04,494 MDAnalysis.guesser.base INFO     There is no empty types values. Guesser did not guess any new values for types attribute
+2025-07-19 06:49:04,494 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c093846e990> to topology
+2025-07-19 06:49:04,494 MDAnalysis.core.universe INFO     attribute masses has been guessed successfully.
+2025-07-19 06:49:04,495 MDAnalysis.topology.PDBParser DEBUG    Segment IDs and Chain IDs are not completely equal.
+2025-07-19 06:49:04,495 MDAnalysis.topology.PDBParser INFO     Setting segids from chainIDs because no segids found in the PDB file.
+2025-07-19 06:49:04,496 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c093846cb60> to topology
+2025-07-19 06:49:04,496 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.AltLocs object at 0x7c093846dc70> to topology
+2025-07-19 06:49:04,496 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ChainIDs object at 0x7c093846e360> to topology
+2025-07-19 06:49:04,496 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.RecordTypes object at 0x7c093846dbb0> to topology
+2025-07-19 06:49:04,496 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c093846e9f0> to topology
+2025-07-19 06:49:04,496 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Tempfactors object at 0x7c093846daf0> to topology
+2025-07-19 06:49:04,496 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Occupancies object at 0x7c093846dfa0> to topology
+2025-07-19 06:49:04,497 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c093846f9e0> to topology
+2025-07-19 06:49:04,497 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Elements object at 0x7c093846cda0> to topology
+2025-07-19 06:49:04,497 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c093846d520> to topology
+2025-07-19 06:49:04,497 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c093846dc40> to topology
+2025-07-19 06:49:04,497 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ICodes object at 0x7c093846f440> to topology
+2025-07-19 06:49:04,497 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c093846eff0> to topology
+2025-07-19 06:49:04,497 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c093846e930> to topology
+2025-07-19 06:49:04,497 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c093846e6c0> to topology
+2025-07-19 06:49:04,497 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c093846eb40> to topology
+2025-07-19 06:49:04,497 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c093846c380> to topology
+2025-07-19 06:49:04,498 MDAnalysis.core.universe DEBUG    Universe.load_new(): loading /home/ialibay/github/mdanalysis/testsuite/MDAnalysisTests/data/merge/2zmm/ligand.pdb...
+2025-07-19 06:49:04,499 MDAnalysis.core.universe INFO     The attribute(s) types have already been read from the topology file. The guesser will only guess empty values for this attribute, if any exists. To overwrite it by completely guessed values, you can pass the attribute to the force_guess parameter instead of the to_guess one
+2025-07-19 06:49:04,499 MDAnalysis.guesser.base INFO     There is no empty types values. Guesser did not guess any new values for types attribute
+2025-07-19 06:49:04,499 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c092d0890a0> to topology
+2025-07-19 06:49:04,499 MDAnalysis.core.universe INFO     attribute masses has been guessed successfully.
+2025-07-19 06:49:04,505 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Occupancies object at 0x7c092d08baa0> to topology
+2025-07-19 06:49:04,505 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c092d08ba70> to topology
+2025-07-19 06:49:04,505 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c092d08a360> to topology
+2025-07-19 06:49:04,505 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c092d08a840> to topology
+2025-07-19 06:49:04,506 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Tempfactors object at 0x7c092d08b500> to topology
+2025-07-19 06:49:04,506 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ICodes object at 0x7c092d08a1b0> to topology
+2025-07-19 06:49:04,506 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c092d08aa80> to topology
+2025-07-19 06:49:04,506 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c092d08a270> to topology
+2025-07-19 06:49:04,506 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c092d08b4d0> to topology
+2025-07-19 06:49:04,506 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c092d0889e0> to topology
+2025-07-19 06:49:04,506 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.AltLocs object at 0x7c092d088050> to topology
+2025-07-19 06:49:04,506 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.RecordTypes object at 0x7c092d08a780> to topology
+2025-07-19 06:49:04,506 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Elements object at 0x7c092d08a030> to topology
+2025-07-19 06:49:04,506 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c092d0889b0> to topology
+2025-07-19 06:49:04,506 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ChainIDs object at 0x7c092d08ad20> to topology
+2025-07-19 06:49:04,506 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c092d088380> to topology
+2025-07-19 06:49:04,506 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c092d0899d0> to topology
+2025-07-19 06:49:04,506 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c092d089f40> to topology
+2025-07-19 06:49:04,506 MDAnalysis.core.universe DEBUG    Universe.load_new(): loading [[[70.008 14.114 20.138]
+  [69.297 15.336 20.498]
+  [68.738 16.032 19.261]
+  ...
+  [46.751 17.008  5.422]
+  [48.758 17.588  4.516]
+  [47.423 12.586  3.586]]]...
+2025-07-19 06:49:04,507 MDAnalysis.core.universe INFO     The attribute(s) masses, types have already been read from the topology file. The guesser will only guess empty values for this attribute, if any exists. To overwrite it by completely guessed values, you can pass the attribute to the force_guess parameter instead of the to_guess one
+2025-07-19 06:49:04,507 MDAnalysis.guesser.base INFO     There is no empty types values. Guesser did not guess any new values for types attribute
+2025-07-19 06:49:04,507 MDAnalysis.guesser.base INFO     There is no empty masses values. Guesser did not guess any new values for masses attribute
+2025-07-19 06:49:04,515 MDAnalysis.topology.PDBParser DEBUG    Segment IDs and Chain IDs are not completely equal.
+2025-07-19 06:49:04,515 MDAnalysis.topology.PDBParser INFO     Setting segids from chainIDs because no segids found in the PDB file.
+2025-07-19 06:49:04,521 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c093cc89ee0> to topology
+2025-07-19 06:49:04,521 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.AltLocs object at 0x7c093cc895e0> to topology
+2025-07-19 06:49:04,521 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ChainIDs object at 0x7c093cc89f70> to topology
+2025-07-19 06:49:04,521 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.RecordTypes object at 0x7c093cc8aa20> to topology
+2025-07-19 06:49:04,521 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c093cc896a0> to topology
+2025-07-19 06:49:04,521 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Tempfactors object at 0x7c093cc899a0> to topology
+2025-07-19 06:49:04,521 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Occupancies object at 0x7c093cc889b0> to topology
+2025-07-19 06:49:04,521 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c093cc894f0> to topology
+2025-07-19 06:49:04,521 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Elements object at 0x7c093cc89520> to topology
+2025-07-19 06:49:04,521 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c093cc8a270> to topology
+2025-07-19 06:49:04,521 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c093cc8b170> to topology
+2025-07-19 06:49:04,521 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ICodes object at 0x7c09396a5b20> to topology
+2025-07-19 06:49:04,521 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c09396a5a30> to topology
+2025-07-19 06:49:04,521 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c09396a7380> to topology
+2025-07-19 06:49:04,521 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c092e771730> to topology
+2025-07-19 06:49:04,522 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c092e772450> to topology
+2025-07-19 06:49:04,522 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c0934257620> to topology
+2025-07-19 06:49:04,522 MDAnalysis.core.universe DEBUG    Universe.load_new(): loading /home/ialibay/github/mdanalysis/testsuite/MDAnalysisTests/data/merge/2zmm/protein.pdb...
+2025-07-19 06:49:04,528 MDAnalysis.core.universe INFO     The attribute(s) types have already been read from the topology file. The guesser will only guess empty values for this attribute, if any exists. To overwrite it by completely guessed values, you can pass the attribute to the force_guess parameter instead of the to_guess one
+2025-07-19 06:49:04,528 MDAnalysis.guesser.base INFO     There is no empty types values. Guesser did not guess any new values for types attribute
+2025-07-19 06:49:04,529 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c0933b7d910> to topology
+2025-07-19 06:49:04,529 MDAnalysis.core.universe INFO     attribute masses has been guessed successfully.
+2025-07-19 06:49:04,531 MDAnalysis.topology.PSF DEBUG    PSF file /home/ialibay/github/mdanalysis/testsuite/MDAnalysisTests/data/adk.psf: format STANDARD
+2025-07-19 06:49:04,612 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c0933b7fb60> to topology
+2025-07-19 06:49:04,612 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c09390020f0> to topology
+2025-07-19 06:49:04,612 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c0932eb38f0> to topology
+2025-07-19 06:49:04,613 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Charges object at 0x7c0932eb1cd0> to topology
+2025-07-19 06:49:04,613 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c0932eb15b0> to topology
+2025-07-19 06:49:04,613 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c0932eb00e0> to topology
+2025-07-19 06:49:04,613 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c0932eb1340> to topology
+2025-07-19 06:49:04,613 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c0932eb3e90> to topology
+2025-07-19 06:49:04,613 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c0932eb3740> to topology
+2025-07-19 06:49:04,613 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c0932eb17c0> to topology
+2025-07-19 06:49:04,613 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c0932eb07d0> to topology
+2025-07-19 06:49:04,613 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c0932eb1c40> to topology
+2025-07-19 06:49:04,613 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Bonds object at 0x7c092e772330> to topology
+2025-07-19 06:49:04,613 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Angles object at 0x7c0932eb31d0> to topology
+2025-07-19 06:49:04,613 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Dihedrals object at 0x7c0932eb1190> to topology
+2025-07-19 06:49:04,613 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Impropers object at 0x7c0932eb2600> to topology
+2025-07-19 06:49:04,614 MDAnalysis.core.universe INFO     The attribute(s) masses, types have already been read from the topology file. The guesser will only guess empty values for this attribute, if any exists. To overwrite it by completely guessed values, you can pass the attribute to the force_guess parameter instead of the to_guess one
+2025-07-19 06:49:04,615 MDAnalysis.guesser.base INFO     There is no empty types values. Guesser did not guess any new values for types attribute
+2025-07-19 06:49:04,615 MDAnalysis.guesser.base INFO     There is no empty masses values. Guesser did not guess any new values for masses attribute
+2025-07-19 06:49:04,822 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c0932eb3c20> to topology
+2025-07-19 06:49:04,823 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c0932eb1a30> to topology
+2025-07-19 06:49:04,823 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c0932eb19a0> to topology
+2025-07-19 06:49:04,823 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c0932eb1c10> to topology
+2025-07-19 06:49:04,823 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c0932eb3f50> to topology
+2025-07-19 06:49:04,823 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c0932eb21e0> to topology
+2025-07-19 06:49:04,823 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c0932eb3860> to topology
+2025-07-19 06:49:04,823 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Charges object at 0x7c0932eb2270> to topology
+2025-07-19 06:49:04,823 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c0932eb3a10> to topology
+2025-07-19 06:49:04,823 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Bonds object at 0x7c0932eb2ed0> to topology
+2025-07-19 06:49:04,823 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Impropers object at 0x7c0932eb1a60> to topology
+2025-07-19 06:49:04,823 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Angles object at 0x7c09395901d0> to topology
+2025-07-19 06:49:04,823 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Dihedrals object at 0x7c093b620bc0> to topology
+2025-07-19 06:49:04,823 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c093968ba40> to topology
+2025-07-19 06:49:04,823 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c092e7723c0> to topology
+2025-07-19 06:49:04,823 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c092e773710> to topology
+2025-07-19 06:49:04,823 MDAnalysis.core.universe INFO     The attribute(s) masses, types have already been read from the topology file. The guesser will only guess empty values for this attribute, if any exists. To overwrite it by completely guessed values, you can pass the attribute to the force_guess parameter instead of the to_guess one
+2025-07-19 06:49:04,824 MDAnalysis.guesser.base INFO     There is no empty types values. Guesser did not guess any new values for types attribute
+2025-07-19 06:49:04,824 MDAnalysis.guesser.base INFO     There is no empty masses values. Guesser did not guess any new values for masses attribute
+2025-07-19 06:49:04,826 MDAnalysis.topology.PSF DEBUG    PSF file /home/ialibay/github/mdanalysis/testsuite/MDAnalysisTests/data/adk.psf: format STANDARD
+2025-07-19 06:49:04,910 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c0939591fa0> to topology
+2025-07-19 06:49:04,910 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c092fe56e70> to topology
+2025-07-19 06:49:04,910 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c0928d35730> to topology
+2025-07-19 06:49:04,910 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Charges object at 0x7c0928d37080> to topology
+2025-07-19 06:49:04,910 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c0928d36ea0> to topology
+2025-07-19 06:49:04,910 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c0928d355b0> to topology
+2025-07-19 06:49:04,910 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c0928d34350> to topology
+2025-07-19 06:49:04,910 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c0928d34f20> to topology
+2025-07-19 06:49:04,910 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c0928d35010> to topology
+2025-07-19 06:49:04,910 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c0939590dd0> to topology
+2025-07-19 06:49:04,910 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c09395902f0> to topology
+2025-07-19 06:49:04,910 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c0928d357c0> to topology
+2025-07-19 06:49:04,910 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Bonds object at 0x7c0939590710> to topology
+2025-07-19 06:49:04,910 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Angles object at 0x7c0933bb7da0> to topology
+2025-07-19 06:49:04,910 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Dihedrals object at 0x7c0939590b60> to topology
+2025-07-19 06:49:04,910 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Impropers object at 0x7c09398812e0> to topology
+2025-07-19 06:49:04,911 MDAnalysis.core.universe DEBUG    Universe.load_new(): loading /home/ialibay/github/mdanalysis/testsuite/MDAnalysisTests/data/adk_dims.dcd...
+2025-07-19 06:49:04,912 MDAnalysis.core.universe INFO     The attribute(s) masses, types have already been read from the topology file. The guesser will only guess empty values for this attribute, if any exists. To overwrite it by completely guessed values, you can pass the attribute to the force_guess parameter instead of the to_guess one
+2025-07-19 06:49:04,912 MDAnalysis.guesser.base INFO     There is no empty types values. Guesser did not guess any new values for types attribute
+2025-07-19 06:49:04,912 MDAnalysis.guesser.base INFO     There is no empty masses values. Guesser did not guess any new values for masses attribute
+2025-07-19 06:49:04,934 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c0928d35f40> to topology
+2025-07-19 06:49:04,934 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c0928d35130> to topology
+2025-07-19 06:49:04,934 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c0928d348f0> to topology
+2025-07-19 06:49:04,934 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c0928d364e0> to topology
+2025-07-19 06:49:04,934 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c0928d367b0> to topology
+2025-07-19 06:49:04,934 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c0928d36210> to topology
+2025-07-19 06:49:04,934 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c0928d358b0> to topology
+2025-07-19 06:49:04,934 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Charges object at 0x7c0928d35cd0> to topology
+2025-07-19 06:49:04,934 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c0928d34380> to topology
+2025-07-19 06:49:04,934 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Bonds object at 0x7c0928d36360> to topology
+2025-07-19 06:49:04,934 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Impropers object at 0x7c0928d34680> to topology
+2025-07-19 06:49:04,934 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Angles object at 0x7c0928d360f0> to topology
+2025-07-19 06:49:04,934 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Dihedrals object at 0x7c0928d34080> to topology
+2025-07-19 06:49:04,934 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c0928d36a20> to topology
+2025-07-19 06:49:04,934 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c0928d37350> to topology
+2025-07-19 06:49:04,934 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c0928d36f60> to topology
+2025-07-19 06:49:04,935 MDAnalysis.core.universe DEBUG    Universe.load_new(): loading [[[ 11.736044    8.500797  -10.445281 ]
+  [ 12.365119    7.839936  -10.834842 ]
+  [ 12.0919485   9.441535  -10.724611 ]
+  [ 10.831957    8.308614  -10.963931 ]
+  [ 11.664622    8.393473   -8.983231 ]
+  [ 12.672612    8.560489   -8.680764 ]
+  [ 10.739638    9.569928   -8.590751 ]
+  [  9.63879     9.270485   -8.967953 ]
+  [ 11.094614   10.518884   -9.141996 ]
+  [ 10.556571    9.934239   -7.112363 ]
+  [ 11.449215   10.322626   -6.6931505]
+  [ 10.2771435   8.978575   -6.5972548]
+  [  9.24967    11.104844   -6.9101005]
+  [ 10.443903   12.492348   -7.161938 ]
+  [ 11.472447   12.294425   -7.6610537]
+  [ 10.565218   13.067866   -6.2516317]
+  [  9.883093   13.17239    -7.789969 ]
+  [ 11.166548    7.128996   -8.374827 ]
+  [ 10.151079    6.6486216  -8.755143 ]
+  [ 11.840959    6.6422696  -7.27511  ]
+  [  5.0286894   3.5712492   3.6345382]
+  [  5.1901855   4.5960603   3.5865705]
+  [  5.181461    2.8684187   4.8725643]
+  [  5.071245    1.8349593   4.6706944]
+  [  6.5064654   3.1842108   5.7285995]
+  [  6.343286    4.0949054   6.4081726]
+  [  7.198042    3.6918514   4.994974 ]
+  [  7.2649417   2.0369337   6.435306 ]
+  [  6.541329    1.5125123   7.1078744]
+  [  7.78169     1.073195    5.373155 ]]]...
+2025-07-19 06:49:04,935 MDAnalysis.core.universe INFO     The attribute(s) masses, types have already been read from the topology file. The guesser will only guess empty values for this attribute, if any exists. To overwrite it by completely guessed values, you can pass the attribute to the force_guess parameter instead of the to_guess one
+2025-07-19 06:49:04,935 MDAnalysis.guesser.base INFO     There is no empty types values. Guesser did not guess any new values for types attribute
+2025-07-19 06:49:04,936 MDAnalysis.guesser.base INFO     There is no empty masses values. Guesser did not guess any new values for masses attribute
+2025-07-19 06:49:04,939 MDAnalysis.topology.PSF DEBUG    PSF file /home/ialibay/github/mdanalysis/testsuite/MDAnalysisTests/data/adk.psf: format STANDARD
+2025-07-19 06:49:05,019 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c0928d343b0> to topology
+2025-07-19 06:49:05,019 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c09376cfb30> to topology
+2025-07-19 06:49:05,020 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c0938b89a00> to topology
+2025-07-19 06:49:05,020 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Charges object at 0x7c093994b2f0> to topology
+2025-07-19 06:49:05,020 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c0938b8bb90> to topology
+2025-07-19 06:49:05,020 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c0938b8b0e0> to topology
+2025-07-19 06:49:05,020 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c0938b8bf80> to topology
+2025-07-19 06:49:05,020 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c0938b895e0> to topology
+2025-07-19 06:49:05,020 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c0938b8aa50> to topology
+2025-07-19 06:49:05,020 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c09385cbe30> to topology
+2025-07-19 06:49:05,020 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c09385c97f0> to topology
+2025-07-19 06:49:05,020 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c09385cbf80> to topology
+2025-07-19 06:49:05,020 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Bonds object at 0x7c0939949700> to topology
+2025-07-19 06:49:05,020 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Angles object at 0x7c093994b230> to topology
+2025-07-19 06:49:05,020 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Dihedrals object at 0x7c09385caed0> to topology
+2025-07-19 06:49:05,020 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Impropers object at 0x7c09385c9fd0> to topology
+2025-07-19 06:49:05,020 MDAnalysis.core.universe DEBUG    Universe.load_new(): loading /home/ialibay/github/mdanalysis/testsuite/MDAnalysisTests/data/adk_dims.dcd...
+2025-07-19 06:49:05,021 MDAnalysis.core.universe INFO     The attribute(s) masses, types have already been read from the topology file. The guesser will only guess empty values for this attribute, if any exists. To overwrite it by completely guessed values, you can pass the attribute to the force_guess parameter instead of the to_guess one
+2025-07-19 06:49:05,022 MDAnalysis.guesser.base INFO     There is no empty types values. Guesser did not guess any new values for types attribute
+2025-07-19 06:49:05,022 MDAnalysis.guesser.base INFO     There is no empty masses values. Guesser did not guess any new values for masses attribute
+2025-07-19 06:49:05,023 MDAnalysis.topology.PDBParser DEBUG    Segment IDs and Chain IDs are not completely equal.
+2025-07-19 06:49:05,023 MDAnalysis.topology.PDBParser INFO     Setting segids from chainIDs because no segids found in the PDB file.
+2025-07-19 06:49:05,023 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c0938b89490> to topology
+2025-07-19 06:49:05,024 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.AltLocs object at 0x7c0938b884a0> to topology
+2025-07-19 06:49:05,024 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ChainIDs object at 0x7c0938b8adb0> to topology
+2025-07-19 06:49:05,024 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.RecordTypes object at 0x7c0938b8b8f0> to topology
+2025-07-19 06:49:05,024 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c0938b8b2f0> to topology
+2025-07-19 06:49:05,024 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Tempfactors object at 0x7c0938b883b0> to topology
+2025-07-19 06:49:05,024 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Occupancies object at 0x7c0938b8b3b0> to topology
+2025-07-19 06:49:05,024 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c0938b8a090> to topology
+2025-07-19 06:49:05,024 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Elements object at 0x7c0938b8ad80> to topology
+2025-07-19 06:49:05,024 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c0938b897f0> to topology
+2025-07-19 06:49:05,024 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c0938b88080> to topology
+2025-07-19 06:49:05,024 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ICodes object at 0x7c0938b8bfe0> to topology
+2025-07-19 06:49:05,024 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c0938b88890> to topology
+2025-07-19 06:49:05,024 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c0938b88e60> to topology
+2025-07-19 06:49:05,024 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c0938b887d0> to topology
+2025-07-19 06:49:05,024 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c0938b8a990> to topology
+2025-07-19 06:49:05,024 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c0938b8a300> to topology
+2025-07-19 06:49:05,025 MDAnalysis.core.universe DEBUG    Universe.load_new(): loading /home/ialibay/github/mdanalysis/testsuite/MDAnalysisTests/data/merge/2zmm/ligand.pdb...
+2025-07-19 06:49:05,026 MDAnalysis.core.universe INFO     The attribute(s) types have already been read from the topology file. The guesser will only guess empty values for this attribute, if any exists. To overwrite it by completely guessed values, you can pass the attribute to the force_guess parameter instead of the to_guess one
+2025-07-19 06:49:05,026 MDAnalysis.guesser.base INFO     There is no empty types values. Guesser did not guess any new values for types attribute
+2025-07-19 06:49:05,026 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c09306ff8f0> to topology
+2025-07-19 06:49:05,026 MDAnalysis.core.universe INFO     attribute masses has been guessed successfully.
+2025-07-19 06:49:05,028 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c092fe572f0> to topology
+2025-07-19 06:49:05,028 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c092fe548c0> to topology
+2025-07-19 06:49:05,028 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c092fe547d0> to topology
+2025-07-19 06:49:05,028 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c092fe56360> to topology
+2025-07-19 06:49:05,028 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c092fe57260> to topology
+2025-07-19 06:49:05,028 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c092fe54c20> to topology
+2025-07-19 06:49:05,028 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c092fe56c90> to topology
+2025-07-19 06:49:05,028 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c092fe57dd0> to topology
+2025-07-19 06:49:05,028 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c092fe552b0> to topology
+2025-07-19 06:49:05,028 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c092fe57710> to topology
+2025-07-19 06:49:05,028 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c092fe543e0> to topology
+2025-07-19 06:49:05,031 MDAnalysis.core.universe DEBUG    Universe.load_new(): loading [[[ 1.17360439e+01  8.50079727e+00 -1.04452810e+01]
+  [ 1.23651190e+01  7.83993578e+00 -1.08348417e+01]
+  [ 1.20919485e+01  9.44153500e+00 -1.07246113e+01]
+  [ 1.08319569e+01  8.30861378e+00 -1.09639311e+01]
+  [ 1.16646223e+01  8.39347267e+00 -8.98323059e+00]
+  [ 1.26726122e+01  8.56048870e+00 -8.68076420e+00]
+  [ 1.07396383e+01  9.56992817e+00 -8.59075069e+00]
+  [ 9.63879013e+00  9.27048492e+00 -8.96795273e+00]
+  [ 1.10946140e+01  1.05188837e+01 -9.14199638e+00]
+  [ 1.05565710e+01  9.93423939e+00 -7.11236286e+00]
+  [ 1.14492149e+01  1.03226261e+01 -6.69315052e+00]
+  [ 1.02771435e+01  8.97857475e+00 -6.59725475e+00]
+  [ 9.24967003e+00  1.11048441e+01 -6.91010046e+00]
+  [ 1.04439030e+01  1.24923477e+01 -7.16193819e+00]
+  [ 1.14724474e+01  1.22944250e+01 -7.66105366e+00]
+  [ 1.05652180e+01  1.30678663e+01 -6.25163174e+00]
+  [ 9.88309288e+00  1.31723900e+01 -7.78996897e+00]
+  [ 1.11665478e+01  7.12899590e+00 -8.37482738e+00]
+  [ 1.01510792e+01  6.64862156e+00 -8.75514317e+00]
+  [ 1.18409586e+01  6.64226961e+00 -7.27510977e+00]
+  [ 1.25664444e+01  7.12490797e+00 -6.93741226e+00]
+  [ 1.14148388e+01  5.43442154e+00 -6.51348448e+00]
+  [ 1.06600475e+01  5.00397110e+00 -7.11752129e+00]
+  [ 1.25321598e+01  4.36391068e+00 -6.26075649e+00]
+  [ 1.21183224e+01  3.52241397e+00 -5.66860533e+00]
+  [ 1.33017664e+01  4.79663849e+00 -5.48925686e+00]
+  [ 1.33161688e+01  3.75903177e+00 -7.44813585e+00]
+  [ 1.26236353e+01  3.67989326e+00 -8.33325958e+00]
+  [ 1.36049891e+01  2.65399671e+00 -7.19413805e+00]
+  [ 1.46088943e+01  4.52482748e+00 -7.80496311e+00]
+  [ 1.52704887e+01  4.50547457e+00 -6.95579910e+00]
+  [ 1.42807636e+01  5.53065968e+00 -8.13507557e+00]
+  [ 1.53075285e+01  3.76299524e+00 -8.87507057e+00]
+  [ 1.47517529e+01  3.29046440e+00 -9.56723881e+00]
+  [ 1.65729733e+01  3.41819119e+00 -8.92728424e+00]
+  [ 1.74779854e+01  3.96588182e+00 -8.11999035e+00]
+  [ 1.71159382e+01  4.70162916e+00 -7.53400993e+00]
+  [ 1.82621746e+01  3.45264864e+00 -7.93133688e+00]
+  [ 1.69649448e+01  2.34458327e+00 -9.63932705e+00]
+  [ 1.63091373e+01  1.88527346e+00 -1.02226048e+01]
+  [ 1.78470707e+01  1.98915374e+00 -9.44174862e+00]
+  [ 1.07705021e+01  5.85520506e+00 -5.25361729e+00]
+  [ 1.13519316e+01  6.66443443e+00 -4.53890944e+00]
+  [ 9.61415005e+00  5.36974335e+00 -4.91725588e+00]
+  [ 9.11253166e+00  4.69796705e+00 -5.51278496e+00]
+  [ 8.95975494e+00  5.61292315e+00 -3.61323047e+00]
+  [ 9.65624142e+00  5.98543453e+00 -2.97635770e+00]
+  [ 7.78349018e+00  6.47507811e+00 -3.61457586e+00]
+  [ 7.20346403e+00  6.25860405e+00 -4.50653982e+00]
+  [ 6.92228937e+00  6.34249258e+00 -2.36811423e+00]
+  [ 7.51787233e+00  6.55539370e+00 -1.46086049e+00]
+  [ 6.45318365e+00  5.36770105e+00 -2.28219533e+00]
+  [ 6.05701923e+00  7.11719227e+00 -2.57567549e+00]
+  [ 8.26797676e+00  7.91464520e+00 -3.78668499e+00]
+  [ 9.13281631e+00  7.94330597e+00 -4.53857660e+00]
+  [ 8.78136539e+00  8.12895393e+00 -2.81900907e+00]
+  [ 7.20982313e+00  8.85214520e+00 -4.33419275e+00]
+  [ 6.42161417e+00  9.10508919e+00 -3.53372955e+00]
+  [ 6.66368151e+00  8.45880318e+00 -5.14688396e+00]
+  [ 7.72485352e+00  9.70960236e+00 -4.63830662e+00]
+  [ 8.56192970e+00  4.23341131e+00 -2.97131038e+00]
+  [ 7.92701054e+00  3.35416222e+00 -3.54032922e+00]
+  [ 8.91762543e+00  4.07630014e+00 -1.65855920e+00]
+  [ 9.54172325e+00  4.75243759e+00 -1.23737442e+00]
+  [ 8.29006767e+00  3.07599092e+00 -7.96651661e-01]
+  [ 7.75698614e+00  2.42374468e+00 -1.45435429e+00]
+  [ 9.35547256e+00  2.42125773e+00  2.62135919e-02]
+  [ 9.94052505e+00  3.19907784e+00  6.23644114e-01]
+  [ 8.82336521e+00  1.32720268e+00  9.48327243e-01]
+  [ 8.53249645e+00  5.54060519e-01  1.78567618e-01]
+  [ 8.04361916e+00  1.50698197e+00  1.68377936e+00]
+  [ 9.62013531e+00  7.75654137e-01  1.64452469e+00]
+  [ 1.04449415e+01  1.74940264e+00 -8.04787278e-01]
+  [ 1.08260603e+01  2.28248787e+00 -1.68450177e+00]
+  [ 9.80888557e+00  9.32603180e-01 -1.32967222e+00]
+  [ 1.15332718e+01  1.06707406e+00  9.65377502e-03]
+  [ 1.11099310e+01  2.39953086e-01  5.91235399e-01]
+  [ 1.19366436e+01  1.84678197e+00  6.88140988e-01]
+  [ 1.23808670e+01  6.27350271e-01 -6.08860433e-01]
+  [ 7.27900267e+00  3.79079175e+00  5.94991222e-02]
+  [ 7.53609943e+00  4.81288433e+00  6.99468732e-01]
+  [ 6.08426428e+00  3.24967217e+00  3.08275759e-01]
+  [ 5.80010939e+00  2.37451196e+00 -1.58902287e-01]
+  [ 5.01112604e+00  3.76389837e+00  1.13035500e+00]
+  [ 5.21370268e+00  4.82007408e+00  1.39235067e+00]
+  [ 3.65938210e+00  3.72360396e+00  3.17795217e-01]
+  [ 2.79865384e+00  4.14136457e+00  9.55968618e-01]
+  [ 3.44994330e+00  2.66080904e+00  9.68385860e-02]
+  [ 3.72026014e+00  4.57045269e+00 -9.81100023e-01]
+  [ 4.71351004e+00  4.41106319e+00 -1.61746860e+00]
+  [ 2.56507468e+00  4.17149639e+00 -1.88564670e+00]
+  [ 1.60746157e+00  4.51480675e+00 -1.39631021e+00]
+  [ 2.45155978e+00  3.08000350e+00 -2.07859850e+00]
+  [ 2.77526331e+00  4.60344696e+00 -2.95435786e+00]
+  [ 3.51956701e+00  6.01002884e+00 -7.83316553e-01]
+  [ 4.07259703e+00  6.52450752e+00  2.61485837e-02]
+  [ 2.45265198e+00  6.28290272e+00 -6.26909614e-01]
+  [ 3.82011867e+00  6.53517294e+00 -1.75949383e+00]
+  [ 4.89125633e+00  2.96719241e+00  2.42212915e+00]
+  [ 4.52475405e+00  1.85517514e+00  2.41892838e+00]
+  [ 5.02868938e+00  3.57124925e+00  3.63453817e+00]
+  [ 5.19018555e+00  4.59606028e+00  3.58657050e+00]
+  [ 5.18146086e+00  2.86841869e+00  4.87256432e+00]
+  [ 5.07124519e+00  1.83495927e+00  4.67069435e+00]
+  [ 6.50646544e+00  3.18421078e+00  5.72859955e+00]
+  [ 6.34328604e+00  4.09490538e+00  6.40817261e+00]
+  [ 7.19804192e+00  3.69185138e+00  4.99497414e+00]
+  [ 7.26494169e+00  2.03693366e+00  6.43530607e+00]
+  [ 6.54132891e+00  1.51251233e+00  7.10787439e+00]
+  [ 7.78169012e+00  1.07319498e+00  5.37315512e+00]
+  [ 5.00569992e+01  1.07539997e+01 -2.50900006e+00]
+  [ 4.96409988e+01  9.27700043e+00 -5.52999973e-01]
+  [ 4.73209991e+01  9.40299988e+00  3.49999994e-01]
+  [ 4.62340012e+01  8.66699982e+00 -1.41000003e-01]
+  [ 4.49570007e+01  9.23099995e+00 -1.52999997e-01]
+  [ 4.47459984e+01  1.05240002e+01  3.24000001e-01]
+  [ 4.91949997e+01  1.02139997e+01 -1.48300004e+00]
+  [ 4.58180008e+01  1.12740002e+01  8.14999998e-01]
+  [ 5.08009987e+01  8.85799980e+00 -5.65999985e-01]
+  [ 4.70970001e+01  1.07069998e+01  8.25999975e-01]
+  [ 4.56110001e+01  1.26339998e+01  1.30999994e+00]
+  [ 4.61749992e+01  1.33160000e+01  2.36800003e+00]
+  [ 4.56829987e+01  1.46450005e+01  2.51999998e+00]
+  [ 4.47929993e+01  1.49560003e+01  1.50800002e+00]
+  [ 4.40369987e+01  1.63110008e+01  1.27300000e+00]
+  [ 4.73219986e+01  1.61889992e+01  3.25699997e+00]
+  [ 4.76360016e+01  1.70070000e+01  4.51800013e+00]
+  [ 4.89959984e+01  7.87300014e+00  1.44500005e+00]
+  [ 4.88670006e+01  6.40000010e+00  1.00899994e+00]
+  [ 4.80750008e+01  5.57299995e+00  2.02099991e+00]
+  [ 4.86020012e+01  5.71700001e+00  3.44799995e+00]
+  [ 4.87840004e+01  7.17600012e+00  3.86199999e+00]
+  [ 4.82939987e+01  8.14299965e+00  2.78399992e+00]
+  [ 4.86559982e+01  8.86400032e+00  3.79999995e-01]
+  [ 4.45219994e+01  1.36420002e+01  4.51999992e-01]
+  [ 4.38979988e+01  1.71049995e+01  2.24900007e+00]
+  [ 4.36329994e+01  1.64930000e+01  8.29999968e-02]
+  [ 4.60740013e+01  1.55200005e+01  3.49099994e+00]
+  [ 4.67509995e+01  1.70079994e+01  5.42199993e+00]
+  [ 4.87579994e+01  1.75879993e+01  4.51599979e+00]
+  [ 4.74230003e+01  1.25860004e+01  3.58599997e+00]]]...
+2025-07-19 06:49:05,031 MDAnalysis.core.universe INFO     The attribute(s) masses, types have already been read from the topology file. The guesser will only guess empty values for this attribute, if any exists. To overwrite it by completely guessed values, you can pass the attribute to the force_guess parameter instead of the to_guess one
+2025-07-19 06:49:05,031 MDAnalysis.guesser.base INFO     There is no empty types values. Guesser did not guess any new values for types attribute
+2025-07-19 06:49:05,031 MDAnalysis.guesser.base INFO     There is no empty masses values. Guesser did not guess any new values for masses attribute
+2025-07-19 06:49:05,033 MDAnalysis.topology.PSF DEBUG    PSF file /home/ialibay/github/mdanalysis/testsuite/MDAnalysisTests/data/adk.psf: format STANDARD
+2025-07-19 06:49:05,116 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c0928d37aa0> to topology
+2025-07-19 06:49:05,116 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c092e12ab10> to topology
+2025-07-19 06:49:05,116 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c0933b76510> to topology
+2025-07-19 06:49:05,116 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Charges object at 0x7c0933b77d70> to topology
+2025-07-19 06:49:05,116 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c0933b75b50> to topology
+2025-07-19 06:49:05,116 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c0933b761e0> to topology
+2025-07-19 06:49:05,116 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c0933b752b0> to topology
+2025-07-19 06:49:05,116 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c0933b751f0> to topology
+2025-07-19 06:49:05,116 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c0933b75790> to topology
+2025-07-19 06:49:05,116 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c0938b8b2c0> to topology
+2025-07-19 06:49:05,116 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c0938b8bce0> to topology
+2025-07-19 06:49:05,116 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c0938b89b80> to topology
+2025-07-19 06:49:05,116 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Bonds object at 0x7c0928d37380> to topology
+2025-07-19 06:49:05,116 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Angles object at 0x7c0928d345c0> to topology
+2025-07-19 06:49:05,117 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Dihedrals object at 0x7c0928d37bc0> to topology
+2025-07-19 06:49:05,117 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Impropers object at 0x7c0928d357f0> to topology
+2025-07-19 06:49:05,117 MDAnalysis.core.universe DEBUG    Universe.load_new(): loading /home/ialibay/github/mdanalysis/testsuite/MDAnalysisTests/data/adk_dims.dcd...
+2025-07-19 06:49:05,118 MDAnalysis.core.universe INFO     The attribute(s) masses, types have already been read from the topology file. The guesser will only guess empty values for this attribute, if any exists. To overwrite it by completely guessed values, you can pass the attribute to the force_guess parameter instead of the to_guess one
+2025-07-19 06:49:05,118 MDAnalysis.guesser.base INFO     There is no empty types values. Guesser did not guess any new values for types attribute
+2025-07-19 06:49:05,118 MDAnalysis.guesser.base INFO     There is no empty masses values. Guesser did not guess any new values for masses attribute
+2025-07-19 06:49:05,136 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c0938b88d10> to topology
+2025-07-19 06:49:05,136 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c0938b8b7a0> to topology
+2025-07-19 06:49:05,136 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c0938b89970> to topology
+2025-07-19 06:49:05,136 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c0938b89ac0> to topology
+2025-07-19 06:49:05,137 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c0938b89c40> to topology
+2025-07-19 06:49:05,137 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c0938b883e0> to topology
+2025-07-19 06:49:05,137 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c0938b88110> to topology
+2025-07-19 06:49:05,137 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Charges object at 0x7c0938b8ba40> to topology
+2025-07-19 06:49:05,137 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c0938b892e0> to topology
+2025-07-19 06:49:05,137 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Bonds object at 0x7c0938b8b9b0> to topology
+2025-07-19 06:49:05,137 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Impropers object at 0x7c0938b8ade0> to topology
+2025-07-19 06:49:05,137 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Angles object at 0x7c0938b89850> to topology
+2025-07-19 06:49:05,137 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Dihedrals object at 0x7c0938b8aab0> to topology
+2025-07-19 06:49:05,137 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c0938b8b800> to topology
+2025-07-19 06:49:05,137 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c0938b8bda0> to topology
+2025-07-19 06:49:05,137 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c0938b884a0> to topology
+2025-07-19 06:49:05,137 MDAnalysis.core.universe DEBUG    Universe.load_new(): loading [[[ 11.736044    8.500797  -10.445281 ]
+  [ 11.449215   10.322626   -6.6931505]]]...
+2025-07-19 06:49:05,138 MDAnalysis.core.universe INFO     The attribute(s) masses, types have already been read from the topology file. The guesser will only guess empty values for this attribute, if any exists. To overwrite it by completely guessed values, you can pass the attribute to the force_guess parameter instead of the to_guess one
+2025-07-19 06:49:05,138 MDAnalysis.guesser.base INFO     There is no empty types values. Guesser did not guess any new values for types attribute
+2025-07-19 06:49:05,138 MDAnalysis.guesser.base INFO     There is no empty masses values. Guesser did not guess any new values for masses attribute
+2025-07-19 06:49:05,147 MDAnalysis.topology.PDBParser DEBUG    Segment IDs and Chain IDs are not completely equal.
+2025-07-19 06:49:05,153 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c0939525370> to topology
+2025-07-19 06:49:05,153 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.AltLocs object at 0x7c0939524620> to topology
+2025-07-19 06:49:05,153 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ChainIDs object at 0x7c0939526c30> to topology
+2025-07-19 06:49:05,153 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.RecordTypes object at 0x7c09395253a0> to topology
+2025-07-19 06:49:05,153 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c0939526ab0> to topology
+2025-07-19 06:49:05,153 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Tempfactors object at 0x7c09395242f0> to topology
+2025-07-19 06:49:05,154 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Occupancies object at 0x7c0939525280> to topology
+2025-07-19 06:49:05,154 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c0938b8b530> to topology
+2025-07-19 06:49:05,154 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c0938d70b00> to topology
+2025-07-19 06:49:05,154 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ICodes object at 0x7c0938d72b70> to topology
+2025-07-19 06:49:05,154 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c0938d724b0> to topology
+2025-07-19 06:49:05,154 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c0938d73950> to topology
+2025-07-19 06:49:05,154 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c0938d71100> to topology
+2025-07-19 06:49:05,154 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c0938d70950> to topology
+2025-07-19 06:49:05,154 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c0938d706b0> to topology
+2025-07-19 06:49:05,154 MDAnalysis.core.universe DEBUG    Universe.load_new(): loading ('/home/ialibay/github/mdanalysis/testsuite/MDAnalysisTests/data/adk_open.pdb', '/home/ialibay/github/mdanalysis/testsuite/MDAnalysisTests/data/adk_open.pdb')...
+2025-07-19 06:49:05,191 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c0938b883b0> to topology
+2025-07-19 06:49:05,191 MDAnalysis.core.universe INFO     attribute types has been guessed successfully.
+2025-07-19 06:49:05,192 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c092af98080> to topology
+2025-07-19 06:49:05,192 MDAnalysis.core.universe INFO     attribute masses has been guessed successfully.
+2025-07-19 06:49:05,201 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c092af98650> to topology
+2025-07-19 06:49:05,201 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.AltLocs object at 0x7c092af9a810> to topology
+2025-07-19 06:49:05,201 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ChainIDs object at 0x7c092af99040> to topology
+2025-07-19 06:49:05,201 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.RecordTypes object at 0x7c092af98260> to topology
+2025-07-19 06:49:05,202 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c092af99070> to topology
+2025-07-19 06:49:05,202 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Tempfactors object at 0x7c092af99910> to topology
+2025-07-19 06:49:05,202 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Occupancies object at 0x7c092af99430> to topology
+2025-07-19 06:49:05,202 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c092af99370> to topology
+2025-07-19 06:49:05,202 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c092af981d0> to topology
+2025-07-19 06:49:05,202 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ICodes object at 0x7c092af99790> to topology
+2025-07-19 06:49:05,202 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c092af98500> to topology
+2025-07-19 06:49:05,202 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c092af989b0> to topology
+2025-07-19 06:49:05,202 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c092af9aab0> to topology
+2025-07-19 06:49:05,202 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c092af9b4a0> to topology
+2025-07-19 06:49:05,202 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c092af98d70> to topology
+2025-07-19 06:49:05,202 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c092af99640> to topology
+2025-07-19 06:49:05,202 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c092af9aba0> to topology
+2025-07-19 06:49:05,212 MDAnalysis.topology.PDBParser DEBUG    Segment IDs and Chain IDs are not completely equal.
+2025-07-19 06:49:05,218 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c092af99b20> to topology
+2025-07-19 06:49:05,218 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.AltLocs object at 0x7c0939534920> to topology
+2025-07-19 06:49:05,218 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ChainIDs object at 0x7c0939536a80> to topology
+2025-07-19 06:49:05,218 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.RecordTypes object at 0x7c0939536510> to topology
+2025-07-19 06:49:05,218 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c0939534860> to topology
+2025-07-19 06:49:05,218 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Tempfactors object at 0x7c0939535e80> to topology
+2025-07-19 06:49:05,218 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Occupancies object at 0x7c0939536270> to topology
+2025-07-19 06:49:05,218 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c0938d71a00> to topology
+2025-07-19 06:49:05,218 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c0939544260> to topology
+2025-07-19 06:49:05,218 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ICodes object at 0x7c0939545100> to topology
+2025-07-19 06:49:05,218 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c0939544cb0> to topology
+2025-07-19 06:49:05,218 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c0939546f60> to topology
+2025-07-19 06:49:05,218 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c0939547b60> to topology
+2025-07-19 06:49:05,218 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c0939545130> to topology
+2025-07-19 06:49:05,219 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c0939546780> to topology
+2025-07-19 06:49:05,219 MDAnalysis.core.universe DEBUG    Universe.load_new(): loading ('/home/ialibay/github/mdanalysis/testsuite/MDAnalysisTests/data/adk_open.pdb', '/home/ialibay/github/mdanalysis/testsuite/MDAnalysisTests/data/adk_open.pdb')...
+2025-07-19 06:49:05,256 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c0938d72c00> to topology
+2025-07-19 06:49:05,256 MDAnalysis.core.universe INFO     attribute types has been guessed successfully.
+2025-07-19 06:49:05,257 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c0933b75c40> to topology
+2025-07-19 06:49:05,257 MDAnalysis.core.universe INFO     attribute masses has been guessed successfully.
+2025-07-19 06:49:05,265 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c0939526660> to topology
+2025-07-19 06:49:05,266 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.AltLocs object at 0x7c09395265d0> to topology
+2025-07-19 06:49:05,266 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ChainIDs object at 0x7c0939524ce0> to topology
+2025-07-19 06:49:05,266 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.RecordTypes object at 0x7c0939525a60> to topology
+2025-07-19 06:49:05,266 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c09395271d0> to topology
+2025-07-19 06:49:05,266 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Tempfactors object at 0x7c0939525bb0> to topology
+2025-07-19 06:49:05,266 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Occupancies object at 0x7c0939526e40> to topology
+2025-07-19 06:49:05,266 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c09395251f0> to topology
+2025-07-19 06:49:05,266 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c0939524d70> to topology
+2025-07-19 06:49:05,266 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ICodes object at 0x7c0939527c20> to topology
+2025-07-19 06:49:05,266 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c0939526450> to topology
+2025-07-19 06:49:05,266 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c0939524920> to topology
+2025-07-19 06:49:05,266 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c0939526e10> to topology
+2025-07-19 06:49:05,266 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c0939527a70> to topology
+2025-07-19 06:49:05,266 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c09395265a0> to topology
+2025-07-19 06:49:05,266 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c0939524950> to topology
+2025-07-19 06:49:05,266 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c0939527410> to topology
+2025-07-19 06:49:05,275 MDAnalysis.topology.PDBParser DEBUG    Segment IDs and Chain IDs are not completely equal.
+2025-07-19 06:49:05,280 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c09395559a0> to topology
+2025-07-19 06:49:05,280 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.AltLocs object at 0x7c09395564e0> to topology
+2025-07-19 06:49:05,280 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ChainIDs object at 0x7c0939554a70> to topology
+2025-07-19 06:49:05,280 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.RecordTypes object at 0x7c0939557c20> to topology
+2025-07-19 06:49:05,280 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c09395564b0> to topology
+2025-07-19 06:49:05,280 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Tempfactors object at 0x7c09395571d0> to topology
+2025-07-19 06:49:05,280 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Occupancies object at 0x7c09395567b0> to topology
+2025-07-19 06:49:05,281 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c0939535fd0> to topology
+2025-07-19 06:49:05,281 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c0939537ef0> to topology
+2025-07-19 06:49:05,281 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ICodes object at 0x7c09395348f0> to topology
+2025-07-19 06:49:05,281 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c0939535160> to topology
+2025-07-19 06:49:05,281 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c0939535e50> to topology
+2025-07-19 06:49:05,281 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c0939537680> to topology
+2025-07-19 06:49:05,281 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c0939535fa0> to topology
+2025-07-19 06:49:05,281 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c0939536d20> to topology
+2025-07-19 06:49:05,281 MDAnalysis.core.universe DEBUG    Universe.load_new(): loading ('/home/ialibay/github/mdanalysis/testsuite/MDAnalysisTests/data/adk_open.pdb', '/home/ialibay/github/mdanalysis/testsuite/MDAnalysisTests/data/adk_open.pdb')...
+2025-07-19 06:49:05,316 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c09395352e0> to topology
+2025-07-19 06:49:05,316 MDAnalysis.core.universe INFO     attribute types has been guessed successfully.
+2025-07-19 06:49:05,316 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c092af98aa0> to topology
+2025-07-19 06:49:05,316 MDAnalysis.core.universe INFO     attribute masses has been guessed successfully.
+2025-07-19 06:49:05,324 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c092af991f0> to topology
+2025-07-19 06:49:05,324 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.AltLocs object at 0x7c092af9bec0> to topology
+2025-07-19 06:49:05,324 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ChainIDs object at 0x7c092af99be0> to topology
+2025-07-19 06:49:05,324 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.RecordTypes object at 0x7c092af98f80> to topology
+2025-07-19 06:49:05,324 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c092af9b920> to topology
+2025-07-19 06:49:05,324 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Tempfactors object at 0x7c092af98470> to topology
+2025-07-19 06:49:05,324 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Occupancies object at 0x7c092af9ac00> to topology
+2025-07-19 06:49:05,324 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c092af994f0> to topology
+2025-07-19 06:49:05,324 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c092af99040> to topology
+2025-07-19 06:49:05,324 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ICodes object at 0x7c092af9aab0> to topology
+2025-07-19 06:49:05,324 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c092af981d0> to topology
+2025-07-19 06:49:05,324 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c092af98320> to topology
+2025-07-19 06:49:05,324 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c092af9a780> to topology
+2025-07-19 06:49:05,324 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c092af9b7a0> to topology
+2025-07-19 06:49:05,324 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c092af9b140> to topology
+2025-07-19 06:49:05,324 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c092af9a2a0> to topology
+2025-07-19 06:49:05,325 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c092af9a630> to topology
+2025-07-19 06:49:05,333 MDAnalysis.topology.PDBParser DEBUG    Segment IDs and Chain IDs are not completely equal.
+2025-07-19 06:49:05,337 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c09394cfda0> to topology
+2025-07-19 06:49:05,337 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.AltLocs object at 0x7c09394cf6b0> to topology
+2025-07-19 06:49:05,338 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ChainIDs object at 0x7c09394cd130> to topology
+2025-07-19 06:49:05,338 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.RecordTypes object at 0x7c09394cf680> to topology
+2025-07-19 06:49:05,338 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c09394ceb40> to topology
+2025-07-19 06:49:05,338 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Tempfactors object at 0x7c09394cf8f0> to topology
+2025-07-19 06:49:05,338 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Occupancies object at 0x7c09394cef90> to topology
+2025-07-19 06:49:05,338 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c0939539880> to topology
+2025-07-19 06:49:05,338 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c093953bc20> to topology
+2025-07-19 06:49:05,338 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ICodes object at 0x7c0939538200> to topology
+2025-07-19 06:49:05,338 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c0939539f70> to topology
+2025-07-19 06:49:05,338 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c093953bdd0> to topology
+2025-07-19 06:49:05,338 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c0939539c70> to topology
+2025-07-19 06:49:05,338 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c0939539970> to topology
+2025-07-19 06:49:05,338 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c093953a510> to topology
+2025-07-19 06:49:05,338 MDAnalysis.core.universe DEBUG    Universe.load_new(): loading ('/home/ialibay/github/mdanalysis/testsuite/MDAnalysisTests/data/adk_open.pdb', '/home/ialibay/github/mdanalysis/testsuite/MDAnalysisTests/data/adk_open.pdb')...
+2025-07-19 06:49:05,373 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c093953a2a0> to topology
+2025-07-19 06:49:05,373 MDAnalysis.core.universe INFO     attribute types has been guessed successfully.
+2025-07-19 06:49:05,373 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c0938b8a0f0> to topology
+2025-07-19 06:49:05,373 MDAnalysis.core.universe INFO     attribute masses has been guessed successfully.
+2025-07-19 06:49:05,381 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7c09395461e0> to topology
+2025-07-19 06:49:05,381 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.AltLocs object at 0x7c0939526660> to topology
+2025-07-19 06:49:05,381 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ChainIDs object at 0x7c09395273b0> to topology
+2025-07-19 06:49:05,381 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.RecordTypes object at 0x7c0939545010> to topology
+2025-07-19 06:49:05,381 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7c0939525190> to topology
+2025-07-19 06:49:05,381 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Tempfactors object at 0x7c0939527fe0> to topology
+2025-07-19 06:49:05,381 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Occupancies object at 0x7c0939526270> to topology
+2025-07-19 06:49:05,381 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7c0939527710> to topology
+2025-07-19 06:49:05,381 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7c0939526870> to topology
+2025-07-19 06:49:05,381 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.ICodes object at 0x7c0939527680> to topology
+2025-07-19 06:49:05,381 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7c0939526b70> to topology
+2025-07-19 06:49:05,381 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7c09395249e0> to topology
+2025-07-19 06:49:05,381 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7c0939526b40> to topology
+2025-07-19 06:49:05,381 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7c09395270b0> to topology
+2025-07-19 06:49:05,381 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7c0939525d90> to topology
+2025-07-19 06:49:05,381 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7c0939527260> to topology
+2025-07-19 06:49:05,381 MDAnalysis.core.universe DEBUG    _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7c0939524cb0> to topology
