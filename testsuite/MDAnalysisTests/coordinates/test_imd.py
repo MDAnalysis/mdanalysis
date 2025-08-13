@@ -151,18 +151,26 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
         )
 
     def test_get_writer_1(self, ref, reader, tmpdir):
-        with pytest.raises(RuntimeError, match="cannot create Writer for streamed trajectories"):
+        with pytest.raises(
+            RuntimeError,
+            match="cannot create Writer for streamed trajectories",
+        ):
             reader.Writer(str(tmpdir.join("output")))
 
     def test_get_writer_2(self, ref, reader, tmpdir):
-        with pytest.raises(RuntimeError, match="cannot create Writer for streamed trajectories"):
+        with pytest.raises(
+            RuntimeError,
+            match="cannot create Writer for streamed trajectories",
+        ):
             reader.Writer(str(tmpdir.join("output")), n_atoms=100)
 
     def test_total_time(self, ref, reader):
         pytest.skip("`total_time` is unknown for IMDReader")
 
     def test_changing_dimensions(self, ref, reader):
-        with pytest.raises(RuntimeError, match="Stream-based readers can't be rewound"):
+        with pytest.raises(
+            RuntimeError, match="Stream-based readers can't be rewound"
+        ):
             reader.rewind()
 
     def test_iter(self, ref, reader):
@@ -198,7 +206,9 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
         pytest.skip("Cannot create two IMDReaders on the same stream")
 
     def test_stop_iter(self, reader):
-        with pytest.raises(RuntimeError, match="Stream-based readers can't be rewound"):
+        with pytest.raises(
+            RuntimeError, match="Stream-based readers can't be rewound"
+        ):
             reader.rewind()
 
     def test_iter_rewinds(self, reader):
@@ -226,7 +236,9 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
         pytest.skip("IMDReader cannot be reopened")
 
     def test_pickle_reader(self, reader):
-        with pytest.raises(NotImplementedError, match="does not support pickling"):
+        with pytest.raises(
+            NotImplementedError, match="does not support pickling"
+        ):
             pickle.dumps(reader)
 
     def test_pickle_next_ts_reader(self, reader):
@@ -370,7 +382,7 @@ class TestStreamIteration:
         # Test step property for different slice steps
         sliced_reader = reader[::1]
         assert sliced_reader.step == 1
-        
+
         sliced_reader_step5 = reader[::5]
         assert sliced_reader_step5.step == 5
 
@@ -439,14 +451,16 @@ def test_wrong_imd_protocol_version(universe, imdsinfo):
     """Test that IMDReader raises ValueError for non-v3 protocol versions."""
     # Modify the fixture to have wrong version
     imdsinfo.version = 2  # Wrong version, should be 3
-    
+
     server = InThreadIMDServer(universe.trajectory)
     server.set_imdsessioninfo(imdsinfo)
     server.handshake_sequence("localhost", first_frame=True)
-    
-    with pytest.raises(ValueError, 
-                      match=rf"IMDReader: Detected IMD version v{imdsinfo.version}, "
-                            rf"but IMDReader is only compatible with v3"):
+
+    with pytest.raises(
+        ValueError,
+        match=rf"IMDReader: Detected IMD version v{imdsinfo.version}, "
+        rf"but IMDReader is only compatible with v3",
+    ):
         IMDReader(
             f"imd://localhost:{server.port}",
             n_atoms=universe.trajectory.n_atoms,
