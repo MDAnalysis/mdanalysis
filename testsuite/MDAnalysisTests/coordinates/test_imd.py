@@ -432,3 +432,23 @@ def test_imd_format_hint():
     assert not IMDReader._format_hint("not_a_valid_imd_url")
     assert not IMDReader._format_hint(12345)
     assert not IMDReader._format_hint(None)
+
+
+@pytest.mark.skipif(not HAS_IMDCLIENT, reason="IMDClient not installed")
+def test_wrong_imd_protocol_version(universe, imdsinfo):
+    """Test that IMDReader raises ValueError for non-v3 protocol versions."""
+    # Modify the fixture to have wrong version
+    imdsinfo.version = 2  # Wrong version, should be 3
+    
+    server = InThreadIMDServer(universe.trajectory)
+    server.set_imdsessioninfo(imdsinfo)
+    server.handshake_sequence("localhost", first_frame=True)
+    
+    with pytest.raises(ValueError, 
+                      match=rf"IMDReader: Detected IMD version v{imdsinfo.version}, "
+                            rf"but IMDReader is only compatible with v3"):
+        IMDReader(
+            f"imd://localhost:{server.port}",
+            n_atoms=universe.trajectory.n_atoms,
+        )
+    server.cleanup()
