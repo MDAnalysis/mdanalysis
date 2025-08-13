@@ -141,7 +141,8 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
         return transformed
 
     def test_n_frames(self, ref, reader):
-        pytest.skip("`n_frames` is unknown for IMDReader")
+        with pytest.raises(RuntimeError, match="n_frames is unknown"):
+            reader.n_frames
 
     def test_first_frame(self, ref, reader):
         # don't rewind here as in inherited base test
@@ -159,7 +160,8 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
         pytest.skip("`total_time` is unknown for IMDReader")
 
     def test_changing_dimensions(self, ref, reader):
-        pytest.skip("IMDReader cannot be rewound")
+        with pytest.raises(RuntimeError, match="Stream-based readers can't be rewound"):
+            reader.rewind()
 
     def test_iter(self, ref, reader):
         for i, ts in enumerate(reader):
@@ -194,7 +196,8 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
         pytest.skip("Cannot create two IMDReaders on the same stream")
 
     def test_stop_iter(self, reader):
-        pytest.skip("IMDReader cannot be rewound")
+        with pytest.raises(RuntimeError, match="Stream-based readers can't be rewound"):
+            reader.rewind()
 
     def test_iter_rewinds(self, reader):
         pytest.skip("IMDReader cannot be rewound")
@@ -221,7 +224,8 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
         pytest.skip("IMDReader cannot be reopened")
 
     def test_pickle_reader(self, reader):
-        pytest.skip("IMDReader cannot be pickled")
+        with pytest.raises(NotImplementedError, match="does not support pickling"):
+            pickle.dumps(reader)
 
     def test_pickle_next_ts_reader(self, reader):
         pytest.skip("IMDReader cannot be pickled")
@@ -230,7 +234,8 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
         pytest.skip("IMDReader cannot be pickled")
 
     def test_transformations_copy(self, ref, transformed):
-        pytest.skip("IMDReader cannot be copied")
+        with pytest.raises(RuntimeError, match="does not support copying"):
+            transformed.copy()
 
     def test_timeseries_empty_asel(self, reader):
         pytest.skip("IMDReader does not support timeseries")
