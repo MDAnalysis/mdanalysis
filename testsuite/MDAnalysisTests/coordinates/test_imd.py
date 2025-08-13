@@ -363,6 +363,15 @@ class TestStreamIteration:
         ):
             reader.timeseries()
 
+    def test_step_property(self, reader):
+        """Test that the step property returns the correct step size."""
+        # Test step property for different slice steps
+        sliced_reader = reader[::1]
+        assert sliced_reader.step == 1
+        
+        sliced_reader_step5 = reader[::5]
+        assert sliced_reader_step5.step == 5
+
 
 @pytest.mark.skipif(not HAS_IMDCLIENT, reason="IMDClient not installed")
 def test_n_atoms_not_specified(universe, imdsinfo):

@@ -2248,4 +2248,16 @@ class StreamFrameIteratorSliced(FrameIteratorBase):
 
     @property
     def step(self):
+        """The step size for sliced frame iteration.
+        
+        Returns the step interval used when iterating through frames in a 
+        streaming trajectory. For example, a step of 2 means every second 
+        frame is processed, while a step of 1 processes every frame.
+        
+        Returns
+        -------
+        int
+            Step size for iteration. Always a positive integer greater than 0.
+            
+        """
         return self._step
