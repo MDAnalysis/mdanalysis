@@ -1861,13 +1861,14 @@ class StreamReaderBase(ReaderBase):
     - **No copying**: Cannot create independent copies of the reader
     - **No reopening**: Cannot restart iteration once stream is consumed
     - **No timeseries**: Cannot use ``timeseries()`` or bulk data extraction
+    - **No writers**: Cannot create ``Writer()`` or ``OtherWriter()`` instances
     - **No pickling**: Cannot serialize reader instances (limits multiprocessing)
-    - **No WriterBase**: No complementary Writer class available for streaming data
+    - **No StreamWriterBase**: No complementary Writer class available for streaming data
 
 
     The reader raises :exc:`RuntimeError` for operations that require random
     access or rewinding, including ``rewind()``, ``copy()``, ``timeseries()``,
-    and ``len()``. Only slice notation is supported for iteration.
+    ``Writer()``, ``OtherWriter()``, and ``len()``. Only slice notation is supported for iteration.
 
     Parameters
     ----------
@@ -2158,6 +2159,55 @@ class StreamReaderBase(ReaderBase):
                 )
 
         return start, stop, step
+
+    def Writer(self, filename, **kwargs):
+        """Writer creation is not supported for streaming trajectories.
+        
+        Writer creation requires trajectory metadata that streaming readers
+        cannot provide due to their sequential processing nature.
+
+        Parameters
+        ----------
+        filename : str
+            Output filename (ignored, as method is not supported)
+        **kwargs
+            Additional keyword arguments (ignored, as method is not supported)
+            
+        Raises
+        ------
+        RuntimeError
+            Always raised, as writer creation is not supported for streaming trajectories
+        """
+        raise RuntimeError(
+            "{}: cannot create Writer for streamed trajectories".format(
+                self.__class__.__name__
+            )
+        )
+
+    def OtherWriter(self, filename, **kwargs):
+        """Writer creation is not supported for streaming trajectories.
+        
+        OtherWriter initialization requires frame-based parameters and trajectory
+        indexing information. Streaming readers process data sequentially
+        without meaningful frame indexing, making writer setup impossible.
+        
+        Parameters
+        ----------
+        filename : str
+            Output filename (ignored, as method is not supported)
+        **kwargs
+            Additional keyword arguments (ignored, as method is not supported)
+            
+        Raises
+        ------
+        RuntimeError
+            Always raised, as writer creation is not supported for streaming trajectories
+        """
+        raise RuntimeError(
+            "{}: cannot create OtherWriter for streamed trajectories".format(
+                self.__class__.__name__
+            )
+        )
 
     def __getstate__(self):
         raise NotImplementedError(
