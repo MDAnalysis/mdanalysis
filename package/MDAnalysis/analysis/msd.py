@@ -110,6 +110,7 @@ The MSD can then be accessed as
 .. code-block:: python
 
     msd =  MSD.results.timeseries
+    lagtimes = MSD.results.delta_t_values
 
 Visual inspection of the MSD is important, so let's take a look at it with a simple plot.
 
@@ -117,8 +118,6 @@ Visual inspection of the MSD is important, so let's take a look at it with a sim
 
     import matplotlib.pyplot as plt
     nframes = MSD.n_frames
-    timestep = 1 # this needs to be the actual time between frames
-    lagtimes = np.arange(nframes)*timestep # make the lag-time axis
     fig = plt.figure()
     ax = plt.axes()
     # plot the actual MSD
@@ -307,13 +306,11 @@ class EinsteinMSD(AnalysisBase):
     results.msds_by_particle : :class:`numpy.ndarray`
         The MSD of each individual particle with respect to constant lag-time or
         unique Δt intervals.
-            for `non_linear=False`: a 2D array of shape (n_lagtimes, n_atoms)
-            for `non_linear=True`: a 2D array of shape (n_delta_t_values, n_atoms)
+            - for `non_linear=False`: a 2D array of shape (n_lagtimes, n_atoms)
+            - for `non_linear=True`: a 2D array of shape (n_delta_t_values, n_atoms)
     results.delta_t_values : :class:`numpy.ndarray`
         Array of unique Δt (time differences) at which time-averaged MSD values are
-        computed (for `non_linear=True`).
-        For `non_linear=False` it is Null array. Time differences are same as the lag-times.
-        (To access: `lagtimes = np.arange(nframes)*timestep`).
+        computed.
 
         .. versionadded:: 2.10.0
 
@@ -419,12 +416,16 @@ class EinsteinMSD(AnalysisBase):
     def _conclude_simple(self):
         r"""Calculates the MSD via the simple "windowed" algorithm."""
         lagtimes = np.arange(1, self.n_frames)
+        dump_times = self.times
         positions = self._position_array.astype(np.float64)
         for lag in tqdm(lagtimes):
             disp = positions[:-lag, :, :] - positions[lag:, :, :]
             sqdist = np.square(disp).sum(axis=-1)
             self.results.msds_by_particle[lag, :] = np.mean(sqdist, axis=0)
         self.results.timeseries = self.results.msds_by_particle.mean(axis=1)
+        self.results.delta_t_values = np.arange(self.n_frames) * [
+            dump_times[1] - dump_times[0]
+        ]
 
     def _conclude_fft(self):  # with FFT, np.float64 bit prescision required.
         r"""Calculates the MSD via the FCA fast correlation algorithm."""
@@ -443,12 +444,16 @@ class EinsteinMSD(AnalysisBase):
                 or set fft=False"""
             )
 
+        dump_times = self.times
         positions = self._position_array.astype(np.float64)
         for n in tqdm(range(self.n_particles)):
             self.results.msds_by_particle[:, n] = tidynamics.msd(
                 positions[:, n, :]
             )
         self.results.timeseries = self.results.msds_by_particle.mean(axis=1)
+        self.results.delta_t_values = np.arange(self.n_frames) * [
+            dump_times[1] - dump_times[0]
+        ]
 
     def _conclude_non_linear(self):
 
