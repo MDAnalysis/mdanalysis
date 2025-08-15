@@ -286,11 +286,11 @@ def extract_box_info(data, fver):
     return obj.Box(box, box_rel, box_v)
 
 
-def do_mtop(data, fver, tpr_resid_from_one=False):
+def do_mtop(data, fver, tpr_resid_from_one=False, precision=4):
     # mtop: the topology of the whole system
     symtab = do_symtab(data)
     do_symstr(data, symtab)  # system_name
-    do_ffparams(data, fver)  # params
+    ff_params = do_ffparams(data, fver)  # params
 
     nmoltype = data.unpack_int()
     moltypes = []  # non-gromacs
@@ -422,6 +422,80 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
     if any(elements):
         elements = Elements(np.array(elements, dtype=object))
         top.add_TopologyAttr(elements)
+
+    # NOTE: the tpr striding code below serves the
+    # purpose of placing us in a suitable "seek" position
+    # in the binary file such that we are well placed
+    # for reading coords and velocities if they are present
+    # the order of operations is based on an analysis of
+    # the C++ code in do_mtop() function in the GROMACS
+    # source at:
+    # src/gromacs/fileio/tpxio.cpp
+    # TODO: expand tpx version support for striding to
+    # the coordinates
+    atnr = ff_params.atnr
+    if fver >= 58:
+        # TODO: the following value is important, and not sure
+        # how to access programmatically yet...
+        # from GMX source code:
+        # api/legacy/include/gromacs/topology/topology_enums.h
+        # worst case scenario we hard code it based on
+        # tpx/GMX version?
+        # for details, see gh-4873
+        SimulationAtomGroupType_size = 10
+        n_atoms = data.unpack_int()
+        if fver < 116:
+            for i in range(3 * atnr * int(precision / 4)):
+                data.unpack_int()
+        if fver < 129:
+            # NOTE: speculative, Tyler did this by
+            # inspecting binary data and relative file offsets
+            # for older tpr files relative to more recent;
+            # the stride skip appears related to `atnr` in GMX source, the
+            # number of non-bonded atom types
+            for i in range(atnr + 1):
+                data.unpack_int()
+
+        if 58 < fver <= 83:
+            for i in range(atnr * int(precision / 4) * 2):
+                data.unpack_int()
+        if fver > 83:
+            interm = data.unpack_uchar()
+        if 83 < fver < 116:
+            for i in range(2 * atnr):
+                data.unpack_int()
+        if fver > 58:
+            ngrid = data.unpack_int()
+            grid_spacing = data.unpack_int()
+            n_elements = grid_spacing ** 2
+            for i in range(ngrid):
+                for j in range(n_elements):
+                    ndo_real(data, 4)
+        for i in range(SimulationAtomGroupType_size):
+            group_size = data.unpack_int()
+            ndo_int(data, group_size)
+        n_group_names = data.unpack_int()
+        for i in range(n_group_names):
+            data.unpack_int()
+        for i in range(SimulationAtomGroupType_size):
+            n_grp_numbers = data.unpack_int()
+            if n_grp_numbers != 0:
+                for i in range(n_grp_numbers):
+                    data.unpack_uchar()
+        if fver > 119:
+            im_excl_grp_size = data.unpack_int()
+            ndo_int(data, im_excl_grp_size)
+            # TODO: why is this needed?
+            # NOTE: this `mystery_n` value is at least sometimes used
+            # for tpx >= 137, but is often 0 otherwise
+            mystery_n = data.unpack_int()
+        if fver >= 137:
+            # NOTE: Tyler observed that the first float32
+            # positional coordinate was offset by `mystery_n`
+            # 32-bit units in a sample tpx 137 tpr file
+            # by empirical testing
+            for i in range(mystery_n):
+                data.unpack_int()
 
     return top
 

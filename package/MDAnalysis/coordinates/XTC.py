@@ -48,13 +48,21 @@ class XTCWriter(XDRBaseWriter):
     they require significantly less disk space and the loss of precision is
     usually not a problem.
     """
-    format = 'XTC'
+
+    format = "XTC"
     multiframe = True
-    units = {'time': 'ps', 'length': 'nm'}
+    units = {"time": "ps", "length": "nm"}
     _file = XTCFile
 
-    def __init__(self, filename, n_atoms, convert_units=True, dt=None,
-                 precision=3, **kwargs):
+    def __init__(
+        self,
+        filename,
+        n_atoms,
+        convert_units=True,
+        dt=None,
+        precision=3,
+        **kwargs,
+    ):
         """
         Parameters
         ----------
@@ -71,10 +79,9 @@ class XTCWriter(XDRBaseWriter):
         precision : float (optional)
             set precision of saved trjactory to this number of decimal places.
         """
-        super(XTCWriter, self).__init__(filename, n_atoms,
-                                        convert_units=convert_units,
-                                        dt=dt,
-                                        **kwargs)
+        super(XTCWriter, self).__init__(
+            filename, n_atoms, convert_units=convert_units, dt=dt, **kwargs
+        )
         self.precision = precision
 
     def _write_next_frame(self, ag):
@@ -112,7 +119,7 @@ class XTCWriter(XDRBaseWriter):
             time = ts.time
         else:
             time = self._dt * ts.frame
-        step = ts.data.get('step', ts.frame)
+        step = ts.data.get("step", ts.frame)
         dimensions = ts.dimensions
 
         if self._convert_units:
@@ -123,7 +130,7 @@ class XTCWriter(XDRBaseWriter):
         # libmdaxdr will multiply the coordinates by precision. This means for
         # a precision of 3 decimal places we need to pass 1000.0 to the xdr
         # library.
-        precision = 10.0 ** self.precision
+        precision = 10.0**self.precision
         self._xdr.write(xyz, box, step, time, precision)
 
 
@@ -144,22 +151,23 @@ class XTCReader(XDRBaseReader):
 
 
     """
-    format = 'XTC'
-    units = {'time': 'ps', 'length': 'nm'}
+
+    format = "XTC"
+    units = {"time": "ps", "length": "nm"}
     _writer = XTCWriter
     _file = XTCFile
 
     def _read_next_timestep(self, ts=None):
         """
         copy next frame into timestep
-        
+
         versionadded:: 2.4.0
             XTCReader implements this method so that it can use
             read_direct_x method of XTCFile to read the data directly
             into the timestep rather than copying it from a temporary array.
         """
         if self._frame == self.n_frames - 1:
-            raise IOError(errno.EIO, 'trying to go over trajectory limit')
+            raise IOError(errno.EIO, "trying to go over trajectory limit")
         if ts is None:
             ts = self.ts
         if ts.has_positions:
@@ -178,7 +186,7 @@ class XTCReader(XDRBaseReader):
             ts.time = frame.time
         else:
             ts.time = self._frame * dt
-        ts.data['step'] = frame.step
+        ts.data["step"] = frame.step
         ts.dimensions = triclinic_box(*frame.box)
 
         if self._sub is not None:

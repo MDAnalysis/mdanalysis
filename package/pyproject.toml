@@ -129,47 +129,19 @@ target-version = ['py310', 'py311', 'py312', 'py313']
 extend-exclude = '''
 (
 __pycache__ 
-| MDAnalysis/core/selection\.py
-| MDAnalysis/analysis/atomicdistances\.py
-| MDAnalysis/topology/CMSParser\.py
-| MDAnalysis/topology/__init__\.py
-| MDAnalysis/core/selection\.py
-| MDAnalysis/analysis/diffusionmap\.py
-| MDAnalysis/analysis/align\.py
-| MDAnalysis/analysis/dasktimeseries\.py
-| MDAnalysis/coordinates/H5MD\.py
-| MDAnalysis/coordinates/MMCIF\.py
+| MDAnalysis/coordinates/DCD\.py
+| MDAnalysis/coordinates/TRJ\.py
 | MDAnalysis/coordinates/__init__\.py
+| MDAnalysis/analysis/hydrogenbonds/hbond_analysis\.py
+| MDAnalysis/coordinates/DLPoly\.py
+| MDAnalysis/coordinates/TRZ\.py
+| MDAnalysis/coordinates/__init__\.py
+| MDAnalysis/coordinates/base\.py
+| MDAnalysis/topology/tpr/utils\.py
+| MDAnalysis/coordinates/MMCIF\.py
 | MDAnalysis/topology/MMCIFParser\.py
 | MDAnalysis/topology/PDBParser\.py
 | MDAnalysis/topology/__init__\.py
-| MDAnalysis/topology/tpr/utils\.py
-| MDAnalysis/coordinates/CIF\.py
-| MDAnalysis/coordinates/PDBx\.py
-| MDAnalysis/coordinates/__init__\.py
-| MDAnalysis/topology/PDBxParser\.py
-| MDAnalysis/topology/__init__\.py
-| MDAnalysis/coordinates/base\.py
-| MDAnalysis/core/universe\.py
-| MDAnalysis/topology/base\.py
-| MDAnalysis/analysis/hydrogenbonds/hbond_analysis\.py
-| MDAnalysis/analysis/sasa\.py
-| MDAnalysis/coordinates/DCD\.py
-| MDAnalysis/coordinates/DLPoly\.py
-| MDAnalysis/coordinates/GMS\.py
-| MDAnalysis/coordinates/MOL2\.py
-| MDAnalysis/coordinates/PDB\.py
-| MDAnalysis/coordinates/TRJ\.py
-| MDAnalysis/coordinates/TRR\.py
-| MDAnalysis/coordinates/TRZ\.py
-| MDAnalysis/coordinates/TXYZ\.py
-| MDAnalysis/coordinates/XTC\.py
-| MDAnalysis/coordinates/XYZ\.py
-| MDAnalysis/coordinates/base\.py
-| MDAnalysis/coordinates/chain\.py
-| MDAnalysis/coordinates/chemfiles\.py
-| MDAnalysis/coordinates/memory\.py
-| MDAnalysis/core/universe\.py
 | .*\.pyx
 )
 '''

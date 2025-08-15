@@ -161,7 +161,7 @@ from ..exceptions import NoDataError
 logger = logging.getLogger("MDAnalysis.coordinates.PBD")
 
 # Pairs of residue name / atom name in use to deduce PDB formatted atom names
-Pair = collections.namedtuple('Atom', 'resname name')
+Pair = collections.namedtuple("Atom", "resname name")
 
 
 class PDBReader(base.ReaderBase):
@@ -176,7 +176,7 @@ class PDBReader(base.ReaderBase):
         (:attr:`compound`), *REMARK* (:attr:`remarks`)
     - all other lines are ignored
 
-    
+
     Reads multi-`MODEL`_ PDB files as trajectories.  The `Timestep.data` dictionary
     holds the occupancy and tempfactor (bfactor) values for each atom for a given frame.
     These attributes are commonly appropriated to store other time varying properties
@@ -264,8 +264,9 @@ class PDBReader(base.ReaderBase):
        Tempfactors (aka bfactors) are now read into the ts.data dictionary each
        frame.  Occupancies are also read into this dictionary.
     """
-    format = ['PDB', 'ENT']
-    units = {'time': None, 'length': 'Angstrom'}
+
+    format = ["PDB", "ENT"]
+    units = {"time": None, "length": "Angstrom"}
 
     @store_init_arguments
     def __init__(self, filename, **kwargs):
@@ -280,7 +281,7 @@ class PDBReader(base.ReaderBase):
         super(PDBReader, self).__init__(filename, **kwargs)
 
         try:
-            self.n_atoms = kwargs['n_atoms']
+            self.n_atoms = kwargs["n_atoms"]
         except KeyError:
             # hackish, but should work and keeps things DRY
             # regular MDA usage via Universe doesn't follow this route
@@ -309,10 +310,12 @@ class PDBReader(base.ReaderBase):
         crysts = []
 
         # hack for streamIO
-        if isinstance(filename, util.NamedStream) and isinstance(filename.stream, StringIO):
+        if isinstance(filename, util.NamedStream) and isinstance(
+            filename.stream, StringIO
+        ):
             filename.stream = BytesIO(filename.stream.getvalue().encode())
 
-        pdbfile = self._pdbfile = util.anyopen(filename, 'rb')
+        pdbfile = self._pdbfile = util.anyopen(filename, "rb")
 
         line = "magical"
         while line:
@@ -320,21 +323,21 @@ class PDBReader(base.ReaderBase):
             # (rather than end of current chunk)
             line = pdbfile.readline()
 
-            if line[:5] == b'MODEL':
+            if line[:5] == b"MODEL":
                 models.append(pdbfile.tell())
-            elif line[:5] == b'CRYST':
+            elif line[:5] == b"CRYST":
                 # remove size of line to get **start** of CRYST line
                 crysts.append(pdbfile.tell() - len(line))
-            elif line[:6] == b'HEADER':
+            elif line[:6] == b"HEADER":
                 # classification = line[10:50]
                 # date = line[50:59]
                 # idCode = line[62:66]
                 header = line[10:66].strip().decode()
-            elif line[:5] == b'TITLE':
+            elif line[:5] == b"TITLE":
                 title.append(line[8:80].strip().decode())
-            elif line[:6] == b'COMPND':
+            elif line[:6] == b"COMPND":
                 compound.append(line[7:80].strip().decode())
-            elif line[:6] == b'REMARK':
+            elif line[:6] == b"REMARK":
                 remarks.append(line[6:].strip().decode())
 
         end = pdbfile.tell()  # where the file ends
@@ -373,14 +376,14 @@ class PDBReader(base.ReaderBase):
         :class:`PDBWriter`
 
         """
-        kwargs.setdefault('multiframe', self.n_frames > 1)
+        kwargs.setdefault("multiframe", self.n_frames > 1)
         return PDBWriter(filename, **kwargs)
 
     def _reopen(self):
         # Pretend the current TS is -1 (in 0 based) so "next" is the
         # 0th frame
         self.close()
-        self._pdbfile = util.anyopen(self.filename, 'rb')
+        self._pdbfile = util.anyopen(self.filename, "rb")
         self.ts.frame = -1
 
     def _read_next_timestep(self, ts=None):
@@ -432,7 +435,7 @@ class PDBReader(base.ReaderBase):
 
         tmp_buf = []
         for line in chunk.splitlines():
-            if line[:6] in ('ATOM  ', 'HETATM'):
+            if line[:6] in ("ATOM  ", "HETATM"):
                 # we only care about coordinates
                 tmp_buf.append([line[30:38], line[38:46], line[46:54]])
                 try:
@@ -448,35 +451,50 @@ class PDBReader(base.ReaderBase):
                 else:
                     saw_tempfactor = True
                 pos += 1
-            elif line[:6] == 'CRYST1':
+            elif line[:6] == "CRYST1":
                 # does an implicit str -> float conversion
                 try:
-                    cell_dims = np.array([line[6:15], line[15:24],
-                                         line[24:33], line[33:40],
-                                         line[40:47], line[47:54]],
-                                         dtype=np.float32)
+                    cell_dims = np.array(
+                        [
+                            line[6:15],
+                            line[15:24],
+                            line[24:33],
+                            line[33:40],
+                            line[40:47],
+                            line[47:54],
+                        ],
+                        dtype=np.float32,
+                    )
                 except ValueError:
-                    warnings.warn("Failed to read CRYST1 record, "
-                                  "possibly invalid PDB file, got:\n{}"
-                                  "".format(line))
+                    warnings.warn(
+                        "Failed to read CRYST1 record, "
+                        "possibly invalid PDB file, got:\n{}"
+                        "".format(line)
+                    )
                     self.ts.dimensions = None
                 else:
-                    if np.allclose(cell_dims, np.array([1.0, 1.0, 1.0, 90.0, 90.0, 90.0])):
-                        warnings.warn("1 A^3 CRYST1 record,"
-                                      " this is usually a placeholder."
-                                      " Unit cell dimensions will be set to None.")
+                    if np.allclose(
+                        cell_dims, np.array([1.0, 1.0, 1.0, 90.0, 90.0, 90.0])
+                    ):
+                        warnings.warn(
+                            "1 A^3 CRYST1 record,"
+                            " this is usually a placeholder."
+                            " Unit cell dimensions will be set to None."
+                        )
                         self.ts.dimensions = None
                     else:
                         self.ts.dimensions = cell_dims
 
         # check if atom number changed
         if pos != self.n_atoms:
-            raise ValueError("Inconsistency in file '{}': The number of atoms "
-                             "({}) in trajectory frame {} differs from the "
-                             "number of atoms ({}) in the corresponding "
-                             "topology.\nTrajectories with varying numbers of "
-                             "atoms are currently not supported."
-                             "".format(self.filename, pos, frame, self.n_atoms))
+            raise ValueError(
+                "Inconsistency in file '{}': The number of atoms "
+                "({}) in trajectory frame {} differs from the "
+                "number of atoms ({}) in the corresponding "
+                "topology.\nTrajectories with varying numbers of "
+                "atoms are currently not supported."
+                "".format(self.filename, pos, frame, self.n_atoms)
+            )
 
         # doing the conversion from list to array at the end is faster
         self.ts.positions = tmp_buf
@@ -487,9 +505,9 @@ class PDBReader(base.ReaderBase):
             if not self.ts.dimensions is None:
                 self.convert_pos_from_native(self.ts.dimensions[:3])
         self.ts.frame = frame
-        self.ts.data['occupancy'] = occupancy
+        self.ts.data["occupancy"] = occupancy
         if saw_tempfactor:
-            self.ts.data['tempfactor'] = tempfactor
+            self.ts.data["tempfactor"] = tempfactor
 
         return self.ts
 
@@ -586,32 +604,37 @@ class PDBWriter(base.WriterBase):
        Do not write unusable conect records when ag index
        is larger than 100000.
     """
+
     fmt = {
-        'ATOM': (
+        "ATOM": (
             "ATOM  {serial:5d} {name:<4s}{altLoc:<1s}{resName:<4s}"
             "{chainID:1s}{resSeq:4d}{iCode:1s}"
             "   {pos[0]:8.3f}{pos[1]:8.3f}{pos[2]:8.3f}{occupancy:6.2f}"
-            "{tempFactor:6.2f}      {segID:<4s}{element:>2s}{charge:2s}\n"),
-        'HETATM': (
+            "{tempFactor:6.2f}      {segID:<4s}{element:>2s}{charge:2s}\n"
+        ),
+        "HETATM": (
             "HETATM{serial:5d} {name:<4s}{altLoc:<1s}{resName:<4s}"
             "{chainID:1s}{resSeq:4d}{iCode:1s}"
             "   {pos[0]:8.3f}{pos[1]:8.3f}{pos[2]:8.3f}{occupancy:6.2f}"
-            "{tempFactor:6.2f}      {segID:<4s}{element:>2s}{charge:2s}\n"),
-        'REMARK': "REMARK     {0}\n",
-        'COMPND': "COMPND    {0}\n",
-        'HEADER': "HEADER    {0}\n",
-        'TITLE': "TITLE     {0}\n",
-        'MODEL': "MODEL     {0:>4d}\n",
-        'NUMMDL': "NUMMDL    {0:5d}\n",
-        'ENDMDL': "ENDMDL\n",
-        'END': "END\n",
-        'CRYST1': ("CRYST1{box[0]:9.3f}{box[1]:9.3f}{box[2]:9.3f}"
-                   "{ang[0]:7.2f}{ang[1]:7.2f}{ang[2]:7.2f} "
-                   "{spacegroup:<11s}{zvalue:4d}\n"),
-        'CONECT': "CONECT{0}\n"
+            "{tempFactor:6.2f}      {segID:<4s}{element:>2s}{charge:2s}\n"
+        ),
+        "REMARK": "REMARK     {0}\n",
+        "COMPND": "COMPND    {0}\n",
+        "HEADER": "HEADER    {0}\n",
+        "TITLE": "TITLE     {0}\n",
+        "MODEL": "MODEL     {0:>4d}\n",
+        "NUMMDL": "NUMMDL    {0:5d}\n",
+        "ENDMDL": "ENDMDL\n",
+        "END": "END\n",
+        "CRYST1": (
+            "CRYST1{box[0]:9.3f}{box[1]:9.3f}{box[2]:9.3f}"
+            "{ang[0]:7.2f}{ang[1]:7.2f}{ang[2]:7.2f} "
+            "{spacegroup:<11s}{zvalue:4d}\n"
+        ),
+        "CONECT": "CONECT{0}\n",
     }
-    format = ['PDB', 'ENT']
-    units = {'time': None, 'length': 'Angstrom'}
+    format = ["PDB", "ENT"]
+    units = {"time": None, "length": "Angstrom"}
     pdb_coor_limits = {"min": -999.9995, "max": 9999.9995}
     #: wrap comments into REMARK records that are not longer than
     # :attr:`remark_max_length` characters.
@@ -619,36 +642,97 @@ class PDBWriter(base.WriterBase):
     multiframe = False
 
     # These attributes are used to deduce how to format the atom name.
-    ions = ('FE', 'AS', 'ZN', 'MG', 'MN', 'CO', 'BR',
-            'CU', 'TA', 'MO', 'AL', 'BE', 'SE', 'PT',
-            'EU', 'NI', 'IR', 'RH', 'AU', 'GD', 'RU')
+    ions = (
+        "FE",
+        "AS",
+        "ZN",
+        "MG",
+        "MN",
+        "CO",
+        "BR",
+        "CU",
+        "TA",
+        "MO",
+        "AL",
+        "BE",
+        "SE",
+        "PT",
+        "EU",
+        "NI",
+        "IR",
+        "RH",
+        "AU",
+        "GD",
+        "RU",
+    )
     # Mercurial can be confused for hydrogen gamma. Yet, mercurial is
     # rather rare in the PDB. Here are all the residues that contain
     # mercurial.
-    special_hg = ('CMH', 'EMC', 'MBO', 'MMC', 'HGB', 'BE7', 'PMB')
+    special_hg = ("CMH", "EMC", "MBO", "MMC", "HGB", "BE7", "PMB")
     # Chloride can be confused for a carbon. Here are the residues that
     # contain chloride.
-    special_cl = ('0QE', 'CPT', 'DCE', 'EAA', 'IMN', 'OCZ', 'OMY', 'OMZ',
-                  'UN9', '1N1', '2T8', '393', '3MY', 'BMU', 'CLM', 'CP6',
-                  'DB8', 'DIF', 'EFZ', 'LUR', 'RDC', 'UCL', 'XMM', 'HLT',
-                  'IRE', 'LCP', 'PCI', 'VGH')
+    special_cl = (
+        "0QE",
+        "CPT",
+        "DCE",
+        "EAA",
+        "IMN",
+        "OCZ",
+        "OMY",
+        "OMZ",
+        "UN9",
+        "1N1",
+        "2T8",
+        "393",
+        "3MY",
+        "BMU",
+        "CLM",
+        "CP6",
+        "DB8",
+        "DIF",
+        "EFZ",
+        "LUR",
+        "RDC",
+        "UCL",
+        "XMM",
+        "HLT",
+        "IRE",
+        "LCP",
+        "PCI",
+        "VGH",
+    )
     # In these pairs, the atom name is aligned on the first column
     # (column 13).
-    include_pairs = (Pair('OEC', 'CA1'),
-                     Pair('PLL', 'PD'),
-                     Pair('OEX', 'CA1'))
+    include_pairs = (Pair("OEC", "CA1"), Pair("PLL", "PD"), Pair("OEX", "CA1"))
     # In these pairs, the atom name is aligned on the second column
     # (column 14), but other rules would align them on the first column.
-    exclude_pairs = (Pair('C14', 'C14'), Pair('C15', 'C15'),
-                     Pair('F9F', 'F9F'), Pair('OAN', 'OAN'),
-                     Pair('BLM', 'NI'), Pair('BZG', 'CO'),
-                     Pair('BZG', 'NI'), Pair('VNL', 'CO1'),
-                     Pair('VNL', 'CO2'), Pair('PF5', 'FE1'),
-                     Pair('PF5', 'FE2'), Pair('UNL', 'UNL'))
+    exclude_pairs = (
+        Pair("C14", "C14"),
+        Pair("C15", "C15"),
+        Pair("F9F", "F9F"),
+        Pair("OAN", "OAN"),
+        Pair("BLM", "NI"),
+        Pair("BZG", "CO"),
+        Pair("BZG", "NI"),
+        Pair("VNL", "CO1"),
+        Pair("VNL", "CO2"),
+        Pair("PF5", "FE1"),
+        Pair("PF5", "FE2"),
+        Pair("UNL", "UNL"),
+    )
 
-    def __init__(self, filename, bonds="conect", n_atoms=None, start=0, step=1,
-                 remarks="Created by PDBWriter",
-                 convert_units=True, multiframe=None, reindex=True):
+    def __init__(
+        self,
+        filename,
+        bonds="conect",
+        n_atoms=None,
+        start=0,
+        step=1,
+        remarks="Created by PDBWriter",
+        convert_units=True,
+        multiframe=None,
+        reindex=True,
+    ):
         """Create a new PDBWriter
 
         Parameters
@@ -690,7 +774,9 @@ class PDBWriter(base.WriterBase):
         self.filename = filename
         # convert length and time to base units
         self.convert_units = convert_units
-        self._multiframe = self.multiframe if multiframe is None else multiframe
+        self._multiframe = (
+            self.multiframe if multiframe is None else multiframe
+        )
         self.bonds = bonds
         self._reindex = reindex
 
@@ -701,7 +787,7 @@ class PDBWriter(base.WriterBase):
         self.step = step
         self.remarks = remarks
 
-        self.pdbfile = util.anyopen(self.filename, 'wt')  # open file on init
+        self.pdbfile = util.anyopen(self.filename, "wt")  # open file on init
         self.has_END = False
         self.first_frame_done = False
 
@@ -713,23 +799,29 @@ class PDBWriter(base.WriterBase):
         .. versionchanged:: 2.0.0
            CONECT_ record written just before END_ record
         """
-        if hasattr(self, 'pdbfile') and self.pdbfile is not None:
+        if hasattr(self, "pdbfile") and self.pdbfile is not None:
             if not self.has_END:
                 self._write_pdb_bonds()
                 self.END()
             else:
-                logger.warning("END record has already been written"
-                               " before the final closing of the file")
+                logger.warning(
+                    "END record has already been written"
+                    " before the final closing of the file"
+                )
             self.pdbfile.close()
         self.pdbfile = None
 
     def _write_pdb_title(self):
         if self._multiframe:
-            self.TITLE("MDANALYSIS FRAMES FROM {0:d}, STEP {1:d}: {2!s}"
-                       "".format(self.start, self.step, self.remarks))
+            self.TITLE(
+                "MDANALYSIS FRAMES FROM {0:d}, STEP {1:d}: {2!s}"
+                "".format(self.start, self.step, self.remarks)
+            )
         else:
-            self.TITLE("MDANALYSIS FRAME {0:d}: {1!s}"
-                       "".format(self.start, self.remarks))
+            self.TITLE(
+                "MDANALYSIS FRAME {0:d}: {1!s}"
+                "".format(self.start, self.remarks)
+            )
 
     def _write_pdb_header(self):
         """
@@ -779,15 +871,21 @@ class PDBWriter(base.WriterBase):
             # Add CRYST1 REMARK (285)
             # The SCALE record is not included
             # (We are only implementing a subset of the PDB standard)
-            self.REMARK("285 UNITARY VALUES FOR THE UNIT CELL AUTOMATICALLY SET")
-            self.REMARK("285 BY MDANALYSIS PDBWRITER BECAUSE UNIT CELL INFORMATION")
+            self.REMARK(
+                "285 UNITARY VALUES FOR THE UNIT CELL AUTOMATICALLY SET"
+            )
+            self.REMARK(
+                "285 BY MDANALYSIS PDBWRITER BECAUSE UNIT CELL INFORMATION"
+            )
             self.REMARK("285 WAS MISSING.")
             self.REMARK("285 PROTEIN DATA BANK CONVENTIONS REQUIRE THAT")
             self.REMARK("285 CRYST1 RECORD IS INCLUDED, BUT THE VALUES ON")
             self.REMARK("285 THIS RECORD ARE MEANINGLESS.")
 
-            warnings.warn("Unit cell dimensions not found. "
-                          "CRYST1 record set to unitary values.")
+            warnings.warn(
+                "Unit cell dimensions not found. "
+                "CRYST1 record set to unitary values."
+            )
         else:
             self.CRYST1(self.convert_dimensions_to_unitcell(u.trajectory.ts))
 
@@ -820,9 +918,11 @@ class PDBWriter(base.WriterBase):
         # such) or add a REMARK (which allows the user to look at the
         # previously written frames)
         if self.frames_written > 1:
-            self.REMARK("Incomplete multi-frame trajectory.",
-                        "Coordinates for the current frame cannot be "
-                        "represented in the PDB format.")
+            self.REMARK(
+                "Incomplete multi-frame trajectory.",
+                "Coordinates for the current frame cannot be "
+                "represented in the PDB format.",
+            )
             self.close()
         else:
             self.close()
@@ -839,31 +939,36 @@ class PDBWriter(base.WriterBase):
                 else:
                     raise
 
-        raise ValueError("PDB files must have coordinate values between "
-                         "{0:.3f} and {1:.3f} Angstroem: file writing was "
-                         "aborted.".format(self.pdb_coor_limits["min"],
-                                           self.pdb_coor_limits["max"]))
+        raise ValueError(
+            "PDB files must have coordinate values between "
+            "{0:.3f} and {1:.3f} Angstroem: file writing was "
+            "aborted.".format(
+                self.pdb_coor_limits["min"], self.pdb_coor_limits["max"]
+            )
+        )
 
     def _write_pdb_bonds(self):
         """Writes out all the bond records"""
         if self.bonds is None:
             return
 
-        if (not hasattr(self, "obj") or
-                not self.obj or
-                not hasattr(self.obj.universe, 'bonds')):
+        if (
+            not hasattr(self, "obj")
+            or not self.obj
+            or not hasattr(self.obj.universe, "bonds")
+        ):
             return
 
         bondset = set(itertools.chain(*(a.bonds for a in self.obj.atoms)))
         if self._reindex:
-            index_attribute = 'index'
+            index_attribute = "index"
             mapping = {
                 index: i
                 for i, index in enumerate(self.obj.atoms.indices, start=1)
             }
             atoms = np.sort(self.obj.atoms.indices)
         else:
-            index_attribute = 'id'
+            index_attribute = "id"
             mapping = {id_: id_ for id_ in self.obj.atoms.ids}
             atoms = np.sort(self.obj.atoms.ids)
         if self.bonds == "conect":
@@ -873,7 +978,8 @@ class PDBWriter(base.WriterBase):
                     getattr(bond[0], index_attribute),
                     getattr(bond[1], index_attribute),
                 )
-                for bond in bondset if not bond.is_guessed
+                for bond in bondset
+                if not bond.is_guessed
             )
         elif self.bonds == "all":
             bonds = (
@@ -891,14 +997,19 @@ class PDBWriter(base.WriterBase):
             if not (a1 in mapping and a2 in mapping):
                 continue
             if mapping[a1] >= 100000 or mapping[a2] >= 100000:
-                warnings.warn("Atom with index >=100000 cannot write "
-                              "bonds to PDB CONECT records.")
+                warnings.warn(
+                    "Atom with index >=100000 cannot write "
+                    "bonds to PDB CONECT records."
+                )
                 return
             con[a2].append(a1)
             con[a1].append(a2)
 
-        conect = ([mapping[a]] + sorted([mapping[at] for at in con[a]])
-                  for a in atoms if a in con)
+        conect = (
+            [mapping[a]] + sorted([mapping[at] for at in con[a]])
+            for a in atoms
+            if a in con
+        )
 
         for c in conect:
             self.CONECT(c)
@@ -921,9 +1032,11 @@ class PDBWriter(base.WriterBase):
         current frame.
         """
         if isinstance(obj, Timestep):
-            raise TypeError("PDBWriter cannot write Timestep objects "
-                            "directly, since they lack topology information ("
-                            "atom names and types) required in PDB files")
+            raise TypeError(
+                "PDBWriter cannot write Timestep objects "
+                "directly, since they lack topology information ("
+                "atom names and types) required in PDB files"
+            )
         if len(obj.atoms) == 0:
             raise IndexError("Cannot write empty AtomGroup")
 
@@ -1010,7 +1123,7 @@ class PDBWriter(base.WriterBase):
         traj[start]
 
     def _write_next_frame(self, ts=None, **kwargs):
-        '''write a new timestep to the PDB file
+        """write a new timestep to the PDB file
 
         :Keywords:
           *ts*
@@ -1029,13 +1142,15 @@ class PDBWriter(base.WriterBase):
 
         .. versionchanged:: 1.0.0
            Renamed from `write_next_timestep` to `_write_next_frame`.
-        '''
+        """
         if ts is None:
             try:
                 ts = self.ts
             except AttributeError:
-                errmsg = ("PBDWriter: no coordinate data to write to "
-                          "trajectory file")
+                errmsg = (
+                    "PBDWriter: no coordinate data to write to "
+                    "trajectory file"
+                )
                 raise NoDataError(errmsg) from None
         self._check_pdb_coordinates()
         self._write_timestep(ts, **kwargs)
@@ -1051,21 +1166,22 @@ class PDBWriter(base.WriterBase):
         <https://gist.github.com/jbarnoud/37a524330f29b5b7b096> for more
         details.
         """
-        if atomname == '':
-            return ''
+        if atomname == "":
+            return ""
         if len(atomname) >= 4:
             return atomname[:4]
         elif len(atomname) == 1:
-            return ' {}  '.format(atomname)
-        elif ((resname == atomname
-               or atomname[:2] in self.ions
-               or atomname == 'UNK'
-               or (resname in self.special_hg and atomname[:2] == 'HG')
-               or (resname in self.special_cl and atomname[:2] == 'CL')
-               or Pair(resname, atomname) in self.include_pairs)
-              and Pair(resname, atomname) not in self.exclude_pairs):
-            return '{:<4}'.format(atomname)
-        return ' {:<3}'.format(atomname)
+            return " {}  ".format(atomname)
+        elif (
+            resname == atomname
+            or atomname[:2] in self.ions
+            or atomname == "UNK"
+            or (resname in self.special_hg and atomname[:2] == "HG")
+            or (resname in self.special_cl and atomname[:2] == "CL")
+            or Pair(resname, atomname) in self.include_pairs
+        ) and Pair(resname, atomname) not in self.exclude_pairs:
+            return "{:<4}".format(atomname)
+        return " {:<3}".format(atomname)
 
     @staticmethod
     def _format_PDB_charges(charges: np.ndarray) -> np.ndarray:
@@ -1094,7 +1210,7 @@ class PDBWriter(base.WriterBase):
             raise ValueError("formal charges array should be of `int` type")
 
         outcharges = charges.astype(object)
-        outcharges[outcharges == 0] = ''  # empty strings for no charge case
+        outcharges[outcharges == 0] = ""  # empty strings for no charge case
         # using np.where is more efficient than looping in sparse cases
         for i in np.where(charges < 0)[0]:
             if charges[i] < -9:
@@ -1163,22 +1279,25 @@ class PDBWriter(base.WriterBase):
                 return getattr(atoms, attrname)
             except AttributeError:
                 if self.frames_written == 0:
-                    warnings.warn("Found no information for attr: '{}'"
-                                  " Using default value of '{}'"
-                                  "".format(attrname, default))
+                    warnings.warn(
+                        "Found no information for attr: '{}'"
+                        " Using default value of '{}'"
+                        "".format(attrname, default)
+                    )
                 return np.array([default] * len(atoms))
-        altlocs = get_attr('altLocs', ' ')
-        resnames = get_attr('resnames', 'UNK')
-        icodes = get_attr('icodes', ' ')
-        segids = get_attr('segids', ' ')
-        chainids = get_attr('chainIDs', '')
-        resids = get_attr('resids', 1)
-        occupancies = get_attr('occupancies', 1.0)
-        tempfactors = get_attr('tempfactors', 0.0)
-        atomnames = get_attr('names', 'X')
-        elements = get_attr('elements', ' ')
-        record_types = get_attr('record_types', 'ATOM')
-        formal_charges = self._format_PDB_charges(get_attr('formalcharges', 0))
+
+        altlocs = get_attr("altLocs", " ")
+        resnames = get_attr("resnames", "UNK")
+        icodes = get_attr("icodes", " ")
+        segids = get_attr("segids", " ")
+        chainids = get_attr("chainIDs", "")
+        resids = get_attr("resids", 1)
+        occupancies = get_attr("occupancies", 1.0)
+        tempfactors = get_attr("tempfactors", 0.0)
+        atomnames = get_attr("names", "X")
+        elements = get_attr("elements", " ")
+        record_types = get_attr("record_types", "ATOM")
+        formal_charges = self._format_PDB_charges(get_attr("formalcharges", 0))
 
         def validate_chainids(chainids, default):
             """Validate each atom's chainID
@@ -1190,7 +1309,7 @@ class PDBWriter(base.WriterBase):
             invalid_char_ids = False
             missing_ids = False
 
-            for (i, chainid) in enumerate(chainids):
+            for i, chainid in enumerate(chainids):
                 if chainid == "":
                     missing_ids = True
                     chainids[i] = default
@@ -1202,17 +1321,23 @@ class PDBWriter(base.WriterBase):
                     chainids[i] = default
 
             if invalid_length_ids:
-                warnings.warn("Found chainIDs with invalid length."
-                              " Corresponding atoms will use value of '{}'"
-                              "".format(default))
+                warnings.warn(
+                    "Found chainIDs with invalid length."
+                    " Corresponding atoms will use value of '{}'"
+                    "".format(default)
+                )
             if invalid_char_ids:
-                warnings.warn("Found chainIDs using unnaccepted character."
-                              " Corresponding atoms will use value of '{}'"
-                              "".format(default))
+                warnings.warn(
+                    "Found chainIDs using unnaccepted character."
+                    " Corresponding atoms will use value of '{}'"
+                    "".format(default)
+                )
             if missing_ids:
-                warnings.warn("Found missing chainIDs."
-                              " Corresponding atoms will use value of '{}'"
-                              "".format(default))
+                warnings.warn(
+                    "Found missing chainIDs."
+                    " Corresponding atoms will use value of '{}'"
+                    "".format(default)
+                )
             return chainids
 
         chainids = validate_chainids(chainids, "X")
@@ -1225,33 +1350,39 @@ class PDBWriter(base.WriterBase):
             except AttributeError:
                 raise NoDataError(
                     'The "id" topology attribute is not set. '
-                    'Either set the attribute or use reindex=True.'
+                    "Either set the attribute or use reindex=True."
                 )
         else:
             atom_ids = np.arange(len(atoms)) + 1
 
         for i in range(len(atoms)):
             vals = {}
-            vals['serial'] = util.ltruncate_int(atom_ids[i], 5)  # check for overflow here?
-            vals['name'] = self._deduce_PDB_atom_name(atomnames[i], resnames[i])
-            vals['altLoc'] = altlocs[i][:1]
-            vals['resName'] = resnames[i][:4]
-            vals['resSeq'] = util.ltruncate_int(resids[i], 4)
-            vals['iCode'] = icodes[i][:1]
-            vals['pos'] = pos[i]  # don't take off atom so conversion works
-            vals['occupancy'] = occupancies[i]
-            vals['tempFactor'] = tempfactors[i]
-            vals['segID'] = segids[i][:4]
-            vals['chainID'] = chainids[i]
-            vals['element'] = elements[i][:2].upper()
-            vals['charge'] = formal_charges[i]
+            vals["serial"] = util.ltruncate_int(
+                atom_ids[i], 5
+            )  # check for overflow here?
+            vals["name"] = self._deduce_PDB_atom_name(
+                atomnames[i], resnames[i]
+            )
+            vals["altLoc"] = altlocs[i][:1]
+            vals["resName"] = resnames[i][:4]
+            vals["resSeq"] = util.ltruncate_int(resids[i], 4)
+            vals["iCode"] = icodes[i][:1]
+            vals["pos"] = pos[i]  # don't take off atom so conversion works
+            vals["occupancy"] = occupancies[i]
+            vals["tempFactor"] = tempfactors[i]
+            vals["segID"] = segids[i][:4]
+            vals["chainID"] = chainids[i]
+            vals["element"] = elements[i][:2].upper()
+            vals["charge"] = formal_charges[i]
 
             # record_type attribute, if exists, can be ATOM or HETATM
             try:
                 self.pdbfile.write(self.fmt[record_types[i]].format(**vals))
             except KeyError:
-                errmsg = (f"Found {record_types[i]} for the record type, but "
-                          f"only allowed types are ATOM or HETATM")
+                errmsg = (
+                    f"Found {record_types[i]} for the record type, but "
+                    f"only allowed types are ATOM or HETATM"
+                )
                 raise ValueError(errmsg) from None
 
         if multiframe:
@@ -1265,17 +1396,15 @@ class PDBWriter(base.WriterBase):
             Strip `trajectory.header` since it can be modified by the user and should be
             sanitized (Issue #2324)
         """
-        if not hasattr(trajectory, 'header'):
+        if not hasattr(trajectory, "header"):
             return
         header = trajectory.header.strip()
-        self.pdbfile.write(self.fmt['HEADER'].format(header))
+        self.pdbfile.write(self.fmt["HEADER"].format(header))
 
     def TITLE(self, *title):
-        """Write TITLE_ record.
-
-        """
+        """Write TITLE_ record."""
         line = " ".join(title)  # TODO: should do continuation automatically
-        self.pdbfile.write(self.fmt['TITLE'].format(line))
+        self.pdbfile.write(self.fmt["TITLE"].format(line))
 
     def REMARK(self, *remarks):
         """Write generic REMARKS_ record (without number).
@@ -1285,23 +1414,25 @@ class PDBWriter(base.WriterBase):
 
         """
         for remark in remarks:
-            self.pdbfile.write(self.fmt['REMARK'].format(remark))
+            self.pdbfile.write(self.fmt["REMARK"].format(remark))
 
     def COMPND(self, trajectory):
-        if not hasattr(trajectory, 'compound'):
+        if not hasattr(trajectory, "compound"):
             return
         compound = trajectory.compound
         for c in compound:
-            self.pdbfile.write(self.fmt['COMPND'].format(c))
+            self.pdbfile.write(self.fmt["COMPND"].format(c))
 
-    def CRYST1(self, dimensions, spacegroup='P 1', zvalue=1):
-        """Write CRYST1_ record.
-        """
-        self.pdbfile.write(self.fmt['CRYST1'].format(
-            box=dimensions[:3],
-            ang=dimensions[3:],
-            spacegroup=spacegroup,
-            zvalue=zvalue))
+    def CRYST1(self, dimensions, spacegroup="P 1", zvalue=1):
+        """Write CRYST1_ record."""
+        self.pdbfile.write(
+            self.fmt["CRYST1"].format(
+                box=dimensions[:3],
+                ang=dimensions[3:],
+                spacegroup=spacegroup,
+                zvalue=zvalue,
+            )
+        )
 
     def MODEL(self, modelnumber):
         """Write the MODEL_ record.
@@ -1316,7 +1447,9 @@ class PDBWriter(base.WriterBase):
            Maximum model number is enforced.
 
         """
-        self.pdbfile.write(self.fmt['MODEL'].format(int(str(modelnumber)[-4:])))
+        self.pdbfile.write(
+            self.fmt["MODEL"].format(int(str(modelnumber)[-4:]))
+        )
 
     def END(self):
         """Write END_ record.
@@ -1329,22 +1462,18 @@ class PDBWriter(base.WriterBase):
         """
         if not self.has_END:
             # only write a single END record
-            self.pdbfile.write(self.fmt['END'])
+            self.pdbfile.write(self.fmt["END"])
         self.has_END = True
 
     def ENDMDL(self):
-        """Write the ENDMDL_ record.
-
-        """
-        self.pdbfile.write(self.fmt['ENDMDL'])
+        """Write the ENDMDL_ record."""
+        self.pdbfile.write(self.fmt["ENDMDL"])
 
     def CONECT(self, conect):
-        """Write CONECT_ record.
-
-        """
+        """Write CONECT_ record."""
         conect = ["{0:5d}".format(entry) for entry in conect]
         conect = "".join(conect)
-        self.pdbfile.write(self.fmt['CONECT'].format(conect))
+        self.pdbfile.write(self.fmt["CONECT"].format(conect))
 
 
 class ExtendedPDBReader(PDBReader):
@@ -1365,6 +1494,7 @@ class ExtendedPDBReader(PDBReader):
 
     .. versionadded:: 0.8
     """
+
     format = "XPDB"
 
 
@@ -1394,6 +1524,7 @@ class MultiPDBWriter(PDBWriter):
     .. versionadded:: 0.7.6
 
     """
-    format = ['PDB', 'ENT']
+
+    format = ["PDB", "ENT"]
     multiframe = True  # For Writer registration
     singleframe = False
