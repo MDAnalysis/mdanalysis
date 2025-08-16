@@ -468,7 +468,7 @@ self.results.delta_t_values = np.arange(self.n_frames) * (self.times[1] - self.t
         # Looping over all the frames as if the referenced gets shifted frame to frame
         for i in range(n_frames):
             for j in range(i + 1, n_frames):
-                delta_t = dump_times[j] - dump_times[i]
+                delta_t = self.times[j] - self.times[i]
                 # Compute displacement and squared displacement
                 disp = positions[j] - positions[i]
                 squared_disp = np.sum(disp**2, axis=1)
