@@ -178,8 +178,7 @@ is used to demonstrate selection of a MSD segment.
     start_time = 20
     start_index = int(start_time/timestep)
     end_time = 60
-    linear_model = linregress(lagtimes[start_index:end_index],
-                                                  msd[start_index:end_index])
+    linear_model = linregress(lagtimes[start_index:end_index], msd[start_index:end_index])
     slope = linear_model.slope
     error = linear_model.stderr
     # dim_fac is 3 as we computed a 3D msd with 'xyz'
@@ -423,7 +422,9 @@ class EinsteinMSD(AnalysisBase):
             sqdist = np.square(disp).sum(axis=-1)
             self.results.msds_by_particle[lag, :] = np.mean(sqdist, axis=0)
         self.results.timeseries = self.results.msds_by_particle.mean(axis=1)
-self.results.delta_t_values = np.arange(self.n_frames) * (self.times[1] - self.times[0])
+        self.results.delta_t_values = np.arange(self.n_frames) * (
+            self.times[1] - self.times[0]
+        )
 
     def _conclude_fft(self):  # with FFT, np.float64 bit prescision required.
         r"""Calculates the MSD via the FCA fast correlation algorithm."""
@@ -449,19 +450,17 @@ self.results.delta_t_values = np.arange(self.n_frames) * (self.times[1] - self.t
                 positions[:, n, :]
             )
         self.results.timeseries = self.results.msds_by_particle.mean(axis=1)
-        self.results.delta_t_values = np.arange(self.n_frames) * [
-            dump_times[1] - dump_times[0]
-        ]
+        self.results.delta_t_values = np.arange(self.n_frames) * (
+            self.times[1] - self.times[0]
+        )
 
     def _conclude_non_linear(self):
 
         n_frames = self.n_frames
         n_atoms = self.n_particles
         positions = self._position_array.astype(np.float64)
-
-        msd_dict = collections.defaultdict(
-            list
-        )  # Dictionary to collect MSDs: {Δt: [msd1, msd2, ...]}
+        # Dictionary to collect MSDs: {Δt: [msd1, msd2, ...]}
+        msd_dict = collections.defaultdict(list)
         msds_by_particle_dict = collections.defaultdict(list)
 
         # TODO: optimize the code
