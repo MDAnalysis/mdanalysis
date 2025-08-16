@@ -423,9 +423,7 @@ class EinsteinMSD(AnalysisBase):
             sqdist = np.square(disp).sum(axis=-1)
             self.results.msds_by_particle[lag, :] = np.mean(sqdist, axis=0)
         self.results.timeseries = self.results.msds_by_particle.mean(axis=1)
-        self.results.delta_t_values = np.arange(self.n_frames) * [
-            dump_times[1] - dump_times[0]
-        ]
+self.results.delta_t_values = np.arange(self.n_frames) * (self.times[1] - self.times[0])
 
     def _conclude_fft(self):  # with FFT, np.float64 bit prescision required.
         r"""Calculates the MSD via the FCA fast correlation algorithm."""
