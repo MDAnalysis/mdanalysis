@@ -455,7 +455,6 @@ self.results.delta_t_values = np.arange(self.n_frames) * (self.times[1] - self.t
 
     def _conclude_non_linear(self):
 
-        dump_times = self.times
         n_frames = self.n_frames
         n_atoms = self.n_particles
         positions = self._position_array.astype(np.float64)
