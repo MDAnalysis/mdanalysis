@@ -415,7 +415,6 @@ class EinsteinMSD(AnalysisBase):
     def _conclude_simple(self):
         r"""Calculates the MSD via the simple "windowed" algorithm."""
         lagtimes = np.arange(1, self.n_frames)
-        dump_times = self.times
         positions = self._position_array.astype(np.float64)
         for lag in tqdm(lagtimes):
             disp = positions[:-lag, :, :] - positions[lag:, :, :]
@@ -443,7 +442,6 @@ class EinsteinMSD(AnalysisBase):
                 or set fft=False"""
             )
 
-        dump_times = self.times
         positions = self._position_array.astype(np.float64)
         for n in tqdm(range(self.n_particles)):
             self.results.msds_by_particle[:, n] = tidynamics.msd(
