@@ -16,13 +16,17 @@ The rules for this file:
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, orbeckst, BHM-Bob, TRY-ER, Abdulrahman-PROG, pbuslaev,
          yuxuanzhuang, yuyuan871111, tanishy7777, tulga-rdn, Gareth-elliott,
-         hmacdope
+         hmacdope, tylerjereddy, cbouy, talagayev, DrDomenicoMarson
 
 
  * 2.10.0
 
 Fixes
- *
+ * Fix DCDWriter to correctly write unit cell angles as cosines following 
+   NAMD/VMD convention (Issue #5069)
+ * Fixed an integer overflow in large DCD file seeks on Windows
+   (Issue #4879, PR #5086)
+ * Fix compile failure due to numpy issues in transformations.c (Issue #5061, PR #5068)
  * Fix incorrect `self.atom` assignment in SingleFrameReaderBase (Issue #5052, PR #5055)
  * Fixes bug in `analysis/hydrogenbonds.py`: `_donors` and `_hydrogens`
    were not updated when the `acceptors_sel` and `hydrogens_sel` were provided
@@ -38,6 +42,12 @@ Fixes
    directly passing them. (Issue #3520, PR #5006)
 
 Enhancements
+ * Support has been added for reading positions and velocities
+   from GROMACS TPR files, between GROMACS version 4.x and 2025
+   (Issue #464, PR #4873)
+ * Added `TemplateInferrer` and `RDKitInferrer` dataclasses to the
+   `RDKitInferring` module to be used by the RDKit converter. (PR #4305)
+ * Improve speed of GROMOS11 (TRC) reader (Issue #5079, PR #5080)
  * Improve parsing of topology information from LAMMPS dump files to allow
    reading of mass, charge and element attributes. (Issue #3449, PR #4995)
  * Added timestep support for XDR writers and readers (Issue #4905, PR #4908)
@@ -58,13 +68,21 @@ Enhancements
    (PR #5038)
  * Moved distopia checking function to common import location in
    MDAnalysisTest.util (PR #5038)
+ * Enables parallelization for `analysis.polymer.PersistenceLength` (Issue #4671, PR #5074)
+
 
 Changes
+ * Refactored the RDKit converter code to move the inferring code in a separate
+   `RDKitInferring` module. The bond order and charges inferrer has been move to
+   an `MDAnalysisInferrer` dataclass in there. (PR #4305)
  * Removed undocumented and unused attribute
    `analysis.lineardensity.LinearDensity.totalmass` (PR #5007)
  * Remove `default` channel from RTD conda env. (Issue # 5036, PR # 5037)   
 
 Deprecations
+ * The RDKit converter parameter `NoImplicit` has been deprecated in favour of
+   `implicit_hydrogens` and `inferrer` parameters. `max_iter` has been moved
+   under `MDAnalysisInferrer`. (PR #4305)
 
 
 03/11/25 IAlibay, ChiahsinChu, RMeli, tanishy7777, talagayev, tylerjereddy,

@@ -248,7 +248,10 @@ class TPRParser(TopologyReaderBase):
 
         if th.bTop:
             tpr_top = tpr_utils.do_mtop(
-                data, th.fver, tpr_resid_from_one=tpr_resid_from_one
+                data,
+                th.fver,
+                tpr_resid_from_one=tpr_resid_from_one,
+                precision=th.precision,
             )
         else:
             msg = f"{self.filename}: No topology found in tpr file"

@@ -18,6 +18,7 @@ from MDAnalysis.analysis.nucleicacids import NucPairDist
 from MDAnalysis.analysis.contacts import Contacts
 from MDAnalysis.analysis.density import DensityAnalysis
 from MDAnalysis.analysis.lineardensity import LinearDensity
+from MDAnalysis.analysis.polymer import PersistenceLength
 from MDAnalysis.lib.util import is_installed
 
 
@@ -184,4 +185,12 @@ def client_DensityAnalysis(request):
 
 @pytest.fixture(scope="module", params=params_for_cls(LinearDensity))
 def client_LinearDensity(request):
+    return request.param
+
+
+# MDAnalysis.analysis.polymer
+
+
+@pytest.fixture(scope="module", params=params_for_cls(PersistenceLength))
+def client_PersistenceLength(request):
     return request.param
