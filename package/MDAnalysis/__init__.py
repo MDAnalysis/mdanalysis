@@ -216,9 +216,6 @@ from .core.universe import Universe, Merge
 from .core.groups import AtomGroup, ResidueGroup, SegmentGroup
 from .coordinates.core import writer as Writer
 
-# Import web functions
-from .web import fetch_pdb
-
 # After Universe import
 from . import converters
 
