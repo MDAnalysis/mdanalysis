@@ -1,7 +1,0 @@
-Am traveling for spring break, so here's a todo list for future me while it still fresh in my mind. (3/10/2025)
-
-1. Start to integrate this code with MDAnalysis/coordinates/ (base.py and PDB.py respectively)? Need to ask about this.
-2. Code review
-3. All base functionality is done, so start writing docs!
-
-
