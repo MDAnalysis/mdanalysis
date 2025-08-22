@@ -527,7 +527,10 @@ def fetch_pdb(PDB_IDS=None,
     Download one or more PDB files from the RCSB Protein Data Bank and cache them locally.
 
     Given one or multiple PDB IDs, downloads the corresponding structure files in the specified
-    format and stores them in a local cache directory. Returns the paths as a string to the downloaded files.
+    format and stores them in a local cache directory. If files are cached on disk, fetch_pdb() will skip the download and use
+    the cached version instead.
+    
+    Returns the path(s) as a string to the downloaded files.
 
     Parameters
     ----------
@@ -546,6 +549,15 @@ def fetch_pdb(PDB_IDS=None,
         The path(s) to the downloaded file(s). Returns a single string if one PDB ID is given,
         or a list of strings if multiple PDB IDs are provided.
 
+    Raises
+    ------
+    requests.exceptions.HTTPError
+        If an invalid PDB code or file format is specified.
+    
+    Notes
+    -----
+    This function downloads using the API established here at https://www.rcsb.org/docs/programmatic-access/file-download-services.
+
     Examples
     --------
     Download a single PDB file:
@@ -563,7 +575,7 @@ def fetch_pdb(PDB_IDS=None,
     >>> mda.Universe(mda.fetch_pdb("1AKE"), file_format="pdb.gz")
     <Universe with 3816 atoms>
 
-    Download a multiple PDB files and converting them to a universe:
+    Download multiple PDB files and converting them to a universe:
 
     >>> [mda.Universe(mda.fetch_pdb(PDB_ID), file_format="pdb.gz") for PDB_ID in ("1AKE", "4BWZ")]
     [<Universe with 3816 atoms>, <Universe with 2824 atoms>]
@@ -583,7 +595,7 @@ def fetch_pdb(PDB_IDS=None,
   
     downloader = pooch.create(
         path=cache_path,
-        base_url="https://files.rcsb.org/download/",
+        base_url="https://files.wwpdb.org/download/",
         registry=registry_dictionary
     )
 
