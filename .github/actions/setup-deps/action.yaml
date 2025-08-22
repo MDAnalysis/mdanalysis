@@ -144,6 +144,7 @@ runs:
           ${{ inputs.netcdf4 }}
           ${{ inputs.networkx }}
           ${{ inputs.openmm }}
+          ${{ inputs.pooch }}
           ${{ inputs.pytng }}
           ${{ inputs.rdkit }}
           ${{ inputs.scikit-learn }}
