@@ -73,7 +73,7 @@ inputs:
   openmm:
     default: 'openmm'
   pooch:
-    default: 'openmm'
+    default: 'pooch'
   pytng:
     default: 'pytng>=0.2.3'
   rdkit:
