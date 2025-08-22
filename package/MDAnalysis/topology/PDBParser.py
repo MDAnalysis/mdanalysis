@@ -523,6 +523,42 @@ def fetch_pdb(PDB_IDS=None,
             file_format="pdb.gz",
             ):
     
+    """
+    Download one or more PDB files from the RCSB Protein Data Bank and cache them locally.
+
+    Given one or multiple PDB IDs, downloads the corresponding structure files in the specified
+    format and stores them in a local cache directory. Returns the paths to the downloaded files.
+
+    Parameters
+    ----------
+    PDB_IDS : str or sequence of str
+        A single PDB ID as a string, or a sequence of PDB IDs to fetch.
+    cache_path : str or pathlib.Path
+        Directory where downloaded file(s) will be cached. 
+    file_format : str
+        The file extension/format to download (e.g., "pdb", "pdb.gz").
+    progressbar : bool, optional
+        If True, display a progress bar during file downloads. Default is False.
+
+    Returns
+    -------
+    str or list of str
+        The path(s) to the downloaded file(s). Returns a single string if one PDB ID is given,
+        or a list of strings if multiple PDB IDs are provided.
+
+    Examples
+    --------
+    Download a single PDB file:
+
+    >>> fetch_pdb("1AKE")
+    './pdb_cache/1AKE.pdb.gz'
+
+    Download multiple PDB files with a progress bar:
+
+    >>> fetch_pdb(["1AKE", "4BWZ"], progressbar=True)
+    ['./pdb_cache/1AKE.pdb.gz', './pdb_cache/4BWZ.pdb.gz']
+    """
+    
     # Have to do this dictionary approach instead of using Pooch.retrieve in order to prevent the hardcoded known_hash warning from showing up
     
     if isinstance(PDB_IDS, str):
