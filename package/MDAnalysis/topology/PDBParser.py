@@ -68,6 +68,7 @@ Classes
 import numpy as np
 import warnings
 import logging
+import pooch
 
 from ..guesser.tables import SYMB2Z
 from ..lib import util
@@ -515,3 +516,27 @@ def _parse_conect(conect):
     bond_atoms = (int(conect[11 + i * 5: 16 + i * 5]) for i in
                   range(n_bond_atoms))
     return atom_id, bond_atoms
+
+def fetch_pdb(PDB_IDS=None,
+            cache_path=None,
+            progressbar=False,
+            file_format="pdb.gz",
+            ):
+    
+    # Have to do this dictionary approach instead of using Pooch.retrieve in order to prevent the hardcoded known_hash warning from showing up
+    
+    if isinstance(PDB_IDS, str):
+        PDB_IDS = (PDB_IDS,)
+
+    registry_dictionary = {f'{PDB_ID}.{file_format}': None for PDB_ID in PDB_IDS}
+  
+    downloader = pooch.create(
+        path=cache_path,
+        base_url="https://files.rcsb.org/download/",
+        registry=registry_dictionary
+    )
+
+    if len(PDB_IDS) == 1:
+        return str(downloader.fetch(fname=tuple(registry_dictionary.keys())[0], progressbar=progressbar))
+    else:
+        return [downloader.fetch(fname=file_name, progressbar=progressbar) for file_name in registry_dictionary.keys()]
