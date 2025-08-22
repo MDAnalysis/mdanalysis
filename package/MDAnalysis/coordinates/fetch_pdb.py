@@ -8,7 +8,7 @@ def fetch_pdb(PDB_IDS=None,
             progressbar=False,
             file_format="pdb.gz",
             ):
-    # note, progress_bar required tdqm. make an optional depedency if not already in
+    # note, progress_bar required tdqm. make an optional depedency if not already
     
     ## Have to do this approach instead of Pooch.retrieve in order to prevent known hash warning from showing up
 
@@ -26,17 +26,11 @@ def fetch_pdb(PDB_IDS=None,
         registry=registry_dictionary
     )
 
-    print(registry_dictionary.items())
 
-
-    if len(PDB_IDS) == 1: # Ensures only one Path is returned in the case of one PDB_ID input argument
-        for file_name in registry_dictionary.keys():
-            return downloader.fetch(fname=file_name, progressbar=progressbar)
+    if len(PDB_IDS) == 1:
+        return downloader.fetch(fname=tuple(registry_dictionary.keys())[0], progressbar=progressbar)
     else:
-        filepath_list = []
-        for file_name in registry_dictionary.keys():
-            filepath_list.append(downloader.fetch(fname=file_name, progressbar=progressbar))
-        return filepath_list
+        return [downloader.fetch(fname=file_name, progressbar=progressbar) for file_name in registry_dictionary.keys()]
 
 
 
