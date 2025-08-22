@@ -68,7 +68,6 @@ Classes
 import numpy as np
 import warnings
 import logging
-import pooch
 
 from ..guesser.tables import SYMB2Z
 from ..lib import util
@@ -584,6 +583,11 @@ def fetch_pdb(PDB_IDS=None,
     
     # Have to do this dictionary approach instead of using Pooch.retrieve in order to prevent the hardcoded known_hash warning from showing up
     
+    try:
+        import pooch
+    except:
+        raise ModuleNotFoundError('pooch is needed as a dependency for fetch_pdb()')
+
     if isinstance(PDB_IDS, str):
         PDB_IDS = (PDB_IDS,)
 

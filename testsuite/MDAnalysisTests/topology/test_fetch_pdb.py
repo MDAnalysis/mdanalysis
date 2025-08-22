@@ -30,6 +30,16 @@ from urllib import request
 import MDAnalysis as mda
 import pytest
 
+
+
+def has_pooch():
+    try:
+        import pooch
+        return True
+    except ModuleNotFoundError:
+        return False
+    
+
 def check_internet():
     try:
         request.urlopen('https://files.wwpdb.org/', timeout=2)
@@ -38,7 +48,7 @@ def check_internet():
         return False
     
     
-@pytest.mark.skipif(check_internet() is False, reason="Cannot connect to https://files.wwpdb.org/'")
+@pytest.mark.skipif(has_pooch() is False or check_internet() is False, reason="Cannot connect to https://files.wwpdb.org/'")
 class TestDocstringExamples:
     """This class test the example found in fetch_pdb's docstring"""
 
@@ -60,7 +70,7 @@ class TestDocstringExamples:
         list_of_path_strings = [mda.Universe(mda.fetch_pdb(PDB_ID), cache_path=tmp_path, file_format="pdb.gz") for PDB_ID in ("1AKE", "4BWZ")]
         assert all(isinstance(PDB_ID, mda.Universe) for PDB_ID in list_of_path_strings)
 
-@pytest.mark.skipif(check_internet() is False, reason="Cannot connect to https://files.wwpdb.org/")
+@pytest.mark.skipif(has_pooch() is False or check_internet() is False, reason="Cannot connect to https://files.wwpdb.org/")
 class TestExpectedErrors:
     def test_invalid_pdb(self, tmp_path):
         with pytest.raises(HTTPError):
