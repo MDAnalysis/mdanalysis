@@ -536,7 +536,7 @@ def fetch_pdb(PDB_IDS=None,
     cache_path : str or pathlib.Path
         Directory where downloaded file(s) will be cached. 
     file_format : str
-        The file extension/format to download (e.g., "pdb", "pdb.gz").
+        The file extension/format to download (e.g., "cif", "pdb")
     progressbar : bool, optional
         If True, display a progress bar during file downloads. Default is False.
 
@@ -563,6 +563,9 @@ def fetch_pdb(PDB_IDS=None,
     
     if isinstance(PDB_IDS, str):
         PDB_IDS = (PDB_IDS,)
+
+    if cache_path is None:
+        cache_path = pooch.os_cache('MDAnalysis')
 
     registry_dictionary = {f'{PDB_ID}.{file_format}': None for PDB_ID in PDB_IDS}
   
