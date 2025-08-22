@@ -580,7 +580,6 @@ def fetch_pdb(PDB_IDS=None,
     >>> [mda.Universe(mda.fetch_pdb(PDB_ID), file_format="pdb.gz") for PDB_ID in ("1AKE", "4BWZ")]
     [<Universe with 3816 atoms>, <Universe with 2824 atoms>]
 
-
     """
     
     # Have to do this dictionary approach instead of using Pooch.retrieve in order to prevent the hardcoded known_hash warning from showing up
