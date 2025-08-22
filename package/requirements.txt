@@ -13,6 +13,7 @@ networkx
 numpy>=1.23.2
 packaging
 parmed
+pooch
 pytest
 requests
 scikit-learn
