@@ -26,7 +26,7 @@ def fetch_pdb(PDB_IDS=None,
     )
 
     if len(PDB_IDS) == 1:
-        return downloader.fetch(fname=tuple(registry_dictionary.keys())[0], progressbar=progressbar)
+        return str(downloader.fetch(fname=tuple(registry_dictionary.keys())[0], progressbar=progressbar))
     else:
         return [downloader.fetch(fname=file_name, progressbar=progressbar) for file_name in registry_dictionary.keys()]
 
