@@ -84,9 +84,9 @@
     <!-- <p class="caption" role="heading"></p> -->
     <ul>
         
-        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        <li class="toctree-l1"><a class="reference internal" href="https://mdanalysis.org">MDAnalysis</a></li>
         
-        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        <li class="toctree-l1"><a class="reference internal" href="https://userguide.mdanalysis.org">User guide</a></li>
         
         <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
         
@@ -94,7 +94,7 @@
     
         <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview of MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
@@ -190,8 +190,11 @@
 
 <span class="sd">   &quot;OpenMP&quot;   :mod:`c_distances_openmp` parallel implementation in C/Cython</span>
 <span class="sd">                                        with OpenMP</span>
-<span class="sd">   &quot;distopia&quot;  `_distopia`               SIMD-accelerated implementation</span>
+
+<span class="sd">   &quot;distopia&quot;  `_distopia`              SIMD-accelerated implementation</span>
+<span class="sd">                                        with the `distopia`_ library</span>
 <span class="sd">   ========== ========================= ======================================</span>
+
 
 <span class="sd">Use of the distopia library</span>
 <span class="sd">---------------------------</span>
@@ -207,25 +210,27 @@
 <span class="sd">.. table:: Functions available using the `distopia`_ backend.</span>
 <span class="sd">   :align: center</span>
 
-<span class="sd">   +-----------------------------------------------+</span>
-<span class="sd">   | Functions                                     |</span>
-<span class="sd">   +===============================================+</span>
-<span class="sd">   | MDAnalysis.lib.distances.calc_bonds           |</span>
-<span class="sd">   +-----------------------------------------------+</span>
-<span class="sd">   | MDAnalysis.lib.distances.calc_angles          |</span>
-<span class="sd">   +-----------------------------------------------+</span>
-<span class="sd">   | MDAnalysis.lib.distances.calc_dihedrals       |</span>
-<span class="sd">   +-----------------------------------------------+</span>
-<span class="sd">   | MDAnalysis.lib.distances.distance_array       | </span>
-<span class="sd">   +-----------------------------------------------+</span>
-<span class="sd">   | MDAnalysis.lib.distances.self_distance_array  |</span>
-<span class="sd">   +-----------------------------------------------+</span>
+<span class="sd">   +-------------------------------------------------------+</span>
+<span class="sd">   | Functions                                             |</span>
+<span class="sd">   +=======================================================+</span>
+<span class="sd">   | :func:`MDAnalysis.lib.distances.calc_bonds`           |</span>
+<span class="sd">   +-------------------------------------------------------+</span>
+<span class="sd">   | :func:`MDAnalysis.lib.distances.calc_angles`          |</span>
+<span class="sd">   +-------------------------------------------------------+</span>
+<span class="sd">   | :func:`MDAnalysis.lib.distances.calc_dihedrals`       |</span>
+<span class="sd">   +-------------------------------------------------------+</span>
+<span class="sd">   | :func:`MDAnalysis.lib.distances.distance_array`       |</span>
+<span class="sd">   +-------------------------------------------------------+</span>
+<span class="sd">   | :func:`MDAnalysis.lib.distances.self_distance_array`  |</span>
+<span class="sd">   +-------------------------------------------------------+</span>
 
 <span class="sd">If `distopia`_ is installed, the functions in this table will accept the key</span>
-<span class="sd">&#39;distopia&#39; for the `backend` keyword argument. If the distopia backend is</span>
-<span class="sd">selected the `distopia` library will be used to calculate the distances. Note</span>
-<span class="sd">that for functions listed in this table **distopia is not the default backend</span>
-<span class="sd">and must be selected.**</span>
+<span class="sd">&#39;distopia&#39; for the `backend` keyword argument. The variable</span>
+<span class="sd">:data:`HAS_DISTOPIA` is set to ``True`` if distopia is available.</span>
+
+<span class="sd">If the distopia backend is selected the `distopia` library will be used to</span>
+<span class="sd">calculate the distances. Note that for functions listed in this table</span>
+<span class="sd">**distopia is not the default backend and must be explicitly selected.**</span>
 
 
 <span class="sd">.. Note::</span>
@@ -251,6 +256,14 @@
 <span class="sd">.. versionchanged:: 2.9.0</span>
 <span class="sd">   Distopia support greatly expanded (with distopia ≥ 0.4.0).</span>
 
+<span class="sd">Constants</span>
+<span class="sd">---------</span>
+<span class="sd">.. data:: HAS_DISTOPIA</span>
+
+<span class="sd">   This variable is ``True`` if the :mod:`distopia` package has been</span>
+<span class="sd">   installed and is available as a `backend`. Otherwise it is</span>
+<span class="sd">   ``False``.</span>
+
 <span class="sd">Functions</span>
 <span class="sd">---------</span>
 <span class="sd">.. autofunction:: distance_array</span>
@@ -266,6 +279,7 @@
 <span class="sd">.. autofunction:: augment_coordinates(coordinates, box, r)</span>
 <span class="sd">.. autofunction:: undo_augment(results, translation, nreal)</span>
 <span class="sd">.. autofunction:: minimize_vectors(vectors, box)</span>
+
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">npt</span>
@@ -655,6 +669,7 @@
     <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">method</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">return_distances</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">backend</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;serial&quot;</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculates pairs of indices corresponding to entries in the `reference`</span>
 <span class="sd">    and `configuration` arrays which are separated by a distance lying within</span>
@@ -693,6 +708,8 @@
 <span class="sd">        method.</span>
 <span class="sd">    return_distances : bool, optional</span>
 <span class="sd">        If set to ``True``, distances will also be returned.</span>
+<span class="sd">    backend : {&#39;serial&#39;, &#39;OpenMP&#39;, &#39;distopia&#39;}, optional</span>
+<span class="sd">        Keyword selecting the type of acceleration.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -735,6 +752,9 @@
 <span class="sd">    .. versionchanged:: 2.3.0</span>
 <span class="sd">       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an</span>
 <span class="sd">       argument in any position and checks inputs using type hinting.</span>
+<span class="sd">    .. versionchanged:: 2.10.0</span>
+<span class="sd">       Added the &quot;backend&quot; argument to select the type of acceleration of</span>
+<span class="sd">       the distance calculations.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">box</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">box</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
@@ -758,14 +778,26 @@
         <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span>
         <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="k">return</span> <span class="n">function</span><span class="p">(</span>
-        <span class="n">reference</span><span class="p">,</span>
-        <span class="n">configuration</span><span class="p">,</span>
-        <span class="n">max_cutoff</span><span class="p">,</span>
-        <span class="n">min_cutoff</span><span class="o">=</span><span class="n">min_cutoff</span><span class="p">,</span>
-        <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span>
-        <span class="n">return_distances</span><span class="o">=</span><span class="n">return_distances</span><span class="p">,</span>
-    <span class="p">)</span></div>
+
+    <span class="k">if</span> <span class="n">function</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;_nsgrid_capped&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">function</span><span class="p">(</span>
+            <span class="n">reference</span><span class="p">,</span>
+            <span class="n">configuration</span><span class="p">,</span>
+            <span class="n">max_cutoff</span><span class="p">,</span>
+            <span class="n">min_cutoff</span><span class="o">=</span><span class="n">min_cutoff</span><span class="p">,</span>
+            <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span>
+            <span class="n">return_distances</span><span class="o">=</span><span class="n">return_distances</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">function</span><span class="p">(</span>
+            <span class="n">reference</span><span class="p">,</span>
+            <span class="n">configuration</span><span class="p">,</span>
+            <span class="n">max_cutoff</span><span class="p">,</span>
+            <span class="n">min_cutoff</span><span class="o">=</span><span class="n">min_cutoff</span><span class="p">,</span>
+            <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span>
+            <span class="n">return_distances</span><span class="o">=</span><span class="n">return_distances</span><span class="p">,</span>
+            <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
 
 
@@ -864,6 +896,7 @@
     <span class="n">min_cutoff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">return_distances</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">backend</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;serial&quot;</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Capped distance evaluations using a brute force method.</span>
 
@@ -901,6 +934,8 @@
 <span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
 <span class="sd">    return_distances : bool, optional</span>
 <span class="sd">        If set to ``True``, distances will also be returned.</span>
+<span class="sd">    backend : {&#39;serial&#39;, &#39;OpenMP&#39;, &#39;distopia&#39;}, optional</span>
+<span class="sd">        Keyword selecting the type of acceleration.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -921,13 +956,18 @@
 <span class="sd">    .. versionchanged:: 2.3.0</span>
 <span class="sd">       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an</span>
 <span class="sd">       argument in any position and checks inputs using type hinting.</span>
+<span class="sd">    .. versionchanged:: 2.10.0</span>
+<span class="sd">       Added the &quot;backend&quot; argument to select the type of acceleration of</span>
+<span class="sd">       the distance calculations.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Default return values (will be overwritten only if pairs are found):</span>
     <span class="n">pairs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">)</span>
     <span class="n">distances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">configuration</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">_distances</span> <span class="o">=</span> <span class="n">distance_array</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
+        <span class="n">_distances</span> <span class="o">=</span> <span class="n">distance_array</span><span class="p">(</span>
+            <span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span>
+        <span class="p">)</span>
         <span class="k">if</span> <span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
                 <span class="p">(</span><span class="n">_distances</span> <span class="o">&lt;=</span> <span class="n">max_cutoff</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">_distances</span> <span class="o">&gt;</span> <span class="n">min_cutoff</span><span class="p">)</span>
@@ -960,6 +1000,7 @@
     <span class="n">min_cutoff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">return_distances</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">backend</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;serial&quot;</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Capped distance evaluations using a KDtree method.</span>
 
@@ -997,6 +1038,8 @@
 <span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
 <span class="sd">    return_distances : bool, optional</span>
 <span class="sd">        If set to ``True``, distances will also be returned.</span>
+<span class="sd">    backend : {&#39;serial&#39;, &#39;OpenMP&#39;, &#39;distopia&#39;}, optional</span>
+<span class="sd">        Keyword selecting the type of acceleration.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1017,6 +1060,9 @@
 <span class="sd">    .. versionchanged:: 2.3.0</span>
 <span class="sd">       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an</span>
 <span class="sd">       argument in any position and checks inputs using type hinting.</span>
+<span class="sd">    .. versionchanged:: 2.10.0</span>
+<span class="sd">       Added the &quot;backend&quot; argument to select the type of acceleration of</span>
+<span class="sd">       the distance calculations.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">.pkdtree</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
         <span class="n">PeriodicKDTree</span><span class="p">,</span>
@@ -1036,7 +1082,10 @@
             <span class="k">if</span> <span class="n">return_distances</span> <span class="ow">or</span> <span class="p">(</span><span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
                 <span class="n">refA</span><span class="p">,</span> <span class="n">refB</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
                 <span class="n">distances</span> <span class="o">=</span> <span class="n">calc_bonds</span><span class="p">(</span>
-                    <span class="n">reference</span><span class="p">[</span><span class="n">refA</span><span class="p">],</span> <span class="n">configuration</span><span class="p">[</span><span class="n">refB</span><span class="p">],</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span>
+                    <span class="n">reference</span><span class="p">[</span><span class="n">refA</span><span class="p">],</span>
+                    <span class="n">configuration</span><span class="p">[</span><span class="n">refB</span><span class="p">],</span>
+                    <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span>
+                    <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="k">if</span> <span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">distances</span> <span class="o">&gt;</span> <span class="n">min_cutoff</span><span class="p">)</span>
@@ -1183,6 +1232,7 @@
     <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">method</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">return_distances</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">backend</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;serial&quot;</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculates pairs of indices corresponding to entries in the `reference`</span>
 <span class="sd">    array which are separated by a distance lying within the specified</span>
@@ -1217,6 +1267,8 @@
 <span class="sd">        method.</span>
 <span class="sd">    return_distances : bool, optional</span>
 <span class="sd">        If set to ``True``, distances will also be returned.</span>
+<span class="sd">    backend : {&#39;serial&#39;, &#39;OpenMP&#39;, &#39;distopia&#39;}, optional</span>
+<span class="sd">        Keyword selecting the type of acceleration.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1265,6 +1317,9 @@
 <span class="sd">    .. versionchanged:: 2.3.0</span>
 <span class="sd">       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an</span>
 <span class="sd">       argument in any position and checks inputs using type hinting.</span>
+<span class="sd">    .. versionchanged:: 2.10.0</span>
+<span class="sd">       Added the &quot;backend&quot; argument to select the type of acceleration of</span>
+<span class="sd">       the distance calculations.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">box</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">box</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
@@ -1285,13 +1340,24 @@
         <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span>
         <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="k">return</span> <span class="n">function</span><span class="p">(</span>
-        <span class="n">reference</span><span class="p">,</span>
-        <span class="n">max_cutoff</span><span class="p">,</span>
-        <span class="n">min_cutoff</span><span class="o">=</span><span class="n">min_cutoff</span><span class="p">,</span>
-        <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span>
-        <span class="n">return_distances</span><span class="o">=</span><span class="n">return_distances</span><span class="p">,</span>
-    <span class="p">)</span></div>
+
+    <span class="k">if</span> <span class="n">function</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;_nsgrid_capped_self&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">function</span><span class="p">(</span>
+            <span class="n">reference</span><span class="p">,</span>
+            <span class="n">max_cutoff</span><span class="p">,</span>
+            <span class="n">min_cutoff</span><span class="o">=</span><span class="n">min_cutoff</span><span class="p">,</span>
+            <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span>
+            <span class="n">return_distances</span><span class="o">=</span><span class="n">return_distances</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">function</span><span class="p">(</span>
+            <span class="n">reference</span><span class="p">,</span>
+            <span class="n">max_cutoff</span><span class="p">,</span>
+            <span class="n">min_cutoff</span><span class="o">=</span><span class="n">min_cutoff</span><span class="p">,</span>
+            <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span>
+            <span class="n">return_distances</span><span class="o">=</span><span class="n">return_distances</span><span class="p">,</span>
+            <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
 
 
@@ -1376,6 +1442,7 @@
     <span class="n">min_cutoff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">return_distances</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">backend</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;serial&quot;</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Capped distance evaluations using a brute force method.</span>
 
@@ -1406,6 +1473,8 @@
 <span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
 <span class="sd">    return_distances : bool, optional</span>
 <span class="sd">        If set to ``True``, distances will also be returned.</span>
+<span class="sd">    backend : {&#39;serial&#39;, &#39;OpenMP&#39;, &#39;distopia&#39;}, optional</span>
+<span class="sd">        Keyword selecting the type of acceleration.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1427,6 +1496,9 @@
 <span class="sd">    .. versionchanged:: 2.3.0</span>
 <span class="sd">       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an</span>
 <span class="sd">       argument in any position and checks inputs using type hinting.</span>
+<span class="sd">    .. versionchanged:: 2.10.0</span>
+<span class="sd">       Added the &quot;backend&quot; argument to select the type of acceleration of</span>
+<span class="sd">       the distance calculations.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Default return values (will be overwritten only if pairs are found):</span>
     <span class="n">pairs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">)</span>
@@ -1436,7 +1508,7 @@
     <span class="c1"># We&#39;re searching within a single coordinate set, so we need at least two</span>
     <span class="c1"># coordinates to find distances between them.</span>
     <span class="k">if</span> <span class="n">N</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">distvec</span> <span class="o">=</span> <span class="n">self_distance_array</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
+        <span class="n">distvec</span> <span class="o">=</span> <span class="n">self_distance_array</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
         <span class="n">dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
         <span class="n">dist</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">triu_indices</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">distvec</span>
 
@@ -1465,6 +1537,7 @@
     <span class="n">min_cutoff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">return_distances</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">backend</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;serial&quot;</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Capped distance evaluations using a KDtree method.</span>
 
@@ -1495,6 +1568,8 @@
 <span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
 <span class="sd">    return_distances : bool, optional</span>
 <span class="sd">        If set to ``True``, distances will also be returned.</span>
+<span class="sd">    backend : {&#39;serial&#39;, &#39;OpenMP&#39;, &#39;distopia&#39;}, optional</span>
+<span class="sd">        Keyword selecting the type of acceleration.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1516,6 +1591,9 @@
 <span class="sd">    .. versionchanged:: 2.3.0</span>
 <span class="sd">       Can now accept an :class:`~MDAnalysis.core.groups.AtomGroup` as an</span>
 <span class="sd">       argument in any position and checks inputs using type hinting.</span>
+<span class="sd">    .. versionchanged:: 2.10.0</span>
+<span class="sd">       Added the &quot;backend&quot; argument to select the type of acceleration of</span>
+<span class="sd">       the distance calculations.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">.pkdtree</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
         <span class="n">PeriodicKDTree</span><span class="p">,</span>
@@ -1537,7 +1615,7 @@
             <span class="k">if</span> <span class="n">return_distances</span> <span class="ow">or</span> <span class="p">(</span><span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
                 <span class="n">refA</span><span class="p">,</span> <span class="n">refB</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
                 <span class="n">distances</span> <span class="o">=</span> <span class="n">calc_bonds</span><span class="p">(</span>
-                    <span class="n">reference</span><span class="p">[</span><span class="n">refA</span><span class="p">],</span> <span class="n">reference</span><span class="p">[</span><span class="n">refB</span><span class="p">],</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span>
+                    <span class="n">reference</span><span class="p">[</span><span class="n">refA</span><span class="p">],</span> <span class="n">reference</span><span class="p">[</span><span class="n">refB</span><span class="p">],</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span>
                 <span class="p">)</span>
                 <span class="k">if</span> <span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">idx</span> <span class="o">=</span> <span class="n">distances</span> <span class="o">&gt;</span> <span class="n">min_cutoff</span>
@@ -2249,7 +2327,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2025, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Matthew Davies, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Alia Lescoulie, Zhenbo Li, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Kurt McKee, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Laksh Krishna Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Brigitta Sipőcz, Paul Smith, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Joshua Raphael Uy, Heet Vekariya, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Tanish Yelgoe, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Jia-Xin Zhu, Yuxuan Zhuang, Fabian Zills, and Oliver Beckstein.</p>
+    <p>&#169; Copyright 2005-2025, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Pavel Buslaev, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Matthew Davies, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Abdulrahman Elbanna, Gareth Elliott, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, BHM-Bob G, Sirsha Ganguly, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Alia Lescoulie, Zhenbo Li, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Kurt McKee, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Debasish Mohanty, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Namir Oues, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, James Rowe, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marc Schuh, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Laksh Krishna Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Brigitta Sipőcz, Paul Smith, Tulga-Erdene Sodjargal, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Joshua Raphael Uy, Heet Vekariya, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Lexi Xu, Zhuyi Xue, Mingyi Xue, Alexander Yang, Yu-Yuan (Stuart) Yang, Tanish Yelgoe, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Jia-Xin Zhu, Yuxuan Zhuang, Fabian Zills, and Oliver Beckstein.</p>
   </div>
 
   

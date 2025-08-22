@@ -88,9 +88,9 @@
     <!-- <p class="caption" role="heading"></p> -->
     <ul>
         
-        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        <li class="toctree-l1"><a class="reference internal" href="https://mdanalysis.org">MDAnalysis</a></li>
         
-        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        <li class="toctree-l1"><a class="reference internal" href="https://userguide.mdanalysis.org">User guide</a></li>
         
         <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
         
@@ -98,7 +98,7 @@
     
         <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview of MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a><ul class="current">
@@ -209,14 +209,18 @@ the normal MDAnalysis citations.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>To correctly compute the MSD using this analysis module, you must supply
-coordinates in the <strong>unwrapped</strong> convention. That is, when atoms pass
-the periodic boundary, they must not be <strong>wrapped</strong> back into the primary
-simulation cell. MDAnalysis does not currently offer this functionality in
-the <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations</span></code> API despite having functions with
-similar names. We plan to implement the appropriate transformations in the
-future. In the meantime, various simulation packages provide utilities to
-convert coordinates to the unwrapped convention. In GROMACS for example,
-this can be done using <code class="docutils literal notranslate"><span class="pre">gmx</span> <span class="pre">trjconv</span></code> with the <code class="docutils literal notranslate"><span class="pre">-pbc</span> <span class="pre">nojump</span></code> flag.</p>
+coordinates in the <strong>unwrapped</strong> convention, also known as <strong>no-jump</strong>.
+That is, when atoms pass the periodic boundary, they must not be wrapped
+back into the primary simulation cell.</p>
+<p>In MDAnalysis you can use the
+<a class="reference internal" href="../transformations/nojump.html#MDAnalysis.transformations.nojump.NoJump" title="MDAnalysis.transformations.nojump.NoJump"><code class="xref py py-class docutils literal notranslate"><span class="pre">NoJump</span></code></a>
+transformation.</p>
+<p>In GROMACS, for example, this can be done using <a class="reference external" href="https://manual.gromacs.org/current/onlinehelp/gmx-trjconv.html">gmx trjconv</a> with the
+<code class="docutils literal notranslate"><span class="pre">-pbc</span> <span class="pre">nojump</span></code> flag.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="../transformations/nojump.html#module-MDAnalysis.transformations.nojump" title="MDAnalysis.transformations.nojump"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.nojump</span></code></a></p>
 </div>
 <section id="computing-an-msd">
 <h2><span class="section-number">4.8.2.2.1. </span>Computing an MSD<a class="headerlink" href="#computing-an-msd" title="Link to this heading"></a></h2>
@@ -239,16 +243,12 @@ analysis by using the class <a class="reference internal" href="#MDAnalysis.anal
 </div>
 <p>The MSD can then be accessed as</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">msd</span> <span class="o">=</span>  <span class="n">MSD</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span>
+<span class="n">lagtimes</span> <span class="o">=</span> <span class="n">MSD</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">delta_t_values</span>
 </pre></div>
 </div>
-<dl class="simple">
-<dt>Visual inspection of the MSD is important, so let’s take a look at it with a</dt><dd><p>simple plot.</p>
-</dd>
-</dl>
+<p>Visual inspection of the MSD is important, so let’s take a look at it with a simple plot.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="n">nframes</span> <span class="o">=</span> <span class="n">MSD</span><span class="o">.</span><span class="n">n_frames</span>
-<span class="n">timestep</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1"># this needs to be the actual time between frames</span>
-<span class="n">lagtimes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nframes</span><span class="p">)</span><span class="o">*</span><span class="n">timestep</span> <span class="c1"># make the lag-time axis</span>
 <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">axes</span><span class="p">()</span>
 <span class="c1"># plot the actual MSD</span>
@@ -299,8 +299,7 @@ is used to demonstrate selection of a MSD segment.</p>
 <span class="n">start_time</span> <span class="o">=</span> <span class="mi">20</span>
 <span class="n">start_index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">start_time</span><span class="o">/</span><span class="n">timestep</span><span class="p">)</span>
 <span class="n">end_time</span> <span class="o">=</span> <span class="mi">60</span>
-<span class="n">linear_model</span> <span class="o">=</span> <span class="n">linregress</span><span class="p">(</span><span class="n">lagtimes</span><span class="p">[</span><span class="n">start_index</span><span class="p">:</span><span class="n">end_index</span><span class="p">],</span>
-                                              <span class="n">msd</span><span class="p">[</span><span class="n">start_index</span><span class="p">:</span><span class="n">end_index</span><span class="p">])</span>
+<span class="n">linear_model</span> <span class="o">=</span> <span class="n">linregress</span><span class="p">(</span><span class="n">lagtimes</span><span class="p">[</span><span class="n">start_index</span><span class="p">:</span><span class="n">end_index</span><span class="p">],</span> <span class="n">msd</span><span class="p">[</span><span class="n">start_index</span><span class="p">:</span><span class="n">end_index</span><span class="p">])</span>
 <span class="n">slope</span> <span class="o">=</span> <span class="n">linear_model</span><span class="o">.</span><span class="n">slope</span>
 <span class="n">error</span> <span class="o">=</span> <span class="n">linear_model</span><span class="o">.</span><span class="n">stderr</span>
 <span class="c1"># dim_fac is 3 as we computed a 3D msd with &#39;xyz&#39;</span>
@@ -367,7 +366,7 @@ to control which frames are incorporated may be required.</p>
 <h2><span class="section-number">4.8.2.2.4. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.msd.EinsteinMSD">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.msd.</span></span><span class="sig-name descname"><span class="pre">EinsteinMSD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msd_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'xyz'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fft</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/msd.html#EinsteinMSD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.msd.</span></span><span class="sig-name descname"><span class="pre">EinsteinMSD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msd_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'xyz'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fft</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">non_linear</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/msd.html#EinsteinMSD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD" title="Link to this definition"></a></dt>
 <dd><p>Class to calculate Mean Squared Displacement by the Einstein relation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -381,6 +380,13 @@ all atoms are selected.</p></li>
 the MSD. Otherwise, use the simple “windowed” algorithm.
 The tidynamics package is required for <cite>fft=True</cite>.
 Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>non_linear</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – <p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, calculates MSD for trajectory where frames are
+non-linearly dumped. To use this set <cite>fft=False</cite>.
+Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.10.0.</span></p>
+</div>
+</p></li>
 </ul>
 </dd>
 </dl>
@@ -398,10 +404,11 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">True</s
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.msd.EinsteinMSD.results.timeseries">
 <span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">timeseries</span></span><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD.results.timeseries" title="Link to this definition"></a></dt>
-<dd><p>The averaged MSD over all the particles with respect to lag-time.</p>
+<dd><p>The averaged MSD over all the particles with respect to constant lag-time or
+unique Δt intervals.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -409,10 +416,32 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">True</s
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.msd.EinsteinMSD.results.msds_by_particle">
 <span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">msds_by_particle</span></span><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD.results.msds_by_particle" title="Link to this definition"></a></dt>
-<dd><p>The MSD of each individual particle with respect to lag-time.</p>
+<dd><p>The MSD of each individual particle with respect to constant lag-time or
+unique Δt intervals.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>for <cite>non_linear=False</cite>: a 2D array of shape (n_lagtimes, n_atoms)</p></li>
+<li><p>for <cite>non_linear=True</cite>: a 2D array of shape (n_delta_t_values, n_atoms)</p></li>
+</ul>
+</div></blockquote>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.msd.EinsteinMSD.results.delta_t_values">
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">delta_t_values</span></span><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD.results.delta_t_values" title="Link to this definition"></a></dt>
+<dd><p>Array of unique Δt (time differences) at which time-averaged MSD values are
+computed.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.10.0.</span></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -453,19 +482,10 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">True</s
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 2.0.0.</span></p>
 </div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>u</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a><em> or </em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – An MDAnalysis <code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code>.</p></li>
-<li><p><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – A selection string. Defaults to “all” in which case
-all atoms are selected.</p></li>
-<li><p><strong>msd_type</strong> (<em>{'xyz'</em><em>, </em><em>'xy'</em><em>, </em><em>'yz'</em><em>, </em><em>'xz'</em><em>, </em><em>'x'</em><em>, </em><em>'y'</em><em>, </em><em>'z'}</em>) – Desired dimensions to be included in the MSD.</p></li>
-<li><p><strong>fft</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, uses a fast FFT based algorithm for computation of
-the MSD. Otherwise, use the simple “windowed” algorithm.
-The tidynamics package is required for <cite>fft=True</cite>.</p></li>
-</ul>
-</dd>
-</dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.10.0: </span>Added ability to calculate MSD from samples that are not linearly spaced with the
+new <cite>non_linear</cite> keyword argument.</p>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.msd.EinsteinMSD.get_supported_backends">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_supported_backends</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD.get_supported_backends" title="Link to this definition"></a></dt>
@@ -610,7 +630,7 @@ support parallelizable execution.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2025, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Matthew Davies, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Alia Lescoulie, Zhenbo Li, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Kurt McKee, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Laksh Krishna Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Brigitta Sipőcz, Paul Smith, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Joshua Raphael Uy, Heet Vekariya, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Tanish Yelgoe, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Jia-Xin Zhu, Yuxuan Zhuang, Fabian Zills, and Oliver Beckstein.</p>
+    <p>&#169; Copyright 2005-2025, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Pavel Buslaev, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Matthew Davies, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Abdulrahman Elbanna, Gareth Elliott, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, BHM-Bob G, Sirsha Ganguly, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Alia Lescoulie, Zhenbo Li, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Kurt McKee, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Debasish Mohanty, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Namir Oues, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, James Rowe, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marc Schuh, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Laksh Krishna Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Brigitta Sipőcz, Paul Smith, Tulga-Erdene Sodjargal, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Joshua Raphael Uy, Heet Vekariya, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Lexi Xu, Zhuyi Xue, Mingyi Xue, Alexander Yang, Yu-Yuan (Stuart) Yang, Tanish Yelgoe, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Jia-Xin Zhu, Yuxuan Zhuang, Fabian Zills, and Oliver Beckstein.</p>
   </div>
 
   

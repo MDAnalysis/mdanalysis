@@ -84,9 +84,9 @@
     <!-- <p class="caption" role="heading"></p> -->
     <ul>
         
-        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        <li class="toctree-l1"><a class="reference internal" href="https://mdanalysis.org">MDAnalysis</a></li>
         
-        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        <li class="toctree-l1"><a class="reference internal" href="https://userguide.mdanalysis.org">User guide</a></li>
         
         <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
         
@@ -94,7 +94,7 @@
     
         <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview of MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
@@ -319,6 +319,53 @@
     <span class="p">]</span>
 
 
+<span class="c1"># some private utility functions for trajectory iteration</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_produce_list_indices_point_in_polygon_this_frame</span><span class="p">(</span>
+    <span class="n">vertex_coord_list</span><span class="p">,</span> <span class="n">relevant_particle_coordinate_array_xy</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Produce a list of indices for particles of interest in the current frame.</span>
+<span class="sd">    The list is ordered according to the order of the squares in the grid.</span>
+<span class="sd">    Each entry in the list is a tuple of indices for the particles in that square.</span>
+<span class="sd">    The list is the same length as the number of squares in the grid.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">list_indices_point_in_polygon</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">square_vertices</span> <span class="ow">in</span> <span class="n">vertex_coord_list</span><span class="p">:</span>
+        <span class="n">path_object</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">square_vertices</span><span class="p">)</span>
+        <span class="n">index_list_in_polygon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">path_object</span><span class="o">.</span><span class="n">contains_points</span><span class="p">(</span><span class="n">relevant_particle_coordinate_array_xy</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">list_indices_point_in_polygon</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index_list_in_polygon</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">list_indices_point_in_polygon</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_produce_list_centroids_this_frame</span><span class="p">(</span>
+    <span class="n">list_indices_in_polygon</span><span class="p">,</span> <span class="n">relevant_particle_coordinate_array_xy</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Produce a list of centroids for the particles in the current frame.</span>
+<span class="sd">    The list is ordered according to the order of the squares in the grid.</span>
+<span class="sd">    Each entry in the list is a numpy array of the centroid coordinates for the particles in that square.</span>
+<span class="sd">    The list is the same length as the number of squares in the grid.</span>
+<span class="sd">    If there are no particles in a square, the entry is None.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">list_centroids_this_frame</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">indices</span> <span class="ow">in</span> <span class="n">list_indices_in_polygon</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="n">indices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="p">):</span>  <span class="c1"># if there are no particles of interest in this particular square</span>
+            <span class="n">list_centroids_this_frame</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">current_coordinate_array_in_square</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">relevant_particle_coordinate_array_xy</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">current_square_indices_centroid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span>
+                <span class="n">current_coordinate_array_in_square</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span>
+            <span class="p">)</span>
+            <span class="n">list_centroids_this_frame</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_square_indices_centroid</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">list_centroids_this_frame</span>  <span class="c1"># a list of numpy xy centroid arrays for this frame</span>
+
+
 <span class="k">def</span><span class="w"> </span><span class="nf">per_core_work</span><span class="p">(</span>
     <span class="n">topology_file_path</span><span class="p">,</span>
     <span class="n">trajectory_file_path</span><span class="p">,</span>
@@ -339,39 +386,6 @@
     <span class="p">)</span>
     <span class="n">list_previous_frame_centroids</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">list_previous_frame_indices</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="c1"># define some utility functions for trajectory iteration:</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">produce_list_indices_point_in_polygon_this_frame</span><span class="p">(</span><span class="n">vertex_coord_list</span><span class="p">):</span>
-        <span class="n">list_indices_point_in_polygon</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">square_vertices</span> <span class="ow">in</span> <span class="n">vertex_coord_list</span><span class="p">:</span>
-            <span class="n">path_object</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">square_vertices</span><span class="p">)</span>
-            <span class="n">index_list_in_polygon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
-                <span class="n">path_object</span><span class="o">.</span><span class="n">contains_points</span><span class="p">(</span>
-                    <span class="n">relevant_particle_coordinate_array_xy</span>
-                <span class="p">)</span>
-            <span class="p">)</span>
-            <span class="n">list_indices_point_in_polygon</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index_list_in_polygon</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">list_indices_point_in_polygon</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">produce_list_centroids_this_frame</span><span class="p">(</span><span class="n">list_indices_in_polygon</span><span class="p">):</span>
-        <span class="n">list_centroids_this_frame</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">indices</span> <span class="ow">in</span> <span class="n">list_indices_in_polygon</span><span class="p">:</span>
-            <span class="k">if</span> <span class="p">(</span>
-                <span class="ow">not</span> <span class="n">indices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span>
-            <span class="p">):</span>  <span class="c1"># if there are no particles of interest in this particular square</span>
-                <span class="n">list_centroids_this_frame</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">current_coordinate_array_in_square</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="n">relevant_particle_coordinate_array_xy</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
-                <span class="p">)</span>
-                <span class="n">current_square_indices_centroid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span>
-                    <span class="n">current_coordinate_array_in_square</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span>
-                <span class="p">)</span>
-                <span class="n">list_centroids_this_frame</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                    <span class="n">current_square_indices_centroid</span>
-                <span class="p">)</span>
-        <span class="k">return</span> <span class="n">list_centroids_this_frame</span>  <span class="c1"># a list of numpy xy centroid arrays for this frame</span>
-
     <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">universe_object</span><span class="o">.</span><span class="n">trajectory</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">&lt;</span> <span class="n">start_frame</span><span class="p">:</span>  <span class="c1"># don&#39;t start until first specified frame</span>
             <span class="k">continue</span>
@@ -381,14 +395,16 @@
         <span class="c1"># only 2D / xy coords for now</span>
         <span class="c1"># I will need a list of indices for relevant particles falling within each square in THIS frame:</span>
         <span class="n">list_indices_in_squares_this_frame</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">produce_list_indices_point_in_polygon_this_frame</span><span class="p">(</span>
-                <span class="n">list_square_vertex_arrays_this_core</span>
+            <span class="n">_produce_list_indices_point_in_polygon_this_frame</span><span class="p">(</span>
+                <span class="n">list_square_vertex_arrays_this_core</span><span class="p">,</span>
+                <span class="n">relevant_particle_coordinate_array_xy</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="p">)</span>
         <span class="c1"># likewise, I will need a list of centroids of particles in each square (same order as above list):</span>
         <span class="n">list_centroids_in_squares_this_frame</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">produce_list_centroids_this_frame</span><span class="p">(</span>
-                <span class="n">list_indices_in_squares_this_frame</span>
+            <span class="n">_produce_list_centroids_this_frame</span><span class="p">(</span>
+                <span class="n">list_indices_in_squares_this_frame</span><span class="p">,</span>
+                <span class="n">relevant_particle_coordinate_array_xy</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="p">(</span>
@@ -396,7 +412,10 @@
         <span class="p">):</span>  <span class="c1"># if the previous frame had indices in at least one square I will need to use</span>
             <span class="c1">#  those indices to generate the updates to the corresponding centroids in this frame:</span>
             <span class="n">list_centroids_this_frame_using_indices_from_last_frame</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">produce_list_centroids_this_frame</span><span class="p">(</span><span class="n">list_previous_frame_indices</span><span class="p">)</span>
+                <span class="n">_produce_list_centroids_this_frame</span><span class="p">(</span>
+                    <span class="n">list_previous_frame_indices</span><span class="p">,</span>
+                    <span class="n">relevant_particle_coordinate_array_xy</span><span class="p">,</span>
+                <span class="p">)</span>
             <span class="p">)</span>
             <span class="c1"># I need to write a velocity of zero if there are any &#39;empty&#39; squares in either frame:</span>
             <span class="n">xy_deltas_to_write</span> <span class="o">=</span> <span class="p">[]</span>
@@ -625,7 +644,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2025, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Matthew Davies, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Alia Lescoulie, Zhenbo Li, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Kurt McKee, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Laksh Krishna Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Brigitta Sipőcz, Paul Smith, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Joshua Raphael Uy, Heet Vekariya, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Tanish Yelgoe, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Jia-Xin Zhu, Yuxuan Zhuang, Fabian Zills, and Oliver Beckstein.</p>
+    <p>&#169; Copyright 2005-2025, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Pavel Buslaev, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Matthew Davies, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Abdulrahman Elbanna, Gareth Elliott, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, BHM-Bob G, Sirsha Ganguly, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Alia Lescoulie, Zhenbo Li, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Kurt McKee, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Debasish Mohanty, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Namir Oues, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, James Rowe, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marc Schuh, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Laksh Krishna Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Brigitta Sipőcz, Paul Smith, Tulga-Erdene Sodjargal, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Joshua Raphael Uy, Heet Vekariya, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Lexi Xu, Zhuyi Xue, Mingyi Xue, Alexander Yang, Yu-Yuan (Stuart) Yang, Tanish Yelgoe, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Jia-Xin Zhu, Yuxuan Zhuang, Fabian Zills, and Oliver Beckstein.</p>
   </div>
 
   

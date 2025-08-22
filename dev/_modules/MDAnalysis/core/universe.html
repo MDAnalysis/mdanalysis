@@ -84,9 +84,9 @@
     <!-- <p class="caption" role="heading"></p> -->
     <ul>
         
-        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        <li class="toctree-l1"><a class="reference internal" href="https://mdanalysis.org">MDAnalysis</a></li>
         
-        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        <li class="toctree-l1"><a class="reference internal" href="https://userguide.mdanalysis.org">User guide</a></li>
         
         <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
         
@@ -94,7 +94,7 @@
     
         <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview of MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
@@ -222,13 +222,28 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..lib.mdamath</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_fragments</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">groups</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._get_readers</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_reader_for</span><span class="p">,</span> <span class="n">get_parser_for</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.groups</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">ComponentBase</span><span class="p">,</span> <span class="n">GroupBase</span><span class="p">,</span>
-                     <span class="n">Atom</span><span class="p">,</span> <span class="n">Residue</span><span class="p">,</span> <span class="n">Segment</span><span class="p">,</span>
-                     <span class="n">AtomGroup</span><span class="p">,</span> <span class="n">ResidueGroup</span><span class="p">,</span> <span class="n">SegmentGroup</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.groups</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ComponentBase</span><span class="p">,</span>
+    <span class="n">GroupBase</span><span class="p">,</span>
+    <span class="n">Atom</span><span class="p">,</span>
+    <span class="n">Residue</span><span class="p">,</span>
+    <span class="n">Segment</span><span class="p">,</span>
+    <span class="n">AtomGroup</span><span class="p">,</span>
+    <span class="n">ResidueGroup</span><span class="p">,</span>
+    <span class="n">SegmentGroup</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.topology</span><span class="w"> </span><span class="kn">import</span> <span class="n">Topology</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.topologyattrs</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">AtomAttr</span><span class="p">,</span> <span class="n">ResidueAttr</span><span class="p">,</span> <span class="n">SegmentAttr</span><span class="p">,</span>
-    <span class="n">BFACTOR_WARNING</span><span class="p">,</span> <span class="n">_Connection</span>
+    <span class="n">AtomAttr</span><span class="p">,</span>
+    <span class="n">ResidueAttr</span><span class="p">,</span>
+    <span class="n">SegmentAttr</span><span class="p">,</span>
+    <span class="n">Segindices</span><span class="p">,</span>
+    <span class="n">Segids</span><span class="p">,</span>
+    <span class="n">Resindices</span><span class="p">,</span>
+    <span class="n">Resids</span><span class="p">,</span>
+    <span class="n">Atomindices</span><span class="p">,</span>
+    <span class="n">BFACTOR_WARNING</span><span class="p">,</span>
+    <span class="n">_Connection</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.topologyobjects</span><span class="w"> </span><span class="kn">import</span> <span class="n">TopologyObject</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..guesser.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_guesser</span>
@@ -236,18 +251,119 @@
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.core.universe&quot;</span><span class="p">)</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_update_topology_by_ids</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">atomwise_resids</span><span class="p">,</span> <span class="n">atomwise_segids</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Update the topology of a Universe with new atomwise resids and segids.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    universe : Universe</span>
+<span class="sd">        The universe to update.</span>
+<span class="sd">    atomwise_resids : numpy.ndarray</span>
+<span class="sd">        The new atomwise residue indices.</span>
+<span class="sd">    atomwise_segids : numpy.ndarray</span>
+<span class="sd">        The new atomwise segment indices.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..topology.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">change_squash</span>
+
+    <span class="c1"># the original topology</span>
+    <span class="n">top</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">_topology</span>
+
+    <span class="c1"># detect the atom level attributes (excluding residue level and above)</span>
+    <span class="n">atom_attrindices</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">idx</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">each_attr</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">top</span><span class="o">.</span><span class="n">attrs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">Residue</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">each_attr</span><span class="o">.</span><span class="n">target_classes</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">each_attr</span><span class="p">,</span> <span class="n">Atomindices</span><span class="p">))</span>
+    <span class="p">]</span>
+    <span class="n">attrs</span> <span class="o">=</span> <span class="p">[</span><span class="n">top</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">each_attr</span><span class="p">]</span> <span class="k">for</span> <span class="n">each_attr</span> <span class="ow">in</span> <span class="n">atom_attrindices</span><span class="p">]</span>
+
+    <span class="c1"># create new residues level stuff</span>
+    <span class="n">residue_attrindices</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">idx</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">each_attr</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">top</span><span class="o">.</span><span class="n">attrs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="p">(</span><span class="n">Residue</span> <span class="ow">in</span> <span class="n">each_attr</span><span class="o">.</span><span class="n">target_classes</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="n">Segment</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">each_attr</span><span class="o">.</span><span class="n">target_classes</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">each_attr</span><span class="p">,</span> <span class="n">Resids</span><span class="p">))</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">each_attr</span><span class="p">,</span> <span class="n">Resindices</span><span class="p">))</span>
+        <span class="p">)</span>
+    <span class="p">]</span>  <span class="c1"># residue level attributes except resids and resindices</span>
+
+    <span class="n">res_criteria</span> <span class="o">=</span> <span class="p">[</span><span class="n">atomwise_resids</span><span class="p">,</span> <span class="n">atomwise_segids</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span>
+        <span class="nb">getattr</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">top</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">each_attr</span><span class="p">]</span><span class="o">.</span><span class="n">attrname</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">each_attr</span> <span class="ow">in</span> <span class="n">residue_attrindices</span>
+        <span class="k">if</span> <span class="n">top</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">each_attr</span><span class="p">]</span><span class="o">.</span><span class="n">attrname</span> <span class="o">!=</span> <span class="s2">&quot;resnums&quot;</span>
+    <span class="p">]</span>
+
+    <span class="n">res_to_squash</span> <span class="o">=</span> <span class="p">[</span><span class="n">atomwise_resids</span><span class="p">,</span> <span class="n">atomwise_segids</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span>
+        <span class="nb">getattr</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">top</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">each_attr</span><span class="p">]</span><span class="o">.</span><span class="n">attrname</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">each_attr</span> <span class="ow">in</span> <span class="n">residue_attrindices</span>
+    <span class="p">]</span>
+
+    <span class="n">residx</span><span class="p">,</span> <span class="n">res_squashed</span> <span class="o">=</span> <span class="n">change_squash</span><span class="p">(</span><span class="n">res_criteria</span><span class="p">,</span> <span class="n">res_to_squash</span><span class="p">)</span>
+    <span class="n">resids</span> <span class="o">=</span> <span class="n">res_squashed</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">res_squashed_segids</span> <span class="o">=</span> <span class="n">res_squashed</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">n_residues</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">resids</span><span class="p">)</span>
+    <span class="c1"># all residue-level attributes except resids</span>
+    <span class="n">res_squashed_res_attrs</span> <span class="o">=</span> <span class="n">res_squashed</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span>
+
+    <span class="n">res_attrs</span> <span class="o">=</span> <span class="p">[</span><span class="n">Resids</span><span class="p">(</span><span class="n">resids</span><span class="p">)]</span> <span class="o">+</span> <span class="p">[</span>
+        <span class="c1"># use the correspdoning type of the attribute with new sqaushed values</span>
+        <span class="n">top</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">each_attr</span><span class="p">]</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">res_squashed_res_attrs</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">each_attr</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">residue_attrindices</span><span class="p">)</span>
+    <span class="p">]</span>
+    <span class="n">attrs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">res_attrs</span><span class="p">)</span>
+
+    <span class="c1"># create new segment level stuff</span>
+    <span class="n">segidx</span><span class="p">,</span> <span class="p">(</span><span class="n">segids</span><span class="p">,)</span> <span class="o">=</span> <span class="n">change_squash</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">res_squashed_segids</span><span class="p">,),</span> <span class="p">(</span><span class="n">res_squashed_segids</span><span class="p">,)</span>
+    <span class="p">)</span>
+    <span class="n">n_segments</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">segids</span><span class="p">)</span>
+    <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Segids</span><span class="p">(</span><span class="n">segids</span><span class="p">))</span>
+
+    <span class="c1"># other attributes</span>
+    <span class="n">other_attrs</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">each_attr</span>
+        <span class="k">for</span> <span class="n">each_attr</span> <span class="ow">in</span> <span class="n">top</span><span class="o">.</span><span class="n">attrs</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="p">(</span><span class="n">Segment</span> <span class="ow">in</span> <span class="n">each_attr</span><span class="o">.</span><span class="n">target_classes</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">each_attr</span><span class="p">,</span> <span class="n">Segids</span><span class="p">))</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">each_attr</span><span class="p">,</span> <span class="n">Atomindices</span><span class="p">))</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">each_attr</span><span class="p">,</span> <span class="n">Resindices</span><span class="p">))</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">each_attr</span><span class="p">,</span> <span class="n">Segindices</span><span class="p">))</span>
+        <span class="p">)</span>
+    <span class="p">]</span>
+
+    <span class="c1"># create new topology</span>
+    <span class="n">top</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span>
+        <span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span>
+        <span class="n">n_residues</span><span class="p">,</span>
+        <span class="n">n_segments</span><span class="p">,</span>
+        <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">,</span>
+        <span class="n">atom_resindex</span><span class="o">=</span><span class="n">residx</span><span class="p">,</span>
+        <span class="n">residue_segindex</span><span class="o">=</span><span class="n">segidx</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># add back other attributes</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">other_attrs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">each_otherattr</span> <span class="ow">in</span> <span class="n">other_attrs</span><span class="p">:</span>
+            <span class="n">top</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="n">each_otherattr</span><span class="p">)</span>
+
+    <span class="c1"># update the topology in the universe</span>
+    <span class="n">universe</span><span class="o">.</span><span class="n">_topology</span> <span class="o">=</span> <span class="n">top</span>
+
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_check_file_like</span><span class="p">(</span><span class="n">topology</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">isstream</span><span class="p">(</span><span class="n">topology</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">):</span>
             <span class="n">_name</span> <span class="o">=</span> <span class="n">topology</span><span class="o">.</span><span class="n">name</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">_name</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">return</span> <span class="n">NamedStream</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">_name</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">topology</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_topology_from_file_like</span><span class="p">(</span><span class="n">topology_file</span><span class="p">,</span> <span class="n">topology_format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                             <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_topology_from_file_like</span><span class="p">(</span><span class="n">topology_file</span><span class="p">,</span> <span class="n">topology_format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="n">parser</span> <span class="o">=</span> <span class="n">get_parser_for</span><span class="p">(</span><span class="n">topology_file</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">topology_format</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
@@ -257,20 +373,25 @@
         <span class="c1"># There are 2 kinds of errors that might be raised here:</span>
         <span class="c1"># one because the file isn&#39;t present</span>
         <span class="c1"># or the permissions are bad, second when the parser fails</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">err</span><span class="o">.</span><span class="n">errno</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span>
-            <span class="n">errno</span><span class="o">.</span><span class="n">errorcode</span><span class="p">[</span><span class="n">err</span><span class="o">.</span><span class="n">errno</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;ENOENT&#39;</span><span class="p">,</span> <span class="s1">&#39;EACCES&#39;</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="n">err</span><span class="o">.</span><span class="n">errno</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">errno</span><span class="o">.</span><span class="n">errorcode</span><span class="p">[</span><span class="n">err</span><span class="o">.</span><span class="n">errno</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="s2">&quot;ENOENT&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;EACCES&quot;</span><span class="p">,</span>
+        <span class="p">]:</span>
             <span class="c1"># Runs if the error is propagated due to no permission / file not found</span>
             <span class="k">raise</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Runs when the parser fails</span>
-            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Failed to load from the topology file </span><span class="si">{0}</span><span class="s2">&quot;</span>
-                            <span class="s2">&quot; with parser </span><span class="si">{1}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span>
-                            <span class="s2">&quot;Error: </span><span class="si">{2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">topology_file</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">err</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span>
+                <span class="s2">&quot;Failed to load from the topology file </span><span class="si">{0}</span><span class="s2">&quot;</span>
+                <span class="s2">&quot; with parser </span><span class="si">{1}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Error: </span><span class="si">{2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">topology_file</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">err</span><span class="p">)</span>
+            <span class="p">)</span>
     <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">NotImplementedError</span><span class="p">)</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="s2">&quot;Failed to construct topology from file </span><span class="si">{0}</span><span class="s2">&quot;</span>
             <span class="s2">&quot; with parser </span><span class="si">{1}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;Error: </span><span class="si">{2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">topology_file</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">err</span><span class="p">))</span>
+            <span class="s2">&quot;Error: </span><span class="si">{2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">topology_file</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">err</span><span class="p">)</span>
+        <span class="p">)</span>
     <span class="k">return</span> <span class="n">topology</span>
 
 
@@ -283,17 +404,21 @@
     <span class="k">return</span> <span class="nb">format</span><span class="p">,</span> <span class="n">topology_format</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_resolve_coordinates</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">*</span><span class="n">coordinates</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                         <span class="n">all_coordinates</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_resolve_coordinates</span><span class="p">(</span>
+    <span class="n">filename</span><span class="p">,</span> <span class="o">*</span><span class="n">coordinates</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">all_coordinates</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">):</span>
     <span class="k">if</span> <span class="n">all_coordinates</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">coordinates</span> <span class="ow">and</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">get_reader_for</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">)</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;No coordinate reader found for </span><span class="si">{}</span><span class="s1">. Skipping &#39;</span>
-                            <span class="s1">&#39;this file.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;No coordinate reader found for </span><span class="si">{}</span><span class="s2">. Skipping &quot;</span>
+                <span class="s2">&quot;this file.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">coordinates</span> <span class="o">=</span> <span class="p">(</span><span class="n">filename</span><span class="p">,)</span> <span class="o">+</span> <span class="n">coordinates</span>
     <span class="k">return</span> <span class="n">coordinates</span>
+
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_generate_from_topology</span><span class="p">(</span><span class="n">universe</span><span class="p">):</span>
     <span class="c1"># generate Universe version of each class</span>
@@ -313,10 +438,12 @@
     <span class="n">universe</span><span class="o">.</span><span class="n">atoms</span> <span class="o">=</span> <span class="n">AtomGroup</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">),</span> <span class="n">universe</span><span class="p">)</span>
 
     <span class="n">universe</span><span class="o">.</span><span class="n">residues</span> <span class="o">=</span> <span class="n">ResidueGroup</span><span class="p">(</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_residues</span><span class="p">),</span> <span class="n">universe</span><span class="p">)</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_residues</span><span class="p">),</span> <span class="n">universe</span>
+    <span class="p">)</span>
 
     <span class="n">universe</span><span class="o">.</span><span class="n">segments</span> <span class="o">=</span> <span class="n">SegmentGroup</span><span class="p">(</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_segments</span><span class="p">),</span> <span class="n">universe</span><span class="p">)</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_segments</span><span class="p">),</span> <span class="n">universe</span>
+    <span class="p">)</span>
 
 
 <div class="viewcode-block" id="Universe">
@@ -440,7 +567,7 @@
 <span class="sd">           method instead. If passed into `guess_TopologyAttrs`, it will</span>
 <span class="sd">           override the values set during Guesser creation.</span>
 
-<span class="sd">           </span>
+
 <span class="sd">    transformations: function or list, ``None``, default ``None``</span>
 <span class="sd">        Provide a list of transformations that you wish to apply to the</span>
 <span class="sd">        trajectory upon reading. Transformations can be found in</span>
@@ -456,6 +583,12 @@
 <span class="sd">        functionality to treat independent trajectory files as a single virtual</span>
 <span class="sd">        trajectory.</span>
 <span class="sd">    **kwargs: extra arguments are passed to the topology parser.</span>
+<span class="sd">        For instance, when reading a PDB file</span>
+<span class="sd">        (:class:`PDBReader&lt;MDAnalysis.coordinates.PDB&gt;`,</span>
+<span class="sd">        :class:`PDBParser&lt;MDAnalysis.topology.PDBParser&gt;`), set</span>
+<span class="sd">        ``force_chainids_to_segids=True`` to make the universe use the</span>
+<span class="sd">        chainIDs (column 22) instead of the segmentIDs (column 73-76) as the</span>
+<span class="sd">        `segids` in the universe and select the corresponding SegmentGroup.</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
@@ -524,61 +657,90 @@
 <span class="sd">        guessing masses and atom types after topology</span>
 <span class="sd">        is read from a registered parser.</span>
 
+<span class="sd">    .. versionchanged:: 2.10.0</span>
+<span class="sd">        Added :meth: `~MDAnalysis.core.universe.Universe.set_groups`</span>
+<span class="sd">        API to set residues/segments based on the atomwise resids/segids.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topology</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">all_coordinates</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                 <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">topology_format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">transformations</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">guess_bonds</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">vdwradii</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fudge_factor</span><span class="o">=</span><span class="mf">0.55</span><span class="p">,</span>
-                 <span class="n">lower_bound</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">,</span>
-                 <span class="n">to_guess</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;types&#39;</span><span class="p">,</span> <span class="s1">&#39;masses&#39;</span><span class="p">),</span> <span class="n">force_guess</span><span class="o">=</span><span class="p">(),</span>
-                 <span class="n">in_memory_step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">topology</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">coordinates</span><span class="p">,</span>
+        <span class="n">all_coordinates</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">topology_format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">transformations</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">guess_bonds</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">vdwradii</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">fudge_factor</span><span class="o">=</span><span class="mf">0.55</span><span class="p">,</span>
+        <span class="n">lower_bound</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">in_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">context</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+        <span class="n">to_guess</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;types&quot;</span><span class="p">,</span> <span class="s2">&quot;masses&quot;</span><span class="p">),</span>
+        <span class="n">force_guess</span><span class="o">=</span><span class="p">(),</span>
+        <span class="n">in_memory_step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># managed attribute holding Reader</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;_valid&#39;</span><span class="p">:</span> <span class="p">{}}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;_valid&quot;</span><span class="p">:</span> <span class="p">{}}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">residues</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">segments</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_context</span> <span class="o">=</span> <span class="n">get_guesser</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;transformations&#39;</span><span class="p">:</span> <span class="n">transformations</span><span class="p">,</span>
-            <span class="s1">&#39;guess_bonds&#39;</span><span class="p">:</span> <span class="n">guess_bonds</span><span class="p">,</span>
-            <span class="s1">&#39;vdwradii&#39;</span><span class="p">:</span> <span class="n">vdwradii</span><span class="p">,</span>
-            <span class="s1">&#39;fudge_factor&#39;</span><span class="p">:</span> <span class="n">fudge_factor</span><span class="p">,</span>
-            <span class="s1">&#39;lower_bound&#39;</span><span class="p">:</span> <span class="n">lower_bound</span><span class="p">,</span>
-            <span class="s1">&#39;in_memory&#39;</span><span class="p">:</span> <span class="n">in_memory</span><span class="p">,</span>
-            <span class="s1">&#39;in_memory_step&#39;</span><span class="p">:</span> <span class="n">in_memory_step</span><span class="p">,</span>
-            <span class="s1">&#39;format&#39;</span><span class="p">:</span> <span class="nb">format</span><span class="p">,</span>
-            <span class="s1">&#39;topology_format&#39;</span><span class="p">:</span> <span class="n">topology_format</span><span class="p">,</span>
-            <span class="s1">&#39;all_coordinates&#39;</span><span class="p">:</span> <span class="n">all_coordinates</span>
+            <span class="s2">&quot;transformations&quot;</span><span class="p">:</span> <span class="n">transformations</span><span class="p">,</span>
+            <span class="s2">&quot;guess_bonds&quot;</span><span class="p">:</span> <span class="n">guess_bonds</span><span class="p">,</span>
+            <span class="s2">&quot;vdwradii&quot;</span><span class="p">:</span> <span class="n">vdwradii</span><span class="p">,</span>
+            <span class="s2">&quot;fudge_factor&quot;</span><span class="p">:</span> <span class="n">fudge_factor</span><span class="p">,</span>
+            <span class="s2">&quot;lower_bound&quot;</span><span class="p">:</span> <span class="n">lower_bound</span><span class="p">,</span>
+            <span class="s2">&quot;in_memory&quot;</span><span class="p">:</span> <span class="n">in_memory</span><span class="p">,</span>
+            <span class="s2">&quot;in_memory_step&quot;</span><span class="p">:</span> <span class="n">in_memory_step</span><span class="p">,</span>
+            <span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="nb">format</span><span class="p">,</span>
+            <span class="s2">&quot;topology_format&quot;</span><span class="p">:</span> <span class="n">topology_format</span><span class="p">,</span>
+            <span class="s2">&quot;all_coordinates&quot;</span><span class="p">:</span> <span class="n">all_coordinates</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="nb">format</span><span class="p">,</span> <span class="n">topology_format</span> <span class="o">=</span> <span class="n">_resolve_formats</span><span class="p">(</span><span class="o">*</span><span class="n">coordinates</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span>
-                                                   <span class="n">topology_format</span><span class="o">=</span><span class="n">topology_format</span><span class="p">)</span>
+        <span class="nb">format</span><span class="p">,</span> <span class="n">topology_format</span> <span class="o">=</span> <span class="n">_resolve_formats</span><span class="p">(</span>
+            <span class="o">*</span><span class="n">coordinates</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span> <span class="n">topology_format</span><span class="o">=</span><span class="n">topology_format</span>
+        <span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">Topology</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">topology</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">_check_file_like</span><span class="p">(</span><span class="n">topology</span><span class="p">)</span>
-            <span class="n">topology</span> <span class="o">=</span> <span class="n">_topology_from_file_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
-                                                <span class="n">topology_format</span><span class="o">=</span><span class="n">topology_format</span><span class="p">,</span>
-                                                <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">topology</span> <span class="o">=</span> <span class="n">_topology_from_file_like</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">topology_format</span><span class="o">=</span><span class="n">topology_format</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+            <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">topology</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span> <span class="o">=</span> <span class="n">topology</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># point to Universe.empty instead of making empty universe</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Topology argument required to make Universe. &#39;</span>
-                            <span class="s1">&#39;Try Universe.empty(n_atoms, ...) to construct &#39;</span>
-                            <span class="s1">&#39;your own Universe.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;Topology argument required to make Universe. &quot;</span>
+                <span class="s2">&quot;Try Universe.empty(n_atoms, ...) to construct &quot;</span>
+                <span class="s2">&quot;your own Universe.&quot;</span>
+            <span class="p">)</span>
 
         <span class="n">_generate_from_topology</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>  <span class="c1"># make real atoms, res, segments</span>
 
-        <span class="n">coordinates</span> <span class="o">=</span> <span class="n">_resolve_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="o">*</span><span class="n">coordinates</span><span class="p">,</span>
-                                           <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span>
-                                           <span class="n">all_coordinates</span><span class="o">=</span><span class="n">all_coordinates</span><span class="p">)</span>
+        <span class="n">coordinates</span> <span class="o">=</span> <span class="n">_resolve_coordinates</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
+            <span class="o">*</span><span class="n">coordinates</span><span class="p">,</span>
+            <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span>
+            <span class="n">all_coordinates</span><span class="o">=</span><span class="n">all_coordinates</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">coordinates</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">load_new</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="n">in_memory</span><span class="p">,</span>
-                        <span class="n">in_memory_step</span><span class="o">=</span><span class="n">in_memory_step</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">load_new</span><span class="p">(</span>
+                <span class="n">coordinates</span><span class="p">,</span>
+                <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span>
+                <span class="n">in_memory</span><span class="o">=</span><span class="n">in_memory</span><span class="p">,</span>
+                <span class="n">in_memory_step</span><span class="o">=</span><span class="n">in_memory_step</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">transformations</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">transformations</span><span class="p">):</span>
@@ -599,25 +761,25 @@
                 <span class="s2">&quot;Universe instantiation. If using guess_TopologyAttrs, &quot;</span>
                 <span class="s2">&quot;pass these kwargs to the method instead, as they will override &quot;</span>
                 <span class="s2">&quot;the previous Context values.&quot;</span><span class="p">,</span>
-                <span class="ne">DeprecationWarning</span>
+                <span class="ne">DeprecationWarning</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="c1"># Original behaviour is to add additionally guessed bond info</span>
             <span class="c1"># this is achieved by adding to the `to_guess` list (unliked `force_guess`</span>
             <span class="c1"># which replaces existing bonds).</span>
-            <span class="n">to_guess</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">to_guess</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;bonds&#39;</span><span class="p">,</span> <span class="s1">&#39;angles&#39;</span><span class="p">,</span> <span class="s1">&#39;dihedrals&#39;</span><span class="p">]</span>
+            <span class="n">to_guess</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">to_guess</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;bonds&quot;</span><span class="p">,</span> <span class="s2">&quot;angles&quot;</span><span class="p">,</span> <span class="s2">&quot;dihedrals&quot;</span><span class="p">]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">guess_TopologyAttrs</span><span class="p">(</span>
             <span class="n">context</span><span class="p">,</span> <span class="n">to_guess</span><span class="p">,</span> <span class="n">force_guess</span><span class="p">,</span> <span class="n">error_if_missing</span><span class="o">=</span><span class="kc">False</span>
         <span class="p">)</span>
-
 
 <div class="viewcode-block" id="Universe.copy">
 <a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.copy">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return an independent copy of this Universe&quot;&quot;&quot;</span>
         <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
-                             <span class="n">to_guess</span><span class="o">=</span><span class="p">(),</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">)</span>
+        <span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">to_guess</span><span class="o">=</span><span class="p">(),</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span>
+        <span class="p">)</span>
         <span class="n">new</span><span class="o">.</span><span class="n">trajectory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">new</span></div>
 
@@ -625,9 +787,18 @@
 <div class="viewcode-block" id="Universe.empty">
 <a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.empty">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">empty</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="n">n_residues</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_segments</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_frames</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-              <span class="n">atom_resindex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">residue_segindex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-              <span class="n">trajectory</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">velocities</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">forces</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">empty</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">n_atoms</span><span class="p">,</span>
+        <span class="n">n_residues</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">n_segments</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">n_frames</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">atom_resindex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">residue_segindex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">trajectory</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">velocities</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">forces</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a blank Universe</span>
 
 <span class="sd">        Useful for building a Universe without requiring existing files,</span>
@@ -694,19 +865,24 @@
 
         <span class="k">if</span> <span class="n">atom_resindex</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">n_residues</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s1">&#39;Residues specified but no atom_resindex given.  &#39;</span>
-                <span class="s1">&#39;All atoms will be placed in first Residue.&#39;</span><span class="p">,</span>
-                <span class="ne">UserWarning</span><span class="p">)</span>
+                <span class="s2">&quot;Residues specified but no atom_resindex given.  &quot;</span>
+                <span class="s2">&quot;All atoms will be placed in first Residue.&quot;</span><span class="p">,</span>
+                <span class="ne">UserWarning</span><span class="p">,</span>
+            <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">residue_segindex</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">n_segments</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s1">&#39;Segments specified but no segment_resindex given.  &#39;</span>
-                <span class="s1">&#39;All residues will be placed in first Segment&#39;</span><span class="p">,</span>
-                <span class="ne">UserWarning</span><span class="p">)</span>
+                <span class="s2">&quot;Segments specified but no segment_resindex given.  &quot;</span>
+                <span class="s2">&quot;All residues will be placed in first Segment&quot;</span><span class="p">,</span>
+                <span class="ne">UserWarning</span><span class="p">,</span>
+            <span class="p">)</span>
 
-        <span class="n">top</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">n_residues</span><span class="p">,</span> <span class="n">n_segments</span><span class="p">,</span>
-                       <span class="n">atom_resindex</span><span class="o">=</span><span class="n">atom_resindex</span><span class="p">,</span>
-                       <span class="n">residue_segindex</span><span class="o">=</span><span class="n">residue_segindex</span><span class="p">,</span>
+        <span class="n">top</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span>
+            <span class="n">n_atoms</span><span class="p">,</span>
+            <span class="n">n_residues</span><span class="p">,</span>
+            <span class="n">n_segments</span><span class="p">,</span>
+            <span class="n">atom_resindex</span><span class="o">=</span><span class="n">atom_resindex</span><span class="p">,</span>
+            <span class="n">residue_segindex</span><span class="o">=</span><span class="n">residue_segindex</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="n">u</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">top</span><span class="p">,</span> <span class="n">to_guess</span><span class="o">=</span><span class="p">())</span>
@@ -718,8 +894,12 @@
 
             <span class="c1"># grab and attach a MemoryReader</span>
             <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span> <span class="o">=</span> <span class="n">get_reader_for</span><span class="p">(</span><span class="n">coords</span><span class="p">)(</span>
-                <span class="n">coords</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="n">n_atoms</span><span class="p">,</span>
-                <span class="n">velocities</span><span class="o">=</span><span class="n">vels</span><span class="p">,</span> <span class="n">forces</span><span class="o">=</span><span class="n">forces</span><span class="p">)</span>
+                <span class="n">coords</span><span class="p">,</span>
+                <span class="n">order</span><span class="o">=</span><span class="s2">&quot;fac&quot;</span><span class="p">,</span>
+                <span class="n">n_atoms</span><span class="o">=</span><span class="n">n_atoms</span><span class="p">,</span>
+                <span class="n">velocities</span><span class="o">=</span><span class="n">vels</span><span class="p">,</span>
+                <span class="n">forces</span><span class="o">=</span><span class="n">forces</span><span class="p">,</span>
+            <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">u</span></div>
 
@@ -735,8 +915,14 @@
 
 <div class="viewcode-block" id="Universe.load_new">
 <a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.load_new">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">load_new</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                 <span class="n">in_memory_step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_new</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">filename</span><span class="p">,</span>
+        <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">in_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">in_memory_step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Load coordinates from `filename`.</span>
 
 <span class="sd">        The file format of `filename` is autodetected from the file name suffix</span>
@@ -809,21 +995,25 @@
         <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
                 <span class="s2">&quot;Cannot find an appropriate coordinate reader for file &#39;</span><span class="si">{0}</span><span class="s2">&#39;.</span><span class="se">\n</span><span class="s2">&quot;</span>
-                <span class="s2">&quot;           </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">err</span><span class="p">))</span>
+                <span class="s2">&quot;           </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">err</span><span class="p">)</span>
+            <span class="p">)</span>
 
         <span class="c1"># supply number of atoms for readers that cannot do it for themselves</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;n_atoms&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;n_atoms&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span> <span class="o">=</span> <span class="n">reader</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The topology and </span><span class="si">{form}</span><span class="s2"> trajectory files don&#39;t&quot;</span>
-                             <span class="s2">&quot; have the same number of atoms!</span><span class="se">\n</span><span class="s2">&quot;</span>
-                             <span class="s2">&quot;Topology number of atoms </span><span class="si">{top_n_atoms}</span><span class="se">\n</span><span class="s2">&quot;</span>
-                             <span class="s2">&quot;Trajectory: </span><span class="si">{fname}</span><span class="s2"> Number of atoms </span><span class="si">{trj_n_atoms}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                                 <span class="n">form</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">format</span><span class="p">,</span>
-                                 <span class="n">top_n_atoms</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">),</span>
-                                 <span class="n">fname</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span>
-                                 <span class="n">trj_n_atoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;The topology and </span><span class="si">{form}</span><span class="s2"> trajectory files don&#39;t&quot;</span>
+                <span class="s2">&quot; have the same number of atoms!</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Topology number of atoms </span><span class="si">{top_n_atoms}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Trajectory: </span><span class="si">{fname}</span><span class="s2"> Number of atoms </span><span class="si">{trj_n_atoms}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">form</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">format</span><span class="p">,</span>
+                    <span class="n">top_n_atoms</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">),</span>
+                    <span class="n">fname</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span>
+                    <span class="n">trj_n_atoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">in_memory</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">transfer_to_memory</span><span class="p">(</span><span class="n">step</span><span class="o">=</span><span class="n">in_memory_step</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -833,8 +1023,9 @@
 
 <div class="viewcode-block" id="Universe.transfer_to_memory">
 <a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.transfer_to_memory">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">transfer_to_memory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                           <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">transfer_to_memory</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Transfer the trajectory to in memory representation.</span>
 
 <span class="sd">        Replaces the current trajectory reader object with one of type</span>
@@ -861,9 +1052,9 @@
         <span class="kn">from</span><span class="w"> </span><span class="nn">..coordinates.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">MemoryReader</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">MemoryReader</span><span class="p">):</span>
-            <span class="n">n_frames</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span>
-                <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">check_slice_indices</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
-            <span class="p">))</span>
+            <span class="n">n_frames</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span>
+                <span class="nb">range</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">check_slice_indices</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">))</span>
+            <span class="p">)</span>
             <span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
             <span class="n">coordinates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_frames</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
             <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
@@ -873,12 +1064,17 @@
 
             <span class="n">velocities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span> <span class="k">if</span> <span class="n">has_vels</span> <span class="k">else</span> <span class="kc">None</span>
             <span class="n">forces</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span> <span class="k">if</span> <span class="n">has_fors</span> <span class="k">else</span> <span class="kc">None</span>
-            <span class="n">dimensions</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_frames</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-                          <span class="k">if</span> <span class="n">has_dims</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">dimensions</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_frames</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="k">if</span> <span class="n">has_dims</span> <span class="k">else</span> <span class="kc">None</span>
+            <span class="p">)</span>
 
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ProgressBar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">:</span><span class="n">step</span><span class="p">],</span>
-                                               <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
-                                               <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Loading frames&quot;</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+                <span class="n">ProgressBar</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">:</span><span class="n">step</span><span class="p">],</span>
+                    <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+                    <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Loading frames&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">):</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">copyto</span><span class="p">(</span><span class="n">coordinates</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">has_vels</span><span class="p">:</span>
                     <span class="n">np</span><span class="o">.</span><span class="n">copyto</span><span class="p">(</span><span class="n">velocities</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ts</span><span class="o">.</span><span class="n">velocities</span><span class="p">)</span>
@@ -898,7 +1094,9 @@
                 <span class="n">dt</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dt</span> <span class="o">*</span> <span class="n">step</span><span class="p">,</span>
                 <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
                 <span class="n">velocities</span><span class="o">=</span><span class="n">velocities</span><span class="p">,</span>
-                <span class="n">forces</span><span class="o">=</span><span class="n">forces</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+                <span class="n">forces</span><span class="o">=</span><span class="n">forces</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="p">)</span></div>
 
 
     <span class="c1"># python 2 doesn&#39;t allow an efficient splitting of kwargs in function</span>
@@ -955,7 +1153,8 @@
         <span class="c1">#    bonds=&quot; and {0} bonds&quot;.format(len(self.bonds)) if self.bonds else &quot;&quot;)</span>
 
         <span class="k">return</span> <span class="s2">&quot;&lt;Universe with </span><span class="si">{n_atoms}</span><span class="s2"> atoms&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="n">n_atoms</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">))</span>
+            <span class="n">n_atoms</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
+        <span class="p">)</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_unpickle_U</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">traj</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
@@ -970,8 +1169,10 @@
         <span class="c1">#  __setstate__/__getstate__ will raise an error when Universe has a</span>
         <span class="c1">#  transformation (that has AtomGroup inside). Use __reduce__ instead.</span>
         <span class="c1">#  Universe&#39;s two &quot;legs&quot; of top and traj both serialise themselves.</span>
-        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unpickle_U</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="p">,</span>
-                                   <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="o">.</span><span class="n">copy</span><span class="p">()))</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_unpickle_U</span><span class="p">,</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="o">.</span><span class="n">copy</span><span class="p">()),</span>
+        <span class="p">)</span>
 
     <span class="c1"># Properties</span>
     <span class="nd">@property</span>
@@ -1086,15 +1287,17 @@
                     <span class="s2">&quot;To raise an issue go to: &quot;</span>
                     <span class="s2">&quot;https://github.com/MDAnalysis/mdanalysis/issues&quot;</span>
                     <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="n">topologyattr</span><span class="p">,</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-                            <span class="nb">sorted</span><span class="p">(</span><span class="n">_TOPOLOGY_ATTRS</span><span class="o">.</span><span class="n">keys</span><span class="p">()))))</span>
+                        <span class="n">topologyattr</span><span class="p">,</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">_TOPOLOGY_ATTRS</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">topologyattr</span> <span class="o">=</span> <span class="n">tcls</span><span class="o">.</span><span class="n">from_blank</span><span class="p">(</span>
                     <span class="n">n_atoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span>
                     <span class="n">n_residues</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_residues</span><span class="p">,</span>
                     <span class="n">n_segments</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_segments</span><span class="p">,</span>
-                    <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">)</span>
+                    <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">,</span>
+                <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="n">topologyattr</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_process_attr</span><span class="p">(</span><span class="n">topologyattr</span><span class="p">)</span></div>
 
@@ -1142,25 +1345,30 @@
                     <span class="c1"># e.g. matrix -&gt; matrices</span>
                     <span class="n">topologyattr</span> <span class="o">=</span> <span class="n">topologyattr</span><span class="o">.</span><span class="n">btype</span> <span class="o">+</span> <span class="s2">&quot;s&quot;</span>
                 <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Topology attribute must be str or &quot;</span>
-                                     <span class="s2">&quot;TopologyAttr object or class. &quot;</span>
-                                     <span class="sa">f</span><span class="s2">&quot;Given: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">topologyattr</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;Topology attribute must be str or &quot;</span>
+                        <span class="s2">&quot;TopologyAttr object or class. &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;Given: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">topologyattr</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">topologyattr</span> <span class="o">=</span> <span class="n">_TOPOLOGY_ATTRS</span><span class="p">[</span><span class="n">topologyattr</span><span class="p">]</span><span class="o">.</span><span class="n">attrname</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="n">attrs</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">_TOPOLOGY_ATTRS</span><span class="p">))</span>
-            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unrecognised topology attribute: &#39;</span><span class="si">{</span><span class="n">topologyattr</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
-                      <span class="sa">f</span><span class="s2">&quot;  Possible values: &#39;</span><span class="si">{</span><span class="n">attrs</span><span class="si">}</span><span class="s2">&#39;</span><span class="se">\n</span><span class="s2">&quot;</span>
-                      <span class="s2">&quot;To raise an issue go to: &quot;</span>
-                      <span class="s2">&quot;https://github.com/MDAnalysis/mdanalysis/issues&quot;</span><span class="p">)</span>
+            <span class="n">attrs</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">_TOPOLOGY_ATTRS</span><span class="p">))</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Unrecognised topology attribute: &#39;</span><span class="si">{</span><span class="n">topologyattr</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;  Possible values: &#39;</span><span class="si">{</span><span class="n">attrs</span><span class="si">}</span><span class="s2">&#39;</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;To raise an issue go to: &quot;</span>
+                <span class="s2">&quot;https://github.com/MDAnalysis/mdanalysis/issues&quot;</span>
+            <span class="p">)</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">topattr</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="p">,</span> <span class="n">topologyattr</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Topology attribute </span><span class="si">{</span><span class="n">topologyattr</span><span class="si">}</span><span class="s2"> &quot;</span>
-                             <span class="s2">&quot;not in Universe.&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Topology attribute </span><span class="si">{</span><span class="n">topologyattr</span><span class="si">}</span><span class="s2"> &quot;</span> <span class="s2">&quot;not in Universe.&quot;</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">del_TopologyAttr</span><span class="p">(</span><span class="n">topattr</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_unprocess_attr</span><span class="p">(</span><span class="n">topattr</span><span class="p">)</span></div>
 
@@ -1173,30 +1381,45 @@
 <span class="sd">         - Component properties</span>
 <span class="sd">         - Transplant methods</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">n_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;atom&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span>
-                  <span class="s1">&#39;residue&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_residues</span><span class="p">,</span>
-                  <span class="s1">&#39;segment&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_segments</span><span class="p">}</span>
+        <span class="n">n_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;atom&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span>
+            <span class="s2">&quot;residue&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_residues</span><span class="p">,</span>
+            <span class="s2">&quot;segment&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_segments</span><span class="p">,</span>
+        <span class="p">}</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;_process_attr: Adding </span><span class="si">{0}</span><span class="s2"> to topology&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attr</span><span class="p">))</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">per_object</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span> <span class="o">!=</span> <span class="n">n_dict</span><span class="p">[</span><span class="n">attr</span><span class="o">.</span><span class="n">per_object</span><span class="p">]):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Length of </span><span class="si">{attr}</span><span class="s1"> does not&#39;</span>
-                             <span class="s1">&#39; match number of </span><span class="si">{obj}</span><span class="s1">s.</span><span class="se">\n</span><span class="s1">&#39;</span>
-                             <span class="s1">&#39;Expect: </span><span class="si">{n:d}</span><span class="s1"> Have: </span><span class="si">{m:d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                                 <span class="n">attr</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">attrname</span><span class="p">,</span>
-                                 <span class="n">obj</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">per_object</span><span class="p">,</span>
-                                 <span class="n">n</span><span class="o">=</span><span class="n">n_dict</span><span class="p">[</span><span class="n">attr</span><span class="o">.</span><span class="n">per_object</span><span class="p">],</span>
-                                 <span class="n">m</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">attr</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">attr</span><span class="o">.</span><span class="n">per_object</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span> <span class="o">!=</span> <span class="n">n_dict</span><span class="p">[</span><span class="n">attr</span><span class="o">.</span><span class="n">per_object</span><span class="p">]</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Length of </span><span class="si">{attr}</span><span class="s2"> does not&quot;</span>
+                <span class="s2">&quot; match number of </span><span class="si">{obj}</span><span class="s2">s.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Expect: </span><span class="si">{n:d}</span><span class="s2"> Have: </span><span class="si">{m:d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">attr</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">attrname</span><span class="p">,</span>
+                    <span class="n">obj</span><span class="o">=</span><span class="n">attr</span><span class="o">.</span><span class="n">per_object</span><span class="p">,</span>
+                    <span class="n">n</span><span class="o">=</span><span class="n">n_dict</span><span class="p">[</span><span class="n">attr</span><span class="o">.</span><span class="n">per_object</span><span class="p">],</span>
+                    <span class="n">m</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">attr</span><span class="p">),</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
 
         <span class="k">for</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="n">attr</span><span class="o">.</span><span class="n">target_classes</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_class_bases</span><span class="p">[</span><span class="bp">cls</span><span class="p">]</span><span class="o">.</span><span class="n">_add_prop</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
 
         <span class="c1"># TODO: Try and shove this into cls._add_prop</span>
         <span class="c1"># Group transplants</span>
-        <span class="k">for</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Atom</span><span class="p">,</span> <span class="n">Residue</span><span class="p">,</span> <span class="n">Segment</span><span class="p">,</span> <span class="n">GroupBase</span><span class="p">,</span>
-                    <span class="n">AtomGroup</span><span class="p">,</span> <span class="n">ResidueGroup</span><span class="p">,</span> <span class="n">SegmentGroup</span><span class="p">):</span>
+        <span class="k">for</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="n">Atom</span><span class="p">,</span>
+            <span class="n">Residue</span><span class="p">,</span>
+            <span class="n">Segment</span><span class="p">,</span>
+            <span class="n">GroupBase</span><span class="p">,</span>
+            <span class="n">AtomGroup</span><span class="p">,</span>
+            <span class="n">ResidueGroup</span><span class="p">,</span>
+            <span class="n">SegmentGroup</span><span class="p">,</span>
+        <span class="p">):</span>
             <span class="k">for</span> <span class="n">funcname</span><span class="p">,</span> <span class="n">meth</span> <span class="ow">in</span> <span class="n">attr</span><span class="o">.</span><span class="n">transplants</span><span class="p">[</span><span class="bp">cls</span><span class="p">]:</span>
                 <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_class_bases</span><span class="p">[</span><span class="bp">cls</span><span class="p">],</span> <span class="n">funcname</span><span class="p">,</span> <span class="n">meth</span><span class="p">)</span>
         <span class="c1"># Universe transplants</span>
-        <span class="k">for</span> <span class="n">funcname</span><span class="p">,</span> <span class="n">meth</span> <span class="ow">in</span> <span class="n">attr</span><span class="o">.</span><span class="n">transplants</span><span class="p">[</span><span class="s1">&#39;Universe&#39;</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">funcname</span><span class="p">,</span> <span class="n">meth</span> <span class="ow">in</span> <span class="n">attr</span><span class="o">.</span><span class="n">transplants</span><span class="p">[</span><span class="s2">&quot;Universe&quot;</span><span class="p">]:</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">funcname</span><span class="p">,</span> <span class="n">meth</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_unprocess_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
@@ -1267,7 +1490,9 @@
         <span class="c1"># pass this information to the topology</span>
         <span class="n">residx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">add_Residue</span><span class="p">(</span><span class="n">segment</span><span class="p">,</span> <span class="o">**</span><span class="n">attrs</span><span class="p">)</span>
         <span class="c1"># resize my residues</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">residues</span> <span class="o">=</span> <span class="n">ResidueGroup</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_residues</span><span class="p">),</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">residues</span> <span class="o">=</span> <span class="n">ResidueGroup</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_residues</span><span class="p">),</span> <span class="bp">self</span>
+        <span class="p">)</span>
 
         <span class="c1"># return the new residue</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="n">residx</span><span class="p">]</span></div>
@@ -1297,13 +1522,16 @@
         <span class="c1"># pass this information to the topology</span>
         <span class="n">segidx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">add_Segment</span><span class="p">(</span><span class="o">**</span><span class="n">attrs</span><span class="p">)</span>
         <span class="c1"># resize my segments</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">segments</span> <span class="o">=</span> <span class="n">SegmentGroup</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_segments</span><span class="p">),</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segments</span> <span class="o">=</span> <span class="n">SegmentGroup</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_segments</span><span class="p">),</span> <span class="bp">self</span>
+        <span class="p">)</span>
         <span class="c1"># return the new segment</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">segments</span><span class="p">[</span><span class="n">segidx</span><span class="p">]</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_add_topology_objects</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">object_type</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                           <span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_topology_objects</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">object_type</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add new TopologyObjects to this Universe</span>
 
 <span class="sd">        Parameters</span>
@@ -1338,7 +1566,7 @@
         <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">AtomGroup</span><span class="p">,</span> <span class="n">TopologyObject</span><span class="p">)):</span>
                 <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">universe</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">self</span><span class="p">:</span>
-                    <span class="n">err_msg</span> <span class="o">=</span> <span class="s1">&#39;Cannot add </span><span class="si">{}</span><span class="s1"> from different Universes.&#39;</span>
+                    <span class="n">err_msg</span> <span class="o">=</span> <span class="s2">&quot;Cannot add </span><span class="si">{}</span><span class="s2"> from different Universes.&quot;</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">err_msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">object_type</span><span class="p">))</span>
                 <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
@@ -1347,8 +1575,8 @@
         <span class="n">all_indices</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">indices</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">])</span>
         <span class="n">nonexistent</span> <span class="o">=</span> <span class="n">all_indices</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">nonexistent</span><span class="p">:</span>
-            <span class="n">istr</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">nonexistent</span><span class="p">))</span>
-            <span class="n">err_msg</span> <span class="o">=</span> <span class="s1">&#39;Cannot add </span><span class="si">{}</span><span class="s1"> for nonexistent atom indices: </span><span class="si">{}</span><span class="s1">&#39;</span>
+            <span class="n">istr</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">nonexistent</span><span class="p">))</span>
+            <span class="n">err_msg</span> <span class="o">=</span> <span class="s2">&quot;Cannot add </span><span class="si">{}</span><span class="s2"> for nonexistent atom indices: </span><span class="si">{}</span><span class="s2">&quot;</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">err_msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">object_type</span><span class="p">,</span> <span class="n">istr</span><span class="p">))</span>
 
         <span class="k">try</span><span class="p">:</span>
@@ -1407,23 +1635,24 @@
 
 <span class="sd">        .. versionadded:: 1.0.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_add_topology_objects</span><span class="p">(</span><span class="s1">&#39;bonds&#39;</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="n">types</span><span class="p">,</span>
-                                 <span class="n">guessed</span><span class="o">=</span><span class="n">guessed</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_topology_objects</span><span class="p">(</span>
+            <span class="s2">&quot;bonds&quot;</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="n">types</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="n">guessed</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_invalidate_bond_related_caches</span><span class="p">()</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_invalidate_bond_related_caches</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Invalidate caches related to bonds and fragments.</span>
-<span class="sd">        </span>
+
 <span class="sd">        This should be called whenever the Universe&#39;s bonds are modified.</span>
 
 <span class="sd">        .. versionadded: 2.8.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Invalidate bond-related caches</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;fragments&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;_valid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;fragments&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;_valid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;fragindices&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;fragments&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s2">&quot;_valid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;fragments&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s2">&quot;_valid&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;fragindices&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Universe.add_angles">
 <a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_angles">[docs]</a>
@@ -1445,8 +1674,9 @@
 
 <span class="sd">        .. versionadded:: 1.0.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_add_topology_objects</span><span class="p">(</span><span class="s1">&#39;angles&#39;</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="n">types</span><span class="p">,</span>
-                                 <span class="n">guessed</span><span class="o">=</span><span class="n">guessed</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_topology_objects</span><span class="p">(</span>
+            <span class="s2">&quot;angles&quot;</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="n">types</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="n">guessed</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Universe.add_dihedrals">
@@ -1470,8 +1700,9 @@
 
 <span class="sd">        .. versionadded:: 1.0.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_add_topology_objects</span><span class="p">(</span><span class="s1">&#39;dihedrals&#39;</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="n">types</span><span class="p">,</span>
-                                 <span class="n">guessed</span><span class="o">=</span><span class="n">guessed</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_topology_objects</span><span class="p">(</span>
+            <span class="s2">&quot;dihedrals&quot;</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="n">types</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="n">guessed</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Universe.add_impropers">
@@ -1495,8 +1726,9 @@
 
 <span class="sd">        .. versionadded:: 1.0.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_add_topology_objects</span><span class="p">(</span><span class="s1">&#39;impropers&#39;</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="n">types</span><span class="p">,</span>
-                                 <span class="n">guessed</span><span class="o">=</span><span class="n">guessed</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_topology_objects</span><span class="p">(</span>
+            <span class="s2">&quot;impropers&quot;</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="n">types</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="n">guessed</span>
+        <span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_delete_topology_objects</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">object_type</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
@@ -1518,7 +1750,7 @@
         <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">AtomGroup</span><span class="p">,</span> <span class="n">TopologyObject</span><span class="p">)):</span>
                 <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">universe</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">self</span><span class="p">:</span>
-                    <span class="n">err_msg</span> <span class="o">=</span> <span class="s1">&#39;Cannot delete </span><span class="si">{}</span><span class="s1"> from different Universes.&#39;</span>
+                    <span class="n">err_msg</span> <span class="o">=</span> <span class="s2">&quot;Cannot delete </span><span class="si">{}</span><span class="s2"> from different Universes.&quot;</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">err_msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">object_type</span><span class="p">))</span>
                 <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
@@ -1527,7 +1759,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">attr</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="p">,</span> <span class="n">object_type</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;There are no </span><span class="si">{}</span><span class="s1"> to delete&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">object_type</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;There are no </span><span class="si">{}</span><span class="s2"> to delete&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">object_type</span><span class="p">))</span>
         <span class="n">attr</span><span class="o">.</span><span class="n">_delete_bonds</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Universe.delete_bonds">
@@ -1569,7 +1801,7 @@
 
 <span class="sd">        .. versionadded:: 1.0.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_delete_topology_objects</span><span class="p">(</span><span class="s1">&#39;bonds&#39;</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_delete_topology_objects</span><span class="p">(</span><span class="s2">&quot;bonds&quot;</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_invalidate_bond_related_caches</span><span class="p">()</span></div>
 
 
@@ -1589,7 +1821,7 @@
 
 <span class="sd">        .. versionadded:: 1.0.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_delete_topology_objects</span><span class="p">(</span><span class="s1">&#39;angles&#39;</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_delete_topology_objects</span><span class="p">(</span><span class="s2">&quot;angles&quot;</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Universe.delete_dihedrals">
@@ -1608,7 +1840,7 @@
 
 <span class="sd">        .. versionadded:: 1.0.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_delete_topology_objects</span><span class="p">(</span><span class="s1">&#39;dihedrals&#39;</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_delete_topology_objects</span><span class="p">(</span><span class="s2">&quot;dihedrals&quot;</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Universe.delete_impropers">
@@ -1627,7 +1859,7 @@
 
 <span class="sd">        .. versionadded:: 1.0.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_delete_topology_objects</span><span class="p">(</span><span class="s1">&#39;impropers&#39;</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_delete_topology_objects</span><span class="p">(</span><span class="s2">&quot;impropers&quot;</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div>
 
 
     <span class="c1"># TODO: Maybe put this as a Bond attribute transplant</span>
@@ -1640,7 +1872,7 @@
     <span class="c1"># Attribute (ie, 2 for the price of 1)</span>
     <span class="c1"># Fragments then gets its own Class/namespace/jazz.</span>
     <span class="nd">@property</span>
-    <span class="nd">@cached</span><span class="p">(</span><span class="s1">&#39;fragments&#39;</span><span class="p">)</span>
+    <span class="nd">@cached</span><span class="p">(</span><span class="s2">&quot;fragments&quot;</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_fragdict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        .. versionadded:: 0.9.0</span>
@@ -1661,7 +1893,7 @@
         <span class="n">frags</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">AtomGroup</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">ix</span><span class="p">),</span> <span class="bp">self</span><span class="p">)</span> <span class="k">for</span> <span class="n">ix</span> <span class="ow">in</span> <span class="n">frag_indices</span><span class="p">])</span>
 
         <span class="n">fragdict</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">fraginfo</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;fraginfo&#39;</span><span class="p">,</span> <span class="s1">&#39;ix, fragment&#39;</span><span class="p">)</span>
+        <span class="n">fraginfo</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;fraginfo&quot;</span><span class="p">,</span> <span class="s2">&quot;ix, fragment&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">frags</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">fragdict</span><span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">fraginfo</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
@@ -1742,22 +1974,27 @@
         <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
                 <span class="s2">&quot;Creating a Universe from a SMILES string requires RDKit but &quot;</span>
-                <span class="s2">&quot;it does not appear to be installed&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+                <span class="s2">&quot;it does not appear to be installed&quot;</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
 
         <span class="n">mol</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="n">smiles</span><span class="p">,</span> <span class="n">sanitize</span><span class="o">=</span><span class="n">sanitize</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">mol</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s1">&#39;Error while parsing SMILES </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">smiles</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;Error while parsing SMILES </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">smiles</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">addHs</span><span class="p">:</span>
             <span class="n">mol</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">AddHs</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">generate_coordinates</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">addHs</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Generating coordinates requires adding &quot;</span>
-                <span class="s2">&quot;hydrogens with `addHs=True`&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Generating coordinates requires adding &quot;</span>
+                    <span class="s2">&quot;hydrogens with `addHs=True`&quot;</span>
+                <span class="p">)</span>
 
             <span class="n">numConfs</span> <span class="o">=</span> <span class="n">rdkit_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;numConfs&quot;</span><span class="p">,</span> <span class="n">numConfs</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">numConfs</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">numConfs</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;numConfs must be a non-zero positive &quot;</span>
-                                  <span class="s2">&quot;integer instead of </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">numConfs</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span>
+                    <span class="s2">&quot;numConfs must be a non-zero positive &quot;</span>
+                    <span class="s2">&quot;integer instead of </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">numConfs</span><span class="p">)</span>
+                <span class="p">)</span>
             <span class="n">AllChem</span><span class="o">.</span><span class="n">EmbedMultipleConfs</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">numConfs</span><span class="p">,</span> <span class="o">**</span><span class="n">rdkit_kwargs</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
@@ -1766,8 +2003,12 @@
 <div class="viewcode-block" id="Universe.guess_TopologyAttrs">
 <a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.guess_TopologyAttrs">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">guess_TopologyAttrs</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_guess</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">force_guess</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">error_if_missing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">to_guess</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">force_guess</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">error_if_missing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Guess and add attributes through a specific context-aware guesser.</span>
@@ -1787,7 +2028,7 @@
 <span class="sd">                However, starting with release 3.0 **no guessing will be done</span>
 <span class="sd">                by default** and it will be up to the user to request guessing</span>
 <span class="sd">                using ``to_guess`` and ``force_guess``.</span>
-<span class="sd">            </span>
+
 <span class="sd">        force_guess: Optional[list[str]]</span>
 <span class="sd">            TopologyAttrs in this list will be force guessed. If the</span>
 <span class="sd">            TopologyAttr does not already exist in the Universe, this has no</span>
@@ -1836,7 +2077,8 @@
         <span class="c1"># Set of all Connectivity related attribute names</span>
         <span class="c1"># used to special case attribute replacement after calling the guesser</span>
         <span class="n">objects</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span>
-            <span class="n">topattr</span><span class="o">.</span><span class="n">attrname</span> <span class="k">for</span> <span class="n">topattr</span> <span class="ow">in</span> <span class="n">_TOPOLOGY_ATTRS</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="n">topattr</span><span class="o">.</span><span class="n">attrname</span>
+            <span class="k">for</span> <span class="n">topattr</span> <span class="ow">in</span> <span class="n">_TOPOLOGY_ATTRS</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
             <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">topattr</span><span class="p">,</span> <span class="n">_Connection</span><span class="p">)</span>
         <span class="p">)</span>
 
@@ -1844,25 +2086,27 @@
         <span class="c1"># from guesser methods</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
 
-            <span class="n">topology_attrs</span> <span class="o">=</span> <span class="p">[</span><span class="n">att</span><span class="o">.</span><span class="n">attrname</span> <span class="k">for</span> <span class="n">att</span> <span class="ow">in</span>
-                              <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">read_attributes</span><span class="p">]</span>
+            <span class="n">topology_attrs</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">att</span><span class="o">.</span><span class="n">attrname</span> <span class="k">for</span> <span class="n">att</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">read_attributes</span>
+            <span class="p">]</span>
 
             <span class="n">common_attrs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">to_guess</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">topology_attrs</span><span class="p">)</span>
             <span class="n">common_attrs</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">attr</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">common_attrs</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">common_attrs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s1">&#39;The attribute(s) </span><span class="si">{</span><span class="n">common_attrs</span><span class="si">}</span><span class="s1"> have already been read &#39;</span>
-                    <span class="s1">&#39;from the topology file. The guesser will &#39;</span>
-                    <span class="s1">&#39;only guess empty values for this attribute, &#39;</span>
-                    <span class="s1">&#39;if any exists. To overwrite it by completely &#39;</span>
-                    <span class="s1">&#39;guessed values, you can pass the attribute to&#39;</span>
-                    <span class="s1">&#39; the force_guess parameter instead of &#39;</span>
-                    <span class="s1">&#39;the to_guess one&#39;</span><span class="p">)</span>
+                    <span class="sa">f</span><span class="s2">&quot;The attribute(s) </span><span class="si">{</span><span class="n">common_attrs</span><span class="si">}</span><span class="s2"> have already been read &quot;</span>
+                    <span class="s2">&quot;from the topology file. The guesser will &quot;</span>
+                    <span class="s2">&quot;only guess empty values for this attribute, &quot;</span>
+                    <span class="s2">&quot;if any exists. To overwrite it by completely &quot;</span>
+                    <span class="s2">&quot;guessed values, you can pass the attribute to&quot;</span>
+                    <span class="s2">&quot; the force_guess parameter instead of &quot;</span>
+                    <span class="s2">&quot;the to_guess one&quot;</span>
+                <span class="p">)</span>
 
             <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">total_guess</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">guesser</span><span class="o">.</span><span class="n">is_guessable</span><span class="p">(</span><span class="n">attr</span><span class="p">):</span>
-                    <span class="n">fg</span> <span class="o">=</span>  <span class="n">attr</span> <span class="ow">in</span> <span class="n">force_guess</span>
+                    <span class="n">fg</span> <span class="o">=</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">force_guess</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="n">values</span> <span class="o">=</span> <span class="n">guesser</span><span class="o">.</span><span class="n">guess_attr</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">fg</span><span class="p">)</span>
                     <span class="k">except</span> <span class="n">NoDataError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -1881,24 +2125,137 @@
                             <span class="n">group</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">_delete_topology_objects</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">group</span><span class="p">)</span>
                         <span class="c1"># this method appends any new bonds in values to existing bonds</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_add_topology_objects</span><span class="p">(</span>
-                            <span class="n">attr</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_add_topology_objects</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                         <span class="k">if</span> <span class="n">attr</span> <span class="o">==</span> <span class="s2">&quot;bonds&quot;</span><span class="p">:</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">_invalidate_bond_related_caches</span><span class="p">()</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">guessed_attr</span> <span class="o">=</span> <span class="n">_TOPOLOGY_ATTRS</span><span class="p">[</span><span class="n">attr</span><span class="p">](</span><span class="n">values</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="n">guessed_attr</span><span class="p">)</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s1">&#39;attribute </span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s1"> has been guessed&#39;</span>
-                        <span class="s1">&#39; successfully.&#39;</span><span class="p">)</span>
+                        <span class="sa">f</span><span class="s2">&quot;attribute </span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s2"> has been guessed&quot;</span> <span class="s2">&quot; successfully.&quot;</span>
+                    <span class="p">)</span>
 
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">context</span><span class="si">}</span><span class="s1"> guesser can not guess the&#39;</span>
-                                     <span class="sa">f</span><span class="s1">&#39; following attribute: </span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">context</span><span class="si">}</span><span class="s2"> guesser can not guess the&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot; following attribute: </span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Can not guess attributes &#39;</span>
-                          <span class="s1">&#39;for universe with 0 atoms&#39;</span><span class="p">)</span></div>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;Can not guess attributes &quot;</span> <span class="s2">&quot;for universe with 0 atoms&quot;</span>
+            <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Universe.set_groups">
+<a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.set_groups">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomwise_resids</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">atomwise_segids</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the groups (`ResidueGroup`, `SegmentGroup`) of the Universe</span>
+<span class="sd">        by atomwise resids/segids.</span>
+
+<span class="sd">        The `topology` will also be updated based on the provided `atomwise_resids`</span>
+<span class="sd">        and `atomwise_segids`. The original `resids` and `segids` will be stored</span>
+<span class="sd">        in attributes `atomwise_resids_orig` and/or `atomwise_segids_orig` if</span>
+<span class="sd">        they are modified.</span>
+<span class="sd">        See notes for the logic of the function.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        atomwise_resids:</span>
+<span class="sd">            A list of residue IDs to be set for the Universe. The length</span>
+<span class="sd">            of the list should be equal to the number of atoms in the Universe.</span>
+<span class="sd">            If `None`, the original resids will be used.</span>
+
+<span class="sd">        atomwise_segids:</span>
+<span class="sd">            A list of segment IDs to be set for the Universe. The length</span>
+<span class="sd">            of the list should be equal to the number of atoms in the Universe.</span>
+<span class="sd">            If `None`, the original segids will be used.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        AssertionError</span>
+<span class="sd">            If the length of the provided atomwise_resids or atomwise_segids</span>
+<span class="sd">            does not match the number of atoms in the Universe.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        First, the function will check if resids or segids is provided.</span>
+<span class="sd">        If both resids and segids are not provided (`None`), it will do nothing.</span>
+<span class="sd">        If only one of them is provided, it will use the original values for the</span>
+<span class="sd">        other one. If both are provided, it will use the provided values for</span>
+<span class="sd">        both resids and segids.</span>
+<span class="sd">        The function will then update the topology by a new generated topology</span>
+<span class="sd">        with new values of the resids and segids.</span>
+<span class="sd">        Finally, the corresponding new `ResidueGroup` and `SegmentGroup` will be</span>
+<span class="sd">        created by the updated topology.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        To set custom segment IDs for the segments of the Universe::</span>
+
+<span class="sd">            atomwise_segids = [&#39;A&#39;, &#39;A&#39;, &#39;B&#39;, &#39;B&#39;]</span>
+<span class="sd">            u.set_groups(atomwise_segids=atomwise_segids)</span>
+
+<span class="sd">            # Now the Universe has two segments with segIDs &#39;A&#39; and &#39;B&#39;</span>
+<span class="sd">            u.segments</span>
+<span class="sd">            &gt;&gt;&gt; &lt;SegmentGroup with 2 segments&gt;</span>
+
+<span class="sd">        .. versionadded:: 2.10.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">atomwise_resids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">atomwise_segids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;Not setting groups. Please provide atomwise_resids or &quot;</span>
+                <span class="s2">&quot;atomwise_segids.&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># resids</span>
+        <span class="k">if</span> <span class="n">atomwise_resids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">atomwise_resids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">resids</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># check the length of atomwise_resids</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atomwise_resids</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;The length of atomwise_resids should be the same as &quot;</span>
+                    <span class="s2">&quot;the number of atoms in the universe.&quot;</span>
+                <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">atomwise_resids_orig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">resids</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s2">&quot;The new resids replaces the current one. &quot;</span>
+                <span class="s2">&quot;The original resids is stored in &quot;</span>
+                <span class="s2">&quot;atomwise_resids_orig.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># segids</span>
+        <span class="k">if</span> <span class="n">atomwise_segids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">atomwise_segids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">segids</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># check the length of atomwise_segids</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atomwise_segids</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;The length of atomwise_segids should be the same as &quot;</span>
+                    <span class="s2">&quot;the number of atoms in the universe.&quot;</span>
+                <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">atomwise_segids_orig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">segids</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s2">&quot;The new resids replaces the current one. &quot;</span>
+                <span class="s2">&quot;The original segids is stored in &quot;</span>
+                <span class="s2">&quot;atomwise_segids_orig.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">atomwise_resids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">atomwise_resids</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">atomwise_segids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">atomwise_segids</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+
+        <span class="n">_update_topology_by_ids</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">atomwise_resids</span><span class="o">=</span><span class="n">atomwise_resids</span><span class="p">,</span>
+            <span class="n">atomwise_segids</span><span class="o">=</span><span class="n">atomwise_segids</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">_generate_from_topology</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 </div>
 
 
@@ -1985,9 +2342,10 @@
 
     <span class="c1"># Create a new topology using the intersection of topology attributes</span>
     <span class="n">blank_topology_attrs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">dir</span><span class="p">(</span><span class="n">Topology</span><span class="p">(</span><span class="n">attrs</span><span class="o">=</span><span class="p">[])))</span>
-    <span class="n">common_attrs</span> <span class="o">=</span> <span class="nb">set</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="nb">set</span><span class="p">(</span><span class="nb">dir</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="p">))</span>
-                                      <span class="k">for</span> <span class="n">ag</span> <span class="ow">in</span> <span class="n">args</span><span class="p">])</span>
-    <span class="n">tops</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="s1">&#39;bonds&#39;</span><span class="p">,</span> <span class="s1">&#39;angles&#39;</span><span class="p">,</span> <span class="s1">&#39;dihedrals&#39;</span><span class="p">,</span> <span class="s1">&#39;impropers&#39;</span><span class="p">])</span>
+    <span class="n">common_attrs</span> <span class="o">=</span> <span class="nb">set</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span>
+        <span class="o">*</span><span class="p">[</span><span class="nb">set</span><span class="p">(</span><span class="nb">dir</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="p">))</span> <span class="k">for</span> <span class="n">ag</span> <span class="ow">in</span> <span class="n">args</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">tops</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;bonds&quot;</span><span class="p">,</span> <span class="s2">&quot;angles&quot;</span><span class="p">,</span> <span class="s2">&quot;dihedrals&quot;</span><span class="p">,</span> <span class="s2">&quot;impropers&quot;</span><span class="p">])</span>
 
     <span class="n">attrs</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -2007,13 +2365,17 @@
             <span class="k">elif</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">attr_class</span><span class="p">,</span> <span class="n">SegmentAttr</span><span class="p">):</span>
                 <span class="n">attr</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">segments</span><span class="p">,</span> <span class="n">attrname</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Don&#39;t know how to handle&quot;</span>
-                                          <span class="s2">&quot; TopologyAttr not subclassed&quot;</span>
-                                          <span class="s2">&quot; from AtomAttr, ResidueAttr,&quot;</span>
-                                          <span class="s2">&quot; or SegmentAttr.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                    <span class="s2">&quot;Don&#39;t know how to handle&quot;</span>
+                    <span class="s2">&quot; TopologyAttr not subclassed&quot;</span>
+                    <span class="s2">&quot; from AtomAttr, ResidueAttr,&quot;</span>
+                    <span class="s2">&quot; or SegmentAttr.&quot;</span>
+                <span class="p">)</span>
             <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Encountered unexpected topology &#39;</span>
-                                <span class="s1">&#39;attribute of type </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">attr</span><span class="p">)))</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                    <span class="s2">&quot;Encountered unexpected topology &quot;</span>
+                    <span class="s2">&quot;attribute of type </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">attr</span><span class="p">))</span>
+                <span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">attr_array</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
@@ -2023,7 +2385,7 @@
 
     <span class="c1"># Build up topology groups including only those that all arguments&#39;</span>
     <span class="c1"># universes have</span>
-    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="p">(</span><span class="n">tops</span> <span class="o">&amp;</span> <span class="n">common_attrs</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tops</span> <span class="o">&amp;</span> <span class="n">common_attrs</span><span class="p">:</span>
         <span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">bondidx</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">types</span> <span class="o">=</span> <span class="p">[]</span>
@@ -2039,16 +2401,18 @@
             <span class="n">tg</span> <span class="o">=</span> <span class="n">tg</span><span class="o">.</span><span class="n">atomgroup_intersection</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
             <span class="c1"># Map them so they refer to our new indices</span>
-            <span class="n">new_idx</span> <span class="o">=</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">([</span><span class="n">mapping</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">entry</span><span class="p">])</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">tg</span><span class="o">.</span><span class="n">indices</span><span class="p">]</span>
+            <span class="n">new_idx</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="nb">tuple</span><span class="p">([</span><span class="n">mapping</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">entry</span><span class="p">])</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">tg</span><span class="o">.</span><span class="n">indices</span>
+            <span class="p">]</span>
             <span class="n">bondidx</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">new_idx</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">tg</span><span class="p">,</span> <span class="s1">&#39;_bondtypes&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">tg</span><span class="p">,</span> <span class="s2">&quot;_bondtypes&quot;</span><span class="p">):</span>
                 <span class="n">types</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">tg</span><span class="o">.</span><span class="n">_bondtypes</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">types</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">tg</span><span class="p">))</span>
+                <span class="n">types</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">tg</span><span class="p">))</span>
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">t</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">types</span><span class="p">):</span>
             <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bonds_class</span><span class="p">(</span><span class="n">bondidx</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">types</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">types</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;|S8&#39;</span><span class="p">)</span>
+            <span class="n">types</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">types</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;|S8&quot;</span><span class="p">)</span>
             <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bonds_class</span><span class="p">(</span><span class="n">bondidx</span><span class="p">,</span> <span class="n">types</span><span class="p">))</span>
 
     <span class="c1"># Renumber residue and segment indices</span>
@@ -2059,10 +2423,12 @@
     <span class="n">seg_offset</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">ag</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
         <span class="c1"># create a mapping scheme for this atomgroup&#39;s parents</span>
-        <span class="n">res_mapping</span> <span class="o">=</span> <span class="p">{</span><span class="n">r</span><span class="o">.</span><span class="n">resindex</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">residues</span><span class="p">,</span>
-                                                           <span class="n">start</span><span class="o">=</span><span class="n">res_offset</span><span class="p">)}</span>
-        <span class="n">seg_mapping</span> <span class="o">=</span> <span class="p">{</span><span class="n">r</span><span class="o">.</span><span class="n">segindex</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">segments</span><span class="p">,</span>
-                                                           <span class="n">start</span><span class="o">=</span><span class="n">seg_offset</span><span class="p">)}</span>
+        <span class="n">res_mapping</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">r</span><span class="o">.</span><span class="n">resindex</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">residues</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">res_offset</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="n">seg_mapping</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">r</span><span class="o">.</span><span class="n">segindex</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">segments</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">seg_offset</span><span class="p">)</span>
+        <span class="p">}</span>
         <span class="n">res_offset</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">residues</span><span class="p">)</span>
         <span class="n">seg_offset</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">segments</span><span class="p">)</span>
 
@@ -2078,19 +2444,26 @@
     <span class="n">n_residues</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">residx</span><span class="p">))</span>
     <span class="n">n_segments</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">segidx</span><span class="p">))</span>
 
-    <span class="n">top</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">n_residues</span><span class="p">,</span> <span class="n">n_segments</span><span class="p">,</span>
-                   <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">,</span>
-                   <span class="n">atom_resindex</span><span class="o">=</span><span class="n">residx</span><span class="p">,</span>
-                   <span class="n">residue_segindex</span><span class="o">=</span><span class="n">segidx</span><span class="p">)</span>
+    <span class="n">top</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span>
+        <span class="n">n_atoms</span><span class="p">,</span>
+        <span class="n">n_residues</span><span class="p">,</span>
+        <span class="n">n_segments</span><span class="p">,</span>
+        <span class="n">attrs</span><span class="o">=</span><span class="n">attrs</span><span class="p">,</span>
+        <span class="n">atom_resindex</span><span class="o">=</span><span class="n">residx</span><span class="p">,</span>
+        <span class="n">residue_segindex</span><span class="o">=</span><span class="n">segidx</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="c1"># Create and populate a universe</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="c1">#Create universe with coordinates if they exists in args</span>
+        <span class="c1"># Create universe with coordinates if they exists in args</span>
         <span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">positions</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">args</span><span class="p">])</span>
-        <span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">top</span><span class="p">,</span> <span class="n">coords</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:],</span>
-                 <span class="nb">format</span><span class="o">=</span><span class="n">MDAnalysis</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">MemoryReader</span><span class="p">)</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span>
+            <span class="n">top</span><span class="p">,</span>
+            <span class="n">coords</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:],</span>
+            <span class="nb">format</span><span class="o">=</span><span class="n">MDAnalysis</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">MemoryReader</span><span class="p">,</span>
+        <span class="p">)</span>
     <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-        <span class="c1">#Create universe without coordinates if they dont exists in args</span>
+        <span class="c1"># Create universe without coordinates if they dont exists in args</span>
         <span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">top</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">u</span></div>
@@ -2104,7 +2477,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2025, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Matthew Davies, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Alia Lescoulie, Zhenbo Li, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Kurt McKee, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Laksh Krishna Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Brigitta Sipőcz, Paul Smith, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Joshua Raphael Uy, Heet Vekariya, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Tanish Yelgoe, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Jia-Xin Zhu, Yuxuan Zhuang, Fabian Zills, and Oliver Beckstein.</p>
+    <p>&#169; Copyright 2005-2025, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Pavel Buslaev, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Matthew Davies, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Abdulrahman Elbanna, Gareth Elliott, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, BHM-Bob G, Sirsha Ganguly, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Alia Lescoulie, Zhenbo Li, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Kurt McKee, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Debasish Mohanty, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Namir Oues, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, James Rowe, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marc Schuh, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Laksh Krishna Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Brigitta Sipőcz, Paul Smith, Tulga-Erdene Sodjargal, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Joshua Raphael Uy, Heet Vekariya, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Lexi Xu, Zhuyi Xue, Mingyi Xue, Alexander Yang, Yu-Yuan (Stuart) Yang, Tanish Yelgoe, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Jia-Xin Zhu, Yuxuan Zhuang, Fabian Zills, and Oliver Beckstein.</p>
   </div>
 
   

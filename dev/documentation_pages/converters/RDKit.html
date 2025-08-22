@@ -39,7 +39,7 @@
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="8.5. OpenMM topology parser MDAnalysis.converters.OpenMMParser" href="OpenMM.html" />
+    <link rel="next" title="8.6. OpenMM topology parser MDAnalysis.converters.OpenMMParser" href="OpenMM.html" />
     <link rel="prev" title="8.1. ParmEd topology parser — MDAnalysis.converters.ParmEdParser" href="ParmEd.html" /> 
 </head>
 
@@ -87,9 +87,9 @@
     <!-- <p class="caption" role="heading"></p> -->
     <ul>
         
-        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        <li class="toctree-l1"><a class="reference internal" href="https://mdanalysis.org">MDAnalysis</a></li>
         
-        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        <li class="toctree-l1"><a class="reference internal" href="https://userguide.mdanalysis.org">User guide</a></li>
         
         <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
         
@@ -97,7 +97,7 @@
     
         <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview of MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
@@ -115,10 +115,14 @@
 <li class="toctree-l3"><a class="reference internal" href="#id1">8.4.1. Classes</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="OpenMM.html">8.5. OpenMM topology parser <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.OpenMMParser</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="OpenMM.html#openmm-structure-i-o-mdanalysis-converters-openmm">8.6. OpenMM structure I/O — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.OpenMM</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../core/accessors.html">8.7. AtomGroup accessors — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.accessors</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="base.html">8.8. Base classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#rdkit-bond-order-inferring-mdanalysis-converters-rdkitinferring">8.5. RDKit bond order inferring — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.RDKitInferring</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">8.5.1. Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="OpenMM.html">8.6. OpenMM topology parser <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.OpenMMParser</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="OpenMM.html#openmm-structure-i-o-mdanalysis-converters-openmm">8.7. OpenMM structure I/O — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.OpenMM</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core/accessors.html">8.8. AtomGroup accessors — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.accessors</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">8.9. Base classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.base</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">9. Trajectory transformations (“on-the-fly” transformations)</a></li>
@@ -161,7 +165,7 @@
              
   <section id="rdkit-topology-parser-mdanalysis-converters-rdkitparser">
 <span id="module-MDAnalysis.converters.RDKitParser"></span><h1><span class="section-number">8.3. </span>RDKit topology parser — <a class="reference internal" href="#module-MDAnalysis.converters.RDKitParser" title="MDAnalysis.converters.RDKitParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.RDKitParser</span></code></a><a class="headerlink" href="#rdkit-topology-parser-mdanalysis-converters-rdkitparser" title="Link to this heading"></a></h1>
-<p>Converts an <a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol">RDKit</a> <a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2024.09)"><code class="xref py py-class docutils literal notranslate"><span class="pre">rdkit.Chem.rdchem.Mol</span></code></a> into a <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.Topology</span></code>.</p>
+<p>Converts an <a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol">RDKit</a> <a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2025.03)"><code class="xref py py-class docutils literal notranslate"><span class="pre">rdkit.Chem.rdchem.Mol</span></code></a> into a <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.Topology</span></code>.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><a class="reference internal" href="#module-MDAnalysis.converters.RDKit" title="MDAnalysis.converters.RDKit"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.RDKit</span></code></a></p>
@@ -501,9 +505,10 @@ is avoided.</p>
 </section>
 <section id="rdkit-molecule-i-o-mdanalysis-converters-rdkit">
 <span id="module-MDAnalysis.converters.RDKit"></span><h1><span class="section-number">8.4. </span>RDKit molecule I/O — <a class="reference internal" href="#module-MDAnalysis.converters.RDKit" title="MDAnalysis.converters.RDKit"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.RDKit</span></code></a><a class="headerlink" href="#rdkit-molecule-i-o-mdanalysis-converters-rdkit" title="Link to this heading"></a></h1>
-<p>Read coordinates data from an <a class="reference external" href="https://www.rdkit.org/docs/">RDKit</a> <a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2024.09)"><code class="xref py py-class docutils literal notranslate"><span class="pre">rdkit.Chem.rdchem.Mol</span></code></a> with
+<p>Read coordinates data from an <a class="reference external" href="https://www.rdkit.org/docs/">RDKit</a>
+<a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2025.03)"><code class="xref py py-class docutils literal notranslate"><span class="pre">rdkit.Chem.rdchem.Mol</span></code></a> with
 <a class="reference internal" href="#MDAnalysis.converters.RDKit.RDKitReader" title="MDAnalysis.converters.RDKit.RDKitReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">RDKitReader</span></code></a> into an MDAnalysis Universe. Convert it back to a
-<a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2024.09)"><code class="xref py py-class docutils literal notranslate"><span class="pre">rdkit.Chem.rdchem.Mol</span></code></a> with <a class="reference internal" href="#MDAnalysis.converters.RDKit.RDKitConverter" title="MDAnalysis.converters.RDKit.RDKitConverter"><code class="xref py py-class docutils literal notranslate"><span class="pre">RDKitConverter</span></code></a>.</p>
+<a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2025.03)"><code class="xref py py-class docutils literal notranslate"><span class="pre">rdkit.Chem.rdchem.Mol</span></code></a> with <a class="reference internal" href="#MDAnalysis.converters.RDKit.RDKitConverter" title="MDAnalysis.converters.RDKit.RDKitConverter"><code class="xref py py-class docutils literal notranslate"><span class="pre">RDKitConverter</span></code></a>.</p>
 <p class="rubric">Example</p>
 <p>To read an RDKit molecule and then convert the AtomGroup back to an RDKit
 molecule:</p>
@@ -529,6 +534,24 @@ converter are expected in future releases of MDAnalysis.
 Please see <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/3339">Issue #3339</a> and the <a class="reference external" href="https://github.com/MDAnalysis/RDKitConverter-benchmark">RDKitConverter benchmark</a> for more
 details.</p>
 </div>
+<p>Instead of using the default bond-order and charge inferring algorithm that
+relies on the topology alone and the presence of explicit hydrogen atoms, you
+can also use alternative builtin algorithms (see the
+<a class="reference internal" href="#module-MDAnalysis.converters.RDKitInferring" title="MDAnalysis.converters.RDKitInferring"><code class="xref py py-mod docutils literal notranslate"><span class="pre">RDKitInferring</span></code></a> module) or even your own function
+to modify the RDKit molecule:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">template</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;CC(=O)Oc1ccccc1C(=O)O&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">inferrer</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">converters</span><span class="o">.</span><span class="n">RDKitInferring</span><span class="o">.</span><span class="n">TemplateInferrer</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">template</span><span class="o">=</span><span class="n">template</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">convert_to</span><span class="o">.</span><span class="n">rdkit</span><span class="p">(</span><span class="n">inferrer</span><span class="o">=</span><span class="n">inferrer</span><span class="p">)</span>
+<span class="go">&lt;rdkit.Chem.rdchem.Mol at 0x7f70ee6f3ca0&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">dummy_inferrer</span><span class="p">(</span><span class="n">mol</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="c1"># assign bond orders and do any other modification here</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="n">mol</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">convert_to</span><span class="o">.</span><span class="n">rdkit</span><span class="p">(</span><span class="n">inferrer</span><span class="o">=</span><span class="n">dummy_inferrer</span><span class="p">)</span>
+<span class="go">&lt;rdkit.Chem.rdchem.Mol at 0x7f70ee6f2b90&gt;</span>
+</pre></div>
+</div>
 <section id="id1">
 <h2><span class="section-number">8.4.1. </span>Classes<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
 <dl class="py class">
@@ -543,7 +566,7 @@ Each conformer in the original RDKit molecule will be read as a frame
 in the resulting universe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2024.09)"><em>rdkit.Chem.rdchem.Mol</em></a>) – RDKit molecule</p>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2025.03)"><em>rdkit.Chem.rdchem.Mol</em></a>) – RDKit molecule</p>
 </dd>
 </dl>
 <dl class="py attribute">
@@ -560,16 +583,16 @@ in the resulting universe.</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.converters.RDKit.</span></span><span class="sig-name descname"><span class="pre">RDKitConverter</span></span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKit.html#RDKitConverter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKit.RDKitConverter" title="Link to this definition"></a></dt>
 <dd><p>Convert MDAnalysis <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> or
 <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> to RDKit
-<a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2024.09)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mol</span></code></a></p>
+<a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2025.03)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mol</span></code></a></p>
 <p>MDanalysis attributes are stored in each RDKit
-<a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Atom" title="(in The RDKit v2024.09)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a> of the resulting molecule in two different
+<a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Atom" title="(in The RDKit v2025.03)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a> of the resulting molecule in two different
 ways:</p>
 <ul class="simple">
-<li><p>in an <a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.AtomPDBResidueInfo" title="(in The RDKit v2024.09)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomPDBResidueInfo</span></code></a> object available
-through the <a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Atom.GetMonomerInfo" title="(in The RDKit v2024.09)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">GetMonomerInfo()</span></code></a> method if it’s
+<li><p>in an <a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.AtomPDBResidueInfo" title="(in The RDKit v2025.03)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomPDBResidueInfo</span></code></a> object available
+through the <a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Atom.GetMonomerInfo" title="(in The RDKit v2025.03)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">GetMonomerInfo()</span></code></a> method if it’s
 an attribute that is typically found in a PDB file,</p></li>
 <li><p>directly as an atom property available through the
-<a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Atom.GetProp" title="(in The RDKit v2024.09)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">GetProp()</span></code></a> methods for the others.</p></li>
+<a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Atom.GetProp" title="(in The RDKit v2025.03)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">GetProp()</span></code></a> methods for the others.</p></li>
 </ul>
 <p>Supported attributes:</p>
 <table class="docutils align-default">
@@ -649,8 +672,20 @@ attribute to be present in the topology, else it will fail.</p>
 <p>It also requires the <cite>bonds</cite> attribute, although they will be automatically
 guessed if not present.</p>
 <p>Hydrogens should be explicit in the topology file. If this is not the case,
-use the parameter <code class="docutils literal notranslate"><span class="pre">NoImplicit=False</span></code> when using the converter to allow
-implicit hydrogens and disable inferring bond orders and charges.</p>
+use the parameter <code class="docutils literal notranslate"><span class="pre">implicit_hydrogens=True</span></code> when using the converter to
+allow implicit hydrogens, and <code class="docutils literal notranslate"><span class="pre">inferrer=None</span></code> to disable inferring bond
+orders and charges. You can also pass your own callable function to
+<code class="docutils literal notranslate"><span class="pre">inferrer</span></code> to assign bond orders and charges as you see fit:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">rdkit.Chem.AllChem</span><span class="w"> </span><span class="kn">import</span> <span class="n">AssignBondOrdersFromTemplate</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">template</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;NC(Cc1ccccc1)C(=O)O&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">infer_from_template</span><span class="p">(</span><span class="n">mol</span><span class="p">:</span> <span class="n">Chem</span><span class="o">.</span><span class="n">Mol</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Chem</span><span class="o">.</span><span class="n">Mol</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="n">AssignBondOrdersFromTemplate</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">mol</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mol</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">convert_to</span><span class="o">.</span><span class="n">rdkit</span><span class="p">(</span><span class="n">inferrer</span><span class="o">=</span><span class="n">infer_from_template</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that all builtin inferrer functions can be found in the
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">RDKitInferring</span></code> module.</p>
 <p>Since one of the main use case of the converter is converting trajectories
 and not just a topology, creating a new molecule from scratch for every
 frame would be too slow so the converter uses a caching system. The cache
@@ -658,8 +693,8 @@ only stores the 2 most recent AtomGroups that were converted, and is
 sensitive to the arguments that were passed to the converter. The number of
 objects cached can be changed with the function
 <code class="xref py py-func docutils literal notranslate"><span class="pre">set_converter_cache_size()</span></code>. However, <code class="docutils literal notranslate"><span class="pre">ag.convert_to(&quot;RDKIT&quot;)</span></code>
-followed by <code class="docutils literal notranslate"><span class="pre">ag.convert_to(&quot;RDKIT&quot;,</span> <span class="pre">NoImplicit=False)</span></code> will not use the
-cache since the arguments given are different. You can pass a
+followed by <code class="docutils literal notranslate"><span class="pre">ag.convert_to(&quot;RDKIT&quot;,</span> <span class="pre">implicit_hydrogens=False)</span></code> will not
+use the cache since the arguments given are different. You can pass a
 <code class="docutils literal notranslate"><span class="pre">cache=False</span></code> argument to the converter to bypass the caching system.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">_MDAnalysis_index</span></code> property of the resulting molecule corresponds
 to the index of the specific <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>
@@ -670,8 +705,8 @@ please refer to the following RDKit UGM presentation:</p>
 <li><p><a class="reference external" href="https://youtu.be/5b5wYmK4URU">Video (4:55 to 8:05)</a></p></li>
 <li><p><a class="reference external" href="https://github.com/rdkit/UGM_2020/blob/master/Presentations/C%C3%A9dricBouysset_From_RDKit_to_the_Universe.pdf">Slides</a></p></li>
 </ul>
-<p>There are some molecules containing specific patterns that the converter
-cannot currently tackle correctly. See
+<p>There are some molecules containing specific patterns that the default
+inferrer cannot currently tackle correctly. See
 <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/3339">Issue #3339</a> for
 more info.</p>
 <div class="versionadded">
@@ -684,24 +719,45 @@ now follow the same order as in the AtomGroup. The output of
 files while the original name is still available through
 <code class="docutils literal notranslate"><span class="pre">atom.GetProp(&quot;_MDAnalysis_name&quot;)</span></code></p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.10.0: </span>Added <code class="docutils literal notranslate"><span class="pre">inferrer</span></code> to specify a callable that can transform the
+molecule (this operation is cached).</p>
+</div>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 2.10.0: </span>Deprecated <code class="docutils literal notranslate"><span class="pre">max_iter</span></code> (moved to the inferrer class
+<a class="reference internal" href="#MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer" title="MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysisInferrer</span></code></a>) and
+deprecated <code class="docutils literal notranslate"><span class="pre">NoImplicit</span></code> in favor of <code class="docutils literal notranslate"><span class="pre">implicit_hydrogens</span></code>.</p>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.converters.RDKit.RDKitConverter.convert">
-<span class="sig-name descname"><span class="pre">convert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">NoImplicit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKit.html#RDKitConverter.convert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKit.RDKitConverter.convert" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">convert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">implicit_hydrogens</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inferrer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">MDAnalysisInferrer(max_iter=200,</span> <span class="pre">sanitize=True)</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKit.html#RDKitConverter.convert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKit.RDKitConverter.convert" title="Link to this definition"></a></dt>
 <dd><p>Write selection at current trajectory frame to
-<a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2024.09)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mol</span></code></a>.</p>
+<a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2025.03)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mol</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>obj</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> or <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>)</p></li>
+<li><p><strong>obj</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> or) – <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a></p></li>
 <li><p><strong>cache</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Use a cached copy of the molecule’s topology when available. To be
 used, the cached molecule and the new one have to be made from the
 same AtomGroup selection and with the same arguments passed
 to the converter</p></li>
-<li><p><strong>NoImplicit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Prevent adding hydrogens to the molecule</p></li>
-<li><p><strong>max_iter</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Maximum number of iterations to standardize conjugated systems.
-See <a class="reference internal" href="#MDAnalysis.converters.RDKit._rebuild_conjugated_bonds" title="MDAnalysis.converters.RDKit._rebuild_conjugated_bonds"><code class="xref py py-func docutils literal notranslate"><span class="pre">_rebuild_conjugated_bonds()</span></code></a></p></li>
+<li><p><strong>inferrer</strong> (<em>Optional</em><em>[</em><em>Callable</em><em>[</em><em>[</em><em>Chem.Mol</em><em>]</em><em>, </em><em>Chem.Mol</em><em>]</em><em>]</em>) – A callable to infer bond orders and charges for the RDKit molecule
+created by the converter. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, inferring is skipped.</p></li>
+<li><p><strong>implicit_hydrogens</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Whether to allow implicit hydrogens on the molecule or not.</p></li>
 <li><p><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Force the conversion when no hydrogens were detected but
-<code class="docutils literal notranslate"><span class="pre">NoImplicit=True</span></code>. Useful for inorganic molecules mostly.</p></li>
+<code class="docutils literal notranslate"><span class="pre">inferrer</span></code> is not <code class="docutils literal notranslate"><span class="pre">None</span></code>. Useful for inorganic molecules
+mostly.</p></li>
+<li><p><strong>NoImplicit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – <p>Opposite of <code class="docutils literal notranslate"><span class="pre">implicit_hydrogens</span></code>.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 2.10.0: </span>Use <code class="docutils literal notranslate"><span class="pre">implicit_hydrogens</span></code> instead (with an opposite value).</p>
+</div>
+</p></li>
+<li><p><strong>max_iter</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – <p>Maximum number of iterations to standardize conjugated systems.
+See <a class="reference internal" href="#MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer._rebuild_conjugated_bonds" title="MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer._rebuild_conjugated_bonds"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_rebuild_conjugated_bonds()</span></code></a>.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 2.10.0: </span>Use <code class="docutils literal notranslate"><span class="pre">inferrer=MDAnalysisInferrer(max_iter=...)</span></code> instead.</p>
+</div>
+</p></li>
 </ul>
 </dd>
 </dl>
@@ -716,51 +772,229 @@ See <a class="reference internal" href="#MDAnalysis.converters.RDKit._rebuild_co
 
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="MDAnalysis.converters.RDKit._infer_bo_and_charges">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.converters.RDKit.</span></span><span class="sig-name descname"><span class="pre">_infer_bo_and_charges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKit.html#_infer_bo_and_charges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKit._infer_bo_and_charges" title="Link to this definition"></a></dt>
-<dd><p>Infer bond orders and formal charges from a molecule.</p>
-<p>Since most MD topology files don’t explicitly retain information on bond
-orders or charges, it has to be guessed from the topology. This is done by
-looping over each atom and comparing its expected valence to the current
-valence to get the Number of Unpaired Electrons (NUE).
-If an atom has a negative NUE, it needs a positive formal charge (-NUE).
-If two neighbouring atoms have UEs, the bond between them most
-likely has to be increased by the value of the smallest NUE.
-If after this process, an atom still has UEs, it needs a negative formal
-charge of -NUE.</p>
+</section>
+</section>
+<section id="rdkit-bond-order-inferring-mdanalysis-converters-rdkitinferring">
+<span id="module-MDAnalysis.converters.RDKitInferring"></span><h1><span class="section-number">8.5. </span>RDKit bond order inferring — <a class="reference internal" href="#module-MDAnalysis.converters.RDKitInferring" title="MDAnalysis.converters.RDKitInferring"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters.RDKitInferring</span></code></a><a class="headerlink" href="#rdkit-bond-order-inferring-mdanalysis-converters-rdkitinferring" title="Link to this heading"></a></h1>
+<p>Bond order and formal charge inferring for RDKit molecules. Because most MD
+file formats don’t preserve bond order information directly (or formal charges
+to some extent), the classes provided here give users different options to
+either provide or infer this information to the RDKit molecule constructed from
+the topology. Having bond orders and formal charges properly defined is a
+requirement for almost all cheminformatics-related task, hence the different
+approaches proposed here to cover most use cases. You can also defined your own
+function if need be, see the <a class="reference internal" href="#module-MDAnalysis.converters.RDKit" title="MDAnalysis.converters.RDKit"><code class="xref py py-mod docutils literal notranslate"><span class="pre">RDKit</span></code></a> module for an
+example.</p>
+<p>These classes are meant to be passed directly to the RDKit converter:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="s2">&quot;aspirin.pdb&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">template</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;CC(=O)Oc1ccccc1C(=O)O&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">inferrer</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">converters</span><span class="o">.</span><span class="n">RDKitInferring</span><span class="o">.</span><span class="n">TemplateInferrer</span><span class="p">(</span><span class="n">template</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rdkit_mol</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">convert_to</span><span class="o">.</span><span class="n">rdkit</span><span class="p">(</span><span class="n">inferrer</span><span class="o">=</span><span class="n">inferrer</span><span class="p">)</span>
+</pre></div>
+</div>
+<section id="id2">
+<h2><span class="section-number">8.5.1. </span>Classes<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.converters.RDKitInferring.</span></span><span class="sig-name descname"><span class="pre">MDAnalysisInferrer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_iter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sanitize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKitInferring.html#MDAnalysisInferrer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer" title="Link to this definition"></a></dt>
+<dd><p>Bond order and formal charge inferring as originally implemented for
+the RDKit converter. This algorithm only relies on the topology with
+explicit hydrogens to assign bond orders and formal charges.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer.max_iter">
+<span class="sig-name descname"><span class="pre">max_iter</span></span><a class="headerlink" href="#MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer.max_iter" title="Link to this definition"></a></dt>
+<dd><p>Maximum number of iterations to standardize conjugated systems.
+See <a class="reference internal" href="#MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer._rebuild_conjugated_bonds" title="MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer._rebuild_conjugated_bonds"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_rebuild_conjugated_bonds()</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer.sanitize">
+<span class="sig-name descname"><span class="pre">sanitize</span></span><a class="headerlink" href="#MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer.sanitize" title="Link to this definition"></a></dt>
+<dd><p>Whether to sanitize the molecule or not.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer.MONATOMIC_CATION_CHARGES">
+<span class="sig-name descname"><span class="pre">MONATOMIC_CATION_CHARGES</span></span><a class="headerlink" href="#MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer.MONATOMIC_CATION_CHARGES" title="Link to this definition"></a></dt>
+<dd><p>Charges that should be assigned to monatomic cations. Maps atomic
+number to  their formal charge. Anion charges are directly handled by
+the code using the typical valence of the atom.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ClassVar[Dict[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer.STANDARDIZATION_REACTIONS">
+<span class="sig-name descname"><span class="pre">STANDARDIZATION_REACTIONS</span></span><a class="headerlink" href="#MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer.STANDARDIZATION_REACTIONS" title="Link to this definition"></a></dt>
+<dd><p>Reactions uses by <a class="reference internal" href="#MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer._standardize_patterns" title="MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer._standardize_patterns"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_standardize_patterns()</span></code></a> to
+fix challenging cases must have single reactant and product, and
+cannot add any atom.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ClassVar[List[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)">str</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Notes</p>
+<p>There are some molecules containing specific substructures that this
+inferrer cannot currently tackle correctly. See
+<a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/3339">Issue #3339</a> for
+more info.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.10.0.</span></p>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer._apply_reactions">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_apply_reactions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reactions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdChemReactions.html#rdkit.Chem.rdChemReactions.ChemicalReaction" title="(in The RDKit v2025.03)"><span class="pre">ChemicalReaction</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reactant</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2025.03)"><span class="pre">Mol</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKitInferring.html#MDAnalysisInferrer._apply_reactions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer._apply_reactions" title="Link to this definition"></a></dt>
+<dd><p>Applies a series of unimolecular reactions to a molecule. The
+reactions must not add any atom to the product. The molecule is
+modified inplace.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>mol</strong> (<a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.RWMol" title="(in The RDKit v2024.09)"><em>rdkit.Chem.rdchem.RWMol</em></a>) – The molecule is modified inplace and must have all hydrogens added</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reactions</strong> (<em>List</em><em>[</em><a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdChemReactions.html#rdkit.Chem.rdChemReactions.ChemicalReaction" title="(in The RDKit v2025.03)"><em>rdkit.Chem.rdChemReactions.ChemicalReaction</em></a><em>]</em>) – Reactions from SMARTS. Each reaction is applied until no more
+transformations can be made.</p></li>
+<li><p><strong>reactant</strong> (<a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2025.03)"><em>rdkit.Chem.rdchem.Mol</em></a>) – The molecule to transform inplace</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer._atom_sorter">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_atom_sorter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atom</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Atom" title="(in The RDKit v2025.03)"><span class="pre">Atom</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.13)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKitInferring.html#MDAnalysisInferrer._atom_sorter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer._atom_sorter" title="Link to this definition"></a></dt>
+<dd><p>Sorts atoms in the molecule in a way that makes it easy for the bond
+order and charge infering code to get the correct state on the first
+try. Currently sorts by number of unpaired electrons, then by number of
+heavy atom neighbors (i.e. atoms at the edge first).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer._get_nb_unpaired_electrons">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_get_nb_unpaired_electrons</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atom</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Atom" title="(in The RDKit v2025.03)"><span class="pre">Atom</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKitInferring.html#MDAnalysisInferrer._get_nb_unpaired_electrons"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer._get_nb_unpaired_electrons" title="Link to this definition"></a></dt>
+<dd><p>Calculate the number of unpaired electrons (NUE) of an atom</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>atom</strong> (<a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Atom" title="(in The RDKit v2025.03)"><em>rdkit.Chem.rdchem.Atom</em></a>) – The atom for which the NUE will be computed</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>nue</strong> – The NUE for each possible valence of the atom</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)">int</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer._infer_bo_and_charges">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_infer_bo_and_charges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2025.03)"><span class="pre">Mol</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKitInferring.html#MDAnalysisInferrer._infer_bo_and_charges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer._infer_bo_and_charges" title="Link to this definition"></a></dt>
+<dd><p>Infer bond orders and formal charges from a molecule.</p>
+<p>Since most MD topology files don’t explicitly retain information on
+bond orders or charges, it has to be guessed from the topology. This
+is done by looping over each atom and comparing its expected valence
+to the current valence to get the Number of Unpaired Electrons (NUE).
+If an atom has a negative NUE, it needs a positive formal charge
+(-NUE). If two neighbouring atoms have UEs, the bond between them most
+likely has to be increased by the value of the smallest NUE.
+If after this process, an atom still has UEs, it needs a negative
+formal charge of -NUE.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mol</strong> (<a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.RWMol" title="(in The RDKit v2025.03)"><em>rdkit.Chem.rdchem.RWMol</em></a>) – The molecule is modified inplace and must have all hydrogens added</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
 <p>This algorithm is order dependant. For example, for a carboxylate group
-R-C(-O)-O the first oxygen read will receive a double bond and the other
-one will be charged. It will also affect more complex conjugated systems.</p>
+<code class="docutils literal notranslate"><span class="pre">R-C(-O)-O</span></code> the first oxygen read will receive a double bond and the
+other one will be charged. It will also affect more complex conjugated
+systems.</p>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="MDAnalysis.converters.RDKit._standardize_patterns">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.converters.RDKit.</span></span><span class="sig-name descname"><span class="pre">_standardize_patterns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKit.html#_standardize_patterns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKit._standardize_patterns" title="Link to this definition"></a></dt>
-<dd><p>Standardizes functional groups</p>
-<p>Uses <a class="reference internal" href="#MDAnalysis.converters.RDKit._rebuild_conjugated_bonds" title="MDAnalysis.converters.RDKit._rebuild_conjugated_bonds"><code class="xref py py-func docutils literal notranslate"><span class="pre">_rebuild_conjugated_bonds()</span></code></a> to standardize conjugated systems,
-and SMARTS reactions for other functional groups.
-Due to the way reactions work, we first have to split the molecule by
-fragments. Then, for each fragment, we apply the standardization reactions.
-Finally, the fragments are recombined.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer._rebuild_conjugated_bonds">
+<span class="sig-name descname"><span class="pre">_rebuild_conjugated_bonds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2025.03)"><span class="pre">Mol</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKitInferring.html#MDAnalysisInferrer._rebuild_conjugated_bonds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer._rebuild_conjugated_bonds" title="Link to this definition"></a></dt>
+<dd><p>Rebuild conjugated bonds without negatively charged atoms at the
+beginning and end of the conjugated system</p>
+<p>Depending on the order in which atoms are read during the conversion,
+the <a class="reference internal" href="#MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer._infer_bo_and_charges" title="MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer._infer_bo_and_charges"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_infer_bo_and_charges()</span></code></a> function might
+write conjugated systems with a double bond less and both edges of the
+system as anions instead of the usual alternating single and double
+bonds. This function corrects this behaviour by using an iterative
+procedure.
+The problematic molecules always follow the same pattern:
+<code class="docutils literal notranslate"><span class="pre">anion[-*=*]n-anion</span></code> instead of <code class="docutils literal notranslate"><span class="pre">*=[*-*=]n*</span></code>, where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the
+number of successive single and double bonds. The goal of the
+iterative procedure is to make <code class="docutils literal notranslate"><span class="pre">n</span></code> as small as possible by
+consecutively transforming <code class="docutils literal notranslate"><span class="pre">anion-*=*</span></code> into <code class="docutils literal notranslate"><span class="pre">*=*-anion</span></code> until it
+reaches the smallest pattern with <code class="docutils literal notranslate"><span class="pre">n=1</span></code>. This last pattern is then
+transformed <code class="docutils literal notranslate"><span class="pre">anion-*=*-anion</span></code> to <code class="docutils literal notranslate"><span class="pre">*=*-*=*</span></code>.
+Since <code class="docutils literal notranslate"><span class="pre">anion-*=*</span></code> is the same as <code class="docutils literal notranslate"><span class="pre">*=*-anion</span></code> in terms of SMARTS,
+we can control that we don’t transform the same triplet of atoms back
+and forth by adding their indices to a list.
+This function also handles conjugated systems with triple bonds.
+The molecule needs to be kekulized first to also cover systems
+with aromatic rings.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>mol</strong> (<a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.RWMol" title="(in The RDKit v2024.09)"><em>rdkit.Chem.rdchem.RWMol</em></a>) – The molecule to standardize</p></li>
-<li><p><strong>max_iter</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Maximum number of iterations to standardize conjugated systems</p></li>
+<li><p><strong>mol</strong> (<a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.RWMol" title="(in The RDKit v2025.03)"><em>rdkit.Chem.rdchem.RWMol</em></a>) – The molecule to transform, modified inplace</p></li>
+<li><p><strong>max_iter</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>]</em>) – <p>Maximum number of iterations to standardize conjugated systems.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 2.10.0: </span>Will be removed in 3.0, use
+<code class="docutils literal notranslate"><span class="pre">inferrer=MDAnalysisInferrer(max_iter=...)</span></code> instead.</p>
+</div>
+</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The molecule is modified inplace</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer._standardize_patterns">
+<span class="sig-name descname"><span class="pre">_standardize_patterns</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2025.03)"><span class="pre">Mol</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2025.03)"><span class="pre">Mol</span></a></span></span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKitInferring.html#MDAnalysisInferrer._standardize_patterns"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer._standardize_patterns" title="Link to this definition"></a></dt>
+<dd><p>Standardizes functional groups</p>
+<p>Uses <a class="reference internal" href="#MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer._rebuild_conjugated_bonds" title="MDAnalysis.converters.RDKitInferring.MDAnalysisInferrer._rebuild_conjugated_bonds"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_rebuild_conjugated_bonds()</span></code></a> to
+standardize conjugated systems, and SMARTS reactions for other
+functional groups.
+Due to the way reactions work, we first have to split the molecule by
+fragments. Then, for each fragment, we apply the standardization
+reactions. Finally, the fragments are recombined.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mol</strong> (<a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.RWMol" title="(in The RDKit v2025.03)"><em>rdkit.Chem.rdchem.RWMol</em></a>) – The molecule to standardize</p></li>
+<li><p><strong>max_iter</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>]</em>) – <p>Maximum number of iterations to standardize conjugated systems.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 2.10.0: </span>Will be removed in 3.0, use
+<code class="docutils literal notranslate"><span class="pre">inferrer=MDAnalysisInferrer(max_iter=...)</span></code> instead.</p>
+</div>
+</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>mol</strong> – The standardized molecule</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2024.09)">rdkit.Chem.rdchem.Mol</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2025.03)">rdkit.Chem.rdchem.Mol</a></p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
@@ -809,39 +1043,89 @@ Finally, the fragments are recombined.</p>
 </table>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="MDAnalysis.converters.RDKit._rebuild_conjugated_bonds">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.converters.RDKit.</span></span><span class="sig-name descname"><span class="pre">_rebuild_conjugated_bonds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKit.html#_rebuild_conjugated_bonds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKit._rebuild_conjugated_bonds" title="Link to this definition"></a></dt>
-<dd><p>Rebuild conjugated bonds without negatively charged atoms at the
-beginning and end of the conjugated system</p>
-<p>Depending on the order in which atoms are read during the conversion, the
-<a class="reference internal" href="#MDAnalysis.converters.RDKit._infer_bo_and_charges" title="MDAnalysis.converters.RDKit._infer_bo_and_charges"><code class="xref py py-func docutils literal notranslate"><span class="pre">_infer_bo_and_charges()</span></code></a> function might write conjugated systems with
-a double bond less and both edges of the system as anions instead of the
-usual alternating single and double bonds. This function corrects this
-behaviour by using an iterative procedure.
-The problematic molecules always follow the same pattern:
-<code class="docutils literal notranslate"><span class="pre">anion[-*=*]n-anion</span></code> instead of <code class="docutils literal notranslate"><span class="pre">*=[*-*=]n*</span></code>, where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number
-of successive single and double bonds. The goal of the iterative procedure
-is to make <code class="docutils literal notranslate"><span class="pre">n</span></code> as small as possible by consecutively transforming
-<code class="docutils literal notranslate"><span class="pre">anion-*=*</span></code> into <code class="docutils literal notranslate"><span class="pre">*=*-anion</span></code> until it reaches the smallest pattern with
-<code class="docutils literal notranslate"><span class="pre">n=1</span></code>. This last pattern is then transformed from <code class="docutils literal notranslate"><span class="pre">anion-*=*-anion</span></code> to
-<code class="docutils literal notranslate"><span class="pre">*=*-*=*</span></code>.
-Since <code class="docutils literal notranslate"><span class="pre">anion-*=*</span></code> is the same as <code class="docutils literal notranslate"><span class="pre">*=*-anion</span></code> in terms of SMARTS, we can
-control that we don’t transform the same triplet of atoms back and forth by
-adding their indices to a list.
-This function also handles conjugated systems with triple bonds.
-The molecule needs to be kekulized first to also cover systems
-with aromatic rings.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="MDAnalysis.converters.RDKitInferring.TemplateInferrer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.converters.RDKitInferring.</span></span><span class="sig-name descname"><span class="pre">TemplateInferrer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">template</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2025.03)"><span class="pre">Mol</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">adjust_hydrogens</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKitInferring.html#TemplateInferrer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKitInferring.TemplateInferrer" title="Link to this definition"></a></dt>
+<dd><p>Infer bond orders and charges by matching the molecule with a template
+molecule containing bond orders and charges.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.converters.RDKitInferring.TemplateInferrer.template">
+<span class="sig-name descname"><span class="pre">template</span></span><a class="headerlink" href="#MDAnalysis.converters.RDKitInferring.TemplateInferrer.template" title="Link to this definition"></a></dt>
+<dd><p>Molecule containing the bond orders and charges.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2025.03)">rdkit.Chem.rdchem.Mol</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.converters.RDKitInferring.TemplateInferrer.adjust_hydrogens">
+<span class="sig-name descname"><span class="pre">adjust_hydrogens</span></span><a class="headerlink" href="#MDAnalysis.converters.RDKitInferring.TemplateInferrer.adjust_hydrogens" title="Link to this definition"></a></dt>
+<dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, temporarily removes hydrogens from the molecule to
+assign bond orders and charges from the template, then adds them
+back. Useful to avoid adding explicit hydrogens on the template which
+can prevent RDKit from finding a match between the template and the
+molecule. Setting this to <code class="docutils literal notranslate"><span class="pre">False</span></code> can be useful to speed things up
+for inorganic molecules that don’t have any hydrogens.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)">bool</a>, default = True</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">..</span> <span class="pre">versionadded::</span> <span class="pre">2.10.0</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.converters.RDKitInferring.TemplateInferrer.assign_from_template_with_adjusted_hydrogens">
+<span class="sig-name descname"><span class="pre">assign_from_template_with_adjusted_hydrogens</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2025.03)"><span class="pre">Mol</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'_MDAnalysis_index'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2025.03)"><span class="pre">Mol</span></a></span></span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKitInferring.html#TemplateInferrer.assign_from_template_with_adjusted_hydrogens"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKitInferring.TemplateInferrer.assign_from_template_with_adjusted_hydrogens" title="Link to this definition"></a></dt>
+<dd><p>Temporarily removes hydrogens from the molecule before assigning
+bond orders and charges from the template, then adds them back.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>mol</strong> (<a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.RWMol" title="(in The RDKit v2024.09)"><em>rdkit.Chem.rdchem.RWMol</em></a>) – The molecule to transform, modified inplace</p></li>
-<li><p><strong>max_iter</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Maximum number of iterations performed by the function</p></li>
+<li><p><strong>mol</strong> (<a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2025.03)"><em>rdkit.Chem.rdchem.Mol</em></a>) – Molecule to assign bond orders and charges to.</p></li>
+<li><p><strong>index_field</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>, </em><em>default = &quot;_MDAnalysis_index&quot;</em>) – Atom property corresponding to a unique integer that can used to
+put back the hydrogen atoms that were removed before matching,
+and sort them back to the original order. Must be accessible
+through <code class="docutils literal notranslate"><span class="pre">atom.GetIntProp</span></code>.</p></li>
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="MDAnalysis.converters.RDKitInferring.RDKitInferrer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.converters.RDKitInferring.</span></span><span class="sig-name descname"><span class="pre">RDKitInferrer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">charge</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKitInferring.html#RDKitInferrer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKitInferring.RDKitInferrer" title="Link to this definition"></a></dt>
+<dd><p>Uses RDKit’s <a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdDetermineBonds.html#rdkit.Chem.rdDetermineBonds.DetermineBondOrders" title="(in The RDKit v2025.03)"><code class="xref py py-func docutils literal notranslate"><span class="pre">DetermineBondOrders()</span></code></a>
+to infer bond orders and formal charges. This is the same algorithm used
+by the <span class="xref std std-ref">xyz2mol</span> package.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.10.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MDAnalysis.converters.RDKitInferring.sanitize_mol">
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.converters.RDKitInferring.</span></span><span class="sig-name descname"><span class="pre">sanitize_mol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2025.03)"><span class="pre">Mol</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKitInferring.html#sanitize_mol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKitInferring.sanitize_mol" title="Link to this definition"></a></dt>
+<dd><p>Sanitizes the molecule.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MDAnalysis.converters.RDKitInferring.reorder_atoms">
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.converters.RDKitInferring.</span></span><span class="sig-name descname"><span class="pre">reorder_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2025.03)"><span class="pre">Mol</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'_MDAnalysis_index'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2025.03)"><span class="pre">Mol</span></a></span></span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKitInferring.html#reorder_atoms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.converters.RDKitInferring.reorder_atoms" title="Link to this definition"></a></dt>
+<dd><p>Reorder atoms based on the given field. Defaults to sorting in the same
+order as the input AtomGroup.</p>
 <p class="rubric">Notes</p>
-<p>The molecule is modified inplace</p>
+<p>If the field is not found on the molecule, skips reordering.</p>
 </dd></dl>
 
 </section>
@@ -852,13 +1136,13 @@ with aromatic rings.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="ParmEd.html" class="btn btn-neutral float-left" title="8.1. ParmEd topology parser — MDAnalysis.converters.ParmEdParser" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="OpenMM.html" class="btn btn-neutral float-right" title="8.5. OpenMM topology parser MDAnalysis.converters.OpenMMParser" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="OpenMM.html" class="btn btn-neutral float-right" title="8.6. OpenMM topology parser MDAnalysis.converters.OpenMMParser" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2025, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Matthew Davies, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Alia Lescoulie, Zhenbo Li, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Kurt McKee, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Laksh Krishna Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Brigitta Sipőcz, Paul Smith, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Joshua Raphael Uy, Heet Vekariya, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Tanish Yelgoe, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Jia-Xin Zhu, Yuxuan Zhuang, Fabian Zills, and Oliver Beckstein.</p>
+    <p>&#169; Copyright 2005-2025, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Pavel Buslaev, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Matthew Davies, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Abdulrahman Elbanna, Gareth Elliott, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, BHM-Bob G, Sirsha Ganguly, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Alia Lescoulie, Zhenbo Li, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Kurt McKee, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Debasish Mohanty, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Namir Oues, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, James Rowe, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marc Schuh, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Laksh Krishna Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Brigitta Sipőcz, Paul Smith, Tulga-Erdene Sodjargal, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Joshua Raphael Uy, Heet Vekariya, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Lexi Xu, Zhuyi Xue, Mingyi Xue, Alexander Yang, Yu-Yuan (Stuart) Yang, Tanish Yelgoe, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Jia-Xin Zhu, Yuxuan Zhuang, Fabian Zills, and Oliver Beckstein.</p>
   </div>
 
   

@@ -84,9 +84,9 @@
     <!-- <p class="caption" role="heading"></p> -->
     <ul>
         
-        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        <li class="toctree-l1"><a class="reference internal" href="https://mdanalysis.org">MDAnalysis</a></li>
         
-        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        <li class="toctree-l1"><a class="reference internal" href="https://userguide.mdanalysis.org">User guide</a></li>
         
         <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
         
@@ -94,7 +94,7 @@
     
         <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview of MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
@@ -205,15 +205,23 @@
 <span class="sd">the normal MDAnalysis citations.</span>
 
 <span class="sd">.. warning::</span>
-<span class="sd">    To correctly compute the MSD using this analysis module, you must supply</span>
-<span class="sd">    coordinates in the **unwrapped** convention. That is, when atoms pass</span>
-<span class="sd">    the periodic boundary, they must not be **wrapped** back into the primary</span>
-<span class="sd">    simulation cell. MDAnalysis does not currently offer this functionality in</span>
-<span class="sd">    the ``MDAnalysis.transformations`` API despite having functions with</span>
-<span class="sd">    similar names. We plan to implement the appropriate transformations in the</span>
-<span class="sd">    future. In the meantime, various simulation packages provide utilities to</span>
-<span class="sd">    convert coordinates to the unwrapped convention. In GROMACS for example,</span>
-<span class="sd">    this can be done using ``gmx trjconv`` with the ``-pbc nojump`` flag.</span>
+<span class="sd">   To correctly compute the MSD using this analysis module, you must supply</span>
+<span class="sd">   coordinates in the **unwrapped** convention, also known as **no-jump**. </span>
+<span class="sd">   That is, when atoms pass the periodic boundary, they must not be wrapped </span>
+<span class="sd">   back into the primary simulation cell.</span>
+<span class="sd">   </span>
+<span class="sd">   In MDAnalysis you can use the </span>
+<span class="sd">   :class:`~MDAnalysis.transformations.nojump.NoJump`</span>
+<span class="sd">   transformation. </span>
+<span class="sd">   </span>
+<span class="sd">   In GROMACS, for example, this can be done using `gmx trjconv`_ with the</span>
+<span class="sd">   ``-pbc nojump`` flag.</span>
+
+<span class="sd">.. _`gmx trjconv`: https://manual.gromacs.org/current/onlinehelp/gmx-trjconv.html</span>
+
+<span class="sd">.. SeeAlso::</span>
+<span class="sd">   :mod:`MDAnalysis.transformations.nojump`</span>
+
 
 <span class="sd">Computing an MSD</span>
 <span class="sd">----------------</span>
@@ -244,16 +252,14 @@
 <span class="sd">.. code-block:: python</span>
 
 <span class="sd">    msd =  MSD.results.timeseries</span>
+<span class="sd">    lagtimes = MSD.results.delta_t_values</span>
 
-<span class="sd">Visual inspection of the MSD is important, so let&#39;s take a look at it with a</span>
-<span class="sd"> simple plot.</span>
+<span class="sd">Visual inspection of the MSD is important, so let&#39;s take a look at it with a simple plot.</span>
 
 <span class="sd">.. code-block:: python</span>
 
 <span class="sd">    import matplotlib.pyplot as plt</span>
 <span class="sd">    nframes = MSD.n_frames</span>
-<span class="sd">    timestep = 1 # this needs to be the actual time between frames</span>
-<span class="sd">    lagtimes = np.arange(nframes)*timestep # make the lag-time axis</span>
 <span class="sd">    fig = plt.figure()</span>
 <span class="sd">    ax = plt.axes()</span>
 <span class="sd">    # plot the actual MSD</span>
@@ -314,8 +320,7 @@
 <span class="sd">    start_time = 20</span>
 <span class="sd">    start_index = int(start_time/timestep)</span>
 <span class="sd">    end_time = 60</span>
-<span class="sd">    linear_model = linregress(lagtimes[start_index:end_index],</span>
-<span class="sd">    				  		  msd[start_index:end_index])</span>
+<span class="sd">    linear_model = linregress(lagtimes[start_index:end_index], msd[start_index:end_index])</span>
 <span class="sd">    slope = linear_model.slope</span>
 <span class="sd">    error = linear_model.stderr</span>
 <span class="sd">    # dim_fac is 3 as we computed a 3D msd with &#39;xyz&#39;</span>
@@ -387,6 +392,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnalysisBase</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..core</span><span class="w"> </span><span class="kn">import</span> <span class="n">groups</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">collections</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.analysis.msd&quot;</span><span class="p">)</span>
 
@@ -425,15 +431,32 @@
 <span class="sd">        the MSD. Otherwise, use the simple &quot;windowed&quot; algorithm.</span>
 <span class="sd">        The tidynamics package is required for `fft=True`.</span>
 <span class="sd">        Defaults to ``True``.</span>
+<span class="sd">    non_linear : bool</span>
+<span class="sd">        If ``True``, calculates MSD for trajectory where frames are</span>
+<span class="sd">        non-linearly dumped. To use this set `fft=False`.</span>
+<span class="sd">        Defaults to ``False``.</span>
+
+<span class="sd">        .. versionadded:: 2.10.0</span>
+
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
 <span class="sd">    dim_fac : int</span>
 <span class="sd">        Dimensionality :math:`d` of the MSD.</span>
 <span class="sd">    results.timeseries : :class:`numpy.ndarray`</span>
-<span class="sd">        The averaged MSD over all the particles with respect to lag-time.</span>
+<span class="sd">        The averaged MSD over all the particles with respect to constant lag-time or</span>
+<span class="sd">        unique Δt intervals.</span>
 <span class="sd">    results.msds_by_particle : :class:`numpy.ndarray`</span>
-<span class="sd">        The MSD of each individual particle with respect to lag-time.</span>
+<span class="sd">        The MSD of each individual particle with respect to constant lag-time or</span>
+<span class="sd">        unique Δt intervals.</span>
+<span class="sd">            - for `non_linear=False`: a 2D array of shape (n_lagtimes, n_atoms)</span>
+<span class="sd">            - for `non_linear=True`: a 2D array of shape (n_delta_t_values, n_atoms)</span>
+<span class="sd">    results.delta_t_values : :class:`numpy.ndarray`</span>
+<span class="sd">        Array of unique Δt (time differences) at which time-averaged MSD values are</span>
+<span class="sd">        computed.</span>
+
+<span class="sd">        .. versionadded:: 2.10.0</span>
+
 <span class="sd">    ag : :class:`AtomGroup`</span>
 <span class="sd">        The :class:`AtomGroup` resulting from your selection</span>
 <span class="sd">    n_frames : int</span>
@@ -443,27 +466,23 @@
 
 
 <span class="sd">    .. versionadded:: 2.0.0</span>
+<span class="sd">    .. versionchanged:: 2.10.0</span>
+<span class="sd">       Added ability to calculate MSD from samples that are not linearly spaced with the</span>
+<span class="sd">       new `non_linear` keyword argument.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">msd_type</span><span class="o">=</span><span class="s2">&quot;xyz&quot;</span><span class="p">,</span> <span class="n">fft</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        u : Universe or AtomGroup</span>
-<span class="sd">            An MDAnalysis :class:`Universe` or :class:`AtomGroup`.</span>
-<span class="sd">        select : str</span>
-<span class="sd">            A selection string. Defaults to &quot;all&quot; in which case</span>
-<span class="sd">            all atoms are selected.</span>
-<span class="sd">        msd_type : {&#39;xyz&#39;, &#39;xy&#39;, &#39;yz&#39;, &#39;xz&#39;, &#39;x&#39;, &#39;y&#39;, &#39;z&#39;}</span>
-<span class="sd">            Desired dimensions to be included in the MSD.</span>
-<span class="sd">        fft : bool</span>
-<span class="sd">            If ``True``, uses a fast FFT based algorithm for computation of</span>
-<span class="sd">            the MSD. Otherwise, use the simple &quot;windowed&quot; algorithm.</span>
-<span class="sd">            The tidynamics package is required for `fft=True`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">u</span><span class="p">,</span>
+        <span class="n">select</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
+        <span class="n">msd_type</span><span class="o">=</span><span class="s2">&quot;xyz&quot;</span><span class="p">,</span>
+        <span class="n">fft</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">non_linear</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">groups</span><span class="o">.</span><span class="n">UpdatingAtomGroup</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="s2">&quot;UpdatingAtomGroups are not valid for MSD &quot;</span> <span class="s2">&quot;computation&quot;</span>
+                <span class="s2">&quot;UpdatingAtomGroups are not valid for MSD computation&quot;</span>
             <span class="p">)</span>
 
         <span class="nb">super</span><span class="p">(</span><span class="n">EinsteinMSD</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -473,6 +492,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">msd_type</span> <span class="o">=</span> <span class="n">msd_type</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parse_msd_type</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fft</span> <span class="o">=</span> <span class="n">fft</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">non_linear</span> <span class="o">=</span> <span class="n">non_linear</span>
 
         <span class="c1"># local</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">)</span>
@@ -482,6 +502,7 @@
         <span class="c1"># result</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">msds_by_particle</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">delta_t_values</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># self.n_frames only available here</span>
@@ -527,10 +548,13 @@
         <span class="p">]</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fft</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_conclude_fft</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_linear</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_conclude_non_linear</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_conclude_simple</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fft</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_conclude_fft</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_conclude_simple</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_conclude_simple</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculates the MSD via the simple &quot;windowed&quot; algorithm.&quot;&quot;&quot;</span>
@@ -541,6 +565,9 @@
             <span class="n">sqdist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">disp</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">msds_by_particle</span><span class="p">[</span><span class="n">lag</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">sqdist</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">msds_by_particle</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">delta_t_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">times</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_conclude_fft</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># with FFT, np.float64 bit prescision required.</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculates the MSD via the FCA fast correlation algorithm.&quot;&quot;&quot;</span>
@@ -564,7 +591,48 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">msds_by_particle</span><span class="p">[:,</span> <span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">tidynamics</span><span class="o">.</span><span class="n">msd</span><span class="p">(</span>
                 <span class="n">positions</span><span class="p">[:,</span> <span class="n">n</span><span class="p">,</span> <span class="p">:]</span>
             <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">msds_by_particle</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">msds_by_particle</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">delta_t_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">times</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_conclude_non_linear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">n_frames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span>
+        <span class="n">n_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_particles</span>
+        <span class="n">positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_position_array</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="c1"># Dictionary to collect MSDs: {Δt: [msd1, msd2, ...]}</span>
+        <span class="n">msd_dict</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="n">msds_by_particle_dict</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+
+        <span class="c1"># TODO: optimize the code</span>
+        <span class="c1"># Looping over all the frames as if the referenced gets shifted frame to frame</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_frames</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n_frames</span><span class="p">):</span>
+                <span class="n">delta_t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">times</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">times</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="c1"># Compute displacement and squared displacement</span>
+                <span class="n">disp</span> <span class="o">=</span> <span class="n">positions</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">positions</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">squared_disp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">disp</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">msd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">squared_disp</span><span class="p">)</span>
+                <span class="c1"># Store MSD under corresponding Δt</span>
+                <span class="n">msd_dict</span><span class="p">[</span><span class="n">delta_t</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msd</span><span class="p">)</span>
+                <span class="n">msds_by_particle_dict</span><span class="p">[</span><span class="n">delta_t</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">squared_disp</span><span class="p">)</span>
+
+        <span class="n">msd_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">msds_by_particle_dict</span><span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">)]</span>
+
+        <span class="c1"># For each delta_t, stacked all squared_disp arrays and averaging over axis=0 (time origins)</span>
+        <span class="n">delta_t_values</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">msd_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">avg_msds</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">msd_dict</span><span class="p">[</span><span class="n">dt</span><span class="p">])</span> <span class="k">for</span> <span class="n">dt</span> <span class="ow">in</span> <span class="n">delta_t_values</span><span class="p">]</span>
+        <span class="n">msds_by_particle_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">delta_t_values</span><span class="p">),</span> <span class="n">n_atoms</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">dt</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">delta_t_values</span><span class="p">):</span>
+            <span class="c1"># Stack list of arrays like -- (n_time_origins, n_atoms)</span>
+            <span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">msds_by_particle_dict</span><span class="p">[</span><span class="n">dt</span><span class="p">])</span>
+            <span class="n">msds_by_particle_array</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">avg_msds</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">delta_t_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">delta_t_values</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">msds_by_particle</span> <span class="o">=</span> <span class="n">msds_by_particle_array</span></div>
 
 </pre></div>
 
@@ -575,7 +643,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2025, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Matthew Davies, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Alia Lescoulie, Zhenbo Li, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Kurt McKee, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Laksh Krishna Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Brigitta Sipőcz, Paul Smith, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Joshua Raphael Uy, Heet Vekariya, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Tanish Yelgoe, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Jia-Xin Zhu, Yuxuan Zhuang, Fabian Zills, and Oliver Beckstein.</p>
+    <p>&#169; Copyright 2005-2025, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Pavel Buslaev, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Matthew Davies, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Abdulrahman Elbanna, Gareth Elliott, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, BHM-Bob G, Sirsha Ganguly, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Alia Lescoulie, Zhenbo Li, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Kurt McKee, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Debasish Mohanty, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Namir Oues, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, James Rowe, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marc Schuh, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Laksh Krishna Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Brigitta Sipőcz, Paul Smith, Tulga-Erdene Sodjargal, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Joshua Raphael Uy, Heet Vekariya, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Lexi Xu, Zhuyi Xue, Mingyi Xue, Alexander Yang, Yu-Yuan (Stuart) Yang, Tanish Yelgoe, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Jia-Xin Zhu, Yuxuan Zhuang, Fabian Zills, and Oliver Beckstein.</p>
   </div>
 
   

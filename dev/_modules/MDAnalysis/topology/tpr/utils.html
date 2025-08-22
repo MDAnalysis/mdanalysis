@@ -84,9 +84,9 @@
     <!-- <p class="caption" role="heading"></p> -->
     <ul>
         
-        <li class="toctree-l1"><a class="reference internal" href="http://mdanalysis.org">MDAnalysis</a></li>
+        <li class="toctree-l1"><a class="reference internal" href="https://mdanalysis.org">MDAnalysis</a></li>
         
-        <li class="toctree-l1"><a class="reference internal" href="http://userguide.mdanalysis.org">User guide</a></li>
+        <li class="toctree-l1"><a class="reference internal" href="https://userguide.mdanalysis.org">User guide</a></li>
         
         <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
         
@@ -94,7 +94,7 @@
     
         <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/overview.html">1. Overview of MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/selections.html">3. Selection commands</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
@@ -493,11 +493,11 @@
 
 <div class="viewcode-block" id="do_mtop">
 <a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_mtop">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">do_mtop</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fver</span><span class="p">,</span> <span class="n">tpr_resid_from_one</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">do_mtop</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fver</span><span class="p">,</span> <span class="n">tpr_resid_from_one</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
     <span class="c1"># mtop: the topology of the whole system</span>
     <span class="n">symtab</span> <span class="o">=</span> <span class="n">do_symtab</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="n">do_symstr</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">symtab</span><span class="p">)</span>  <span class="c1"># system_name</span>
-    <span class="n">do_ffparams</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fver</span><span class="p">)</span>  <span class="c1"># params</span>
+    <span class="n">ff_params</span> <span class="o">=</span> <span class="n">do_ffparams</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fver</span><span class="p">)</span>  <span class="c1"># params</span>
 
     <span class="n">nmoltype</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
     <span class="n">moltypes</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># non-gromacs</span>
@@ -629,6 +629,80 @@
     <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">elements</span><span class="p">):</span>
         <span class="n">elements</span> <span class="o">=</span> <span class="n">Elements</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">))</span>
         <span class="n">top</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="n">elements</span><span class="p">)</span>
+
+    <span class="c1"># NOTE: the tpr striding code below serves the</span>
+    <span class="c1"># purpose of placing us in a suitable &quot;seek&quot; position</span>
+    <span class="c1"># in the binary file such that we are well placed</span>
+    <span class="c1"># for reading coords and velocities if they are present</span>
+    <span class="c1"># the order of operations is based on an analysis of</span>
+    <span class="c1"># the C++ code in do_mtop() function in the GROMACS</span>
+    <span class="c1"># source at:</span>
+    <span class="c1"># src/gromacs/fileio/tpxio.cpp</span>
+    <span class="c1"># TODO: expand tpx version support for striding to</span>
+    <span class="c1"># the coordinates</span>
+    <span class="n">atnr</span> <span class="o">=</span> <span class="n">ff_params</span><span class="o">.</span><span class="n">atnr</span>
+    <span class="k">if</span> <span class="n">fver</span> <span class="o">&gt;=</span> <span class="mi">58</span><span class="p">:</span>
+        <span class="c1"># TODO: the following value is important, and not sure</span>
+        <span class="c1"># how to access programmatically yet...</span>
+        <span class="c1"># from GMX source code:</span>
+        <span class="c1"># api/legacy/include/gromacs/topology/topology_enums.h</span>
+        <span class="c1"># worst case scenario we hard code it based on</span>
+        <span class="c1"># tpx/GMX version?</span>
+        <span class="c1"># for details, see gh-4873</span>
+        <span class="n">SimulationAtomGroupType_size</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="n">n_atoms</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">fver</span> <span class="o">&lt;</span> <span class="mi">116</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="n">atnr</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="n">precision</span> <span class="o">/</span> <span class="mi">4</span><span class="p">)):</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">fver</span> <span class="o">&lt;</span> <span class="mi">129</span><span class="p">:</span>
+            <span class="c1"># NOTE: speculative, Tyler did this by</span>
+            <span class="c1"># inspecting binary data and relative file offsets</span>
+            <span class="c1"># for older tpr files relative to more recent;</span>
+            <span class="c1"># the stride skip appears related to `atnr` in GMX source, the</span>
+            <span class="c1"># number of non-bonded atom types</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">atnr</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="mi">58</span> <span class="o">&lt;</span> <span class="n">fver</span> <span class="o">&lt;=</span> <span class="mi">83</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">atnr</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="n">precision</span> <span class="o">/</span> <span class="mi">4</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">):</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">fver</span> <span class="o">&gt;</span> <span class="mi">83</span><span class="p">:</span>
+            <span class="n">interm</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_uchar</span><span class="p">()</span>
+        <span class="k">if</span> <span class="mi">83</span> <span class="o">&lt;</span> <span class="n">fver</span> <span class="o">&lt;</span> <span class="mi">116</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">atnr</span><span class="p">):</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">fver</span> <span class="o">&gt;</span> <span class="mi">58</span><span class="p">:</span>
+            <span class="n">ngrid</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
+            <span class="n">grid_spacing</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
+            <span class="n">n_elements</span> <span class="o">=</span> <span class="n">grid_spacing</span> <span class="o">**</span> <span class="mi">2</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ngrid</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_elements</span><span class="p">):</span>
+                    <span class="n">ndo_real</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">SimulationAtomGroupType_size</span><span class="p">):</span>
+            <span class="n">group_size</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
+            <span class="n">ndo_int</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">group_size</span><span class="p">)</span>
+        <span class="n">n_group_names</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_group_names</span><span class="p">):</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">SimulationAtomGroupType_size</span><span class="p">):</span>
+            <span class="n">n_grp_numbers</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">n_grp_numbers</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_grp_numbers</span><span class="p">):</span>
+                    <span class="n">data</span><span class="o">.</span><span class="n">unpack_uchar</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">fver</span> <span class="o">&gt;</span> <span class="mi">119</span><span class="p">:</span>
+            <span class="n">im_excl_grp_size</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
+            <span class="n">ndo_int</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">im_excl_grp_size</span><span class="p">)</span>
+            <span class="c1"># TODO: why is this needed?</span>
+            <span class="c1"># NOTE: this `mystery_n` value is at least sometimes used</span>
+            <span class="c1"># for tpx &gt;= 137, but is often 0 otherwise</span>
+            <span class="n">mystery_n</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">fver</span> <span class="o">&gt;=</span> <span class="mi">137</span><span class="p">:</span>
+            <span class="c1"># NOTE: Tyler observed that the first float32</span>
+            <span class="c1"># positional coordinate was offset by `mystery_n`</span>
+            <span class="c1"># 32-bit units in a sample tpx 137 tpr file</span>
+            <span class="c1"># by empirical testing</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mystery_n</span><span class="p">):</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
 
     <span class="k">return</span> <span class="n">top</span></div>
 
@@ -1155,7 +1229,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2025, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Matthew Davies, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Alia Lescoulie, Zhenbo Li, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Kurt McKee, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Laksh Krishna Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Brigitta Sipőcz, Paul Smith, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Joshua Raphael Uy, Heet Vekariya, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Zhuyi Xue, Mingyi Xue, Alexander Yang, Tanish Yelgoe, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Jia-Xin Zhu, Yuxuan Zhuang, Fabian Zills, and Oliver Beckstein.</p>
+    <p>&#169; Copyright 2005-2025, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Pavel Buslaev, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Matthew Davies, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Abdulrahman Elbanna, Gareth Elliott, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, BHM-Bob G, Sirsha Ganguly, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Alia Lescoulie, Zhenbo Li, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Kurt McKee, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Debasish Mohanty, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Namir Oues, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, James Rowe, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marc Schuh, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Laksh Krishna Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Brigitta Sipőcz, Paul Smith, Tulga-Erdene Sodjargal, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Joshua Raphael Uy, Heet Vekariya, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Lexi Xu, Zhuyi Xue, Mingyi Xue, Alexander Yang, Yu-Yuan (Stuart) Yang, Tanish Yelgoe, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Raymond Zhao, Jia-Xin Zhu, Yuxuan Zhuang, Fabian Zills, and Oliver Beckstein.</p>
   </div>
 
   
