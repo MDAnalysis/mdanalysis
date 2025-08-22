@@ -527,7 +527,7 @@ def fetch_pdb(PDB_IDS=None,
     Download one or more PDB files from the RCSB Protein Data Bank and cache them locally.
 
     Given one or multiple PDB IDs, downloads the corresponding structure files in the specified
-    format and stores them in a local cache directory. Returns the paths to the downloaded files.
+    format and stores them in a local cache directory. Returns the paths as a string to the downloaded files.
 
     Parameters
     ----------
@@ -550,13 +550,25 @@ def fetch_pdb(PDB_IDS=None,
     --------
     Download a single PDB file:
 
-    >>> fetch_pdb("1AKE")
-    './pdb_cache/1AKE.pdb.gz'
+    >>> mda.fetch_pdb("1AKE", file_format="cif")
+    './pdb_cache/1AKE.cif'
 
     Download multiple PDB files with a progress bar:
 
-    >>> fetch_pdb(["1AKE", "4BWZ"], progressbar=True)
+    >>> mda.fetch_pdb(["1AKE", "4BWZ"], progressbar=True)
     ['./pdb_cache/1AKE.pdb.gz', './pdb_cache/4BWZ.pdb.gz']
+
+    Download a single PDB file and converting it to a universe:
+
+    >>> mda.Universe(mda.fetch_pdb("1AKE"), file_format="pdb.gz")
+    <Universe with 3816 atoms>
+
+    Download a multiple PDB files and converting them to a universe:
+
+    >>> [mda.Universe(mda.fetch_pdb(PDB_ID), file_format="pdb.gz") for PDB_ID in ("1AKE", "4BWZ")]
+    [<Universe with 3816 atoms>, <Universe with 2824 atoms>]
+
+
     """
     
     # Have to do this dictionary approach instead of using Pooch.retrieve in order to prevent the hardcoded known_hash warning from showing up
