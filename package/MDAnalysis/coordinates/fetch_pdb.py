@@ -9,16 +9,13 @@ def fetch_pdb(PDB_IDS=None,
             file_format="pdb.gz",
             ):
     
-    ## Have to do this approach instead of Pooch.retrieve in order to prevent known hash warning from showing up
+    # Have to do this dictionary approach instead of using Pooch.retrieve in order to prevent the hardcoded known hash warning from showing up
     
-    # Handles the case if input is a string
     if isinstance(PDB_IDS, str):
         PDB_IDS = (PDB_IDS,)
 
-    # Handles multiple tuples and lists
     registry_dictionary = {f'{PDB_ID}.{file_format}': None for PDB_ID in PDB_IDS}
   
-    
     downloader = pooch.create(
         path=cache_path,
         base_url="https://files.rcsb.org/download/",
