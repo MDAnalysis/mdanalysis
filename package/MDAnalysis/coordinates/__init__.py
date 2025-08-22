@@ -182,6 +182,9 @@ also recognized when they are compressed with :program:`gzip` or
    |               |           |       | velocities are processed. Module                     |
    |               |           |       | :mod:`MDAnalysis.coordinates.TRR`                    |
    +---------------+-----------+-------+------------------------------------------------------+
+   | Gromacs       | tpr       |  r    | Coordinates and velocities are read in.              |
+   |               |           |       | Module :mod:`MDAnalysis.coordinates.TPR`             |
+   +---------------+-----------+-------+------------------------------------------------------+
    | Gromacs       | tng       |  r    | Variable precision tng trajectory. Coordinates,      |
    |               |           |       | velocities and forces are processed along with any   |
    |               |           |       | `additional tng block data`_ requested for reading.  |
@@ -776,6 +779,7 @@ from . import MOL2
 from . import PDB
 from . import PDBQT
 from . import PQR
+from . import TPR
 from . import TRC
 from . import TRJ
 from . import TRR

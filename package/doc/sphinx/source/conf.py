@@ -163,8 +163,8 @@ toc_object_entries = False
 html_theme = "mdanalysis_sphinx_theme"
 
 extra_nav_links = {}
-extra_nav_links["MDAnalysis"] = "http://mdanalysis.org"
-extra_nav_links["User guide"] = "http://userguide.mdanalysis.org"
+extra_nav_links["MDAnalysis"] = "https://mdanalysis.org"
+extra_nav_links["User guide"] = "https://userguide.mdanalysis.org"
 extra_nav_links["MDAKits"] = "https://mdakits.mdanalysis.org/"
 
 

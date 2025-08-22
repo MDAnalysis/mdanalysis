@@ -215,6 +215,7 @@ from . import base, core
 from ..exceptions import NoDataError
 from ..due import due, Doi
 from MDAnalysis.lib.util import store_init_arguments
+
 try:
     import h5py
 except ImportError:
@@ -225,6 +226,7 @@ except ImportError:
 
     class MockH5pyFile:
         pass
+
     h5py = types.ModuleType("h5py")
     h5py.File = MockH5pyFile
 
@@ -338,65 +340,68 @@ class H5MDReader(base.ReaderBase):
 
     """
 
-    format = 'H5MD'
+    format = "H5MD"
     # units is defined as instance-level variable and set from the
     # H5MD file in __init__() below
 
     # This dictionary is used to translate H5MD units to MDAnalysis units.
     # (https://nongnu.org/h5md/modules/units.html)
     _unit_translation = {
-        'time': {
-            'ps': 'ps',
-            'fs': 'fs',
-            'ns': 'ns',
-            'second': 's',
-            'sec': 's',
-            's': 's',
-            'AKMA': 'AKMA',
+        "time": {
+            "ps": "ps",
+            "fs": "fs",
+            "ns": "ns",
+            "second": "s",
+            "sec": "s",
+            "s": "s",
+            "AKMA": "AKMA",
         },
-        'length': {
-            'Angstrom': 'Angstrom',
-            'angstrom': 'Angstrom',
-            'A': 'Angstrom',
-            'nm': 'nm',
-            'pm': 'pm',
-            'fm': 'fm',
+        "length": {
+            "Angstrom": "Angstrom",
+            "angstrom": "Angstrom",
+            "A": "Angstrom",
+            "nm": "nm",
+            "pm": "pm",
+            "fm": "fm",
         },
-        'velocity': {
-            'Angstrom ps-1': 'Angstrom/ps',
-            'A ps-1': 'Angstrom/ps',
-            'Angstrom fs-1': 'Angstrom/fs',
-            'A fs-1': 'Angstrom/fs',
-            'Angstrom AKMA-1': 'Angstrom/AKMA',
-            'A AKMA-1': 'Angstrom/AKMA',
-            'nm ps-1': 'nm/ps',
-            'nm ns-1': 'nm/ns',
-            'pm ps-1': 'pm/ps',
-            'm s-1': 'm/s'
+        "velocity": {
+            "Angstrom ps-1": "Angstrom/ps",
+            "A ps-1": "Angstrom/ps",
+            "Angstrom fs-1": "Angstrom/fs",
+            "A fs-1": "Angstrom/fs",
+            "Angstrom AKMA-1": "Angstrom/AKMA",
+            "A AKMA-1": "Angstrom/AKMA",
+            "nm ps-1": "nm/ps",
+            "nm ns-1": "nm/ns",
+            "pm ps-1": "pm/ps",
+            "m s-1": "m/s",
         },
-        'force':  {
-            'kJ mol-1 Angstrom-1': 'kJ/(mol*Angstrom)',
-            'kJ mol-1 nm-1': 'kJ/(mol*nm)',
-            'Newton': 'Newton',
-            'N': 'N',
-            'J m-1': 'J/m',
-            'kcal mol-1 Angstrom-1': 'kcal/(mol*Angstrom)',
-            'kcal mol-1 A-1': 'kcal/(mol*Angstrom)'
-        }
+        "force": {
+            "kJ mol-1 Angstrom-1": "kJ/(mol*Angstrom)",
+            "kJ mol-1 nm-1": "kJ/(mol*nm)",
+            "Newton": "Newton",
+            "N": "N",
+            "J m-1": "J/m",
+            "kcal mol-1 Angstrom-1": "kcal/(mol*Angstrom)",
+            "kcal mol-1 A-1": "kcal/(mol*Angstrom)",
+        },
     }
 
-    @due.dcite(Doi("10.25080/majora-1b6fd038-005"),
-               description="MDAnalysis trajectory reader/writer of the H5MD"
-               "format", path=__name__)
-    @due.dcite(Doi("10.1016/j.cpc.2014.01.018"),
-               description="Specifications of the H5MD standard",
-               path=__name__, version='1.1')
+    @due.dcite(
+        Doi("10.25080/majora-1b6fd038-005"),
+        description="MDAnalysis trajectory reader/writer of the H5MD" "format",
+        path=__name__,
+    )
+    @due.dcite(
+        Doi("10.1016/j.cpc.2014.01.018"),
+        description="Specifications of the H5MD standard",
+        path=__name__,
+        version="1.1",
+    )
     @store_init_arguments
-    def __init__(self, filename,
-                 convert_units=True,
-                 driver=None,
-                 comm=None,
-                 **kwargs):
+    def __init__(
+        self, filename, convert_units=True, driver=None, comm=None, **kwargs
+    ):
         """
         Parameters
         ----------
@@ -442,43 +447,54 @@ class H5MDReader(base.ReaderBase):
         # opened with parallel h5py/hdf5 enabled
         self._driver = driver
         self._comm = comm
-        if (self._comm is not None) and (self._driver != 'mpio'):
-            raise ValueError("If MPI communicator object is used to open"
-                             " h5md file, ``driver='mpio'`` must be passed.")
+        if (self._comm is not None) and (self._driver != "mpio"):
+            raise ValueError(
+                "If MPI communicator object is used to open"
+                " h5md file, ``driver='mpio'`` must be passed."
+            )
 
         self.open_trajectory()
-        if self._particle_group['box'].attrs['dimension'] != 3:
-            raise ValueError("MDAnalysis only supports 3-dimensional"
-                             " simulation boxes")
+        if self._particle_group["box"].attrs["dimension"] != 3:
+            raise ValueError(
+                "MDAnalysis only supports 3-dimensional" " simulation boxes"
+            )
 
         # _has dictionary used for checking whether h5md file has
         # 'position', 'velocity', or 'force' groups in the file
-        self._has = {name: name in self._particle_group for
-                     name in ('position', 'velocity', 'force')}
+        self._has = {
+            name: name in self._particle_group
+            for name in ("position", "velocity", "force")
+        }
 
         # Gets some info about what settings the datasets were created with
         # from first available group
         for name, value in self._has.items():
             if value:
-                dset = self._particle_group[f'{name}/value']
+                dset = self._particle_group[f"{name}/value"]
                 self.n_atoms = dset.shape[1]
                 self.compression = dset.compression
                 self.compression_opts = dset.compression_opts
                 break
         else:
-            raise NoDataError("Provide at least a position, velocity"
-                              " or force group in the h5md file.")
+            raise NoDataError(
+                "Provide at least a position, velocity"
+                " or force group in the h5md file."
+            )
 
-        self.ts = self._Timestep(self.n_atoms,
-                                 positions=self.has_positions,
-                                 velocities=self.has_velocities,
-                                 forces=self.has_forces,
-                                 **self._ts_kwargs)
+        self.ts = self._Timestep(
+            self.n_atoms,
+            positions=self.has_positions,
+            velocities=self.has_velocities,
+            forces=self.has_forces,
+            **self._ts_kwargs,
+        )
 
-        self.units = {'time': None,
-                      'length': None,
-                      'velocity': None,
-                      'force': None}
+        self.units = {
+            "time": None,
+            "length": None,
+            "velocity": None,
+            "force": None,
+        }
         self._set_translated_units()  # fills units dictionary
         self._read_next_timestep()
 
@@ -487,11 +503,12 @@ class H5MDReader(base.ReaderBase):
         and fills units dictionary"""
 
         # need this dictionary to associate 'position': 'length'
-        _group_unit_dict = {'time': 'time',
-                            'position': 'length',
-                            'velocity': 'velocity',
-                            'force': 'force'
-                            }
+        _group_unit_dict = {
+            "time": "time",
+            "position": "length",
+            "velocity": "velocity",
+            "force": "force",
+        }
 
         for group, unit in _group_unit_dict.items():
             self._translate_h5md_units(group, unit)
@@ -505,47 +522,65 @@ class H5MDReader(base.ReaderBase):
 
         # doing time unit separately because time has to fish for
         # first available parent group - either position, velocity, or force
-        if unit == 'time':
+        if unit == "time":
             for name, value in self._has.items():
                 if value:
-                    if 'unit' in self._particle_group[name]['time'].attrs:
+                    if "unit" in self._particle_group[name]["time"].attrs:
                         try:
-                            self.units['time'] = self._unit_translation[
-                                'time'][self._particle_group[name][
-                                    'time'].attrs['unit']]
+                            self.units["time"] = self._unit_translation[
+                                "time"
+                            ][self._particle_group[name]["time"].attrs["unit"]]
                             break
                         except KeyError:
-                            raise RuntimeError(errmsg.format(
-                                               unit, self._particle_group[
-                                               name]['time'].attrs['unit'])
-                                               ) from None
+                            raise RuntimeError(
+                                errmsg.format(
+                                    unit,
+                                    self._particle_group[name]["time"].attrs[
+                                        "unit"
+                                    ],
+                                )
+                            ) from None
 
         else:
             if self._has[group]:
-                if 'unit' in self._particle_group[group]['value'].attrs:
+                if "unit" in self._particle_group[group]["value"].attrs:
                     try:
                         self.units[unit] = self._unit_translation[unit][
-                            self._particle_group[group]['value'].attrs['unit']]
+                            self._particle_group[group]["value"].attrs["unit"]
+                        ]
                     except KeyError:
-                        raise RuntimeError(errmsg.format(
-                                           unit, self._particle_group[group][
-                                           'value'].attrs['unit'])
-                                           ) from None
+                        raise RuntimeError(
+                            errmsg.format(
+                                unit,
+                                self._particle_group[group]["value"].attrs[
+                                    "unit"
+                                ],
+                            )
+                        ) from None
 
             # if position group is not provided, can still get 'length' unit
             # from unitcell box
-            if (not self._has['position']) and ('edges' in self._particle_group['box']):
-                if 'unit' in self._particle_group['box/edges/value'].attrs:
+            if (not self._has["position"]) and (
+                "edges" in self._particle_group["box"]
+            ):
+                if "unit" in self._particle_group["box/edges/value"].attrs:
                     try:
-                        self.units['length'] = self._unit_translation[
-                                               'length'][self._particle_group[
-                                               'box/edges/value'
-                                               ].attrs['unit']]
+                        self.units["length"] = self._unit_translation[
+                            "length"
+                        ][
+                            self._particle_group["box/edges/value"].attrs[
+                                "unit"
+                            ]
+                        ]
                     except KeyError:
-                        raise RuntimeError(errmsg.format(unit,
-                                           self._particle_group[
-                                           'box/edges/value'].attrs[
-                                           'unit'])) from None
+                        raise RuntimeError(
+                            errmsg.format(
+                                unit,
+                                self._particle_group["box/edges/value"].attrs[
+                                    "unit"
+                                ],
+                            )
+                        ) from None
 
     def _check_units(self, group, unit):
         """Raises error if no units are provided from H5MD file
@@ -558,8 +593,8 @@ class H5MDReader(base.ReaderBase):
         " set to ``True``. MDAnalysis sets ``convert_units=True`` by default."
         " Set ``convert_units=False`` to load Universe without units."
 
-        if unit == 'time':
-            if self.units['time'] is None:
+        if unit == "time":
+            if self.units["time"] is None:
                 raise ValueError(errmsg)
 
         else:
@@ -576,16 +611,18 @@ class H5MDReader(base.ReaderBase):
 
     @staticmethod
     def parse_n_atoms(filename):
-        with h5py.File(filename, 'r') as f:
-            for group in f['particles/trajectory']:
-                if group in ('position', 'velocity', 'force'):
-                    n_atoms = f[f'particles/trajectory/{group}/value'].shape[1]
+        with h5py.File(filename, "r") as f:
+            for group in f["particles/trajectory"]:
+                if group in ("position", "velocity", "force"):
+                    n_atoms = f[f"particles/trajectory/{group}/value"].shape[1]
                     return n_atoms
 
-            raise NoDataError("Could not construct minimal topology from the "
-                              "H5MD trajectory file, as it did not contain a "
-                              "'position', 'velocity', or 'force' group. "
-                              "You must include a topology file.")
+            raise NoDataError(
+                "Could not construct minimal topology from the "
+                "H5MD trajectory file, as it did not contain a "
+                "'position', 'velocity', or 'force' group. "
+                "You must include a topology file."
+            )
 
     def open_trajectory(self):
         """opens the trajectory file using h5py library"""
@@ -596,38 +633,43 @@ class H5MDReader(base.ReaderBase):
         else:
             if self._comm is not None:
                 # can only pass comm argument to h5py.File if driver='mpio'
-                assert self._driver == 'mpio'
-                self._file = H5PYPicklable(name=self.filename,  # pragma: no cover
-                                           mode='r',
-                                           driver=self._driver,
-                                           comm=self._comm)
+                assert self._driver == "mpio"
+                self._file = H5PYPicklable(
+                    name=self.filename,  # pragma: no cover
+                    mode="r",
+                    driver=self._driver,
+                    comm=self._comm,
+                )
             else:
-                self._file = H5PYPicklable(name=self.filename,
-                                           mode='r',
-                                           driver=self._driver)
+                self._file = H5PYPicklable(
+                    name=self.filename, mode="r", driver=self._driver
+                )
 
         # pulls first key out of 'particles'
         # allows for arbitrary name of group1 in 'particles'
-        self._particle_group = self._file['particles'][
-            list(self._file['particles'])[0]]
+        self._particle_group = self._file["particles"][
+            list(self._file["particles"])[0]
+        ]
 
     @property
     def n_frames(self):
         """number of frames in trajectory"""
         for name, value in self._has.items():
             if value:
-                return self._particle_group[name]['value'].shape[0]
+                return self._particle_group[name]["value"].shape[0]
 
     def _read_frame(self, frame):
         """reads data from h5md file and copies to current timestep"""
         try:
             for name, value in self._has.items():
                 if value:
-                    _ = self._particle_group[name]['step'][frame]
+                    _ = self._particle_group[name]["step"][frame]
                     break
             else:
-                raise NoDataError("Provide at least a position, velocity"
-                                  " or force group in the h5md file.")
+                raise NoDataError(
+                    "Provide at least a position, velocity"
+                    " or force group in the h5md file."
+                )
         except (ValueError, IndexError):
             raise IOError from None
 
@@ -659,12 +701,12 @@ class H5MDReader(base.ReaderBase):
 
         # set the timestep positions, velocities, and forces with
         # current frame dataset
-        if self._has['position']:
-            self._read_dataset_into_ts('position', ts.positions)
-        if self._has['velocity']:
-            self._read_dataset_into_ts('velocity', ts.velocities)
-        if self._has['force']:
-            self._read_dataset_into_ts('force', ts.forces)
+        if self._has["position"]:
+            self._read_dataset_into_ts("position", ts.positions)
+        if self._has["velocity"]:
+            self._read_dataset_into_ts("velocity", ts.velocities)
+        if self._has["force"]:
+            self._read_dataset_into_ts("force", ts.forces)
 
         if self.convert_units:
             self._convert_units()
@@ -699,33 +741,39 @@ class H5MDReader(base.ReaderBase):
         # pulls 'time' and 'step' out of first available parent group
         for name, value in self._has.items():
             if value:
-                if 'time' in self._particle_group[name]:
-                    self.ts.time = self._particle_group[name][
-                        'time'][self._frame]
+                if "time" in self._particle_group[name]:
+                    self.ts.time = self._particle_group[name]["time"][
+                        self._frame
+                    ]
                     break
         for name, value in self._has.items():
             if value:
-                if 'step' in self._particle_group[name]:
-                    self.ts.data['step'] = self._particle_group[name][
-                        'step'][self._frame]
+                if "step" in self._particle_group[name]:
+                    self.ts.data["step"] = self._particle_group[name]["step"][
+                        self._frame
+                    ]
                     break
 
     def _read_dataset_into_ts(self, dataset, attribute):
         """reads position, velocity, or force dataset array at current frame
         into corresponding ts attribute"""
 
-        n_atoms_now = self._particle_group[f'{dataset}/value'][
-                                           self._frame].shape[0]
+        n_atoms_now = self._particle_group[f"{dataset}/value"][
+            self._frame
+        ].shape[0]
         if n_atoms_now != self.n_atoms:
-            raise ValueError(f"Frame {self._frame} of the {dataset} dataset"
-                             f" has {n_atoms_now} atoms but the initial frame"
-                             " of either the postion, velocity, or force"
-                             f" dataset had {self.n_atoms} atoms."
-                             " MDAnalysis is unable to deal"
-                             " with variable topology!")
+            raise ValueError(
+                f"Frame {self._frame} of the {dataset} dataset"
+                f" has {n_atoms_now} atoms but the initial frame"
+                " of either the postion, velocity, or force"
+                f" dataset had {self.n_atoms} atoms."
+                " MDAnalysis is unable to deal"
+                " with variable topology!"
+            )
 
-        self._particle_group[f'{dataset}/value'].read_direct(
-                             attribute, source_sel=np.s_[self._frame, :])
+        self._particle_group[f"{dataset}/value"].read_direct(
+            attribute, source_sel=np.s_[self._frame, :]
+        )
 
     def _convert_units(self):
         """converts time, position, velocity, and force values if they
@@ -736,16 +784,19 @@ class H5MDReader(base.ReaderBase):
 
         self.ts.time = self.convert_time_from_native(self.ts.time)
 
-        if 'edges' in self._particle_group['box'] and self.ts.dimensions is not None:
+        if (
+            "edges" in self._particle_group["box"]
+            and self.ts.dimensions is not None
+        ):
             self.convert_pos_from_native(self.ts.dimensions[:3])
 
-        if self._has['position']:
+        if self._has["position"]:
             self.convert_pos_from_native(self.ts.positions)
 
-        if self._has['velocity']:
+        if self._has["velocity"]:
             self.convert_velocities_from_native(self.ts.velocities)
 
-        if self._has['force']:
+        if self._has["force"]:
             self.convert_forces_from_native(self.ts.forces)
 
     def _read_next_timestep(self):
@@ -802,50 +853,51 @@ class H5MDReader(base.ReaderBase):
         """
         if n_atoms is None:
             n_atoms = self.n_atoms
-        kwargs.setdefault('driver', self._driver)
-        kwargs.setdefault('compression', self.compression)
-        kwargs.setdefault('compression_opts', self.compression_opts)
-        kwargs.setdefault('positions', self.has_positions)
-        kwargs.setdefault('velocities', self.has_velocities)
-        kwargs.setdefault('forces', self.has_forces)
+        kwargs.setdefault("driver", self._driver)
+        kwargs.setdefault("compression", self.compression)
+        kwargs.setdefault("compression_opts", self.compression_opts)
+        kwargs.setdefault("positions", self.has_positions)
+        kwargs.setdefault("velocities", self.has_velocities)
+        kwargs.setdefault("forces", self.has_forces)
         return H5MDWriter(filename, n_atoms, **kwargs)
 
     @property
     def has_positions(self):
         """``True`` if 'position' group is in trajectory."""
-        return self._has['position']
+        return self._has["position"]
 
     @has_positions.setter
     def has_positions(self, value: bool):
-        self._has['position'] = value
+        self._has["position"] = value
 
     @property
     def has_velocities(self):
         """``True`` if 'velocity' group is in trajectory."""
-        return self._has['velocity']
+        return self._has["velocity"]
 
     @has_velocities.setter
     def has_velocities(self, value: bool):
-        self._has['velocity'] = value
+        self._has["velocity"] = value
 
     @property
     def has_forces(self):
         """``True`` if 'force' group is in trajectory."""
-        return self._has['force']
+        return self._has["force"]
 
     @has_forces.setter
     def has_forces(self, value: bool):
-        self._has['force'] = value
+        self._has["force"] = value
 
     def __getstate__(self):
         state = self.__dict__.copy()
-        del state['_particle_group']
+        del state["_particle_group"]
         return state
 
     def __setstate__(self, state):
         self.__dict__ = state
-        self._particle_group = self._file['particles'][
-                               list(self._file['particles'])[0]]
+        self._particle_group = self._file["particles"][
+            list(self._file["particles"])[0]
+        ]
 
 
 class H5MDWriter(base.WriterBase):
@@ -1025,11 +1077,11 @@ class H5MDWriter(base.WriterBase):
 
     """
 
-    format = 'H5MD'
+    format = "H5MD"
     multiframe = True
     #: These variables are not written from :attr:`Timestep.data`
     #: dictionary to the observables group in the H5MD file
-    data_blacklist = ['step', 'time', 'dt']
+    data_blacklist = ["step", "time", "dt"]
 
     #: currently written version of the file format
     H5MD_VERSION = (1, 1)
@@ -1037,54 +1089,80 @@ class H5MDWriter(base.WriterBase):
     # This dictionary is used to translate MDAnalysis units to H5MD units.
     # (https://nongnu.org/h5md/modules/units.html)
     _unit_translation_dict = {
-        'time': {
-            'ps': 'ps',
-            'fs': 'fs',
-            'ns': 'ns',
-            'second': 's',
-            'sec': 's',
-            's': 's',
-            'AKMA': 'AKMA'},
-        'length': {
-            'Angstrom': 'Angstrom',
-            'angstrom': 'Angstrom',
-            'A': 'Angstrom',
-            'nm': 'nm',
-            'pm': 'pm',
-            'fm': 'fm'},
-        'velocity': {
-            'Angstrom/ps': 'Angstrom ps-1',
-            'A/ps': 'Angstrom ps-1',
-            'Angstrom/fs': 'Angstrom fs-1',
-            'A/fs': 'Angstrom fs-1',
-            'Angstrom/AKMA': 'Angstrom AKMA-1',
-            'A/AKMA': 'Angstrom AKMA-1',
-            'nm/ps': 'nm ps-1',
-            'nm/ns': 'nm ns-1',
-            'pm/ps': 'pm ps-1',
-            'm/s': 'm s-1'},
-        'force':  {
-            'kJ/(mol*Angstrom)': 'kJ mol-1 Angstrom-1',
-            'kJ/(mol*nm)': 'kJ mol-1 nm-1',
-            'Newton': 'Newton',
-            'N': 'N',
-            'J/m': 'J m-1',
-            'kcal/(mol*Angstrom)': 'kcal mol-1 Angstrom-1',
-            'kcal/(mol*A)': 'kcal mol-1 Angstrom-1'}}
+        "time": {
+            "ps": "ps",
+            "fs": "fs",
+            "ns": "ns",
+            "second": "s",
+            "sec": "s",
+            "s": "s",
+            "AKMA": "AKMA",
+        },
+        "length": {
+            "Angstrom": "Angstrom",
+            "angstrom": "Angstrom",
+            "A": "Angstrom",
+            "nm": "nm",
+            "pm": "pm",
+            "fm": "fm",
+        },
+        "velocity": {
+            "Angstrom/ps": "Angstrom ps-1",
+            "A/ps": "Angstrom ps-1",
+            "Angstrom/fs": "Angstrom fs-1",
+            "A/fs": "Angstrom fs-1",
+            "Angstrom/AKMA": "Angstrom AKMA-1",
+            "A/AKMA": "Angstrom AKMA-1",
+            "nm/ps": "nm ps-1",
+            "nm/ns": "nm ns-1",
+            "pm/ps": "pm ps-1",
+            "m/s": "m s-1",
+        },
+        "force": {
+            "kJ/(mol*Angstrom)": "kJ mol-1 Angstrom-1",
+            "kJ/(mol*nm)": "kJ mol-1 nm-1",
+            "Newton": "Newton",
+            "N": "N",
+            "J/m": "J m-1",
+            "kcal/(mol*Angstrom)": "kcal mol-1 Angstrom-1",
+            "kcal/(mol*A)": "kcal mol-1 Angstrom-1",
+        },
+    }
 
-    @due.dcite(Doi("10.25080/majora-1b6fd038-005"),
-               description="MDAnalysis trajectory reader/writer of the H5MD"
-               "format", path=__name__)
-    @due.dcite(Doi("10.1016/j.cpc.2014.01.018"),
-               description="Specifications of the H5MD standard",
-               path=__name__, version='1.1')
-    def __init__(self, filename, n_atoms, n_frames=None, driver=None,
-                 convert_units=True, chunks=None, compression=None,
-                 compression_opts=None, positions=True, velocities=True,
-                 forces=True, timeunit=None, lengthunit=None,
-                 velocityunit=None, forceunit=None, author='N/A',
-                 author_email=None, creator='MDAnalysis',
-                 creator_version=mda.__version__, **kwargs):
+    @due.dcite(
+        Doi("10.25080/majora-1b6fd038-005"),
+        description="MDAnalysis trajectory reader/writer of the H5MD" "format",
+        path=__name__,
+    )
+    @due.dcite(
+        Doi("10.1016/j.cpc.2014.01.018"),
+        description="Specifications of the H5MD standard",
+        path=__name__,
+        version="1.1",
+    )
+    def __init__(
+        self,
+        filename,
+        n_atoms,
+        n_frames=None,
+        driver=None,
+        convert_units=True,
+        chunks=None,
+        compression=None,
+        compression_opts=None,
+        positions=True,
+        velocities=True,
+        forces=True,
+        timeunit=None,
+        lengthunit=None,
+        velocityunit=None,
+        forceunit=None,
+        author="N/A",
+        author_email=None,
+        creator="MDAnalysis",
+        creator_version=mda.__version__,
+        **kwargs,
+    ):
 
         if not HAS_H5PY:
             raise RuntimeError("H5MDWriter: Please install h5py")
@@ -1092,15 +1170,19 @@ class H5MDWriter(base.WriterBase):
         if n_atoms == 0:
             raise ValueError("H5MDWriter: no atoms in output trajectory")
         self._driver = driver
-        if self._driver == 'mpio':
-            raise ValueError("H5MDWriter: parallel writing with MPI I/O "
-                             "is not currently supported.")
+        if self._driver == "mpio":
+            raise ValueError(
+                "H5MDWriter: parallel writing with MPI I/O "
+                "is not currently supported."
+            )
         self.n_atoms = n_atoms
         self.n_frames = n_frames
         self.chunks = (1, n_atoms, 3) if chunks is None else chunks
         if self.chunks is False and self.n_frames is None:
-            raise ValueError("H5MDWriter must know how many frames will be "
-                             "written if ``chunks=False``.")
+            raise ValueError(
+                "H5MDWriter must know how many frames will be "
+                "written if ``chunks=False``."
+            )
         self.contiguous = self.chunks is False and self.n_frames is not None
         self.compression = compression
         self.compression_opts = compression_opts
@@ -1114,16 +1196,24 @@ class H5MDWriter(base.WriterBase):
         self._write_positions = positions
         self._write_velocities = velocities
         self._write_forces = forces
-        if not any([self._write_positions,
-                    self._write_velocities,
-                    self._write_velocities]):
-            raise ValueError("At least one of positions, velocities, or "
-                             "forces must be set to ``True``.")
+        if not any(
+            [
+                self._write_positions,
+                self._write_velocities,
+                self._write_velocities,
+            ]
+        ):
+            raise ValueError(
+                "At least one of positions, velocities, or "
+                "forces must be set to ``True``."
+            )
 
-        self._new_units = {'time': timeunit,
-                           'length': lengthunit,
-                           'velocity': velocityunit,
-                           'force': forceunit}
+        self._new_units = {
+            "time": timeunit,
+            "length": lengthunit,
+            "velocity": velocityunit,
+            "force": forceunit,
+        }
 
         # Pull out various keywords to store metadata in 'h5md' group
         self.author = author
@@ -1152,8 +1242,10 @@ class H5MDWriter(base.WriterBase):
                 raise TypeError(errmsg) from None
 
         if ts.n_atoms != self.n_atoms:
-            raise IOError("H5MDWriter: Timestep does not have"
-                          " the correct number of atoms")
+            raise IOError(
+                "H5MDWriter: Timestep does not have"
+                " the correct number of atoms"
+            )
 
         # This should only be called once when first timestep is read.
         if self.h5md_file is None:
@@ -1184,21 +1276,25 @@ class H5MDWriter(base.WriterBase):
         for key, value in self._new_units.items():
             if value is not None:
                 if value not in self._unit_translation_dict[key]:
-                    raise ValueError(f"{value} is not a unit recognized by"
-                                     " MDAnalysis. Allowed units are:"
-                                     f" {self._unit_translation_dict.keys()}"
-                                     " For more information on units, see"
-                                     " `MDAnalysis units`_.")
+                    raise ValueError(
+                        f"{value} is not a unit recognized by"
+                        " MDAnalysis. Allowed units are:"
+                        f" {self._unit_translation_dict.keys()}"
+                        " For more information on units, see"
+                        " `MDAnalysis units`_."
+                    )
                 else:
                     self.units[key] = self._new_units[key]
 
         if self.convert_units:
             # check if all units are None
             if not any(self.units.values()):
-                raise ValueError("The trajectory has no units, but "
-                                 "`convert_units` is set to ``True`` by "
-                                 "default in MDAnalysis. To write the file "
-                                 "with no units, set ``convert_units=False``.")
+                raise ValueError(
+                    "The trajectory has no units, but "
+                    "`convert_units` is set to ``True`` by "
+                    "default in MDAnalysis. To write the file "
+                    "with no units, set ``convert_units=False``."
+                )
 
     def _open_file(self):
         """Opens file with `H5PY`_ library and fills in metadata from kwargs.
@@ -1207,20 +1303,20 @@ class H5MDWriter(base.WriterBase):
 
         """
 
-        self.h5md_file = h5py.File(name=self.filename,
-                                   mode='w',
-                                   driver=self._driver)
+        self.h5md_file = h5py.File(
+            name=self.filename, mode="w", driver=self._driver
+        )
 
         # fill in H5MD metadata from kwargs
-        self.h5md_file.require_group('h5md')
-        self.h5md_file['h5md'].attrs['version'] = np.array(self.H5MD_VERSION)
-        self.h5md_file['h5md'].require_group('author')
-        self.h5md_file['h5md/author'].attrs['name'] = self.author
+        self.h5md_file.require_group("h5md")
+        self.h5md_file["h5md"].attrs["version"] = np.array(self.H5MD_VERSION)
+        self.h5md_file["h5md"].require_group("author")
+        self.h5md_file["h5md/author"].attrs["name"] = self.author
         if self.author_email is not None:
-            self.h5md_file['h5md/author'].attrs['email'] = self.author_email
-        self.h5md_file['h5md'].require_group('creator')
-        self.h5md_file['h5md/creator'].attrs['name'] = self.creator
-        self.h5md_file['h5md/creator'].attrs['version'] = self.creator_version
+            self.h5md_file["h5md/author"].attrs["email"] = self.author_email
+        self.h5md_file["h5md"].require_group("creator")
+        self.h5md_file["h5md/creator"].attrs["name"] = self.creator
+        self.h5md_file["h5md/creator"].attrs["version"] = self.creator_version
 
     def _initialize_hdf5_datasets(self, ts):
         """initializes all datasets that will be written to by
@@ -1242,57 +1338,67 @@ class H5MDWriter(base.WriterBase):
 
         # ask the parent file if it has positions, velocities, and forces
         # if prompted by the writer with the self._write_* attributes
-        self._has = {group: getattr(ts, f'has_{attr}')
-                     if getattr(self, f'_write_{attr}')
-                     else False for group, attr in zip(
-                     ('position', 'velocity', 'force'),
-                     ('positions', 'velocities', 'forces'))}
+        self._has = {
+            group: (
+                getattr(ts, f"has_{attr}")
+                if getattr(self, f"_write_{attr}")
+                else False
+            )
+            for group, attr in zip(
+                ("position", "velocity", "force"),
+                ("positions", "velocities", "forces"),
+            )
+        }
 
         # initialize trajectory group
-        self.h5md_file.require_group('particles').require_group('trajectory')
-        self._traj = self.h5md_file['particles/trajectory']
+        self.h5md_file.require_group("particles").require_group("trajectory")
+        self._traj = self.h5md_file["particles/trajectory"]
         self.data_keys = [
-            key for key in ts.data.keys() if key not in self.data_blacklist]
+            key for key in ts.data.keys() if key not in self.data_blacklist
+        ]
         if self.data_keys:
-            self._obsv = self.h5md_file.require_group('observables')
+            self._obsv = self.h5md_file.require_group("observables")
 
         # box group is required for every group in 'particles'
-        self._traj.require_group('box')
-        self._traj['box'].attrs['dimension'] = 3
+        self._traj.require_group("box")
+        self._traj["box"].attrs["dimension"] = 3
         if ts.dimensions is not None and np.all(ts.dimensions > 0):
-            self._traj['box'].attrs['boundary'] = 3*['periodic']
-            self._traj['box'].require_group('edges')
-            self._edges = self._traj.require_dataset('box/edges/value',
-                                                     shape=(0, 3, 3),
-                                                     maxshape=(None, 3, 3),
-                                                     dtype=np.float32)
-            self._step = self._traj.require_dataset('box/edges/step',
-                                                    shape=(0,),
-                                                    maxshape=(None,),
-                                                    dtype=np.int32)
-            self._time = self._traj.require_dataset('box/edges/time',
-                                                    shape=(0,),
-                                                    maxshape=(None,),
-                                                    dtype=np.float32)
-            self._set_attr_unit(self._edges, 'length')
-            self._set_attr_unit(self._time, 'time')
+            self._traj["box"].attrs["boundary"] = 3 * ["periodic"]
+            self._traj["box"].require_group("edges")
+            self._edges = self._traj.require_dataset(
+                "box/edges/value",
+                shape=(0, 3, 3),
+                maxshape=(None, 3, 3),
+                dtype=np.float32,
+            )
+            self._step = self._traj.require_dataset(
+                "box/edges/step", shape=(0,), maxshape=(None,), dtype=np.int32
+            )
+            self._time = self._traj.require_dataset(
+                "box/edges/time",
+                shape=(0,),
+                maxshape=(None,),
+                dtype=np.float32,
+            )
+            self._set_attr_unit(self._edges, "length")
+            self._set_attr_unit(self._time, "time")
         else:
             # if no box, boundary attr must be "none" according to H5MD
-            self._traj['box'].attrs['boundary'] = 3*['none']
+            self._traj["box"].attrs["boundary"] = 3 * ["none"]
             self._create_step_and_time_datasets()
 
         if self.has_positions:
-            self._create_trajectory_dataset('position')
-            self._pos = self._traj['position/value']
-            self._set_attr_unit(self._pos, 'length')
+            self._create_trajectory_dataset("position")
+            self._pos = self._traj["position/value"]
+            self._set_attr_unit(self._pos, "length")
         if self.has_velocities:
-            self._create_trajectory_dataset('velocity')
-            self._vel = self._traj['velocity/value']
-            self._set_attr_unit(self._vel, 'velocity')
+            self._create_trajectory_dataset("velocity")
+            self._vel = self._traj["velocity/value"]
+            self._set_attr_unit(self._vel, "velocity")
         if self.has_forces:
-            self._create_trajectory_dataset('force')
-            self._force = self._traj['force/value']
-            self._set_attr_unit(self._force, 'force')
+            self._create_trajectory_dataset("force")
+            self._force = self._traj["force/value"]
+            self._set_attr_unit(self._force, "force")
 
         # intialize observable datasets from ts.data dictionary that
         # are NOT in self.data_blacklist
@@ -1321,15 +1427,19 @@ class H5MDWriter(base.WriterBase):
 
         for group, value in self._has.items():
             if value:
-                self._step = self._traj.require_dataset(f'{group}/step',
-                                                        shape=(0,),
-                                                        maxshape=(None,),
-                                                        dtype=np.int32)
-                self._time = self._traj.require_dataset(f'{group}/time',
-                                                        shape=(0,),
-                                                        maxshape=(None,),
-                                                        dtype=np.float32)
-                self._set_attr_unit(self._time, 'time')
+                self._step = self._traj.require_dataset(
+                    f"{group}/step",
+                    shape=(0,),
+                    maxshape=(None,),
+                    dtype=np.int32,
+                )
+                self._time = self._traj.require_dataset(
+                    f"{group}/time",
+                    shape=(0,),
+                    maxshape=(None,),
+                    dtype=np.float32,
+                )
+                self._set_attr_unit(self._time, "time")
                 break
 
     def _create_trajectory_dataset(self, group):
@@ -1346,17 +1456,19 @@ class H5MDWriter(base.WriterBase):
         chunks = None if self.contiguous else self.chunks
 
         self._traj.require_group(group)
-        self._traj.require_dataset(f'{group}/value',
-                                   shape=shape,
-                                   maxshape=maxshape,
-                                   dtype=np.float32,
-                                   chunks=chunks,
-                                   compression=self.compression,
-                                   compression_opts=self.compression_opts)
-        if 'step' not in self._traj[group]:
-            self._traj[f'{group}/step'] = self._step
-        if 'time' not in self._traj[group]:
-            self._traj[f'{group}/time'] = self._time
+        self._traj.require_dataset(
+            f"{group}/value",
+            shape=shape,
+            maxshape=maxshape,
+            dtype=np.float32,
+            chunks=chunks,
+            compression=self.compression,
+            compression_opts=self.compression_opts,
+        )
+        if "step" not in self._traj[group]:
+            self._traj[f"{group}/step"] = self._step
+        if "time" not in self._traj[group]:
+            self._traj[f"{group}/time"] = self._time
 
     def _create_observables_dataset(self, group, data):
         """helper function to initialize a dataset for each observable"""
@@ -1364,14 +1476,16 @@ class H5MDWriter(base.WriterBase):
         self._obsv.require_group(group)
         # guarantee ints and floats have a shape ()
         data = np.asarray(data)
-        self._obsv.require_dataset(f'{group}/value',
-                                   shape=(0,) + data.shape,
-                                   maxshape=(None,) + data.shape,
-                                   dtype=data.dtype)
-        if 'step' not in self._obsv[group]:
-            self._obsv[f'{group}/step'] = self._step
-        if 'time' not in self._obsv[group]:
-            self._obsv[f'{group}/time'] = self._time
+        self._obsv.require_dataset(
+            f"{group}/value",
+            shape=(0,) + data.shape,
+            maxshape=(None,) + data.shape,
+            dtype=data.dtype,
+        )
+        if "step" not in self._obsv[group]:
+            self._obsv[f"{group}/step"] = self._step
+        if "time" not in self._obsv[group]:
+            self._obsv[f"{group}/time"] = self._time
 
     def _set_attr_unit(self, dset, unit):
         """helper function to set a 'unit' attribute for an HDF5 dataset"""
@@ -1379,7 +1493,9 @@ class H5MDWriter(base.WriterBase):
         if self.units[unit] is None:
             return
 
-        dset.attrs['unit'] = self._unit_translation_dict[unit][self.units[unit]]
+        dset.attrs["unit"] = self._unit_translation_dict[unit][
+            self.units[unit]
+        ]
 
     def _write_next_timestep(self, ts):
         """Write coordinates and unitcell information to H5MD file.
@@ -1406,42 +1522,45 @@ class H5MDWriter(base.WriterBase):
         # sampled, therefore ts.data['step'] is the most appropriate value
         # to use. However, step is also necessary in H5MD to allow
         # temporal matching of the data, so ts.frame is used as an alternative
-        self._step.resize(self._step.shape[0]+1, axis=0)
+        self._step.resize(self._step.shape[0] + 1, axis=0)
         try:
-            self._step[i] = ts.data['step']
-        except(KeyError):
+            self._step[i] = ts.data["step"]
+        except KeyError:
             self._step[i] = ts.frame
-        if len(self._step) > 1 and self._step[i] < self._step[i-1]:
-            raise ValueError("The H5MD standard dictates that the step "
-                             "dataset must increase monotonically in value.")
+        if len(self._step) > 1 and self._step[i] < self._step[i - 1]:
+            raise ValueError(
+                "The H5MD standard dictates that the step "
+                "dataset must increase monotonically in value."
+            )
 
         # the dataset.resize() method should work with any chunk shape
-        self._time.resize(self._time.shape[0]+1, axis=0)
+        self._time.resize(self._time.shape[0] + 1, axis=0)
         self._time[i] = ts.time
 
-        if 'edges' in self._traj['box']:
-            self._edges.resize(self._edges.shape[0]+1, axis=0)
-            self._edges.write_direct(ts.triclinic_dimensions,
-                                     dest_sel=np.s_[i, :])
+        if "edges" in self._traj["box"]:
+            self._edges.resize(self._edges.shape[0] + 1, axis=0)
+            self._edges.write_direct(
+                ts.triclinic_dimensions, dest_sel=np.s_[i, :]
+            )
         # These datasets are not resized if n_frames was provided as an
         # argument, as they were initialized with their full size.
         if self.has_positions:
             if self.n_frames is None:
-                self._pos.resize(self._pos.shape[0]+1, axis=0)
+                self._pos.resize(self._pos.shape[0] + 1, axis=0)
             self._pos.write_direct(ts.positions, dest_sel=np.s_[i, :])
         if self.has_velocities:
             if self.n_frames is None:
-                self._vel.resize(self._vel.shape[0]+1, axis=0)
+                self._vel.resize(self._vel.shape[0] + 1, axis=0)
             self._vel.write_direct(ts.velocities, dest_sel=np.s_[i, :])
         if self.has_forces:
             if self.n_frames is None:
-                self._force.resize(self._force.shape[0]+1, axis=0)
+                self._force.resize(self._force.shape[0] + 1, axis=0)
             self._force.write_direct(ts.forces, dest_sel=np.s_[i, :])
 
         if self.data_keys:
             for key in self.data_keys:
-                obs = self._obsv[f'{key}/value']
-                obs.resize(obs.shape[0]+1, axis=0)
+                obs = self._obsv[f"{key}/value"]
+                obs.resize(obs.shape[0] + 1, axis=0)
                 obs[i] = ts.data[key]
 
         if self.convert_units:
@@ -1454,34 +1573,34 @@ class H5MDWriter(base.WriterBase):
 
         # Note: simply doing convert_pos_to_native(self._pos[-1]) does not
         # actually change the values in the dataset, so assignment required
-        if self.units['time'] is not None:
+        if self.units["time"] is not None:
             self._time[i] = self.convert_time_to_native(self._time[i])
-        if self.units['length'] is not None:
-            if self._has['position']:
+        if self.units["length"] is not None:
+            if self._has["position"]:
                 self._pos[i] = self.convert_pos_to_native(self._pos[i])
-            if 'edges' in self._traj['box']:
+            if "edges" in self._traj["box"]:
                 self._edges[i] = self.convert_pos_to_native(self._edges[i])
-        if self._has['velocity']:
-            if self.units['velocity'] is not None:
+        if self._has["velocity"]:
+            if self.units["velocity"] is not None:
                 self._vel[i] = self.convert_velocities_to_native(self._vel[i])
-        if self._has['force']:
-            if self.units['force'] is not None:
+        if self._has["force"]:
+            if self.units["force"] is not None:
                 self._force[i] = self.convert_forces_to_native(self._force[i])
 
     @property
     def has_positions(self):
         """``True`` if writer is writing positions from Timestep."""
-        return self._has['position']
+        return self._has["position"]
 
     @property
     def has_velocities(self):
         """``True`` if writer is writing velocities from Timestep."""
-        return self._has['velocity']
+        return self._has["velocity"]
 
     @property
     def has_forces(self):
         """``True`` if writer is writing forces from Timestep."""
-        return self._has['force']
+        return self._has["force"]
 
 
 class H5PYPicklable(h5py.File):
@@ -1540,18 +1659,18 @@ class H5PYPicklable(h5py.File):
         # from self and pickle MPI.Comm object. Parallel driver is excluded
         # from test because h5py calls for an MPI configuration when driver is
         # 'mpio', so this will need to be patched in the test function.
-        if driver == 'mpio':  # pragma: no cover
-            raise TypeError("Parallel pickling of `h5py.File` with"  # pragma: no cover
-                            " 'mpio' driver is currently not supported.")
+        if driver == "mpio":  # pragma: no cover
+            raise TypeError(
+                "Parallel pickling of `h5py.File` with"  # pragma: no cover
+                " 'mpio' driver is currently not supported."
+            )
 
-        return {'name': self.filename,
-                'mode': self.mode,
-                'driver': driver}
+        return {"name": self.filename, "mode": self.mode, "driver": driver}
 
     def __setstate__(self, state):
-        self.__init__(name=state['name'],
-                      mode=state['mode'],
-                      driver=state['driver'])
+        self.__init__(
+            name=state["name"], mode=state["mode"], driver=state["driver"]
+        )
 
     def __getnewargs__(self):
         """Override the h5py getnewargs to skip its error message"""
