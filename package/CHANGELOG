@@ -40,8 +40,8 @@ Fixes
  * Fixes the benchmark `SimpleRmsBench` in `benchmarks/analysis/rms.py`
    by changing the way weights for RMSD are calculated, instead of
    directly passing them. (Issue #3520, PR #5006)
- * Fixes bug in `units.py`: conversion factors for some speed units has
-   been fixed (Issue #5051)  
+ * Fixes incorrect conversion factors for speed units A/fs, A/us, A/ms 
+   in MDAnalysis.units (Issue #5051, PR #5053)  
 
 Enhancements
  * Added capability to calculate MSD from frames with irregular (non-linear)
