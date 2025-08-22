@@ -72,6 +72,8 @@ inputs:
     default: 'networkx'
   openmm:
     default: 'openmm'
+  pooch:
+    default: 'openmm'
   pytng:
     default: 'pytng>=0.2.3'
   rdkit:
