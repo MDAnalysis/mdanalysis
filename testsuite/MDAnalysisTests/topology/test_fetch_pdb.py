@@ -21,62 +21,96 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-
 from urllib import request
 
 import MDAnalysis as mda
 import pytest
 
+
 def has_pooch():
     try:
         import pooch
-        from requests.exceptions import HTTPError 
+        from requests.exceptions import HTTPError
+
         return True
     except ModuleNotFoundError:
         return False
-    
+
 
 def has_internet():
     try:
-        request.urlopen('https://files.wwpdb.org/', timeout=2)
+        request.urlopen("https://files.wwpdb.org/", timeout=2)
         return True
-    except request.URLError as err: 
+    except request.URLError as err:
         return False
-    
-    
-@pytest.mark.skipif(not has_pooch() or not has_internet() , reason="Cannot connect to https://files.wwpdb.org/'")
+
+
+@pytest.mark.skipif(
+    not has_pooch() or not has_internet(),
+    reason="Cannot connect to https://files.wwpdb.org/'",
+)
 class TestDocstringExamples:
     """This class tests all the examples found in fetch_pdb's docstring"""
 
-    TRUE_NATOMS_PER_PDB = {'1AKE': 3816,
-                           '4BWZ': 2824}
+    TRUE_NATOMS_PER_PDB = {"1AKE": 3816, "4BWZ": 2824}
 
     def test_one_file_download(self, tmp_path):
-        assert isinstance(mda.fetch_pdb("1AKE", cache_path=tmp_path, file_format="cif"), str)
+        assert isinstance(
+            mda.fetch_pdb("1AKE", cache_path=tmp_path, file_format="cif"), str
+        )
 
     def test_multiple_files_download(self, tmp_path):
-        list_of_path_strings = mda.fetch_pdb(["1AKE", "4BWZ"], cache_path=tmp_path, progressbar=True)
+        list_of_path_strings = mda.fetch_pdb(
+            ["1AKE", "4BWZ"], cache_path=tmp_path, progressbar=True
+        )
         assert all(isinstance(PDB_ID, str) for PDB_ID in list_of_path_strings)
 
     def test_one_file_to_universe(self, tmp_path):
-        u = mda.Universe(mda.fetch_pdb("1AKE"), file_format="pdb.gz", cache_path=tmp_path, progressbar=True)
-        assert isinstance(u, mda.Universe) and (len(u.atoms) == self.TRUE_NATOMS_PER_PDB['1AKE'])
+        u = mda.Universe(
+            mda.fetch_pdb("1AKE"),
+            file_format="pdb.gz",
+            cache_path=tmp_path,
+            progressbar=True,
+        )
+        assert isinstance(u, mda.Universe) and (
+            len(u.atoms) == self.TRUE_NATOMS_PER_PDB["1AKE"]
+        )
 
     def test_multiple_files_to_universe(self, tmp_path):
-        list_of_path_strings = [mda.Universe(mda.fetch_pdb(PDB_ID), cache_path=tmp_path, file_format="pdb.gz") for PDB_ID in ("1AKE", "4BWZ")]
-        assert (all(isinstance(PDB_ID, mda.Universe) for PDB_ID in list_of_path_strings)) and (len(u.atoms) == n_atoms for u, n_atoms in zip(list_of_path_strings, self.TRUE_NATOMS_PER_PDB.values()))
+        list_of_path_strings = [
+            mda.Universe(
+                mda.fetch_pdb(PDB_ID),
+                cache_path=tmp_path,
+                file_format="pdb.gz",
+            )
+            for PDB_ID in ("1AKE", "4BWZ")
+        ]
+        assert (
+            all(
+                isinstance(PDB_ID, mda.Universe)
+                for PDB_ID in list_of_path_strings
+            )
+        ) and (
+            len(u.atoms) == n_atoms
+            for u, n_atoms in zip(
+                list_of_path_strings, self.TRUE_NATOMS_PER_PDB.values()
+            )
+        )
 
-@pytest.mark.skipif(not has_pooch() or not has_internet() , reason="Cannot connect to https://files.wwpdb.org/")
+
+@pytest.mark.skipif(
+    not has_pooch() or not has_internet(),
+    reason="Cannot connect to https://files.wwpdb.org/",
+)
 class TestExpectedErrors:
-    from requests.exceptions import HTTPError 
+    from requests.exceptions import HTTPError
 
     def test_invalid_pdb(self, tmp_path):
         with pytest.raises(self.HTTPError):
-            mda.fetch_pdb(PDB_IDS='foobar', cache_path=tmp_path)
+            mda.fetch_pdb(PDB_IDS="foobar", cache_path=tmp_path)
 
     def test_invalid_file_format(self, tmp_path):
         with pytest.raises(self.HTTPError):
-            mda.fetch_pdb(PDB_IDS='1AKE', cache_path=tmp_path, file_format='barfoo')
-
-
-
+            mda.fetch_pdb(
+                PDB_IDS="1AKE", cache_path=tmp_path, file_format="barfoo"
+            )
