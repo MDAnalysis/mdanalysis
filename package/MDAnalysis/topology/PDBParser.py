@@ -591,7 +591,7 @@ def fetch_pdb(PDB_IDS=None,
         PDB_IDS = (PDB_IDS,)
 
     if cache_path is None:
-        cache_path = pooch.os_cache('MDAnalysis')
+        cache_path = pooch.os_cache('pdb_cache')
 
     # Have to do this dictionary approach instead of using Pooch.retrieve in order to prevent the hardcoded known_hash warning from showing up
     registry_dictionary = {f'{PDB_ID}.{file_format}': None for PDB_ID in PDB_IDS}
