@@ -21,10 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-
-# Note need to make test not run when there is no internet
-
-from requests.exceptions import HTTPError
+from requests.exceptions import HTTPError # Note still need to change this.
 from urllib import request
 
 import MDAnalysis as mda
@@ -40,7 +37,7 @@ def has_pooch():
         return False
     
 
-def check_internet():
+def has_internet():
     try:
         request.urlopen('https://files.wwpdb.org/', timeout=2)
         return True
@@ -48,29 +45,29 @@ def check_internet():
         return False
     
     
-@pytest.mark.skipif(has_pooch() is False or check_internet() is False, reason="Cannot connect to https://files.wwpdb.org/'")
+@pytest.mark.skipif(not has_pooch() or not has_internet() , reason="Cannot connect to https://files.wwpdb.org/'")
 class TestDocstringExamples:
-    """This class test the example found in fetch_pdb's docstring"""
+    """This class tests all the examples found in fetch_pdb's docstring"""
+
+    TRUE_NATOMS_PER_PDB = {'1AKE': 3816,
+                           '4BWZ': 2824}
 
     def test_one_file_download(self, tmp_path):
-        """Tests docstring's mda.fetch_pdb("1AKE", file_format="cif") """
         assert isinstance(mda.fetch_pdb("1AKE", cache_path=tmp_path, file_format="cif"), str)
 
     def test_multiple_files_download(self, tmp_path):
-        """Tests docstring's mda.fetch_pdb(["1AKE", "4BWZ"], progressbar=True) """
         list_of_path_strings = mda.fetch_pdb(["1AKE", "4BWZ"], cache_path=tmp_path, progressbar=True)
         assert all(isinstance(PDB_ID, str) for PDB_ID in list_of_path_strings)
 
     def test_one_file_to_universe(self, tmp_path):
-        """Tests docstring's mda.Universe(mda.fetch_pdb("1AKE"), file_format="pdb.gz") """
-        assert isinstance(mda.Universe(mda.fetch_pdb("1AKE"), file_format="pdb.gz", cache_path=tmp_path, progressbar=True), mda.Universe)
+        u = mda.Universe(mda.fetch_pdb("1AKE"), file_format="pdb.gz", cache_path=tmp_path, progressbar=True)
+        assert isinstance(u, mda.Universe) and (len(u.atoms) == self.TRUE_NATOMS_PER_PDB['1AKE'])
 
     def test_multiple_files_to_universe(self, tmp_path):
-        """Tests docstring's [mda.Universe(mda.fetch_pdb(PDB_ID), file_format="pdb.gz") for PDB_ID in ("1AKE", "4BWZ")] """
         list_of_path_strings = [mda.Universe(mda.fetch_pdb(PDB_ID), cache_path=tmp_path, file_format="pdb.gz") for PDB_ID in ("1AKE", "4BWZ")]
-        assert all(isinstance(PDB_ID, mda.Universe) for PDB_ID in list_of_path_strings)
+        assert (all(isinstance(PDB_ID, mda.Universe) for PDB_ID in list_of_path_strings)) and (len(u.atoms) == n_atoms for u, n_atoms in zip(list_of_path_strings, self.TRUE_NATOMS_PER_PDB.values()))
 
-@pytest.mark.skipif(has_pooch() is False or check_internet() is False, reason="Cannot connect to https://files.wwpdb.org/")
+@pytest.mark.skipif(not has_pooch() or not has_internet() , reason="Cannot connect to https://files.wwpdb.org/")
 class TestExpectedErrors:
     def test_invalid_pdb(self, tmp_path):
         with pytest.raises(HTTPError):
