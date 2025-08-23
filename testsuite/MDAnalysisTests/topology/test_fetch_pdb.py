@@ -41,7 +41,7 @@ def has_internet():
     try:
         request.urlopen("https://files.wwpdb.org/", timeout=2)
         return True
-    except request.URLError as err:
+    except request.URLError:
         return False
 
 
