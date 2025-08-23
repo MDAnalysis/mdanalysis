@@ -584,7 +584,7 @@ def fetch_pdb(PDB_IDS=None,
     
     try:
         import pooch
-    except:
+    except ModuleNotFoundError:
         raise ModuleNotFoundError('pooch is needed as a dependency for fetch_pdb()')
 
     if isinstance(PDB_IDS, str):

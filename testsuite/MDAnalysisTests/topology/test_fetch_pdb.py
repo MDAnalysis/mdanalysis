@@ -47,7 +47,7 @@ def has_internet():
 
 @pytest.mark.skipif(
     not has_pooch() or not has_internet(),
-    reason="Cannot connect to https://files.wwpdb.org/'",
+    reason="Cannot connect to https://files.wwpdb.org/",
 )
 class TestDocstringExamples:
     """This class tests all the examples found in fetch_pdb's docstring"""
@@ -114,3 +114,12 @@ class TestExpectedErrors:
             mda.fetch_pdb(
                 PDB_IDS="1AKE", cache_path=tmp_path, file_format="barfoo"
             )
+
+
+@pytest.mark.skipif(
+    has_pooch(),
+    reason="Pooch is installed.",
+)
+def test_pooch_is_not_installed(tmp_path):
+    with pytest.raises(ModuleNotFoundError):
+        mda.fetch_pdb("1AKE", cache_path=tmp_path, file_format="cif")
