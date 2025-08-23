@@ -21,17 +21,16 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-from requests.exceptions import HTTPError 
+
 from urllib import request
 
 import MDAnalysis as mda
 import pytest
 
-
-
 def has_pooch():
     try:
         import pooch
+        from requests.exceptions import HTTPError 
         return True
     except ModuleNotFoundError:
         return False
@@ -69,12 +68,14 @@ class TestDocstringExamples:
 
 @pytest.mark.skipif(not has_pooch() or not has_internet() , reason="Cannot connect to https://files.wwpdb.org/")
 class TestExpectedErrors:
+    from requests.exceptions import HTTPError 
+
     def test_invalid_pdb(self, tmp_path):
-        with pytest.raises(HTTPError):
+        with pytest.raises(self.HTTPError):
             mda.fetch_pdb(PDB_IDS='foobar', cache_path=tmp_path)
 
     def test_invalid_file_format(self, tmp_path):
-        with pytest.raises(HTTPError):
+        with pytest.raises(self.HTTPError):
             mda.fetch_pdb(PDB_IDS='1AKE', cache_path=tmp_path, file_format='barfoo')
 
 
