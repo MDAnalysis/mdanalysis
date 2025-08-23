@@ -21,7 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-from requests.exceptions import HTTPError # Note still need to change this.
+from requests.exceptions import HTTPError 
 from urllib import request
 
 import MDAnalysis as mda

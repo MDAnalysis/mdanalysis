@@ -581,7 +581,6 @@ def fetch_pdb(PDB_IDS=None,
 
     """
     
-    # Have to do this dictionary approach instead of using Pooch.retrieve in order to prevent the hardcoded known_hash warning from showing up
     
     try:
         import pooch
@@ -594,6 +593,7 @@ def fetch_pdb(PDB_IDS=None,
     if cache_path is None:
         cache_path = pooch.os_cache('MDAnalysis')
 
+    # Have to do this dictionary approach instead of using Pooch.retrieve in order to prevent the hardcoded known_hash warning from showing up
     registry_dictionary = {f'{PDB_ID}.{file_format}': None for PDB_ID in PDB_IDS}
   
     downloader = pooch.create(
