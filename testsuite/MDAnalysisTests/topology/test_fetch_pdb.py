@@ -120,6 +120,6 @@ class TestExpectedErrors:
     has_pooch(),
     reason="Pooch is installed.",
 )
-def test_pooch_is_not_installed(tmp_path):
+def test_pooch_installation(tmp_path):
     with pytest.raises(ModuleNotFoundError):
         mda.fetch_pdb("1AKE", cache_path=tmp_path, file_format="cif")
