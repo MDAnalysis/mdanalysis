@@ -516,19 +516,19 @@ def _parse_conect(conect):
                   range(n_bond_atoms))
     return atom_id, bond_atoms
 
-def fetch_pdb(PDB_IDS=None,
-            cache_path=None,
-            progressbar=False,
-            file_format="pdb.gz",
-            ):
-    
+def fetch_pdb(
+    PDB_IDS=None,
+    cache_path=None,
+    progressbar=False,
+    file_format="pdb.gz",
+):
     """
     Download one or more PDB files from the RCSB Protein Data Bank and cache them locally.
 
     Given one or multiple PDB IDs, downloads the corresponding structure files in the specified
     format and stores them in a local cache directory. If files are cached on disk, fetch_pdb() will skip the download and use
     the cached version instead.
-    
+
     Returns the path(s) as a string to the downloaded files.
 
     Parameters
@@ -536,7 +536,7 @@ def fetch_pdb(PDB_IDS=None,
     PDB_IDS : str or sequence of str
         A single PDB ID as a string, or a sequence of PDB IDs to fetch.
     cache_path : str or pathlib.Path
-        Directory where downloaded file(s) will be cached. 
+        Directory where downloaded file(s) will be cached.
     file_format : str
         The file extension/format to download (e.g., "cif", "pdb")
     progressbar : bool, optional
@@ -552,7 +552,7 @@ def fetch_pdb(PDB_IDS=None,
     ------
     requests.exceptions.HTTPError
         If an invalid PDB code or file format is specified.
-    
+
     Notes
     -----
     This function downloads using the API established here at https://www.rcsb.org/docs/programmatic-access/file-download-services.
@@ -580,29 +580,40 @@ def fetch_pdb(PDB_IDS=None,
     [<Universe with 3816 atoms>, <Universe with 2824 atoms>]
 
     """
-    
-    
+
     try:
         import pooch
     except ModuleNotFoundError:
-        raise ModuleNotFoundError('pooch is needed as a dependency for fetch_pdb()')
+        raise ModuleNotFoundError(
+            "pooch is needed as a dependency for fetch_pdb()"
+        )
 
     if isinstance(PDB_IDS, str):
         PDB_IDS = (PDB_IDS,)
 
     if cache_path is None:
-        cache_path = pooch.os_cache('pdb_cache')
+        cache_path = pooch.os_cache("pdb_cache")
 
-    # Have to do this dictionary approach instead of using Pooch.retrieve in order to prevent the hardcoded known_hash warning from showing up
-    registry_dictionary = {f'{PDB_ID}.{file_format}': None for PDB_ID in PDB_IDS}
-  
+    # Have to do this dictionary approach instead of using Pooch.retrieve in order to prevent the hardcoded known_hash warning from showing up.
+    registry_dictionary = {
+        f"{PDB_ID}.{file_format}": None for PDB_ID in PDB_IDS
+    }
+
     downloader = pooch.create(
         path=cache_path,
         base_url="https://files.wwpdb.org/download/",
-        registry=registry_dictionary
+        registry=registry_dictionary,
     )
 
     if len(PDB_IDS) == 1:
-        return str(downloader.fetch(fname=tuple(registry_dictionary.keys())[0], progressbar=progressbar))
+        return str(
+            downloader.fetch(
+                fname=tuple(registry_dictionary.keys())[0],
+                progressbar=progressbar,
+            )
+        )
     else:
-        return [downloader.fetch(fname=file_name, progressbar=progressbar) for file_name in registry_dictionary.keys()]
+        return [
+            downloader.fetch(fname=file_name, progressbar=progressbar)
+            for file_name in registry_dictionary.keys()
+        ]
