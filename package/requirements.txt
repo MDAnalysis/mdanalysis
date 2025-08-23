@@ -15,7 +15,6 @@ packaging
 parmed
 pooch
 pytest
-requests
 scikit-learn
 scipy
 seaborn>=0.7.0,<=0.9
