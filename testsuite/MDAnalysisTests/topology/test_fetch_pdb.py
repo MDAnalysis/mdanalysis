@@ -47,7 +47,7 @@ def has_internet():
 
 @pytest.mark.skipif(
     not has_pooch() or not has_internet(),
-    reason="Cannot connect to https://files.wwpdb.org/",
+    reason="Installation doesn't have pooch or can not connect to https://files.wwpdb.org/",
 )
 class TestDocstringExamples:
     """This class tests all the examples found in fetch_pdb's docstring"""
@@ -100,7 +100,7 @@ class TestDocstringExamples:
 
 @pytest.mark.skipif(
     not has_pooch() or not has_internet(),
-    reason="Cannot connect to https://files.wwpdb.org/",
+    reason="Installation doesn't have pooch or can not connect to https://files.wwpdb.org/",
 )
 class TestExpectedErrors:
     from requests.exceptions import HTTPError
