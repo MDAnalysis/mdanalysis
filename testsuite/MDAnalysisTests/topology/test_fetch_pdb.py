@@ -26,28 +26,24 @@ from urllib import request
 import MDAnalysis as mda
 import pytest
 
+try:
+    import pooch
+    from requests.exceptions import HTTPError
 
-def has_pooch():
-    try:
-        import pooch
-        from requests.exceptions import HTTPError
+    has_pooch = True
+except ImportError:
+    has_pooch = False
 
-        return True
-    except ModuleNotFoundError:
-        return False
-
-
-def has_internet():
-    try:
-        request.urlopen("https://files.wwpdb.org/", timeout=2)
-        return True
-    except request.URLError:
-        return False
+try:
+    request.urlopen("https://files.wwpdb.org/", timeout=2)
+    has_internet = True
+except request.URLError:
+    has_internet = False
 
 
 @pytest.mark.skipif(
-    not has_pooch() or not has_internet(),
-    reason="Installation doesn't have pooch or can not connect to https://files.wwpdb.org/",
+    not has_pooch or not has_internet,
+    reason="Pooch is not installed or can not connect to https://files.wwpdb.org/",
 )
 class TestDocstringExamples:
     """This class tests all the examples found in fetch_pdb's docstring"""
@@ -99,25 +95,24 @@ class TestDocstringExamples:
 
 
 @pytest.mark.skipif(
-    not has_pooch() or not has_internet(),
-    reason="Installation doesn't have pooch or can not connect to https://files.wwpdb.org/",
+    not has_pooch or not has_internet,
+    reason="Pooch is not installed or can not connect to https://files.wwpdb.org/",
 )
 class TestExpectedErrors:
-    from requests.exceptions import HTTPError
-
+    
     def test_invalid_pdb(self, tmp_path):
-        with pytest.raises(self.HTTPError):
+        with pytest.raises(HTTPError):
             mda.fetch_pdb(PDB_IDS="foobar", cache_path=tmp_path)
 
     def test_invalid_file_format(self, tmp_path):
-        with pytest.raises(self.HTTPError):
+        with pytest.raises(HTTPError):
             mda.fetch_pdb(
                 PDB_IDS="1AKE", cache_path=tmp_path, file_format="barfoo"
             )
 
 
 @pytest.mark.skipif(
-    has_pooch(),
+    has_pooch,
     reason="Pooch is installed.",
 )
 def test_pooch_installation(tmp_path):
