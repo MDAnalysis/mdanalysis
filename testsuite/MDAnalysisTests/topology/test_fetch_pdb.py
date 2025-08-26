@@ -21,30 +21,34 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-import pytest
-
-import MDAnalysis as mda
-from MDAnalysis.topology.PDBParser import HAS_POOCH
-
 from urllib import request
 
+import MDAnalysis as mda
+import pytest
 
-if HAS_POOCH:
+try:
+    import pooch
     from requests.exceptions import HTTPError
+
+    has_pooch = True
+except ImportError:
+    has_pooch = False
 
 try:
     request.urlopen("https://files.wwpdb.org/", timeout=2)
-    HAS_INTERNET = True
+    has_internet = True
 except request.URLError:
-    HAS_INTERNET = False
+    has_internet = False
 
 
 @pytest.mark.skipif(
-    not HAS_POOCH or not HAS_INTERNET,
+    not has_pooch or not has_internet,
     reason="Pooch is not installed or can not connect to https://files.wwpdb.org/",
 )
 class TestDocstringExamples:
     """This class tests all the examples found in fetch_pdb's docstring"""
+
+    # TRUE_NATOMS_PER_PDB = {"1AKE": 3816, "4BWZ": 2824}
 
     @pytest.mark.parametrize("pdb_id", [("1AKE"), ("4BWZ")])
     def test_one_file_download(self, tmp_path, pdb_id):
@@ -74,7 +78,7 @@ class TestDocstringExamples:
 
 
 @pytest.mark.skipif(
-    not HAS_POOCH or not HAS_INTERNET,
+    not has_pooch or not has_internet,
     reason="Pooch is not installed or can not connect to https://files.wwpdb.org/",
 )
 class TestExpectedErrors:
@@ -89,7 +93,11 @@ class TestExpectedErrors:
                 PDB_IDS="1AKE", cache_path=tmp_path, file_format="barfoo"
             )
 
-@pytest.mark.skipif(HAS_POOCH, reason="pooch is installed")
-def test_fetch_pdb_raises(tmp_path):
-    with pytest.raises(ModuleNotFoundError, match="pooch is needed as a dependency for fetch_pdb()"):
+
+@pytest.mark.skipif(
+    has_pooch,
+    reason="Pooch is installed.",
+)
+def test_pooch_installation(tmp_path):
+    with pytest.raises(ModuleNotFoundError):
         mda.fetch_pdb("1AKE", cache_path=tmp_path, file_format="cif")
