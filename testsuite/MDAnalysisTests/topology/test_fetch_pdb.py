@@ -48,11 +48,12 @@ except request.URLError:
 class TestDocstringExamples:
     """This class tests all the examples found in fetch_pdb's docstring"""
 
-    TRUE_NATOMS_PER_PDB = {"1AKE": 3816, "4BWZ": 2824}
+    # TRUE_NATOMS_PER_PDB = {"1AKE": 3816, "4BWZ": 2824}
 
-    def test_one_file_download(self, tmp_path):
+    @pytest.mark.parametrize("pdb_id", [("1AKE"), ("4BWZ")])
+    def test_one_file_download(self, tmp_path, pdb_id):
         assert isinstance(
-            mda.fetch_pdb("1AKE", cache_path=tmp_path, file_format="cif"), str
+            mda.fetch_pdb(pdb_id, cache_path=tmp_path, file_format="cif"), str
         )
 
     def test_multiple_files_download(self, tmp_path):
@@ -61,37 +62,19 @@ class TestDocstringExamples:
         )
         assert all(isinstance(PDB_ID, str) for PDB_ID in list_of_path_strings)
 
-    def test_one_file_to_universe(self, tmp_path):
+    @pytest.mark.parametrize(
+        "pdb_id, n_atoms", [("1AKE", 3816), ("4BWZ", 2824)]
+    )
+    def test_files_to_universe(self, tmp_path, pdb_id, n_atoms):
         u = mda.Universe(
-            mda.fetch_pdb("1AKE"),
-            file_format="pdb.gz",
-            cache_path=tmp_path,
-            progressbar=True,
-        )
-        assert isinstance(u, mda.Universe) and (
-            len(u.atoms) == self.TRUE_NATOMS_PER_PDB["1AKE"]
-        )
-
-    def test_multiple_files_to_universe(self, tmp_path):
-        list_of_path_strings = [
-            mda.Universe(
-                mda.fetch_pdb(PDB_ID),
-                cache_path=tmp_path,
+            mda.fetch_pdb(
+                pdb_id,
                 file_format="pdb.gz",
-            )
-            for PDB_ID in ("1AKE", "4BWZ")
-        ]
-        assert (
-            all(
-                isinstance(PDB_ID, mda.Universe)
-                for PDB_ID in list_of_path_strings
-            )
-        ) and (
-            len(u.atoms) == n_atoms
-            for u, n_atoms in zip(
-                list_of_path_strings, self.TRUE_NATOMS_PER_PDB.values()
+                cache_path=tmp_path,
+                progressbar=True,
             )
         )
+        assert isinstance(u, mda.Universe) and (len(u.atoms) == n_atoms)
 
 
 @pytest.mark.skipif(
@@ -99,7 +82,7 @@ class TestDocstringExamples:
     reason="Pooch is not installed or can not connect to https://files.wwpdb.org/",
 )
 class TestExpectedErrors:
-    
+
     def test_invalid_pdb(self, tmp_path):
         with pytest.raises(HTTPError):
             mda.fetch_pdb(PDB_IDS="foobar", cache_path=tmp_path)
