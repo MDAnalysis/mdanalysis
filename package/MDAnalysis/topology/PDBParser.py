@@ -92,6 +92,13 @@ from ..core.topologyattrs import (
     FormalCharges,
 )
 
+try:
+    import pooch
+except ImportError:
+    HAS_POOCH = False
+else:
+    HAS_POOCH = True
+
 # Set up a logger for the PDBParser
 logger = logging.getLogger("MDAnalysis.topology.PDBParser")
 
@@ -581,9 +588,7 @@ def fetch_pdb(
 
     """
 
-    try:
-        import pooch
-    except ModuleNotFoundError:
+    if not HAS_POOCH:
         raise ModuleNotFoundError(
             "pooch is needed as a dependency for fetch_pdb()"
         )
