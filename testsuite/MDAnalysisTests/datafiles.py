@@ -274,6 +274,7 @@ __all__ = [
     "LAMMPSDUMP_chain2",  # Lammps dump file with chain reader
     "LAMMPS_chain",  # Lammps data file with chain reader
     "LAMMPSDUMP_additional_columns",  # lammpsdump file with additional data (an additional charge column)
+    "LAMMPSDUMP_non_linear",  # lammpsdump file to test calculating non-linear msd method
     "unordered_res",  # pdb file with resids non sequential
     "GMS_ASYMOPT",  # GAMESS C1  optimization
     "GMS_SYMOPT",  # GAMESS D4h optimization
@@ -784,6 +785,9 @@ LAMMPSdata_additional_columns = (
 ).as_posix()
 LAMMPSDUMP_additional_columns = (
     _data_ref / "lammps/additional_columns.lammpstrj"
+).as_posix()
+LAMMPSDUMP_non_linear = (
+    _data_ref / "analysis/msd/test_non_linear.dump.bz2"
 ).as_posix()
 
 unordered_res = (_data_ref / "unordered_res.pdb").as_posix()

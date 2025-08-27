@@ -42,6 +42,9 @@ Fixes
    directly passing them. (Issue #3520, PR #5006)
 
 Enhancements
+ * Added capability to calculate MSD from frames with irregular (non-linear)
+   time spacing in analysis.msd.EinsteinMSD with keyword argument
+   `non_linear=True` (Issue #5028, PR #5066)
  * Support has been added for reading positions and velocities
    from GROMACS TPR files, between GROMACS version 4.x and 2025
    (Issue #464, PR #4873)
