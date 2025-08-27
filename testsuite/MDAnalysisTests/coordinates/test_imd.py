@@ -44,13 +44,52 @@ from MDAnalysisTests.datafiles import (
 )
 
 
-def test_IMDCLIENT_import(monkeypatch):
-    backup = sys.modules.copy()
+class IMDModuleStateManager:
+    """Context manager to completely backup and restore imdclient/IMD module state.
 
-    try:
+    We need a custom manager because IMD changes its own state (HAS_IMDCLIENT) when it is imported
+    and we are going to manipulate the state of the imdclient module that IMD sees.
+    """
+
+    def __init__(self):
+        self.original_modules = None
+        self.imd_was_imported = False
+
+    def __enter__(self):
+        # Backup sys.modules
+        self.original_modules = sys.modules.copy()
+
+        # Check if IMD module was already imported
+        self.imd_was_imported = "MDAnalysis.coordinates.IMD" in sys.modules
+
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        # Restore sys.modules completely first
+        sys.modules.clear()
+        sys.modules.update(self.original_modules)
+
+        # If IMD module was originally imported, force a fresh reload to restore original state
+        # This ensures that HAS_IMDCLIENT and other globals are recalculated with the real imdclient
+        if self.imd_was_imported:
+            # Remove the potentially corrupted IMD module
+            sys.modules.pop("MDAnalysis.coordinates.IMD", None)
+            # Fresh import will re-evaluate all globals
+            import MDAnalysis.coordinates.IMD
+
+
+class TestImport:
+    """Test imdclient import behavior and HAS_IMDCLIENT flag."""
+
+    def _setup_mock_imdclient(self, monkeypatch, version):
+        """Helper method to set up mock imdclient with specified version."""
+        # Remove IMD and imdclient modules to force fresh import
+        monkeypatch.delitem(
+            sys.modules, "MDAnalysis.coordinates.IMD", raising=False
+        )
+        monkeypatch.delitem(sys.modules, "imdclient", raising=False)
+
         module_name = "imdclient"
-
-        # Create mock modules
         mocked_module = ModuleType(module_name)
         IMDClient_module = ModuleType(f"{module_name}.IMDClient")
 
@@ -59,7 +98,7 @@ def test_IMDCLIENT_import(monkeypatch):
 
         IMDClient_module.IMDClient = MockIMDClient
         mocked_module.IMDClient = IMDClient_module
-        mocked_module.__version__ = str(MIN_IMDCLIENT_VERSION)
+        mocked_module.__version__ = version
 
         utils_module = ModuleType(f"{module_name}.utils")
         utils_module.parse_host_port = lambda x: ("localhost", 12345)
@@ -71,33 +110,48 @@ def test_IMDCLIENT_import(monkeypatch):
         )
         monkeypatch.setitem(sys.modules, f"{module_name}.utils", utils_module)
 
-        sys.modules.pop("MDAnalysis.coordinates.IMD", None)
+        return mocked_module
 
-        # check if imdclient is new enough
-        import MDAnalysis.coordinates.IMD
+    def test_has_minversion(self, monkeypatch):
+        """Test that HAS_IMDCLIENT is True when imdclient >= MIN_IMDCLIENT_VERSION."""
+        with IMDModuleStateManager():
+            self._setup_mock_imdclient(monkeypatch, str(MIN_IMDCLIENT_VERSION))
 
-        importlib.reload(MDAnalysis.coordinates.IMD)
-        from MDAnalysis.coordinates.IMD import HAS_IMDCLIENT
+            # Import and check HAS_IMDCLIENT with compatible version
+            import MDAnalysis.coordinates.IMD
+            from MDAnalysis.coordinates.IMD import HAS_IMDCLIENT
 
-        assert HAS_IMDCLIENT
+            assert (
+                HAS_IMDCLIENT
+            ), f"HAS_IMDCLIENT should be True with version {MIN_IMDCLIENT_VERSION}"
 
-        # check if imdclient version is too old
-        mocked_module.__version__ = "0.0.0"
-        importlib.reload(MDAnalysis.coordinates.IMD)
-        from MDAnalysis.coordinates.IMD import HAS_IMDCLIENT
-        from MDAnalysis.coordinates.IMD import IMDReader as IMDReader_NOClient
+    def test_no_minversion(self, monkeypatch):
+        """Test that HAS_IMDCLIENT is False when imdclient version is too old."""
+        with IMDModuleStateManager():
+            self._setup_mock_imdclient(monkeypatch, "0.0.0")
 
-        assert not HAS_IMDCLIENT
+            # Import and check HAS_IMDCLIENT with incompatible version
+            import MDAnalysis.coordinates.IMD
+            from MDAnalysis.coordinates.IMD import HAS_IMDCLIENT
 
-        # test initialization error
-        with pytest.raises(
-            ImportError, match="IMDReader requires the imdclient"
-        ):
-            IMDReader_NOClient("imd://localhost:12345", n_atoms=5)
-    finally:
-        # Restore sys.modules to avoid side effects on other tests
-        sys.modules.clear()
-        sys.modules.update(backup)
+            assert (
+                not HAS_IMDCLIENT
+            ), "HAS_IMDCLIENT should be False with version 0.0.0"
+
+    def test_missing_ImportError(self, monkeypatch):
+        """Test that IMDReader raises ImportError when HAS_IMDCLIENT=False."""
+        with IMDModuleStateManager():
+            self._setup_mock_imdclient(monkeypatch, "0.0.0")
+
+            # Import with incompatible version (HAS_IMDCLIENT=False)
+            import MDAnalysis.coordinates.IMD
+            from MDAnalysis.coordinates.IMD import IMDReader
+
+            # IMDReader should raise ImportError when HAS_IMDCLIENT=False
+            with pytest.raises(
+                ImportError, match="IMDReader requires the imdclient"
+            ):
+                IMDReader("imd://localhost:12345", n_atoms=5)
 
 
 @pytest.mark.skipif(not HAS_IMDCLIENT, reason="IMDClient not installed")
