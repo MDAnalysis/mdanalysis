@@ -39,7 +39,7 @@ except request.URLError:
 
 
 @pytest.mark.skipif(
-    not HAS_POOCH or not HAS_INTERNET,
+    not (HAS_POOCH and HAS_INTERNET),
     reason="Pooch is not installed or can not connect to https://files.wwpdb.org/",
 )
 class TestDocstringExamples:
@@ -73,7 +73,7 @@ class TestDocstringExamples:
 
 
 @pytest.mark.skipif(
-    not HAS_POOCH or not HAS_INTERNET,
+    not (HAS_POOCH and HAS_INTERNET),
     reason="Pooch is not installed or can not connect to https://files.wwpdb.org/",
 )
 class TestExpectedErrors:
