@@ -64,6 +64,13 @@ Classes
    :members:
    :inherited-members:
 
+.. _Data:
+
+Data
+----
+
+.. autodata:: PDB_BASE_URL
+
 """
 import numpy as np
 import warnings
@@ -92,6 +99,9 @@ from ..core.topologyattrs import (
     FormalCharges,
 )
 
+# Set up a logger for the PDBParser
+logger = logging.getLogger("MDAnalysis.topology.PDBParser")
+
 try:
     import pooch
 except ImportError:
@@ -99,9 +109,8 @@ except ImportError:
 else:
     HAS_POOCH = True
 
-# Set up a logger for the PDBParser
-logger = logging.getLogger("MDAnalysis.topology.PDBParser")
-
+#: Base URL for download files from the Protein Databank.
+PDB_BASE_URL = "https://files.wwpdb.org/download/"
 
 def float_or_default(val, default):
     try:
@@ -606,7 +615,7 @@ def fetch_pdb(
 
     downloader = pooch.create(
         path=cache_path,
-        base_url="https://files.wwpdb.org/download/",
+        base_url=PDB_BASE_URL,
         registry=registry_dictionary,
     )
 
