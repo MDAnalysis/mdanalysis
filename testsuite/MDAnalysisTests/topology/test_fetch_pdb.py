@@ -33,13 +33,13 @@ if HAS_POOCH:
 
 try:
     request.urlopen("https://files.wwpdb.org/", timeout=2)
-    HAS_INTERNET = True
+    HAS_ACCESS_TO_WWPDB = True
 except request.URLError:
-    HAS_INTERNET = False
+    HAS_ACCESS_TO_WWPDB = False
 
 
 @pytest.mark.skipif(
-    not (HAS_POOCH and HAS_INTERNET),
+    not (HAS_POOCH and HAS_ACCESS_TO_WWPDB),
     reason="Pooch is not installed or can not connect to https://files.wwpdb.org/",
 )
 class TestDocstringExamples:
@@ -73,7 +73,7 @@ class TestDocstringExamples:
 
 
 @pytest.mark.skipif(
-    not (HAS_POOCH and HAS_INTERNET),
+    not (HAS_POOCH and HAS_ACCESS_TO_WWPDB),
     reason="Pooch is not installed or can not connect to https://files.wwpdb.org/",
 )
 class TestExpectedErrors:
