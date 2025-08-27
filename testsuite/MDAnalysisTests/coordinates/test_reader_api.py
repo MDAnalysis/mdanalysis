@@ -472,8 +472,6 @@ class _Stream:
 
 
 class TestStreamReader(_Stream):
-    __test__ = True
-
     @pytest.fixture
     def reader(self):
         return self.readerclass("dummy", n_atoms=self.n_atoms)
