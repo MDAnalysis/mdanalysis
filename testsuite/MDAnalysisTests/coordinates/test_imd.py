@@ -164,6 +164,13 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
         ):
             reader.Writer(str(tmpdir.join("output")), n_atoms=100)
 
+    def test_OtherWriter_RuntimeError(self, reader, tmpdir):
+        with pytest.raises(
+            RuntimeError,
+            match="cannot create OtherWriter for streamed trajectories",
+        ):
+            reader.OtherWriter(tmpdir.join("output"))
+
     def test_total_time(self, ref, reader):
         pytest.skip("`total_time` is unknown for IMDReader")
 
