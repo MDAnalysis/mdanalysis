@@ -169,7 +169,7 @@ else:
     if imdclient_version < MIN_IMDCLIENT_VERSION:
         warnings.warn(
             f"imdclient version {imdclient_version} is too old; "
-            f"need at least {imdclient_version}, Your installed version of "
+            f"need at least {MIN_IMDCLIENT_VERSION}, Your installed version of "
             "imdclient will NOT be used.",
             category=RuntimeWarning,
         )
