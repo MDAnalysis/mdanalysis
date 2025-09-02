@@ -42,6 +42,34 @@ The :class:`~MDAnalysis.coordinates.IMD.IMDReader` can then connect to the runni
     for ts in u.trajectory:
         print(f'{ts.time:8.3f} {sel[0].position} {sel[0].velocity} {sel[0].force} {u.dimensions[0:3]}')
 
+.. important::
+   **Jupyter Notebook Users**: When using IMDReader in Jupyter notebooks, be aware that 
+   **kernel restarts will not gracefully close active IMD connections**. This can leave 
+   socket connections open, potentially preventing new connections to the same stream.
+
+   Always use ``try/except/finally`` blocks to ensure proper cleanup:
+
+   .. code-block:: python
+
+       import MDAnalysis as mda
+       
+       try:
+           u = mda.Universe("topol.tpr", "imd://localhost:8889")
+       except Exception as e:
+           print(f"Error during connection: {e}")
+       else:
+           try:
+               # Your analysis code here
+               for ts in u.trajectory:
+                   # Process each frame
+                   pass
+           finally:
+               # Ensure connection is closed
+               u.trajectory.close()
+
+   Always explicitly call ``u.trajectory.close()`` when finished with analysis to 
+   ensure connection is closed properly.
+
 Important Limitations
 ---------------------
 
@@ -62,6 +90,23 @@ constraints that differ from traditional trajectory readers:
 .. warning::  
    The IMDReader has some important limitations that are inherent in streaming data.  
    See :class:`~MDAnalysis.coordinates.base.StreamReaderBase` for technical details.  
+
+Multiple Client Connections
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The ability to establish multiple simultaneous connections to the same IMD port is 
+**MD engine implementation dependent**. Some simulation engines may allow multiple 
+clients to connect concurrently, while others may reject or fail additional connection 
+attempts.
+
+* **NAMD**: Currently supports multiple concurrent connections to the same port
+* **GROMACS/LAMMPS**: Not supported by current implementation
+
+.. important::
+   Even when multiple connections are supported by the simulation engine, each connection 
+   receives its own independent data stream. These streams may contain different data 
+   depending on the simulation engine's configuration, so multiple connections should 
+   not be assumed to provide identical data streams.  
 
 .. seealso::
    :class:`IMDReader`
