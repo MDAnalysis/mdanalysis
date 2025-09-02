@@ -299,7 +299,6 @@ class IMDReader(StreamReaderBase):
         self.ts.frame = self._frame
         if imdf.time is not None:
             self.ts.time = imdf.time
-            # NOTE: timestep.pyx "dt" method is suspicious bc it uses "new" keyword for a float
             self.ts.data["dt"] = imdf.dt
             self.ts.data["step"] = imdf.step
         if imdf.energies is not None:
