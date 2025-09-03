@@ -19,10 +19,6 @@ The rules for this file:
          hmacdope, tylerjereddy, cbouy, talagayev, DrDomenicoMarson, jauy1,
          BradyAJohnston
   
-  * Added new function `PDBParser.fetch_pdb` to download structure files from wwPDB
-   using `pooch` as optional dependency. This can be used to interactively create
-   `Universe` classes on the fly. (Issue #4907, PR #4943)  
-
  * 2.10.0
 
 Fixes
@@ -46,6 +42,9 @@ Fixes
    directly passing them. (Issue #3520, PR #5006)
 
 Enhancements
+* Added new function `PDBParser.fetch_pdb` to download structure files from wwPDB
+   using `pooch` as optional dependency. This can be used to interactively create
+   `Universe` classes on the fly. (Issue #4907, PR #4943)  
  * Added capability to calculate MSD from frames with irregular (non-linear)
    time spacing in analysis.msd.EinsteinMSD with keyword argument
    `non_linear=True` (Issue #5028, PR #5066)
