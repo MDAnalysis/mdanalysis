@@ -63,14 +63,7 @@ Classes
 .. autoclass:: PDBParser
    :members:
    :inherited-members:
-
-.. _Data:
-
-Data
-----
-
-.. autodata:: PDB_BASE_URL
-
+   
 """
 import numpy as np
 import warnings
