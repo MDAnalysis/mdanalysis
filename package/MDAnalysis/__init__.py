@@ -221,7 +221,6 @@ from . import converters
 
 from .due import due, Doi, BibTeX
 
-## Temp fetch_pdb import to see if things works
 from .topology.PDBParser import fetch_pdb
 
 due.cite(
