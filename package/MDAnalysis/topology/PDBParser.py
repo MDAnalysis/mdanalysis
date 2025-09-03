@@ -109,9 +109,6 @@ except ImportError:
 else:
     HAS_POOCH = True
 
-#: Base URL for download files from the Protein Databank.
-PDB_BASE_URL = "https://files.wwpdb.org/download/"
-
 def float_or_default(val, default):
     try:
         return float(val)
@@ -615,7 +612,7 @@ def fetch_pdb(
 
     downloader = pooch.create(
         path=cache_path,
-        base_url=PDB_BASE_URL,
+        base_url="https://files.wwpdb.org/download/",
         registry=registry_dictionary,
     )
 
