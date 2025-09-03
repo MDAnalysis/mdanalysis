@@ -16,8 +16,12 @@ The rules for this file:
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, orbeckst, BHM-Bob, TRY-ER, Abdulrahman-PROG, pbuslaev,
          yuxuanzhuang, yuyuan871111, tanishy7777, tulga-rdn, Gareth-elliott,
-         hmacdope, tylerjereddy, cbouy, talagayev, DrDomenicoMarson
-
+         hmacdope, tylerjereddy, cbouy, talagayev, DrDomenicoMarson, jauy1,
+         BradyAJohnston
+  
+  * Added new function `PDBParser.fetch_pdb` to download structure files from wwPDB
+   using `pooch` as optional dependency. This can be used to interactively create
+   `Universe` classes on the fly. (Issue #4907, PR #4943)  
 
  * 2.10.0
 
