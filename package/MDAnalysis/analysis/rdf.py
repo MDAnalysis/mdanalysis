@@ -322,9 +322,11 @@ class InterRDF(AnalysisBase):
 
         # Use optimized histogram if available, otherwise fall back to numpy
         if HAS_NUMBA and optimized_histogram is not None:
-            count, _ = optimized_histogram(dist, 
-                                          bins=self.rdf_settings['bins'],
-                                          range=self.rdf_settings['range'])
+            count, _ = optimized_histogram(
+                dist,
+                bins=self.rdf_settings["bins"],
+                range=self.rdf_settings["range"],
+            )
         else:
             count, _ = np.histogram(dist, **self.rdf_settings)
         self.results.count += count
