@@ -31,7 +31,7 @@ Generally, DCD trajectories produced by any code can be read (with the
 :class:`DCDReader`) although there can be issues with the unitcell (simulation
 box) representation (see :attr:`DCDReader.dimensions`). DCDs can also be
 written but the :class:`DCDWriter` follows recent NAMD/VMD convention for the
-unitcell but still writes AKMA time. Reading and writing these trajectories
+unitcell while still writing AKMA time. Reading and writing these trajectories
 within MDAnalysis will work seamlessly but if you process those trajectories
 with other tools you might need to watch out that time and unitcell dimensions
 are correctly interpreted.
@@ -80,21 +80,26 @@ class DCDReader(base.ReaderBase):
     dimensions**, especially for triclinic unitcells (see `Issue 187`_). DCD
     trajectories produced by CHARMM and NAMD( >2.5) record time in AKMA units.
     If other units have been recorded (e.g., ps) then employ the configurable
-    :class:MDAnalysis.coordinates.LAMMPS.DCDReader and set the time unit as a
+    :class:`MDAnalysis.coordinates.LAMMPS.DCDReader` and set the time unit as a
     optional argument. You can find a list of units used in the DCD formats on
     the MDAnalysis `wiki`_.
 
-
-    MDAnalysis always uses ``(*A*, *B*, *C*, *alpha*, *beta*, *gamma*)`` to
-    represent the unit cell. Lengths *A*, *B*, *C* are in the MDAnalysis length
-    unit (Å), and angles are in degrees.
+    MDAnalysis always uses (*A*, *B*, *C*, α, β, γ) to represent the unit
+    cell. Lengths *A*, *B*, *C* are in the MDAnalysis length unit (Å), and
+    angles α, β, γ are in degrees.
 
     The ordering of the angles in the unitcell is the same as in recent
     versions of VMD's DCDplugin_ (2013), namely the `X-PLOR DCD format`_: The
     original unitcell is read as ``[A, gamma, B, beta, alpha, C]`` from the DCD
-    file. If any of these values are < 0 or if any of the angles are > 180
-    degrees then it is assumed it is a new-style CHARMM unitcell (at least
-    since c36b2) in which box vectors were recorded.
+    file. If any of these values are < 0 or if any of the angles are > 180º
+    then it is assumed it is a new-style CHARMM unitcell (possibly ≥22, at
+    least since c36b2) in which symmetric box vectors were recorded. If all
+    angles are numbers between -1 and +1, then they are treated as cosines of
+    the angle (following the modern NAMD > 2.5/VMD convention).
+
+    Ultimately, all unitcell representations are converted to the MDAnalysis
+    standard unit cell representation in :attr:`DCDReader.dimensions`.
+
 
     .. deprecated:: 2.4.0
         DCDReader currently makes independent timesteps
@@ -116,6 +121,7 @@ class DCDReader(base.ReaderBase):
     .. _Issue 187: https://github.com/MDAnalysis/mdanalysis/issues/187
     .. _DCDplugin: http://www.ks.uiuc.edu/Research/vmd/plugins/doxygen/dcdplugin_8c-source.html#l00947
     .. _wiki: https://github.com/MDAnalysis/mdanalysis/wiki/FileFormats#dcd
+
     """
     format = 'DCD'
     flavor = 'CHARMM'
@@ -353,12 +359,36 @@ class DCDWriter(base.WriterBase):
     in Å and angle-cosines, ``[A, cos(gamma), B, cos(beta), cos(alpha), C]``)
     and writes positions in Å and time in AKMA time units.
 
+    .. warning::
+    
+       Multiple conventions exist for how unit cells are written to DCD
+       files. Until 2.10.0 MDAnalysis followed the old X-PLOR/CHARMM/NAMD
+       (≤2.5) convention of storing ``[A, gamma, B, beta, alpha, C]`` while
+       wrongly stating that the new NAMD/VMD convention would be followed. In
+       2.10.0, MDAnalysis switched to following the documented behavior and now
+       stores the box with angle cosines, as described above. The MDAnalysis
+       :class:`DCDReader` can correctly read either format but *if you have
+       code that relies on a specific format for the box information in the raw
+       DCD file, please check your results.*
+
+       Furthermore, modern versions of CHARMM store box vectors and not box
+       length/angles. When reading MDAnalysis-generated DCD files *in CHARMM*,
+       carefully check your results.
 
     .. note::
         When writing out timesteps without ``dimensions`` (i.e. set ``None``)
         the :class:`DCDWriter` will write out a zeroed unitcell (i.e.
         ``[0, 0, 0, 0, 0, 0]``). As this behaviour is poorly defined, it may
         not match the expectations of other software.
+
+    .. versionchanged:: 2.10.0    
+       Up to 2.10.0 the :class:`DCDWriter` wrote a unit cell following old NAMD
+       (≤2.5) convention, even though the docs stated that the new NAMD
+       convention was being used. Now the modern NAMD > 2.5 format is
+       written. See `Issue #5069`_ for details.
+
+
+    .. _`Issue #5069`: https://github.com/MDAnalysis/mdanalysis/issues/5069
 
     """
     format = 'DCD'
@@ -467,10 +497,14 @@ class DCDWriter(base.WriterBase):
             xyz = self.convert_pos_to_native(xyz, inplace=True)
             dimensions = self.convert_dimensions_to_unitcell(ts, inplace=True)
 
-        # we only support writing charmm format unit cell info
-        # The DCD unitcell is written as ``[A, gamma, B, beta, alpha, C]``
+        # Convert angles to cosines following NAMD/VMD convention
+        # The DCD unitcell is written as [A, cos(gamma), B, cos(beta), cos(alpha), C]
         _ts_order = [0, 5, 1, 4, 3, 2]
         box = np.take(dimensions, _ts_order)
+        
+        # Convert angles (indices 1, 3, 4) from degrees to the special cosine format
+        # used by NAMD/VMD: cos(angle) = sin(90 - angle); see Issue 5069
+        box[[1, 3, 4]] = np.sin(np.deg2rad(90.0 - box[[1, 3, 4]]))
 
         self._file.write(xyz=xyz, box=box)
 
