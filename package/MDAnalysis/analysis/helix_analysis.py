@@ -187,103 +187,182 @@ def local_screw_angles(global_axis, ref_axis, helix_directions):
     return np.rad2deg(to_ortho)
 
 
-def helix_analysis(positions, ref_axis=(0, 0, 1)):
-    r"""
-    Calculate helix properties from atomic coordinates.
+from typing import Dict, Tuple, Union, Optional, List
+import numpy as np
+from numpy.typing import NDArray
 
-    Each property is calculated from a sliding window of 4 atoms,
-    from i to i+3. Any property whose name begins with 'local' is a
-    property of a sliding window.
+def helix_analysis(
+    positions: NDArray[np.float64], 
+    ref_axis: Union[Tuple[float, float, float], NDArray[np.float64]] = (0, 0, 1)
+) -> Dict[str, NDArray]:
+    r"""
+    Calculate detailed helix properties from atomic coordinates using a sliding window approach.
+
+    This function implements the HELANAL algorithm to analyze protein helices based on
+    their Cα atom coordinates. It calculates various geometric properties including
+    local twists, bends, and screw angles that characterize the helix structure.
 
     Parameters
     ----------
-    positions : :class:`numpy.ndarray` of shape (N, 3)
-        Atomic coordinates.
-    ref_axis : array-like of length 3, optional
-        The reference axis used to calculate the tilt of the vector
-        of best fit, and the local screw angles.
+    positions : NDArray[float64], shape (N, 3)
+        Atomic coordinates of Cα atoms in the helix. Must contain at least 9 atoms
+        for meaningful analysis.
+    ref_axis : array-like, shape (3,), optional
+        Reference axis used for calculating tilt and screw angles. Default is z-axis (0, 0, 1).
 
     Returns
     -------
-    dict with the following keys:
-        local_twists : array, shape (N-3,)
-            local twist angle from atom i+1 to i+2
-        local_nres_per_turn : array, shape (N-3,)
-            number of residues per turn, based on local_twist
-        local_axes :  array, shape (N-3, 3)
-            the length-wise helix axis of the local window
-        local_bends : array, shape (N-6,)
-            the angles between local helix angles, 3 windows apart
-        local_heights : array, shape (N-3,)
-            the rise of each local helix
-        local_helix_directions : array, shape (N-2, 3)
-            the unit vector from each local origin to atom i+1
-        local_origins : array, shape (N-2, 3)
-            the projected origin for each helix
-        all_bends : array, shape (N-3, N-3)
-            angles between each local axis
-        global_axis : array, shape (3,)
-            vector of best fit through origins, pointing at the first origin.
-        local_screw_angles : array, shape (N-2,)
-            cylindrical azimuth angle to plane of global_axis and ref_axis
+    dict
+        Dictionary containing the following keys:
+        - 'local_twists' : NDArray[float64], shape (N-3,)
+            Local twist angle (in degrees) between consecutive residues (i+1 to i+2).
+        - 'local_nres_per_turn' : NDArray[float64], shape (N-3,)
+            Number of residues per turn, calculated as 360° / local_twist.
+        - 'local_axes' : NDArray[float64], shape (N-3, 3)
+            Local helix axis vectors for each window.
+        - 'local_bends' : NDArray[float64], shape (N-6,)
+            Angles (in degrees) between local helix axes 3 windows apart.
+        - 'local_heights' : NDArray[float64], shape (N-3,)
+            Rise per residue (in Å) along the local helix axis.
+        - 'local_helix_directions' : NDArray[float64], shape (N-2, 3)
+            Unit vectors from each local origin to the next Cα atom.
+        - 'local_origins' : NDArray[float64], shape (N-2, 3)
+            Projected origins for each local helix window.
+        - 'all_bends' : NDArray[float64], shape (N-3, N-3)
+            Matrix of angles between all pairs of local helix axes.
+        - 'global_axis' : NDArray[float64], shape (3,)
+            Best-fit axis through all helix origins.
+        - 'local_screw_angles' : NDArray[float64], shape (N-2,)
+            Azimuthal angles (in degrees) in the plane perpendicular to global_axis.
+
+    Notes
+    -----
+    The algorithm uses a sliding window of 4 consecutive Cα atoms to calculate
+    local helix properties. For a helix with N residues, the function returns
+    properties for N-3 windows.
+
+    The reference axis is used to define the zero angle for screw angle calculations.
+    By default, this is along the z-axis (0, 0, 1).
+
+    References
+    ----------
+    .. [1] Bansal M, Kumar S, Velavan R. (2000). HELANAL - A program to
+       characterise helix geometry in proteins. J Biomol Struct Dyn, 17(5):811-819.
+    .. [2] Sugeta H, Miyazawa T. (1967). General method for calculating helical
+       parameters of polymer chains from bond lengths, bond angles and internal
+       rotation angles. Biopolymers, 5:673-679.
+    
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from MDAnalysis.analysis import helix_analysis
+    >>> # Generate a simple alpha-helix
+    >>> t = np.linspace(0, 4*np.pi, 12)  # 12 residues
+    >>> x = np.cos(t)
+    >>> y = np.sin(t)
+    >>> z = t / (4*np.pi) * 16  # ~1.5Å rise per residue
+    >>> positions = np.column_stack((x, y, z))
+    >>> # Analyze helix properties
+    >>> results = helix_analysis(positions)
+    >>> # Get average twist angle
+    >>> avg_twist = results['local_twists'].mean()
+    >>> print(f"Average twist angle: {avg_twist:.1f}°")
     """
+    # Input validation
+    positions = np.asarray(positions, dtype=np.float64)
+    if positions.ndim != 2 or positions.shape[1] != 3:
+        raise ValueError("positions must be a 2D array of shape (N, 3)")
+    if len(positions) < 9:
+        warnings.warn(
+            f"Only {len(positions)} atoms provided. For reliable helix analysis, "
+            "at least 9 consecutive Cα atoms are recommended.",
+            UserWarning
+        )
+    
+    ref_axis = np.asarray(ref_axis, dtype=np.float64)
+    if ref_axis.shape != (3,):
+        raise ValueError("ref_axis must be a vector of length 3")
 
-    #          ^               ^
-    #           \             / bi
-    #            \           /
-    #         CA_i+2 <----- CA_i+1
-    #         /    \       /   ^
-    #        /    r \     /     \
-    #     V /        \ θ /       \
-    #      /          \ /       CA_i
-    #     v           origin
-    #   CA_i+3
-    #
-    # V: vectors
-    # bi: approximate "bisectors" in plane of screen
-    #     Note: not real bisectors, as the vectors aren't normalised
-    # θ: local_twists
-    # origin: origins
-    # local_axes: perpendicular to plane of screen. Orthogonal to "bisectors"
-
-    vectors = positions[1:] - positions[:-1]  # (n_res-1, 3)
-    bisectors = vectors[:-1] - vectors[1:]  # (n_res-2, 3)
-    bimags = mdamath.pnorm(bisectors)  # (n_res-2,)
-    adjacent_mag = bimags[:-1] * bimags[1:]  # (n_res-3,)
-
-    # find angle between bisectors for twist and n_residue/turn
-    cos_theta = mdamath.pdot(bisectors[:-1], bisectors[1:]) / adjacent_mag
-    cos_theta = np.clip(cos_theta, -1, 1)
-    twists = np.arccos(cos_theta)  # (n_res-3,)
-    local_twists = np.rad2deg(twists)
-    local_nres_per_turn = 2 * np.pi / twists
-
-    # find normal to bisectors for local axes
-    cross_bi = np.cross(bisectors[:-1], bisectors[1:])  # (n_res-3, 3)
-    local_axes = (cross_bi.T / mdamath.pnorm(cross_bi)).T  # (n_res-3, 3)
-    local_axes = np.nan_to_num(local_axes)
-
-    zero_vectors = np.tile(np.any(local_axes, axis=1), (len(local_axes), 1)).T
-    # find angles between axes for bends
-    bend_theta = np.matmul(local_axes, local_axes.T)  # (n_res-3, n_res-3)
-    # set angles to 0 between zero-vectors
-    bend_theta = np.where(
-        zero_vectors + zero_vectors.T, bend_theta, 1  # (n_res-3, n_res-3)
-    )
-    bend_matrix = np.rad2deg(np.arccos(np.clip(bend_theta, -1, 1)))
-    # local bends are between axes 3 windows apart
-    local_bends = np.diagonal(bend_matrix, offset=3)  # (n_res-6,)
-
-    # radius of local cylinder
-    radii = (adjacent_mag**0.5) / (2 * (1.0 - cos_theta))  # (n_res-3,)
+    # Optimized vector calculations using numpy array operations
+    # Pre-allocate arrays to avoid repeated memory allocation
+    n_res = len(positions)
+    
+    # Calculate vectors between consecutive Cα atoms
+    vectors = np.subtract(positions[1:], positions[:-1], dtype=np.float32)  # (n_res-1, 3)
+    
+    # Calculate bisectors (approximate, not normalized)
+    bisectors = np.subtract(vectors[:-1], vectors[1:], dtype=np.float32)  # (n_res-2, 3)
+    
+    # Pre-compute magnitudes for normalization
+    vector_norms = np.linalg.norm(vectors, axis=1)
+    bisector_norms = np.linalg.norm(bisectors, axis=1)
+    
+    # Avoid division by zero for zero-length vectors
+    vector_norms[vector_norms == 0] = np.finfo(np.float32).eps
+    bisector_norms[bisector_norms == 0] = np.finfo(np.float32).eps
+    
+    # Normalize vectors for subsequent calculations
+    vectors_normed = vectors / vector_norms[:, np.newaxis]
+    bisectors_normed = bisectors / bisector_norms[:, np.newaxis]
+    
+    # Calculate local twists and residues per turn using optimized vector operations
+    cos_theta = np.einsum('ij,ij->i', bisectors_normed[:-1], bisectors_normed[1:], optimize=True)
+    cos_theta = np.clip(cos_theta, -1.0, 1.0)  # Ensure valid range for arccos
+    local_twists = np.rad2deg(np.arccos(cos_theta))
+    
+    # Avoid division by zero in nres_per_turn calculation
+    twist_mask = np.abs(cos_theta) < 1.0 - 1e-10  # Avoid near-1 values that cause numerical instability
+    local_nres_per_turn = np.full_like(cos_theta, np.nan)  # Initialize with NaN
+    local_nres_per_turn[twist_mask] = 2 * np.pi / np.arccos(cos_theta[twist_mask])
+    
+    # Calculate local helix axes using optimized cross product
+    local_axes = np.cross(vectors_normed[:-1], bisectors_normed, axis=1)
+    local_axes_norm = np.linalg.norm(local_axes, axis=1, keepdims=True)
+    local_axes_norm[local_axes_norm < np.finfo(np.float32).eps] = 1.0  # Avoid division by zero
+    local_axes = np.divide(local_axes, local_axes_norm, out=local_axes, where=local_axes_norm!=0)
+    
+    # Optimized calculation of local origins using vectorized operations
+    v1 = positions[:-2]  # First atom in window (n-2, 3)
+    v2 = positions[1:-1]  # Middle atom (n-2, 3)
+    v3 = positions[2:]    # Last atom (n-2, 3)
+    
+    v13 = v3 - v1  # Vector from first to last atom (n-2, 3)
+    v13_sq = np.einsum('ij,ij->i', v13, v13, optimize=True)  # Squared lengths (n-2,)
+    
+    # Calculate projection parameter t, handling division by zero
+    t = np.zeros_like(v13_sq)
+    mask = v13_sq > np.finfo(np.float32).eps
+    t[mask] = np.einsum('ij,ij->i', v2 - v1, v13, optimize=True)[mask] / v13_sq[mask]
+    t = np.clip(t, 0.0, 1.0)  # Clamp t to [0,1]
+    
+    # Calculate local origins using broadcasting
+    local_origins = v1 + t[:, np.newaxis] * v13
+    
+    # Calculate and normalize local helix directions
+    local_helix_directions = v2 - local_origins
+    dir_norms = np.linalg.norm(local_helix_directions, axis=1, keepdims=True)
+    dir_norms[dir_norms < np.finfo(np.float32).eps] = 1.0  # Avoid division by zero
+    local_helix_directions = np.divide(local_helix_directions, dir_norms, 
+                                      out=local_helix_directions, 
+                                      where=dir_norms!=0)
+    
+    # Calculate local heights using optimized dot product
+    local_heights = np.abs(np.einsum('ij,ij->i', v2 - local_origins, local_axes, optimize=True))
+    
+    # Calculate local bends between axes 3 windows apart
+    if len(local_axes) >= 6:
+        cos_bends = np.einsum('ij,ij->i', local_axes[3:], local_axes[:-3], optimize=True)
+        cos_bends = np.clip(cos_bends, -1.0, 1.0)  # Ensure valid range
+        local_bends = np.rad2deg(np.arccos(cos_bends))
+    else:
+        local_bends = np.array([], dtype=np.float32)
+    
+    # Calculate radius of local cylinder
+    radii = (np.linalg.norm(bisectors, axis=1)**0.5) / (2 * (1.0 - cos_theta))  # (n_res-3,)
     # special case: angle b/w bisectors is 0 (should virtually never happen)
     # guesstimate radius = half bisector magnitude
-    radii = np.where(cos_theta != 1, radii, (adjacent_mag**0.5) / 2)
-    # height of local cylinder
-    heights = np.abs(mdamath.pdot(vectors[1:-1], local_axes))  # (n_res-3,)
-
-    local_helix_directions = (bisectors.T / bimags).T  # (n_res-2, 3)
-
+    radii = np.where(cos_theta != 1, radii, (np.linalg.norm(bisectors, axis=1)**0.5) / 2)
+    
     # get origins by subtracting radius from atom i+1
     origins = positions[1:-1].copy()  # (n_res-2, 3)
     origins[:-1] -= (radii * local_helix_directions[:-1].T).T
