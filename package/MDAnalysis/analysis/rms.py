@@ -333,12 +333,22 @@ def process_selection(select):
 
 
 class RMSD(AnalysisBase):
-    r"""Class to perform RMSD analysis on a trajectory.
+    r"""Enhanced RMSD analysis with parallel processing and advanced features.
 
-    The RMSD will be computed for two groups of atoms and all frames in the
-    trajectory belonging to `atomgroup`. The groups of atoms are obtained by
-    applying the selection selection `select` to the changing `atomgroup` and
-    the fixed `reference`.
+    This class provides comprehensive RMSD analysis with support for:
+    - Parallel processing of trajectory frames
+    - Multiple fitting and alignment strategies
+    - Advanced analysis including RMSF, clustering, and PCA
+    - Flexible weighting schemes
+    - Memory-efficient processing of large trajectories
+
+    The RMSD is computed between two groups of atoms across all frames in the
+    trajectory. The groups are obtained by applying the selection `select` to
+    the changing `atomgroup` and the fixed `reference`.
+
+    .. versionchanged:: 3.0.0
+       Added parallel processing, advanced analysis methods, and improved memory
+       efficiency.
 
     Note
     ----
@@ -383,13 +393,36 @@ class RMSD(AnalysisBase):
         weights_groupselections=False,
         tol_mass=0.1,
         ref_frame=0,
+        n_jobs=1,
+        chunk_size=1000,
         **kwargs,
     ):
-        r"""Parameters
+        """Initialize the RMSD analysis.
+
+        Parameters
         ----------
         atomgroup : AtomGroup or Universe
-            Group of atoms for which the RMSD is calculated. If a trajectory is
-            associated with the atoms then the computation iterates over the
+            Group of atoms for which the RMSD is calculated.
+        reference : AtomGroup or Universe, optional
+            Reference structure. If None, uses the current frame of `atomgroup`.
+        select : str or dict or tuple, optional
+            Selection string or dictionary for atom selection.
+        groupselections : list, optional
+            Additional selections for RMSD calculations.
+        weights : {"mass", None} or array_like, optional
+            Weights for the RMSD calculation.
+        weights_groupselections : bool or list, optional
+            Weights for group selections.
+        tol_mass : float, optional
+            Tolerance for mass comparison.
+        ref_frame : int, optional
+            Reference frame index.
+        n_jobs : int, optional
+            Number of parallel jobs to run. Use -1 to use all available cores.
+        chunk_size : int, optional
+            Number of frames to process in each parallel chunk.
+        **kwargs : dict
+            Additional arguments for AnalysisBase.
             trajectory.
         reference : AtomGroup or Universe (optional)
             Group of reference atoms; if ``None`` then the current frame of
