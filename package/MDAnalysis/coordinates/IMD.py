@@ -19,6 +19,18 @@ velocity, force, and energy data as the simulation progresses. This allows for r
 monitoring and analysis of ongoing simulations. It uses the `imdclient package <https://github.com/Becksteinlab/imdclient>`_ 
 (dependency) to implement the IMDv3 protocol and manage the socket connection and data parsing.
 
+.. seealso::
+   :class:`IMDReader`
+      Technical details and parameter options for the reader class
+   
+   `imdclient documentation <https://imdclient.readthedocs.io/>`_
+      Complete documentation for the IMDClient package
+      
+   `IMDClient GitHub repository <https://github.com/Becksteinlab/imdclient>`_
+      Source code and development resources
+
+.. _`imdclient simulation engine docs`: https://imdclient.readthedocs.io/en/latest/usage.html
+
 Usage Example
 -------------
 
@@ -73,6 +85,9 @@ The :class:`~MDAnalysis.coordinates.IMD.IMDReader` can then connect to the runni
 Important Limitations
 ---------------------
 
+.. warning::  
+   The IMDReader has some important limitations that are inherent in streaming data.  
+
 Since IMD streams data in real-time from a running simulation, it has fundamental 
 constraints that differ from traditional trajectory readers:
 
@@ -87,39 +102,24 @@ constraints that differ from traditional trajectory readers:
 * **Single client connection**: Only one reader can connect to an IMD stream at a time
 * **No trajectory Writing**: Complimentary IMD Writer class is not available for streaming data
 
-.. warning::  
-   The IMDReader has some important limitations that are inherent in streaming data.  
-   See :class:`~MDAnalysis.coordinates.base.StreamReaderBase` for technical details.  
+.. seealso::
+   See :class:`~MDAnalysis.coordinates.base.StreamReaderBase` for technical details.
 
 Multiple Client Connections
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+---------------------------
 
 The ability to establish multiple simultaneous connections to the same IMD port is 
 **MD engine implementation dependent**. Some simulation engines may allow multiple 
 clients to connect concurrently, while others may reject or fail additional connection 
 attempts.
 
-* **NAMD**: Currently supports multiple concurrent connections to the same port
-* **GROMACS/LAMMPS**: Not supported by current implementation
+See the `imdclient simulation engine docs`_ for further details. 
 
 .. important::
    Even when multiple connections are supported by the simulation engine, each connection 
    receives its own independent data stream. These streams may contain different data 
    depending on the simulation engine's configuration, so multiple connections should 
-   not be assumed to provide identical data streams.  
-
-.. seealso::
-   :class:`IMDReader`
-      Technical details and parameter options for the reader class
-   
-   `imdclient documentation <https://imdclient.readthedocs.io/>`_
-      Complete documentation for the IMDClient package
-      
-   `IMDClient GitHub repository <https://github.com/Becksteinlab/imdclient>`_
-      Source code and development resources
-
-.. _`imdclient simulation engine docs`: https://imdclient.readthedocs.io/en/latest/usage.html
-
+   not be assumed to provide identical data streams.
 
 Classes
 -------
