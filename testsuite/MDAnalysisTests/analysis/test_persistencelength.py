@@ -165,6 +165,14 @@ class TestSortBackbone(object):
             polymer.sort_backbone(u.atoms)
         assert "branches or isolated atoms" in str(ex.value)
 
+    def test_missing_internal(self, u):
+        u = mda.Universe.empty(4, trajectory=True)
+        bondlist = [(0, 1), (2, 3)]
+        u.add_TopologyAttr(Bonds(bondlist))
+        with pytest.raises(ValueError) as ex:
+            polymer.sort_backbone(u.atoms)
+        assert "Backbone connectivity invalid" in str(ex.value)
+
     def test_circular(self):
         u = mda.Universe.empty(6, trajectory=True)
         # circular structure
