@@ -149,18 +149,21 @@ class TestSortBackbone(object):
 
         assert_equal(s_ag.ids, [0, 1, 4, 6, 8])
 
-    def test_not_fragment(self, u):
-        # two fragments don't work
-        bad_ag = u.residues[0].atoms[:2] + u.residues[1].atoms[:2]
-        with pytest.raises(ValueError):
-            polymer.sort_backbone(bad_ag)
-
     def test_branches(self, u):
         # includes side branches, can't sort
         bad_ag = u.atoms[:10]  # include -H etc
 
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError) as ex:
             polymer.sort_backbone(bad_ag)
+        assert "branches or isolated atoms" in str(ex.value)
+
+    def test_isolated(self, u):
+        u = mda.Universe.empty(4, trajectory=True)
+        bondlist = [(0, 1), (1, 2)]
+        u.add_TopologyAttr(Bonds(bondlist))
+        with pytest.raises(ValueError) as ex:
+            polymer.sort_backbone(u.atoms)
+        assert "branches or isolated atoms" in str(ex.value)
 
     def test_circular(self):
         u = mda.Universe.empty(6, trajectory=True)
@@ -170,4 +173,4 @@ class TestSortBackbone(object):
 
         with pytest.raises(ValueError) as ex:
             polymer.sort_backbone(u.atoms)
-        assert "cyclical" in str(ex.value)
+        assert "Cyclical" in str(ex.value)

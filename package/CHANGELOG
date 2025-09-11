@@ -81,6 +81,8 @@ Changes
  * Removed undocumented and unused attribute
    `analysis.lineardensity.LinearDensity.totalmass` (PR #5007)
  * Remove `default` channel from RTD conda env. (Issue # 5036, PR # 5037)   
+ * Changed the fragment detection logic in `analysis.polymer.sort_backbone` (Issue #5112, PR #)
+ * Replaced the while loop in `analysis.polymer.sort_backbone` with a for loop (Issue #5112, PR #)
 
 Deprecations
  * The RDKit converter parameter `NoImplicit` has been deprecated in favour of
