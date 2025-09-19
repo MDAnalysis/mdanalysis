@@ -77,7 +77,6 @@ extra_formats = [
     "gsd>3.0.0",
     "rdkit>=2022.09.1",
     "imdclient>=0.2.2",
-
 ]
 analysis = [
     "biopython>=1.80",
