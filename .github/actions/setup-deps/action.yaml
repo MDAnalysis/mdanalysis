@@ -64,6 +64,8 @@ inputs:
     default: 'h5py>=2.10'
   hole2:
     default: 'hole2'
+  imdclient:
+    default: 'imdclient>=0.2.2'
   joblib:
     default: 'joblib>=0.12'
   netcdf4:
@@ -82,8 +84,6 @@ inputs:
     default: 'seaborn>=0.7.0'
   tidynamics:
     default: 'tidynamics>=1.0.0'
-  imdclient:
-    default: 'imdclient>=0.2.2'
   # pip-installed min dependencies
   coverage:
     default: 'coverage'
@@ -140,6 +140,7 @@ runs:
           ${{ inputs.gsd }}
           ${{ inputs.h5py }}
           ${{ inputs.hole2 }}
+          ${{ inputs.imdclient }}
           ${{ inputs.joblib }}
           ${{ inputs.netcdf4 }}
           ${{ inputs.networkx }}
@@ -149,7 +150,6 @@ runs:
           ${{ inputs.scikit-learn }}
           ${{ inputs.seaborn }}
           ${{ inputs.tidynamics }}
-          ${{ inputs.imdclient }}
 
       run: |
         # setup full variable

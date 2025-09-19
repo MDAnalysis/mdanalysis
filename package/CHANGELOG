@@ -42,6 +42,11 @@ Fixes
    directly passing them. (Issue #3520, PR #5006)
 
 Enhancements
+ * Added support for reading and processing streamed data in `coordinates.base`
+   with new `StreamFrameIteratorSliced` and `StreamReaderBase` (Issue #4827, PR #4923)
+ * New coordinate reader: Added `IMDReader` for reading real-time streamed
+   molecular dynamics simulation data using the IMDv3 protocol - requires
+   `imdclient` package (Issue #4827, PR #4923)
  * Added capability to calculate MSD from frames with irregular (non-linear)
    time spacing in analysis.msd.EinsteinMSD with keyword argument
    `non_linear=True` (Issue #5028, PR #5066)
@@ -70,12 +75,7 @@ Enhancements
    so that it gets passed through from the calling functions and classes
    (PR #5038)
  * Moved distopia checking function to common import location in
-   MDAnalysisTest.util (PR #5038)
- * Added support for reading and processing streamed data in `coordinates.base`
-   with new `StreamFrameIteratorSliced` and `StreamReaderBase` (Issue #4827, PR #4923)
- * New coordinate reader: Added `IMDReader` for reading real-time streamed
-   molecular dynamics simulation data using the IMDv3 protocol - requires
-   `imdclient` package (Issue #4827, PR #4923)  
+   MDAnalysisTest.util (PR #5038)  
  * Enables parallelization for `analysis.polymer.PersistenceLength` (Issue #4671, PR #5074)
 
 
