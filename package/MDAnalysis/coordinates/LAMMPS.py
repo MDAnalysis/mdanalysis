@@ -615,6 +615,12 @@ class DumpReader(base.ReaderBase):
     **kwargs
        Other keyword arguments used in :class:`~MDAnalysis.coordinates.base.ReaderBase`
 
+    Note
+    ----
+    This reader assumes LAMMPS "real" units where time is in femtoseconds, 
+    length is in Angstroms, velocities in Angstrom/femtosecond, and forces 
+    in kcal/(mol*Angstrom). Forces are automatically converted to MDAnalysis 
+    base units (kJ/(mol*Angstrom)) for consistency with other trajectory formats.
 
     .. versionchanged:: 2.8.0
        Reading of arbitrary, additional columns is now supported.
@@ -631,6 +637,12 @@ class DumpReader(base.ReaderBase):
     """
 
     format = "LAMMPSDUMP"
+    units = {
+        'time': 'fs',
+        'length': 'Angstrom',
+        'velocity': 'Angstrom/fs',
+        'force': 'kcal/(mol*Angstrom)'
+    }
     _conventions = [
         "auto",
         "unscaled",
@@ -909,5 +921,13 @@ class DumpReader(base.ReaderBase):
             )
         # Transform to origin after transformation of scaled variables
         ts.positions -= np.array([xlo, ylo, zlo])[None, :]
+
+        # Convert units if requested
+        if self.convert_units:
+            self.convert_pos_from_native(ts.positions)
+            if self._has_vels:
+                self.convert_velocities_from_native(ts.velocities)
+            if self._has_forces:
+                self.convert_forces_from_native(ts.forces)
 
         return ts
