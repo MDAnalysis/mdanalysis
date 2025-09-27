@@ -617,9 +617,9 @@ class DumpReader(base.ReaderBase):
 
     Note
     ----
-    This reader assumes LAMMPS "real" units where time is in femtoseconds, 
-    length is in Angstroms, velocities in Angstrom/femtosecond, and forces 
-    in kcal/(mol*Angstrom). Forces are automatically converted to MDAnalysis 
+    This reader assumes LAMMPS "real" units where time is in femtoseconds,
+    length is in Angstroms, velocities in Angstrom/femtosecond, and forces
+    in kcal/(mol*Angstrom). Forces are automatically converted to MDAnalysis
     base units (kJ/(mol*Angstrom)) for consistency with other trajectory formats.
 
     .. versionchanged:: 2.8.0
@@ -638,10 +638,10 @@ class DumpReader(base.ReaderBase):
 
     format = "LAMMPSDUMP"
     units = {
-        'time': 'fs',
-        'length': 'Angstrom',
-        'velocity': 'Angstrom/fs',
-        'force': 'kcal/(mol*Angstrom)'
+        "time": "fs",
+        "length": "Angstrom",
+        "velocity": "Angstrom/fs",
+        "force": "kcal/(mol*Angstrom)",
     }
     _conventions = [
         "auto",

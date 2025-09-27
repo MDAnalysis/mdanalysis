@@ -771,27 +771,27 @@ class TestLammpsDumpReader(object):
     def test_dump_reader_units_attribute(self):
         """Test that DumpReader has proper units defined"""
         from MDAnalysis.coordinates.LAMMPS import DumpReader
-        
+
         expected_units = {
-            'time': 'fs',
-            'length': 'Angstrom',
-            'velocity': 'Angstrom/fs',
-            'force': 'kcal/(mol*Angstrom)'
+            "time": "fs",
+            "length": "Angstrom",
+            "velocity": "Angstrom/fs",
+            "force": "kcal/(mol*Angstrom)",
         }
-        
+
         assert DumpReader.units == expected_units
 
     def test_force_unit_conversion_factor(self):
         """Test that the force conversion factor is correct"""
         from MDAnalysis import units
-        
+
         # Get conversion factor from kcal/(mol*Angstrom) to kJ/(mol*Angstrom)
         factor = units.get_conversion_factor(
-            'force', 
-            'kcal/(mol*Angstrom)',  # from (LAMMPS native)
-            'kJ/(mol*Angstrom)'     # to (MDAnalysis base)
+            "force",
+            "kcal/(mol*Angstrom)",  # from (LAMMPS native)
+            "kJ/(mol*Angstrom)",  # to (MDAnalysis base)
         )
-        
+
         expected_factor = 4.184  # 1 kcal = 4.184 kJ
         assert_allclose(factor, expected_factor, rtol=1e-6)
 
@@ -799,38 +799,36 @@ class TestLammpsDumpReader(object):
         """Test force unit conversion using existing test file with forces"""
         # Test with convert_units=True (default)
         u_converted = mda.Universe(
-            LAMMPS_image_vf, 
-            LAMMPSDUMP_image_vf, 
-            format="LAMMPSDUMP"
+            LAMMPS_image_vf, LAMMPSDUMP_image_vf, format="LAMMPSDUMP"
         )
-        
+
         # Test with convert_units=False
         u_native = mda.Universe(
-            LAMMPS_image_vf, 
-            LAMMPSDUMP_image_vf, 
+            LAMMPS_image_vf,
+            LAMMPSDUMP_image_vf,
             format="LAMMPSDUMP",
-            convert_units=False
+            convert_units=False,
         )
-        
+
         # Both should have forces
-        assert hasattr(u_converted.atoms, 'forces')
-        assert hasattr(u_native.atoms, 'forces')
-        
+        assert hasattr(u_converted.atoms, "forces")
+        assert hasattr(u_native.atoms, "forces")
+
         # Go to last frame where we know forces exist
         u_converted.trajectory[-1]
         u_native.trajectory[-1]
-        
+
         forces_converted = u_converted.atoms.forces
         forces_native = u_native.atoms.forces
-        
+
         # Check that forces are different (converted vs native)
         # The conversion factor should be 4.184
         expected_factor = 4.184
         forces_expected = forces_native * expected_factor
-        
+
         # Test that converted forces match expected values
         assert_allclose(forces_converted, forces_expected, rtol=1e-6)
-        
+
         # Test that native forces are unchanged when convert_units=False
         # Just check they are reasonable values (not zero everywhere)
         assert not np.allclose(forces_native, 0.0)
@@ -838,29 +836,33 @@ class TestLammpsDumpReader(object):
     def test_force_conversion_consistency_across_frames(self):
         """Test that force conversion works consistently across all frames"""
         u_converted = mda.Universe(
-            LAMMPS_image_vf, 
-            LAMMPSDUMP_image_vf, 
-            format="LAMMPSDUMP"
+            LAMMPS_image_vf, LAMMPSDUMP_image_vf, format="LAMMPSDUMP"
         )
-        
+
         u_native = mda.Universe(
-            LAMMPS_image_vf, 
-            LAMMPSDUMP_image_vf, 
+            LAMMPS_image_vf,
+            LAMMPSDUMP_image_vf,
             format="LAMMPSDUMP",
-            convert_units=False
+            convert_units=False,
         )
-        
+
         conversion_factor = 4.184
-        
+
         # Test conversion in all frames
-        for ts_conv, ts_native in zip(u_converted.trajectory, u_native.trajectory):
+        for ts_conv, ts_native in zip(
+            u_converted.trajectory, u_native.trajectory
+        ):
             if ts_conv.has_forces:
                 forces_converted = ts_conv.forces
                 forces_native = ts_native.forces
                 forces_expected = forces_native * conversion_factor
-                
-                assert_allclose(forces_converted, forces_expected, rtol=1e-6,
-                    err_msg=f"Force conversion failed at frame {ts_conv.frame}")
+
+                assert_allclose(
+                    forces_converted,
+                    forces_expected,
+                    rtol=1e-6,
+                    err_msg=f"Force conversion failed at frame {ts_conv.frame}",
+                )
 
 
 @pytest.mark.parametrize(
