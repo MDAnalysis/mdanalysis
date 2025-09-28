@@ -645,10 +645,6 @@ class InterRDF_s(AnalysisBase):
                 backend=self.backend,
             )
 
-            # Different people write code for different purposes. For my needs, the following two lines are sufficient:
-            # count, _ = np.histogram(dist, **self.rdf_settings)
-            # self.results.count[i][0, 0, :] += count
-
             # The following is an optimized version based on the old logic.
             bins = self.rdf_settings["bins"]
             minv, maxv = (
@@ -660,9 +656,8 @@ class InterRDF_s(AnalysisBase):
             bin_indices = bin_indices.astype(np.int64)
 
             for j, (idx1, idx2) in enumerate(pairs):
-                if 0 <= bin_indices[j] < bins:
+                if bin_indices[j] in range(bins):
                     self.results.count[i][idx1, idx2, bin_indices[j]] += 1
-                # self.results.count[i][0, 0, bin_indices[j]] += 1  # this is necessary to calc rdf
 
         if self.norm == "rdf":
             self.volume_cum += self._ts.volume
