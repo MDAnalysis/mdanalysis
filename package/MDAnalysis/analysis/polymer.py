@@ -40,7 +40,7 @@ import logging
 from .. import NoDataError
 from ..core.groups import requires, AtomGroup
 from ..lib.distances import calc_bonds
-from .base import AnalysisBase
+from .base import AnalysisBase, ResultsGroup
 
 logger = logging.getLogger(__name__)
 
@@ -236,7 +236,16 @@ class PersistenceLength(AnalysisBase):
        Former ``results`` are now stored as ``results.bond_autocorrelation``.
        :attr:`lb`, :attr:`lp`, :attr:`fit` are now stored in a
        :class:`MDAnalysis.analysis.base.Results` instance.
+    .. versionchanged:: 2.10.0
+       introduced :meth:`get_supported_backends` allowing for parallel
+       execution on ``multiprocessing`` and ``dask`` backends.
     """
+
+    _analysis_algorithm_is_parallelizable = True
+
+    @classmethod
+    def get_supported_backends(cls):
+        return ("serial", "multiprocessing", "dask")
 
     def __init__(self, atomgroups, **kwargs):
         super(PersistenceLength, self).__init__(
@@ -249,15 +258,18 @@ class PersistenceLength(AnalysisBase):
         chainlength = len(atomgroups[0])
         if not all(l == chainlength for l in lens):
             raise ValueError("Not all AtomGroups were the same size")
+        self.chainlength = chainlength
 
-        self._results = np.zeros(chainlength - 1, dtype=np.float32)
+    def _prepare(self):
+        self.results.raw_bond_autocorr = np.zeros(
+            self.chainlength - 1, dtype=np.float32
+        )
 
     def _single_frame(self):
         # could optimise this by writing a "self dot array"
         # we're only using the upper triangle of np.inner
         # function would accept a bunch of coordinates and spit out the
         # decorrel for that
-        n = len(self._atomgroups[0])
 
         for chain in self._atomgroups:
             # Vector from each atom to next
@@ -266,8 +278,17 @@ class PersistenceLength(AnalysisBase):
             vecs /= np.sqrt((vecs * vecs).sum(axis=1))[:, None]
 
             inner_pr = np.inner(vecs, vecs)
-            for i in range(n - 1):
-                self._results[: (n - 1) - i] += inner_pr[i, i:]
+            for i in range(self.chainlength - 1):
+                self.results.raw_bond_autocorr[
+                    : (self.chainlength - 1) - i
+                ] += inner_pr[i, i:]
+
+    def _get_aggregator(self):
+        return ResultsGroup(
+            lookup={
+                "raw_bond_autocorr": ResultsGroup.ndarray_sum,
+            }
+        )
 
     @property
     def lb(self):
@@ -300,14 +321,12 @@ class PersistenceLength(AnalysisBase):
         return self.results.fit
 
     def _conclude(self):
-        n = len(self._atomgroups[0])
-
-        norm = np.linspace(n - 1, 1, n - 1)
-        norm *= len(self._atomgroups) * self.n_frames
-
-        self.results.bond_autocorrelation = self._results / norm
+        norm = np.linspace(self.chainlength - 1, 1, self.chainlength - 1)
+        norm *= len(self._atomgroups) * self._trajectory.n_frames
+        self.results.bond_autocorrelation = (
+            self.results.raw_bond_autocorr / norm
+        )
         self._calc_bond_length()
-
         self._perform_fit()
 
     def _calc_bond_length(self):
@@ -350,7 +369,7 @@ class PersistenceLength(AnalysisBase):
         import matplotlib.pyplot as plt
 
         if ax is None:
-            fig, ax = plt.subplots()
+            _, ax = plt.subplots()
         ax.plot(
             self.results.x,
             self.results.bond_autocorrelation,

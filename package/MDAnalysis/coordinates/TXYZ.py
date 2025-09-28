@@ -54,13 +54,13 @@ from . import base
 from ..lib.util import openany, cached, store_init_arguments
 from .timestep import Timestep
 
+
 class TXYZReader(base.ReaderBase):
     """Reads from a TXYZ file"""
 
-
-    format = ['TXYZ', 'ARC']
+    format = ["TXYZ", "ARC"]
     # these are assumed!
-    units = {'time': 'ps', 'length': 'Angstrom'}
+    units = {"time": "ps", "length": "Angstrom"}
     _Timestep = Timestep
 
     @store_init_arguments
@@ -89,7 +89,7 @@ class TXYZReader(base.ReaderBase):
         self._read_next_timestep()
 
     @property
-    @cached('n_atoms')
+    @cached("n_atoms")
     def n_atoms(self):
         """number of atoms in a frame"""
         with util.anyopen(self.filename) as f:
@@ -98,7 +98,7 @@ class TXYZReader(base.ReaderBase):
         return int(n)
 
     @property
-    @cached('n_frames')
+    @cached("n_frames")
     def n_frames(self):
         try:
             return self._read_xyz_n_frames()
@@ -143,7 +143,7 @@ class TXYZReader(base.ReaderBase):
             # we assume that there is only one header line per frame
             f.readline()
             if self.periodic:
-                ts.dimensions = f.readline().split() 
+                ts.dimensions = f.readline().split()
             # convert all entries at the end once for optimal speed
             tmp_buf = []
             for i in range(self.n_atoms):
@@ -161,7 +161,8 @@ class TXYZReader(base.ReaderBase):
     def open_trajectory(self):
         if self.xyzfile is not None:
             raise IOError(
-                errno.EALREADY, 'TXYZ file already opened', self.filename)
+                errno.EALREADY, "TXYZ file already opened", self.filename
+            )
 
         self.xyzfile = util.anyopen(self.filename)
 

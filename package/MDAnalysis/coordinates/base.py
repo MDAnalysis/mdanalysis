@@ -50,6 +50,7 @@ Iterator classes used by the by the :class:`ProtoReader`:
 
 .. autoclass:: FrameIteratorIndices
 
+.. autoclass:: StreamFrameIteratorSliced
 
 .. _ReadersBase:
 
@@ -87,8 +88,9 @@ case, :class:`ProtoReader` should be used.
 .. autoclass:: ProtoReader
    :members:
 
-
-
+.. autoclass:: StreamReaderBase
+   :members:
+   
 .. _WritersBase:
 
 Writers
@@ -1844,3 +1846,468 @@ class ConverterBase(IOBase, metaclass=_Convertermeta):
 
     def convert(self, obj):
         raise NotImplementedError
+
+class StreamReaderBase(ReaderBase):
+    """Base class for readers that read a continuous stream of data.
+
+    This class is designed for readers that process continuous data streams,
+    such as live feeds from simulations. Unlike traditional trajectory readers
+    that can randomly access frames, streaming readers have fundamental constraints:
+
+    - **No random access**: Cannot seek to arbitrary frames (no ``traj[5]``)
+    - **Forward-only**: Can only iterate sequentially through frames
+    - **No length**: Total number of frames is unknown until stream ends
+    - **No rewinding**: Cannot restart or rewind the stream
+    - **No copying**: Cannot create independent copies of the reader
+    - **No reopening**: Cannot restart iteration once stream is consumed
+    - **No timeseries**: Cannot use ``timeseries()`` or bulk data extraction
+    - **No writers**: Cannot create ``Writer()`` or ``OtherWriter()`` instances
+    - **No pickling**: Cannot serialize reader instances (limits multiprocessing)
+    - **No StreamWriterBase**: No complementary Writer class available for streaming data
+
+
+    The reader raises :exc:`RuntimeError` for operations that require random
+    access or rewinding, including ``rewind()``, ``copy()``, ``timeseries()``,
+    ``Writer()``, ``OtherWriter()``, and ``len()``. Only slice notation is supported for iteration.
+
+    Parameters
+    ----------
+    filename : str or file-like
+        Source of the streaming data
+    convert_units : bool, optional
+        Whether to convert units from native to MDAnalysis units (default: True)
+    **kwargs
+        Additional keyword arguments passed to the parent ReaderBase
+
+    See Also
+    --------
+    StreamFrameIteratorSliced : Iterator for stepped streaming access
+    ReaderBase : Base class for standard trajectory readers
+
+
+    .. versionadded:: 2.10.0 
+    """
+
+    def __init__(self, filename, convert_units=True, **kwargs):
+        super(StreamReaderBase, self).__init__(
+            filename, convert_units=convert_units, **kwargs
+        )
+        self._init_scope = True
+        self._reopen_called = False
+        self._first_ts = None
+        self._frame = -1
+
+    def _read_next_timestep(self):
+        # No rewinding- to both load the first frame after  __init__
+        # and access it again during iteration, we need to store first ts in mem
+        if not self._init_scope and self._frame == -1:
+            self._frame += 1
+            # can't simply return the same ts again- transformations would be applied twice
+            # instead, return the pre-transformed copy
+            return self._first_ts
+
+        ts = self._read_frame(self._frame + 1)
+
+        if self._init_scope:
+            self._first_ts = self.ts.copy()
+            self._init_scope = False
+
+        return ts
+
+    @property
+    def n_frames(self):
+        """Changes as stream is processed unlike other readers"""
+        raise RuntimeError(
+            "{}: n_frames is unknown".format(self.__class__.__name__)
+        )
+
+    def __len__(self):
+        raise RuntimeError(
+            "{} has unknown length".format(self.__class__.__name__)
+        )
+
+    def next(self):
+        """Advance to the next timestep in the streaming trajectory.
+        
+        Streaming readers process frames sequentially and cannot rewind
+        once iteration completes. Use ``for ts in trajectory`` for iteration.
+        
+        Returns
+        -------
+        Timestep
+            The next timestep in the stream
+            
+        Raises
+        ------
+        StopIteration
+            When the stream ends or no more frames are available
+        """
+        try:
+            ts = self._read_next_timestep()
+        except (EOFError, IOError):
+            # Don't rewind here like we normally would
+            raise StopIteration from None
+        else:
+            for auxname, reader in self._auxs.items():
+                ts = self._auxs[auxname].update_ts(ts)
+
+            ts = self._apply_transformations(ts)
+
+        return ts
+
+    def rewind(self):
+        """Rewinding is not supported for streaming trajectories.
+        
+        Streaming readers process data continuously from streams
+        and cannot restart or go backward in the stream once consumed.
+
+        Raises
+        ------
+        RuntimeError
+            Always raised, as rewinding is not supported for streaming trajectories
+        """
+        raise RuntimeError(
+            "{}: Stream-based readers can't be rewound".format(
+                self.__class__.__name__
+            )
+        )
+
+    # Incompatible methods
+    def copy(self):
+        """Reader copying is not supported for streaming trajectories.
+        
+        Streaming readers maintain internal state and connection resources
+        that cannot be duplicated. Each stream connection is unique and
+        cannot be copied.
+        
+        Raises
+        ------
+        RuntimeError
+            Always raised, as copying is not supported for streaming trajectories
+        """
+        raise RuntimeError(
+            "{} does not support copying".format(self.__class__.__name__)
+        )
+
+    def _reopen(self):
+        """Prepare stream for iteration - can only be called once.
+        
+        Streaming readers cannot be reopened once iteration begins.
+        This method is called internally during iteration setup and
+        will raise an error if called multiple times.
+        
+        Raises
+        ------
+        RuntimeError
+            If the stream has already been opened for iteration
+        """
+        if self._reopen_called:
+            raise RuntimeError(
+                "{}: Cannot reopen stream".format(self.__class__.__name__)
+            )
+        self._frame = -1
+        self._reopen_called = True
+
+    def timeseries(self, **kwargs):
+        """Timeseries extraction is not supported for streaming trajectories.
+        
+        Streaming readers cannot randomly access frames or store bulk coordinate
+        data in memory, which ``timeseries()`` requires. Use sequential frame
+        iteration instead.
+                    
+        Parameters
+        ----------
+        **kwargs
+            Any keyword arguments (ignored, as method is not supported)
+            
+        Raises
+        ------
+        RuntimeError
+            Always raised, as timeseries extraction is not supported for 
+            streaming trajectories
+        """
+        raise RuntimeError(
+            "{}: cannot access timeseries for streamed trajectories".format(self.__class__.__name__)
+        )
+
+    def __getitem__(self, frame):
+        """Return an iterator for slicing a streaming trajectory.
+
+        Parameters
+        ----------
+        frame : slice
+            Slice object. Only the step parameter is meaningful for streams.
+
+        Returns
+        -------
+        FrameIteratorAll or StreamFrameIteratorSliced
+            Iterator for the requested slice.
+
+        Raises
+        ------
+        TypeError
+            If frame is not a slice object.
+        ValueError
+            If slice contains start or stop values.
+
+        Examples
+        --------
+        >>> for ts in traj[:]:          # All frames sequentially
+        ...     process(ts)
+        >>> for ts in traj[::5]:        # Every 5th frame
+        ...     process(ts)
+
+        See Also
+        --------
+        StreamFrameIteratorSliced
+        """
+        if isinstance(frame, slice):
+            _, _, step = self.check_slice_indices(
+                frame.start, frame.stop, frame.step
+            )
+            if step is None:
+                return FrameIteratorAll(self)
+            else:
+                return StreamFrameIteratorSliced(self, step)
+        else:
+            raise TypeError(
+                "Streamed trajectories must be an indexed using a slice"
+            )
+
+    def check_slice_indices(self, start, stop, step):
+        """Check and validate slice indices for streaming trajectories.
+        
+        Streaming trajectories have fundamental constraints that differ from 
+        traditional trajectory files:
+        
+        * **No start/stop indices**: Since streams process data continuously
+          without knowing the total length, ``start`` and ``stop`` must be ``None``
+        * **Step-only slicing**: Only the ``step`` parameter is meaningful,
+          controlling how many frames to skip during iteration
+        * **Forward-only**: ``step`` must be positive (> 0) as streams cannot
+          be processed backward in time
+          
+        Parameters
+        ----------
+        start : int or None
+            Starting frame index. Must be ``None`` for streaming readers.
+        stop : int or None
+            Ending frame index. Must be ``None`` for streaming readers.
+        step : int or None
+            Step size for iteration. Must be positive integer or ``None`` 
+            (equivalent to 1).
+            
+        Returns
+        -------
+        tuple
+            (start, stop, step) with validated values
+            
+        Raises
+        ------
+        ValueError
+            If ``start`` or ``stop`` are not ``None``, or if ``step`` is 
+            not a positive integer.
+            
+        Examples
+        --------
+        Valid streaming slices::
+        
+            traj[:]        # All frames (step=None, equivalent to step=1)
+            traj[::2]      # Every 2nd frame 
+            traj[::10]     # Every 10th frame
+            
+        Invalid streaming slices::
+        
+            traj[5:]       # Cannot specify start index
+            traj[:100]     # Cannot specify stop index  
+            traj[5:100:2]  # Cannot specify start or stop indices
+            traj[::-1]     # Cannot go backwards (negative step)
+            
+        See Also
+        --------
+        __getitem__
+        StreamFrameIteratorSliced
+
+
+        .. versionadded:: 2.10.0
+        """
+        if start is not None:
+            raise ValueError(
+                "{}: Cannot expect a start index from a stream, 'start' must be None".format(
+                    self.__class__.__name__
+                )
+            )
+        if stop is not None:
+            raise ValueError(
+                "{}: Cannot expect a stop index from a stream, 'stop' must be None".format(
+                    self.__class__.__name__
+                )
+            )
+        if step is not None:
+            if isinstance(step, numbers.Integral):
+                if step < 1:
+                    raise ValueError(
+                        "{}: Cannot go backwards in a stream, 'step' must be > 0".format(
+                            self.__class__.__name__
+                        )
+                    )
+            else:
+                raise ValueError(
+                    "{}: 'step' must be an integer".format(
+                        self.__class__.__name__
+                    )
+                )
+
+        return start, stop, step
+
+    def Writer(self, filename, **kwargs):
+        """Writer creation is not supported for streaming trajectories.
+        
+        Writer creation requires trajectory metadata that streaming readers
+        cannot provide due to their sequential processing nature.
+
+        Parameters
+        ----------
+        filename : str
+            Output filename (ignored, as method is not supported)
+        **kwargs
+            Additional keyword arguments (ignored, as method is not supported)
+            
+        Raises
+        ------
+        RuntimeError
+            Always raised, as writer creation is not supported for streaming trajectories
+        """
+        raise RuntimeError(
+            "{}: cannot create Writer for streamed trajectories".format(
+                self.__class__.__name__
+            )
+        )
+
+    def OtherWriter(self, filename, **kwargs):
+        """Writer creation is not supported for streaming trajectories.
+        
+        OtherWriter initialization requires frame-based parameters and trajectory
+        indexing information. Streaming readers process data sequentially
+        without meaningful frame indexing, making writer setup impossible.
+        
+        Parameters
+        ----------
+        filename : str
+            Output filename (ignored, as method is not supported)
+        **kwargs
+            Additional keyword arguments (ignored, as method is not supported)
+            
+        Raises
+        ------
+        RuntimeError
+            Always raised, as writer creation is not supported for streaming trajectories
+        """
+        raise RuntimeError(
+            "{}: cannot create OtherWriter for streamed trajectories".format(
+                self.__class__.__name__
+            )
+        )
+
+    def __getstate__(self):
+        raise NotImplementedError(
+            "{} does not support pickling".format(self.__class__.__name__)
+        )
+
+    def __setstate__(self, state: object):
+        raise NotImplementedError(
+            "{} does not support pickling".format(self.__class__.__name__)
+        )
+
+    def __repr__(self):
+        return (
+            "<{cls} {fname} with continuous stream of {natoms} atoms>"
+            "".format(
+                cls=self.__class__.__name__,
+                fname=self.filename,
+                natoms=self.n_atoms,
+            )
+        )
+
+
+class StreamFrameIteratorSliced(FrameIteratorBase):
+    """Iterator for sliced frames in a streamed trajectory.
+    
+    Created when slicing a streaming trajectory with a step parameter 
+    (e.g., ``trajectory[::n]``). Reads every nth frame from the continuous 
+    stream, discarding intermediate frames for performance.
+    
+    This differs from iterating over all frames (``trajectory[:]``) which uses
+    :class:`FrameIteratorAll` and processes every frame sequentially without 
+    skipping.
+    
+    Streaming constraints apply to the sliced iterator:
+    
+    - Frames cannot be accessed randomly (no indexing support)
+    - The total number of frames is unknown until streaming ends  
+    - Rewinding or restarting iteration is not possible
+    - Only forward iteration with a fixed step size is supported
+    
+    Parameters
+    ----------
+    trajectory : StreamReaderBase
+        The streaming trajectory reader to iterate over. Must be a 
+        stream-based reader that supports continuous data reading.
+    step : int
+        Step size for iteration. Must be a positive integer. A step 
+        of 1 reads every frame, step of 2 reads every other frame, etc.
+        
+    See Also
+    --------
+    StreamReaderBase
+    FrameIteratorBase
+
+
+    .. versionadded:: 2.10.0
+    """
+
+    def __init__(self, trajectory, step):
+        super().__init__(trajectory)
+        self._step = step
+
+    def __iter__(self):
+        # Calling reopen tells reader
+        # it can't be reopened again
+        self.trajectory._reopen()
+        return self
+
+    def __next__(self):
+        try:
+            # Burn the timesteps until we reach the desired step
+            # Don't use next() to avoid unnecessary transformations
+            while (self.trajectory._frame + 1) % self._step != 0:
+                self.trajectory._read_next_timestep()
+        except (EOFError, IOError):
+            # Don't rewind here like we normally would
+            raise StopIteration from None
+
+        return self.trajectory.next()
+
+    def __len__(self):
+        raise RuntimeError(
+            "{} has unknown length".format(self.__class__.__name__)
+        )
+
+    def __getitem__(self, frame):
+        raise RuntimeError("Sliced iterator does not support indexing")
+
+    @property
+    def step(self):
+        """The step size for sliced frame iteration.
+        
+        Returns the step interval used when iterating through frames in a 
+        streaming trajectory. For example, a step of 2 means every second 
+        frame is processed, while a step of 1 processes every frame.
+        
+        Returns
+        -------
+        int
+            Step size for iteration. Always a positive integer greater than 0.
+            
+        """
+        return self._step

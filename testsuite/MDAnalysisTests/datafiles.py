@@ -96,6 +96,7 @@ __all__ = [
     "PDB_xvf",
     "TPR_xvf",
     "TRR_xvf",  # Gromacs coords/veloc/forces (cobrotoxin, OPLS-AA, Gromacs 4.5.5 tpr)
+    "TPR_xvf_2024_4",
     "H5MD_xvf",  # TPR_xvf + TRR_xvf converted to h5md format
     "H5MD_energy",  # H5MD trajectory with observables/atoms/energy
     "H5MD_malformed",  # H5MD trajectory with malformed observable group
@@ -273,6 +274,7 @@ __all__ = [
     "LAMMPSDUMP_chain2",  # Lammps dump file with chain reader
     "LAMMPS_chain",  # Lammps data file with chain reader
     "LAMMPSDUMP_additional_columns",  # lammpsdump file with additional data (an additional charge column)
+    "LAMMPSDUMP_non_linear",  # lammpsdump file to test calculating non-linear msd method
     "unordered_res",  # pdb file with resids non sequential
     "GMS_ASYMOPT",  # GAMESS C1  optimization
     "GMS_SYMOPT",  # GAMESS D4h optimization
@@ -336,6 +338,9 @@ __all__ = [
     "GSD_long",
     "TRC_PDB_VAC",
     "TRC_TRAJ1_VAC",
+    "TRC_TRAJ1_VAC_WHITESPACE",  # contains inconsistent trailing whitespace in POSITIONRED
+    "TRC_TRAJ1_VAC_MISSING_POS",  # contains one missing position in the last frame
+    "TRC_TRAJ1_VAC_EXTRA_POS",  # contains one extra position in the last frame
     "TRC_TRAJ2_VAC",  # 2x 3 frames of vacuum trajectory from GROMOS11 tutorial
     "TRC_CLUSTER_VAC",  # three frames without TIMESTEP and GENBOX block but with unsupported POSITION block
     "TRC_TRICLINIC_SOLV",
@@ -524,6 +529,7 @@ TNG_traj_vels_forces = (
 ).as_posix()
 PDB_xvf = (_data_ref / "cobrotoxin.pdb").as_posix()
 TPR_xvf = (_data_ref / "cobrotoxin.tpr").as_posix()
+TPR_xvf_2024_4 = (_data_ref / "cobrotoxin_2024_4.tpr").as_posix()
 TRR_xvf = (_data_ref / "cobrotoxin.trr").as_posix()
 H5MD_xvf = (_data_ref / "cobrotoxin.h5md").as_posix()
 H5MD_energy = (_data_ref / "cu.h5md").as_posix()
@@ -780,6 +786,9 @@ LAMMPSdata_additional_columns = (
 LAMMPSDUMP_additional_columns = (
     _data_ref / "lammps/additional_columns.lammpstrj"
 ).as_posix()
+LAMMPSDUMP_non_linear = (
+    _data_ref / "analysis/msd/test_non_linear.dump.bz2"
+).as_posix()
 
 unordered_res = (_data_ref / "unordered_res.pdb").as_posix()
 
@@ -839,6 +848,15 @@ GSD_long = (_data_ref / "example_longer.gsd").as_posix()
 
 TRC_PDB_VAC = (_data_ref / "gromos11/gromos11_traj_vac.pdb.gz").as_posix()
 TRC_TRAJ1_VAC = (_data_ref / "gromos11/gromos11_traj_vac_1.trc.gz").as_posix()
+TRC_TRAJ1_VAC_WHITESPACE = (
+    _data_ref / "gromos11/gromos11_traj_vac_1_whitespace.trc.gz"
+).as_posix()
+TRC_TRAJ1_VAC_MISSING_POS = (
+    _data_ref / "gromos11/gromos11_traj_vac_1_missing_pos.trc.gz"
+).as_posix()
+TRC_TRAJ1_VAC_EXTRA_POS = (
+    _data_ref / "gromos11/gromos11_traj_vac_1_extra_pos.trc.gz"
+).as_posix()
 TRC_TRAJ2_VAC = (_data_ref / "gromos11/gromos11_traj_vac_2.trc.gz").as_posix()
 TRC_PDB_SOLV = (_data_ref / "gromos11/gromos11_traj_solv.pdb.gz").as_posix()
 TRC_TRAJ_SOLV = (_data_ref / "gromos11/gromos11_traj_solv.trc.gz").as_posix()

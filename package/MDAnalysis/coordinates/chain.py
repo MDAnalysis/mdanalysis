@@ -105,28 +105,40 @@ def filter_times(times, dt):
     """
     # Special cases
     if len(times) == 1:
-        return [0, ]
+        return [
+            0,
+        ]
     elif len(times) == 2:
         if times[0][0] < times[1][0]:
             return [0, 1]
         elif np.allclose(times[0][0], times[1][0]):
-            return [1, ]
+            return [
+                1,
+            ]
         else:
-            return [0, ]
+            return [
+                0,
+            ]
     if np.unique(times).size == 2:
-        return [len(times) - 1, ]
+        return [
+            len(times) - 1,
+        ]
 
     # more then 2 unique time entries
 
-    used_idx = [0, ]
+    used_idx = [
+        0,
+    ]
 
-    for i, (first, middle, last) in enumerate(zip(times[:-2], times[1:-1], times[2:]), start=1):
+    for i, (first, middle, last) in enumerate(
+        zip(times[:-2], times[1:-1], times[2:]), start=1
+    ):
         if np.allclose(first[0], middle[0]):
             used_idx[-1] = i
         elif not np.allclose(middle[1] - middle[0], dt):
             if (middle[0] <= first[1]) and (last[0] <= middle[1]):
                 used_idx.append(i)
-        elif (middle[0] <= first[1]):
+        elif middle[0] <= first[1]:
             used_idx.append(i)
 
     # take care of first special case
@@ -147,15 +159,19 @@ def check_allowed_filetypes(readers, allowed):
     allowed : list of allowed formats
     """
     classname = type(readers[0])
-    only_one_reader = np.all([isinstance(r,  classname) for r in readers])
+    only_one_reader = np.all([isinstance(r, classname) for r in readers])
     if not only_one_reader:
         readernames = [type(r) for r in readers]
-        raise ValueError("ChainReader: continuous=true only supported"
-                         " when all files are using the same reader. "
-                         "Found: {}".format(readernames))
+        raise ValueError(
+            "ChainReader: continuous=true only supported"
+            " when all files are using the same reader. "
+            "Found: {}".format(readernames)
+        )
     if readers[0].format not in allowed:
-        raise NotImplementedError("ChainReader: continuous=True only "
-                                  "supported for formats: {}".format(allowed))
+        raise NotImplementedError(
+            "ChainReader: continuous=True only "
+            "supported for formats: {}".format(allowed)
+        )
 
 
 class ChainReader(base.ReaderBase):
@@ -215,11 +231,19 @@ class ChainReader(base.ReaderBase):
        current timestep is retained.
 
     """
-    format = 'CHAIN'
+
+    format = "CHAIN"
 
     @store_init_arguments
-    def __init__(self, filenames, skip=1, dt=None, continuous=False,
-                 convert_units=True, **kwargs):
+    def __init__(
+        self,
+        filenames,
+        skip=1,
+        dt=None,
+        continuous=False,
+        convert_units=True,
+        **kwargs,
+    ):
         """Set up the chain reader.
 
         Parameters
@@ -256,19 +280,23 @@ class ChainReader(base.ReaderBase):
             unchanged
 
         """
-        super(ChainReader, self).__init__(filename='CHAIN',
-                                          skip=skip,
-                                          convert_units=convert_units,
-                                          dt=dt,
-                                          **kwargs)
+        super(ChainReader, self).__init__(
+            filename="CHAIN",
+            skip=skip,
+            convert_units=convert_units,
+            dt=dt,
+            **kwargs,
+        )
 
         filenames = asiterable(filenames)
         # Override here because single frame readers handle this argument as a
         # kwarg to a timestep which behaves differently if dt is present or not.
         if dt is not None:
-            kwargs['dt'] = dt
-        self.readers = [core.reader(filename, convert_units=convert_units, **kwargs)
-                        for filename in filenames]
+            kwargs["dt"] = dt
+        self.readers = [
+            core.reader(filename, convert_units=convert_units, **kwargs)
+            for filename in filenames
+        ]
         # Iterate through all filenames, appending NoneType None for ndarrays
         self.filenames = []
         for fn in filenames:
@@ -284,7 +312,7 @@ class ChainReader(base.ReaderBase):
         self.__active_reader_index = 0
 
         self.skip = skip
-        self.n_atoms = self._get_same('n_atoms')
+        self.n_atoms = self._get_same("n_atoms")
 
         # Translation between virtual frames and frames in individual
         # trajectories. Assumes that individual trajectories i contain frames
@@ -297,25 +325,28 @@ class ChainReader(base.ReaderBase):
         # trajectory i and local frame f (i.e. readers[i][f] will correspond to
         # ChainReader[k]).
         # build map 'start_frames', which is used by _get_local_frame()
-        n_frames = self._get('n_frames')
+        n_frames = self._get("n_frames")
         # [0]: frames are 0-indexed internally
         # (see Timestep.check_slice_indices())
         self._start_frames = np.cumsum([0] + n_frames)
 
         self.n_frames = np.sum(n_frames)
-        self.dts = np.array(self._get('dt'))
+        self.dts = np.array(self._get("dt"))
         self.total_times = self.dts * n_frames
 
         # calculate new start_frames to have a time continuous trajectory.
         if continuous:
-            check_allowed_filetypes(self.readers, ['XTC', 'TRR', 'LAMMPSDUMP',
-                                                   'TRC'])
+            check_allowed_filetypes(
+                self.readers, ["XTC", "TRR", "LAMMPSDUMP", "TRC"]
+            )
             if np.any(np.array(n_frames) == 1):
-                raise RuntimeError("ChainReader: Need at least two frames in "
-                                   "every trajectory with continuous=True")
+                raise RuntimeError(
+                    "ChainReader: Need at least two frames in "
+                    "every trajectory with continuous=True"
+                )
             # TODO: allow floating point precision in dt check
-            dt = self._get_same('dt')
-            n_frames = np.asarray(self._get('n_frames'))
+            dt = self._get_same("dt")
+            n_frames = np.asarray(self._get("n_frames"))
             self.dts = np.ones(self.dts.shape) * dt
 
             # the sorting needs to happen on two levels. The first major level
@@ -347,7 +378,9 @@ class ChainReader(base.ReaderBase):
                 self.total_times = self.dts[used_idx] * n_frames[used_idx]
 
             # rebuild lookup table
-            sf = [0, ]
+            sf = [
+                0,
+            ]
             n_frames = 0
             for r1, r2 in zip(self.readers[:-1], self.readers[1:]):
                 r2[0], r1[0]
@@ -355,13 +388,17 @@ class ChainReader(base.ReaderBase):
                 start_time = r2.time
                 r1[-1]
                 if r1.time < start_time:
-                    warnings.warn("Missing frame in continuous chain", UserWarning)
+                    warnings.warn(
+                        "Missing frame in continuous chain", UserWarning
+                    )
 
                 # check for interleaving
                 r1[1]
                 if r1_start_time < start_time < r1.time:
-                    raise RuntimeError("ChainReader: Interleaving not supported "
-                                       "with continuous=True.")
+                    raise RuntimeError(
+                        "ChainReader: Interleaving not supported "
+                        "with continuous=True."
+                    )
 
                 # find end where trajectory was restarted from
                 for ts in r1[::-1]:
@@ -387,9 +424,11 @@ class ChainReader(base.ReaderBase):
 
         .. versionadded:: 1.0.0
         """
-        return (not isinstance(thing, np.ndarray) and
-                util.iterable(thing) and
-                not util.isstream(thing))
+        return (
+            not isinstance(thing, np.ndarray)
+            and util.iterable(thing)
+            and not util.isstream(thing)
+        )
 
     def _get_local_frame(self, k) -> Tuple[int, int]:
         """Find trajectory index and trajectory frame for chained frame `k`.
@@ -427,7 +466,9 @@ class ChainReader(base.ReaderBase):
         # trajectory index i
         i = bisect.bisect_right(self._start_frames, k) - 1
         if i < 0:
-            raise IndexError("Cannot find trajectory for virtual frame {0:d}".format(k))
+            raise IndexError(
+                "Cannot find trajectory for virtual frame {0:d}".format(k)
+            )
         # local frame index f in trajectory i (frame indices are 0-based)
         f = k - self._start_frames[i]
         return i, f
@@ -435,16 +476,16 @@ class ChainReader(base.ReaderBase):
     def __getstate__(self):
         state = self.__dict__.copy()
         #  save ts temporarily otherwise it will be changed during rewinding.
-        state['ts'] = self.ts.__deepcopy__()
+        state["ts"] = self.ts.__deepcopy__()
 
         #  the ts.frame of each reader is set to the chained frame index during
         #  iteration, thus we need to rewind the readers that have been used.
         #  PR #2723
-        for reader in state['readers'][:self.__active_reader_index + 1]:
+        for reader in state["readers"][: self.__active_reader_index + 1]:
             reader.rewind()
 
         #  retrieve the current ts
-        self.ts = state['ts']
+        self.ts = state["ts"]
         return state
 
     def __setstate__(self, state):
@@ -506,11 +547,16 @@ class ChainReader(base.ReaderBase):
         # Now each reader is either already instantiated with a common dt, or
         #  left at its default dt. In any case, we sum over individual times.
         trajindex, subframe = self._get_local_frame(self.frame)
-        return self.total_times[:trajindex].sum() + subframe * self.dts[trajindex]
+        return (
+            self.total_times[:trajindex].sum() + subframe * self.dts[trajindex]
+        )
 
     def _apply(self, method, **kwargs):
         """Execute `method` with `kwargs` for all readers."""
-        return [reader.__getattribute__(method)(**kwargs) for reader in self.readers]
+        return [
+            reader.__getattribute__(method)(**kwargs)
+            for reader in self.readers
+        ]
 
     def _get(self, attr):
         """Get value of `attr` for all readers."""
@@ -538,15 +584,19 @@ class ChainReader(base.ReaderBase):
         value = values[0]
         if not np.allclose(values, value):
             bad_traj = np.array(self.filenames)[values != value]
-            raise ValueError("The following trajectories do not have the correct {0} "
-                             " ({1}):\n{2}".format(attr, value, bad_traj))
+            raise ValueError(
+                "The following trajectories do not have the correct {0} "
+                " ({1}):\n{2}".format(attr, value, bad_traj)
+            )
         return value
 
     def __activate_reader(self, i):
         """Make reader `i` the active reader."""
         # private method, not to be used by user to avoid a total mess
         if not (0 <= i < len(self.readers)):
-            raise IndexError("Reader index must be 0 <= i < {0:d}".format(len(self.readers)))
+            raise IndexError(
+                "Reader index must be 0 <= i < {0:d}".format(len(self.readers))
+            )
         self.__active_reader_index = i
         self.filename = self.filenames[i]
 
@@ -600,24 +650,34 @@ class ChainReader(base.ReaderBase):
     def _reopen(self):
         """Internal method: Rewind trajectories themselves and trj pointer."""
         self.__current_frame = -1
-        self._apply('rewind')
+        self._apply("rewind")
 
     def close(self):
-        self._apply('close')
+        self._apply("close")
 
     def __repr__(self):
         if len(self.filenames) > 3:
-            fname = (os.path.basename(self.filenames[0])
-                     if self.filenames[0] else "numpy.ndarray")
+            fname = (
+                os.path.basename(self.filenames[0])
+                if self.filenames[0]
+                else "numpy.ndarray"
+            )
             fnames = "{fname} and {nfnames} more".format(
-                    fname=fname,
-                    nfnames=len(self.filenames) - 1)
+                fname=fname, nfnames=len(self.filenames) - 1
+            )
         else:
-            fnames = ", ".join([os.path.basename(fn) if fn else "numpy.ndarray"
-                                for fn in self.filenames])
-        return ("<{clsname} containing {fname} with {nframes} frames of {natoms} atoms>"
-                "".format(
-                    clsname=self.__class__.__name__,
-                    fname=fnames,
-                    nframes=self.n_frames,
-                    natoms=self.n_atoms))
+            fnames = ", ".join(
+                [
+                    os.path.basename(fn) if fn else "numpy.ndarray"
+                    for fn in self.filenames
+                ]
+            )
+        return (
+            "<{clsname} containing {fname} with {nframes} frames of {natoms} atoms>"
+            "".format(
+                clsname=self.__class__.__name__,
+                fname=fnames,
+                nframes=self.n_frames,
+                natoms=self.n_atoms,
+            )
+        )
