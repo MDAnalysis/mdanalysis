@@ -657,7 +657,7 @@ class InterRDF_s(AnalysisBase):
 
             for j, (idx1, idx2) in enumerate(pairs):
                 self.results.count[i][idx1, idx2, bin_indices[j]] += int(
-                   bin_indices[j] in range(bins)
+                    bin_indices[j] in range(bins)
                 )
 
         if self.norm == "rdf":
