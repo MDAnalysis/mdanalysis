@@ -656,7 +656,9 @@ class InterRDF_s(AnalysisBase):
             bin_indices = bin_indices.astype(np.int64)
 
             for j, (idx1, idx2) in enumerate(pairs):
-                self.results.count[i][idx1, idx2, bin_indices[j]] += int(bin_indices[j] in range(bins))
+                self.results.count[i][idx1, idx2, bin_indices[j]] += int(
+                   bin_indices[j] in range(bins)
+                )
 
         if self.norm == "rdf":
             self.volume_cum += self._ts.volume
