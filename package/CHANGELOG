@@ -40,6 +40,8 @@ Fixes
  * Fixes the benchmark `SimpleRmsBench` in `benchmarks/analysis/rms.py`
    by changing the way weights for RMSD are calculated, instead of
    directly passing them. (Issue #3520, PR #5006)
+ * `analysis.polymer.sort_backbone` is now working for discontinuous polymers
+    and does not result in an infinite loop (Issue #5112, PR #5113)
 
 Enhancements
  * Added capability to calculate MSD from frames with irregular (non-linear)
@@ -81,8 +83,7 @@ Changes
  * Removed undocumented and unused attribute
    `analysis.lineardensity.LinearDensity.totalmass` (PR #5007)
  * Remove `default` channel from RTD conda env. (Issue # 5036, PR # 5037)   
- * Changed the fragment detection logic in `analysis.polymer.sort_backbone` (Issue #5112, PR #5113)
- * Replaced the while loop in `analysis.polymer.sort_backbone` with a for loop (Issue #5112, PR #5113)
+
 
 Deprecations
  * The RDKit converter parameter `NoImplicit` has been deprecated in favour of

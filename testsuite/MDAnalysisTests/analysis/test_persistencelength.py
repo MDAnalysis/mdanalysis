@@ -153,32 +153,27 @@ class TestSortBackbone(object):
         # includes side branches, can't sort
         bad_ag = u.atoms[:10]  # include -H etc
 
-        with pytest.raises(ValueError) as ex:
+        with pytest.raises(ValueError, match="branches or isolated atoms"):
             polymer.sort_backbone(bad_ag)
-        assert "branches or isolated atoms" in str(ex.value)
 
     def test_isolated(self, u):
         u = mda.Universe.empty(4, trajectory=True)
         bondlist = [(0, 1), (1, 2)]
         u.add_TopologyAttr(Bonds(bondlist))
-        with pytest.raises(ValueError) as ex:
+        with pytest.raises(ValueError, match="branches or isolated atoms"):
             polymer.sort_backbone(u.atoms)
-        assert "branches or isolated atoms" in str(ex.value)
 
     def test_missing_internal(self, u):
         u = mda.Universe.empty(4, trajectory=True)
         bondlist = [(0, 1), (2, 3)]
         u.add_TopologyAttr(Bonds(bondlist))
-        with pytest.raises(ValueError) as ex:
+        with pytest.raises(ValueError, match="Backbone connectivity invalid"):
             polymer.sort_backbone(u.atoms)
-        assert "Backbone connectivity invalid" in str(ex.value)
 
     def test_circular(self):
         u = mda.Universe.empty(6, trajectory=True)
         # circular structure
         bondlist = [(0, 1), (1, 2), (2, 3), (3, 4), (4, 5), (5, 0)]
         u.add_TopologyAttr(Bonds(bondlist))
-
-        with pytest.raises(ValueError) as ex:
+        with pytest.raises(ValueError, match="Cyclical"):
             polymer.sort_backbone(u.atoms)
-        assert "Cyclical" in str(ex.value)
