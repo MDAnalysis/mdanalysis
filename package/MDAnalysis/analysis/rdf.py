@@ -650,15 +650,12 @@ class InterRDF_s(AnalysisBase):
                 self.rdf_settings["range"][0],
                 self.rdf_settings["range"][1],
             )
-            # Calculate bin indices for each value in dist, similar to np.histogram's bin assignment.
             bin_indices = (dist - minv) * bins / (maxv - minv)
             bin_indices = bin_indices.astype(np.int64)
             counts = np.isin(bin_indices, np.arange(bins)).astype(np.int64)
-            bin_indices = bin_indices * counts  # set out-of-range indices to 0
-
+            bin_indices = bin_indices * counts
             idx1s = pairs[:, 0]
             idx2s = pairs[:, 1]
-
             self.results.count[i][idx1s, idx2s, bin_indices] += counts
 
         if self.norm == "rdf":
