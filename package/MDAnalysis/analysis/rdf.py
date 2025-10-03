@@ -645,7 +645,6 @@ class InterRDF_s(AnalysisBase):
                 backend=self.backend,
             )
 
-            # The following is an optimized version based on the old logic.
             bins = self.rdf_settings["bins"]
             minv, maxv = (
                 self.rdf_settings["range"][0],
@@ -654,11 +653,13 @@ class InterRDF_s(AnalysisBase):
             # Calculate bin indices for each value in dist, similar to np.histogram's bin assignment.
             bin_indices = (dist - minv) * bins / (maxv - minv)
             bin_indices = bin_indices.astype(np.int64)
+            counts = np.isin(bin_indices, np.arange(bins)).astype(np.int64)
+            bin_indices = bin_indices * counts  # set out-of-range indices to 0
 
-            for j, (idx1, idx2) in enumerate(pairs):
-                self.results.count[i][idx1, idx2, bin_indices[j]] += int(
-                    bin_indices[j] in range(bins)
-                )
+            idx1s = pairs[:, 0]
+            idx2s = pairs[:, 1]
+
+            self.results.count[i][idx1s, idx2s, bin_indices] += counts
 
         if self.norm == "rdf":
             self.volume_cum += self._ts.volume
