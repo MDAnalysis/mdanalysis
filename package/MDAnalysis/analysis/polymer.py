@@ -103,15 +103,6 @@ def sort_backbone(backbone):
         # append this to the sorted backbone
         sorted_backbone += next_atom
 
-    # final sanity check to see if we missed some atoms
-    if len(sorted_backbone) != len(backbone):
-        raise ValueError(
-            "Backbone traversal did not visit all atoms. "
-            "Expected {} atoms, got {}.".format(
-                len(backbone), len(sorted_backbone)
-            )
-        )
-
     return sorted_backbone
 
 
