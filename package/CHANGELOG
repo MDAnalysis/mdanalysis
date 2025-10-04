@@ -16,7 +16,8 @@ The rules for this file:
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, orbeckst, BHM-Bob, TRY-ER, Abdulrahman-PROG, pbuslaev,
          yuxuanzhuang, yuyuan871111, tanishy7777, tulga-rdn, Gareth-elliott,
-         hmacdope, tylerjereddy, cbouy, talagayev, DrDomenicoMarson, amruthesht
+         hmacdope, tylerjereddy, cbouy, talagayev, DrDomenicoMarson, 
+         amruthesht, gitzhangch
 
 
  * 2.10.0
@@ -77,6 +78,9 @@ Enhancements
  * Moved distopia checking function to common import location in
    MDAnalysisTest.util (PR #5038)  
  * Enables parallelization for `analysis.polymer.PersistenceLength` (Issue #4671, PR #5074)
+ * Optimized performance of `analysis.rdf.InterRDF_s._single_frame` by 
+   replacing the inner for loop and repeated `np.histogram` calls with a 
+   vectorized NumPy calculation.(Issue #5067, PR #5073)
 
 
 Changes
