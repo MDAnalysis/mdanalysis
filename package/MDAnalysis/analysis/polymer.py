@@ -114,6 +114,7 @@ def sort_backbone(backbone):
 
     return sorted_backbone
 
+
 class PersistenceLength(AnalysisBase):
     r"""Calculate the persistence length for polymer chains
 
