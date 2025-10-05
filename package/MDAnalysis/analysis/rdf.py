@@ -653,7 +653,6 @@ class InterRDF_s(AnalysisBase):
             bin_indices = (dist - minv) * bins / (maxv - minv)
             bin_indices = bin_indices.astype(np.int64)
             counts = np.isin(bin_indices, np.arange(bins)).astype(np.int64)
-            bin_indices = bin_indices * counts
             idx1s = pairs[:, 0]
             idx2s = pairs[:, 1]
             self.results.count[i][idx1s, idx2s, bin_indices] += counts

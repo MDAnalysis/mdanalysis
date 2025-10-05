@@ -43,6 +43,8 @@ Fixes
    directly passing them. (Issue #3520, PR #5006)
 
 Enhancements
+ * Improved performance of `analysis.rdf.InterRDF_s` about 100-fold  
+   by using vectorized NumPy calculations. (Issue #5067, PR #5073)
  * Added support for reading and processing streamed data in `coordinates.base`
    with new `StreamFrameIteratorSliced` and `StreamReaderBase` (Issue #4827, PR #4923)
  * New coordinate reader: Added `IMDReader` for reading real-time streamed
@@ -78,9 +80,6 @@ Enhancements
  * Moved distopia checking function to common import location in
    MDAnalysisTest.util (PR #5038)  
  * Enables parallelization for `analysis.polymer.PersistenceLength` (Issue #4671, PR #5074)
- * Optimized performance of `analysis.rdf.InterRDF_s._single_frame` by 
-   replacing the inner for loop and repeated `np.histogram` calls with a 
-   vectorized NumPy calculation.(Issue #5067, PR #5073)
 
 
 Changes
