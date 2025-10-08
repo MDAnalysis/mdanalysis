@@ -190,4 +190,3 @@ def test_nested_array_sum():
 
     assert np.array_equal(result[0], arr_1 + arr_3)
     assert np.array_equal(result[1], arr_2 + arr_4)
-

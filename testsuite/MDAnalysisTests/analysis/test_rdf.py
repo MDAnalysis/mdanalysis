@@ -162,4 +162,3 @@ def test_norm(sels, backend):
     s1, s2 = sels
     rdf = InterRDF(s1, s2, norm="none", backend=backend).run()
     assert_allclose(max(rdf.results.rdf), 4)
-
