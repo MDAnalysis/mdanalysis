@@ -731,9 +731,17 @@ class InterRDF_s(AnalysisBase):
                 backend=self.backend,
             )
 
-            for j, (idx1, idx2) in enumerate(pairs):
-                count, _ = np.histogram(dist[j], **self.rdf_settings)
-                self.results.count[i][idx1, idx2, :] += count
+            bins = self.rdf_settings["bins"]
+            minv, maxv = (
+                self.rdf_settings["range"][0],
+                self.rdf_settings["range"][1],
+            )
+            bin_indices = (dist - minv) * bins / (maxv - minv)
+            bin_indices = bin_indices.astype(np.int64)
+            counts = np.isin(bin_indices, np.arange(bins)).astype(np.int64)
+            idx1s = pairs[:, 0]
+            idx2s = pairs[:, 1]
+            self.results.count[i][idx1s, idx2s, bin_indices] += counts
 
         if self.norm == "rdf":
             self.results.volume_cum += self._ts.volume

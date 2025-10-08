@@ -16,7 +16,8 @@ The rules for this file:
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, orbeckst, BHM-Bob, TRY-ER, Abdulrahman-PROG, pbuslaev,
          yuxuanzhuang, yuyuan871111, tanishy7777, tulga-rdn, Gareth-elliott,
-         hmacdope, tylerjereddy, cbouy, talagayev, DrDomenicoMarson, amruthesht
+         hmacdope, tylerjereddy, cbouy, talagayev, DrDomenicoMarson, 
+         amruthesht, gitzhangch
 
 
  * 2.10.0
@@ -42,6 +43,8 @@ Fixes
    directly passing them. (Issue #3520, PR #5006)
 
 Enhancements
+ * Improved performance of `analysis.rdf.InterRDF_s` about 100-fold  
+   by using vectorized NumPy calculations. (Issue #5067, PR #5073)
  * Added support for reading and processing streamed data in `coordinates.base`
    with new `StreamFrameIteratorSliced` and `StreamReaderBase` (Issue #4827, PR #4923)
  * New coordinate reader: Added `IMDReader` for reading real-time streamed
