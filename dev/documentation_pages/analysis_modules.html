@@ -264,11 +264,11 @@ split-apply-combine scheme whereby slices of the trajectory (“split”) are an
 parallel (“apply” the analysis function) and the data from the parallel executions
 are “combined” at the end.</p>
 <p>MDAnalysis supports different <a class="reference internal" href="analysis/backends.html#backends"><span class="std std-ref">backends</span></a> for the parallel execution such as
-<a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#module-multiprocessing" title="(in Python v3.13)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multiprocessing</span></code></a> or <a class="reference external" href="https://dask.org/">dask</a> (see <a class="reference internal" href="analysis/backends.html#module-MDAnalysis.analysis.backends" title="MDAnalysis.analysis.backends"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.backends</span></code></a>).
+<a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#module-multiprocessing" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multiprocessing</span></code></a> or <a class="reference external" href="https://dask.org/">dask</a> (see <a class="reference internal" href="analysis/backends.html#module-MDAnalysis.analysis.backends" title="MDAnalysis.analysis.backends"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.backends</span></code></a>).
 As a special case, serial execution is handled by the default  <code class="docutils literal notranslate"><span class="pre">backend='serial'</span></code>, i.e.,
 by default, none of the analysis tools run in parallel and one has to explicitly request
 parallel execution. Without any additionally installed dependencies, only one parallel backend
-is supported – Python <a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#module-multiprocessing" title="(in Python v3.13)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multiprocessing</span></code></a> (which is available in the Python standard
+is supported – Python <a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#module-multiprocessing" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multiprocessing</span></code></a> (which is available in the Python standard
 library), which processes each slice of a trajectory by running a separate <em>process</em> on a
 different core of a multi-core CPU.</p>
 <div class="admonition note">

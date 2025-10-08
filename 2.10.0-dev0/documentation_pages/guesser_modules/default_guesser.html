@@ -240,10 +240,10 @@ the <a class="reference internal" href="../core/universe.html#MDAnalysis.core.un
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – The Universe to apply the guesser on</p></li>
 <li><p><strong>box</strong> (<em>np.ndarray</em><em>, </em><em>optional</em>) – The box of the Universe. This is used for bond guessing.</p></li>
-<li><p><strong>vdwradii</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a><em>, </em><em>optional</em>) – Dict relating atom types: vdw radii. This is used for bond guessing</p></li>
-<li><p><strong>fudge_factor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – The factor by which atoms must overlap each other to be considered
+<li><p><strong>vdwradii</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a><em>, </em><em>optional</em>) – Dict relating atom types: vdw radii. This is used for bond guessing</p></li>
+<li><p><strong>fudge_factor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – The factor by which atoms must overlap each other to be considered
 a bond.  Larger values will increase the number of bonds found. [0.55]</p></li>
-<li><p><strong>lower_bound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a><em>, </em><em>optional</em>) – The minimum bond length. All bonds found shorter than this length
+<li><p><strong>lower_bound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>optional</em>) – The minimum bond length. All bonds found shorter than this length
 will be ignored. This is useful for parsing PDB with altloc records
 where atoms with altloc A and B may be very close together and
 there should be no chemical bond between them. [0.1]</p></li>
@@ -293,7 +293,7 @@ then (1,2,3) must be an angle.</p>
 Suitable for use in u._topology</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a> of tuples</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a> of tuples</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -368,8 +368,8 @@ set to 0.0; if you rely on the masses you might want to double-check.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>attr_to_guess</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – an atrribute to be guessed then to be added to the universe</p></li>
-<li><p><strong>force_guess</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – To indicate wether to only partialy guess the empty values of the
+<li><p><strong>attr_to_guess</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – an atrribute to be guessed then to be added to the universe</p></li>
+<li><p><strong>force_guess</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – To indicate wether to only partialy guess the empty values of the
 attribute or to overwrite all existing values by guessed one</p></li>
 </ul>
 </dd>
@@ -401,7 +401,7 @@ of the <code class="docutils literal notranslate"><span class="pre">atoms</span>
 <dd class="field-even"><p>List of tuples suitable for use in Universe topology building.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a></p>
 </dd>
 </dl>
 <div class="admonition warning">
@@ -411,7 +411,7 @@ structure is correct. This is wrong and will burn somebody.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If inputs are malformed or <cite>vdwradii</cite> data is missing.</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If inputs are malformed or <cite>vdwradii</cite> data is missing.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -431,7 +431,7 @@ then (1,2,3,4) must be a dihedral.</p>
 Suitable for use in u._topology</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.13)">list</a> of tuples</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a> of tuples</p>
 </dd>
 </dl>
 </dd></dl>
@@ -495,7 +495,7 @@ types.</p>
 <dd class="field-odd"><p>np.ndarray dtype float64</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If there are no atom types or elements to guess mass from.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If there are no atom types or elements to guess mass from.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -518,7 +518,7 @@ types.</p>
 <dd class="field-odd"><p>np.ndarray dtype object</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If there is no names to guess types from.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If there is no names to guess types from.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -529,10 +529,10 @@ types.</p>
 <dd><p>check if the passed atrribute can be guessed by the guesser class</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>guess</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Attribute to be guessed then added to the Universe</p>
+<dd class="field-odd"><p><strong>guess</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Attribute to be guessed then added to the Universe</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
