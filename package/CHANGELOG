@@ -24,7 +24,7 @@ The rules for this file:
 
 Fixes
  * Fix atom selection parsing to allow escaping keywords with a backslash
-   (Issue #5111, PR #5118)
+   (Issue #5111, PR #5119)
  * Fix DCDWriter to correctly write unit cell angles as cosines following 
    NAMD/VMD convention (Issue #5069)
  * Fixed an integer overflow in large DCD file seeks on Windows
