@@ -15,7 +15,7 @@ on:
   schedule:
     # 3 am Tuesdays and Fridays
     - cron: "0 3 * * 2,5"
-
+  workflow_dispatch: # Allows running this workflow manually
 
 concurrency:
   group: "${{ github.ref }}-${{ github.head_ref }}-${{ github.workflow }}"
@@ -41,7 +41,7 @@ jobs:
           - [macos-13, macosx_*, x86_64]
           - [windows-2022, win_amd64, AMD64]
           - [macos-14, macosx_*, arm64]
-        python: ["cp310", "cp311", "cp312", "cp313"]
+        python: ["cp310", "cp311", "cp312", "cp313", "cp314"]
     defaults:
       run:
         working-directory: ./package
