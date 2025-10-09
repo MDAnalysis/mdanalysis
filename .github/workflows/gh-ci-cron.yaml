@@ -5,9 +5,9 @@ on:
     - cron: "0 3 * * 2,5"
   workflow_dispatch:
   # Uncomment when you need to test on a PR
-  # pull_request:
-  #  branches:
-  #    - develop
+  pull_request:
+    branches:
+      - develop
 
 
 concurrency:
@@ -107,7 +107,6 @@ jobs:
           pip
         condarc: |
           channels:
-            - jaimergp/label/unsupported-cudatoolkit-shim
             - conda-forge
             - bioconda
 
@@ -141,7 +140,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, macos-13]
+        os: [ubuntu-22.04, macos-13]
 
     steps:
     - uses: actions/checkout@v4
@@ -156,11 +155,10 @@ jobs:
       with:
         environment-name: mda
         create-args: >-
-          python=3.10
+          python=3.11
           pip
         condarc: |
           channels:
-            - jaimergp/label/unsupported-cudatoolkit-shim
             - conda-forge
             - bioconda
 
@@ -190,7 +188,7 @@ jobs:
     strategy:
         fail-fast: false
         matrix:
-          python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+          python-version: ["3.11", "3.12", "3.13", "3.14"]
     steps:
     - uses: actions/checkout@v4
 
