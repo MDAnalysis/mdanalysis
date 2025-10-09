@@ -731,9 +731,9 @@ class InterRDF_s(AnalysisBase):
                 backend=self.backend,
             )
 
+            # Fast manual implementation for distance histogram (equidistant bins)
             nbins = self.rdf_settings["bins"]
             rmin, rmax = self.rdf_settings["range"]
-            # Fast manual implementation for distance histogram (equidistant bins)
             bin_indices = (dist - rmin) * nbins / (rmax - rmin)
             bin_indices = bin_indices.astype(np.int64)
             counts = (bin_indices >= 0) & (bin_indices < nbins)
