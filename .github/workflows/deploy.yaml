@@ -29,7 +29,6 @@ defaults:
 
 jobs:
   build_wheels:
-    if: "github.repository == 'MDAnalysis/mdanalysis'"
     name: Build wheels
     runs-on: ${{ matrix.buildplat[0] }}
     timeout-minutes: 15
