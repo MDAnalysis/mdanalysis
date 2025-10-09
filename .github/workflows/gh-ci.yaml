@@ -47,7 +47,7 @@ jobs:
               python-version: "3.11"
               full-deps: false
               codecov: true
-              numpy: numpy=1.23.2
+              numpy: numpy=1.26.0
             - name: asv_check
               os: ubuntu-latest
               python-version: "3.11"
