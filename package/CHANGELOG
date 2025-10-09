@@ -42,6 +42,10 @@ Fixes
    directly passing them. (Issue #3520, PR #5006)
 
 Enhancements
+ * LAMMPS DumpReader now converts forces to MDAnalysis base units by default
+   and supports overriding native units via `timeunit`, `lengthunit`, and
+   `energyunit` kwargs to accommodate different LAMMPS unit styles such as
+   "real" and "metal" (Issue #5115, PR #5117)
  * Added support for reading and processing streamed data in `coordinates.base`
    with new `StreamFrameIteratorSliced` and `StreamReaderBase` (Issue #4827, PR #4923)
  * New coordinate reader: Added `IMDReader` for reading real-time streamed

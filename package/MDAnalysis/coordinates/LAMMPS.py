@@ -615,16 +615,41 @@ class DumpReader(base.ReaderBase):
     **kwargs
        Other keyword arguments used in :class:`~MDAnalysis.coordinates.base.ReaderBase`
 
+    Additional keyword arguments
+    ----------------------------
+    timeunit : str, optional
+        Native time unit of the dump file (default: ``"fs"`` for LAMMPS
+        "real" units). Must be a valid MDAnalysis time unit.
+    lengthunit : str, optional
+        Native length unit of the dump file (default: ``"Angstrom"`` for
+        LAMMPS "real" units). Must be a valid MDAnalysis length unit.
+    energyunit : str, optional
+        Native energy unit per mole of the dump file (default:
+        ``"kcal/mol"`` for LAMMPS "real" units). Used together with
+        `lengthunit` to derive the native force unit (energy/length).
+
     Note
     ----
-    This reader assumes LAMMPS "real" units where time is in femtoseconds,
-    length is in Angstroms, velocities in Angstrom/femtosecond, and forces
-    in kcal/(mol*Angstrom). Forces are automatically converted to MDAnalysis
-    base units (kJ/(mol*Angstrom)) for consistency with other trajectory formats.
+    By default, this reader assumes LAMMPS "real" units where time is in
+    femtoseconds (``fs``), length is in Angstroms (``Angstrom``), velocities
+    in ``Angstrom/fs``, and forces in ``kcal/(mol*Angstrom)``. You can
+    override the native units with `timeunit`, `lengthunit`, and `energyunit`.
+    The velocity unit is derived as ``lengthunit/timeunit``; the force unit
+    is derived as ``energyunit/lengthunit`` (preserving ``/mol`` if present).
+
+    When ``convert_units=True`` (default), positions, velocities, and forces
+    are converted from the native units to MDAnalysis base units, i.e.,
+    positions to ``Angstrom``, time to ``ps`` (affecting velocity), and
+    forces to ``kJ/(mol*Angstrom)``. This ensures consistency with other
+    trajectory formats.
 
     .. versionchanged:: 2.8.0
        Reading of arbitrary, additional columns is now supported.
        (Issue `#3504 <https://github.com/MDAnalysis/mdanalysis/issues/3504>`__)
+     .. versionchanged:: 2.10.0
+         Forces are converted to MDAnalysis base units by default and native
+         units can be overridden via `timeunit`, `lengthunit`, and `energyunit`
+         to accommodate different LAMMPS unit styles.
     .. versionchanged:: 2.4.0
        Now imports velocities and forces, translates the box to the origin,
        and optionally unwraps trajectories with image flags upon loading.
@@ -671,6 +696,7 @@ class DumpReader(base.ReaderBase):
         additional_columns=None,
         **kwargs,
     ):
+        # Initialize first to set convert_units and ts kwargs
         super(DumpReader, self).__init__(filename, **kwargs)
 
         root, ext = os.path.splitext(self.filename)
@@ -684,6 +710,82 @@ class DumpReader(base.ReaderBase):
                 " is not a valid option. "
                 f"Please choose one of {option_string}"
             )
+
+        # Allow overriding native units per-instance to support LAMMPS unit styles
+        # Defaults correspond to "real": time=fs, length=Angstrom, energy=kcal/mol
+        timeunit = kwargs.pop("timeunit", None)
+        lengthunit = kwargs.pop("lengthunit", None)
+        energyunit = kwargs.pop("energyunit", None)
+
+        # Start from class defaults
+        self.units = self.units.copy()
+
+        # Helper to (re)compute velocity and force units from time/length/energy
+        def _compute_units(_time, _length, _energy):
+            # velocity as length/time
+            vel = None
+            if _time is not None and _length is not None:
+                vel = f"{_length}/{_time}"
+
+            # force as energy/length (add per-mol if provided in energy)
+            # Examples:
+            #  - energy="kcal/mol", length="Angstrom" -> "kcal/(mol*Angstrom)"
+            #  - energy="eV", length="Angstrom" -> "eV/Angstrom"
+            frc = None
+            if _energy is not None and _length is not None:
+                if "/mol" in _energy:
+                    base_energy = _energy.replace("/mol", "")
+                    frc = f"{base_energy}/(mol*{_length})"
+                else:
+                    frc = f"{_energy}/{_length}"
+            return vel, frc
+
+        # Apply overrides if provided
+        if timeunit is not None:
+            # Validate unit type if known
+            try:
+                if units.unit_types[timeunit] != 'time':
+                    raise TypeError(
+                        f"LAMMPS DumpReader: wrong unit {timeunit!r} for unit type 'time'"
+                    )
+            except KeyError:
+                raise ValueError(
+                    f"LAMMPS DumpReader: unknown time unit {timeunit!r}"
+                ) from None
+            self.units['time'] = timeunit
+
+        if lengthunit is not None:
+            try:
+                if units.unit_types[lengthunit] != 'length':
+                    raise TypeError(
+                        f"LAMMPS DumpReader: wrong unit {lengthunit!r} for unit type 'length'"
+                    )
+            except KeyError:
+                raise ValueError(
+                    f"LAMMPS DumpReader: unknown length unit {lengthunit!r}"
+                ) from None
+            self.units['length'] = lengthunit
+
+        # default energy for "real"
+        default_energy = 'kcal/mol'
+        if energyunit is None:
+            energyunit = default_energy
+        else:
+            try:
+                if units.unit_types[energyunit] != 'energy':
+                    raise TypeError(
+                        f"LAMMPS DumpReader: wrong unit {energyunit!r} for unit type 'energy'"
+                    )
+            except KeyError:
+                # Some compound forms like 'kcal/mol' may not be in unit_types; allow pass-through
+                pass
+
+        # Derive velocity and force units based on final time/length/energy
+        vunit, funit = _compute_units(self.units['time'], self.units['length'], energyunit)
+        if vunit is not None:
+            self.units['velocity'] = vunit
+        if funit is not None:
+            self.units['force'] = funit
 
         self._unwrap = unwrap_images
 
