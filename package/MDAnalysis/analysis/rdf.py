@@ -736,7 +736,8 @@ class InterRDF_s(AnalysisBase):
             # Fast manual implementation for distance histogram (equidistant bins)
             bin_indices = (dist - rmin) * nbins / (rmax - rmin)
             bin_indices = bin_indices.astype(np.int64)
-            counts = ((bin_indices >= 0) & (bin_indices < nbins)).astype(np.int64)
+            counts = (bin_indices >= 0) & (bin_indices < nbins)
+            counts = counts.astype(np.int64)
             idx1s = pairs[:, 0]
             idx2s = pairs[:, 1]
             self.results.count[i][idx1s, idx2s, bin_indices] += counts
