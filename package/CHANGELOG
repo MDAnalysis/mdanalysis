@@ -122,7 +122,10 @@ Enhancements
  * Add check and warning for empty (all zero) coordinates in RDKit converter (PR #4824)
  * Added `precision` for XYZWriter (Issue #4775, PR #4771)
  * Parallelize `analysis.rdf.InterRDF` and `analysis.rdf.InterRDF` (Issue #4675)
-
+ * Added `precision` for XYZWriter (Issue #4775, PR #4771)
+ * Add check and warning for empty (all zero) coordinates in RDKit converter
+   (PR #4824)
+ * Added `precision` for XYZWriter (Issue #4775, PR #4771)
 
 Changes
  * MDAnalysis.analysis.psa, MDAnalysis.analysis.waterdynamics and
