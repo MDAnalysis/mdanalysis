@@ -15,7 +15,6 @@ on:
   schedule:
     # 3 am Tuesdays and Fridays
     - cron: "0 3 * * 2,5"
-  workflow_dispatch: # Allows running this workflow manually
 
 concurrency:
   group: "${{ github.ref }}-${{ github.head_ref }}-${{ github.workflow }}"
@@ -29,6 +28,7 @@ defaults:
 
 jobs:
   build_wheels:
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
     name: Build wheels
     runs-on: ${{ matrix.buildplat[0] }}
     timeout-minutes: 15
