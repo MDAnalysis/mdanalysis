@@ -20,6 +20,17 @@ py3.extension_module('_augment',
   subdir: 'MDAnalysis/lib'
 )
 
+py3.extension_module('nsgrid',
+  [cython_gen_cpp.process('nsgrid.pyx')],
+  cpp_args: cython_cpp_args,
+  include_directories: [
+    'include',
+    ],
+  dependencies: np_dep,
+  install: true,
+  subdir: 'MDAnalysis/lib'
+)
+
 
 py3.install_sources([
     'NeighborSearch.py',
