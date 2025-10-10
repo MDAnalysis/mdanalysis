@@ -1,3 +1,15 @@
+py3.extension_module('_cutil',
+  [cython_gen_cpp.process('_cutil.pyx')],
+  cpp_args: cython_cpp_args,
+  include_directories: [
+    'include',
+    ],
+  dependencies: np_dep,
+  install: true,
+  subdir: 'MDAnalysis/lib'
+)
+
+
 py3.install_sources([
     'NeighborSearch.py',
     '__init__.py',

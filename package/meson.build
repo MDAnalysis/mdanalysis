@@ -1,6 +1,6 @@
 project(
   'MDAnalysis',
-  'c', 'cython',
+  'c', 'cpp', 'cython',
   version: '2.10.0-dev0',
   license: 'LGPLv3+',
   meson_version: '>= 1.9.0',
@@ -14,6 +14,7 @@ project(
 py3 = import('python').find_installation(pure: false)
 py3_dep = py3.dependency()
 cc = meson.get_compiler('c')
+cpp = meson.get_compiler('cpp')
 cy = meson.get_compiler('cython')
 cython = find_program(cy.cmd_array()[0])
 
@@ -22,4 +23,5 @@ if host_machine.system() == 'darwin' and cc.get_id() == 'clang'
                              language : ['c'])
 endif
 
+fs = import('fs')
 subdir('MDAnalysis')
