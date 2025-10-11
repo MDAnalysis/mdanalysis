@@ -30,3 +30,5 @@ py3.install_sources([
   ],
   subdir: 'MDAnalysis/topology'
 )
+
+subdir('tpr')
