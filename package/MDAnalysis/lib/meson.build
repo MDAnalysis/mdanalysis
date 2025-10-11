@@ -20,6 +20,20 @@ py3.extension_module('_augment',
   subdir: 'MDAnalysis/lib'
 )
 
+transformations_src =  [
+  'src/transformations/transformations.c',
+]
+
+py3.extension_module('_transformations',
+  transformations_src,
+  include_directories: [
+    'include',
+    ],
+  dependencies: np_dep,
+  install: true,
+  subdir: 'MDAnalysis/lib'
+)
+
 py3.extension_module('nsgrid',
   [cython_gen_cpp.process('nsgrid.pyx')],
   cpp_args: cython_cpp_args,

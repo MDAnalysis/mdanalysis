@@ -24,7 +24,8 @@ else
   _incdir_numpy_abs = incdir_numpy
 endif
 inc_np = include_directories(incdir_numpy)
-numpy_nodepr_api = ['-DNPY_NO_DEPRECATED_API=NPY_1_9_API_VERSION']
+#numpy_nodepr_api = ['-DNPY_NO_DEPRECATED_API=NPY_1_9_API_VERSION']
+numpy_nodepr_api = []
 np_dep = declare_dependency(include_directories: inc_np, compile_args: numpy_nodepr_api)
 
 _cython_tree = [fs.copyfile('__init__.py')]
