@@ -69,3 +69,4 @@ py3.install_sources([
   subdir: 'MDAnalysis/lib'
 )
 
+subdir('formats')
