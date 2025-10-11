@@ -28,3 +28,10 @@ py3.install_sources([
   ],
   subdir: 'MDAnalysis/analysis'
 )
+
+subdir('data')
+subdir('dssp')
+subdir('hydrogenbonds')
+subdir('encore')
+subdir('hole2')
+subdir('hbonds')
