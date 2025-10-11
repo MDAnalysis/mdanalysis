@@ -1,3 +1,11 @@
+py3.extension_module('timestep',
+  [cython_gen_cpp.process('timestep.pyx')],
+  cpp_args: cython_cpp_args,
+  dependencies: np_dep,
+  install: true,
+  subdir: 'MDAnalysis/coordinates'
+)
+
 py3.install_sources([
     'CRD.py',
     'DMS.py',
