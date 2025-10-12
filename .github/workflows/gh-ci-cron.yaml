@@ -295,7 +295,7 @@ jobs:
     - name: install_deps
       shell: bash
       run: |
-          pip install pytest-xdist pytest-timeout "numpy<2.3" "cython<3.1"
+          pip install pytest-xdist pytest-timeout "numpy<2.3" "cython<3.1" wheel "setuptools>=40.9.0" packaging
 
     - name: install_mdanalysis
       shell: bash
