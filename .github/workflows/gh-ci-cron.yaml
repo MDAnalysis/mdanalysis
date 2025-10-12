@@ -5,9 +5,9 @@ on:
     - cron: "0 3 * * 2,5"
   workflow_dispatch:
   # Uncomment when you need to test on a PR
-  pull_request:
-    branches:
-      - develop
+  # pull_request:
+  #   branches:
+  #     - develop
 
 
 concurrency:
@@ -302,6 +302,7 @@ jobs:
       run: |
           # If wheels is False we build directly from source so we use the --no-binary flag
           # to avoid pulling down wheels for MDAnalysis (which are already precompiled)
+          # Also need to add `--no-build-isolation` until next release, see Issue #5125
           if [ "${{ matrix.wheels }}" == "false" ]; then
             INSTALL_FLAGS="--no-build-isolation --no-binary"
           fi
