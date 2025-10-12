@@ -303,7 +303,7 @@ jobs:
           # If wheels is False we build directly from source so we use the --no-binary flag
           # to avoid pulling down wheels for MDAnalysis (which are already precompiled)
           if [ "${{ matrix.wheels }}" == "false" ]; then
-            INSTALL_FLAGS="--no-binary --no-build-isolation"
+            INSTALL_FLAGS="--no-build-isolation --no-binary"
           fi
           pip install ${INSTALL_FLAGS} mdanalysis mdanalysistests
 
