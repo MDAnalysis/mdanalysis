@@ -25,3 +25,4 @@ endif
 
 fs = import('fs')
 subdir('MDAnalysis')
+mdanalysis_tests = subproject('MDAnalysisTests')

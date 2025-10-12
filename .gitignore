@@ -52,3 +52,7 @@ benchmarks/results
 .idea
 .vscode
 *.lock
+
+# meson
+.wraplock
+build-install
