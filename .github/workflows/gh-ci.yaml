@@ -33,18 +33,22 @@ jobs:
           codecov: [true, ]
           cython: ["cython<3.1", ]
           include:
+            # Including 3.14 and 3.11 without coverage
+            # and cython >=3.1 to deal temporarily with
+            # keeping on testing Cython whilst issue #5057
+            # is not fixed
             - name: python_314_nocov
               os: ubuntu-latest
               python-version: "3.14"
               full-deps: false
               codecov: false
-              cython: "cython"
+              cython: "cython>=3.1"
             - name: python_311_nocov
               os: ubuntu-latest
               python-version: "3.11"
               full-deps: false
               codecov: false
-              cython: "cython"
+              cython: "cython>=3.1"
             - name: macOS_14_arm64_py313
               os: macOS-14
               python-version: "3.13"
