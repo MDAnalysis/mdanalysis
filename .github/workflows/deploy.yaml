@@ -252,9 +252,8 @@ jobs:
           # Multiple deps don't like windows
           - os: windows-latest
             type: "FULL"
-          # Chemfiles won't install over py3.13
-          #- python-version: "3.13"
-          #  type: "FULL"
+          - python-version: "3.14"
+            type: "FULL"
     env:
       MPLBACKEND: agg
 
