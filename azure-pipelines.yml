@@ -110,7 +110,8 @@ jobs:
       mmtf-python
       networkx
       parmed
-      pytng>=0.2.3
+      # Disable PyTNG checking, see issue #5123
+      # pytng>=0.2.3
       rdkit>=2024.03.4
       tidynamics>=1.0.0
       imdclient>=0.2.2
