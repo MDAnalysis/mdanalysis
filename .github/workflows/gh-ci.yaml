@@ -31,23 +31,33 @@ jobs:
           python-version: ["3.11", "3.12", "3.13"]
           full-deps: [true, ]
           codecov: [true, ]
+          cython: ["cython<3.1", ]
           include:
-            - name: python_314
+            - name: python_314_nocov
               os: ubuntu-latest
               python-version: "3.14"
               full-deps: false
-              codecov: true
+              codecov: false
+              cython: "cython"
+            - name: python_311_nocov
+              os: ubuntu-latest
+              python-version: "3.11"
+              full-deps: false
+              codecov: false
+              cython: "cython"
             - name: macOS_14_arm64_py313
               os: macOS-14
               python-version: "3.13"
               full-deps: false
               codecov: true
+              cython: "cython<3.1"
             - name: numpy_min
               os: ubuntu-latest
               python-version: "3.11"
               full-deps: false
               codecov: true
               numpy: numpy=1.26.0
+              cython: "cython<3.1"
             - name: asv_check
               os: ubuntu-latest
               python-version: "3.11"
@@ -88,7 +98,7 @@ jobs:
         # disable GSD because it occasionally introduce hanging in testing #4209
         gsd: ''
         # pin cython
-        cython: 'cython<3.1'
+        cython: ${{ matrix.cython }}
         # in most cases will just default to empty, i.e. pick up max version from other deps
         numpy: ${{ matrix.numpy }}
         extra-pip-deps: ${{ matrix.extra-pip-deps }}
