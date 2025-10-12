@@ -232,6 +232,9 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">grab_not_keywords</span><span class="p">(</span><span class="n">tokens</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Pop tokens from the left until you hit a keyword</span>
 
+<span class="sd">    Keywords can be escaped with a backslash to allow their use as names,</span>
+<span class="sd">    e.g. &#39;\\protein&#39;</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    tokens : collections.deque</span>
@@ -260,8 +263,8 @@
     <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">while</span> <span class="ow">not</span> <span class="n">is_keyword</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
         <span class="n">val</span> <span class="o">=</span> <span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
-        <span class="c1"># Insert escape characters here to use keywords as names?</span>
-        <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="c1"># Remove escape sequence to allow use of keywords as names</span>
+        <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">removeprefix</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">values</span></div>
 
 

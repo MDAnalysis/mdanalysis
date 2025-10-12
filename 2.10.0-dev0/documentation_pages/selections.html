@@ -276,7 +276,8 @@ topology.</p>
 <dt>resnum <em>resnum-number-range</em></dt><dd><p>resnum is the canonical residue number; typically it is set to the
 residue id in the original PDB structure.</p>
 </dd>
-<dt>resname <em>residue-name</em></dt><dd><p>select by residue name, e.g. <code class="docutils literal notranslate"><span class="pre">resname</span> <span class="pre">LYS</span></code></p>
+<dt>resname <em>residue-name</em></dt><dd><p>select by residue name, e.g. <code class="docutils literal notranslate"><span class="pre">resname</span> <span class="pre">LYS</span></code>. If a residue shares a name
+with a selection keyword, the name must be escaped e.g. <code class="docutils literal notranslate"><span class="pre">resname</span> <span class="pre">\\water</span></code>.</p>
 </dd>
 <dt>name <em>atom-name</em></dt><dd><p>select by atom name (as given in the topology). Often, this is force
 field dependent. Example: <code class="docutils literal notranslate"><span class="pre">name</span> <span class="pre">CA</span></code> (for C&amp;alpha; atoms) or <code class="docutils literal notranslate"><span class="pre">name</span>

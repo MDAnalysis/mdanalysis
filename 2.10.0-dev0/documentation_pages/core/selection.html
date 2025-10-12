@@ -547,6 +547,8 @@ as that is automatically handled by
 <dt class="sig sig-object py" id="MDAnalysis.core.selection.grab_not_keywords">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.selection.</span></span><span class="sig-name descname"><span class="pre">grab_not_keywords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#grab_not_keywords"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.selection.grab_not_keywords" title="Link to this definition"></a></dt>
 <dd><p>Pop tokens from the left until you hit a keyword</p>
+<p>Keywords can be escaped with a backslash to allow their use as names,
+e.g. ‘protein’</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>tokens</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.html#collections.deque" title="(in Python v3.14)"><em>collections.deque</em></a>) – deque of strings, some tokens some not</p>
