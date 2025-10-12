@@ -295,7 +295,7 @@ jobs:
     - name: install_deps
       shell: bash
       run: |
-          pip install pytest-xdist pytest-timeout "numpy<2.2" "cython<3.1"
+          pip install pytest-xdist pytest-timeout "numpy<2.3" "cython<3.1"
 
     - name: install_mdanalysis
       shell: bash
@@ -303,7 +303,7 @@ jobs:
           # If wheels is False we build directly from source so we use the --no-binary flag
           # to avoid pulling down wheels for MDAnalysis (which are already precompiled)
           if [ "${{ matrix.wheels }}" == "false" ]; then
-            INSTALL_FLAGS="--no-binary"
+            INSTALL_FLAGS="--no-binary --no-build-isolation"
           fi
           pip install ${INSTALL_FLAGS} mdanalysis mdanalysistests
 
