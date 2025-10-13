@@ -107,6 +107,14 @@ class TestSelectionsCHARMM(object):
         # check that contents (atom indices) are identical afterwards
         assert_equal(myprot.atoms.ix, sel.ix)
 
+    def test_residue_named_protein(self):
+        u = make_Universe(("resnames",))
+        myprot = u.residues[::2]
+        myprot.resnames = "protein"
+        sel = u.select_atoms("resname \\protein")
+        # check that contents (atom indices) are identical afterwards
+        assert_equal(myprot.atoms.ix, sel.ix)
+
     def test_backbone(self, universe):
         sel = universe.select_atoms("backbone")
         assert_equal(sel.n_atoms, 855)
@@ -1226,6 +1234,7 @@ class TestSelectionErrors(object):
             "resnum ",
             "bynum or protein",
             "index or protein",
+            "resname protein",  # unexpected token
             "prop mass < 4.0 hello",  # unused token
             "prop mass > 10. and group this",  # missing group
             # bad ranges
@@ -1472,6 +1481,7 @@ def test_similarity_selection_icodes(u_pdb_icodes, selection, n_atoms):
         "name N*",
         "resname stuff",
         "resname ALA",
+        "resname \\protein",
         "type O",
         "index 0",
         "index 1",
