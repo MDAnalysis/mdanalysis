@@ -45,7 +45,7 @@ Fixes
    directly passing them. (Issue #3520, PR #5006)
 
 Enhancements
- * Improved performance of `analysis.rdf.InterRDF_s` about 100-fold  
+ * Improved performance of `analysis.rdf.InterRDF_s` > 20-fold  
    by using vectorized NumPy calculations. (Issue #5067, PR #5073)
  * Parallelize `analysis.rdf.InterRDF` and `analysis.rdf.InterRDF` (Issue #4675)   
  * Added support for reading and processing streamed data in `coordinates.base`
