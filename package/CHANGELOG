@@ -43,11 +43,14 @@ Fixes
  * Fixes the benchmark `SimpleRmsBench` in `benchmarks/analysis/rms.py`
    by changing the way weights for RMSD are calculated, instead of
    directly passing them. (Issue #3520, PR #5006)
+ * `analysis.polymer.sort_backbone` is now working for discontinuous polymers
+    and does not result in an infinite loop (Issue #5112, PR #5113)
 
 Enhancements
  * Improved performance of `analysis.rdf.InterRDF_s` > 20-fold  
    by using vectorized NumPy calculations. (Issue #5067, PR #5073)
  * Parallelize `analysis.rdf.InterRDF` and `analysis.rdf.InterRDF` (Issue #4675)   
+ * Support for Python 3.14 was added (PR #5121).
  * Added support for reading and processing streamed data in `coordinates.base`
    with new `StreamFrameIteratorSliced` and `StreamReaderBase` (Issue #4827, PR #4923)
  * New coordinate reader: Added `IMDReader` for reading real-time streamed
@@ -86,12 +89,14 @@ Enhancements
 
 
 Changes
+ * Support for Python 3.10 was removed, in line with SPEC0 (PR #5121).
  * Refactored the RDKit converter code to move the inferring code in a separate
    `RDKitInferring` module. The bond order and charges inferrer has been move to
    an `MDAnalysisInferrer` dataclass in there. (PR #4305)
  * Removed undocumented and unused attribute
    `analysis.lineardensity.LinearDensity.totalmass` (PR #5007)
  * Remove `default` channel from RTD conda env. (Issue # 5036, PR # 5037)   
+
 
 Deprecations
  * The RDKit converter parameter `NoImplicit` has been deprecated in favour of
