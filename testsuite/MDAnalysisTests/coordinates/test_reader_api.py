@@ -27,6 +27,7 @@ import pytest
 from MDAnalysis.coordinates.base import (
     ReaderBase,
     SingleFrameReaderBase,
+    StreamReaderBase,
     Timestep,
 )
 from numpy.testing import assert_allclose, assert_equal
@@ -79,6 +80,24 @@ class AmazingReader(SingleFrameReaderBase):
         self.n_atoms = 10
         self.ts = Timestep(self.n_atoms)
         self.ts.frame = 0
+
+
+class AmazingStreamReader(StreamReaderBase):
+    format = "AmazingStream"
+
+    def __init__(self, filename, n_atoms):
+        self.n_atoms = n_atoms
+        self._mocked_frames = [Timestep(n_atoms) for _ in range(3)]
+        super().__init__(filename)
+
+    def _read_frame(self, frame):
+        self._frame = frame
+        if self._frame >= len(self._mocked_frames):
+            raise EOFError("End of stream")
+        ts = self._mocked_frames[self._frame]
+        ts.frame = self._frame
+        self.ts = ts
+        return ts
 
 
 class _TestReader(object):
@@ -445,3 +464,80 @@ class TestSingleFrameReader(_Single):
             assert_allclose(ts.positions, np.zeros((10, 3)))
 
         assert_allclose(reader.ts.positions, np.zeros((10, 3)))
+
+
+class _Stream:
+    n_atoms = 3
+    readerclass = AmazingStreamReader
+
+
+class TestStreamReader(_Stream):
+    @pytest.fixture
+    def reader(self):
+        return self.readerclass("dummy", n_atoms=self.n_atoms)
+
+    def test_repr(self, reader):
+        rep = repr(reader)
+        assert "AmazingStreamReader" in rep
+        assert "continuous stream" in rep
+        assert "3 atoms" in rep
+
+    def test_read_and_exhaust_stream(self, reader):
+        ts0 = reader.next()
+        ts1 = reader.next()
+        ts2 = reader.next()
+        assert ts0.frame == 0
+        assert ts1.frame == 1
+        assert ts2.frame == 2
+
+        with pytest.raises(StopIteration):
+            reader.next()
+
+    def test_len_and_n_frames_raise(self, reader):
+        with pytest.raises(RuntimeError):
+            _ = len(reader)
+        with pytest.raises(RuntimeError):
+            _ = reader.n_frames
+
+    def test_rewind_raises(self, reader):
+        with pytest.raises(RuntimeError, match="can't be rewound"):
+            reader.rewind()
+
+    def test_copy_raises(self, reader):
+        with pytest.raises(RuntimeError, match="does not support copying"):
+            reader.copy()
+
+    def test_timeseries_raises(self, reader):
+        with pytest.raises(RuntimeError, match="cannot access timeseries"):
+            reader.timeseries()
+
+    def test_reopen_only_once(self, reader):
+        reader._reopen()
+        with pytest.raises(RuntimeError, match="Cannot reopen stream"):
+            reader._reopen()
+
+    def test_slice_reader(self, reader):
+        sliced = reader[slice(None, None, 2)]
+        with pytest.raises(RuntimeError, match="has unknown length"):
+            len(sliced)
+        with pytest.raises(RuntimeError, match="does not support indexing"):
+            sliced[0]
+
+        for i, ts in enumerate(sliced):
+            assert ts.frame == i * 2
+
+    def test_check_slice_index_errors(self, reader):
+        with pytest.raises(ValueError, match="start.*must be None"):
+            reader.check_slice_indices(0, None, 1)
+        with pytest.raises(ValueError, match="stop.*must be None"):
+            reader.check_slice_indices(None, 1, 1)
+        with pytest.raises(ValueError, match="must be > 0"):
+            reader.check_slice_indices(None, None, 0)
+        with pytest.raises(ValueError, match="must be an integer"):
+            reader.check_slice_indices(None, None, 1.5)
+
+    def test_pickle_methods(self, reader):
+        with pytest.raises(NotImplementedError):
+            reader.__getstate__()
+        with pytest.raises(NotImplementedError):
+            reader.__setstate__({})

@@ -149,25 +149,31 @@ class TestSortBackbone(object):
 
         assert_equal(s_ag.ids, [0, 1, 4, 6, 8])
 
-    def test_not_fragment(self, u):
-        # two fragments don't work
-        bad_ag = u.residues[0].atoms[:2] + u.residues[1].atoms[:2]
-        with pytest.raises(ValueError):
-            polymer.sort_backbone(bad_ag)
-
     def test_branches(self, u):
         # includes side branches, can't sort
         bad_ag = u.atoms[:10]  # include -H etc
 
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="branches or isolated atoms"):
             polymer.sort_backbone(bad_ag)
+
+    def test_isolated(self, u):
+        u = mda.Universe.empty(4, trajectory=True)
+        bondlist = [(0, 1), (1, 2)]
+        u.add_TopologyAttr(Bonds(bondlist))
+        with pytest.raises(ValueError, match="branches or isolated atoms"):
+            polymer.sort_backbone(u.atoms)
+
+    def test_missing_internal(self, u):
+        u = mda.Universe.empty(4, trajectory=True)
+        bondlist = [(0, 1), (2, 3)]
+        u.add_TopologyAttr(Bonds(bondlist))
+        with pytest.raises(ValueError, match="Backbone connectivity invalid"):
+            polymer.sort_backbone(u.atoms)
 
     def test_circular(self):
         u = mda.Universe.empty(6, trajectory=True)
         # circular structure
         bondlist = [(0, 1), (1, 2), (2, 3), (3, 4), (4, 5), (5, 0)]
         u.add_TopologyAttr(Bonds(bondlist))
-
-        with pytest.raises(ValueError) as ex:
+        with pytest.raises(ValueError, match="Cyclical"):
             polymer.sort_backbone(u.atoms)
-        assert "cyclical" in str(ex.value)

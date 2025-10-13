@@ -24,10 +24,10 @@ classifiers = [
     "Operating System :: Microsoft :: Windows",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Programming Language :: C",
     "Topic :: Scientific/Engineering",
     "Topic :: Scientific/Engineering :: Bio-Informatics",
@@ -35,7 +35,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 readme = {file = "README", content-type = "text/x-rst"}
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dynamic = ["version", "dependencies"]
 
 [project.urls]
@@ -156,7 +156,7 @@ filterwarnings = [
 
 [tool.black]
 line-length = 79
-target-version = ['py310', 'py311', 'py312', 'py313']
+target-version = ['py311', 'py312', 'py313']
 extend-exclude = '''
 (
 testsuite/MDAnalysisTests/datafiles\.py
