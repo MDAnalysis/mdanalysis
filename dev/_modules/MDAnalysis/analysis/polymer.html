@@ -211,37 +211,32 @@
 
 <span class="sd">    .. versionadded:: 0.20.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">backbone</span><span class="o">.</span><span class="n">n_fragments</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> fragments found in backbone.  &quot;</span>
-            <span class="s2">&quot;backbone must be a single contiguous AtomGroup&quot;</span>
-            <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">backbone</span><span class="o">.</span><span class="n">n_fragments</span><span class="p">)</span>
-        <span class="p">)</span>
-
-    <span class="n">branches</span> <span class="o">=</span> <span class="p">[</span><span class="n">at</span> <span class="k">for</span> <span class="n">at</span> <span class="ow">in</span> <span class="n">backbone</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">at</span><span class="o">.</span><span class="n">bonded_atoms</span> <span class="o">&amp;</span> <span class="n">backbone</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">branches</span><span class="p">:</span>
-        <span class="c1"># find which atom has too many bonds for easier debug</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;Backbone is not linear.  &quot;</span>
-            <span class="s2">&quot;The following atoms have more than two bonds in backbone: </span><span class="si">{}</span><span class="s2">.&quot;</span>
-            <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">branches</span><span class="p">))</span>
-        <span class="p">)</span>
-
-    <span class="n">caps</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">atom</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">backbone</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span> <span class="o">&amp;</span> <span class="n">backbone</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+    <span class="n">degrees</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span> <span class="o">&amp;</span> <span class="n">backbone</span><span class="p">)</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">backbone</span><span class="p">]</span>
+    <span class="n">deg1_atoms</span> <span class="o">=</span> <span class="p">[</span><span class="n">atom</span> <span class="k">for</span> <span class="n">atom</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">backbone</span><span class="p">,</span> <span class="n">degrees</span><span class="p">)</span> <span class="k">if</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">wrong_atoms</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">atom</span> <span class="k">for</span> <span class="n">atom</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">backbone</span><span class="p">,</span> <span class="n">degrees</span><span class="p">)</span> <span class="k">if</span> <span class="n">d</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
     <span class="p">]</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">caps</span><span class="p">:</span>
-        <span class="c1"># cyclical structure</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">wrong_atoms</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;Could not find starting point of backbone, &quot;</span>
-            <span class="s2">&quot;is the backbone cyclical?&quot;</span>
+            <span class="s2">&quot;Backbone contains atoms with connectivity degree not equal to 1 or 2. &quot;</span>
+            <span class="s2">&quot;This suggests branches or isolated atoms. Problematic atoms: </span><span class="si">{}</span><span class="s2">.&quot;</span>
+            <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">wrong_atoms</span><span class="p">))</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">deg1_atoms</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Backbone connectivity invalid: &quot;</span>
+            <span class="s2">&quot;expected exactly 2 atoms with connectivity degree 1 (caps). &quot;</span>
+            <span class="s2">&quot;Cyclical structures are not supported. &quot;</span>
+            <span class="s2">&quot;Atoms with connectivity degree 1 found: </span><span class="si">{}</span><span class="s2">.&quot;</span>
+            <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">deg1_atoms</span><span class="p">))</span>
         <span class="p">)</span>
 
     <span class="c1"># arbitrarily choose one of the capping atoms to be the startpoint</span>
-    <span class="n">sorted_backbone</span> <span class="o">=</span> <span class="n">AtomGroup</span><span class="p">([</span><span class="n">caps</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+    <span class="n">sorted_backbone</span> <span class="o">=</span> <span class="n">AtomGroup</span><span class="p">([</span><span class="n">deg1_atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
 
-    <span class="c1"># iterate until the sorted chain length matches the backbone size</span>
-    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">sorted_backbone</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">backbone</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">backbone</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
         <span class="c1"># current end of the chain</span>
         <span class="n">end_atom</span> <span class="o">=</span> <span class="n">sorted_backbone</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
