@@ -92,6 +92,7 @@ Enhancements
 
 
 Changes
+ * Output precision for LAMMPS Data files set to 10 decimals (PR #5053)
  * Support for Python 3.10 was removed, in line with SPEC0 (PR #5121).
  * Refactored the RDKit converter code to move the inferring code in a separate
    `RDKitInferring` module. The bond order and charges inferrer has been move to

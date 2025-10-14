@@ -341,7 +341,7 @@ class DATAWriter(base.WriterBase):
                 x, y, z = coords
                 self.f.write(
                     f"{index:d} {moltag:d} {atype:d} {charge:f}"
-                    f" {x:f} {y:f} {z:f}\n"
+                    f" {x:.10f} {y:.10f} {z:.10f}\n"
                 )
         else:
             for index, moltag, atype, coords in zip(
@@ -349,7 +349,7 @@ class DATAWriter(base.WriterBase):
             ):
                 x, y, z = coords
                 self.f.write(
-                    f"{index:d} {moltag:d} {atype:d}" f" {x:f} {y:f} {z:f}\n"
+                    f"{index:d} {moltag:d} {atype:d} {x:.10f} {y:.10f} {z:.10f}\n"
                 )
 
     def _write_velocities(self, atoms):
@@ -362,7 +362,7 @@ class DATAWriter(base.WriterBase):
         )
         for index, vel in zip(indices, velocities):
             self.f.write(
-                "{i:d} {x:f} {y:f} {z:f}\n".format(
+                "{i:d} {x:.10f} {y:.10f} {z:.10f}\n".format(
                     i=index, x=vel[0], y=vel[1], z=vel[2]
                 )
             )
