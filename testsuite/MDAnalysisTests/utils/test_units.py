@@ -39,7 +39,9 @@ class TestUnitEncoding(object):
         try:
             assert_equal(units.lengthUnit_factor["Å"], 1.0)
         except KeyError:
-            raise AssertionError("UTF-8-encoded symbol for Angtrom not supported")
+            raise AssertionError(
+                "UTF-8-encoded symbol for Angtrom not supported"
+            )
 
 
 class TestConstants(object):
