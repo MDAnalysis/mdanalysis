@@ -48,6 +48,7 @@ Fixes
     and does not result in an infinite loop (Issue #5112, PR #5113)
 
 Enhancements
+ * add conversion factor for speed unit A/ns (PR #5053)
  * Improved performance of `analysis.rdf.InterRDF_s` > 20-fold
    by using vectorized NumPy calculations. (Issue #5067, PR #5073)
  * Parallelize `analysis.rdf.InterRDF` and `analysis.rdf.InterRDF` (Issue #4675)

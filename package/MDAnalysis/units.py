@@ -193,8 +193,8 @@ class DeprecatedKeyAccessDict(dict):
 #       test_units:TestConstants.constants_reference !
 
 #: Values of physical constants are taken from `CODATA 2010 at NIST`_. The
-#: thermochemical calorie is defined in the `ISO 80000-5:2007`_ standard
-#: and is also listed in the `NIST Guide to SI: Appendix B.8: Factors for Units`_.
+#: thermochemical calorie is defined in the `ISO 80000-5:2007`_ standard and
+#: is also listed in the `NIST Guide to SI: Appendix B.8: Factors for Units`_.
 #:
 #: .. _`CODATA 2010 at NIST`:
 #:    http://physics.nist.gov/cuu/Constants/
@@ -215,7 +215,8 @@ constants = DeprecatedKeyAccessDict(
 )
 
 #: The basic unit of *length* in MDAnalysis is the Angstrom.
-#: Conversion factors between the base unit and other lengthUnits *x* are stored.
+#: Conversion factors between the base unit and other lengthUnits *x* are
+#: stored.
 #: Conversions follow `L/x = L/Angstrom * lengthUnit_factor[x]`.
 #: *x* can be *nm*/*nanometer* or *fm*.
 lengthUnit_factor = {
@@ -262,14 +263,12 @@ densityUnit_factor = {
     "nm^{-3}": 1 / 1e-3,
     "nanometer^{-3}": 1 / 1e-3,
     "Molar": 1 / (1e-27 * constants["N_Avogadro"]),
-    "SPC": 1
-    / (1e-24 * constants["N_Avogadro"] * water["SPC"] / water["MolarMass"]),
+    "SPC": 1 / (1e-24 * constants["N_Avogadro"] * water["SPC"] / water["MolarMass"]),
     "TIP3P": 1
     / (1e-24 * constants["N_Avogadro"] * water["TIP3P"] / water["MolarMass"]),
     "TIP4P": 1
     / (1e-24 * constants["N_Avogadro"] * water["TIP4P"] / water["MolarMass"]),
-    "water": 1
-    / (1e-24 * constants["N_Avogadro"] * water["exp"] / water["MolarMass"]),
+    "water": 1 / (1e-24 * constants["N_Avogadro"] * water["exp"] / water["MolarMass"]),
 }
 
 
@@ -306,11 +305,11 @@ speedUnit_factor = {
     "angstrom/femtosecond": 1.0 * 1e-3,
     "angstrom/fs": 1.0 * 1e-3,
     "A/fs": 1.0 * 1e-3,
-    "Angstrom/ms": 1.0 * 1e9,
-    "Angstrom/millisecond": 1.0 * 1e9,
-    "angstrom/millisecond": 1.0 * 1e9,
-    "angstrom/ms": 1.0 * 1e9,
-    "A/ms": 1.0 * 1e9,
+    "Angstrom/ns": 1.0 * 1e3,
+    "A/ns": 1.0 * 1e3,
+    "\u212b/ns": 1.0 * 1e3,
+    "Angstrom/nanosecond": 1.0 * 1e3,
+    "angstrom/nanosecond": 1.0 * 1e3,
     "Angstrom/us": 1.0 * 1e6,
     "angstrom/us": 1.0 * 1e6,
     "A/us": 1.0 * 1e6,
@@ -318,6 +317,11 @@ speedUnit_factor = {
     "angstrom/microsecond": 1.0 * 1e6,
     "Angstrom/\u03BCs": 1.0 * 1e6,
     "angstrom/\u03BCs": 1.0 * 1e6,
+    "Angstrom/ms": 1.0 * 1e9,
+    "Angstrom/millisecond": 1.0 * 1e9,
+    "angstrom/millisecond": 1.0 * 1e9,
+    "angstrom/ms": 1.0 * 1e9,
+    "A/ms": 1.0 * 1e9,
     "Angstrom/AKMA": 4.888821e-2,
     "A/AKMA": 4.888821e-2,
     "nm/ps": 0.1,
@@ -354,11 +358,12 @@ forceUnit_factor = {
 #: *elementary_charge* in :data:`constants`.
 #: The `conversion factor to Amber charge units`_ is 18.2223.
 #:
-#: .. _`conversion factor to Amber charge units`: https://ambermd.org/FileFormats.php#parm.dat
+#: .. _`conversion factor to Amber charge units`:
+#:    https://ambermd.org/FileFormats.php#parm.dat
 #:
 #: .. versionchanged:: 0.9.0
-#:    Use CODATA 2010 value for *elementary charge*, which differs from the previously used value
-#:    *e* =  1.602176487 x 10**(-19) C by 7.8000000e-27 C.
+#:    Use CODATA 2010 value for *elementary charge*, which differs from the previously
+#:    used value *e* =  1.602176487 x 10**(-19) C by 7.8000000e-27 C.
 chargeUnit_factor = {
     "e": 1.0,
     "Amber": 18.2223,  # https://ambermd.org/FileFormats.php#parm.dat

@@ -39,9 +39,7 @@ class TestUnitEncoding(object):
         try:
             assert_equal(units.lengthUnit_factor["Å"], 1.0)
         except KeyError:
-            raise AssertionError(
-                "UTF-8-encoded symbol for Angtrom not supported"
-            )
+            raise AssertionError("UTF-8-encoded symbol for Angtrom not supported")
 
 
 class TestConstants(object):
@@ -137,6 +135,11 @@ class TestConversion(object):
             (1, "A/ms", "A/ps", 1e-9),
             (1, "A/us", "A/ps", 1e-6),
             (1, "A/fs", "A/ps", 1e3),
+            (1, "A/ps", "A/fs", 1e-3),
+            (1, "A/ns", "A/ms", 1e6),
+            (1, "A/ps", "A/ps", 1.0),
+            (1, "nm/ns", "pm/ps", 1.0),
+            (1, "m/s", "A/fs", 1e-5),
             (1, "A/AKMA", "A/ps", 1 / 4.888821e-2),
         ),
     )
