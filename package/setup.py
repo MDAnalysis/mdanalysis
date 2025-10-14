@@ -380,6 +380,15 @@ def extensions(config):
         extra_compile_args=parallel_args + extra_compile_args,
         extra_link_args=parallel_args,
     )
+    histogram = MDAExtension(
+        "MDAnalysis.lib.c_histogram",
+        ["MDAnalysis/lib/c_histogram" + source_suffix],
+        include_dirs=include_dirs,
+        libraries=mathlib + parallel_libraries,
+        define_macros=define_macros + parallel_macros,
+        extra_compile_args=parallel_args + extra_compile_args,
+        extra_link_args=parallel_args,
+    )
     qcprot = MDAExtension(
         "MDAnalysis.lib.qcprot",
         ["MDAnalysis/lib/qcprot" + source_suffix],
@@ -492,6 +501,7 @@ def extensions(config):
         libdcd,
         distances,
         distances_omp,
+        histogram,
         qcprot,
         transformation,
         libmdaxdr,

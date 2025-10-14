@@ -42,9 +42,9 @@ Fixes
    directly passing them. (Issue #3520, PR #5006)
 
 Enhancements
- * Added optimized histogram implementation using Numba JIT compilation
+ * Added optimized histogram implementation using Cython and OpenMP
    for RDF calculations, providing 10-15x speedup for large datasets
-   (Issue #3435, PR #XXXX)
+   (Issue #3435, PR #5103)
  * Added capability to calculate MSD from frames with irregular (non-linear)
    time spacing in analysis.msd.EinsteinMSD with keyword argument
    `non_linear=True` (Issue #5028, PR #5066)

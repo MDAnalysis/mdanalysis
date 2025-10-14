@@ -8,26 +8,21 @@
 #
 # Released under the GNU Public Licence, v2 or any higher version
 """
-Test optimized histogram implementation --- :mod:`MDAnalysisTests.lib.test_histogram_opt`
-=========================================================================================
+Test optimized histogram implementation --- :mod:`MDAnalysisTests.lib.test_c_histogram`
+=======================================================================================
 
-Tests the optimized histogram implementation against numpy.histogram for correctness
-and performance improvements.
+Tests the optimized Cython histogram implementation against numpy.histogram
+for correctness and performance improvements.
 
 """
 import pytest
 import numpy as np
 from numpy.testing import assert_allclose, assert_array_equal
 
-try:
-    from MDAnalysis.lib.histogram_opt import optimized_histogram, HAS_NUMBA
-except ImportError:
-    HAS_NUMBA = False
-    optimized_histogram = None
+from MDAnalysis.lib.c_histogram import histogram
 
 
-@pytest.mark.skipif(not HAS_NUMBA, reason="Numba not available")
-class TestOptimizedHistogram:
+class TestCythonHistogram:
     """Test the optimized histogram implementation."""
 
     def test_correctness_uniform(self):
@@ -36,8 +31,8 @@ class TestOptimizedHistogram:
         data = np.random.uniform(0, 15, 10000).astype(np.float64)
 
         np_hist, np_edges = np.histogram(data, bins=75, range=(0.0, 15.0))
-        opt_hist, opt_edges = optimized_histogram(
-            data, bins=75, range=(0.0, 15.0)
+        opt_hist, opt_edges = histogram(
+            data, bins=75, range_vals=(0.0, 15.0)
         )
 
         assert_allclose(np_hist, opt_hist, rtol=1e-14, atol=1)
@@ -49,8 +44,8 @@ class TestOptimizedHistogram:
         data = np.random.normal(7.5, 2, 10000).clip(0, 15).astype(np.float64)
 
         np_hist, np_edges = np.histogram(data, bins=75, range=(0.0, 15.0))
-        opt_hist, opt_edges = optimized_histogram(
-            data, bins=75, range=(0.0, 15.0)
+        opt_hist, opt_edges = histogram(
+            data, bins=75, range_vals=(0.0, 15.0)
         )
 
         assert_allclose(np_hist, opt_hist, rtol=1e-14, atol=1)
@@ -61,8 +56,8 @@ class TestOptimizedHistogram:
         data = np.zeros(1000, dtype=np.float64)
 
         np_hist, np_edges = np.histogram(data, bins=75, range=(0.0, 15.0))
-        opt_hist, opt_edges = optimized_histogram(
-            data, bins=75, range=(0.0, 15.0)
+        opt_hist, opt_edges = histogram(
+            data, bins=75, range_vals=(0.0, 15.0)
         )
 
         assert_allclose(np_hist, opt_hist, rtol=1e-14, atol=1)
@@ -73,8 +68,8 @@ class TestOptimizedHistogram:
         data = np.ones(1000, dtype=np.float64) * 14.999
 
         np_hist, np_edges = np.histogram(data, bins=75, range=(0.0, 15.0))
-        opt_hist, opt_edges = optimized_histogram(
-            data, bins=75, range=(0.0, 15.0)
+        opt_hist, opt_edges = histogram(
+            data, bins=75, range_vals=(0.0, 15.0)
         )
 
         assert_allclose(np_hist, opt_hist, rtol=1e-14, atol=1)
@@ -85,8 +80,8 @@ class TestOptimizedHistogram:
         data = np.array([0.0, 14.999, 15.0, 7.5] * 250, dtype=np.float64)
 
         np_hist, np_edges = np.histogram(data, bins=75, range=(0.0, 15.0))
-        opt_hist, opt_edges = optimized_histogram(
-            data, bins=75, range=(0.0, 15.0)
+        opt_hist, opt_edges = histogram(
+            data, bins=75, range_vals=(0.0, 15.0)
         )
 
         # Allow for small differences at boundaries due to floating point precision
@@ -98,8 +93,8 @@ class TestOptimizedHistogram:
         data = np.linspace(0, 15, 1001, dtype=np.float64)
 
         np_hist, np_edges = np.histogram(data, bins=75, range=(0.0, 15.0))
-        opt_hist, opt_edges = optimized_histogram(
-            data, bins=75, range=(0.0, 15.0)
+        opt_hist, opt_edges = histogram(
+            data, bins=75, range_vals=(0.0, 15.0)
         )
 
         # Allow for small differences at boundaries due to floating point precision
@@ -111,11 +106,11 @@ class TestOptimizedHistogram:
         np.random.seed(42)
         data = np.random.random(100000).astype(np.float64) * 15.0
 
-        hist_serial, edges_serial = optimized_histogram(
-            data, bins=75, range=(0.0, 15.0), use_parallel=False
+        hist_serial, edges_serial = histogram(
+            data, bins=75, range_vals=(0.0, 15.0), use_parallel=False
         )
-        hist_parallel, edges_parallel = optimized_histogram(
-            data, bins=75, range=(0.0, 15.0), use_parallel=True
+        hist_parallel, edges_parallel = histogram(
+            data, bins=75, range_vals=(0.0, 15.0), use_parallel=True
         )
 
         assert_allclose(hist_serial, hist_parallel, rtol=1e-14, atol=1)
@@ -130,8 +125,8 @@ class TestOptimizedHistogram:
             np_hist, np_edges = np.histogram(
                 data, bins=bins, range=(0.0, 15.0)
             )
-            opt_hist, opt_edges = optimized_histogram(
-                data, bins=bins, range=(0.0, 15.0)
+            opt_hist, opt_edges = histogram(
+                data, bins=bins, range_vals=(0.0, 15.0)
             )
 
             assert_allclose(
@@ -155,8 +150,8 @@ class TestOptimizedHistogram:
 
         for range_val in [(0.0, 10.0), (0.0, 20.0), (5.0, 15.0)]:
             np_hist, np_edges = np.histogram(data, bins=75, range=range_val)
-            opt_hist, opt_edges = optimized_histogram(
-                data, bins=75, range=range_val
+            opt_hist, opt_edges = histogram(
+                data, bins=75, range_vals=range_val
             )
 
             assert_allclose(
@@ -185,8 +180,8 @@ class TestOptimizedHistogram:
         np_hist, np_edges = np.histogram(
             data_non_contig, bins=75, range=(0.0, 15.0)
         )
-        opt_hist, opt_edges = optimized_histogram(
-            data_non_contig, bins=75, range=(0.0, 15.0)
+        opt_hist, opt_edges = histogram(
+            data_non_contig, bins=75, range_vals=(0.0, 15.0)
         )
 
         assert_allclose(np_hist, opt_hist, rtol=1e-14, atol=1)
@@ -199,8 +194,8 @@ class TestOptimizedHistogram:
         data = np.random.random(size).astype(np.float64) * 15.0
 
         np_hist, np_edges = np.histogram(data, bins=75, range=(0.0, 15.0))
-        opt_hist, opt_edges = optimized_histogram(
-            data, bins=75, range=(0.0, 15.0)
+        opt_hist, opt_edges = histogram(
+            data, bins=75, range_vals=(0.0, 15.0)
         )
 
         assert_allclose(
@@ -213,18 +208,3 @@ class TestOptimizedHistogram:
         assert_allclose(
             np_edges, opt_edges, rtol=1e-14, err_msg=f"Failed for size={size}"
         )
-
-
-@pytest.mark.skipif(
-    HAS_NUMBA, reason="Testing fallback when Numba not available"
-)
-class TestHistogramFallback:
-    """Test that the module falls back gracefully when Numba is not available."""
-
-    def test_import_without_numba(self):
-        """Test that import works without Numba."""
-        # This test will only run if Numba is not installed
-        # The import should still work but HAS_NUMBA should be False
-        from MDAnalysis.lib import histogram_opt
-
-        assert not histogram_opt.HAS_NUMBA
