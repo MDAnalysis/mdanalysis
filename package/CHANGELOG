@@ -22,7 +22,7 @@ The rules for this file:
  * 2.10.0
 
 Fixes
- * Fixes incorrect conversion factors for speed units A/fs, A/us, A/ms
+ * Fix incorrect conversion factors for speed units A/fs, A/us, A/ms
    in MDAnalysis.units (Issue #5051, PR #5053)
  * `analysis.polymer.sort_backbone` is now working for discontinuous polymers
    and does not result in an infinite loop (Issue #5112, PR #5113)
@@ -48,7 +48,8 @@ Fixes
    directly passing them. (Issue #3520, PR #5006)
 
 Enhancements
- * add conversion factor for speed unit A/ns (PR #5053)
+ * Add conversion factor for speed unit A/ns and additional representations (Å/fs, A/µs,
+   Å/μs, Å/ms) (PR #5053)
  * Improved performance of `analysis.rdf.InterRDF_s` > 20-fold
    by using vectorized NumPy calculations. (Issue #5067, PR #5073)
  * Parallelize `analysis.rdf.InterRDF` and `analysis.rdf.InterRDF` (Issue #4675)
