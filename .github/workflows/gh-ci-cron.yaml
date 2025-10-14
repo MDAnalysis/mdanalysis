@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
   # Uncomment when you need to test on a PR
   # pull_request:
-  #  branches:
-  #    - develop
+  #   branches:
+  #     - develop
 
 
 concurrency:
@@ -107,7 +107,6 @@ jobs:
           pip
         condarc: |
           channels:
-            - jaimergp/label/unsupported-cudatoolkit-shim
             - conda-forge
             - bioconda
 
@@ -141,7 +140,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, macos-13]
+        os: [ubuntu-22.04, macos-13]
 
     steps:
     - uses: actions/checkout@v4
@@ -156,11 +155,10 @@ jobs:
       with:
         environment-name: mda
         create-args: >-
-          python=3.10
+          python=3.11
           pip
         condarc: |
           channels:
-            - jaimergp/label/unsupported-cudatoolkit-shim
             - conda-forge
             - bioconda
 
@@ -190,7 +188,7 @@ jobs:
     strategy:
         fail-fast: false
         matrix:
-          python-version: ["3.10", "3.11", "3.12", "3.13"]
+          python-version: ["3.11", "3.12", "3.13", "3.14"]
     steps:
     - uses: actions/checkout@v4
 
@@ -233,10 +231,8 @@ jobs:
         matrix:
           # Stick to macos-13 because some of our
           # optional deps don't support arm64 (i.e. macos-14)
-          #
-          # add "3.13" once conda-forge packages are available (see #4805)
           os: [ubuntu-latest, macos-13]
-          python-version: ["3.10", "3.11", "3.12"]
+          python-version: ["3.10", "3.11", "3.12", "3.13"]
     steps:
     - uses: actions/checkout@v4
 
@@ -252,10 +248,8 @@ jobs:
         create-args: >-
           python=${{ matrix.python-version }}
           pip
-        # using jaime's shim to avoid pulling down the cudatoolkit
         condarc: |
           channels:
-            - jaimergp/label/unsupported-cudatoolkit-shim
             - conda-forge
             - bioconda
 
@@ -298,15 +292,21 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
+    - name: install_deps
+      shell: bash
+      run: |
+          pip install pytest-xdist pytest-timeout "numpy<2.3" "cython<3.1" wheel "setuptools>=40.9.0" packaging
+
     - name: install_mdanalysis
       shell: bash
       run: |
           # If wheels is False we build directly from source so we use the --no-binary flag
           # to avoid pulling down wheels for MDAnalysis (which are already precompiled)
+          # Also need to add `--no-build-isolation` until next release, see Issue #5125
           if [ "${{ matrix.wheels }}" == "false" ]; then
-            INSTALL_FLAGS="-vvv --no-binary"
+            INSTALL_FLAGS="--no-build-isolation --no-binary"
           fi
-          pip install ${INSTALL_FLAGS} mdanalysis mdanalysistests pytest-xdist pytest-timeout
+          pip install ${INSTALL_FLAGS} mdanalysis mdanalysistests
 
     - name: run_tests
       shell: bash

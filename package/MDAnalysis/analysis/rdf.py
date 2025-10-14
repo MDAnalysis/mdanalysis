@@ -258,7 +258,7 @@ class InterRDF(AnalysisBase):
        of the `results` attribute of
        :class:`~MDAnalysis.analysis.AnalysisBase`.
 
-    .. versionchanged:: 2.9.0
+    .. versionchanged:: 2.10.0
        Enabled **parallel execution** with the ``multiprocessing`` and ``dask``
        backends; use the new method :meth:`get_supported_backends` to see all
        supported backends.
@@ -638,7 +638,7 @@ class InterRDF_s(AnalysisBase):
        Instead of `density=True` use `norm='density'`
     .. deprecated:: 2.3.0
        The `universe` parameter is superflous.
-    .. versionchanged:: 2.9.0
+    .. versionchanged:: 2.10.0
        Enabled **parallel execution** with the ``multiprocessing`` and ``dask``
        backends; use the new method :meth:`get_supported_backends` to see all
        supported backends.
@@ -731,9 +731,16 @@ class InterRDF_s(AnalysisBase):
                 backend=self.backend,
             )
 
-            for j, (idx1, idx2) in enumerate(pairs):
-                count, _ = np.histogram(dist[j], **self.rdf_settings)
-                self.results.count[i][idx1, idx2, :] += count
+            # Fast manual implementation for distance histogram (equidistant bins)
+            nbins = self.rdf_settings["bins"]
+            rmin, rmax = self.rdf_settings["range"]
+            bin_indices = (dist - rmin) * nbins / (rmax - rmin)
+            bin_indices = bin_indices.astype(np.int64)
+            counts = (bin_indices >= 0) & (bin_indices < nbins)
+            counts = counts.astype(np.int64)
+            idx1s = pairs[:, 0]
+            idx2s = pairs[:, 1]
+            self.results.count[i][idx1s, idx2s, bin_indices] += counts
 
         if self.norm == "rdf":
             self.results.volume_cum += self._ts.volume

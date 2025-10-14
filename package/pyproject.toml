@@ -1,7 +1,7 @@
 [build-system]
 # Minimum requirements for the build system to execute
 requires = [
-    "Cython>=0.28,<3.1",
+    "Cython>=0.28",
     "packaging",
     # numpy requirement for wheel builds for distribution on PyPI - building
     # against 2.x yields wheels that are also compatible with numpy 1.x at
@@ -27,9 +27,9 @@ authors = [
 maintainers = [
     {name = 'MDAnalysis Core Developers', email = 'mdanalysis@numfocus.org'}
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
-    'numpy>=1.23.2',
+    'numpy>=1.26.0',
     'GridDataFormats>=0.4.0',
     'mmtf-python>=1.0.0',
     'joblib>=0.12',
@@ -55,10 +55,10 @@ classifiers = [
     'Operating System :: MacOS :: MacOS X',
     'Operating System :: Microsoft :: Windows',
     'Programming Language :: Python',
-    'Programming Language :: Python :: 3.10',
     'Programming Language :: Python :: 3.11',
     'Programming Language :: Python :: 3.12',
     'Programming Language :: Python :: 3.13',
+    'Programming Language :: Python :: 3.14',
     'Programming Language :: C',
     'Topic :: Scientific/Engineering',
     'Topic :: Scientific/Engineering :: Bio-Informatics',
@@ -126,7 +126,7 @@ MDAnalysis = [
 
 [tool.black]
 line-length = 79
-target-version = ['py310', 'py311', 'py312', 'py313']
+target-version = ['py311', 'py312', 'py313']
 extend-exclude = '''
 (
 __pycache__ 
