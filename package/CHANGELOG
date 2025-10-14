@@ -22,6 +22,10 @@ The rules for this file:
  * 2.10.0
 
 Fixes
+ * Fixes incorrect conversion factors for speed units A/fs, A/us, A/ms
+   in MDAnalysis.units (Issue #5051, PR #5053)
+ * `analysis.polymer.sort_backbone` is now working for discontinuous polymers
+   and does not result in an infinite loop (Issue #5112, PR #5113)
  * Fix atom selection parsing to allow escaping keywords with a backslash
    (Issue #5111, PR #5119)
  * Fix DCDWriter to correctly write unit cell angles as cosines following
@@ -42,10 +46,6 @@ Fixes
  * Fixes the benchmark `SimpleRmsBench` in `benchmarks/analysis/rms.py`
    by changing the way weights for RMSD are calculated, instead of
    directly passing them. (Issue #3520, PR #5006)
- * Fixes incorrect conversion factors for speed units A/fs, A/us, A/ms
-   in MDAnalysis.units (Issue #5051, PR #5053)
- * `analysis.polymer.sort_backbone` is now working for discontinuous polymers
-    and does not result in an infinite loop (Issue #5112, PR #5113)
 
 Enhancements
  * add conversion factor for speed unit A/ns (PR #5053)
