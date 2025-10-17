@@ -145,7 +145,7 @@ jobs:
           mv dist/mdanalysistests-* testsuite/dist
 
       - name: upload_source_and_wheels
-        uses: pypa/gh-action-pypi-publish@v1.12.4
+        uses: pypa/gh-action-pypi-publish@v1.13.0
         with:
           skip_existing: true
           repository_url: https://test.pypi.org/legacy/
@@ -174,7 +174,7 @@ jobs:
           mv dist/mdanalysistests-* testsuite/dist
 
       - name: upload_tests
-        uses: pypa/gh-action-pypi-publish@v1.12.4
+        uses: pypa/gh-action-pypi-publish@v1.13.0
         with:
           packages_dir: testsuite/dist
           skip_existing: true
@@ -204,7 +204,7 @@ jobs:
           mv dist/mdanalysistests-* testsuite/dist
 
       - name: upload_source_and_wheels
-        uses: pypa/gh-action-pypi-publish@v1.12.4
+        uses: pypa/gh-action-pypi-publish@v1.13.0
 
   upload_pypi_mdanalysistests:
     if: |
@@ -230,7 +230,7 @@ jobs:
           mv dist/mdanalysistests-* testsuite/dist
 
       - name: upload_tests
-        uses: pypa/gh-action-pypi-publish@v1.12.4
+        uses: pypa/gh-action-pypi-publish@v1.13.0
         with:
           packages_dir: testsuite/dist
 
