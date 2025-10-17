@@ -1,0 +1,1112 @@
+
+
+
+  
+    
+  
+
+
+
+
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.9.1/css/academicons.min.css" integrity="sha512-b1ASx0WHgVFL5ZQhTgiPWX+68KjS38Jk87jg7pe+qC7q9YkEtFq0z7xCglv7qGIs/68d3mAp+StfC8WKC5SSAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="shortcut icon" href="../../_static/logo/mda_favicon.ico">
+</head>
+
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>7.10. IMDReader — MDAnalysis.coordinates.IMD &mdash; MDAnalysis 2.10.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/site.css" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=67920a36"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/js/versions.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 2.10.0 documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="7.11. INPCRD structure files in MDAnalysis — MDAnalysis.coordinates.INPCRD" href="INPCRD.html" />
+    <link rel="prev" title="7.9. H5MD trajectories — MDAnalysis.coordinates.H5MD" href="H5MD.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+
+
+  
+
+
+
+
+<a href="../../index.html">
+  
+    <img src="../../_static/logo/mda_logo.png" class="logo" alt="Logo"/>
+</a>
+
+
+  
+  
+  
+    <div class="version">
+      2.10.0
+    </div>
+  
+
+
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+    
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview of MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guesser_modules.html">6. Guesser modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../coordinates_modules.html">7. Coordinates modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="init.html">7.1. Trajectory Readers and Writers  — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="CRD.html">7.2. CRD structure files in MDAnalysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.CRD</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="DCD.html">7.3. DCD trajectory I/O  — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DCD</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="DLPoly.html">7.4. DL_Poly format reader <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DLPoly</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="DMS.html">7.5. DESRES file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DMS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="GMS.html">7.6. GAMESS trajectory reader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GMS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="GSD.html">7.7. GSD trajectory reader  — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GSD</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="GRO.html">7.8. GRO file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GRO</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="H5MD.html">7.9. H5MD trajectories — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.H5MD</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">7.10. IMDReader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.IMD</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#usage-example">7.10.1. Usage Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#important-limitations">7.10.2. Important Limitations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multiple-client-connections">7.10.3. Multiple Client Connections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#classes">7.10.4. Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="INPCRD.html">7.11. INPCRD structure files in MDAnalysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.INPCRD</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="LAMMPS.html">7.12. LAMMPS DCD trajectory and DATA I/O  — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.LAMMPS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="MMTF.html">7.13. MMTF trajectory reader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MMTF</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="MOL2.html">7.14. MOL2 file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="NAMDBIN.html">7.15. NAMDBIN files format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.NAMDBIN</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDB.html">7.16. PDB structure files in MDAnalysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDB</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDBQT.html">7.17. PDBQT structure files in MDAnalysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDBQT</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="PQR.html">7.18. PQR file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PQR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TNG.html">7.19. TNG trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TNG</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TPR.html">7.20. TPR file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TPR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TRC.html">7.21. GROMOS11 trajectory reader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRC</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TRJ.html">7.22. AMBER trajectories — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRJ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TRR.html">7.23. TRR trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TRZ.html">7.24. TRZ trajectory I/O  — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRZ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TXYZ.html">7.25. TXYZ file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TXYZ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XTC.html">7.26. XTC trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XTC</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XYZ.html">7.27. XYZ trajectory reader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XYZ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="FHIAIMS.html">7.28. FHI-AIMS file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.FHIAIMS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="memory.html">7.29. Reading trajectories from memory — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="chemfiles.html">7.30. Reading trajectories with <em>chemfiles</em> — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chemfiles</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="null.html">7.31. Null output — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.null</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="timestep.html">7.32. Timestep Class — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.timestep</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">7.33. Base classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">7.34. Common functions for coordinate reading — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="pickle_readers.html">7.35. Serialization of Coordinate Readers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chain.html">7.36. ChainReader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XDR.html">7.37. XDR based trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../converters.html">8. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">9. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">10. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">11. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">12. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">13. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">14. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">15. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">16. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">17. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">18. References</a></li>
+</ul>
+
+</div>
+
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">MDAnalysis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../coordinates_modules.html"><span class="section-number">7. </span>Coordinates modules</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">7.10. </span>IMDReader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.IMD</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/documentation_pages/coordinates/IMD.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="imdreader-mdanalysis-coordinates-imd">
+<span id="module-MDAnalysis.coordinates.IMD"></span><h1><span class="section-number">7.10. </span>IMDReader — <a class="reference internal" href="#module-MDAnalysis.coordinates.IMD" title="MDAnalysis.coordinates.IMD"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.IMD</span></code></a><a class="headerlink" href="#imdreader-mdanalysis-coordinates-imd" title="Link to this heading"></a></h1>
+<p>This module provides support for reading molecular dynamics simulation data via the
+<a class="reference external" href="https://imdclient.readthedocs.io/en/latest/protocol_v3.html">Interactive Molecular Dynamics (IMD) protocol v3</a>.
+The IMD protocol allows two-way communicating molecular simulation data through a socket.
+Via IMD, a simulation engine sends data to a receiver (in this case, the IMDClient) and the receiver can send forces and specific control
+requests (such as pausing, resuming, or terminating the simulation) back to the simulation engine.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This reader only supports IMDv3, which is implemented in GROMACS, LAMMPS, and NAMD at varying
+stages of development. See the <a class="reference external" href="https://imdclient.readthedocs.io/en/latest/usage.html">imdclient simulation engine docs</a> for more.
+While IMDv2 is widely available in simulation engines, it was designed primarily for visualization
+and gaps are allowed in the stream (i.e., an inconsistent number of integrator time steps between transmitted coordinate arrays is allowed)</p>
+</div>
+<p>The <a class="reference internal" href="#MDAnalysis.coordinates.IMD.IMDReader" title="MDAnalysis.coordinates.IMD.IMDReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">IMDReader</span></code></a> connects to a simulation via a socket and receives coordinate,
+velocity, force, and energy data as the simulation progresses. This allows for real-time
+monitoring and analysis of ongoing simulations. It uses the <a class="reference external" href="https://github.com/Becksteinlab/imdclient">imdclient package</a>
+(dependency) to implement the IMDv3 protocol and manage the socket connection and data parsing.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#MDAnalysis.coordinates.IMD.IMDReader" title="MDAnalysis.coordinates.IMD.IMDReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">IMDReader</span></code></a></dt><dd><p>Technical details and parameter options for the reader class</p>
+</dd>
+<dt><a class="reference external" href="https://imdclient.readthedocs.io/">imdclient documentation</a></dt><dd><p>Complete documentation for the IMDClient package</p>
+</dd>
+<dt><a class="reference external" href="https://github.com/Becksteinlab/imdclient">IMDClient GitHub repository</a></dt><dd><p>Source code and development resources</p>
+</dd>
+</dl>
+</div>
+<section id="usage-example">
+<h2><span class="section-number">7.10.1. </span>Usage Example<a class="headerlink" href="#usage-example" title="Link to this heading"></a></h2>
+<p>As an example of reading a stream, after configuring GROMACS to run a simulation with IMDv3 enabled
+(see the <a class="reference external" href="https://imdclient.readthedocs.io/en/latest/usage.html">imdclient simulation engine docs</a> for
+up-to-date resources on configuring each simulation engine), use the following commands:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gmx<span class="w"> </span>mdrun<span class="w"> </span>-v<span class="w"> </span>-nt<span class="w"> </span><span class="m">4</span><span class="w"> </span>-imdwait<span class="w"> </span>-imdport<span class="w"> </span><span class="m">8889</span>
+</pre></div>
+</div>
+<p>The <a class="reference internal" href="#MDAnalysis.coordinates.IMD.IMDReader" title="MDAnalysis.coordinates.IMD.IMDReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">IMDReader</span></code></a> can then connect to the running simulation and stream data in real time:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="s2">&quot;topol.tpr&quot;</span><span class="p">,</span> <span class="s2">&quot;imd://localhost:8889&quot;</span><span class="p">,</span> <span class="n">buffer_size</span><span class="o">=</span><span class="mi">10</span><span class="o">*</span><span class="mi">1024</span><span class="o">*</span><span class="mi">1024</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    time [         position         ] [         velocity         ] [           force          ] [            box           ]&quot;</span><span class="p">)</span>
+<span class="n">sel</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>  <span class="c1"># Select all atoms; adjust selection as needed</span>
+<span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span><span class="si">:</span><span class="s1">8.3f</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">sel</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">sel</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">velocity</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">sel</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">force</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">u</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p><strong>Jupyter Notebook Users</strong>: When using IMDReader in Jupyter notebooks, be aware that
+<strong>kernel restarts will not gracefully close active IMD connections</strong>. This can leave
+socket connections open, potentially preventing new connections to the same stream.</p>
+<p>Always use <code class="docutils literal notranslate"><span class="pre">try/except/finally</span></code> blocks to ensure proper cleanup:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="s2">&quot;topol.tpr&quot;</span><span class="p">,</span> <span class="s2">&quot;imd://localhost:8889&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error during connection: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Your analysis code here</span>
+        <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">:</span>
+            <span class="c1"># Process each frame</span>
+            <span class="k">pass</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="c1"># Ensure connection is closed</span>
+        <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Always explicitly call <code class="docutils literal notranslate"><span class="pre">u.trajectory.close()</span></code> when finished with analysis to
+ensure connection is closed properly.</p>
+</div>
+</section>
+<section id="important-limitations">
+<h2><span class="section-number">7.10.2. </span>Important Limitations<a class="headerlink" href="#important-limitations" title="Link to this heading"></a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The IMDReader has some important limitations that are inherent in streaming data.</p>
+</div>
+<p>Since IMD streams data in real-time from a running simulation, it has fundamental
+constraints that differ from traditional trajectory readers:</p>
+<ul class="simple">
+<li><p><strong>No random access</strong>: Cannot jump to arbitrary frame numbers or seek backwards</p></li>
+<li><p><strong>Forward-only access</strong>: You can only move forward through frames as they arrive</p></li>
+<li><p><strong>No trajectory length</strong>: The total number of frames is unknown until the simulation ends</p></li>
+<li><p><strong>Single-use iteration</strong>: Cannot restart or rewind once the stream has been consumed</p></li>
+<li><p><strong>No independent copies</strong>: Cannot create separate reader instances for the same stream</p></li>
+<li><p><strong>No stream restart</strong>: Cannot reconnect or reopen once the connection is closed</p></li>
+<li><p><strong>No bulk operations</strong>: Cannot extract all data at once using timeseries methods</p></li>
+<li><p><strong>Limited multiprocessing</strong>: Cannot split reader across processes for parallel analysis</p></li>
+<li><p><strong>Single client connection</strong>: Only one reader can connect to an IMD stream at a time</p></li>
+<li><p><strong>No trajectory Writing</strong>: Complimentary IMD Writer class is not available for streaming data</p></li>
+</ul>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>See <a class="reference internal" href="base.html#MDAnalysis.coordinates.base.StreamReaderBase" title="MDAnalysis.coordinates.base.StreamReaderBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">StreamReaderBase</span></code></a> for technical details.</p>
+</div>
+</section>
+<section id="multiple-client-connections">
+<h2><span class="section-number">7.10.3. </span>Multiple Client Connections<a class="headerlink" href="#multiple-client-connections" title="Link to this heading"></a></h2>
+<p>The ability to establish multiple simultaneous connections to the same IMD port is
+<strong>MD engine implementation dependent</strong>. Some simulation engines may allow multiple
+clients to connect concurrently, while others may reject or fail additional connection
+attempts.</p>
+<p>See the <a class="reference external" href="https://imdclient.readthedocs.io/en/latest/usage.html">imdclient simulation engine docs</a> for further details.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Even when multiple connections are supported by the simulation engine, each connection
+receives its own independent data stream. These streams may contain different data
+depending on the simulation engine’s configuration, so multiple connections should
+not be assumed to provide identical data streams.</p>
+</div>
+</section>
+<section id="classes">
+<h2><span class="section-number">7.10.4. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.IMD.IMDReader">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.IMD.</span></span><span class="sig-name descname"><span class="pre">IMDReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10485760</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/IMD.html#IMDReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.IMD.IMDReader" title="Link to this definition"></a></dt>
+<dd><p>Coordinate reader implementing the IMDv3 protocol for streaming simulation data.</p>
+<p>This class handles the technical aspects of connecting to IMD-enabled simulation
+engines and processing the incoming data stream. For usage examples and protocol
+overview, see the module documentation above.</p>
+<p>The reader manages socket connections, data buffering, and frame parsing according
+to the IMDv3 specification. It automatically handles different data packet types
+(coordinates, velocities, forces, energies, timing) and populates MDAnalysis
+timestep objects accordingly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<em>a string</em><em> of </em><em>the form &quot;imd://host:port&quot; where host is the hostname</em>) – or IP address of the listening simulation engine’s IMD server and port
+is the port number.</p></li>
+<li><p><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – number of atoms in the system. defaults to number of atoms
+in the topology. Don’t set this unless you know what you’re doing.</p></li>
+<li><p><strong>buffer_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> (</em><em>optional</em><em>) </em><em>default=10*</em><em>(</em><em>1024**2</em><em>)</em>) – number of bytes of memory to allocate to the <a class="reference external" href="https://imdclient.readthedocs.io/en/stable/api.html#imdclient.IMDClient.IMDClient" title="(in IMDClient)"><code class="xref py py-class docutils literal notranslate"><span class="pre">IMDClient</span></code></a>’s
+internal buffer. Defaults to 10 megabytes. Larger buffers can improve
+performance for analyses with periodic heavy computation.</p></li>
+<li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a><em> (</em><em>optional</em><em>)</em>) – keyword arguments passed to the constructed <a class="reference external" href="https://imdclient.readthedocs.io/en/stable/api.html#imdclient.IMDClient.IMDClient" title="(in IMDClient)"><code class="xref py py-class docutils literal notranslate"><span class="pre">IMDClient</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The IMDReader provides access to additional simulation data through the timestep’s
+<cite>data</cite> attribute (<cite>ts.data</cite>). The following keys may be available depending on
+what the simulation engine transmits:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><cite>dt</cite><span class="classifier">float</span></dt><dd><p>Time step size in picoseconds (from the <a class="reference external" href="https://imdclient.readthedocs.io/en/latest/protocol_v3.html#time">IMD_TIME</a> packet of the IMDv3 protocol)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>step</cite><span class="classifier">int</span></dt><dd><p>Current simulation step number (from the <a class="reference external" href="https://imdclient.readthedocs.io/en/latest/protocol_v3.html#time">IMD_TIME</a> packet of the IMDv3 protocol)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Energy terms<span class="classifier">float</span></dt><dd><p>Various energy components (e.g., ‘potential’, ‘kinetic’, ‘total’, etc.)
+from the <a class="reference external" href="https://imdclient.readthedocs.io/en/latest/protocol_v3.html#energies">IMD_ENERGIES</a> packet of the IMDv3 protocol.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For important limitations inherent to streaming data, see the module documentation above
+and <a class="reference internal" href="base.html#MDAnalysis.coordinates.base.StreamReaderBase" title="MDAnalysis.coordinates.base.StreamReaderBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">StreamReaderBase</span></code></a> for more technical details.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.10.0.</span></p>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.IMD.IMDReader.OtherWriter">
+<span class="sig-name descname"><span class="pre">OtherWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.IMD.IMDReader.OtherWriter" title="Link to this definition"></a></dt>
+<dd><p>Writer creation is not supported for streaming trajectories.</p>
+<p>OtherWriter initialization requires frame-based parameters and trajectory
+indexing information. Streaming readers process data sequentially
+without meaningful frame indexing, making writer setup impossible.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Output filename (ignored, as method is not supported)</p></li>
+<li><p><strong>**kwargs</strong> – Additional keyword arguments (ignored, as method is not supported)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.14)"><strong>RuntimeError</strong></a> – Always raised, as writer creation is not supported for streaming trajectories</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.IMD.IMDReader.Writer">
+<span class="sig-name descname"><span class="pre">Writer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.IMD.IMDReader.Writer" title="Link to this definition"></a></dt>
+<dd><p>Writer creation is not supported for streaming trajectories.</p>
+<p>Writer creation requires trajectory metadata that streaming readers
+cannot provide due to their sequential processing nature.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Output filename (ignored, as method is not supported)</p></li>
+<li><p><strong>**kwargs</strong> – Additional keyword arguments (ignored, as method is not supported)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.14)"><strong>RuntimeError</strong></a> – Always raised, as writer creation is not supported for streaming trajectories</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.IMD.IMDReader.add_auxiliary">
+<span class="sig-name descname"><span class="pre">add_auxiliary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">aux_spec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auxdata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader" title="MDAnalysis.auxiliary.base.AuxReader"><span class="pre">AuxReader</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#MDAnalysis.coordinates.IMD.IMDReader.add_auxiliary" title="Link to this definition"></a></dt>
+<dd><p>Add auxiliary data to be read alongside trajectory.</p>
+<p>Auxiliary data may be any data timeseries from the trajectory
+additional to that read in by the trajectory reader. <em>auxdata</em> can
+be an <a class="reference internal" href="../auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader" title="MDAnalysis.auxiliary.base.AuxReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">AuxReader</span></code></a> instance, or the
+data itself as e.g. a filename; in the latter case an appropriate
+<a class="reference internal" href="../auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader" title="MDAnalysis.auxiliary.base.AuxReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">AuxReader</span></code></a> is guessed from the
+data/file format. An appropriate <cite>format</cite> may also be directly provided
+as a key word argument.</p>
+<p>On adding, the AuxReader is initially matched to the current timestep
+of the trajectory, and will be updated when the trajectory timestep
+changes (through a call to <a class="reference internal" href="#MDAnalysis.coordinates.IMD.IMDReader.next" title="MDAnalysis.coordinates.IMD.IMDReader.next"><code class="xref py py-meth docutils literal notranslate"><span class="pre">next()</span></code></a> or jumping timesteps with
+<code class="docutils literal notranslate"><span class="pre">trajectory[i]</span></code>).</p>
+<p>The representative value(s) of the auxiliary data for each timestep (as
+calculated by the <a class="reference internal" href="../auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader" title="MDAnalysis.auxiliary.base.AuxReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">AuxReader</span></code></a>) are
+stored in the current timestep in the <code class="docutils literal notranslate"><span class="pre">ts.aux</span></code> namespace under
+<em>aux_spec</em>; e.g. to add additional pull force data stored in
+pull-force.xvg:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PDB</span><span class="p">,</span> <span class="n">XTC</span><span class="p">)</span>
+<span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="s1">&#39;pull&#39;</span><span class="p">,</span> <span class="s1">&#39;pull-force.xvg&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The representative value for the current timestep may then be accessed
+as <code class="docutils literal notranslate"><span class="pre">u.trajectory.ts.aux.pull</span></code> or <code class="docutils literal notranslate"><span class="pre">u.trajectory.ts.aux['pull']</span></code>.</p>
+<p>The following applies to energy readers like the
+<a class="reference internal" href="../auxiliary/EDR.html#MDAnalysis.auxiliary.EDR.EDRReader" title="MDAnalysis.auxiliary.EDR.EDRReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">EDRReader</span></code></a>.</p>
+<p>All data that is present in the (energy) file can be added by omitting
+<cite>aux_spec</cite> like so:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="n">auxdata</span><span class="o">=</span><span class="s2">&quot;ener.edr&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><em>aux_spec</em> is expected to be a dictionary that maps the desired
+attribute name in the <code class="docutils literal notranslate"><span class="pre">ts.aux</span></code> namespace to the precise data to be
+added as identified by a <code class="xref py py-attr docutils literal notranslate"><span class="pre">data_selector</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">term_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;temp&quot;</span><span class="p">:</span> <span class="s2">&quot;Temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;epot&quot;</span><span class="p">:</span> <span class="s2">&quot;Potential&quot;</span><span class="p">}</span>
+<span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="n">term_dict</span><span class="p">,</span> <span class="s2">&quot;ener.edr&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Adding this data can be useful, for example, to filter trajectory
+frames based on non-coordinate data like the potential energy of each
+time step. Trajectory slicing allows working on a subset of frames:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">selected_frames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span>
+                            <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">aux</span><span class="o">.</span><span class="n">epot</span> <span class="o">&lt;</span> <span class="n">some_threshold</span><span class="p">])</span>
+<span class="n">subset</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">selected_frames</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#MDAnalysis.coordinates.IMD.IMDReader.remove_auxiliary" title="MDAnalysis.coordinates.IMD.IMDReader.remove_auxiliary"><code class="xref py py-meth docutils literal notranslate"><span class="pre">remove_auxiliary()</span></code></a></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Auxiliary data is assumed to be time-ordered, with no duplicates. See
+the <a class="reference internal" href="../auxiliary/init.html#auxiliary-api"><span class="std std-ref">Auxiliary API</span></a>.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.IMD.IMDReader.add_transformations">
+<span class="sig-name descname"><span class="pre">add_transformations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">transformations</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.IMD.IMDReader.add_transformations" title="Link to this definition"></a></dt>
+<dd><p>Add all transformations to be applied to the trajectory.</p>
+<p>This function take as list of transformations as an argument. These
+transformations are functions that will be called by the Reader and given
+a <code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code> object as argument, which will be transformed and returned
+to the Reader.
+The transformations can be part of the <a class="reference internal" href="../trajectory_transformations.html#module-MDAnalysis.transformations" title="MDAnalysis.transformations"><code class="xref py py-mod docutils literal notranslate"><span class="pre">transformations</span></code></a>
+module, or created by the user, and are stored as a list <cite>transformations</cite>.
+This list can only be modified once, and further calls of this function will
+raise an exception.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">)</span>
+<span class="n">workflow</span> <span class="o">=</span> <span class="p">[</span><span class="n">some_transform</span><span class="p">,</span> <span class="n">another_transform</span><span class="p">,</span> <span class="n">this_transform</span><span class="p">]</span>
+<span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_transformations</span><span class="p">(</span><span class="o">*</span><span class="n">workflow</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The transformations are applied in the order given in the list
+<cite>transformations</cite>, i.e., the first transformation is the first
+or innermost one to be applied to the <code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code>. The
+example above would be equivalent to</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">:</span>
+   <span class="n">ts</span> <span class="o">=</span> <span class="n">this_transform</span><span class="p">(</span><span class="n">another_transform</span><span class="p">(</span><span class="n">some_transform</span><span class="p">(</span><span class="n">ts</span><span class="p">)))</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>transform_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – list of all the transformations that will be applied to the coordinates
+in the order given in the list</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="../trajectory_transformations.html#module-MDAnalysis.transformations" title="MDAnalysis.transformations"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.IMD.IMDReader.aux_list">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">aux_list</span></span><a class="headerlink" href="#MDAnalysis.coordinates.IMD.IMDReader.aux_list" title="Link to this definition"></a></dt>
+<dd><p>Lists the names of added auxiliary data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.IMD.IMDReader.check_slice_indices">
+<span class="sig-name descname"><span class="pre">check_slice_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.IMD.IMDReader.check_slice_indices" title="Link to this definition"></a></dt>
+<dd><p>Check and validate slice indices for streaming trajectories.</p>
+<p>Streaming trajectories have fundamental constraints that differ from
+traditional trajectory files:</p>
+<ul class="simple">
+<li><p><strong>No start/stop indices</strong>: Since streams process data continuously
+without knowing the total length, <code class="docutils literal notranslate"><span class="pre">start</span></code> and <code class="docutils literal notranslate"><span class="pre">stop</span></code> must be <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>Step-only slicing</strong>: Only the <code class="docutils literal notranslate"><span class="pre">step</span></code> parameter is meaningful,
+controlling how many frames to skip during iteration</p></li>
+<li><p><strong>Forward-only</strong>: <code class="docutils literal notranslate"><span class="pre">step</span></code> must be positive (&gt; 0) as streams cannot
+be processed backward in time</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> or </em><em>None</em>) – Starting frame index. Must be <code class="docutils literal notranslate"><span class="pre">None</span></code> for streaming readers.</p></li>
+<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> or </em><em>None</em>) – Ending frame index. Must be <code class="docutils literal notranslate"><span class="pre">None</span></code> for streaming readers.</p></li>
+<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em> or </em><em>None</em>) – Step size for iteration. Must be positive integer or <code class="docutils literal notranslate"><span class="pre">None</span></code>
+(equivalent to 1).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>(start, stop, step) with validated values</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)">tuple</a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">start</span></code> or <code class="docutils literal notranslate"><span class="pre">stop</span></code> are not <code class="docutils literal notranslate"><span class="pre">None</span></code>, or if <code class="docutils literal notranslate"><span class="pre">step</span></code> is
+    not a positive integer.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Valid streaming slices:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">traj</span><span class="p">[:]</span>        <span class="c1"># All frames (step=None, equivalent to step=1)</span>
+<span class="n">traj</span><span class="p">[::</span><span class="mi">2</span><span class="p">]</span>      <span class="c1"># Every 2nd frame</span>
+<span class="n">traj</span><span class="p">[::</span><span class="mi">10</span><span class="p">]</span>     <span class="c1"># Every 10th frame</span>
+</pre></div>
+</div>
+<p>Invalid streaming slices:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">traj</span><span class="p">[</span><span class="mi">5</span><span class="p">:]</span>       <span class="c1"># Cannot specify start index</span>
+<span class="n">traj</span><span class="p">[:</span><span class="mi">100</span><span class="p">]</span>     <span class="c1"># Cannot specify stop index</span>
+<span class="n">traj</span><span class="p">[</span><span class="mi">5</span><span class="p">:</span><span class="mi">100</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>  <span class="c1"># Cannot specify start or stop indices</span>
+<span class="n">traj</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>     <span class="c1"># Cannot go backwards (negative step)</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__getitem__</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">StreamFrameIteratorSliced</span></code></p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.10.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.IMD.IMDReader.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/IMD.html#IMDReader.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.IMD.IMDReader.close" title="Link to this definition"></a></dt>
+<dd><p>Gracefully shut down the reader. Stops the producer thread.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.IMD.IMDReader.convert_forces_from_native">
+<span class="sig-name descname"><span class="pre">convert_forces_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.IMD.IMDReader.convert_forces_from_native" title="Link to this definition"></a></dt>
+<dd><p>Conversion of forces array <em>force</em> from native to base units</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>force</strong> (<em>array_like</em>) – Forces to transform</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>By default, the input <em>force</em> is modified in place and also returned.
+In-place operations improve performance because allocating new arrays
+is avoided.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.7.7.</span></p>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.IMD.IMDReader.convert_forces_to_native">
+<span class="sig-name descname"><span class="pre">convert_forces_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.IMD.IMDReader.convert_forces_to_native" title="Link to this definition"></a></dt>
+<dd><p>Conversion of force array <em>force</em> from base to native units.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>force</strong> (<em>array_like</em>) – Forces to transform</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>By default, the input <cite>force</cite> is modified in place and also returned.
+In-place operations improve performance because allocating new arrays
+is avoided.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.7.7.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.IMD.IMDReader.convert_pos_from_native">
+<span class="sig-name descname"><span class="pre">convert_pos_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.IMD.IMDReader.convert_pos_from_native" title="Link to this definition"></a></dt>
+<dd><p>Conversion of coordinate array x from native units to base units.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array_like</em>) – Positions to transform</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>By default, the input <cite>x</cite> is modified in place and also returned.
+In-place operations improve performance because allocating new arrays
+is avoided.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.7.5: </span>Keyword <cite>inplace</cite> can be set to <code class="docutils literal notranslate"><span class="pre">False</span></code> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <cite>x</cite> is
+returned.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.IMD.IMDReader.convert_pos_to_native">
+<span class="sig-name descname"><span class="pre">convert_pos_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.IMD.IMDReader.convert_pos_to_native" title="Link to this definition"></a></dt>
+<dd><p>Conversion of coordinate array <cite>x</cite> from base units to native units.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array_like</em>) – Positions to transform</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>By default, the input <cite>x</cite> is modified in place and also returned.
+In-place operations improve performance because allocating new arrays
+is avoided.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.7.5: </span>Keyword <cite>inplace</cite> can be set to <code class="docutils literal notranslate"><span class="pre">False</span></code> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <cite>x</cite> is
+returned.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.IMD.IMDReader.convert_time_from_native">
+<span class="sig-name descname"><span class="pre">convert_time_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.IMD.IMDReader.convert_time_from_native" title="Link to this definition"></a></dt>
+<dd><p>Convert time <em>t</em> from native units to base units.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> (<em>array_like</em>) – Time values to transform</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>By default, the input <cite>t</cite> is modified in place and also returned
+(although note that scalar values <cite>t</cite> are passed by value in Python and
+hence an in-place modification has no effect on the caller.)  In-place
+operations improve performance because allocating new arrays is
+avoided.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.7.5: </span>Keyword <cite>inplace</cite> can be set to <code class="docutils literal notranslate"><span class="pre">False</span></code> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <cite>x</cite> is
+returned.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.IMD.IMDReader.convert_time_to_native">
+<span class="sig-name descname"><span class="pre">convert_time_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.IMD.IMDReader.convert_time_to_native" title="Link to this definition"></a></dt>
+<dd><p>Convert time <em>t</em> from base units to native units.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> (<em>array_like</em>) – Time values to transform</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>By default, the input <em>t</em> is modified in place and also
+returned. (Also note that scalar values <em>t</em> are passed by
+value in Python and hence an in-place modification has no
+effect on the caller.)</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <code class="docutils literal notranslate"><span class="pre">False</span></code> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <em>x</em> is
+returned.</p>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.IMD.IMDReader.convert_velocities_from_native">
+<span class="sig-name descname"><span class="pre">convert_velocities_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.IMD.IMDReader.convert_velocities_from_native" title="Link to this definition"></a></dt>
+<dd><p>Conversion of velocities array <em>v</em> from native to base units</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>v</strong> (<em>array_like</em>) – Velocities to transform</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>By default, the input <em>v</em> is modified in place and also returned.
+In-place operations improve performance because allocating new arrays
+is avoided.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.7.5.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.IMD.IMDReader.convert_velocities_to_native">
+<span class="sig-name descname"><span class="pre">convert_velocities_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.IMD.IMDReader.convert_velocities_to_native" title="Link to this definition"></a></dt>
+<dd><p>Conversion of coordinate array <cite>v</cite> from base to native units</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>v</strong> (<em>array_like</em>) – Velocities to transform</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>By default, the input <cite>v</cite> is modified in place and also returned.
+In-place operations improve performance because allocating new arrays
+is avoided.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.7.5.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.IMD.IMDReader.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.IMD.IMDReader.copy" title="Link to this definition"></a></dt>
+<dd><p>Reader copying is not supported for streaming trajectories.</p>
+<p>Streaming readers maintain internal state and connection resources
+that cannot be duplicated. Each stream connection is unique and
+cannot be copied.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.14)"><strong>RuntimeError</strong></a> – Always raised, as copying is not supported for streaming trajectories</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.IMD.IMDReader.dt">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dt</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></em><a class="headerlink" href="#MDAnalysis.coordinates.IMD.IMDReader.dt" title="Link to this definition"></a></dt>
+<dd><p>Time between two trajectory frames in picoseconds.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.IMD.IMDReader.frame">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">frame</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></em><a class="headerlink" href="#MDAnalysis.coordinates.IMD.IMDReader.frame" title="Link to this definition"></a></dt>
+<dd><p>Frame number of the current time step.</p>
+<p>This is a simple short cut to <code class="xref py py-attr docutils literal notranslate"><span class="pre">Timestep.frame</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.IMD.IMDReader.get_aux_attribute">
+<span class="sig-name descname"><span class="pre">get_aux_attribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">auxname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attrname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.IMD.IMDReader.get_aux_attribute" title="Link to this definition"></a></dt>
+<dd><p>Get the value of <em>attrname</em> from the auxiliary <em>auxname</em></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Name of the auxiliary to get value for</p></li>
+<li><p><strong>attrname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Name of gettable attribute in the auxiliary reader</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#MDAnalysis.coordinates.IMD.IMDReader.set_aux_attribute" title="MDAnalysis.coordinates.IMD.IMDReader.set_aux_attribute"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_aux_attribute()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.IMD.IMDReader.get_aux_descriptions">
+<span class="sig-name descname"><span class="pre">get_aux_descriptions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">auxnames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.IMD.IMDReader.get_aux_descriptions" title="Link to this definition"></a></dt>
+<dd><p>Get descriptions to allow reloading the specified auxiliaries.</p>
+<p>If no auxnames are provided, defaults to the full list of added
+auxiliaries.</p>
+<p>Passing the resultant description to <code class="docutils literal notranslate"><span class="pre">add_auxiliary()</span></code> will allow
+recreation of the auxiliary. e.g., to duplicate all auxiliaries into a
+second trajectory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">descriptions</span> <span class="o">=</span> <span class="n">trajectory_1</span><span class="o">.</span><span class="n">get_aux_descriptions</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">aux</span> <span class="ow">in</span> <span class="n">descriptions</span><span class="p">:</span>
+    <span class="n">trajectory_2</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="o">**</span><span class="n">aux</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of dictionaries of the args/kwargs describing each auxiliary.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a></p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="../auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader.get_description" title="MDAnalysis.auxiliary.base.AuxReader.get_description"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.base.AuxReader.get_description()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.IMD.IMDReader.iter_as_aux">
+<span class="sig-name descname"><span class="pre">iter_as_aux</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">auxname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.IMD.IMDReader.iter_as_aux" title="Link to this definition"></a></dt>
+<dd><p>Iterate through timesteps for which there is at least one assigned
+step from the auxiliary <em>auxname</em> within the cutoff specified in <em>auxname</em>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#MDAnalysis.coordinates.IMD.IMDReader.next_as_aux" title="MDAnalysis.coordinates.IMD.IMDReader.next_as_aux"><code class="xref py py-meth docutils literal notranslate"><span class="pre">next_as_aux()</span></code></a>, <a class="reference internal" href="#MDAnalysis.coordinates.IMD.IMDReader.iter_auxiliary" title="MDAnalysis.coordinates.IMD.IMDReader.iter_auxiliary"><code class="xref py py-meth docutils literal notranslate"><span class="pre">iter_auxiliary()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.IMD.IMDReader.iter_auxiliary">
+<span class="sig-name descname"><span class="pre">iter_auxiliary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">auxname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selected</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.IMD.IMDReader.iter_auxiliary" title="Link to this definition"></a></dt>
+<dd><p>Iterate through the auxiliary <em>auxname</em> independently of the trajectory.</p>
+<p>Will iterate over the specified steps of the auxiliary (defaults to all
+steps). Allows to access all values in an auxiliary, including those out
+of the time range of the trajectory, without having to also iterate
+through the trajectory.</p>
+<p>After interation, the auxiliary will be repositioned at the current step.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Name of the auxiliary to iterate over.</p></li>
+<li><p><strong>(</strong><strong>start</strong> (<em>optional</em>) – Options for iterating over a slice of the auxiliary.</p></li>
+<li><p><strong>stop</strong> (<em>optional</em>) – Options for iterating over a slice of the auxiliary.</p></li>
+<li><p><strong>step</strong><strong>)</strong> (<em>optional</em>) – Options for iterating over a slice of the auxiliary.</p></li>
+<li><p><strong>selected</strong> (<em>lst</em><em> | </em><em>ndarray</em><em>, </em><em>optional</em>) – List of steps to iterate over.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Yields<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="../auxiliary/base.html#MDAnalysis.auxiliary.base.AuxStep" title="MDAnalysis.auxiliary.base.AuxStep"><code class="xref py py-class docutils literal notranslate"><span class="pre">AuxStep</span></code></a> object</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#MDAnalysis.coordinates.IMD.IMDReader.iter_as_aux" title="MDAnalysis.coordinates.IMD.IMDReader.iter_as_aux"><code class="xref py py-meth docutils literal notranslate"><span class="pre">iter_as_aux()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.IMD.IMDReader.n_frames">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_frames</span></span><a class="headerlink" href="#MDAnalysis.coordinates.IMD.IMDReader.n_frames" title="Link to this definition"></a></dt>
+<dd><p>Changes as stream is processed unlike other readers</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.IMD.IMDReader.next">
+<span class="sig-name descname"><span class="pre">next</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.IMD.IMDReader.next" title="Link to this definition"></a></dt>
+<dd><p>Advance to the next timestep in the streaming trajectory.</p>
+<p>Streaming readers process frames sequentially and cannot rewind
+once iteration completes. Use <code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">ts</span> <span class="pre">in</span> <span class="pre">trajectory</span></code> for iteration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The next timestep in the stream</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep">Timestep</a></p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#StopIteration" title="(in Python v3.14)"><strong>StopIteration</strong></a> – When the stream ends or no more frames are available</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.IMD.IMDReader.next_as_aux">
+<span class="sig-name descname"><span class="pre">next_as_aux</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">auxname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.IMD.IMDReader.next_as_aux" title="Link to this definition"></a></dt>
+<dd><p>Move to the next timestep for which there is at least one step from
+the auxiliary <em>auxname</em> within the cutoff specified in <em>auxname</em>.</p>
+<p>This allows progression through the trajectory without encountering
+<code class="docutils literal notranslate"><span class="pre">NaN</span></code> representative values (unless these are specifically part of the
+auxiliary data).</p>
+<p>If the auxiliary cutoff is not set, where auxiliary steps are less frequent
+(<code class="docutils literal notranslate"><span class="pre">auxiliary.dt</span> <span class="pre">&gt;</span> <span class="pre">trajectory.dt</span></code>), this allows progression at the
+auxiliary pace (rounded to nearest timestep); while if the auxiliary
+steps are more frequent, this will work the same as calling
+<a class="reference internal" href="#MDAnalysis.coordinates.IMD.IMDReader.next" title="MDAnalysis.coordinates.IMD.IMDReader.next"><code class="xref py py-meth docutils literal notranslate"><span class="pre">next()</span></code></a>.</p>
+<p>See the <a class="reference internal" href="../auxiliary/init.html#auxiliary-api"><span class="std std-ref">Auxiliary API</span></a>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#MDAnalysis.coordinates.IMD.IMDReader.iter_as_aux" title="MDAnalysis.coordinates.IMD.IMDReader.iter_as_aux"><code class="xref py py-meth docutils literal notranslate"><span class="pre">iter_as_aux()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.IMD.IMDReader.parse_n_atoms">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parse_n_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.IMD.IMDReader.parse_n_atoms" title="Link to this definition"></a></dt>
+<dd><p>Read the coordinate file and deduce the number of atoms</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>n_atoms</strong> – the number of atoms in the coordinate file</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a></p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.14)"><strong>NotImplementedError</strong></a> – when the number of atoms can’t be deduced</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.IMD.IMDReader.remove_auxiliary">
+<span class="sig-name descname"><span class="pre">remove_auxiliary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">auxname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.IMD.IMDReader.remove_auxiliary" title="Link to this definition"></a></dt>
+<dd><p>Clear data and close the <a class="reference internal" href="../auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader" title="MDAnalysis.auxiliary.base.AuxReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">AuxReader</span></code></a>
+for the auxiliary <em>auxname</em>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#MDAnalysis.coordinates.IMD.IMDReader.add_auxiliary" title="MDAnalysis.coordinates.IMD.IMDReader.add_auxiliary"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_auxiliary()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.IMD.IMDReader.rename_aux">
+<span class="sig-name descname"><span class="pre">rename_aux</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">auxname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.IMD.IMDReader.rename_aux" title="Link to this definition"></a></dt>
+<dd><p>Change the name of the auxiliary <em>auxname</em> to <em>new</em>.</p>
+<p>Provided there is not already an auxiliary named <em>new</em>, the auxiliary
+name will be changed in ts.aux namespace, the trajectory’s
+list of added auxiliaries, and in the auxiliary reader itself.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Name of the auxiliary to rename</p></li>
+<li><p><strong>new</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – New name to try set</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the name <em>new</em> is already in use by an existing auxiliary.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.IMD.IMDReader.rewind">
+<span class="sig-name descname"><span class="pre">rewind</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.IMD.IMDReader.rewind" title="Link to this definition"></a></dt>
+<dd><p>Rewinding is not supported for streaming trajectories.</p>
+<p>Streaming readers process data continuously from streams
+and cannot restart or go backward in the stream once consumed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.14)"><strong>RuntimeError</strong></a> – Always raised, as rewinding is not supported for streaming trajectories</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.IMD.IMDReader.set_aux_attribute">
+<span class="sig-name descname"><span class="pre">set_aux_attribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">auxname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attrname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.IMD.IMDReader.set_aux_attribute" title="Link to this definition"></a></dt>
+<dd><p>Set the value of <em>attrname</em> in the auxiliary <em>auxname</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Name of the auxiliary to alter</p></li>
+<li><p><strong>attrname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Name of settable attribute in the auxiliary reader</p></li>
+<li><p><strong>new</strong> – New value to try set <em>attrname</em> to</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#MDAnalysis.coordinates.IMD.IMDReader.get_aux_attribute" title="MDAnalysis.coordinates.IMD.IMDReader.get_aux_attribute"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_aux_attribute()</span></code></a>, <a class="reference internal" href="#MDAnalysis.coordinates.IMD.IMDReader.rename_aux" title="MDAnalysis.coordinates.IMD.IMDReader.rename_aux"><code class="xref py py-meth docutils literal notranslate"><span class="pre">rename_aux()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.IMD.IMDReader.time">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">time</span></span><a class="headerlink" href="#MDAnalysis.coordinates.IMD.IMDReader.time" title="Link to this definition"></a></dt>
+<dd><p>Time of the current frame in MDAnalysis time units (typically ps).</p>
+<p>This is either read straight from the Timestep, or calculated as
+time = <code class="xref py py-attr docutils literal notranslate"><span class="pre">Timestep.frame</span></code> * <code class="xref py py-attr docutils literal notranslate"><span class="pre">Timestep.dt</span></code></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.IMD.IMDReader.timeseries">
+<span class="sig-name descname"><span class="pre">timeseries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.IMD.IMDReader.timeseries" title="Link to this definition"></a></dt>
+<dd><p>Timeseries extraction is not supported for streaming trajectories.</p>
+<p>Streaming readers cannot randomly access frames or store bulk coordinate
+data in memory, which <code class="docutils literal notranslate"><span class="pre">timeseries()</span></code> requires. Use sequential frame
+iteration instead.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>**kwargs</strong> – Any keyword arguments (ignored, as method is not supported)</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.14)"><strong>RuntimeError</strong></a> – Always raised, as timeseries extraction is not supported for
+    streaming trajectories</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.IMD.IMDReader.totaltime">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">totaltime</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></em><a class="headerlink" href="#MDAnalysis.coordinates.IMD.IMDReader.totaltime" title="Link to this definition"></a></dt>
+<dd><p>Total length of the trajectory</p>
+<p>The time is calculated as <code class="docutils literal notranslate"><span class="pre">(n_frames</span> <span class="pre">-</span> <span class="pre">1)</span> <span class="pre">*</span> <span class="pre">dt</span></code>, i.e., we assume that
+the first frame no time as elapsed. Thus, a trajectory with two frames will
+be considered to have a length of a single time step <cite>dt</cite> and a
+“trajectory” with a single frame will be reported as length 0.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.IMD.IMDReader.transformations">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">transformations</span></span><a class="headerlink" href="#MDAnalysis.coordinates.IMD.IMDReader.transformations" title="Link to this definition"></a></dt>
+<dd><p>Returns the list of transformations</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.IMD.IMDReader.units">
+<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">None,</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.IMD.IMDReader.units" title="Link to this definition"></a></dt>
+<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
+… for formats that support it)</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="H5MD.html" class="btn btn-neutral float-left" title="7.9. H5MD trajectories — MDAnalysis.coordinates.H5MD" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="INPCRD.html" class="btn btn-neutral float-right" title="7.11. INPCRD structure files in MDAnalysis — MDAnalysis.coordinates.INPCRD" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2005-2025, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Pavel Buslaev, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Matthew Davies, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Abdulrahman Elbanna, Gareth Elliott, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, BHM-Bob G, Sirsha Ganguly, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Alia Lescoulie, Zhenbo Li, Max Linke, Philip Loche, Raúl Lois-Cuns, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Kurt McKee, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Debasish Mohanty, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Namir Oues, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, James Rowe, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marc Schuh, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Laksh Krishna Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Brigitta Sipőcz, Paul Smith, Tulga-Erdene Sodjargal, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Amruthesh Thirumalaiswamy, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Joshua Raphael Uy, Heet Vekariya, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Lexi Xu, Zhuyi Xue, Mingyi Xue, Alexander Yang, Yu-Yuan (Stuart) Yang, Tanish Yelgoe, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Ch Zhang, Raymond Zhao, Jia-Xin Zhu, Yuxuan Zhuang, Fabian Zills, and Oliver Beckstein.</p>
+  </div>
+
+  
+
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
+
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        2.10.0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

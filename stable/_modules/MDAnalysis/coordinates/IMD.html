@@ -1,0 +1,536 @@
+
+
+
+  
+    
+  
+
+
+
+
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.9.1/css/academicons.min.css" integrity="sha512-b1ASx0WHgVFL5ZQhTgiPWX+68KjS38Jk87jg7pe+qC7q9YkEtFq0z7xCglv7qGIs/68d3mAp+StfC8WKC5SSAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="shortcut icon" href="../../../_static/logo/mda_favicon.ico">
+</head>
+
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MDAnalysis.coordinates.IMD &mdash; MDAnalysis 2.10.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/site.css" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=67920a36"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/js/versions.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 2.10.0 documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+
+
+  
+
+
+
+
+<a href="../../../index.html">
+  
+    <img src="../../../_static/logo/mda_logo.png" class="logo" alt="Logo"/>
+</a>
+
+
+  
+  
+  
+    <div class="version">
+      2.10.0
+    </div>
+  
+
+
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+        </div>
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+    
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdanalysis.org">MDAnalysis</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://userguide.mdanalysis.org">User guide</a></li>
+        
+        <li class="toctree-l1"><a class="reference internal" href="https://mdakits.mdanalysis.org/">MDAKits</a></li>
+        
+    </ul>
+    
+        <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview of MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/guesser_modules.html">6. Guesser modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">7. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">8. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">9. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">10. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">11. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">12. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">13. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">14. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">15. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">16. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">17. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">18. References</a></li>
+</ul>
+
+</div>
+
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">MDAnalysis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">MDAnalysis.coordinates.IMD</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for MDAnalysis.coordinates.IMD</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">IMDReader --- :mod:`MDAnalysis.coordinates.IMD`</span>
+<span class="sd">^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span>
+
+<span class="sd">This module provides support for reading molecular dynamics simulation data via the </span>
+<span class="sd">`Interactive Molecular Dynamics (IMD) protocol v3 &lt;https://imdclient.readthedocs.io/en/latest/protocol_v3.html&gt;`_.</span>
+<span class="sd">The IMD protocol allows two-way communicating molecular simulation data through a socket.</span>
+<span class="sd">Via IMD, a simulation engine sends data to a receiver (in this case, the IMDClient) and the receiver can send forces and specific control</span>
+<span class="sd">requests (such as pausing, resuming, or terminating the simulation) back to the simulation engine. </span>
+
+<span class="sd">.. note::</span>
+<span class="sd">   This reader only supports IMDv3, which is implemented in GROMACS, LAMMPS, and NAMD at varying</span>
+<span class="sd">   stages of development. See the `imdclient simulation engine docs`_ for more. </span>
+<span class="sd">   While IMDv2 is widely available in simulation engines, it was designed primarily for visualization</span>
+<span class="sd">   and gaps are allowed in the stream (i.e., an inconsistent number of integrator time steps between transmitted coordinate arrays is allowed)</span>
+
+<span class="sd">The :class:`IMDReader` connects to a simulation via a socket and receives coordinate,</span>
+<span class="sd">velocity, force, and energy data as the simulation progresses. This allows for real-time</span>
+<span class="sd">monitoring and analysis of ongoing simulations. It uses the `imdclient package &lt;https://github.com/Becksteinlab/imdclient&gt;`_ </span>
+<span class="sd">(dependency) to implement the IMDv3 protocol and manage the socket connection and data parsing.</span>
+
+<span class="sd">.. seealso::</span>
+<span class="sd">   :class:`IMDReader`</span>
+<span class="sd">      Technical details and parameter options for the reader class</span>
+<span class="sd">   </span>
+<span class="sd">   `imdclient documentation &lt;https://imdclient.readthedocs.io/&gt;`_</span>
+<span class="sd">      Complete documentation for the IMDClient package</span>
+<span class="sd">      </span>
+<span class="sd">   `IMDClient GitHub repository &lt;https://github.com/Becksteinlab/imdclient&gt;`_</span>
+<span class="sd">      Source code and development resources</span>
+
+<span class="sd">.. _`imdclient simulation engine docs`: https://imdclient.readthedocs.io/en/latest/usage.html</span>
+
+<span class="sd">Usage Example</span>
+<span class="sd">-------------</span>
+
+<span class="sd">As an example of reading a stream, after configuring GROMACS to run a simulation with IMDv3 enabled</span>
+<span class="sd">(see the `imdclient simulation engine docs`_ for </span>
+<span class="sd">up-to-date resources on configuring each simulation engine), use the following commands:</span>
+
+<span class="sd">.. code-block:: bash</span>
+
+<span class="sd">    gmx mdrun -v -nt 4 -imdwait -imdport 8889</span>
+
+<span class="sd">The :class:`~MDAnalysis.coordinates.IMD.IMDReader` can then connect to the running simulation and stream data in real time:</span>
+
+<span class="sd">.. code-block:: python</span>
+
+<span class="sd">    import MDAnalysis as mda</span>
+<span class="sd">    u = mda.Universe(&quot;topol.tpr&quot;, &quot;imd://localhost:8889&quot;, buffer_size=10*1024*1024)</span>
+
+<span class="sd">    print(&quot;    time [         position         ] [         velocity         ] [           force          ] [            box           ]&quot;)</span>
+<span class="sd">    sel = u.select_atoms(&quot;all&quot;)  # Select all atoms; adjust selection as needed</span>
+<span class="sd">    for ts in u.trajectory:</span>
+<span class="sd">        print(f&#39;{ts.time:8.3f} {sel[0].position} {sel[0].velocity} {sel[0].force} {u.dimensions[0:3]}&#39;)</span>
+
+<span class="sd">.. important::</span>
+<span class="sd">   **Jupyter Notebook Users**: When using IMDReader in Jupyter notebooks, be aware that </span>
+<span class="sd">   **kernel restarts will not gracefully close active IMD connections**. This can leave </span>
+<span class="sd">   socket connections open, potentially preventing new connections to the same stream.</span>
+
+<span class="sd">   Always use ``try/except/finally`` blocks to ensure proper cleanup:</span>
+
+<span class="sd">   .. code-block:: python</span>
+
+<span class="sd">       import MDAnalysis as mda</span>
+<span class="sd">       </span>
+<span class="sd">       try:</span>
+<span class="sd">           u = mda.Universe(&quot;topol.tpr&quot;, &quot;imd://localhost:8889&quot;)</span>
+<span class="sd">       except Exception as e:</span>
+<span class="sd">           print(f&quot;Error during connection: {e}&quot;)</span>
+<span class="sd">       else:</span>
+<span class="sd">           try:</span>
+<span class="sd">               # Your analysis code here</span>
+<span class="sd">               for ts in u.trajectory:</span>
+<span class="sd">                   # Process each frame</span>
+<span class="sd">                   pass</span>
+<span class="sd">           finally:</span>
+<span class="sd">               # Ensure connection is closed</span>
+<span class="sd">               u.trajectory.close()</span>
+
+<span class="sd">   Always explicitly call ``u.trajectory.close()`` when finished with analysis to </span>
+<span class="sd">   ensure connection is closed properly.</span>
+
+<span class="sd">Important Limitations</span>
+<span class="sd">---------------------</span>
+
+<span class="sd">.. warning::  </span>
+<span class="sd">   The IMDReader has some important limitations that are inherent in streaming data.  </span>
+
+<span class="sd">Since IMD streams data in real-time from a running simulation, it has fundamental </span>
+<span class="sd">constraints that differ from traditional trajectory readers:</span>
+
+<span class="sd">* **No random access**: Cannot jump to arbitrary frame numbers or seek backwards  </span>
+<span class="sd">* **Forward-only access**: You can only move forward through frames as they arrive</span>
+<span class="sd">* **No trajectory length**: The total number of frames is unknown until the simulation ends</span>
+<span class="sd">* **Single-use iteration**: Cannot restart or rewind once the stream has been consumed</span>
+<span class="sd">* **No independent copies**: Cannot create separate reader instances for the same stream</span>
+<span class="sd">* **No stream restart**: Cannot reconnect or reopen once the connection is closed</span>
+<span class="sd">* **No bulk operations**: Cannot extract all data at once using timeseries methods</span>
+<span class="sd">* **Limited multiprocessing**: Cannot split reader across processes for parallel analysis</span>
+<span class="sd">* **Single client connection**: Only one reader can connect to an IMD stream at a time</span>
+<span class="sd">* **No trajectory Writing**: Complimentary IMD Writer class is not available for streaming data</span>
+
+<span class="sd">.. seealso::</span>
+<span class="sd">   See :class:`~MDAnalysis.coordinates.base.StreamReaderBase` for technical details.</span>
+
+<span class="sd">Multiple Client Connections</span>
+<span class="sd">---------------------------</span>
+
+<span class="sd">The ability to establish multiple simultaneous connections to the same IMD port is </span>
+<span class="sd">**MD engine implementation dependent**. Some simulation engines may allow multiple </span>
+<span class="sd">clients to connect concurrently, while others may reject or fail additional connection </span>
+<span class="sd">attempts.</span>
+
+<span class="sd">See the `imdclient simulation engine docs`_ for further details. </span>
+
+<span class="sd">.. important::</span>
+<span class="sd">   Even when multiple connections are supported by the simulation engine, each connection </span>
+<span class="sd">   receives its own independent data stream. These streams may contain different data </span>
+<span class="sd">   depending on the simulation engine&#39;s configuration, so multiple connections should </span>
+<span class="sd">   not be assumed to provide identical data streams.</span>
+
+<span class="sd">Classes</span>
+<span class="sd">-------</span>
+
+<span class="sd">.. autoclass:: IMDReader</span>
+<span class="sd">   :members:</span>
+<span class="sd">   :inherited-members:</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.coordinates</span><span class="w"> </span><span class="kn">import</span> <span class="n">core</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.lib.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">store_init_arguments</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.coordinates.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">StreamReaderBase</span>
+
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">packaging.version</span><span class="w"> </span><span class="kn">import</span> <span class="n">Version</span>
+
+<span class="n">MIN_IMDCLIENT_VERSION</span> <span class="o">=</span> <span class="n">Version</span><span class="p">(</span><span class="s2">&quot;0.2.2&quot;</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">imdclient</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">imdclient.IMDClient</span><span class="w"> </span><span class="kn">import</span> <span class="n">IMDClient</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">imdclient.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_host_port</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">HAS_IMDCLIENT</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">imdclient_version</span> <span class="o">=</span> <span class="n">Version</span><span class="p">(</span><span class="s2">&quot;0.0.0&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Allow building documentation without imdclient</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">types</span>
+
+    <span class="k">class</span><span class="w"> </span><span class="nc">MockIMDClient</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="n">imdclient</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">ModuleType</span><span class="p">(</span><span class="s2">&quot;imdclient&quot;</span><span class="p">)</span>
+    <span class="n">imdclient</span><span class="o">.</span><span class="n">IMDClient</span> <span class="o">=</span> <span class="n">MockIMDClient</span>
+    <span class="n">imdclient</span><span class="o">.</span><span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;0.0.0&quot;</span>
+
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">HAS_IMDCLIENT</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">imdclient_version</span> <span class="o">=</span> <span class="n">Version</span><span class="p">(</span><span class="n">imdclient</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+
+    <span class="c1"># Check for compatibility: currently needs to be &gt;=0.2.2</span>
+    <span class="k">if</span> <span class="n">imdclient_version</span> <span class="o">&lt;</span> <span class="n">MIN_IMDCLIENT_VERSION</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;imdclient version </span><span class="si">{</span><span class="n">imdclient_version</span><span class="si">}</span><span class="s2"> is too old; &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;need at least </span><span class="si">{</span><span class="n">MIN_IMDCLIENT_VERSION</span><span class="si">}</span><span class="s2">, Your installed version of &quot;</span>
+            <span class="s2">&quot;imdclient will NOT be used.&quot;</span><span class="p">,</span>
+            <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">HAS_IMDCLIENT</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.coordinates.IMDReader&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="IMDReader">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/IMD.html#MDAnalysis.coordinates.IMD.IMDReader">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">IMDReader</span><span class="p">(</span><span class="n">StreamReaderBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Coordinate reader implementing the IMDv3 protocol for streaming simulation data.</span>
+
+<span class="sd">    This class handles the technical aspects of connecting to IMD-enabled simulation</span>
+<span class="sd">    engines and processing the incoming data stream. For usage examples and protocol</span>
+<span class="sd">    overview, see the module documentation above.</span>
+
+<span class="sd">    The reader manages socket connections, data buffering, and frame parsing according</span>
+<span class="sd">    to the IMDv3 specification. It automatically handles different data packet types</span>
+<span class="sd">    (coordinates, velocities, forces, energies, timing) and populates MDAnalysis</span>
+<span class="sd">    timestep objects accordingly.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : a string of the form &quot;imd://host:port&quot; where host is the hostname</span>
+<span class="sd">        or IP address of the listening simulation engine&#39;s IMD server and port</span>
+<span class="sd">        is the port number.</span>
+<span class="sd">    n_atoms : int (optional)</span>
+<span class="sd">        number of atoms in the system. defaults to number of atoms</span>
+<span class="sd">        in the topology. Don&#39;t set this unless you know what you&#39;re doing.</span>
+<span class="sd">    buffer_size: int (optional) default=10*(1024**2)</span>
+<span class="sd">        number of bytes of memory to allocate to the :class:`~imdclient.IMDClient.IMDClient`&#39;s</span>
+<span class="sd">        internal buffer. Defaults to 10 megabytes. Larger buffers can improve</span>
+<span class="sd">        performance for analyses with periodic heavy computation.</span>
+<span class="sd">    **kwargs : dict (optional)</span>
+<span class="sd">        keyword arguments passed to the constructed :class:`~imdclient.IMDClient.IMDClient`</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The IMDReader provides access to additional simulation data through the timestep&#39;s</span>
+<span class="sd">    `data` attribute (`ts.data`). The following keys may be available depending on</span>
+<span class="sd">    what the simulation engine transmits:</span>
+
+<span class="sd">    * `dt` : float</span>
+<span class="sd">        Time step size in picoseconds (from the `IMD_TIME`_ packet of the IMDv3 protocol)</span>
+<span class="sd">    * `step` : int</span>
+<span class="sd">        Current simulation step number (from the `IMD_TIME`_ packet of the IMDv3 protocol)</span>
+<span class="sd">    * Energy terms : float</span>
+<span class="sd">        Various energy components (e.g., &#39;potential&#39;, &#39;kinetic&#39;, &#39;total&#39;, etc.)</span>
+<span class="sd">        from the `IMD_ENERGIES`_ packet of the IMDv3 protocol.</span>
+
+<span class="sd">    .. _IMD_TIME: https://imdclient.readthedocs.io/en/latest/protocol_v3.html#time</span>
+<span class="sd">    .. _IMD_ENERGIES: https://imdclient.readthedocs.io/en/latest/protocol_v3.html#energies</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">       For important limitations inherent to streaming data, see the module documentation above</span>
+<span class="sd">       and :class:`~MDAnalysis.coordinates.base.StreamReaderBase` for more technical details.</span>
+
+<span class="sd">    .. versionadded:: 2.10.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;IMD&quot;</span>
+
+    <span class="nd">@store_init_arguments</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">filename</span><span class="p">,</span>
+        <span class="n">n_atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">buffer_size</span><span class="o">=</span><span class="mi">10</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1024</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">HAS_IMDCLIENT</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+                <span class="s2">&quot;IMDReader requires the imdclient package. &quot;</span>
+                <span class="s2">&quot;Please install it with &#39;pip install imdclient&#39;.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">IMDReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_imdclient</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;IMDReader initializing&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">n_atoms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;IMDReader: n_atoms must be specified&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="n">n_atoms</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">host</span><span class="p">,</span> <span class="n">port</span> <span class="o">=</span> <span class="n">parse_host_port</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;IMDReader: Invalid IMD URL &#39;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># This starts the simulation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_imdclient</span> <span class="o">=</span> <span class="n">IMDClient</span><span class="p">(</span>
+            <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="n">buffer_size</span><span class="o">=</span><span class="n">buffer_size</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
+
+        <span class="n">imdsinfo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_imdclient</span><span class="o">.</span><span class="n">get_imdsessioninfo</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">imdsinfo</span><span class="o">.</span><span class="n">version</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;IMDReader: Detected IMD version v</span><span class="si">{</span><span class="n">imdsinfo</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">, &quot;</span>
+                <span class="o">+</span> <span class="s2">&quot;but IMDReader is only compatible with v3&quot;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span>
+            <span class="n">positions</span><span class="o">=</span><span class="n">imdsinfo</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+            <span class="n">velocities</span><span class="o">=</span><span class="n">imdsinfo</span><span class="o">.</span><span class="n">velocities</span><span class="p">,</span>
+            <span class="n">forces</span><span class="o">=</span><span class="n">imdsinfo</span><span class="o">.</span><span class="n">forces</span><span class="p">,</span>
+            <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts_kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">EOFError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;IMDReader: Read error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_read_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+
+        <span class="n">imdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_imdclient</span><span class="o">.</span><span class="n">get_imdframe</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">=</span> <span class="n">frame</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load_imdframe_into_ts</span><span class="p">(</span><span class="n">imdf</span><span class="p">)</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;IMDReader: Loaded frame </span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_load_imdframe_into_ts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imdf</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span>
+        <span class="k">if</span> <span class="n">imdf</span><span class="o">.</span><span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">imdf</span><span class="o">.</span><span class="n">time</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;dt&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">imdf</span><span class="o">.</span><span class="n">dt</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">imdf</span><span class="o">.</span><span class="n">step</span>
+        <span class="k">if</span> <span class="n">imdf</span><span class="o">.</span><span class="n">energies</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">imdf</span><span class="o">.</span><span class="n">energies</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s2">&quot;step&quot;</span><span class="p">}</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">imdf</span><span class="o">.</span><span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">triclinic_box</span><span class="p">(</span><span class="o">*</span><span class="n">imdf</span><span class="o">.</span><span class="n">box</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">imdf</span><span class="o">.</span><span class="n">positions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># must call copy because reference is expected to reset</span>
+            <span class="c1"># see &#39;test_frame_collect_all_same&#39; in MDAnalysisTests.coordinates.base</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">copyto</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">imdf</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">imdf</span><span class="o">.</span><span class="n">velocities</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">copyto</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">velocities</span><span class="p">,</span> <span class="n">imdf</span><span class="o">.</span><span class="n">velocities</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">imdf</span><span class="o">.</span><span class="n">forces</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">copyto</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">forces</span><span class="p">,</span> <span class="n">imdf</span><span class="o">.</span><span class="n">forces</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_format_hint</span><span class="p">(</span><span class="n">thing</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">thing</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="c1"># a weaker check for type hint</span>
+        <span class="k">if</span> <span class="n">thing</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;imd://&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="IMDReader.close">
+<a class="viewcode-back" href="../../../documentation_pages/coordinates/IMD.html#MDAnalysis.coordinates.IMD.IMDReader.close">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gracefully shut down the reader. Stops the producer thread.&quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;IMDReader close() called&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_imdclient</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_imdclient</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;IMDReader shut down gracefully.&quot;</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2005-2025, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Henok Ademtew, Shobhit Agarwal, Aya M. Alaa, Irfan Alibay, Kazi Shudipto Amin, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Patricio Barletta, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Kavya Bisht, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Meet Brijwani, Bart Bruininks, Sébastien Buchoux, Pavel Buslaev, Sören von Bülow, Yantong Cai, David Caplan, Yuanyu Chang, Pratham Chauhan, Matthieu Chavent, Haochuan Chen, Xu Hong Chen, Kathleen Clark, Jennifer A Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Matthew Davies, Robert Delgado, John Detlefs, Xavier Deupi, Bradley Dice, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Abdulrahman Elbanna, Gareth Elliott, Daniel J. Evans, Shujie Fan, Bjarne Feddersen, Lennard van der Feltz, Jake Fennick, Philip Fowler, Guillaume Fraux, Anirvinya G, BHM-Bob G, Sirsha Ganguly, Michael Gecht, Ahmed Salah Ghoneim, Mikhail Glagolev, William Glass, Jenna M. Swarthout Goddard, Joseph Goose, Alexander Gorfer, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Pratik Gupta, Sumit Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Uma D Kadam, Aditya Kamath, Jon Kapla, Ian M. Kenney, Aditya Keshari, Haleema Khan, Navya Khare, Utsav Khatu, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Atharva Kulkarni, Manish Kumar, Mohit Kumar, Shubham Kumar, Alia Lescoulie, Zhenbo Li, Max Linke, Philip Loche, Raúl Lois-Cuns, Jinju Lu, Hugo MacDermott-Opeskin, Shaivi Malik, Egor Marin, Domenico Marson, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Kurt McKee, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, David Minh, Debasish Mohanty, Geongi Moon, Sampurna Mukherjee, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Meghan Osato, Namir Oues, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Rafael R. Pappalardo, Vishal Parmar, Danny Parton, Shakul Pathak, Christian Pfaendner, Joshua L. Phillips, Marcelo D. Poleto, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, James Rowe, Xiaoxu Ruan, Carlos Yanez S., Utkarsh Saxena, Moritz Schaeffler, Alexander Schlaich, Marc Schuh, Marcello Sega, Ricky Sexton, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Laksh Krishna Sharma, Rishabh Shukla, Karthikeyan Singaravelan, Tamandeep Singh, Brigitta Sipőcz, Paul Smith, Tulga-Erdene Sodjargal, Andy Somogyi, Caio S. Souza, Kai Niklas Spauszus, David van der Spoel, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Philipp Stärk, Johannes Stöckelmaier, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Sukeerti T, Matthijs Tadema, Valerij Talagayev, Joao Miguel Correia Teixeira, Paarth Thadani, Amruthesh Thirumalaiswamy, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Zaheer Timol, Wiep van der Toorn, Mieczyslaw Torchala, Aditi Tripathi, Joshua Raphael Uy, Heet Vekariya, Mark Verma, Josh Vermaas, Isaac Virshup, Lily Wang, Leon Wehrhan, Nestor Wendt, Lawson Woods, Zhiyi Wu, Tengyu Xie, Lexi Xu, Zhuyi Xue, Mingyi Xue, Alexander Yang, Yu-Yuan (Stuart) Yang, Tanish Yelgoe, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Ch Zhang, Raymond Zhao, Jia-Xin Zhu, Yuxuan Zhuang, Fabian Zills, and Oliver Beckstein.</p>
+  </div>
+
+  
+
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
+
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        2.10.0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
