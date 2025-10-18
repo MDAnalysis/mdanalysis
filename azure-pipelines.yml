@@ -100,12 +100,10 @@ jobs:
       python -m pip install numpy==$(NUMPY_MIN)
     displayName: 'pin to older NumPy (wheel test)'
     condition: and(succeeded(), ne(variables['NUMPY_MIN'], ''))
-  # Disabled PyTNG checking, see issue #5123
-  # TODO: add pytng>=0.2.3 back once resolved
   - script: >-
       python -m pip install -vvv
       biopython
-      "chemfiles>=0.10,<0.10.4"
+      chemfiles>=0.10
       duecredit
       joblib
       GridDataFormats
@@ -115,6 +113,7 @@ jobs:
       rdkit>=2024.03.4
       tidynamics>=1.0.0
       imdclient>=0.2.2
+      pytng>=0.3.4
 
     # remove from azure to avoid test hanging #4707
     # "gsd>3.0.0"
