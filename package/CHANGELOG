@@ -14,13 +14,16 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay
+??/??/?? IAlibay, jauy123, BradyAJohnston
 
  * 2.11.0
 
 Fixes
 
 Enhancements
+* Added new function `PDBParser.fetch_pdb` to download structure files from wwPDB
+   using `pooch` as optional dependency. This can be used to interactively create
+   `Universe` classes on the fly. (Issue #4907, PR #4943)  
 
 Changes
 
