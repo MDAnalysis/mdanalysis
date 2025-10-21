@@ -21,39 +21,39 @@ jobs:
     MPLBACKEND: agg
   strategy:
     matrix:
-        Win-Python310-64bit-full:
-          PYTHON_VERSION: '3.10'
+        Win-Python311-64bit-full:
+          PYTHON_VERSION: '3.11'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'normal'
           imageName: 'windows-2019'
-        Win-Python312-64bit-full:
-          PYTHON_VERSION: '3.12'
+        Win-Python313-64bit-full:
+          PYTHON_VERSION: '3.13'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'normal'
           imageName: 'windows-2019'
-        Win-Python312-64bit-full-wheel:
-          PYTHON_VERSION: '3.12'
+        Win-Python313-64bit-full-wheel:
+          PYTHON_VERSION: '3.13'
+          PYTHON_ARCH: 'x64'
+          BUILD_TYPE: 'wheel'
+          NUMPY_MIN: '2.1.0'
+          imageName: 'windows-2019'
+        Win-Python311-64bit-full-wheel:
+          PYTHON_VERSION: '3.11'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
           NUMPY_MIN: '1.26.0'
           imageName: 'windows-2019'
-        Win-Python310-64bit-full-wheel:
-          PYTHON_VERSION: '3.10'
-          PYTHON_ARCH: 'x64'
-          BUILD_TYPE: 'wheel'
-          NUMPY_MIN: '1.23.2'
-          imageName: 'windows-2019'
-        Linux-Python312-64bit-full-wheel:
-          PYTHON_VERSION: '3.12'
+        Linux-Python313-64bit-full-wheel:
+          PYTHON_VERSION: '3.13'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
           NUMPY_MIN: '2.1.0'
           imageName: 'ubuntu-latest'
-        Linux-Python310-64bit-full-wheel:
-          PYTHON_VERSION: '3.10'
+        Linux-Python311-64bit-full-wheel:
+          PYTHON_VERSION: '3.11'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
-          NUMPY_MIN: '1.23.2'
+          NUMPY_MIN: '1.26.0'
           imageName: 'ubuntu-latest'
   pool:
     vmImage: $(imageName)
@@ -103,16 +103,18 @@ jobs:
   - script: >-
       python -m pip install -vvv
       biopython
-      "chemfiles>=0.10,<0.10.4"
+      chemfiles>=0.10
       duecredit
       joblib
       GridDataFormats
       mmtf-python
       networkx
       parmed
-      pytng>=0.2.3
       rdkit>=2024.03.4
       tidynamics>=1.0.0
+      imdclient>=0.2.2
+      pytng>=0.3.4
+
     # remove from azure to avoid test hanging #4707
     # "gsd>3.0.0"
     displayName: 'Install additional dependencies for 64-bit tests'

@@ -349,4 +349,5 @@ intersphinx_mapping = {
     "pathsimanalysis": ("https://www.mdanalysis.org/PathSimAnalysis/", None),
     "mdahole2": ("https://www.mdanalysis.org/mdahole2/", None),
     "dask": ("https://docs.dask.org/en/stable/", None),
+    "imdclient": ("https://imdclient.readthedocs.io/en/stable/", None),
 }
