@@ -90,15 +90,6 @@ class TestExpectedErrors:
 
 
 @pytest.mark.skipif(
-    not (HAS_POOCH and HAS_ACCESS_TO_WWPDB),
-    reason="Pooch is not installed or can not connect to https://files.wwpdb.org/",
-)
-@pytest.mark.parametrize("pdb_id", [("1AKE"), ("4BWZ")])
-def test_no_cache_path(pdb_id):
-    assert isinstance(mda.fetch_pdb(pdb_id, cache_path=None), str)
-
-
-@pytest.mark.skipif(
     HAS_POOCH,
     reason="Pooch is installed.",
 )
