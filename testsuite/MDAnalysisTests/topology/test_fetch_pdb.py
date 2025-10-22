@@ -38,9 +38,10 @@ except request.URLError:
     HAS_ACCESS_TO_WWPDB = False
 
 
+@pytest.mark.skipif(not HAS_POOCH, reason="Pooch is not installed.")
 @pytest.mark.skipif(
-    not (HAS_POOCH and HAS_ACCESS_TO_WWPDB),
-    reason="Pooch is not installed or can not connect to https://files.wwpdb.org/",
+    not HAS_ACCESS_TO_WWPDB,
+    reason="Can not connect to https://files.wwpdb.org/",
 )
 class TestDocstringExamples:
     """This class tests all the examples found in fetch_pdb's docstring"""
@@ -72,9 +73,10 @@ class TestDocstringExamples:
         assert isinstance(u, mda.Universe) and (len(u.atoms) == n_atoms)
 
 
+@pytest.mark.skipif(not HAS_POOCH, reason="Pooch is not installed.")
 @pytest.mark.skipif(
-    not (HAS_POOCH and HAS_ACCESS_TO_WWPDB),
-    reason="Pooch is not installed or can not connect to https://files.wwpdb.org/",
+    not HAS_ACCESS_TO_WWPDB,
+    reason="Can not connect to https://files.wwpdb.org/",
 )
 class TestExpectedErrors:
 
@@ -89,9 +91,10 @@ class TestExpectedErrors:
             )
 
 
+@pytest.mark.skipif(not HAS_POOCH, reason="Pooch is not installed.")
 @pytest.mark.skipif(
-    not (HAS_POOCH and HAS_ACCESS_TO_WWPDB),
-    reason="Pooch is not installed or can not connect to https://files.wwpdb.org/",
+    not HAS_ACCESS_TO_WWPDB,
+    reason="Can not connect to https://files.wwpdb.org/",
 )
 @pytest.mark.parametrize("pdb_id", [("1AKE"), ("4BWZ")])
 def test_no_cache_path(pdb_id):
