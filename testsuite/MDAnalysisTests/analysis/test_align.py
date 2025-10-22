@@ -820,4 +820,5 @@ def test_alignto_reorder_atomgroups():
     mobile = u.atoms[:4]
     ref = u.atoms[[3, 2, 1, 0]]
     rmsd = align.alignto(mobile, ref, select="bynum 1-4")
+    # ensure tuple of zeros matches exactly
     assert_allclose(rmsd, (0.0, 0.0))
