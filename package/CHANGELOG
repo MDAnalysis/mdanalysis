@@ -21,9 +21,9 @@ The rules for this file:
 Fixes
 
 Enhancements
-* Added new function `PDBParser.fetch_pdb` to download structure files from wwPDB
-   using `pooch` as optional dependency. This can be used to interactively create
-   `Universe` classes on the fly. (Issue #4907, PR #4943)  
+* Added function `topology.PDBParser.fetch_pdb` (accessible as
+  `MDAnalysis.fetch_pdb()`) to download structure files from wwPDB using
+  `pooch` as optional dependency (Issue #4907, PR #4943) 
 
 Changes
 

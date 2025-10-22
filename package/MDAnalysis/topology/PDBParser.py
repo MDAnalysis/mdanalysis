@@ -561,7 +561,8 @@ def fetch_pdb(
     cache_path : str or pathlib.Path
         Directory where downloaded file(s) will be cached.
     file_format : str
-        The file extension/format to download (e.g., "cif", "pdb")
+        The file extension/format to download (e.g., "cif", "pdb").
+        See the Notes section below for a list of all supported file formats.
     progressbar : bool, optional
         If True, display a progress bar during file downloads. Default is False.
 
@@ -582,9 +583,15 @@ def fetch_pdb(
     
     Notes
     -----
-    This function downloads using the API established here at https://www.rcsb.org/docs/programmatic-access/file-download-services.
+    This function uses the `RCSB File Download Services`_ for directly downloading
+    structure files via https.
+    
+    .. _`RCSB File Download Services`: 
+       https://www.rcsb.org/docs/programmatic-access/file-download-services
 
-    Currently supported file formats (per the API) are ('cif', 'cif.gz', 'bcif', 'bcif.gz', 'xml', 'xml.gz', 'pdb', 'pdb.gz', 'pdb1', 'pdb1.gz')
+    The RCSB currently provides data in 'cif', 'cif.gz', 'bcif', 'bcif.gz', 'xml',
+    'xml.gz', 'pdb', 'pdb.gz', 'pdb1', 'pdb1.gz' file formats and can therefore be
+    downloaded. Not all of these formats can be currently read with MDAnalysis.
 
     Examples
     --------
@@ -603,11 +610,13 @@ def fetch_pdb(
     >>> mda.Universe(mda.fetch_pdb("1AKE"), file_format="pdb.gz")
     <Universe with 3816 atoms>
 
-    Download multiple PDB files and converting them to a universe:
+    Download multiple PDB files and convert each of them into a universe:
 
     >>> [mda.Universe(mda.fetch_pdb(pdb_id), file_format="pdb.gz") for pdb_id in ("1AKE", "4BWZ")]
     [<Universe with 3816 atoms>, <Universe with 2824 atoms>]
 
+    
+    .. versionadded:: 2.11.0
     """
 
     if not HAS_POOCH:
@@ -627,7 +636,8 @@ def fetch_pdb(
     if cache_path is None:
         cache_path = pooch.os_cache("MDAnalysis_pdbs")
 
-    # Have to do this dictionary approach instead of using Pooch.retrieve in order to prevent the hardcoded known_hash warning from showing up.
+    # Have to do this dictionary approach instead of using pooch.retrieve in order
+    # to prevent the hardcoded known_hash warning from showing up.
     registry_dictionary = {
         f"{pdb_id}.{file_format}": None for pdb_id in _pdb_ids
     }
