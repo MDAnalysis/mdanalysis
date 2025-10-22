@@ -568,12 +568,12 @@ def fetch_pdb(
     Download a single PDB file:
 
     >>> mda.fetch_pdb("1AKE", file_format="cif")
-    './pdb_cache/1AKE.cif'
+    './MDAnalysis_pdbs/1AKE.cif'
 
     Download multiple PDB files with a progress bar:
 
     >>> mda.fetch_pdb(["1AKE", "4BWZ"], progressbar=True)
-    ['./pdb_cache/1AKE.pdb.gz', './pdb_cache/4BWZ.pdb.gz']
+    ['./MDAnalysis_pdbs/1AKE.pdb.gz', './MDAnalysis_pdbs/4BWZ.pdb.gz']
 
     Download a single PDB file and converting it to a universe:
 
@@ -596,7 +596,7 @@ def fetch_pdb(
         PDB_IDS = (PDB_IDS,)
 
     if cache_path is None:
-        cache_path = pooch.os_cache("pdb_cache")
+        cache_path = pooch.os_cache("MDAnalysis_pdbs")
 
     # Have to do this dictionary approach instead of using Pooch.retrieve in order to prevent the hardcoded known_hash warning from showing up.
     registry_dictionary = {
