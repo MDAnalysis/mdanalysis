@@ -104,16 +104,16 @@ else:
 
 # These file formats are here (https://www.rcsb.org/docs/programmatic-access/file-download-services) under "PDB entry files"
 SUPPORTED_FILE_FORMATS_DOWNLOADER = (
-    'cif',
-    'cif.gz',
-    'bcif',
-    'bcif.gz',
-    'xml',
-    'xml.gz',
-    'pdb',
-    'pdb.gz',
-    'pdb1',
-    'pdb1.gz',
+    "cif",
+    "cif.gz",
+    "bcif",
+    "bcif.gz",
+    "xml",
+    "xml.gz",
+    "pdb",
+    "pdb.gz",
+    "pdb1",
+    "pdb1.gz",
 )
 
 
@@ -537,6 +537,7 @@ def _parse_conect(conect):
                   range(n_bond_atoms))
     return atom_id, bond_atoms
 
+
 def fetch_pdb(
     PDB_IDS=None,
     cache_path=None,
@@ -576,7 +577,6 @@ def fetch_pdb(
 
     requests.exceptions.HTTPError
         If an invalid PDB code or file format is specified.
-    
     Notes
     -----
     This function downloads using the API established here at https://www.rcsb.org/docs/programmatic-access/file-download-services.
@@ -606,13 +606,15 @@ def fetch_pdb(
     [<Universe with 3816 atoms>, <Universe with 2824 atoms>]
 
     """
-  
+
     if not HAS_POOCH:
         raise ModuleNotFoundError(
             "pooch is needed as a dependency for fetch_pdb()"
         )
     elif file_format not in SUPPORTED_FILE_FORMATS_DOWNLOADER:
-        raise ValueError(f'Invalid file format. Supported file formats are {SUPPORTED_FILE_FORMATS_DOWNLOADER}')
+        raise ValueError(
+            f"Invalid file format. Supported file formats are {SUPPORTED_FILE_FORMATS_DOWNLOADER}"
+        )
 
     if isinstance(PDB_IDS, str):
         PDB_IDS = (PDB_IDS,)
