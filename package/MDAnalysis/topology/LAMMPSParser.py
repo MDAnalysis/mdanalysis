@@ -33,9 +33,9 @@ Parses data_ or dump_ files produced by LAMMPS_.
     read from the input file. This may change in release 3.0.
     See :ref:`Guessers` for more information.
 
-.. _LAMMPS: http://lammps.sandia.gov/
-.. _data: DATA file format: :http://lammps.sandia.gov/doc/2001/data_format.html
-.. _dump: http://lammps.sandia.gov/doc/dump.html
+.. _LAMMPS: https://www.lammps.org/
+.. _data: DATA file format: :https://docs.lammps.org/2001/data_format.html
+.. _dump: https://docs.lammps.org/dump.html
 
 .. versionchanged:: 1.0.0
    Deprecated :class:`LAMMPSDataConverter` has now been removed.
@@ -67,7 +67,7 @@ The following code could be used::
   >>> u = mda.Universe('myfile.data', atom_style='id type x y z')
 
 
-.. _`atom_style`: http://lammps.sandia.gov/doc/atom_style.html
+.. _`atom_style`: https://docs.lammps.org/atom_style.html
 
 Classes
 -------
@@ -98,12 +98,15 @@ from ..core.topologyattrs import (
     Bonds,
     Charges,
     Dihedrals,
+    Elements,
     Impropers,
     Masses,
     Resids,
     Resnums,
     Segids,
 )
+from ..guesser.tables import SYMB2Z
+from ..guesser.tables import masses as mass_table
 
 logger = logging.getLogger("MDAnalysis.topology.LAMMPS")
 
@@ -466,7 +469,7 @@ class DATAParser(TopologyReaderBase):
         Lammps atoms can have lots of different formats,
         and even custom formats
 
-        http://lammps.sandia.gov/doc/atom_style.html
+        https://docs.lammps.org/atom_style.html
 
         Treated here are
         - atoms with 7 fields (with charge) "full"
@@ -602,14 +605,36 @@ class DATAParser(TopologyReaderBase):
         return unitcell
 
 
+# Define the headers that define topology information from the lammps file
+# Any headers outside of this set will be ignored
+DUMP_HEADERS = {
+    "id": {"attr_class": Atomids, "default": None, "dtype": np.int32},
+    "mol": {"attr_class": [Resids, Resnums], "default": 1, "dtype": int},
+    "type": {"attr_class": Atomtypes, "default": 1, "dtype": object},
+    "mass": {"attr_class": Masses, "default": 1.0, "dtype": np.float64},
+    "element": {"attr_class": Elements, "default": None, "dtype": object},
+    "q": {"attr_class": Charges, "default": None, "dtype": np.float32},
+}
+
+
 class LammpsDumpParser(TopologyReaderBase):
-    """Parses Lammps ascii dump files in 'atom' format.
+    """Parses Lammps ascii dump files.
 
-    Sets all masses to 1.0.
+    id, mol, type, mass, element and q columns are read
+    and used to set the corresponding topology attributes.
+
+    All other columns are ignored.
+
+    If masses are not provided they will attempt to be guessed
+    from element names. If no element names are provided then all masses
+    will be set to 1.0.
 
 
-    .. versionchanged:: 2.0.0
     .. versionadded:: 0.19.0
+    .. versionchanged:: 2.0.0
+       Allow for a more flexible column layout
+    .. versionchanged:: 2.10.0
+       Allow reading of mass, charge and element attributes
     """
 
     format = "LAMMPSDUMP"
@@ -627,33 +652,86 @@ class LammpsDumpParser(TopologyReaderBase):
             fin.readline()  # y
             fin.readline()  # z
 
-            indices = np.zeros(natoms, dtype=int)
-            types = np.zeros(natoms, dtype=object)
-
+            # Next line contains the headers for the atom data
             atomline = fin.readline()  # ITEM ATOMS
             attrs = atomline.split()[2:]  # attributes on coordinate line
-            col_ids = {attr: i for i, attr in enumerate(attrs)}  # column ids
+            col_ids = {
+                attr: i for i, attr in enumerate(attrs) if attr in DUMP_HEADERS
+            }  # column ids
+            if "id" not in col_ids:
+                raise ValueError("No id column found in dump file")
+            if "mass" not in col_ids:
+                if "element" in col_ids:
+                    warnings.warn(
+                        "No mass column found in dump file. "
+                        "Using guessed masses from element info."
+                    )
+                else:
+                    warnings.warn("Guessed all Masses to 1.0")
+            if "type" not in col_ids:
+                warnings.warn("Set all atom types to 1")
 
+            atom_data = {}
+            # Initialize the atom data arrays
+            for header in DUMP_HEADERS:
+                if header in col_ids:
+                    atom_data[header] = np.zeros(
+                        natoms, dtype=DUMP_HEADERS[header]["dtype"]
+                    )
+                elif DUMP_HEADERS[header]["default"] is not None:
+                    atom_data[header] = np.full(
+                        natoms,
+                        DUMP_HEADERS[header]["default"],
+                        dtype=DUMP_HEADERS[header]["dtype"],
+                    )
+            # Read the atom data
             for i in range(natoms):
                 fields = fin.readline().split()
+                for header, col_id in col_ids.items():
+                    atom_data[header][i] = fields[col_id]
 
-                indices[i] = fields[col_ids["id"]]
-                types[i] = fields[col_ids["type"]]
+        # Check for valid elements and set masses by element if not given
+        if "element" in col_ids:
+            validated_elements = []
+            for elem in atom_data["element"]:
+                if elem.capitalize() in SYMB2Z:
+                    validated_elements.append(elem.capitalize())
+                else:
+                    wmsg = (
+                        f"Unknown element {elem} found for some atoms. "
+                        f"These have been given an empty element record. "
+                    )
+                    warnings.warn(wmsg)
+                    validated_elements.append("")
+            atom_data["element"] = np.array(
+                validated_elements, dtype=DUMP_HEADERS["element"]["dtype"]
+            )
+            if "mass" not in col_ids:
+                for i, elem in enumerate(validated_elements):
+                    try:
+                        atom_data["mass"][i] = mass_table[elem]
+                    except KeyError:
+                        atom_data["mass"][i] = 1.0
 
-        order = np.argsort(indices)
-        indices = indices[order]
-        types = types[order]
+        # Reorder the atom data by id
+        order = np.argsort(atom_data["id"])
 
         attrs = []
-        attrs.append(Atomids(indices))
-        attrs.append(Atomtypes(types))
-        attrs.append(Masses(np.ones(natoms, dtype=np.float64), guessed=True))
-        warnings.warn("Guessed all Masses to 1.0")
-        attrs.append(Resids(np.array([1], dtype=int)))
-        attrs.append(Resnums(np.array([1], dtype=int)))
-        attrs.append(Segids(np.array(["SYSTEM"], dtype=object)))
+        for key, value in atom_data.items():
+            if key == "mol":
+                # Get the number of unique residues
+                # and the assignment of each atom to a residue
+                residx, resids = squash_by(value[order])[:2]
+                n_residues = len(resids)
+                for attr_class in DUMP_HEADERS[key]["attr_class"]:
+                    attrs.append(attr_class(resids))
+            else:
+                attrs.append(DUMP_HEADERS[key]["attr_class"](value[order]))
 
-        return Topology(natoms, 1, 1, attrs=attrs)
+        attrs.append(Segids(np.array(["SYSTEM"], dtype=object)))
+        return Topology(
+            natoms, n_residues, 1, attrs=attrs, atom_resindex=residx
+        )
 
 
 @functools.total_ordering

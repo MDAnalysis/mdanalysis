@@ -22,18 +22,25 @@ try:
 except ImportError:
     pass
 
+try:
+    from MDAnalysis.coordinates.TRC import TRCReader
+    from MDAnalysisTests.datafiles import TRC_TRAJ_SOLV
+except ImportError:
+    pass
+
 traj_dict = {
     "XTC": [XTC, XTCReader],
     "TRR": [TRR, TRRReader],
     "DCD": [DCD, DCDReader],
     "NCDF": [NCDF, NCDFReader],
+    "TRC": [TRC_TRAJ_SOLV, TRCReader],
 }
 
 
 class TrajReaderCreation(object):
     """Benchmarks for trajectory file format reading."""
 
-    params = ["XTC", "TRR", "DCD", "NCDF"]
+    params = ["XTC", "TRR", "DCD", "NCDF", "TRC"]
     param_names = ["traj_format"]
 
     def setup(self, traj_format):
@@ -50,7 +57,7 @@ class TrajReaderCreation(object):
 class TrajReaderIteration(object):
     """Benchmarks for trajectory file format striding."""
 
-    params = ["XTC", "TRR", "DCD", "NCDF"]
+    params = ["XTC", "TRR", "DCD", "NCDF", "TRC"]
     param_names = ["traj_format"]
 
     def setup(self, traj_format):

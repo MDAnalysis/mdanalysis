@@ -23,9 +23,7 @@
 import pytest
 import MDAnalysis as mda
 
-import numpy as np
 from numpy.testing import assert_allclose, assert_equal
-from numpy.lib import NumpyVersion
 
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
 from MDAnalysisTests.coordinates.reference import RefAdKSmall
@@ -43,12 +41,8 @@ from MDAnalysisTests.datafiles import (
     PRM_UreyBradley,
 )
 
-# TODO: remove this guard when parmed has a release
-# that support NumPy 2
-if NumpyVersion(np.__version__) < "2.0.0":
-    pmd = pytest.importorskip("parmed")
-else:
-    pmd = pytest.importorskip("parmed_skip_with_numpy2")
+
+pmd = pytest.importorskip("parmed")
 
 
 class TestParmEdReaderGRO:

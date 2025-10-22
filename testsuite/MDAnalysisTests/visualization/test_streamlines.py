@@ -53,6 +53,151 @@ def membrane_xtc(tmpdir_factory, univ):
     return str(tmp_xtc)
 
 
+def test_produce_list_indices_point_in_polygon_this_frame():
+    # Define two squares:
+    # square1 covers the area [0,1]x[0,1]
+    # square2 covers the area [2,3]x[2,3]
+    square1 = [(0, 0), (1, 0), (1, 1), (0, 1)]
+    square2 = [(2, 2), (3, 2), (3, 3), (2, 3)]
+
+    # Create a list of vertex coordinates (for two squares)
+    vertex_list = [square1, square2]
+
+    # Define points:
+    # Point [0.5, 0.5] lies inside square1.
+    # Point [1.5, 1.5] lies outside both squares.
+    # Point [2.5, 2.5] lies inside square2.
+    # Point [3.5, 3.5] lies outside both squares.
+    points = np.array([[0.5, 0.5], [1.5, 1.5], [2.5, 2.5], [3.5, 3.5]])
+
+    # Call the function under test.
+    result = streamlines._produce_list_indices_point_in_polygon_this_frame(
+        vertex_list, points
+    )
+
+    # np.where returns a tuple; thus for each square we expect:
+    # For square1: point index 0 is inside → (array([0]),)
+    # For square2: point index 2 is inside → (array([2]),)
+    expected = [(np.array([0]),), (np.array([2]),)]
+
+    # Check that each result matches the expected indices.
+    for res_tuple, exp_tuple in zip(result, expected):
+        np.testing.assert_array_equal(res_tuple[0], exp_tuple[0])
+
+
+def test_produce_list_centroids_empty():
+    # Simulate an empty index set for one square:
+    list_indices = [(np.array([]),)]
+    # Dummy particle coordinate array (won't be used since indices is empty)
+    pts = np.array([[0, 0], [1, 1]])
+    result = streamlines._produce_list_centroids_this_frame(list_indices, pts)
+    assert result == [None]
+
+
+def test_produce_list_centroids_single_square():
+    # Create an array of particle coordinates
+    pts = np.array([[0, 0], [1, 1], [2, 2], [3, 3]])
+    # Choose indices that pick points [1] and [3]
+    indices_tuple = (np.array([1, 3]),)
+    list_indices = [indices_tuple]
+    result = streamlines._produce_list_centroids_this_frame(list_indices, pts)
+    expected = np.array([2.0, 2.0])
+    np.testing.assert_allclose(result[0], expected)
+
+
+def test_produce_list_centroids_multiple_squares():
+    pts = np.array([[0, 0], [2, 2], [4, 4], [6, 6]])
+    # First square will use pts[0] and pts[2] -> average is [2,2]
+    indices1 = (np.array([0, 2]),)
+    # Second square will use pts[1] and pts[3] -> average is [4,4]
+    indices2 = (np.array([1, 3]),)
+    list_indices = [indices1, indices2]
+    result = streamlines._produce_list_centroids_this_frame(list_indices, pts)
+    expected1 = np.array([2, 2])
+    expected2 = np.array([4, 4])
+    np.testing.assert_array_equal(result[0], expected1)
+    np.testing.assert_array_equal(result[1], expected2)
+
+
+def test_adjacent_squares():
+    # Test two adjacent squares that share a boundary.
+    # Square1 covers [0,1]x[0,1] and square2 covers [1,2]x[0,1].
+    # A point at [0.5, 0.5] should be in square1 and one at [1.5,0.5] should be in square2.
+    square1 = [(0, 0), (1, 0), (1, 1), (0, 1)]
+    square2 = [(1, 0), (2, 0), (2, 1), (1, 1)]
+    vertex_list = [square1, square2]
+    points = np.array(
+        [
+            [0.5, 0.5],
+            [1.5, 0.5],
+        ]
+    )
+    result = streamlines._produce_list_indices_point_in_polygon_this_frame(
+        vertex_list, points
+    )
+    expected = [(np.array([0]),), (np.array([1]),)]
+    for res_tuple, exp_tuple in zip(result, expected):
+        np.testing.assert_array_equal(res_tuple[0], exp_tuple[0])
+
+
+def test_point_on_boundary():
+    # Test that a point exactly on the square's boundary is not considered inside.
+    # For a square covering [0,1]x[0,1], a point at [1,0.5] lies exactly on the right edge.
+    # By default, matplotlib.path.Path.contains_points includes boundary points.
+    square = [(0, 0), (1, 0), (1, 1), (0, 1)]
+    vertex_list = [square]
+    points = np.array([[1, 0.5]])  # exactly on the boundary
+    result = streamlines._produce_list_indices_point_in_polygon_this_frame(
+        vertex_list, points
+    )
+    expected = [(np.array([0], dtype=int),)]
+    np.testing.assert_array_equal(result, expected)
+
+
+def test_points_on_boundary_of_two_adjacent_squares():
+    square1 = [(0, 0), (1, 0), (1, 1), (0, 1)]
+    square2 = [(1, 0), (2, 0), (2, 1), (1, 1)]
+    vertex_list = [square1, square2]
+    points = np.array([[1, 0.5], [1, 0.7]])  # exactly on the boundary
+    result = streamlines._produce_list_indices_point_in_polygon_this_frame(
+        vertex_list, points
+    )
+    expected = [(np.array([0, 1], dtype=int),), (np.array([0, 1], dtype=int),)]
+    np.testing.assert_array_equal(result, expected)
+
+
+def test_per_core_work_2D(membrane_xtc, univ):
+    xmin = univ.atoms.positions[..., 0].min()
+    xmax = univ.atoms.positions[..., 0].max()
+    ymin = univ.atoms.positions[..., 1].min()
+    ymax = univ.atoms.positions[..., 1].max()
+    tuple_of_limits = (xmin, xmax, ymin, ymax)
+    grid = streamlines.produce_grid(
+        tuple_of_limits=tuple_of_limits, grid_spacing=20
+    )
+    (
+        list_square_vertex_arrays_per_core,
+        list_parent_index_values,
+        _,
+        _,
+    ) = streamlines.split_grid(grid=grid, num_cores=1)
+    values = streamlines.per_core_work(
+        topology_file_path=Martini_membrane_gro,
+        trajectory_file_path=membrane_xtc,
+        list_square_vertex_arrays_this_core=list_square_vertex_arrays_per_core[
+            0
+        ],
+        MDA_selection="name PO4",
+        start_frame=1,
+        end_frame=2,
+        reconstruction_index_list=list_parent_index_values[0],
+        maximum_delta_magnitude=2.0,
+    )
+    for entry in values:
+        res = entry[1]
+        np.testing.assert_allclose(res[:2], np.array([0.8, 0.5]), atol=1e-1)
+
+
 def test_streamplot_2D(membrane_xtc, univ):
     # regression test the data structures
     # generated by the 2D streamplot code
@@ -115,6 +260,28 @@ def test_streamplot_2D_zero_return(membrane_xtc, univ, tmpdir):
         ymax=univ.atoms.positions[..., 1].max(),
         maximum_delta_magnitude=2.0,
         num_cores=1,
+    )
+    assert_allclose(u1, np.zeros((5, 5)))
+    assert_allclose(v1, np.zeros((5, 5)))
+    assert avg == approx(0.0)
+    assert std == approx(0.0)
+
+
+def test_streamplot_2D_dual_core(membrane_xtc, univ, tmpdir):
+    # simple test to ensure that it runs with multiple cores
+    u1, v1, avg, std = streamlines.generate_streamlines(
+        topology_file_path=Martini_membrane_gro,
+        trajectory_file_path=membrane_xtc,
+        grid_spacing=20,
+        MDA_selection="name POX",
+        start_frame=1,
+        end_frame=2,
+        xmin=univ.atoms.positions[..., 0].min(),
+        xmax=univ.atoms.positions[..., 0].max(),
+        ymin=univ.atoms.positions[..., 1].min(),
+        ymax=univ.atoms.positions[..., 1].max(),
+        maximum_delta_magnitude=2.0,
+        num_cores=2,
     )
     assert_allclose(u1, np.zeros((5, 5)))
     assert_allclose(v1, np.zeros((5, 5)))

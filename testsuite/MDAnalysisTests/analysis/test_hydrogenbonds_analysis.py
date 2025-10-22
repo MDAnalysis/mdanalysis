@@ -63,6 +63,22 @@ class TestHydrogenBondAnalysisTIP3P(object):
         h.run(**client_HydrogenBondAnalysis)
         return h
 
+    @pytest.fixture(scope="class")
+    def h_modified(self, universe, client_HydrogenBondAnalysis):
+        kwargs = self.kwargs.copy()
+        donors_sel = kwargs.pop("donors_sel")
+        hydrogens_sel = kwargs.pop("hydrogens_sel")
+        acceptors_sel = kwargs.pop("acceptors_sel")
+        h = HydrogenBondAnalysis(universe, **kwargs)
+        h.donors_sel = donors_sel
+        h.hydrogens_sel = hydrogens_sel
+        h.acceptors_sel = acceptors_sel
+        h.run(**client_HydrogenBondAnalysis)
+        return h
+
+    def test_hbond_modified_consistency(self, h, h_modified):
+        assert_array_equal(h.results.hbonds, h_modified.results.hbonds)
+
     def test_hbond_analysis(self, h):
 
         assert len(np.unique(h.results.hbonds[:, 0])) == 10
