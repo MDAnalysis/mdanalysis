@@ -571,12 +571,17 @@ def fetch_pdb(
 
     Raises
     ------
+    ValueError
+        For an invalid file format. Supported file formats are under Notes.
+
     requests.exceptions.HTTPError
         If an invalid PDB code or file format is specified.
-
+    
     Notes
     -----
     This function downloads using the API established here at https://www.rcsb.org/docs/programmatic-access/file-download-services.
+
+    Currently supported file formats (per the API) are ('cif', 'cif.gz', 'bcif', 'bcif.gz', 'xml', 'xml.gz', 'pdb', 'pdb.gz', 'pdb1', 'pdb1.gz')
 
     Examples
     --------

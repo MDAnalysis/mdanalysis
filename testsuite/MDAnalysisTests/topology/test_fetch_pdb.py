@@ -85,7 +85,7 @@ class TestExpectedErrors:
             mda.fetch_pdb(PDB_IDS="foobar", cache_path=tmp_path)
 
     def test_invalid_file_format(self, tmp_path):
-        with pytest.raises(HTTPError):
+        with pytest.raises(ValueError):
             mda.fetch_pdb(
                 PDB_IDS="1AKE", cache_path=tmp_path, file_format="barfoo"
             )
