@@ -539,7 +539,7 @@ def _parse_conect(conect):
 
 
 def fetch_pdb(
-    PDB_IDS=None,
+    pdb_ids=None,
     cache_path=None,
     progressbar=False,
     file_format="pdb.gz",
@@ -555,7 +555,7 @@ def fetch_pdb(
 
     Parameters
     ----------
-    PDB_IDS : str or sequence of str
+    pdb_ids : str or sequence of str
         A single PDB ID as a string, or a sequence of PDB IDs to fetch.
     cache_path : str or pathlib.Path
         Directory where downloaded file(s) will be cached.
@@ -577,6 +577,7 @@ def fetch_pdb(
 
     requests.exceptions.HTTPError
         If an invalid PDB code or file format is specified.
+    
     Notes
     -----
     This function downloads using the API established here at https://www.rcsb.org/docs/programmatic-access/file-download-services.
@@ -602,7 +603,7 @@ def fetch_pdb(
 
     Download multiple PDB files and converting them to a universe:
 
-    >>> [mda.Universe(mda.fetch_pdb(PDB_ID), file_format="pdb.gz") for PDB_ID in ("1AKE", "4BWZ")]
+    >>> [mda.Universe(mda.fetch_pdb(pdb_id), file_format="pdb.gz") for pdb_id in ("1AKE", "4BWZ")]
     [<Universe with 3816 atoms>, <Universe with 2824 atoms>]
 
     """
@@ -615,16 +616,18 @@ def fetch_pdb(
         raise ValueError(
             f"Invalid file format. Supported file formats are {SUPPORTED_FILE_FORMATS_DOWNLOADER}"
         )
-
-    if isinstance(PDB_IDS, str):
-        PDB_IDS = (PDB_IDS,)
+    
+    if isinstance(pdb_ids, str):
+        _pdb_ids = (pdb_ids,)
+    else:
+        _pdb_ids = pdb_ids
 
     if cache_path is None:
         cache_path = pooch.os_cache("MDAnalysis_pdbs")
 
     # Have to do this dictionary approach instead of using Pooch.retrieve in order to prevent the hardcoded known_hash warning from showing up.
     registry_dictionary = {
-        f"{PDB_ID}.{file_format}": None for PDB_ID in PDB_IDS
+        f"{pdb_id}.{file_format}": None for pdb_id in _pdb_ids
     }
 
     downloader = pooch.create(
@@ -633,7 +636,7 @@ def fetch_pdb(
         registry=registry_dictionary,
     )
 
-    if len(PDB_IDS) == 1:
+    if type(pdb_ids) is str:
         return str(
             downloader.fetch(
                 fname=tuple(registry_dictionary.keys())[0],
@@ -642,6 +645,8 @@ def fetch_pdb(
         )
     else:
         return [
-            downloader.fetch(fname=file_name, progressbar=progressbar)
-            for file_name in registry_dictionary.keys()
+            str(
+                downloader.fetch(fname=file_name, progressbar=progressbar)
+                for file_name in registry_dictionary.keys()
+            )
         ]
