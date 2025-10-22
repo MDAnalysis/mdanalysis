@@ -545,13 +545,14 @@ def fetch_pdb(
     file_format="pdb.gz",
 ):
     """
-    Download one or more PDB files from the RCSB Protein Data Bank and cache them locally.
+    Download one or more PDB files from the RCSB Protein Data Bank and cache
+    them locally.
 
-    Given one or multiple PDB IDs, downloads the corresponding structure files in the specified
-    format and stores them in a local cache directory. If files are cached on disk, fetch_pdb() will skip the download and use
-    the cached version instead.
+    Given one or multiple PDB IDs, downloads the corresponding structure files
+    format and stores them in a local cache directory. If files are cached on
+    disk, fetch_pdb() will skip the download and use the cached version instead.
 
-    Returns the path(s) as a string to the downloaded files.
+    Returns the path(s) as a string to the downloaded file(s).
 
     Parameters
     ----------
@@ -567,8 +568,9 @@ def fetch_pdb(
     Returns
     -------
     str or list of str
-        The path(s) to the downloaded file(s). Returns a single string if one PDB ID is given,
-        or a list of strings if multiple PDB IDs are provided.
+        The path(s) to the downloaded file(s). Returns a single string if
+        one PDB ID is given, or a list of strings if multiple PDB IDs are
+        provided.
 
     Raises
     ------
