@@ -612,7 +612,7 @@ def fetch_pdb(
 
     Download multiple PDB files and convert each of them into a universe:
 
-    >>> [mda.Universe(mda.fetch_pdb(pdb_id), file_format="pdb.gz") for pdb_id in ("1AKE", "4BWZ")]
+    >>> [mda.Universe(pdb) for pdb in mda.fetch_pdb(["1AKE", "4BWZ"], progressbar=True)]
     [<Universe with 3816 atoms>, <Universe with 2824 atoms>]
 
     
@@ -657,8 +657,6 @@ def fetch_pdb(
         )
     else:
         return [
-            str(
-                downloader.fetch(fname=file_name, progressbar=progressbar)
-                for file_name in registry_dictionary.keys()
-            )
+            downloader.fetch(fname=file_name, progressbar=progressbar)
+            for file_name in registry_dictionary.keys()
         ]
