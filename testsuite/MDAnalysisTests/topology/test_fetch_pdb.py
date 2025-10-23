@@ -27,15 +27,35 @@ import MDAnalysis as mda
 from MDAnalysis.topology.PDBParser import HAS_POOCH
 
 from urllib import request
+from shutil import rmtree
+from pathlib import Path
 
 if HAS_POOCH:
     from requests.exceptions import HTTPError
+    from pooch import os_cache
 
 try:
     request.urlopen("https://files.wwpdb.org/", timeout=2)
     HAS_ACCESS_TO_WWPDB = True
 except request.URLError:
     HAS_ACCESS_TO_WWPDB = False
+
+
+def true_basename(path):
+    """This is needed because pathlib.Path(foo.pdb.gz).stem as foo.pdb"""
+    return Path(path).stem.split(".")[0]
+
+
+@pytest.mark.skipif(
+    HAS_POOCH,
+    reason="Pooch is installed.",
+)
+def test_pooch_installation(tmp_path):
+    with pytest.raises(
+        ModuleNotFoundError,
+        match="pooch is needed as a dependency for fetch_pdb()",
+    ):
+        mda.fetch_pdb("1AKE", cache_path=tmp_path, file_format="cif")
 
 
 @pytest.mark.skipif(not HAS_POOCH, reason="Pooch is not installed.")
@@ -48,15 +68,23 @@ class TestDocstringExamples:
 
     @pytest.mark.parametrize("pdb_id", [("1AKE"), ("4BWZ")])
     def test_one_file_download(self, tmp_path, pdb_id):
-        assert isinstance(
-            mda.fetch_pdb(pdb_id, cache_path=tmp_path, file_format="cif"), str
-        )
+        path = mda.fetch_pdb(pdb_id, cache_path=tmp_path, file_format="cif")
+        assert isinstance(path, str)
+        assert true_basename(path) == pdb_id
 
     def test_multiple_files_download(self, tmp_path):
         list_of_path_strings = mda.fetch_pdb(
             ["1AKE", "4BWZ"], cache_path=tmp_path, progressbar=True
         )
-        assert all(isinstance(PDB_ID, str) for PDB_ID in list_of_path_strings)
+        assert all(isinstance(pdb_id, str) for pdb_id in list_of_path_strings)
+        assert all(
+            [
+                true_basename(path) == name
+                for path, name in zip(
+                    list_of_path_strings, ["1AKE", "4BWZ"], strict=True
+                )
+            ]
+        )
 
     @pytest.mark.parametrize(
         "pdb_id, n_atoms", [("1AKE", 3816), ("4BWZ", 2824)]
@@ -71,6 +99,36 @@ class TestDocstringExamples:
             )
         )
         assert isinstance(u, mda.Universe) and (len(u.atoms) == n_atoms)
+
+
+@pytest.fixture()
+def clean_up_default_cache():
+    yield
+    rmtree(os_cache("MDAnalysis_pdbs"))
+
+
+@pytest.mark.skipif(not HAS_POOCH, reason="Pooch is not installed.")
+@pytest.mark.skipif(
+    not HAS_ACCESS_TO_WWPDB,
+    reason="Can not connect to https://files.wwpdb.org/",
+)
+class TestExpectedBehaviors:
+
+    def test_no_cache_path(self, clean_up_default_cache):
+        assert isinstance(mda.fetch_pdb("1AKE", cache_path=None), str)
+
+    def test_str_input_gives_str_output(self, tmp_path):
+        assert isinstance(
+            mda.fetch_pdb(
+                pdb_ids="1AKE", cache_path=tmp_path, file_format="cif"
+            ),
+            str,
+        )
+
+    def test_list_input_gives_list_output(self, tmp_path):
+        assert isinstance(
+            mda.fetch_pdb(pdb_ids=["1AKE"], cache_path=tmp_path), list
+        )
 
 
 @pytest.mark.skipif(not HAS_POOCH, reason="Pooch is not installed.")
@@ -89,33 +147,3 @@ class TestExpectedErrors:
             mda.fetch_pdb(
                 pdb_ids="1AKE", cache_path=tmp_path, file_format="barfoo"
             )
-
-
-@pytest.mark.skipif(not HAS_POOCH, reason="Pooch is not installed.")
-@pytest.mark.skipif(
-    not HAS_ACCESS_TO_WWPDB,
-    reason="Can not connect to https://files.wwpdb.org/",
-)
-class TestExpectedBehavior:
-
-    def test_no_cache_path(pdb_id):
-        assert isinstance(mda.fetch_pdb('1AKE', cache_path=None), str)
-
-    def test_str_input_gives_str_output(tmp_path):
-        assert isinstance(
-            mda.fetch_pdb(pdb_ids='1AKE', cache_path=tmp_path), str
-        )
-    
-    def test_list_input_gives_list_output(tmp_path):
-        assert isinstance(
-            mda.fetch_pdb(pdb_ids=['1AKE'], cache_path=tmp_path), list
-        )
-
-
-@pytest.mark.skipif(
-    HAS_POOCH,
-    reason="Pooch is installed.",
-)
-def test_pooch_installation(tmp_path):
-    with pytest.raises(ModuleNotFoundError):
-        mda.fetch_pdb("1AKE", cache_path=tmp_path, file_format="cif")
