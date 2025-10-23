@@ -96,9 +96,20 @@ class TestExpectedErrors:
     not HAS_ACCESS_TO_WWPDB,
     reason="Can not connect to https://files.wwpdb.org/",
 )
-@pytest.mark.parametrize("pdb_id", [("1AKE"), ("4BWZ")])
-def test_no_cache_path(pdb_id):
-    assert isinstance(mda.fetch_pdb(pdb_id, cache_path=None), str)
+class TestExpectedBehavior:
+
+    def test_no_cache_path(pdb_id):
+        assert isinstance(mda.fetch_pdb('1AKE', cache_path=None), str)
+
+    def test_str_input_gives_str_output(tmp_path):
+        assert isinstance(
+            mda.fetch_pdb(pdb_ids='1AKE', cache_path=tmp_path), str
+        )
+    
+    def test_list_input_gives_list_output(tmp_path):
+        assert isinstance(
+            mda.fetch_pdb(pdb_ids=['1AKE'], cache_path=tmp_path), list
+        )
 
 
 @pytest.mark.skipif(
