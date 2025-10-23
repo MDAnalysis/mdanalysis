@@ -138,7 +138,7 @@ def get_Atomattrs(model: "gemmi.Model") -> tuple[list[AtomAttr], np.ndarray]:
         occupancies,  # at.occ
         record_types,  # res.het_flag
         tempfactors,  # at.b_iso
-        residx,  # _into_idx(res.seqid.num) TODO: basically must be `auth_seq_id`
+        residx,  # _into_idx(res.label_seq or res.seqid.num)
     ) = map(  # this construct takes np.ndarray of all lists of attributes, extracted from the `gemmi.Model`
         np.array,
         list(
