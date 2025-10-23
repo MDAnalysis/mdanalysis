@@ -579,7 +579,7 @@ def fetch_pdb(
         For an invalid file format. Supported file formats are under Notes.
 
     requests.exceptions.HTTPError
-        If an invalid PDB code or file format is specified.
+        If an invalid PDB code is specified. This is a pooch exception.
 
     Notes
     -----
@@ -592,6 +592,15 @@ def fetch_pdb(
     The RCSB currently provides data in 'cif', 'cif.gz', 'bcif', 'bcif.gz', 'xml',
     'xml.gz', 'pdb', 'pdb.gz', 'pdb1', 'pdb1.gz' file formats and can therefore be
     downloaded. Not all of these formats can be currently read with MDAnalysis.
+
+    Cache, controlled by the cache_patch parameter, is handled internally by pooch.
+    The default None arguments stores the data files in the platform dependent
+    `Pooch Default Cache Path`_ under the folder MDAnalysis_pdbs. To clear cache
+    (and subsquently force re-fetching), it is required to delete the cache folder
+    as specified by cache_path.
+
+    .. _`Pooch Default Cache Path`
+       https://www.fatiando.org/pooch/latest/api/generated/pooch.os_cache.html
 
     Examples
     --------
@@ -649,7 +658,9 @@ def fetch_pdb(
         registry=registry_dictionary,
     )
 
-    paths = [downloader.fetch(fname=file_name, progressbar=progressbar)
-             for file_name in registry_dictionary.keys()]
+    paths = [
+        downloader.fetch(fname=file_name, progressbar=progressbar)
+        for file_name in registry_dictionary.keys()
+    ]
 
     return paths if type(pdb_ids) is not str else paths[0]
