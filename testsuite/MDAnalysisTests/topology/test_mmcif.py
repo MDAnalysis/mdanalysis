@@ -6,6 +6,17 @@ from MDAnalysisTests.datafiles import MMCIF as MMCIF_FOLDER
 
 
 @pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
+@pytest.mark.parametrize("basename", [f"{MMCIF_FOLDER}/1BD2"])
+@pytest.mark.filterwarnings("ignore::UserWarning")
+def test_legacy_pdb_vs_mmcif(basename):
+    u_cif = mda.Universe(f"{basename}.cif.gz")
+    u_pdb = mda.Universe(f"{basename}.pdb.gz")
+    assert len(u_pdb.select_atoms("resid 54 and segid D")) == len(
+        u_cif.select_atoms("resid 54 and segid D")
+    )
+
+
+@pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
 @pytest.mark.parametrize(
     "mmcif_filename,n_chains",
     [

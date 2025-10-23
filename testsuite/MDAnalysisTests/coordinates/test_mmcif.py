@@ -5,7 +5,29 @@ import numpy as np
 import pytest
 from MDAnalysis.coordinates.MMCIF import HAS_GEMMI
 
+from pathlib import Path
 from MDAnalysisTests.datafiles import MMCIF as MMCIF_FOLDER
+
+
+@pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
+@pytest.mark.parametrize(
+    "mmcif_filename",
+    [
+        f
+        for f in glob.glob(f"{MMCIF_FOLDER}/*.cif.gz")
+        if "invalid" not in f
+        and "warning" not in f
+        and Path(f).with_suffix("").with_suffix(".pdb.gz").exists()
+    ],
+)
+@pytest.mark.filterwarnings("ignore::UserWarning")
+def test_legacy_pdb_vs_mmcif(mmcif_filename):
+    u_cif = mda.Universe(mmcif_filename)
+    u_pdb = mda.Universe(
+        Path(mmcif_filename).with_suffix("").with_suffix(".pdb.gz")
+    )
+    assert len(u_cif.residues) == len(u_pdb.residues)
+    assert len(u_cif.atoms) == len(u_pdb.atoms)
 
 
 @pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")

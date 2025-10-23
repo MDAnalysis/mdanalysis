@@ -138,7 +138,7 @@ def get_Atomattrs(model: "gemmi.Model") -> tuple[list[AtomAttr], np.ndarray]:
         occupancies,  # at.occ
         record_types,  # res.het_flag
         tempfactors,  # at.b_iso
-        residx,  # _into_idx(res.seqid.num)
+        residx,  # _into_idx(res.seqid.num) TODO: basically must be `auth_seq_id`
     ) = map(  # this construct takes np.ndarray of all lists of attributes, extracted from the `gemmi.Model`
         np.array,
         list(
@@ -161,7 +161,12 @@ def get_Atomattrs(model: "gemmi.Model") -> tuple[list[AtomAttr], np.ndarray]:
                         atom.occ,  # occupancies
                         residue.het_flag,  # record_types
                         atom.b_iso,  # tempfactors
-                        residue.seqid.num,  # residx, later translated into continious repr
+                        # residue.seqid.num,
+                        (
+                            residue.label_seq
+                            if residue.label_seq is not None
+                            else residue.seqid.num
+                        ),  # residx, later translated into continious repr
                     )
                     # the main loop over the `gemmi.Model` object
                     for chain in model
@@ -205,6 +210,16 @@ def get_Atomattrs(model: "gemmi.Model") -> tuple[list[AtomAttr], np.ndarray]:
     return attrs, residx
 
 
+def make_resid(residue: "gemmi.Residue") -> str:
+    # return residue.seqid.num
+    # return f'{residue.seqid.num}{residue.seqid.icode.strip()}'
+    return (
+        residue.label_seq
+        if residue.label_seq is not None
+        else residue.seqid.num
+    )
+
+
 def get_Residueattrs(
     model: "gemmi.Model",
 ) -> tuple[list[ResidueAttr], np.ndarray]:
@@ -227,7 +242,7 @@ def get_Residueattrs(
         resids,  # residue.seqid.num
         resnames,  # residue.name
         segidx,  # chain.name
-        resnums,
+        resnums,  # residue.seqid.num
     ) = map(
         np.array,
         list(
@@ -247,9 +262,10 @@ def get_Residueattrs(
         ),
     )
     segidx = np.array(_into_idx(segidx))
+
     attrs = [
         Resnums(resnums),
-        ICodes(icodes),
+        ICodes([icode.strip() for icode in icodes]),
         Resids(resids),
         Resnames(resnames),
     ]
