@@ -580,13 +580,13 @@ def fetch_pdb(
 
     requests.exceptions.HTTPError
         If an invalid PDB code or file format is specified.
-    
+
     Notes
     -----
     This function uses the `RCSB File Download Services`_ for directly downloading
     structure files via https.
-    
-    .. _`RCSB File Download Services`: 
+
+    .. _`RCSB File Download Services`:
        https://www.rcsb.org/docs/programmatic-access/file-download-services
 
     The RCSB currently provides data in 'cif', 'cif.gz', 'bcif', 'bcif.gz', 'xml',
@@ -615,7 +615,7 @@ def fetch_pdb(
     >>> [mda.Universe(pdb) for pdb in mda.fetch_pdb(["1AKE", "4BWZ"], progressbar=True)]
     [<Universe with 3816 atoms>, <Universe with 2824 atoms>]
 
-    
+
     .. versionadded:: 2.11.0
     """
 
@@ -625,9 +625,10 @@ def fetch_pdb(
         )
     elif file_format not in SUPPORTED_FILE_FORMATS_DOWNLOADER:
         raise ValueError(
-            f"Invalid file format. Supported file formats are {SUPPORTED_FILE_FORMATS_DOWNLOADER}"
+            "Invalid file format. Supported file formats "
+            f"are {SUPPORTED_FILE_FORMATS_DOWNLOADER}"
         )
-    
+
     if isinstance(pdb_ids, str):
         _pdb_ids = (pdb_ids,)
     else:
@@ -648,15 +649,7 @@ def fetch_pdb(
         registry=registry_dictionary,
     )
 
-    if type(pdb_ids) is str:
-        return str(
-            downloader.fetch(
-                fname=tuple(registry_dictionary.keys())[0],
-                progressbar=progressbar,
-            )
-        )
-    else:
-        return [
-            downloader.fetch(fname=file_name, progressbar=progressbar)
-            for file_name in registry_dictionary.keys()
-        ]
+    paths = [downloader.fetch(fname=file_name, progressbar=progressbar)
+             for file_name in registry_dictionary.keys()]
+
+    return paths if type(pdb_ids) is not str else paths[0]
