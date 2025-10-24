@@ -663,4 +663,4 @@ def fetch_pdb(
         for file_name in registry_dictionary.keys()
     ]
 
-    return paths if type(pdb_ids) is not str else paths[0]
+    return paths if not isinstance(pdb_ids, str) else paths[0]
