@@ -102,6 +102,8 @@ except ImportError:
 else:
     HAS_POOCH = True
 
+DEFAULT_CACHE_NAME_DOWNLOADER = "MDAnalysis_pdbs"
+
 # These file formats are here (https://www.rcsb.org/docs/programmatic-access/file-download-services) under "PDB entry files"
 SUPPORTED_FILE_FORMATS_DOWNLOADER = (
     "cif",
@@ -644,7 +646,7 @@ def fetch_pdb(
         _pdb_ids = pdb_ids
 
     if cache_path is None:
-        cache_path = pooch.os_cache("MDAnalysis_pdbs")
+        cache_path = pooch.os_cache(DEFAULT_CACHE_NAME_DOWNLOADER)
 
     # Have to do this dictionary approach instead of using pooch.retrieve in order
     # to prevent the hardcoded known_hash warning from showing up.

@@ -24,15 +24,20 @@
 import pytest
 
 import MDAnalysis as mda
-from MDAnalysis.topology.PDBParser import HAS_POOCH
+from MDAnalysis.topology.PDBParser import (
+    DEFAULT_CACHE_NAME_DOWNLOADER,
+    HAS_POOCH,
+    SUPPORTED_FILE_FORMATS_DOWNLOADER,
+)
 
+import re
 from urllib import request
 from shutil import rmtree
 from pathlib import Path
 
 if HAS_POOCH:
     from requests.exceptions import HTTPError
-    from pooch import os_cache
+    import pooch
 
 try:
     request.urlopen("https://files.wwpdb.org/", timeout=2)
@@ -66,7 +71,7 @@ def test_pooch_installation(tmp_path):
 class TestDocstringExamples:
     """This class tests all the examples found in fetch_pdb's docstring"""
 
-    @pytest.mark.parametrize("pdb_id", [("1AKE"), ("4BWZ")])
+    @pytest.mark.parametrize("pdb_id", ["1AKE", "4BWZ"])
     def test_one_file_download(self, tmp_path, pdb_id):
         path = mda.fetch_pdb(pdb_id, cache_path=tmp_path, file_format="cif")
         assert isinstance(path, str)
@@ -103,8 +108,9 @@ class TestDocstringExamples:
 
 @pytest.fixture()
 def clean_up_default_cache():
+    rmtree(pooch.os_cache(DEFAULT_CACHE_NAME_DOWNLOADER), ignore_errors=True)
     yield
-    rmtree(os_cache("MDAnalysis_pdbs"))
+    rmtree(pooch.os_cache(DEFAULT_CACHE_NAME_DOWNLOADER))
 
 
 @pytest.mark.skipif(not HAS_POOCH, reason="Pooch is not installed.")
@@ -143,7 +149,13 @@ class TestExpectedErrors:
             mda.fetch_pdb(pdb_ids="foobar", cache_path=tmp_path)
 
     def test_invalid_file_format(self, tmp_path):
-        with pytest.raises(ValueError):
+        with pytest.raises(
+            ValueError,
+            match=re.escape(
+                "Invalid file format. Supported file formats "
+                f"are {SUPPORTED_FILE_FORMATS_DOWNLOADER}"
+            ),
+        ):
             mda.fetch_pdb(
                 pdb_ids="1AKE", cache_path=tmp_path, file_format="barfoo"
             )
