@@ -57,12 +57,14 @@ See Also
 * :class:`MDAnalysis.core.universe.Universe`
 
 
-Classes
+Classes and Functions
 -------
 
 .. autoclass:: PDBParser
    :members:
    :inherited-members:
+
+.. autofunction:: fetch_pdb
    
 """
 import numpy as np
@@ -595,13 +597,13 @@ def fetch_pdb(
     'xml.gz', 'pdb', 'pdb.gz', 'pdb1', 'pdb1.gz' file formats and can therefore be
     downloaded. Not all of these formats can be currently read with MDAnalysis.
 
-    Cache, controlled by the cache_patch parameter, is handled internally by pooch.
+    Cache, controlled by the `cache_patch` parameter, is handled internally by pooch.
     The default None arguments stores the data files in the platform dependent
     `Pooch Default Cache Path`_ under the folder MDAnalysis_pdbs. To clear cache
     (and subsquently force re-fetching), it is required to delete the cache folder
     as specified by cache_path.
 
-    .. _`Pooch Default Cache Path`
+    .. _`Pooch Default Cache Path`:
        https://www.fatiando.org/pooch/latest/api/generated/pooch.os_cache.html
 
     Examples
