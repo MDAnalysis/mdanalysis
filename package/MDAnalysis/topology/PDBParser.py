@@ -63,10 +63,10 @@ See Also
    :members:
    :inherited-members:
 
+.. autofunction:: fetch_pdb
+
 .. autodata:: DEFAULT_CACHE_NAME_DOWNLOADER
 
-.. autofunction:: fetch_pdb
-   
 """
 import numpy as np
 import warnings
@@ -105,7 +105,7 @@ except ImportError:
 else:
     HAS_POOCH = True
 
-#: Name of the :mod:`pooch` cache directory ``pooch.os_cache( DEFAULT_CACHE_NAME_DOWNLOADER)``;
+#: Name of the :mod:`pooch` cache directory ``pooch.os_cache(DEFAULT_CACHE_NAME_DOWNLOADER)``;
 #: see :func:`pooch.os_cache` for further details.
 DEFAULT_CACHE_NAME_DOWNLOADER = "MDAnalysis_pdbs"
 
@@ -557,7 +557,7 @@ def fetch_pdb(
 
     Given one or multiple PDB IDs, downloads the corresponding structure files
     format and stores them in a local cache directory. If files are cached on
-    disk, fetch_pdb() will skip the download and use the cached version instead.
+    disk, *fetch_pdb* will skip the download and use the cached version instead.
 
     Returns the path(s) as a string to the downloaded file(s).
 
@@ -567,6 +567,8 @@ def fetch_pdb(
         A single PDB ID as a string, or a sequence of PDB IDs to fetch.
     cache_path : str or pathlib.Path
         Directory where downloaded file(s) will be cached.
+        The default ``None`` argument uses the :mod:`pooch` default cache with
+        project name :data:`DEFAULT_CACHE_NAME_DOWNLOADER`.
     file_format : str
         The file extension/format to download (e.g., "cif", "pdb").
         See the Notes section below for a list of all supported file formats.
@@ -585,8 +587,9 @@ def fetch_pdb(
     ValueError
         For an invalid file format. Supported file formats are under Notes.
 
-    requests.exceptions.HTTPError
-        If an invalid PDB code is specified. This is a pooch exception.
+    :class:`requests.exceptions.HTTPError`
+        If an invalid PDB code is specified. Note that this is :mod:`requests`, not the
+        standard library :mod:`urllib.request`.
 
     Notes
     -----
@@ -600,14 +603,11 @@ def fetch_pdb(
     'xml.gz', 'pdb', 'pdb.gz', 'pdb1', 'pdb1.gz' file formats and can therefore be
     downloaded. Not all of these formats can be currently read with MDAnalysis.
 
-    Cache, controlled by the `cache_patch` parameter, is handled internally by pooch.
-    The default None arguments stores the data files in the platform dependent
-    `Pooch Default Cache Path`_ under the folder MDAnalysis_pdbs. To clear cache
-    (and subsquently force re-fetching), it is required to delete the cache folder
-    as specified by cache_path.
-
-    .. _`Pooch Default Cache Path`:
-       https://www.fatiando.org/pooch/latest/api/generated/pooch.os_cache.html
+    Caching, controlled by the `cache_path` parameter, is handled internally by
+    :mod:`pooch`. The default cache name is taken from
+    :data:`DEFAULT_CACHE_NAME_DOWNLOADER`. To clear cache (and subsequently force
+    re-fetching), it is required to delete the cache folder as specified by
+    `cache_path`.
 
     Examples
     --------
