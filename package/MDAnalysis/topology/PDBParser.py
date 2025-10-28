@@ -63,6 +63,8 @@ See Also
    :members:
    :inherited-members:
 
+.. autodata:: DEFAULT_CACHE_NAME_DOWNLOADER
+
 .. autofunction:: fetch_pdb
    
 """
@@ -103,6 +105,8 @@ except ImportError:
 else:
     HAS_POOCH = True
 
+#: Name of the :mod:`pooch` cache directory ``pooch.os_cache( DEFAULT_CACHE_NAME_DOWNLOADER)``;
+#: see :func:`pooch.os_cache` for further details.
 DEFAULT_CACHE_NAME_DOWNLOADER = "MDAnalysis_pdbs"
 
 # These file formats are here (https://www.rcsb.org/docs/programmatic-access/file-download-services) under "PDB entry files"
