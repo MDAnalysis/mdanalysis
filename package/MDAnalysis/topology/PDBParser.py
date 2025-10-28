@@ -57,8 +57,7 @@ See Also
 * :class:`MDAnalysis.core.universe.Universe`
 
 
-Classes and Functions
--------
+---------------------
 
 .. autoclass:: PDBParser
    :members:
