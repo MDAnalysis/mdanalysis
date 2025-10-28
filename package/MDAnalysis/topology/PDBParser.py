@@ -56,8 +56,9 @@ See Also
 * :class:`MDAnalysis.coordinates.PDB.PDBReader`
 * :class:`MDAnalysis.core.universe.Universe`
 
-Classes
--------
+
+Classes and Functions
+---------------------
 
 .. autoclass:: PDBParser
    :members:
@@ -107,6 +108,8 @@ else:
 
 #: Name of the :mod:`pooch` cache directory ``pooch.os_cache(DEFAULT_CACHE_NAME_DOWNLOADER)``;
 #: see :func:`pooch.os_cache` for further details.
+#:
+#: .. versionadded:: 2.11.0
 DEFAULT_CACHE_NAME_DOWNLOADER = "MDAnalysis_pdbs"
 
 # These file formats are here (https://www.rcsb.org/docs/programmatic-access/file-download-services) under "PDB entry files"
