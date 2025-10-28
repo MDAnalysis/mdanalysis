@@ -56,8 +56,8 @@ See Also
 * :class:`MDAnalysis.coordinates.PDB.PDBReader`
 * :class:`MDAnalysis.core.universe.Universe`
 
-
----------------------
+Classes
+-------
 
 .. autoclass:: PDBParser
    :members:
@@ -621,7 +621,7 @@ def fetch_pdb(
     >>> mda.fetch_pdb(["1AKE", "4BWZ"], progressbar=True)
     ['./MDAnalysis_pdbs/1AKE.pdb.gz', './MDAnalysis_pdbs/4BWZ.pdb.gz']
 
-    Download a single PDB file and converting it to a universe:
+    Download a single PDB file and convert it to a universe:
 
     >>> mda.Universe(mda.fetch_pdb("1AKE"), file_format="pdb.gz")
     <Universe with 3816 atoms>
