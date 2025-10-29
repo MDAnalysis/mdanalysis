@@ -602,9 +602,10 @@ def fetch_pdb(
     .. _`RCSB File Download Services`:
        https://www.rcsb.org/docs/programmatic-access/file-download-services
 
-    The RCSB currently provides data in 'cif', 'cif.gz', 'bcif', 'bcif.gz', 'xml',
-    'xml.gz', 'pdb', 'pdb.gz', 'pdb1', 'pdb1.gz' file formats and can therefore be
-    downloaded. Not all of these formats can be currently read with MDAnalysis.
+    The RCSB currently provides data in ``'cif'`` , ``'cif.gz'`` , ``'bcif'`` ,
+    ``'bcif.gz'`` , ``'xml'`` , ``'xml.gz'`` , ``'pdb'`` , ``'pdb.gz'``,
+    ``'pdb1'``, ``'pdb1.gz'`` file formats and can therefore be downloaded.
+    Not all of these formats can be currently read with MDAnalysis.
 
     Caching, controlled by the `cache_path` parameter, is handled internally by
     :mod:`pooch`. The default cache name is taken from
