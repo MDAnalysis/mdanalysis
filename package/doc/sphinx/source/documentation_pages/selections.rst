@@ -138,7 +138,8 @@ resnum *resnum-number-range*
     residue id in the original PDB structure.
 
 resname *residue-name*
-    select by residue name, e.g. ``resname LYS``
+    select by residue name, e.g. ``resname LYS``. If a residue shares a name
+    with a selection keyword, the name must be escaped e.g. ``resname \\water``.
 
 name *atom-name*
     select by atom name (as given in the topology). Often, this is force
