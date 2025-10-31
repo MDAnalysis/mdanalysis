@@ -64,7 +64,7 @@ __all__ = ['histogram', 'OPENMP_ENABLED']
 cdef void _histogram_serial(
     const double[::1] distances,
     uint64_t n,
-    long[::1] hist,
+    cnp.int64_t[::1] hist,
     int nbins,
     double bin_width,
     double min_val,
@@ -79,7 +79,7 @@ cdef void _histogram_serial(
         1D memory view of distances
     n : uint64_t
         Number of distances
-    hist : long[::1]
+    hist : cnp.int64_t[::1]
         Output histogram array
     nbins : int
         Number of bins
@@ -108,12 +108,12 @@ cdef void _histogram_serial(
 cdef void _histogram_parallel(
     const double[::1] distances,
     uint64_t n,
-    long[::1] hist,
+    cnp.int64_t[::1] hist,
     int nbins,
     double bin_width,
     double min_val,
     double max_val,
-    long[:, ::1] partial_hists,
+    cnp.int64_t[:, ::1] partial_hists,
     int num_threads
 ) noexcept nogil:
     """
@@ -128,7 +128,7 @@ cdef void _histogram_parallel(
         1D memory view of distances
     n : uint64_t
         Number of distances
-    hist : long[::1]
+    hist : cnp.int64_t[::1]
         Output histogram array
     nbins : int
         Number of bins
@@ -138,7 +138,7 @@ cdef void _histogram_parallel(
         Minimum value of range
     max_val : double
         Maximum value of range
-    partial_hists : long[:, ::1]
+    partial_hists : cnp.int64_t[:, ::1]
         Preallocated array for thread-local histograms
     num_threads : int
         Number of OpenMP threads to use
@@ -250,19 +250,19 @@ def histogram(
         distances = distances.astype(np.float64)
 
     # Create output arrays
-    cdef cnp.ndarray[long, ndim=1] hist = np.zeros(nbins, dtype=np.int64)
+    cdef cnp.ndarray[cnp.int64_t, ndim=1] hist = np.zeros(nbins, dtype=np.int64)
     cdef cnp.ndarray[double, ndim=1] edges = np.linspace(min_val, max_val, nbins + 1)
 
     # Create memory views for efficient access
     cdef const double[::1] dist_view = distances
-    cdef long[::1] hist_view = hist
+    cdef cnp.int64_t[::1] hist_view = hist
 
     # Declare variables for parallel execution
     cdef int num_threads = 0  # 0 means use OpenMP default
     cdef uint64_t chunk_size
     cdef uint64_t n_chunks
-    cdef cnp.ndarray[long, ndim=2] partial_hists_arr
-    cdef long[:, ::1] partial_hists_view
+    cdef cnp.ndarray[cnp.int64_t, ndim=2] partial_hists_arr
+    cdef cnp.int64_t[:, ::1] partial_hists_view
 
     if use_parallel:
         # Calculate number of chunks and allocate partial histograms

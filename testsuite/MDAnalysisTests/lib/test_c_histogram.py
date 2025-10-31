@@ -31,9 +31,7 @@ class TestCythonHistogram:
         data = np.random.uniform(0, 15, 10000).astype(np.float64)
 
         np_hist, np_edges = np.histogram(data, bins=75, range=(0.0, 15.0))
-        opt_hist, opt_edges = histogram(
-            data, bins=75, range_vals=(0.0, 15.0)
-        )
+        opt_hist, opt_edges = histogram(data, bins=75, range_vals=(0.0, 15.0))
 
         assert_allclose(np_hist, opt_hist, rtol=1e-14, atol=1)
         assert_allclose(np_edges, opt_edges, rtol=1e-14)
@@ -44,9 +42,7 @@ class TestCythonHistogram:
         data = np.random.normal(7.5, 2, 10000).clip(0, 15).astype(np.float64)
 
         np_hist, np_edges = np.histogram(data, bins=75, range=(0.0, 15.0))
-        opt_hist, opt_edges = histogram(
-            data, bins=75, range_vals=(0.0, 15.0)
-        )
+        opt_hist, opt_edges = histogram(data, bins=75, range_vals=(0.0, 15.0))
 
         assert_allclose(np_hist, opt_hist, rtol=1e-14, atol=1)
         assert_allclose(np_edges, opt_edges, rtol=1e-14)
@@ -56,9 +52,7 @@ class TestCythonHistogram:
         data = np.zeros(1000, dtype=np.float64)
 
         np_hist, np_edges = np.histogram(data, bins=75, range=(0.0, 15.0))
-        opt_hist, opt_edges = histogram(
-            data, bins=75, range_vals=(0.0, 15.0)
-        )
+        opt_hist, opt_edges = histogram(data, bins=75, range_vals=(0.0, 15.0))
 
         assert_allclose(np_hist, opt_hist, rtol=1e-14, atol=1)
         assert_allclose(np_edges, opt_edges, rtol=1e-14)
@@ -68,9 +62,7 @@ class TestCythonHistogram:
         data = np.ones(1000, dtype=np.float64) * 14.999
 
         np_hist, np_edges = np.histogram(data, bins=75, range=(0.0, 15.0))
-        opt_hist, opt_edges = histogram(
-            data, bins=75, range_vals=(0.0, 15.0)
-        )
+        opt_hist, opt_edges = histogram(data, bins=75, range_vals=(0.0, 15.0))
 
         assert_allclose(np_hist, opt_hist, rtol=1e-14, atol=1)
         assert_allclose(np_edges, opt_edges, rtol=1e-14)
@@ -80,9 +72,7 @@ class TestCythonHistogram:
         data = np.array([0.0, 14.999, 15.0, 7.5] * 250, dtype=np.float64)
 
         np_hist, np_edges = np.histogram(data, bins=75, range=(0.0, 15.0))
-        opt_hist, opt_edges = histogram(
-            data, bins=75, range_vals=(0.0, 15.0)
-        )
+        opt_hist, opt_edges = histogram(data, bins=75, range_vals=(0.0, 15.0))
 
         # Allow for small differences at boundaries due to floating point precision
         assert_allclose(np_hist, opt_hist, rtol=1e-14, atol=1)
@@ -93,9 +83,7 @@ class TestCythonHistogram:
         data = np.linspace(0, 15, 1001, dtype=np.float64)
 
         np_hist, np_edges = np.histogram(data, bins=75, range=(0.0, 15.0))
-        opt_hist, opt_edges = histogram(
-            data, bins=75, range_vals=(0.0, 15.0)
-        )
+        opt_hist, opt_edges = histogram(data, bins=75, range_vals=(0.0, 15.0))
 
         # Allow for small differences at boundaries due to floating point precision
         assert_allclose(np_hist, opt_hist, rtol=1e-14, atol=1)
@@ -122,12 +110,8 @@ class TestCythonHistogram:
         data = np.random.random(10000).astype(np.float64) * 15.0
 
         for bins in [10, 50, 100, 200]:
-            np_hist, np_edges = np.histogram(
-                data, bins=bins, range=(0.0, 15.0)
-            )
-            opt_hist, opt_edges = histogram(
-                data, bins=bins, range_vals=(0.0, 15.0)
-            )
+            np_hist, np_edges = np.histogram(data, bins=bins, range=(0.0, 15.0))
+            opt_hist, opt_edges = histogram(data, bins=bins, range_vals=(0.0, 15.0))
 
             assert_allclose(
                 np_hist,
@@ -150,9 +134,7 @@ class TestCythonHistogram:
 
         for range_val in [(0.0, 10.0), (0.0, 20.0), (5.0, 15.0)]:
             np_hist, np_edges = np.histogram(data, bins=75, range=range_val)
-            opt_hist, opt_edges = histogram(
-                data, bins=75, range_vals=range_val
-            )
+            opt_hist, opt_edges = histogram(data, bins=75, range_vals=range_val)
 
             assert_allclose(
                 np_hist,
@@ -177,9 +159,7 @@ class TestCythonHistogram:
 
         assert not data_non_contig.flags["C_CONTIGUOUS"]
 
-        np_hist, np_edges = np.histogram(
-            data_non_contig, bins=75, range=(0.0, 15.0)
-        )
+        np_hist, np_edges = np.histogram(data_non_contig, bins=75, range=(0.0, 15.0))
         opt_hist, opt_edges = histogram(
             data_non_contig, bins=75, range_vals=(0.0, 15.0)
         )
@@ -194,9 +174,7 @@ class TestCythonHistogram:
         data = np.random.random(size).astype(np.float64) * 15.0
 
         np_hist, np_edges = np.histogram(data, bins=75, range=(0.0, 15.0))
-        opt_hist, opt_edges = histogram(
-            data, bins=75, range_vals=(0.0, 15.0)
-        )
+        opt_hist, opt_edges = histogram(data, bins=75, range_vals=(0.0, 15.0))
 
         assert_allclose(
             np_hist,
