@@ -110,8 +110,12 @@ class TestCythonHistogram:
         data = np.random.random(10000).astype(np.float64) * 15.0
 
         for bins in [10, 50, 100, 200]:
-            np_hist, np_edges = np.histogram(data, bins=bins, range=(0.0, 15.0))
-            opt_hist, opt_edges = histogram(data, bins=bins, range_vals=(0.0, 15.0))
+            np_hist, np_edges = np.histogram(
+                data, bins=bins, range=(0.0, 15.0)
+            )
+            opt_hist, opt_edges = histogram(
+                data, bins=bins, range_vals=(0.0, 15.0)
+            )
 
             assert_allclose(
                 np_hist,
@@ -134,7 +138,9 @@ class TestCythonHistogram:
 
         for range_val in [(0.0, 10.0), (0.0, 20.0), (5.0, 15.0)]:
             np_hist, np_edges = np.histogram(data, bins=75, range=range_val)
-            opt_hist, opt_edges = histogram(data, bins=75, range_vals=range_val)
+            opt_hist, opt_edges = histogram(
+                data, bins=75, range_vals=range_val
+            )
 
             assert_allclose(
                 np_hist,
@@ -159,7 +165,9 @@ class TestCythonHistogram:
 
         assert not data_non_contig.flags["C_CONTIGUOUS"]
 
-        np_hist, np_edges = np.histogram(data_non_contig, bins=75, range=(0.0, 15.0))
+        np_hist, np_edges = np.histogram(
+            data_non_contig, bins=75, range=(0.0, 15.0)
+        )
         opt_hist, opt_edges = histogram(
             data_non_contig, bins=75, range_vals=(0.0, 15.0)
         )
