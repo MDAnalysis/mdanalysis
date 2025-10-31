@@ -123,6 +123,7 @@ def nested_array_sum(arrs):
         aggregated_arr[1] += flat[2 * i + 1]  # 1, 3, 5, ...
     return aggregated_arr
 
+
 # Import optimized histogram
 from ..lib.c_histogram import histogram as optimized_histogram
 
