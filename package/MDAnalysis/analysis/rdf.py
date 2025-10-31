@@ -67,7 +67,7 @@ in a shell at distance :math:`r` around a :math:`a` particle, which is
 .. math::
    n_{ab}(r) = \rho g_{ab}(r)
 
-.. versionadded:: 2.10.0
+.. versionadded:: 2.11.0
    The RDF calculation now uses an optimized histogram implementation using
    Cython and OpenMP, providing 10-15x speedup for large datasets. The optimization
    uses parallel execution and cache-efficient memory access patterns.
@@ -85,7 +85,43 @@ import warnings
 import numpy as np
 
 from ..lib import distances
-from .base import AnalysisBase
+from .base import AnalysisBase, ResultsGroup
+
+
+def nested_array_sum(arrs):
+    r"""Custom aggregator for nested arrays
+
+    This function takes a nested list or tuple of NumPy arrays, flattens it
+    into a single list, and aggregates the elements at alternating indices
+    into two separate arrays. The first array accumulates elements at even
+    indices, while the second accumulates elements at odd indices.
+
+    Parameters
+    ----------
+    arrs : list
+        List of arrays or nested lists of arrays
+
+    Returns
+    -------
+    list of ndarray
+        A list containing two NumPy arrays:
+        - The first array is the sum of all elements at even indices
+          in the sum of flattened arrays.
+        - The second array is the sum of all elements at odd indices
+          in the sum of flattened arrays.
+    """
+
+    def flatten(arr):
+        if isinstance(arr, (list, tuple)):
+            return [item for sublist in arr for item in flatten(sublist)]
+        return [arr]
+
+    flat = flatten(arrs)
+    aggregated_arr = [np.zeros_like(flat[0]), np.zeros_like(flat[1])]
+    for i in range(len(flat) // 2):
+        aggregated_arr[0] += flat[2 * i]  # 0, 2, 4, ...
+        aggregated_arr[1] += flat[2 * i + 1]  # 1, 3, 5, ...
+    return aggregated_arr
 
 # Import optimized histogram
 from ..lib.c_histogram import histogram as optimized_histogram
@@ -229,7 +265,22 @@ class InterRDF(AnalysisBase):
        Store results as attributes `bins`, `edges`, `rdf` and `count`
        of the `results` attribute of
        :class:`~MDAnalysis.analysis.AnalysisBase`.
+
+    .. versionchanged:: 2.10.0
+       Enabled **parallel execution** with the ``multiprocessing`` and ``dask``
+       backends; use the new method :meth:`get_supported_backends` to see all
+       supported backends.
     """
+
+    @classmethod
+    def get_supported_backends(cls):
+        return (
+            "serial",
+            "multiprocessing",
+            "dask",
+        )
+
+    _analysis_algorithm_is_parallelizable = True
 
     def __init__(
         self,
@@ -288,7 +339,7 @@ class InterRDF(AnalysisBase):
 
         if self.norm == "rdf":
             # Cumulative volume for rdf normalization
-            self.volume_cum = 0
+            self.results.volume_cum = 0
         # Set the max range to filter the search radius
         self._maxrange = self.rdf_settings["range"][1]
 
@@ -324,7 +375,17 @@ class InterRDF(AnalysisBase):
         self.results.count += count
 
         if self.norm == "rdf":
-            self.volume_cum += self._ts.volume
+            self.results.volume_cum += self._ts.volume
+
+    def _get_aggregator(self):
+        return ResultsGroup(
+            lookup={
+                "count": ResultsGroup.ndarray_sum,
+                "volume_cum": ResultsGroup.ndarray_sum,
+                "bins": ResultsGroup.ndarray_sum,
+                "edges": ResultsGroup.ndarray_mean,
+            }
+        )
 
     def _conclude(self):
         norm = self.n_frames
@@ -346,6 +407,7 @@ class InterRDF(AnalysisBase):
                 N -= xA * xB * nblocks
 
             # Average number density
+            self.volume_cum = self.results.volume_cum
             box_vol = self.volume_cum / self.n_frames
             norm *= N / box_vol
 
@@ -589,7 +651,31 @@ class InterRDF_s(AnalysisBase):
        Instead of `density=True` use `norm='density'`
     .. deprecated:: 2.3.0
        The `universe` parameter is superflous.
+    .. versionchanged:: 2.10.0
+       Enabled **parallel execution** with the ``multiprocessing`` and ``dask``
+       backends; use the new method :meth:`get_supported_backends` to see all
+       supported backends.
     """
+
+    @classmethod
+    def get_supported_backends(cls):
+        return (
+            "serial",
+            "multiprocessing",
+            "dask",
+        )
+
+    _analysis_algorithm_is_parallelizable = True
+
+    def _get_aggregator(self):
+        return ResultsGroup(
+            lookup={
+                "count": nested_array_sum,
+                "volume_cum": ResultsGroup.ndarray_sum,
+                "bins": ResultsGroup.ndarray_mean,
+                "edges": ResultsGroup.ndarray_mean,
+            }
+        )
 
     def __init__(
         self,
@@ -642,7 +728,7 @@ class InterRDF_s(AnalysisBase):
 
         if self.norm == "rdf":
             # Cumulative volume for rdf normalization
-            self.volume_cum = 0
+            self.results.volume_cum = 0
         self._maxrange = self.rdf_settings["range"][1]
 
     def _single_frame(self):
@@ -655,12 +741,19 @@ class InterRDF_s(AnalysisBase):
                 backend=self.backend,
             )
 
-            for j, (idx1, idx2) in enumerate(pairs):
-                count, _ = np.histogram(dist[j], **self.rdf_settings)
-                self.results.count[i][idx1, idx2, :] += count
+            # Fast manual implementation for distance histogram (equidistant bins)
+            nbins = self.rdf_settings["bins"]
+            rmin, rmax = self.rdf_settings["range"]
+            bin_indices = (dist - rmin) * nbins / (rmax - rmin)
+            bin_indices = bin_indices.astype(np.int64)
+            counts = (bin_indices >= 0) & (bin_indices < nbins)
+            counts = counts.astype(np.int64)
+            idx1s = pairs[:, 0]
+            idx2s = pairs[:, 1]
+            self.results.count[i][idx1s, idx2s, bin_indices] += counts
 
         if self.norm == "rdf":
-            self.volume_cum += self._ts.volume
+            self.results.volume_cum += self._ts.volume
 
     def _conclude(self):
         norm = self.n_frames
@@ -671,6 +764,7 @@ class InterRDF_s(AnalysisBase):
 
         if self.norm == "rdf":
             # Average number density
+            self.volume_cum = self.results.volume_cum
             norm *= 1 / (self.volume_cum / self.n_frames)
 
         # Empty lists to restore indices, RDF

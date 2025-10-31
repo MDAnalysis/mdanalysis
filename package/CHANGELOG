@@ -14,10 +14,26 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, orbeckst, BHM-Bob, TRY-ER, Abdulrahman-PROG, pbuslaev,
-         yuxuanzhuang, yuyuan871111, tanishy7777, tulga-rdn, Gareth-elliott,
-         hmacdope, tylerjereddy, cbouy, talagayev, DrDomenicoMarson
+??/??/?? IAlibay
 
+ * 2.11.0
+
+Fixes
+
+Enhancements
+ * Added optimized histogram implementation using Cython and OpenMP
+   for RDF calculations, providing 10-15x speedup for large datasets
+   (Issue #3435, PR #5128)
+
+Changes
+
+Deprecations
+
+
+10/18/25 IAlibay, orbeckst, BHM-Bob, TRY-ER, Abdulrahman-PROG, pbuslaev,
+         yuxuanzhuang, yuyuan871111, tanishy7777, tulga-rdn, Gareth-elliott,
+         hmacdope, tylerjereddy, cbouy, talagayev, DrDomenicoMarson, amruthesht,
+         p-j-smith, gitzhangch, raulloiscuns
 
  * 2.10.0
 
@@ -42,9 +58,6 @@ Fixes
    directly passing them. (Issue #3520, PR #5006)
 
 Enhancements
- * Added optimized histogram implementation using Cython and OpenMP
-   for RDF calculations, providing 10-15x speedup for large datasets
-   (Issue #3435, PR #5103)
  * Added capability to calculate MSD from frames with irregular (non-linear)
    time spacing in analysis.msd.EinsteinMSD with keyword argument
    `non_linear=True` (Issue #5028, PR #5066)

@@ -41,7 +41,7 @@ jobs:
           - [macos-13, macosx_*, x86_64]
           - [windows-2022, win_amd64, AMD64]
           - [macos-14, macosx_*, arm64]
-        python: ["cp310", "cp311", "cp312", "cp313"]
+        python: ["cp311", "cp312", "cp313", "cp314"]
     defaults:
       run:
         working-directory: ./package
@@ -51,7 +51,7 @@ jobs:
           fetch-depth: 0
 
       - name: Build wheels
-        uses: pypa/cibuildwheel@v2.23.0
+        uses: pypa/cibuildwheel@v3.2.0
         with:
           package-dir: package
         env:
@@ -145,7 +145,7 @@ jobs:
           mv dist/mdanalysistests-* testsuite/dist
 
       - name: upload_source_and_wheels
-        uses: pypa/gh-action-pypi-publish@v1.12.4
+        uses: pypa/gh-action-pypi-publish@v1.13.0
         with:
           skip_existing: true
           repository_url: https://test.pypi.org/legacy/
@@ -174,7 +174,7 @@ jobs:
           mv dist/mdanalysistests-* testsuite/dist
 
       - name: upload_tests
-        uses: pypa/gh-action-pypi-publish@v1.12.4
+        uses: pypa/gh-action-pypi-publish@v1.13.0
         with:
           packages_dir: testsuite/dist
           skip_existing: true
@@ -204,7 +204,7 @@ jobs:
           mv dist/mdanalysistests-* testsuite/dist
 
       - name: upload_source_and_wheels
-        uses: pypa/gh-action-pypi-publish@v1.12.4
+        uses: pypa/gh-action-pypi-publish@v1.13.0
 
   upload_pypi_mdanalysistests:
     if: |
@@ -230,7 +230,7 @@ jobs:
           mv dist/mdanalysistests-* testsuite/dist
 
       - name: upload_tests
-        uses: pypa/gh-action-pypi-publish@v1.12.4
+        uses: pypa/gh-action-pypi-publish@v1.13.0
         with:
           packages_dir: testsuite/dist
 
@@ -246,14 +246,13 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ["3.10", "3.11", "3.12", "3.13"]
+        python-version: ["3.11", "3.12", "3.13", "3.14"]
         type: ["FULL", "MIN"]
         exclude:
           # Multiple deps don't like windows
           - os: windows-latest
             type: "FULL"
-          # Chemfiles won't install over py3.13
-          - python-version: "3.13"
+          - python-version: "3.14"
             type: "FULL"
     env:
       MPLBACKEND: agg

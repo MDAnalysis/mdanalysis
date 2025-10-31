@@ -36,7 +36,7 @@ The optimization strategies include:
 - Reduced Python overhead through Cython compilation
 - Optimized binning algorithm
 
-.. versionadded:: 2.10.0
+.. versionadded:: 2.11.0
 
 """
 
@@ -234,7 +234,7 @@ def histogram(
     >>> distances = np.random.random(10000) * 15.0
     >>> hist, edges = histogram(distances, bins=75, range_vals=(0, 15))
 
-    .. versionadded:: 2.10.0
+    .. versionadded:: 2.11.0
 
     """
     cdef double min_val = range_vals[0]

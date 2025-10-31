@@ -85,6 +85,9 @@ def is_keyword(val):
 def grab_not_keywords(tokens):
     """Pop tokens from the left until you hit a keyword
 
+    Keywords can be escaped with a backslash to allow their use as names,
+    e.g. '\\protein'
+
     Parameters
     ----------
     tokens : collections.deque
@@ -113,8 +116,8 @@ def grab_not_keywords(tokens):
     values = []
     while not is_keyword(tokens[0]):
         val = tokens.popleft()
-        # Insert escape characters here to use keywords as names?
-        values.append(val)
+        # Remove escape sequence to allow use of keywords as names
+        values.append(val.removeprefix("\\"))
     return values
 
 
