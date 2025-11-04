@@ -1,0 +1,32 @@
+[workspace]
+authors = ["MDAnalysis Developers"]
+channels = ["conda-forge"]
+name = "mdanalysis"
+platforms = ["linux-64", "osx-arm64"]
+version = "2.11.0.dev0"
+
+[tasks]
+build = "cd package && spin build -j 8"
+test = "cd package && spin test -j 8"
+
+[dependencies]
+numpy = ">=1.23.2"
+griddataformats = ">=0.4.0"
+mmtf-python = ">=1.0.0"
+python = "3.13.*"
+joblib = ">=0.12"
+scipy = ">=1.5.0"
+matplotlib = ">=1.5.1"
+tqdm = ">=4.43.0"
+threadpoolctl = ">=3.6.0,<4"
+packaging = ">=25.0,<26"
+filelock = ">=3.20.0,<4"
+mda-xdrlib = ">=0.2.0,<0.3"
+pytest = ">=8.4.2,<9"
+pytest-xdist = ">=3.8.0,<4"
+hypothesis = ">=6.145.1,<7"
+spin = ">=0.15,<0.16"
+meson-python = ">=0.18.0,<0.19"
+ninja = ">=1.13.1,<2"
+cython = ">=3.1.6,<4"
+pip = ">=25.2,<26"

@@ -52,7 +52,11 @@ benchmarks/results
 .idea
 .vscode
 *.lock
+!pixi.lock
 
 # meson
 .wraplock
 build-install
+# pixi environments
+.pixi/*
+!.pixi/config.toml
