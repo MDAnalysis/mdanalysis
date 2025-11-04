@@ -6,7 +6,13 @@ from MDAnalysisTests.datafiles import MMCIF as MMCIF_FOLDER
 
 
 @pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
-@pytest.mark.parametrize("basename", [f"{MMCIF_FOLDER}/1BD2"])
+@pytest.mark.parametrize(
+    "basename",
+    [
+        f"{MMCIF_FOLDER}/1BD2_short",
+        f"{MMCIF_FOLDER}/1BD2",
+    ],
+)
 @pytest.mark.filterwarnings("ignore::UserWarning")
 def test_legacy_pdb_vs_mmcif(basename):
     u_cif = mda.Universe(f"{basename}.cif.gz")
@@ -50,8 +56,7 @@ def test_chains(mmcif_filename, n_chains):
 def test_sequence(mmcif_filename, sequence):
     u = mda.Universe(mmcif_filename)
     in_structure = [
-        str(res.resname)
-        for res in u.select_atoms("protein and chainid A").residues
+        str(res.resname) for res in u.select_atoms("protein and chainid A").residues
     ]
     assert in_structure == sequence, ":".join(in_structure)
 
