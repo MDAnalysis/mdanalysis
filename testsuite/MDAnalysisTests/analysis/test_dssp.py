@@ -1,8 +1,9 @@
-import pytest
 import glob
-import MDAnalysis as mda
 
+import MDAnalysis as mda
+import pytest
 from MDAnalysis.analysis.dssp import DSSP, translate
+
 from MDAnalysisTests.datafiles import DSSP as DSSP_FOLDER
 from MDAnalysisTests.datafiles import TPR, XTC
 
@@ -20,7 +21,7 @@ def test_file_guess_hydrogens(pdb_filename, client_DSSP):
     with open(f"{pdb_filename.rstrip('.gz')}.dssp", "r") as fin:
         correct_answ = fin.read().strip().split()[0]
 
-    run = DSSP(u, guess_hydrogens=True, ignore_proline_donor=False).run(
+    run = DSSP(u, guess_hydrogens=True, ignore_proline_donor=True).run(
         **client_DSSP
     )
     answ = "".join(run.results.dssp[0])
