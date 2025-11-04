@@ -239,7 +239,7 @@ def get_Residueattrs(
     """
     (
         icodes,  # residue.seqid.icode
-        resids,  # residue.seqid.num
+        resids,  # residue.seqid.num # FIXME: perhaps this is what's wrong, and not residx per se?
         resnames,  # residue.name
         segidx,  # chain.name
         resnums,  # residue.seqid.num
