@@ -178,7 +178,9 @@ def get_Atomattrs(model: "gemmi.Model") -> tuple[list[AtomAttr], np.ndarray]:
     )
 
     # transform *idx into continious numpy arrays
+    print(f"Before: {len(residx)=}")
     residx = np.array(_into_idx(residx))
+    print(f"After: {len(residx)=}")
 
     # fill in altlocs, since gemmi has '' as default
     altlocs = ["A" if not elem else elem for elem in altlocs]
