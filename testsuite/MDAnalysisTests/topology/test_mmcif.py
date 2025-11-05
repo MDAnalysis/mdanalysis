@@ -20,9 +20,13 @@ def test_legacy_pdb_vs_mmcif(basename):
     u_cif = mda.Universe(f"{basename}.cif.gz")
     u_pdb = mda.Universe(f"{basename}.pdb.gz")
     assert len(u_pdb.atoms) == len(u_cif.atoms)
-    assert len(u_pdb.select_atoms("segid *")) == len(u_cif.select_atoms("segid *"))
+    assert len(u_pdb.select_atoms("segid *")) == len(
+        u_cif.select_atoms("segid *")
+    )
 
-    assert len(u_pdb.select_atoms("protein")) == len(u_cif.select_atoms("protein"))
+    assert len(u_pdb.select_atoms("protein")) == len(
+        u_cif.select_atoms("protein")
+    )
 
     assert len(u_pdb.select_atoms("name CA and segid D")) == len(
         u_cif.select_atoms("name CA and segid D")
@@ -32,13 +36,17 @@ def test_legacy_pdb_vs_mmcif(basename):
             assert len(u_pdb.select_atoms(f"segid {segment}")) == len(
                 u_cif.select_atoms(f"segid {segment}")
             )
-            assert len(u_pdb.select_atoms(f"segid {segment} and resid {resid}")) == len(
-                u_cif.select_atoms(f"segid {segment} and resid {resid}")
-            )
             assert len(
-                u_pdb.select_atoms(f"segid {segment} and resid {resid} and name CA")
+                u_pdb.select_atoms(f"segid {segment} and resid {resid}")
+            ) == len(u_cif.select_atoms(f"segid {segment} and resid {resid}"))
+            assert len(
+                u_pdb.select_atoms(
+                    f"segid {segment} and resid {resid} and name CA"
+                )
             ) == len(
-                u_cif.select_atoms(f"segid {segment} and resid {resid} and name CA")
+                u_cif.select_atoms(
+                    f"segid {segment} and resid {resid} and name CA"
+                )
             )
 
 
@@ -76,7 +84,8 @@ def test_chains(mmcif_filename, n_chains):
 def test_sequence(mmcif_filename, sequence):
     u = mda.Universe(mmcif_filename)
     in_structure = [
-        str(res.resname) for res in u.select_atoms("protein and chainid A").residues
+        str(res.resname)
+        for res in u.select_atoms("protein and chainid A").residues
     ]
     assert in_structure == sequence, ":".join(in_structure)
 
