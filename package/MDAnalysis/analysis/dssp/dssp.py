@@ -144,12 +144,14 @@ Functions
 .. autofunction:: translate
 """
 
-from typing import Union, Optional
-import numpy as np
-from MDAnalysis import Universe, AtomGroup
+from typing import Optional, Union
 
+import numpy as np
+
+from MDAnalysis import AtomGroup, Universe
+
+from ...due import Doi, due
 from ..base import AnalysisBase, ResultsGroup
-from ...due import due, Doi
 
 due.cite(
     Doi("10.1002/bip.360221211"),
@@ -163,8 +165,8 @@ del Doi
 
 try:  # pragma: no cover
     from pydssp.pydssp_numpy import (
-        assign,
         _get_hydrogen_atom_position,
+        assign,
     )
 
     HAS_PYDSSP = True
@@ -172,8 +174,8 @@ try:  # pragma: no cover
 except ModuleNotFoundError:
     HAS_PYDSSP = False
     from .pydssp_numpy import (
-        assign,
         _get_hydrogen_atom_position,
+        assign,
     )
 
 
@@ -234,15 +236,6 @@ class DSSP(AnalysisBase):
            (e.g., a :exc:`ValueError` is raised) you must customize `hydrogen_name`
            for your specific case.
 
-    ignore_proline_donor : bool, optional, default ``True``
-         If ``True`` (the default) do not consider HN on proline to be a hydrogen
-         donor for the purpose of calculating secondary structure.
-
-         .. versionadded:: 2.10.0
-            The default ``True`` is the correct DSSP behavior and fixes the earlier
-            implementation. Setting to ``False`` recovers behavior from 2.9.x and
-            earlier.
-
 
     Raises
     ------
@@ -291,8 +284,9 @@ class DSSP(AnalysisBase):
        supported backends.
 
     .. versionchanged:: 2.10.0
-       Change treatment of proline and follow pydssp 0.9.1 (with
-       ``ignore_proline_donor=True``).
+       Change treatment of proline and follow pydssp 0.9.1 (prolines are now explicitly
+       forbidden to participate in the hydrogen bond network). Previous version could yield
+       wrong assignment of prolines.
     """
 
     _analysis_algorithm_is_parallelizable = True
@@ -312,7 +306,6 @@ class DSSP(AnalysisBase):
         *,
         heavyatom_names: tuple[str] = ("N", "CA", "C", "O O1 OT1"),
         hydrogen_name: str = "H HN HT1 HT2 HT3",
-        ignore_proline_donor: bool = True,
     ):
         self._guess_hydrogens = guess_hydrogens
 
@@ -329,9 +322,7 @@ class DSSP(AnalysisBase):
             ]
             for t in heavyatom_names
         }
-        self._donor_mask: Optional[np.ndarray] = (
-            ag.residues.resnames != "PRO" if ignore_proline_donor else None
-        )
+        self._donor_mask: Optional[np.ndarray] = ag.residues.resnames != "PRO"
         self._hydrogens: list["AtomGroup"] = [
             res.atoms.select_atoms(f"name {hydrogen_name}")
             for res in ag.residues

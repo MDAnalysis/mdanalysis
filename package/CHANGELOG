@@ -22,11 +22,6 @@ Fixes
  * Fixes incorrect assignment of secondary structure to proline residues in
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
-Enhancements
- * Adds new kwarg `ignore_proline_donor=True` to analysis.dssp.DSSP so that
-   proline HN are not used as H-bond donors in secondary structure
-   calculation. Set to `False` to recover behavior from <2.10.0 (Issue #4913)
-
 Changes
 
 Deprecations
