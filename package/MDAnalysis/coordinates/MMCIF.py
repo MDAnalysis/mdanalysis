@@ -127,7 +127,7 @@ class MMCIFReader(base.SingleFrameReaderBase):
             ]
         )
         if len(structure) > 1:
-            warnings.warn(  # FIXME: add tests for this
+            warnings.warn(
                 f"File {self.filename} has {len(structure)=} models, but only the first one will be read"
             )
 

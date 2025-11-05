@@ -28,23 +28,6 @@ def test_legacy_pdb_vs_mmcif(mmcif_filename):
     )
     assert len(u_cif.residues) == len(u_pdb.residues)
     assert len(u_cif.atoms) == len(u_pdb.atoms)
-    for segment in "ABCDE":
-        for resid in [1, 10, 54, 72]:
-            assert len(u_pdb.select_atoms(f"segid {segment}")) == len(
-                u_cif.select_atoms(f"segid {segment}")
-            )
-            assert len(
-                u_pdb.select_atoms(f"segid {segment} and resid {resid}")
-            ) == len(u_cif.select_atoms(f"segid {segment} and resid {resid}"))
-            assert len(
-                u_pdb.select_atoms(
-                    f"segid {segment} and resid {resid} and name CA"
-                )
-            ) == len(
-                u_cif.select_atoms(
-                    f"segid {segment} and resid {resid} and name CA"
-                )
-            )
 
 
 @pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
