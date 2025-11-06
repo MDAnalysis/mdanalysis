@@ -115,7 +115,7 @@ class MMCIFReader(base.SingleFrameReaderBase):
     .. versionadded:: 2.9.0
     """
 
-    format = ["cif", "cif.gz", "mmcif", "mmcif.gz"]
+    format = ["cif", "cif.gz", "mmcif", "mmcif.gz", "pdb_gemmi"]
     units = {"time": None, "length": "Angstrom"}
 
     def _read_first_frame(self):

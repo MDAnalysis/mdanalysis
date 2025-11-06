@@ -62,6 +62,22 @@ def test_works_without_explicit_format(mmcif_filename):
 
 @pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
 @pytest.mark.parametrize(
+    "mmcif_filename",
+    [
+        f
+        for f in glob.glob(f"{MMCIF_FOLDER}/*.pdb*")
+        if "invalid" not in f and "warning" not in f
+    ],
+)
+@pytest.mark.filterwarnings("ignore::UserWarning")
+def test_pdb_parsing(mmcif_filename):
+    u_gemmi = mda.Universe(mmcif_filename, format="pdb_gemmi")
+    u_pdb = mda.Universe(mmcif_filename, format="pdb_gemmi")
+    assert u_gemmi.trajectory.n_atoms == u_pdb.trajectory.n_atoms
+
+
+@pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
+@pytest.mark.parametrize(
     "mmcif_filename,natoms_protein,natoms_total",
     [
         (f"{MMCIF_FOLDER}/1YJP.cif", 59, 66),

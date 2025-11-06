@@ -56,6 +56,12 @@ numbers up to 99,999.
    that you're having troubles parsing with standard PDB parser. ``MMCIFParser``
    uses ``gemmi`` library (https://github.com/project-gemmi/gemmi) that is developed
    together with RCSB, and might work better for your particular situation.
+   You can do that via providing explicit ``format='pdb_gemmi'`` when creating ``Universe``:
+
+    .. code-block:: python
+
+        u = MDAnalysis.Universe('model.pdb', format='pdb_gemmi')
+
 
 See Also
 --------
