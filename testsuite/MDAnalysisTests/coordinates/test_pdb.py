@@ -56,7 +56,11 @@ from MDAnalysisTests.datafiles import (
     mol2_molecule,
     PDB_charges,
     CONECT_ERROR,
+    MMCIF as MMCIF_FOLDER,
 )
+
+from MDAnalysis.coordinates.MMCIF import HAS_GEMMI
+
 from numpy.testing import (
     assert_equal,
     assert_array_almost_equal,
@@ -1612,3 +1616,8 @@ ATOM    665  OG1 THR A 315      21.047  13.922   1.304  1.00 15.14        B  O
     # After version 2.10.0, segid is read from column 73-76.
     # segid is set to "B" for all atoms
     assert_equal(u_standard.atoms.segids, ["B"] * len(u_standard.atoms))
+
+
+def test_pdb_with_hexadecimal_residues():
+    u = mda.Universe(f"{MMCIF_FOLDER}/1f0u_solv.pdb.gz", format="pdb_gemmi")
+    assert len(u.select_atoms("water and segid E").residues) == 10_814
