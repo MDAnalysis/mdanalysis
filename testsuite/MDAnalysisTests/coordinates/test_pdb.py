@@ -1618,6 +1618,7 @@ ATOM    665  OG1 THR A 315      21.047  13.922   1.304  1.00 15.14        B  O
     assert_equal(u_standard.atoms.segids, ["B"] * len(u_standard.atoms))
 
 
+@pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
 def test_pdb_with_hexadecimal_residues():
     u = mda.Universe(f"{MMCIF_FOLDER}/1f0u_solv.pdb.gz", format="pdb_gemmi")
     assert len(u.select_atoms("water and segid E").residues) == 10_814
