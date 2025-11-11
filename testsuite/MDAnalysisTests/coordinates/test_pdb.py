@@ -26,42 +26,47 @@ from io import StringIO
 import MDAnalysis as mda
 import numpy as np
 import pytest
+from MDAnalysis.coordinates.MMCIF import HAS_GEMMI
+from numpy.testing import (
+    assert_allclose,
+    assert_almost_equal,
+    assert_array_almost_equal,
+    assert_equal,
+)
+
 from MDAnalysisTests import make_Universe
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
-from MDAnalysisTests.coordinates.reference import RefAdKSmall, RefAdK
+from MDAnalysisTests.coordinates.reference import RefAdK, RefAdKSmall
 from MDAnalysisTests.datafiles import (
-    PDB,
-    PDB_small,
-    PDB_multiframe,
-    PDB_full,
-    PDB_varying,
-    XPDB_small,
-    PSF,
-    DCD,
-    CONECT,
-    CRD,
-    INC_PDB,
-    PDB_xlserial,
     ALIGN,
-    ENT,
-    PDB_cm,
-    PDB_cm_gz,
-    PDB_cm_bz2,
-    PDB_mc,
-    PDB_mc_gz,
-    PDB_mc_bz2,
-    PDB_CRYOEM_BOX,
-    MMTF_NOCRYST,
-    PDB_HOLE,
-    mol2_molecule,
-    PDB_charges,
+    CONECT,
     CONECT_ERROR,
+    CRD,
+    DCD,
+    ENT,
+    INC_PDB,
+    MMTF_NOCRYST,
+    PDB,
+    PDB_CRYOEM_BOX,
+    PDB_HOLE,
+    PSF,
+    PDB_charges,
+    PDB_cm,
+    PDB_cm_bz2,
+    PDB_cm_gz,
+    PDB_full,
+    PDB_mc,
+    PDB_mc_bz2,
+    PDB_mc_gz,
+    PDB_multiframe,
+    PDB_small,
+    PDB_varying,
+    PDB_xlserial,
+    XPDB_small,
+    mol2_molecule,
 )
-from numpy.testing import (
-    assert_equal,
-    assert_array_almost_equal,
-    assert_almost_equal,
-    assert_allclose,
+from MDAnalysisTests.datafiles import (
+    MMCIF as MMCIF_FOLDER,
 )
 
 IGNORE_NO_INFORMATION_WARNING = (
@@ -116,8 +121,7 @@ class TestPDBReader(_SingleFrameReader):
 class TestPDBMetadata(object):
     header = "HYDROLASE                               11-MAR-12   4E43"
     title = [
-        "HIV PROTEASE (PR) DIMER WITH ACETATE IN EXO SITE AND PEPTIDE "
-        "IN ACTIVE",
+        "HIV PROTEASE (PR) DIMER WITH ACETATE IN EXO SITE AND PEPTIDE IN ACTIVE",
         "2 SITE",
     ]
     compnd = [
@@ -317,7 +321,7 @@ class TestPDBWriter(object):
         return make_Universe(["resids", "resnames"], trajectory=True)
 
     def test_writer(self, universe, outfile):
-        "Test writing from a single frame PDB file to a PDB file." ""
+        "Test writing from a single frame PDB file to a PDB file."
         universe.atoms.write(outfile)
         u = mda.Universe(PSF, outfile)
         assert_almost_equal(
@@ -568,7 +572,7 @@ class TestPDBWriter(object):
         u.atoms.write(outfile)
         written = mda.Universe(outfile)
         written_atoms = written.select_atoms(
-            "resname ETA and " "record_type HETATM"
+            "resname ETA and record_type HETATM"
         )
 
         assert len(u_hetatms) == len(written_atoms), "mismatched HETATM number"
@@ -1612,3 +1616,10 @@ ATOM    665  OG1 THR A 315      21.047  13.922   1.304  1.00 15.14        B  O
     # After version 2.10.0, segid is read from column 73-76.
     # segid is set to "B" for all atoms
     assert_equal(u_standard.atoms.segids, ["B"] * len(u_standard.atoms))
+
+
+@pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
+def test_pdb_with_hexadecimal_residues():
+    u = mda.Universe(f"{MMCIF_FOLDER}/1f0u_solv.pdb.gz", format="pdb_gemmi")
+    assert len(u.select_atoms("water and segid E").residues) == 10_814
+    assert len(u.select_atoms("water and resid 1").residues) == 1

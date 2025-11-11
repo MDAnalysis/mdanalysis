@@ -19,13 +19,13 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "MDAnalysis"
 dynamic = ['version', 'readme']
-license = {file = "LICENSE"}
+license = { file = "LICENSE" }
 description = "An object-oriented toolkit to analyze molecular dynamics trajectories."
 authors = [
-    {name = 'MDAnalysis Development Team', email = 'mdanalysis@numfocus.org'}
+    { name = 'MDAnalysis Development Team', email = 'mdanalysis@numfocus.org' },
 ]
 maintainers = [
-    {name = 'MDAnalysis Core Developers', email = 'mdanalysis@numfocus.org'}
+    { name = 'MDAnalysis Core Developers', email = 'mdanalysis@numfocus.org' },
 ]
 requires-python = ">=3.11"
 dependencies = [
@@ -42,8 +42,14 @@ dependencies = [
     'mda-xdrlib',
 ]
 keywords = [
-    "python", "science", "chemistry", "biophysics", "molecular-dynamics",
-    "computational-chemistry", "molecular-simulation", "analysis",
+    "python",
+    "science",
+    "chemistry",
+    "biophysics",
+    "molecular-dynamics",
+    "computational-chemistry",
+    "molecular-simulation",
+    "analysis",
     "trajectory-analysis",
 ]
 classifiers = [
@@ -75,6 +81,7 @@ extra_formats = [
     "pyedr>=0.7.0",
     "pytng>=0.2.3",
     "gsd>3.0.0",
+    "gemmi>=0.7.3",     # for mmcif format
     "rdkit>=2022.09.1",
     "imdclient>=0.2.2",
 ]
@@ -96,9 +103,7 @@ doc = [
     "pybtex",
     "pybtex-docutils",
 ]
-parallel = [
-    "dask",
-]
+parallel = ["dask"]
 
 [project.urls]
 Homepage = "https://www.mdanalysis.org"
@@ -120,16 +125,14 @@ zip-safe = false
 find = {}
 
 [tool.setuptools.package-data]
-MDAnalysis = [
-    'analysis/data/*.npy',
-]
+MDAnalysis = ['analysis/data/*.npy']
 
 [tool.black]
 line-length = 79
 target-version = ['py311', 'py312', 'py313']
 extend-exclude = '''
 (
-__pycache__ 
+__pycache__
 | MDAnalysis/coordinates/DCD\.py
 | MDAnalysis/coordinates/TRJ\.py
 | MDAnalysis/coordinates/__init__\.py
@@ -139,8 +142,6 @@ __pycache__
 | MDAnalysis/coordinates/__init__\.py
 | MDAnalysis/coordinates/base\.py
 | MDAnalysis/topology/tpr/utils\.py
-| MDAnalysis/coordinates/MMCIF\.py
-| MDAnalysis/topology/MMCIFParser\.py
 | MDAnalysis/topology/PDBParser\.py
 | MDAnalysis/topology/__init__\.py
 | .*\.pyx

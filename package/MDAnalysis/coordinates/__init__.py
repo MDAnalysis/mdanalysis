@@ -807,3 +807,4 @@ from . import null
 from . import NAMDBIN
 from . import FHIAIMS
 from . import TNG
+from . import MMCIF
