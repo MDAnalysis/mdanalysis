@@ -112,7 +112,7 @@ else:
 #: .. versionadded:: 2.11.0
 DEFAULT_CACHE_NAME_DOWNLOADER = "MDAnalysis_pdbs"
 
-# These file formats are here (https://www.rcsb.org/docs/programmatic-access/file-download-services) under "PDB entry files"
+# These file formats are here https://www.rcsb.org/docs/programmatic-access/file-download-services#pdb-entry-files"
 SUPPORTED_FILE_FORMATS_DOWNLOADER = (
     "cif",
     "cif.gz",
