@@ -254,27 +254,27 @@
 <span class="sd">   :inherited-members:</span>
 
 <span class="sd">   .. attribute:: results.dssp</span>
-<span class="sd">   </span>
-<span class="sd">      Contains the time series of the DSSP assignment as a </span>
+
+<span class="sd">      Contains the time series of the DSSP assignment as a</span>
 <span class="sd">      :class:`numpy.ndarray` array of shape ``(n_frames, n_residues)`` where each row</span>
-<span class="sd">      contains the assigned secondary structure character for each residue (whose </span>
+<span class="sd">      contains the assigned secondary structure character for each residue (whose</span>
 <span class="sd">      corresponding resid is stored in :attr:`results.resids`). The three characters</span>
 <span class="sd">      are [&#39;H&#39;, &#39;E&#39;, &#39;-&#39;] and representi alpha-helix, sheet and loop, respectively.</span>
 
 <span class="sd">   .. attribute:: results.dssp_ndarray</span>
-<span class="sd">   </span>
+
 <span class="sd">      Contains the one-hot encoding of the time series of the DSSP assignment</span>
-<span class="sd">      as a :class:`numpy.ndarray` Boolean array of shape ``(n_frames, n_residues, 3)`` </span>
+<span class="sd">      as a :class:`numpy.ndarray` Boolean array of shape ``(n_frames, n_residues, 3)``</span>
 <span class="sd">      where for each residue the encoding is stored as ``(3,)`` shape</span>
-<span class="sd">      :class:`numpy.ndarray` of Booleans so that ``True`` at index 0 represents loop </span>
-<span class="sd">      (&#39;-&#39;), ``True`` at index 1 represents helix (&#39;H&#39;), and ``True`` at index 2 </span>
+<span class="sd">      :class:`numpy.ndarray` of Booleans so that ``True`` at index 0 represents loop</span>
+<span class="sd">      (&#39;-&#39;), ``True`` at index 1 represents helix (&#39;H&#39;), and ``True`` at index 2</span>
 <span class="sd">      represents sheet &#39;E&#39;.</span>
 
 <span class="sd">      .. SeeAlso:: :func:`translate`</span>
-<span class="sd">      </span>
+
 
 <span class="sd">   .. attribute:: results.resids</span>
-<span class="sd">   </span>
+
 <span class="sd">      A :class:`numpy.ndarray` of length ``n_residues`` that contains the residue IDs</span>
 <span class="sd">      (resids) for the protein residues that were assigned a secondary structure.</span>
 
@@ -286,12 +286,14 @@
 <span class="sd">.. autofunction:: translate</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">Universe</span><span class="p">,</span> <span class="n">AtomGroup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">AtomGroup</span><span class="p">,</span> <span class="n">Universe</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">...due</span><span class="w"> </span><span class="kn">import</span> <span class="n">Doi</span><span class="p">,</span> <span class="n">due</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..base</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnalysisBase</span><span class="p">,</span> <span class="n">ResultsGroup</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">...due</span><span class="w"> </span><span class="kn">import</span> <span class="n">due</span><span class="p">,</span> <span class="n">Doi</span>
 
 <span class="n">due</span><span class="o">.</span><span class="n">cite</span><span class="p">(</span>
     <span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1002/bip.360221211&quot;</span><span class="p">),</span>
@@ -305,8 +307,8 @@
 
 <span class="k">try</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">pydssp.pydssp_numpy</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-        <span class="n">assign</span><span class="p">,</span>
         <span class="n">_get_hydrogen_atom_position</span><span class="p">,</span>
+        <span class="n">assign</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">HAS_PYDSSP</span> <span class="o">=</span> <span class="kc">True</span>
@@ -314,8 +316,8 @@
 <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
     <span class="n">HAS_PYDSSP</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">.pydssp_numpy</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-        <span class="n">assign</span><span class="p">,</span>
         <span class="n">_get_hydrogen_atom_position</span><span class="p">,</span>
+        <span class="n">assign</span><span class="p">,</span>
     <span class="p">)</span>
 
 
@@ -424,6 +426,11 @@
 <span class="sd">       Enabled **parallel execution** with the ``multiprocessing`` and ``dask``</span>
 <span class="sd">       backends; use the new method :meth:`get_supported_backends` to see all</span>
 <span class="sd">       supported backends.</span>
+
+<span class="sd">    .. versionchanged:: 2.10.0</span>
+<span class="sd">       Change treatment of proline and follow pydssp 0.9.1 (prolines are now explicitly</span>
+<span class="sd">       forbidden to participate in the hydrogen bond network). Previous version could yield</span>
+<span class="sd">       wrong assignment of prolines.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_analysis_algorithm_is_parallelizable</span> <span class="o">=</span> <span class="kc">True</span>
@@ -462,6 +469,7 @@
             <span class="p">]</span>
             <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">heavyatom_names</span>
         <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_donor_mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">resnames</span> <span class="o">!=</span> <span class="s2">&quot;PRO&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_hydrogens</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="s2">&quot;AtomGroup&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">res</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;name </span><span class="si">{</span><span class="n">hydrogen_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">ag</span><span class="o">.</span><span class="n">residues</span>
@@ -538,7 +546,7 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">coords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_coords</span><span class="p">()</span>
-        <span class="n">dssp</span> <span class="o">=</span> <span class="n">assign</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+        <span class="n">dssp</span> <span class="o">=</span> <span class="n">assign</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">donor_mask</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_donor_mask</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dssp_ndarray</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dssp</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

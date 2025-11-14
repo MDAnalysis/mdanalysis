@@ -372,6 +372,11 @@ used to compute, for instance, the <strong>average secondary structure</strong>:
 backends; use the new method <a class="reference internal" href="#MDAnalysis.analysis.dssp.dssp.DSSP.get_supported_backends" title="MDAnalysis.analysis.dssp.dssp.DSSP.get_supported_backends"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_supported_backends()</span></code></a> to see all
 supported backends.</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.10.0: </span>Change treatment of proline and follow pydssp 0.9.1 (prolines are now explicitly
+forbidden to participate in the hydrogen bond network). Previous version could yield
+wrong assignment of prolines.</p>
+</div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.dssp.dssp.DSSP.results.dssp">
 <span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">dssp</span></span><a class="headerlink" href="#MDAnalysis.analysis.dssp.dssp.DSSP.results.dssp" title="Link to this definition"></a></dt>
@@ -539,15 +544,23 @@ support parallelizable execution.</p>
 <h2><span class="section-number">4.8.1.4.3. </span>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.dssp.dssp.assign">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.dssp.dssp.</span></span><span class="sig-name descname"><span class="pre">assign</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coord</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><span class="pre">ndarray</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/dssp/pydssp_numpy.html#assign"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.dssp.dssp.assign" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.dssp.dssp.</span></span><span class="sig-name descname"><span class="pre">assign</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coord</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><span class="pre">ndarray</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">donor_mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><span class="pre">ndarray</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.3)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/dssp/pydssp_numpy.html#assign"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.dssp.dssp.assign" title="Link to this definition"></a></dt>
 <dd><p>Assigns secondary structure for a given coordinate array,
 either with or without assigned hydrogens</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>coord</strong> (<em>np.ndarray</em>) – input coordinates in either (n, 4, 3) or (n, 5, 3) shape,
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>coord</strong> (<em>np.ndarray</em>) – input coordinates in either (n, 4, 3) or (n, 5, 3) shape,
 without or with hydrogens, respectively. Second dimension <cite>k</cite> represents
 (N, CA, C, O) atoms coordinates (if k=4), or (N, CA, C, O, H) coordinates
-(when k=5).</p>
+(when k=5).</p></li>
+<li><p><strong>donor_mask</strong> (<em>np.array</em>) – <p>Mask out any hydrogens that should not be considered (in particular HN
+in PRO). If <code class="docutils literal notranslate"><span class="pre">None</span></code> then all H will be used (behavior up to 2.9.0).</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.10.0.</span></p>
+</div>
+</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>output (n,) array with one-hot labels in C3 notation (‘-’, ‘H’, ‘E’),
@@ -559,6 +572,9 @@ representing loop, helix and sheet, respectively.</p>
 </dl>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 2.8.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.10.0: </span>Support masking of donors.</p>
 </div>
 </dd></dl>
 
