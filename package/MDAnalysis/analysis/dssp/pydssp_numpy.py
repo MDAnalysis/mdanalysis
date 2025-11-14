@@ -134,7 +134,7 @@ def get_hbond_map(
         are used.
     donor_mask : np.array
          Mask out any hydrogens that should not be considered (in particular HN
-         in PRO). If ``None`` then all H will be used (behavior up to 2.9.0).
+         in PRO). If ``None`` then all H will be used (behavior up to 2.10.0).
 
          .. versionadded:: 2.10.0
 
