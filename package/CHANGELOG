@@ -14,11 +14,13 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, orbeckst, marinegor
+??/??/?? IAlibay, orbeckst, marinegor, tylerjereddy
 
  * 2.11.0
 
 Fixes
+ * Fix incorrect TPR file parsing for GROMACS topologies produced prior
+   to version 5.1.0 (Issue #5145, PR #5146)
  * Fixes incorrect assignment of secondary structure to proline residues in
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
