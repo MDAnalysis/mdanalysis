@@ -361,6 +361,8 @@ __all__ = [
     "LYSJaninArray",  # time series of chi1/chi2 angles
     "PDB_rama",
     "PDB_janin",  # for testing failures of Ramachandran and Janin classes
+    "PDB_sasa",
+    "PDB_rsasa",  # for testing failures of SASA and RSASA classes
     "BATArray",  # time series of bond-angle-torsion coordinates array from Molecule_comments_header.mol2
     # DOS line endings
     "WIN_PDB_multiframe",
@@ -887,6 +889,9 @@ JaninArray = (_data_ref / "adk_oplsaa_janin.npy").as_posix()
 LYSJaninArray = (_data_ref / "adk_oplsaa_LYS_janin.npy").as_posix()
 PDB_rama = (_data_ref / "19hc.pdb.gz").as_posix()
 PDB_janin = (_data_ref / "1a28.pdb.gz").as_posix()
+
+PDB_sasa = (_data_ref / "adk_oplsaa_sasa.npy").as_posix()
+PDB_rsasa = (_data_ref / "adk_oplsaa_rsasa.npy").as_posix()
 
 BATArray = (_data_ref / "mol2_comments_header_bat.npy").as_posix()
 

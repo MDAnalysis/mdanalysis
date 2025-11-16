@@ -14,7 +14,7 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, orbeckst, marinegor, tylerjereddy
+??/??/?? IAlibay, orbeckst, marinegor, tylerjereddy, JureCerar
 
  * 2.11.0
 
@@ -23,6 +23,10 @@ Fixes
    to version 5.1.0 (Issue #5145, PR #5146)
  * Fixes incorrect assignment of secondary structure to proline residues in
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
+
+Enhancements
+ * Add calculation for the accessible surface area, and relative accessible
+   surface area using Shrake-Rupley algorithm (PR #2439)
 
 Changes
 

@@ -48,5 +48,6 @@ __all__ = [
     "rdf",
     "results",
     "rms",
+    "sasa",
     "waterdynamics",
 ]
