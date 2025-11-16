@@ -2,7 +2,8 @@ import MDAnalysis as mda
 import pytest
 from pathlib import Path
 from io import StringIO
-from MDAnalysis.lib.util import NamedStream
+import gzip
+from MDAnalysis.lib import util
 from MDAnalysis.coordinates.MMCIF import HAS_GEMMI
 
 from MDAnalysisTests.datafiles import MMCIF as MMCIF_FOLDER
@@ -116,11 +117,16 @@ def test_multimodel_warning_msg():
     [
         (f"{MMCIF_FOLDER}/1BD2_short.cif.gz", None),
         (Path(f"{MMCIF_FOLDER}/1BD2_short.cif.gz"), None),
-        (StringIO(open(f"{MMCIF_FOLDER}/1BD2_short.cif.gz")), "CIF"),
-        (open(f"{MMCIF_FOLDER}/1BD2_short.cif.gz"), "CIF"),
         (
-            NamedStream(
-                StringIO(open(f"{MMCIF_FOLDER}/1BD2_short.cif.gz")),
+            StringIO(util.anyopen(f"{MMCIF_FOLDER}/1BD2_short.cif.gz").read()),
+            "CIF",
+        ),
+        (gzip.open(f"{MMCIF_FOLDER}/1BD2_short.cif.gz"), "CIF"),
+        (
+            util.NamedStream(
+                StringIO(
+                    util.anyopen(f"{MMCIF_FOLDER}/1BD2_short.cif.gz").read()
+                ),
                 "some_name.cif",
             ),
             "CIF",
@@ -128,21 +134,23 @@ def test_multimodel_warning_msg():
         (f"{MMCIF_FOLDER}/1BD2_short.pdb.gz", None),
         (Path(f"{MMCIF_FOLDER}/1BD2_short.pdb.gz"), None),
         (
-            StringIO(open(f"{MMCIF_FOLDER}/1BD2_short.pdb.gz")),
-            mda.topology.MMCIFParser.MMCIFParser,
+            StringIO(util.anyopen(f"{MMCIF_FOLDER}/1BD2_short.pdb.gz").read()),
+            "CIF",
         ),
         (
-            open(f"{MMCIF_FOLDER}/1BD2_short.pdb.gz"),
-            mda.topology.MMCIFParser.MMCIFParser,
+            util.anyopen(f"{MMCIF_FOLDER}/1BD2_short.pdb.gz"),
+            "CIF",
         ),
         (
-            NamedStream(
-                StringIO(open(f"{MMCIF_FOLDER}/1BD2_short.pdb.gz")),
+            util.NamedStream(
+                StringIO(
+                    util.anyopen(f"{MMCIF_FOLDER}/1BD2_short.pdb.gz").read()
+                ),
                 "some_name.pdb",
             ),
-            mda.topology.MMCIFParser.MMCIFParser,
+            "CIF",
         ),
     ],
 )
 def test_input_methods(filename, fmt):
-    mda.Universe(filename, format=fmt)
+    mda.Universe(filename, topology_format=fmt)
