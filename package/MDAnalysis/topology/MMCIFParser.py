@@ -253,5 +253,8 @@ class MMCIFParser(TopologyReaderBase):
                 return gemmi.make_structure_from_block(
                     gemmi.cif.read_string(content_as_str)[0]
                 )
-            except ValueError:
-                return gemmi.read_pdb_string(content_as_str)
+            except ValueError as e:
+                try:
+                    return gemmi.read_pdb_string(content_as_str)
+                except ValueError:
+                    raise e
