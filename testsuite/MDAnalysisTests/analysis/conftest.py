@@ -20,6 +20,7 @@ from MDAnalysis.analysis.density import DensityAnalysis
 from MDAnalysis.analysis.lineardensity import LinearDensity
 from MDAnalysis.analysis.polymer import PersistenceLength
 from MDAnalysis.analysis.rdf import InterRDF, InterRDF_s
+from MDAnalysis.analysis.align import AverageStructure
 from MDAnalysis.lib.util import is_installed
 
 
@@ -207,4 +208,12 @@ def client_InterRDF(request):
 
 @pytest.fixture(scope="module", params=params_for_cls(InterRDF_s))
 def client_InterRDF_s(request):
+    return request.param
+
+
+# MDAnalysis.analysis.align
+
+
+@pytest.fixture(scope="module", params=params_for_cls(AverageStructure))
+def client_AverageStructure(request):
     return request.param
