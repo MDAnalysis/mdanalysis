@@ -255,6 +255,28 @@ class TestUniverseCreation(object):
         u = mda.Universe(mol, format="RDKIT")
         assert len(u.atoms) == 0
 
+    def test_Universe_top_format_no_coords(self):
+        # Issue #5147- ensure traj format is not set to topology format
+        u = mda.Universe(
+            PDB,
+            topology_format=MDAnalysis.topology.PDBParser.PDBParser,
+            format=None,
+        )
+        assert not isinstance(
+            u.trajectory, MDAnalysis.topology.PDBParser.PDBParser
+        )
+
+    def test_Universe_traj_format_no_coords(self):
+        # Issue #5147- ensure top format is not set to traj format
+        # no way to get inferred top format from Universe- use internal method call
+        format, topology_format = MDAnalysis.core.universe._resolve_formats(
+            None,
+            format=MDAnalysis.coordinates.PDB.PDBReader,
+            topology_format=None,
+        )
+
+        assert topology_format is None
+
 
 class TestUniverseFromSmiles(object):
     def setup_class(self):
