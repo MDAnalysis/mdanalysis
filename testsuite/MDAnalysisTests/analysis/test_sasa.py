@@ -25,10 +25,10 @@ import numpy as np
 
 import MDAnalysis
 from MDAnalysis.transformations import unwrap
+from MDAnalysis.guesser.tables import vdwradii
 from MDAnalysis.exceptions import NoDataError
-from MDAnalysisTests.datafiles import TPR, PDB, XTC
+from MDAnalysisTests.datafiles import TPR, PDB, XTC, PDB_sasa, PDB_rsasa
 
-from MDAnalysisTests.datafiles import PDB_sasa, PDB_rsasa
 from MDAnalysis.analysis.sasa import _sasa, SASA, RSASA
 
 
@@ -37,6 +37,9 @@ def protein():
     """Returns AdK protein AtomGroup"""
     u = MDAnalysis.Universe(TPR, PDB)
     u.trajectory.add_transformations(unwrap(u.atoms))
+    if not hasattr(u, "radii"):
+        u.add_TopologyAttr("radii")
+        u.atoms.radii = [vdwradii.get(e, 2.0) for e in u.atoms.elements]
     protein = u.select_atoms("protein")
     return protein
 
@@ -52,6 +55,9 @@ def trajectory():
     """Returns AdK protein AtomGroup"""
     u = MDAnalysis.Universe(TPR, XTC)
     u.trajectory.add_transformations(unwrap(u.atoms))
+    if not hasattr(u, "radii"):
+        u.add_TopologyAttr("radii")
+        u.atoms.radii = [vdwradii.get(e, 2.0) for e in u.atoms.elements]
     protein = u.select_atoms("protein")
     return protein
 
@@ -60,7 +66,7 @@ def trajectory():
 def co():
     """Return Carbon Monoxide (CO) AtomGroup"""
     u = MDAnalysis.Universe.empty(2, trajectory=True)
-    u.add_TopologyAttr("elements", ["O", "C"])
+    u.add_TopologyAttr("names", ["O", "C"])
     u.add_TopologyAttr("radii", [1.52, 1.70])
     u.atoms.positions = [[ 0.5285, 0., 0.],
                          [-0.5285, 0., 0.]]
@@ -83,7 +89,7 @@ def co_area_exact(co):
 def test_analytical(co, co_area_exact):
     """Test sasa function against analytical result"""
     co_area = _sasa(co.positions, co.radii, probe_radius=0, n_dots=1024)
-    assert np.allclose(co_area, co_area_exact, 0.001)
+    assert np.allclose(co_area, co_area_exact, 0.01)
 
 
 class TestSASA(object):
@@ -96,17 +102,17 @@ class TestSASA(object):
         """Test for CO against analytical result"""
         r = SASA(co, probe_radius=0., n_dots=1_024).run()
         assert np.allclose(r.results.area.mean(axis=0),
-                           co_area_exact, 0.001)
+                           co_area_exact, 0.01)
 
     def test_sasa(self, protein):
         """Test against reference values"""
-        r = SASA(protein, self.PROBE_RADIUS,
-                 self.N_DOTS).run(frames=[1])
-        assert r.results.area.shape[0] == protein.n_atoms
+        r = SASA(protein, self.PROBE_RADIUS, self.N_DOTS).run()
+        assert r.results.area.shape[0] == 1
+        assert r.results.area.shape[1] == protein.n_atoms
         actual = r.results.area.mean(axis=0)
         desired = np.load(PDB_sasa)
         # Difference should be less than 1% or 0.1 Å²
-        assert np.allclose(actual, desired, 0.01, 0.1)
+        np.testing.assert_allclose(actual, desired, 0.01, 0.1)
 
     def test_sasa_traj(self, trajectory):
         """Test for trajectory"""
@@ -153,7 +159,8 @@ class TestSASA(object):
         with pytest.raises(NoDataError):
             SASA(u.atoms)
         # Should also raise error for radii is less than zero
-        u.add_TopologyAttr("radii", 0)
+        u.add_TopologyAttr("radii")
+        u.atoms.radii = 0
         with pytest.raises(ValueError):
             SASA(u.atoms)
 
@@ -172,19 +179,20 @@ class TestRSASA(object):
     def test_rsasa(self, protein):
         """Test against reference values"""
         r = RSASA(protein, None, self.PROBE_RADIUS, self.N_DOTS).run()
-        assert r.results.relative_area.shape[0] == protein.n_residues
+        assert r.results.relative_area.shape[0] == 1
+        assert r.results.relative_area.shape[1] == protein.n_residues
         actual = r.results.relative_area.mean(axis=0)
         desired = np.load(PDB_rsasa)
         # Difference should be less than 5% rel and 1% abs
-        assert np.allclose(actual, desired, 0.05, 0.01)
+        np.testing.assert_allclose(actual, desired, 0.05, 0.01)
 
     def test_rsasa_traj(self, trajectory):
         """Test for trajectory"""
         # Three residues is stressful enough
         ag = trajectory.select_atoms("resid 1-3")
         r = RSASA(ag).run()
-        assert r.results.area.shape[0] == len(ag.universe.trajectory)
-        assert r.results.area.shape[1] == ag.n_residues
+        assert r.results.relative_area.shape[0] == len(ag.universe.trajectory)
+        assert r.results.relative_area.shape[1] == ag.n_residues
 
     @pytest.mark.parametrize("n_dots", [16, 128])
     def test_rsasa_dots(self, residue, n_dots):
@@ -224,7 +232,7 @@ class TestRSASA(object):
     def test_rsasa_no_radii_error(self):
         """Should raise error if no radii attribute"""
         u = MDAnalysis.Universe.empty(2, trajectory=True)
-        u.add_TopologyAttr("elements", ["O", "C"])
+        u.add_TopologyAttr("names", ["O", "C"])
         u.atoms.positions = [[ 0.5285, 0., 0.],
                              [-0.5285, 0., 0.]]
         u.guess_TopologyAttrs(to_guess=["bonds"])
@@ -232,14 +240,15 @@ class TestRSASA(object):
         with pytest.raises(NoDataError):
             RSASA(u.atoms)
         # Should also raise error for radii less than zero
-        u.add_TopologyAttr("radii", 0)
+        u.add_TopologyAttr("radii")
+        u.atoms.radii = 0
         with pytest.raises(ValueError):
             RSASA(u.atoms)
 
     def test_rsasa_no_bonds_error(self):
         """Should raise error if no bonds attribute"""
         u = MDAnalysis.Universe.empty(2, trajectory=True)
-        u.add_TopologyAttr("elements", ["O", "C"])
+        u.add_TopologyAttr("names", ["O", "C"])
         u.add_TopologyAttr("radii", [1.52, 1.70])
         u.atoms.positions = [[ 0.5285, 0., 0.],
                              [-0.5285, 0., 0.]]

@@ -2,7 +2,7 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- https://www.mdanalysis.org
-# Copyright (c) 2006-2024 The MDAnalysis Development Team and contributors
+# Copyright (c) 2006-2025 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
@@ -166,7 +166,7 @@ import logging
 import scipy.spatial
 
 from ..due import due, Doi
-from .base import AnalysisBase, ResultGroup
+from .base import AnalysisBase, ResultsGroup
 from ..exceptions import NoDataError
 from ..core import groups
 
@@ -364,8 +364,8 @@ class SASA(AnalysisBase):
 
     def _single_frame(self):
         self.results.area.append(
-            _sasa(self.ag.positions, self.radii, 
-                  self.probe_radius, self.radii_dict)
+            _sasa(self.ag.positions, self.ag.radii,
+                  self.probe_radius, self.n_dots)
         )
 
     def _get_aggregator(self):
