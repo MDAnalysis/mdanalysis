@@ -60,6 +60,7 @@ import copy
 import warnings
 import contextlib
 import collections
+import inspect
 
 import MDAnalysis
 import sys
@@ -260,20 +261,27 @@ def _resolve_formats(*coordinates, format=None, topology_format=None):
         # fully qualified absolute names prevents circular import
         if format is None:
             format = (
-                topology_format
-                if not issubclass(
-                    topology_format,
-                    MDAnalysis.topology.base.TopologyReaderBase,
+                None
+                if (inspect.isclass(topology_format))
+                and (
+                    issubclass(
+                        topology_format,
+                        MDAnalysis.topology.base.TopologyReaderBase,
+                    )
                 )
-                else None
+                else topology_format
             )
         elif topology_format is None:
             topology_format = (
-                format
-                if not issubclass(
-                    format, MDAnalysis.coordinates.base.ProtoReader
+                None
+                if (inspect.isclass(format))
+                and (
+                    issubclass(
+                        format,
+                        MDAnalysis.Analysis.coordinates.base.ProtoReader,
+                    )
                 )
-                else None
+                else format
             )
     return format, topology_format
 
