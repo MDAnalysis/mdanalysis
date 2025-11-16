@@ -70,6 +70,7 @@ from ..core.topologyattrs import (
     Tempfactors,
 )
 from .base import TopologyReaderBase, change_squash
+from ..lib import util
 
 
 class MMCIFParser(TopologyReaderBase):
@@ -108,7 +109,7 @@ class MMCIFParser(TopologyReaderBase):
         -------
         MDAnalysis Topology object
         """
-        structure = gemmi.read_structure(self.filename)
+        structure = self._get_structure()
 
         if len(structure) > 1:
             warnings.warn(
@@ -224,3 +225,33 @@ class MMCIFParser(TopologyReaderBase):
             atom_resindex=residx,
             residue_segindex=segidx,
         )
+
+    def _get_structure(self):
+        # This method exists because of some lacking methods in the gemmi Python API.
+        # within gemmi in C++, one can call `read_structure` and in-memory, string, and filepath
+        # arguments will all be accepted:
+        # https://github.com/project-gemmi/gemmi/blob/4416e298f204b7b57bf5b3051d7efd4fe02957cf/include/gemmi/mmread.hpp#L86
+
+        # However, for MDA to similarly accept common input types like streams (open File-like objs and StringIO objs)
+        # as well as pathlib.Path() objects, we have to use the Python API methods available currently (as of 0.7.3)
+        # with a string as a common target for all input types
+        # For this, we call gemmi.cif.read_string (https://gemmi.readthedocs.io/en/latest/cif.html#reading) to handle CIF
+        # strings and gemmi.read_pdb to handle PDB strings (no one method can handle both formats currently Py-side)
+
+        # openany() is called instead of passing file paths (when available) differently from streams
+        # even though reading the file into a string is less efficient, this is easier to maintain
+
+        # if the gemmi Python API is extended, this method can be simplified/removed and replaced with something like
+        # gemmi.read_structure
+
+        with util.openany(self.filename) as f:
+            content_as_str = f.read()
+            try:
+                # String -> Doc -> Block -> Structure
+                # making Structure from first Block in Document as is done internally in gemmi:
+                # https://github.com/project-gemmi/gemmi/blob/4416e298f204b7b57bf5b3051d7efd4fe02957cf/include/gemmi/mmcif.hpp#L32
+                return gemmi.make_structure_from_block(
+                    gemmi.cif.read_string(content_as_str)[0]
+                )
+            except ValueError:
+                return gemmi.read_pdb_string(content_as_str)

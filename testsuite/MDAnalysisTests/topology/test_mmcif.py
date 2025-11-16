@@ -1,5 +1,8 @@
 import MDAnalysis as mda
 import pytest
+from pathlib import Path
+from io import StringIO
+from MDAnalysis.lib.util import NamedStream
 from MDAnalysis.coordinates.MMCIF import HAS_GEMMI
 
 from MDAnalysisTests.datafiles import MMCIF as MMCIF_FOLDER
@@ -105,3 +108,41 @@ def test_multimodel_warning_msg():
         mda.topology.MMCIFParser.MMCIFParser(
             f"{MMCIF_FOLDER}/multimodel_warning.cif"
         ).parse()
+
+
+@pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
+@pytest.mark.parametrize(
+    "filename,fmt",
+    [
+        (f"{MMCIF_FOLDER}/1BD2_short.cif.gz", None),
+        (Path(f"{MMCIF_FOLDER}/1BD2_short.cif.gz"), None),
+        (StringIO(open(f"{MMCIF_FOLDER}/1BD2_short.cif.gz")), "CIF"),
+        (open(f"{MMCIF_FOLDER}/1BD2_short.cif.gz"), "CIF"),
+        (
+            NamedStream(
+                StringIO(open(f"{MMCIF_FOLDER}/1BD2_short.cif.gz")),
+                "some_name.cif",
+            ),
+            "CIF",
+        ),
+        (f"{MMCIF_FOLDER}/1BD2_short.pdb.gz", None),
+        (Path(f"{MMCIF_FOLDER}/1BD2_short.pdb.gz"), None),
+        (
+            StringIO(open(f"{MMCIF_FOLDER}/1BD2_short.pdb.gz")),
+            mda.topology.MMCIFParser.MMCIFParser,
+        ),
+        (
+            open(f"{MMCIF_FOLDER}/1BD2_short.pdb.gz"),
+            mda.topology.MMCIFParser.MMCIFParser,
+        ),
+        (
+            NamedStream(
+                StringIO(open(f"{MMCIF_FOLDER}/1BD2_short.pdb.gz")),
+                "some_name.pdb",
+            ),
+            mda.topology.MMCIFParser.MMCIFParser,
+        ),
+    ],
+)
+def test_input_methods(filename, fmt):
+    mda.Universe(filename, format=fmt)
