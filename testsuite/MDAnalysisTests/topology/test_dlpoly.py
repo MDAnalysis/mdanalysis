@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -20,7 +20,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from numpy.testing import assert_equal
+from numpy.testing import assert_equal, assert_allclose
 import pytest
 
 import MDAnalysis as mda
@@ -34,7 +34,7 @@ from MDAnalysisTests.datafiles import (
     DLP_HISTORY_order,
     DLP_HISTORY_minimal,
     DLP_HISTORY_minimal_cell,
-    DLP_HISTORY_classic
+    DLP_HISTORY_classic,
 )
 
 
@@ -43,79 +43,93 @@ class DLPUniverse(ParserBase):
         u = mda.Universe(filename, topology_format=self.format)
         assert isinstance(u, mda.Universe)
 
+    def test_guessed_attributes(self, filename):
+        u = mda.Universe(filename, topology_format=self.format)
+        for attr in self.guessed_attrs:
+            assert hasattr(u.atoms, attr)
+
 
 class DLPBase2(DLPUniverse):
-    expected_attrs = ['ids', 'names']
-    guessed_attrs = ['types', 'masses']
+    expected_attrs = ["ids", "names"]
+    guessed_attrs = ["masses", "types"]
+
     expected_n_atoms = 216
     expected_n_residues = 1
     expected_n_segments = 1
 
+    def test_guesssed_masses(self, filename):
+        u = mda.Universe(filename, topology_format=self.format)
+        assert_allclose(u.atoms.masses[0], 39.102)
+        assert_allclose(u.atoms.masses[4], 35.45)
+
+    def test_guessed_types(self, filename):
+        u = mda.Universe(filename, topology_format=self.format)
+        assert u.atoms.types[0] == "K"
+        assert u.atoms.types[4] == "CL"
+
     def test_names(self, top):
-        assert top.names.values[0] == 'K+'
-        assert top.names.values[4] == 'Cl-'
+        assert top.names.values[0] == "K+"
+        assert top.names.values[4] == "Cl-"
 
 
 class TestDLPHistoryParser(DLPBase2):
     parser = mda.topology.DLPolyParser.HistoryParser
     ref_filename = DLP_HISTORY
-    format = 'HISTORY'
+    format = "HISTORY"
 
 
 class TestDLPConfigParser(DLPBase2):
     parser = mda.topology.DLPolyParser.ConfigParser
     ref_filename = DLP_CONFIG
-    format = 'CONFIG'
+    format = "CONFIG"
 
 
 class DLPBase(DLPUniverse):
-    expected_attrs = ['ids', 'names']
-    guessed_attrs = ['types', 'masses']
+    expected_attrs = ["ids", "names"]
     expected_n_atoms = 3
     expected_n_residues = 1
     expected_n_segments = 1
 
     def test_dlp_names(self, top):
-        assert_equal(top.names.values,
-                     ['C', 'B', 'A'])
+        assert_equal(top.names.values, ["C", "B", "A"])
 
 
 class TestDLPConfigMinimal(DLPBase):
     parser = mda.topology.DLPolyParser.ConfigParser
     ref_filename = DLP_CONFIG_minimal
-    format = 'CONFIG'
+    format = "CONFIG"
 
 
 class TestDLPConfigOrder(DLPBase):
     parser = mda.topology.DLPolyParser.ConfigParser
     ref_filename = DLP_CONFIG_order
-    format = 'CONFIG'
+    format = "CONFIG"
 
 
 class TestDLPHistoryMinimal(DLPBase):
     parser = mda.topology.DLPolyParser.HistoryParser
     ref_filename = DLP_HISTORY_minimal
-    format = 'HISTORY'
+    format = "HISTORY"
 
 
 class TestDLPHistoryMinimal(DLPBase):
     parser = mda.topology.DLPolyParser.HistoryParser
     ref_filename = DLP_HISTORY_minimal_cell
-    format = 'HISTORY'
+    format = "HISTORY"
 
 
 class TestDLPHistoryOrder(DLPBase):
     parser = mda.topology.DLPolyParser.HistoryParser
     ref_filename = DLP_HISTORY_order
-    format = 'HISTORY'
+    format = "HISTORY"
 
 
 class TestDLPHistoryClassic(DLPBase):
     parser = mda.topology.DLPolyParser.HistoryParser
     ref_filename = DLP_HISTORY_classic
-    format = 'HISTORY'
+    format = "HISTORY"
 
 
 def test_HISTORY_EOFError():
     with pytest.raises(EOFError):
-        mda.Universe(DLP_CONFIG, topology_format='HISTORY')
+        mda.Universe(DLP_CONFIG, topology_format="HISTORY")

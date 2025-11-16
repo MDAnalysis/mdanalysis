@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -26,7 +26,7 @@
 
 :Author: Paul Smith
 :Year: 2019
-:Copyright: GNU Public License v3
+:Copyright: Lesser GNU Public License v2.1+
 
 .. versionadded:: 1.0.0
 
@@ -219,6 +219,7 @@ The class and its methods
 
 .. autoclass:: HydrogenBondAnalysis
    :members:
+   :inherited-members: run
 
    .. attribute:: results.hbonds
 
@@ -241,7 +242,7 @@ from collections.abc import Iterable
 
 import numpy as np
 
-from ..base import AnalysisBase, Results
+from ..base import AnalysisBase, Results, ResultsGroup
 from MDAnalysis.lib.distances import capped_distance, calc_angles
 from MDAnalysis.lib.correlations import autocorrelation, correct_intermittency
 from MDAnalysis.exceptions import NoDataError
@@ -266,6 +267,12 @@ class HydrogenBondAnalysis(AnalysisBase):
     """
     Perform an analysis of hydrogen bonds in a Universe.
     """
+
+    _analysis_algorithm_is_parallelizable = True
+
+    @classmethod
+    def get_supported_backends(cls):
+        return ('serial', 'multiprocessing', 'dask',)
 
     def __init__(self, universe,
                  donors_sel=None, hydrogens_sel=None, acceptors_sel=None,
@@ -335,15 +342,21 @@ class HydrogenBondAnalysis(AnalysisBase):
         .. versionchanged:: 2.4.0
             Added use of atom types in selection strings for hydrogen atoms, 
             bond donors, or bond acceptors
-
+        .. versionchanged:: 2.8.0
+            Introduced :meth:`get_supported_backends` allowing for parallel execution on
+            :mod:`multiprocessing` and :mod:`dask` backends.
+        .. versionchanged:: 2.10.0
+            The `donors_sel`, `hydrogens_sel`, and `acceptors_sel` are stored as properties
+            now and update the internal `_donor`, `_hydrogens`, and `_acceptors` when they
+            are modified.
         """
 
         self.u = universe
         self._trajectory = self.u.trajectory
 
-        self.donors_sel = donors_sel.strip() if donors_sel is not None else donors_sel
-        self.hydrogens_sel = hydrogens_sel.strip() if hydrogens_sel is not None else hydrogens_sel
-        self.acceptors_sel = acceptors_sel.strip() if acceptors_sel is not None else acceptors_sel
+        self._donors_sel = donors_sel.strip() if donors_sel is not None else donors_sel
+        self._hydrogens_sel = hydrogens_sel.strip() if hydrogens_sel is not None else hydrogens_sel
+        self._acceptors_sel = acceptors_sel.strip() if acceptors_sel is not None else acceptors_sel
 
         msg = ("{} is an empty selection string - no hydrogen bonds will "
                "be found. This may be intended, but please check your "
@@ -382,6 +395,17 @@ class HydrogenBondAnalysis(AnalysisBase):
         self.update_selections = update_selections
         self.results = Results()
         self.results.hbonds = None
+
+        # Set atom selections if they have not been provided
+        if self._acceptors_sel is None:
+            self._acceptors_sel = self.guess_acceptors()
+        if self._hydrogens_sel is None:
+            self._hydrogens_sel = self.guess_hydrogens()
+
+        # Select atom groups
+        self._acceptors = self.u.select_atoms(self.acceptors_sel,
+                                              updating=self.update_selections)
+        self._donors, self._hydrogens = self._get_dh_pairs()
 
     def guess_hydrogens(self,
                         select='all',
@@ -699,16 +723,6 @@ class HydrogenBondAnalysis(AnalysisBase):
     def _prepare(self):
         self.results.hbonds = [[], [], [], [], [], []]
 
-        # Set atom selections if they have not been provided
-        if self.acceptors_sel is None:
-            self.acceptors_sel = self.guess_acceptors()
-        if self.hydrogens_sel is None:
-            self.hydrogens_sel = self.guess_hydrogens()
-
-        # Select atom groups
-        self._acceptors = self.u.select_atoms(self.acceptors_sel,
-                                              updating=self.update_selections)
-        self._donors, self._hydrogens = self._get_dh_pairs()
 
     def _single_frame(self):
 
@@ -787,6 +801,9 @@ class HydrogenBondAnalysis(AnalysisBase):
     def _conclude(self):
 
         self.results.hbonds = np.asarray(self.results.hbonds).T
+
+    def _get_aggregator(self):
+        return ResultsGroup(lookup={'hbonds': ResultsGroup.ndarray_hstack})
 
     @property
     def hbonds(self):
@@ -971,3 +988,47 @@ class HydrogenBondAnalysis(AnalysisBase):
         unique_hbonds = unique_hbonds[unique_hbonds[:, 3].argsort()[::-1]]
 
         return unique_hbonds
+
+    @property
+    def donors_sel(self):
+        """Selection string for the hydrogen bond donor atoms.
+        
+        .. versionadded:: 2.10.0
+        """
+        return self._donors_sel
+
+    @donors_sel.setter
+    def donors_sel(self, value):
+        self._donors_sel = value
+        self._donors, self._hydrogens = self._get_dh_pairs()
+
+    @property
+    def hydrogens_sel(self):
+        """Selection string for the hydrogen bond hydrogen atoms.
+        
+        .. versionadded:: 2.10.0
+        """
+        return self._hydrogens_sel
+
+    @hydrogens_sel.setter
+    def hydrogens_sel(self, value):
+        self._hydrogens_sel = value
+        if self._hydrogens_sel is None:
+            self._hydrogens_sel = self.guess_hydrogens()
+        self._donors, self._hydrogens = self._get_dh_pairs()
+
+    @property
+    def acceptors_sel(self):
+        """Selection string for the hydrogen bond acceptor atoms.
+        
+        .. versionadded:: 2.10.0
+        """
+        return self._acceptors_sel
+
+    @acceptors_sel.setter
+    def acceptors_sel(self, value):
+        self._acceptors_sel = value
+        if self._acceptors_sel is None:
+            self._acceptors_sel = self.guess_acceptors()
+        self._acceptors = self.u.select_atoms(self._acceptors_sel,
+                                              updating=self.update_selections)

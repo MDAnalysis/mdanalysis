@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -29,11 +29,11 @@ import pytest
 
 path_to_testing_modules = MDAnalysisTests.__path__[0]
 # Exclusion path relative to MDAnalysisTests
-exclusions = ['/plugins', '/data']
+exclusions = ["/plugins", "/data"]
 
 
 def is_excluded(path):
-    leaf = path[len(path_to_testing_modules):]
+    leaf = path[len(path_to_testing_modules) :]
     return leaf in exclusions
 
 
@@ -42,7 +42,7 @@ def get_file_paths():
     for dirpath, dirnames, files in os.walk(path_to_testing_modules):
         if is_excluded(dirpath):
             continue
-        for f in filter(lambda x: x.endswith('.py'), files):
+        for f in filter(lambda x: x.endswith(".py"), files):
             fpath = os.path.join(dirpath, f)
             if is_excluded(fpath):
                 continue
@@ -50,12 +50,18 @@ def get_file_paths():
     return paths
 
 
-@pytest.mark.parametrize('testing_module', get_file_paths())
+@pytest.mark.parametrize("testing_module", get_file_paths())
 def test_relative_import(testing_module):
-    with open(testing_module, 'r') as test_module_file_object:
+    with open(testing_module, "r") as test_module_file_object:
         for lineno, line in enumerate(test_module_file_object, start=1):
-            if 'from .' in line and 'import' in line \
-                    and not 'test_imports' in testing_module:
+            if (
+                "from ." in line
+                and "import" in line
+                and not "test_imports" in testing_module
+            ):
                 raise AssertionError(
                     "A relative import statement was found in "
-                    "module {testing_module} at linenumber {lineno}.".format(**vars()))
+                    "module {testing_module} at linenumber {lineno}.".format(
+                        **vars()
+                    )
+                )

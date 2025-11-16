@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -27,8 +27,17 @@
 ================================================================
 """
 
-__all__ = ['log', 'transformations', 'util', 'mdamath', 'distances',
-           'NeighborSearch', 'formats', 'pkdtree', 'nsgrid']
+__all__ = [
+    "log",
+    "transformations",
+    "util",
+    "mdamath",
+    "distances",
+    "NeighborSearch",
+    "formats",
+    "pkdtree",
+    "nsgrid",
+]
 
 from . import log
 from . import transformations
@@ -39,6 +48,8 @@ from . import NeighborSearch
 from . import formats
 from . import pkdtree
 from . import nsgrid
-from .picklable_file_io import (FileIOPicklable,
-                                BufferIOPicklable,
-                                TextIOPicklable)
+from .picklable_file_io import (
+    FileIOPicklable,
+    BufferIOPicklable,
+    TextIOPicklable,
+)

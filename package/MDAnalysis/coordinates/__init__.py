@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -53,7 +53,7 @@ attribute :attr:`Universe.trajectory` that points to the actual
 :class:`~MDAnalysis.coordinates.base.ProtoReader` object; all Readers are accessible
 through this entry point in the same manner ("`duck typing`_").
 
-There are three types of base Reader which act as starting points for each
+There are four types of base Reader which act as starting points for each
 specific format. These are:
 
 :class:`~MDAnalysis.coordinates.base.ReaderBase`
@@ -65,6 +65,12 @@ specific format. These are:
    A simplified Reader which reads a file containing only a single
    frame of information.  This is used with formats such as GRO
    and CRD
+
+:class:`~MDAnalysis.coordinates.base.StreamReaderBase`
+   A specialized Reader for continuous data streams such as live 
+   simulation feeds. Unlike standard readers, streaming readers cannot
+   randomly access frames, rewind, or determine total length. This is
+   used for real-time trajectory data from simulations via IMD connections.
 
 :class:`~MDAnalysis.coordinates.chain.ChainReader`
    An advanced Reader designed to read a sequence of files, to
@@ -182,6 +188,9 @@ also recognized when they are compressed with :program:`gzip` or
    |               |           |       | velocities are processed. Module                     |
    |               |           |       | :mod:`MDAnalysis.coordinates.TRR`                    |
    +---------------+-----------+-------+------------------------------------------------------+
+   | Gromacs       | tpr       |  r    | Coordinates and velocities are read in.              |
+   |               |           |       | Module :mod:`MDAnalysis.coordinates.TPR`             |
+   +---------------+-----------+-------+------------------------------------------------------+
    | Gromacs       | tng       |  r    | Variable precision tng trajectory. Coordinates,      |
    |               |           |       | velocities and forces are processed along with any   |
    |               |           |       | `additional tng block data`_ requested for reading.  |
@@ -273,6 +282,11 @@ also recognized when they are compressed with :program:`gzip` or
    | `chemfiles`_  | CHEMFILES |  r/w  | interface to `chemfiles`_, see the `list of chemfiles|
    | library       |           |       | file formats`_ and                                   |
    |               |           |       | :mod:`MDAnalysis.coordinates.chemfiles`              |
+   +---------------+-----------+-------+------------------------------------------------------+
+   | IMD           | imd://    |  r    | Receive simulation trajectory data using interactive |
+   |               | <host>:   |       | molecular dynamics version 3 (IMDv3) by configuring  |
+   |               | <port>    |       | a socket address to a NAMD, GROMACS, or LAMMPS       |
+   |               |           |       | simulation. :mod:`MDAnalysis.coordinates.IMD`        |
    +---------------+-----------+-------+------------------------------------------------------+
 
 .. [#a] This format can also be used to provide basic *topology*
@@ -770,12 +784,14 @@ from . import DLPoly
 from . import DMS
 from . import GMS
 from . import GRO
+from . import IMD
 from . import INPCRD
 from . import LAMMPS
 from . import MOL2
 from . import PDB
 from . import PDBQT
 from . import PQR
+from . import TPR
 from . import TRC
 from . import TRJ
 from . import TRR

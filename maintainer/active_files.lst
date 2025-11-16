@@ -1,0 +1,137 @@
+# 4841 add `relprop` for atom selection and corresponding UT
+package/MDAnalysis/core/selection.py
+testsuite/MDAnalysisTests/core/test_atomselections.py
+# ---------------------
+# 4822 Enabling of parallelization of `analysis.atomicdistances.AtomicDistances`
+package/CHANGELOG
+package/MDAnalysis/analysis/atomicdistances.py
+testsuite/MDAnalysisTests/analysis/test_atomicdistances.py
+# ---------------------
+# 4816 Implementation of `CMSParser`
+package/MDAnalysis/topology/CMSParser.py
+package/MDAnalysis/topology/__init__.py
+# ---------------------
+# 4815 add active PRs to black ignore
+maintainer/active_files_package.lst
+maintainer/active_files_testsuite.lst
+package/pyproject.toml
+testsuite/pyproject.toml
+# ---------------------
+# 4812 Bump the github-actions group with 4 updates
+.github/workflows/deploy.yaml
+.github/workflows/gh-ci.yaml
+# ---------------------
+# 4800 Transfer of `fasteners` dependency to `filelock`
+.github/actions/setup-deps/action.yaml
+azure-pipelines.yml
+maintainer/conda/environment.yml
+package/CHANGELOG
+package/MDAnalysis/coordinates/XDR.py
+package/pyproject.toml
+package/requirements.txt
+testsuite/MDAnalysisTests/coordinates/test_xdr.py
+# ---------------------
+# 4790 Implementation of SugarSelection
+package/MDAnalysis/core/selection.py
+testsuite/MDAnalysisTests/core/test_atomselections.py
+testsuite/MDAnalysisTests/data/6kya.pdb
+testsuite/MDAnalysisTests/data/GLYCAM_sugars.pdb
+testsuite/MDAnalysisTests/datafiles.py
+# ---------------------
+# 4745 'MDAnalysis.analysis.diffusionmap' parallelization
+package/MDAnalysis/analysis/diffusionmap.py
+testsuite/MDAnalysisTests/analysis/conftest.py
+testsuite/MDAnalysisTests/analysis/test_diffusionmap.py
+# ---------------------
+# 4738 'MDAnalysis.analysis.align' parallelization 
+package/MDAnalysis/analysis/align.py
+testsuite/MDAnalysisTests/analysis/conftest.py
+testsuite/MDAnalysisTests/analysis/test_align.py
+# ---------------------
+# 4734 distopia 0.3.0 compatibility changes
+.github/actions/setup-deps/action.yaml
+package/CHANGELOG
+package/MDAnalysis/lib/_distopia.py
+package/MDAnalysis/lib/distances.py
+testsuite/MDAnalysisTests/lib/test_distances.py
+# ---------------------
+# 4714 Dask timeseries prototype
+.gitignore
+package/MDAnalysis/analysis/dasktimeseries.py
+package/MDAnalysis/coordinates/H5MD.py
+tmp/env.yaml
+tmp/lazyts.ipynb
+# ---------------------
+# 4712 Implementing `gemmi`-based mmcif reader (with easy extension to PDB/PDBx and mmJSON)
+.github/actions/setup-deps/action.yaml
+package/MDAnalysis/coordinates/MMCIF.py
+package/MDAnalysis/coordinates/__init__.py
+package/MDAnalysis/topology/MMCIFParser.py
+package/MDAnalysis/topology/PDBParser.py
+package/MDAnalysis/topology/__init__.py
+package/MDAnalysis/topology/tpr/utils.py
+package/pyproject.toml
+testsuite/MDAnalysisTests/coordinates/test_mmcif.py
+testsuite/MDAnalysisTests/data/mmcif/1YJP.cif
+testsuite/MDAnalysisTests/data/mmcif/1YJP.cif.gz
+testsuite/MDAnalysisTests/data/mmcif/7ETN.cif
+testsuite/MDAnalysisTests/data/mmcif/7ETN.cif.gz
+testsuite/MDAnalysisTests/datafiles.py
+testsuite/MDAnalysisTests/topology/test_mmcif.py
+# ---------------------
+# 4681 [WIP] Cif reader
+package/MDAnalysis/coordinates/CIF.py
+package/MDAnalysis/coordinates/PDBx.py
+package/MDAnalysis/coordinates/__init__.py
+package/MDAnalysis/topology/PDBxParser.py
+package/MDAnalysis/topology/__init__.py
+package/doc/sphinx/source/documentation_pages/coordinates/PDBx.rst
+testsuite/MDAnalysisTests/coordinates/test_cif.py
+# ---------------------
+# 4584 Limit threads usage in numpy during test to avoid time-out
+testsuite/MDAnalysisTests/analysis/test_encore.py
+testsuite/MDAnalysisTests/parallelism/test_multiprocessing.py
+# ---------------------
+# 4535 Pathlib object handling for Universe,  SingleFrameReaderBase and Toplogy parsers (Issue #3937)
+package/CHANGELOG
+package/MDAnalysis/coordinates/base.py
+package/MDAnalysis/core/universe.py
+package/MDAnalysis/topology/base.py
+testsuite/MDAnalysisTests/coordinates/base.py
+testsuite/MDAnalysisTests/coordinates/test_gro.py
+testsuite/MDAnalysisTests/topology/base.py
+# ---------------------
+# 4533 Fix: modernise HBA to use AG as objects internally instead of selection strings - code only PR (Issue #3933)
+package/AUTHORS
+package/CHANGELOG
+package/MDAnalysis/analysis/hydrogenbonds/hbond_analysis.py
+testsuite/MDAnalysisTests/analysis/test_hydrogenbonds_analysis.py
+# ---------------------
+# 4417 Accessible Surface Area calculations
+package/AUTHORS
+package/CHANGELOG
+package/MDAnalysis/analysis/sasa.py
+package/doc/sphinx/source/documentation_pages/analysis/sasa.rst
+package/doc/sphinx/source/references.bib
+testsuite/MDAnalysisTests/analysis/test_sasa.py
+# ---------------------
+# 4334 Deprecate `ts` argument to _read_next_timestep
+package/MDAnalysis/coordinates/DCD.py
+package/MDAnalysis/coordinates/DLPoly.py
+package/MDAnalysis/coordinates/GMS.py
+package/MDAnalysis/coordinates/MOL2.py
+package/MDAnalysis/coordinates/PDB.py
+package/MDAnalysis/coordinates/TRJ.py
+package/MDAnalysis/coordinates/TRR.py
+package/MDAnalysis/coordinates/TRZ.py
+package/MDAnalysis/coordinates/TXYZ.py
+package/MDAnalysis/coordinates/XTC.py
+package/MDAnalysis/coordinates/XYZ.py
+package/MDAnalysis/coordinates/base.py
+package/MDAnalysis/coordinates/chain.py
+package/MDAnalysis/coordinates/chemfiles.py
+package/MDAnalysis/coordinates/memory.py
+# ---------------------
+# 4046  Added an info method to Universe Class
+package/MDAnalysis/core/universe.py
+# ---------------------

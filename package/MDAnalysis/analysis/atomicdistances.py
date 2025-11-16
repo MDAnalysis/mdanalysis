@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -29,7 +29,7 @@ Simple atomic distance analysis --- :mod:`MDAnalysis.analysis.atomicdistances`
 
 :Author: Xu Hong Chen
 :Year: 2023
-:Copyright: GNU Public License v3
+:Copyright: Lesser GNU Public License v2.1+
 
 This module provides a class to efficiently compute distances between
 two groups of atoms with an equal number of atoms over a trajectory.
@@ -150,15 +150,16 @@ class AtomicDistances(AnalysisBase):
     def __init__(self, ag1, ag2, pbc=True, **kwargs):
         # check ag1 and ag2 have the same number of atoms
         if ag1.atoms.n_atoms != ag2.atoms.n_atoms:
-            raise ValueError("AtomGroups do not "
-                             "have the same number of atoms")
+            raise ValueError(
+                "AtomGroups do not " "have the same number of atoms"
+            )
         # check ag1 and ag2 are from the same trajectory
         elif ag1.universe.trajectory != ag2.universe.trajectory:
-            raise ValueError("AtomGroups are not "
-                             "from the same trajectory")
+            raise ValueError("AtomGroups are not " "from the same trajectory")
 
-        super(AtomicDistances, self).__init__(ag1.universe.trajectory,
-                                              **kwargs)
+        super(AtomicDistances, self).__init__(
+            ag1.universe.trajectory, **kwargs
+        )
 
         self._ag1 = ag1
         self._ag2 = ag2
@@ -171,6 +172,6 @@ class AtomicDistances(AnalysisBase):
     def _single_frame(self):
         # if PBCs considered, get box size
         box = self._ag1.dimensions if self._pbc else None
-        self.results[self._frame_index] = calc_bonds(self._ag1.positions,
-                                                     self._ag2.positions,
-                                                     box)
+        self.results[self._frame_index] = calc_bonds(
+            self._ag1.positions, self._ag2.positions, box
+        )

@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -25,6 +25,9 @@
 ===================================================================
 
 .. versionadded:: 2.0.0
+.. versionchanged:: 2.8.0
+   Removed type and mass guessing (attributes guessing takes place
+   now through universe.guess_TopologyAttrs() API)
 
 
 Converts an
@@ -59,8 +62,7 @@ import numpy as np
 import warnings
 
 from ..topology.base import TopologyReaderBase
-from ..topology.tables import SYMB2Z
-from ..topology.guessers import guess_types, guess_masses
+from ..guesser.tables import SYMB2Z
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomids,
@@ -82,9 +84,7 @@ class OpenMMTopologyParser(TopologyReaderBase):
 
     @staticmethod
     def _format_hint(thing):
-        """Can this Parser read object *thing*?
-
-        """
+        """Can this Parser read object *thing*?"""
         try:
             from openmm import app
         except ImportError:
@@ -96,7 +96,7 @@ class OpenMMTopologyParser(TopologyReaderBase):
             return isinstance(thing, app.Topology)
 
     def _mda_topology_from_omm_topology(self, omm_topology):
-        """ Construct mda topology from omm topology
+        """Construct mda topology from omm topology
 
         Can be used for any openmm object that contains a topology object
 
@@ -108,11 +108,6 @@ class OpenMMTopologyParser(TopologyReaderBase):
         -------
         top : MDAnalysis.core.topology.Topology
 
-        Note
-        ----
-        When none of the elements are present in the openmm topolgy, their
-        atomtypes are guessed using their names and their masses are
-        then guessed using their atomtypes.
 
         When partial elements are present, values from available elements
         are used whereas the absent elements are assigned an empty string
@@ -133,9 +128,11 @@ class OpenMMTopologyParser(TopologyReaderBase):
             try:
                 from simtk.unit import daltons
             except ImportError:
-                msg = ("OpenMM is required for the OpenMMParser but "
-                       "it's not installed. Try installing it with \n"
-                       "conda install -c conda-forge openmm")
+                msg = (
+                    "OpenMM is required for the OpenMMParser but "
+                    "it's not installed. Try installing it with \n"
+                    "conda install -c conda-forge openmm"
+                )
                 raise ImportError(msg)
 
         atom_resindex = [a.residue.index for a in omm_topology.atoms()]
@@ -171,34 +168,50 @@ class OpenMMTopologyParser(TopologyReaderBase):
                 if elem.symbol.capitalize() in SYMB2Z:
                     validated_elements.append(elem.symbol)
                 else:
-                    validated_elements.append('')
+                    validated_elements.append("")
                 atomtypes.append(elem.symbol)
                 masses.append(elem.mass.value_in_unit(daltons))
             else:
-                validated_elements.append('')
+                validated_elements.append("")
                 masses.append(0.0)
-                atomtypes.append('X')
+                atomtypes.append("X")
 
         if not all(validated_elements):
             if any(validated_elements):
-                warnings.warn("Element information missing for some atoms. "
-                              "These have been given an empty element record ")
-                if any(i == 'X' for i in atomtypes):
-                    warnings.warn("For absent elements, atomtype has been  "
-                                  "set to 'X' and mass has been set to 0.0. "
-                                  "If needed these can be guessed using "
-                                  "MDAnalysis.topology.guessers.")
-                attrs.append(Elements(np.array(validated_elements,
-                                               dtype=object)))
+                warnings.warn(
+                    "Element information missing for some atoms. "
+                    "These have been given an empty element record "
+                )
+                if any(i == "X" for i in atomtypes):
+                    warnings.warn(
+                        "For absent elements, atomtype has been  "
+                        "set to 'X' and mass has been set to 0.0. "
+                        "If needed these can be guessed using "
+                        "universe.guess_TopologyAttrs("
+                        "to_guess=['masses', 'types']). "
+                        "(for MDAnalysis version 2.x "
+                        "this is done automatically,"
+                        " but it will be removed in 3.0)."
+                    )
+
+                attrs.append(
+                    Elements(np.array(validated_elements, dtype=object))
+                )
 
             else:
-                atomtypes = guess_types(atomnames)
-                masses = guess_masses(atomtypes)
-                wmsg = ("Element information is missing for all the atoms. "
-                        "Elements attribute will not be populated. "
-                        "Atomtype attribute will be guessed using atom "
-                        "name and mass will be guessed using atomtype."
-                        "See MDAnalysis.topology.guessers.")
+                wmsg = (
+                    "Element information is missing for all the atoms. "
+                    "Elements attribute will not be populated. "
+                    "Atomtype attribute will be guessed using atom "
+                    "name and mass will be guessed using atomtype."
+                    "For MDAnalysis version 2.x this is done automatically, "
+                    "but it will be removed in MDAnalysis v3.0. "
+                    "These can be guessed using "
+                    "universe.guess_TopologyAttrs("
+                    "to_guess=['masses', 'types']) "
+                    "See MDAnalysis.guessers."
+                )
+
                 warnings.warn(wmsg)
         else:
             attrs.append(Elements(np.array(validated_elements, dtype=object)))
@@ -231,9 +244,7 @@ class OpenMMAppTopologyParser(OpenMMTopologyParser):
 
     @staticmethod
     def _format_hint(thing):
-        """Can this Parser read object *thing*?
-
-        """
+        """Can this Parser read object *thing*?"""
         try:
             from openmm import app
         except ImportError:
@@ -244,10 +255,7 @@ class OpenMMAppTopologyParser(OpenMMTopologyParser):
         else:
             return isinstance(
                 thing,
-                (
-                    app.PDBFile, app.Modeller,
-                    app.Simulation, app.PDBxFile
-                )
+                (app.PDBFile, app.Modeller, app.Simulation, app.PDBxFile),
             )
 
     def parse(self, **kwargs):

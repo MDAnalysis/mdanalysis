@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -27,7 +27,7 @@ Mean Squared Displacement --- :mod:`MDAnalysis.analysis.msd`
 
 :Authors: Hugo MacDermott-Opeskin
 :Year: 2020
-:Copyright: GNU Public License v2
+:Copyright: Lesser GNU Public License v2.1+
 
 This module implements the calculation of Mean Squared Displacements (MSDs)
 by the Einstein relation. MSDs can be used to characterize the speed at
@@ -63,15 +63,23 @@ Please cite [Calandri2011]_ [Buyl2018]_ if you use this module in addition to
 the normal MDAnalysis citations.
 
 .. warning::
-    To correctly compute the MSD using this analysis module, you must supply
-    coordinates in the **unwrapped** convention. That is, when atoms pass
-    the periodic boundary, they must not be **wrapped** back into the primary
-    simulation cell. MDAnalysis does not currently offer this functionality in
-    the ``MDAnalysis.transformations`` API despite having functions with
-    similar names. We plan to implement the appropriate transformations in the
-    future. In the meantime, various simulation packages provide utilities to
-    convert coordinates to the unwrapped convention. In GROMACS for example,
-    this can be done using ``gmx trjconv`` with the ``-pbc nojump`` flag.
+   To correctly compute the MSD using this analysis module, you must supply
+   coordinates in the **unwrapped** convention, also known as **no-jump**. 
+   That is, when atoms pass the periodic boundary, they must not be wrapped 
+   back into the primary simulation cell.
+   
+   In MDAnalysis you can use the 
+   :class:`~MDAnalysis.transformations.nojump.NoJump`
+   transformation. 
+   
+   In GROMACS, for example, this can be done using `gmx trjconv`_ with the
+   ``-pbc nojump`` flag.
+
+.. _`gmx trjconv`: https://manual.gromacs.org/current/onlinehelp/gmx-trjconv.html
+
+.. SeeAlso::
+   :mod:`MDAnalysis.transformations.nojump`
+
 
 Computing an MSD
 ----------------
@@ -102,16 +110,14 @@ The MSD can then be accessed as
 .. code-block:: python
 
     msd =  MSD.results.timeseries
+    lagtimes = MSD.results.delta_t_values
 
-Visual inspection of the MSD is important, so let's take a look at it with a
- simple plot.
+Visual inspection of the MSD is important, so let's take a look at it with a simple plot.
 
 .. code-block:: python
 
     import matplotlib.pyplot as plt
     nframes = MSD.n_frames
-    timestep = 1 # this needs to be the actual time between frames
-    lagtimes = np.arange(nframes)*timestep # make the lag-time axis
     fig = plt.figure()
     ax = plt.axes()
     # plot the actual MSD
@@ -172,8 +178,7 @@ is used to demonstrate selection of a MSD segment.
     start_time = 20
     start_index = int(start_time/timestep)
     end_time = 60
-    linear_model = linregress(lagtimes[start_index:end_index],
-    				  		  msd[start_index:end_index])
+    linear_model = linregress(lagtimes[start_index:end_index], msd[start_index:end_index])
     slope = linear_model.slope
     error = linear_model.stderr
     # dim_fac is 3 as we computed a 3D msd with 'xyz'
@@ -245,17 +250,22 @@ from ..due import due, Doi
 from .base import AnalysisBase
 from ..core import groups
 from tqdm import tqdm
+import collections
 
-logger = logging.getLogger('MDAnalysis.analysis.msd')
+logger = logging.getLogger("MDAnalysis.analysis.msd")
 
-due.cite(Doi("10.21105/joss.00877"),
-         description="Mean Squared Displacements with tidynamics",
-         path="MDAnalysis.analysis.msd",
-         cite_module=True)
-due.cite(Doi("10.1051/sfn/201112010"),
-         description="FCA fast correlation algorithm",
-         path="MDAnalysis.analysis.msd",
-         cite_module=True)
+due.cite(
+    Doi("10.21105/joss.00877"),
+    description="Mean Squared Displacements with tidynamics",
+    path="MDAnalysis.analysis.msd",
+    cite_module=True,
+)
+due.cite(
+    Doi("10.1051/sfn/201112010"),
+    description="FCA fast correlation algorithm",
+    path="MDAnalysis.analysis.msd",
+    cite_module=True,
+)
 del Doi
 
 
@@ -277,15 +287,32 @@ class EinsteinMSD(AnalysisBase):
         the MSD. Otherwise, use the simple "windowed" algorithm.
         The tidynamics package is required for `fft=True`.
         Defaults to ``True``.
+    non_linear : bool
+        If ``True``, calculates MSD for trajectory where frames are
+        non-linearly dumped. To use this set `fft=False`.
+        Defaults to ``False``.
+
+        .. versionadded:: 2.10.0
+
 
     Attributes
     ----------
     dim_fac : int
         Dimensionality :math:`d` of the MSD.
     results.timeseries : :class:`numpy.ndarray`
-        The averaged MSD over all the particles with respect to lag-time.
+        The averaged MSD over all the particles with respect to constant lag-time or
+        unique Δt intervals.
     results.msds_by_particle : :class:`numpy.ndarray`
-        The MSD of each individual particle with respect to lag-time.
+        The MSD of each individual particle with respect to constant lag-time or
+        unique Δt intervals.
+            - for `non_linear=False`: a 2D array of shape (n_lagtimes, n_atoms)
+            - for `non_linear=True`: a 2D array of shape (n_delta_t_values, n_atoms)
+    results.delta_t_values : :class:`numpy.ndarray`
+        Array of unique Δt (time differences) at which time-averaged MSD values are
+        computed.
+
+        .. versionadded:: 2.10.0
+
     ag : :class:`AtomGroup`
         The :class:`AtomGroup` resulting from your selection
     n_frames : int
@@ -295,27 +322,24 @@ class EinsteinMSD(AnalysisBase):
 
 
     .. versionadded:: 2.0.0
+    .. versionchanged:: 2.10.0
+       Added ability to calculate MSD from samples that are not linearly spaced with the
+       new `non_linear` keyword argument.
     """
 
-    def __init__(self, u, select='all', msd_type='xyz', fft=True, **kwargs):
-        r"""
-        Parameters
-        ----------
-        u : Universe or AtomGroup
-            An MDAnalysis :class:`Universe` or :class:`AtomGroup`.
-        select : str
-            A selection string. Defaults to "all" in which case
-            all atoms are selected.
-        msd_type : {'xyz', 'xy', 'yz', 'xz', 'x', 'y', 'z'}
-            Desired dimensions to be included in the MSD.
-        fft : bool
-            If ``True``, uses a fast FFT based algorithm for computation of
-            the MSD. Otherwise, use the simple "windowed" algorithm.
-            The tidynamics package is required for `fft=True`.
-        """
+    def __init__(
+        self,
+        u,
+        select="all",
+        msd_type="xyz",
+        fft=True,
+        non_linear=False,
+        **kwargs,
+    ):
         if isinstance(u, groups.UpdatingAtomGroup):
-            raise TypeError("UpdatingAtomGroups are not valid for MSD "
-                            "computation")
+            raise TypeError(
+                "UpdatingAtomGroups are not valid for MSD computation"
+            )
 
         super(EinsteinMSD, self).__init__(u.universe.trajectory, **kwargs)
 
@@ -324,6 +348,7 @@ class EinsteinMSD(AnalysisBase):
         self.msd_type = msd_type
         self._parse_msd_type()
         self.fft = fft
+        self.non_linear = non_linear
 
         # local
         self.ag = u.select_atoms(self.select)
@@ -333,22 +358,30 @@ class EinsteinMSD(AnalysisBase):
         # result
         self.results.msds_by_particle = None
         self.results.timeseries = None
+        self.results.delta_t_values = None
 
     def _prepare(self):
         # self.n_frames only available here
         # these need to be zeroed prior to each run() call
-        self.results.msds_by_particle = np.zeros((self.n_frames,
-                                                  self.n_particles))
+        self.results.msds_by_particle = np.zeros(
+            (self.n_frames, self.n_particles)
+        )
         self._position_array = np.zeros(
-            (self.n_frames, self.n_particles, self.dim_fac))
+            (self.n_frames, self.n_particles, self.dim_fac)
+        )
         # self.results.timeseries not set here
 
     def _parse_msd_type(self):
-        r""" Sets up the desired dimensionality of the MSD.
-
-        """
-        keys = {'x': [0], 'y': [1], 'z': [2], 'xy': [0, 1],
-                'xz': [0, 2], 'yz': [1, 2], 'xyz': [0, 1, 2]}
+        r"""Sets up the desired dimensionality of the MSD."""
+        keys = {
+            "x": [0],
+            "y": [1],
+            "z": [2],
+            "xy": [0, 1],
+            "xz": [0, 2],
+            "yz": [1, 2],
+            "xyz": [0, 1, 2],
+        }
 
         self.msd_type = self.msd_type.lower()
 
@@ -356,30 +389,31 @@ class EinsteinMSD(AnalysisBase):
             self._dim = keys[self.msd_type]
         except KeyError:
             raise ValueError(
-                'invalid msd_type: {} specified, please specify one of xyz, '
-                'xy, xz, yz, x, y, z'.format(self.msd_type))
+                "invalid msd_type: {} specified, please specify one of xyz, "
+                "xy, xz, yz, x, y, z".format(self.msd_type)
+            )
 
         self.dim_fac = len(self._dim)
 
     def _single_frame(self):
-        r""" Constructs array of positions for MSD calculation.
-
-        """
+        r"""Constructs array of positions for MSD calculation."""
         # shape of position array set here, use span in last dimension
         # from this point on
-        self._position_array[self._frame_index] = (
-            self.ag.positions[:, self._dim])
+        self._position_array[self._frame_index] = self.ag.positions[
+            :, self._dim
+        ]
 
     def _conclude(self):
-        if self.fft:
-            self._conclude_fft()
+        if self.non_linear:
+            self._conclude_non_linear()
         else:
-            self._conclude_simple()
+            if self.fft:
+                self._conclude_fft()
+            else:
+                self._conclude_simple()
 
     def _conclude_simple(self):
-        r""" Calculates the MSD via the simple "windowed" algorithm.
-
-        """
+        r"""Calculates the MSD via the simple "windowed" algorithm."""
         lagtimes = np.arange(1, self.n_frames)
         positions = self._position_array.astype(np.float64)
         for lag in tqdm(lagtimes):
@@ -387,15 +421,17 @@ class EinsteinMSD(AnalysisBase):
             sqdist = np.square(disp).sum(axis=-1)
             self.results.msds_by_particle[lag, :] = np.mean(sqdist, axis=0)
         self.results.timeseries = self.results.msds_by_particle.mean(axis=1)
+        self.results.delta_t_values = np.arange(self.n_frames) * (
+            self.times[1] - self.times[0]
+        )
 
     def _conclude_fft(self):  # with FFT, np.float64 bit prescision required.
-        r""" Calculates the MSD via the FCA fast correlation algorithm.
-
-        """
+        r"""Calculates the MSD via the FCA fast correlation algorithm."""
         try:
             import tidynamics
         except ImportError:
-            raise ImportError("""ERROR --- tidynamics was not found!
+            raise ImportError(
+                """ERROR --- tidynamics was not found!
 
                 tidynamics is required to compute an FFT based MSD (default)
 
@@ -403,10 +439,53 @@ class EinsteinMSD(AnalysisBase):
 
                     pip install tidynamics
 
-                or set fft=False""")
+                or set fft=False"""
+            )
 
         positions = self._position_array.astype(np.float64)
         for n in tqdm(range(self.n_particles)):
             self.results.msds_by_particle[:, n] = tidynamics.msd(
-                positions[:, n, :])
+                positions[:, n, :]
+            )
         self.results.timeseries = self.results.msds_by_particle.mean(axis=1)
+        self.results.delta_t_values = np.arange(self.n_frames) * (
+            self.times[1] - self.times[0]
+        )
+
+    def _conclude_non_linear(self):
+
+        n_frames = self.n_frames
+        n_atoms = self.n_particles
+        positions = self._position_array.astype(np.float64)
+        # Dictionary to collect MSDs: {Δt: [msd1, msd2, ...]}
+        msd_dict = collections.defaultdict(list)
+        msds_by_particle_dict = collections.defaultdict(list)
+
+        # TODO: optimize the code
+        # Looping over all the frames as if the referenced gets shifted frame to frame
+        for i in range(n_frames):
+            for j in range(i + 1, n_frames):
+                delta_t = self.times[j] - self.times[i]
+                # Compute displacement and squared displacement
+                disp = positions[j] - positions[i]
+                squared_disp = np.sum(disp**2, axis=1)
+                msd = np.mean(squared_disp)
+                # Store MSD under corresponding Δt
+                msd_dict[delta_t].append(msd)
+                msds_by_particle_dict[delta_t].append(squared_disp)
+
+        msd_dict[0] = [0]
+        msds_by_particle_dict[0.0] = [np.zeros(n_atoms)]
+
+        # For each delta_t, stacked all squared_disp arrays and averaging over axis=0 (time origins)
+        delta_t_values = sorted(msd_dict.keys())
+        avg_msds = [np.mean(msd_dict[dt]) for dt in delta_t_values]
+        msds_by_particle_array = np.zeros((len(delta_t_values), n_atoms))
+        for idx, dt in enumerate(delta_t_values):
+            # Stack list of arrays like -- (n_time_origins, n_atoms)
+            arr = np.vstack(msds_by_particle_dict[dt])
+            msds_by_particle_array[idx, :] = np.mean(arr, axis=0)
+
+        self.results.timeseries = np.array(avg_msds)
+        self.results.delta_t_values = np.array(delta_t_values)
+        self.results.msds_by_particle = msds_by_particle_array

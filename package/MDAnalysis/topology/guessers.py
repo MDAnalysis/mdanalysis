@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -23,6 +23,11 @@
 """
 Guessing unknown Topology information --- :mod:`MDAnalysis.topology.guessers`
 =============================================================================
+
+.. deprecated:: 2.8.0
+   The :mod:`MDAnalysis.topology.guessers` module will be removed in release 3.0.0.
+   It is deprecated in favor of the new Guessers API. See 
+   :mod:`MDAnalysis.guesser.default_guesser` for more details.
 
 In general `guess_atom_X` returns the guessed value for a single value,
 while `guess_Xs` will work on an array of many atoms.
@@ -101,9 +106,18 @@ import warnings
 import re
 
 from ..lib import distances
-from . import tables
+from MDAnalysis.guesser import tables
+from MDAnalysis.lib.util import deprecate
 
 
+deprecation_msg = (
+    "MDAnalysis.topology.guessers is deprecated in favour of "
+    "the new Guessers API. "
+    "See MDAnalysis.guesser.default_guesser for more details."
+)
+
+
+@deprecate(release="2.8.0", remove="3.0.0", message=deprecation_msg)
 def guess_masses(atom_types):
     """Guess the mass of many atoms based upon their type
 
@@ -117,10 +131,13 @@ def guess_masses(atom_types):
     atom_masses : np.ndarray dtype float64
     """
     validate_atom_types(atom_types)
-    masses = np.array([get_atom_mass(atom_t) for atom_t in atom_types], dtype=np.float64)
+    masses = np.array(
+        [get_atom_mass(atom_t) for atom_t in atom_types], dtype=np.float64
+    )
     return masses
 
 
+@deprecate(release="2.8.0", remove="3.0.0", message=deprecation_msg)
 def validate_atom_types(atom_types):
     """Vaildates the atom types based on whether they are available in our tables
 
@@ -143,9 +160,14 @@ def validate_atom_types(atom_types):
             try:
                 tables.masses[atom_type.upper()]
             except KeyError:
-                warnings.warn("Failed to guess the mass for the following atom types: {}".format(atom_type))
+                warnings.warn(
+                    "Failed to guess the mass for the following atom types: {}".format(
+                        atom_type
+                    )
+                )
 
 
+@deprecate(release="2.8.0", remove="3.0.0", message=deprecation_msg)
 def guess_types(atom_names):
     """Guess the atom type of many atoms based on atom name
 
@@ -158,9 +180,12 @@ def guess_types(atom_names):
     -------
     atom_types : np.ndarray dtype object
     """
-    return np.array([guess_atom_element(name) for name in atom_names], dtype=object)
+    return np.array(
+        [guess_atom_element(name) for name in atom_names], dtype=object
+    )
 
 
+@deprecate(release="2.8.0", remove="3.0.0", message=deprecation_msg)
 def guess_atom_type(atomname):
     """Guess atom type from the name.
 
@@ -178,9 +203,11 @@ def guess_atom_type(atomname):
     return guess_atom_element(atomname)
 
 
-NUMBERS = re.compile(r'[0-9]') # match numbers
-SYMBOLS = re.compile(r'[*+-]')  # match *, +, -
+NUMBERS = re.compile(r"[0-9]")  # match numbers
+SYMBOLS = re.compile(r"[*+-]")  # match *, +, -
 
+
+@deprecate(release="2.8.0", remove="3.0.0", message=deprecation_msg)
 def guess_atom_element(atomname):
     """Guess the element of the atom from the name.
 
@@ -197,19 +224,19 @@ def guess_atom_element(atomname):
     :func:`guess_atom_type`
     :mod:`MDAnalysis.topology.tables`
     """
-    if atomname == '':
-        return ''
+    if atomname == "":
+        return ""
     try:
         return tables.atomelements[atomname.upper()]
     except KeyError:
         # strip symbols
-        no_symbols = re.sub(SYMBOLS, '', atomname)
+        no_symbols = re.sub(SYMBOLS, "", atomname)
 
         # split name by numbers
         no_numbers = re.split(NUMBERS, no_symbols)
-        no_numbers = list(filter(None, no_numbers)) #remove ''
+        no_numbers = list(filter(None, no_numbers))  # remove ''
         # if no_numbers is not empty, use the first element of no_numbers
-        name = no_numbers[0].upper() if no_numbers else ''
+        name = no_numbers[0].upper() if no_numbers else ""
 
         # just in case
         if name in tables.atomelements:
@@ -230,6 +257,7 @@ def guess_atom_element(atomname):
         return no_symbols
 
 
+@deprecate(release="2.8.0", remove="3.0.0", message=deprecation_msg)
 def guess_bonds(atoms, coords, box=None, **kwargs):
     r"""Guess if bonds exist between two atoms based on their distance.
 
@@ -297,10 +325,10 @@ def guess_bonds(atoms, coords, box=None, **kwargs):
     if len(atoms) != len(coords):
         raise ValueError("'atoms' and 'coord' must be the same length")
 
-    fudge_factor = kwargs.get('fudge_factor', 0.55)
+    fudge_factor = kwargs.get("fudge_factor", 0.55)
 
     vdwradii = tables.vdwradii.copy()  # so I don't permanently change it
-    user_vdwradii = kwargs.get('vdwradii', None)
+    user_vdwradii = kwargs.get("vdwradii", None)
     if user_vdwradii:  # this should make algo use their values over defaults
         vdwradii.update(user_vdwradii)
 
@@ -309,13 +337,16 @@ def guess_bonds(atoms, coords, box=None, **kwargs):
 
     # check that all types have a defined vdw
     if not all(val in vdwradii for val in set(atomtypes)):
-        raise ValueError(("vdw radii for types: " +
-                          ", ".join([t for t in set(atomtypes) if
-                                     not t in vdwradii]) +
-                          ". These can be defined manually using the" +
-                          " keyword 'vdwradii'"))
+        raise ValueError(
+            (
+                "vdw radii for types: "
+                + ", ".join([t for t in set(atomtypes) if not t in vdwradii])
+                + ". These can be defined manually using the"
+                + " keyword 'vdwradii'"
+            )
+        )
 
-    lower_bound = kwargs.get('lower_bound', 0.1)
+    lower_bound = kwargs.get("lower_bound", 0.1)
 
     if box is not None:
         box = np.asarray(box)
@@ -327,17 +358,17 @@ def guess_bonds(atoms, coords, box=None, **kwargs):
 
     bonds = []
 
-    pairs, dist = distances.self_capped_distance(coords,
-                                                 max_cutoff=2.0*max_vdw,
-                                                 min_cutoff=lower_bound,
-                                                 box=box)
+    pairs, dist = distances.self_capped_distance(
+        coords, max_cutoff=2.0 * max_vdw, min_cutoff=lower_bound, box=box
+    )
     for idx, (i, j) in enumerate(pairs):
-        d = (vdwradii[atomtypes[i]] + vdwradii[atomtypes[j]])*fudge_factor
-        if (dist[idx] < d):
+        d = (vdwradii[atomtypes[i]] + vdwradii[atomtypes[j]]) * fudge_factor
+        if dist[idx] < d:
             bonds.append((atoms[i].index, atoms[j].index))
     return tuple(bonds)
 
 
+@deprecate(release="2.8.0", remove="3.0.0", message=deprecation_msg)
 def guess_angles(bonds):
     """Given a list of Bonds, find all angles that exist between atoms.
 
@@ -374,6 +405,7 @@ def guess_angles(bonds):
     return tuple(angles_found)
 
 
+@deprecate(release="2.8.0", remove="3.0.0", message=deprecation_msg)
 def guess_dihedrals(angles):
     """Given a list of Angles, find all dihedrals that exist between atoms.
 
@@ -394,8 +426,9 @@ def guess_dihedrals(angles):
         a_tup = tuple([a.index for a in b])  # angle as tuple of numbers
         # if searching with b[0], want tuple of (b[2], b[1], b[0], +new)
         # search the first and last atom of each angle
-        for atom, prefix in zip([b.atoms[0], b.atoms[-1]],
-                                [a_tup[::-1], a_tup]):
+        for atom, prefix in zip(
+            [b.atoms[0], b.atoms[-1]], [a_tup[::-1], a_tup]
+        ):
             for other_b in atom.bonds:
                 if not other_b.partner(atom) in b:
                     third_a = other_b.partner(atom)
@@ -407,6 +440,7 @@ def guess_dihedrals(angles):
     return tuple(dihedrals_found)
 
 
+@deprecate(release="2.8.0", remove="3.0.0", message=deprecation_msg)
 def guess_improper_dihedrals(angles):
     """Given a list of Angles, find all improper dihedrals that exist between
     atoms.
@@ -443,6 +477,7 @@ def guess_improper_dihedrals(angles):
     return tuple(dihedrals_found)
 
 
+@deprecate(release="2.8.0", remove="3.0.0", message=deprecation_msg)
 def get_atom_mass(element):
     """Return the atomic mass in u for *element*.
 
@@ -462,6 +497,7 @@ def get_atom_mass(element):
             return 0.0
 
 
+@deprecate(release="2.8.0", remove="3.0.0", message=deprecation_msg)
 def guess_atom_mass(atomname):
     """Guess a mass based on the atom name.
 
@@ -473,6 +509,7 @@ def guess_atom_mass(atomname):
     return get_atom_mass(guess_atom_element(atomname))
 
 
+@deprecate(release="2.8.0", remove="3.0.0", message=deprecation_msg)
 def guess_atom_charge(atomname):
     """Guess atom charge from the name.
 
@@ -482,6 +519,7 @@ def guess_atom_charge(atomname):
     return 0.0
 
 
+@deprecate(release="2.8.0", remove="3.0.0", message=deprecation_msg)
 def guess_aromaticities(atomgroup):
     """Guess aromaticity of atoms using RDKit
 
@@ -502,6 +540,7 @@ def guess_aromaticities(atomgroup):
     return np.array([atom.GetIsAromatic() for atom in mol.GetAtoms()])
 
 
+@deprecate(release="2.8.0", remove="3.0.0", message=deprecation_msg)
 def guess_gasteiger_charges(atomgroup):
     """Guess Gasteiger partial charges using RDKit
 
@@ -520,7 +559,9 @@ def guess_gasteiger_charges(atomgroup):
     """
     mol = atomgroup.convert_to("RDKIT")
     from rdkit.Chem.rdPartialCharges import ComputeGasteigerCharges
+
     ComputeGasteigerCharges(mol, throwOnParamFailure=True)
-    return np.array([atom.GetDoubleProp("_GasteigerCharge")
-                     for atom in mol.GetAtoms()],
-                    dtype=np.float32)
+    return np.array(
+        [atom.GetDoubleProp("_GasteigerCharge") for atom in mol.GetAtoms()],
+        dtype=np.float32,
+    )

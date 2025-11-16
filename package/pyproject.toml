@@ -27,9 +27,9 @@ authors = [
 maintainers = [
     {name = 'MDAnalysis Core Developers', email = 'mdanalysis@numfocus.org'}
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
-    'numpy>=1.23.2',
+    'numpy>=1.26.0',
     'GridDataFormats>=0.4.0',
     'mmtf-python>=1.0.0',
     'joblib>=0.12',
@@ -38,11 +38,8 @@ dependencies = [
     'tqdm>=4.43.0',
     'threadpoolctl',
     'packaging',
-    'fasteners',
+    'filelock',
     'mda-xdrlib',
-    'waterdynamics',
-    'pathsimanalysis',
-    'mdahole2',
 ]
 keywords = [
     "python", "science", "chemistry", "biophysics", "molecular-dynamics",
@@ -53,14 +50,15 @@ classifiers = [
     'Development Status :: 6 - Mature',
     'Environment :: Console',
     'Intended Audience :: Science/Research',
-    'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
+    'License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)',
     'Operating System :: POSIX',
     'Operating System :: MacOS :: MacOS X',
     'Operating System :: Microsoft :: Windows',
     'Programming Language :: Python',
-    'Programming Language :: Python :: 3.10',
     'Programming Language :: Python :: 3.11',
     'Programming Language :: Python :: 3.12',
+    'Programming Language :: Python :: 3.13',
+    'Programming Language :: Python :: 3.14',
     'Programming Language :: C',
     'Topic :: Scientific/Engineering',
     'Topic :: Scientific/Engineering :: Bio-Informatics',
@@ -77,7 +75,8 @@ extra_formats = [
     "pyedr>=0.7.0",
     "pytng>=0.2.3",
     "gsd>3.0.0",
-    "rdkit>=2020.03.1",
+    "rdkit>=2022.09.1",
+    "imdclient>=0.2.2",
 ]
 analysis = [
     "biopython>=1.80",
@@ -85,6 +84,9 @@ analysis = [
     "scikit-learn",
     "tidynamics>=1.0.0",
     'networkx>=2.0',
+    'waterdynamics',
+    'pathsimanalysis',
+    'mdahole2',
 ]
 doc = [
     "sphinx",
@@ -93,6 +95,9 @@ doc = [
     "sphinxcontrib-bibtex",
     "pybtex",
     "pybtex-docutils",
+]
+parallel = [
+    "dask",
 ]
 
 [project.urls]
@@ -118,3 +123,27 @@ find = {}
 MDAnalysis = [
     'analysis/data/*.npy',
 ]
+
+[tool.black]
+line-length = 79
+target-version = ['py311', 'py312', 'py313']
+extend-exclude = '''
+(
+__pycache__ 
+| MDAnalysis/coordinates/DCD\.py
+| MDAnalysis/coordinates/TRJ\.py
+| MDAnalysis/coordinates/__init__\.py
+| MDAnalysis/analysis/hydrogenbonds/hbond_analysis\.py
+| MDAnalysis/coordinates/DLPoly\.py
+| MDAnalysis/coordinates/TRZ\.py
+| MDAnalysis/coordinates/__init__\.py
+| MDAnalysis/coordinates/base\.py
+| MDAnalysis/topology/tpr/utils\.py
+| MDAnalysis/coordinates/MMCIF\.py
+| MDAnalysis/topology/MMCIFParser\.py
+| MDAnalysis/topology/PDBParser\.py
+| MDAnalysis/topology/__init__\.py
+| .*\.pyx
+)
+'''
+required-version = '24'

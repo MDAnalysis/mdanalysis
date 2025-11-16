@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -103,16 +103,17 @@ Data files
 
 
 __all__ = [
-    "Rama_ref", "Janin_ref", 
+    "Rama_ref",
+    "Janin_ref",
     # reference plots for Ramachandran and Janin classes
 ]
 
 
 from importlib import resources
 
-_base_ref = resources.files('MDAnalysis.analysis.data')
-Rama_ref = (_base_ref / 'rama_ref_data.npy').as_posix()
-Janin_ref = (_base_ref / 'janin_ref_data.npy').as_posix()
+_base_ref = resources.files("MDAnalysis.analysis.data")
+Rama_ref = (_base_ref / "rama_ref_data.npy").as_posix()
+Janin_ref = (_base_ref / "janin_ref_data.npy").as_posix()
 
 # This should be the last line: clean up namespace
 del resources

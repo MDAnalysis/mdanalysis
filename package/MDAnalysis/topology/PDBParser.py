@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -35,12 +35,19 @@ a different file format (e.g. the "extended" PDB, *XPDB* format, see
 :mod:`~MDAnalysis.topology.ExtendedPDBParser`) that can handle residue
 numbers up to 99,999.
 
+.. note::
+
+    Atomtypes will be created from elements if they are present and valid.
+    Otherwise, they will be guessed on Universe creation.
+    By default, masses will also be guessed on Universe creation.
+    This may change in release 3.0.
+    See :ref:`Guessers` for more information.
 
 
 .. Note::
 
-   The parser processes atoms and their names. Masses are guessed and set to 0
-   if unknown. Partial charges are not set. Elements are parsed if they are
+   The parser processes atoms and their names.
+   Partial charges are not set. Elements are parsed if they are
    valid. If partially missing or incorrect, empty records are assigned.
 
 See Also
@@ -60,9 +67,9 @@ Classes
 """
 import numpy as np
 import warnings
+import logging
 
-from .guessers import guess_masses, guess_types
-from .tables import SYMB2Z
+from ..guesser.tables import SYMB2Z
 from ..lib import util
 from .base import TopologyReaderBase, change_squash
 from ..core.topology import Topology
@@ -75,7 +82,6 @@ from ..core.topologyattrs import (
     Atomtypes,
     Elements,
     ICodes,
-    Masses,
     Occupancies,
     RecordTypes,
     Resids,
@@ -85,6 +91,9 @@ from ..core.topologyattrs import (
     Tempfactors,
     FormalCharges,
 )
+
+# Set up a logger for the PDBParser
+logger = logging.getLogger("MDAnalysis.topology.PDBParser")
 
 
 def float_or_default(val, default):
@@ -169,8 +178,10 @@ class PDBParser(TopologyReaderBase):
      - bonds
      - formalcharges
 
-    Guesses the following Attributes:
-     - masses
+    Note that `PDBParser` accepts an optional keyword argument
+    ``force_chainids_to_segids``. If set to ``True``, the chain IDs (even if
+    empty values are in the chain ID column in the file) will forcibly be used
+    instead of the segment IDs for creating segments.
 
     See Also
     --------
@@ -197,6 +208,14 @@ class PDBParser(TopologyReaderBase):
     .. versionchanged:: 2.5.0
        Formal charges will not be populated if an unknown entry is encountered,
        instead a UserWarning is emitted.
+    .. versionchanged:: 2.8.0
+        Removed type and mass guessing (attributes guessing takes place now
+        through universe.guess_TopologyAttrs() API).
+    .. versionchanged:: 2.10.0
+        segID is read from 73-76 instead of 67-76 and added the
+        `force_chainids_to_segids` keyword argument. Some infos in logger will
+        be generated if the segids is not present or if the chainids are not
+        completely equal to segids.
     """
     format = ['PDB', 'ENT']
 
@@ -207,7 +226,7 @@ class PDBParser(TopologyReaderBase):
         -------
         MDAnalysis Topology object
         """
-        top = self._parseatoms()
+        top = self._parseatoms(**kwargs)
 
         try:
             bonds = self._parsebonds(top.ids.values)
@@ -224,7 +243,7 @@ class PDBParser(TopologyReaderBase):
 
         return top
 
-    def _parseatoms(self):
+    def _parseatoms(self, **kwargs):
         """Create the initial Topology object"""
         resid_prev = 0  # resid looping hack
 
@@ -297,15 +316,27 @@ class PDBParser(TopologyReaderBase):
                 occupancies.append(float_or_default(line[54:60], 0.0))
                 tempfactors.append(float_or_default(line[60:66], 1.0))  # AKA bfactor
 
-                segids.append(line[66:76].strip())
+                segids.append(line[72:76].strip())
 
         # Warn about wrapped serials
         if self._wrapped_serials:
             warnings.warn("Serial numbers went over 100,000.  "
                           "Higher serials have been guessed")
 
+        # If segids is not equal to chainids, warn the user
+        if any([a != b for a, b in zip(segids, chainids)]):
+            logger.debug("Segment IDs and Chain IDs are not completely equal.")
+
         # If segids not present, try to use chainids
         if not any(segids):
+            logger.info("Setting segids from chainIDs because no segids "
+                        "found in the PDB file.")
+            segids = chainids
+
+        # If force_chainids_to_segids is set, use chainids as segids
+        if kwargs.get("force_chainids_to_segids", False):
+            logger.info("force_chainids_to_segids is set. "
+                        "Using chain IDs as segment IDs.")
             segids = chainids
 
         n_atoms = len(serials)
@@ -322,16 +353,8 @@ class PDBParser(TopologyReaderBase):
                 (occupancies, Occupancies, np.float32),
         ):
             attrs.append(Attr(np.array(vals, dtype=dtype)))
-        # Guessed attributes
-        # masses from types if they exist
         # OPT: We do this check twice, maybe could refactor to avoid this
-        if not any(elements):
-            atomtypes = guess_types(names)
-            attrs.append(Atomtypes(atomtypes, guessed=True))
-            warnings.warn("Element information is missing, elements attribute "
-                          "will not be populated. If needed these can be "
-                          "guessed using MDAnalysis.topology.guessers.")
-        else:
+        if any(elements):
             # Feed atomtypes as raw element column, but validate elements
             atomtypes = elements
             attrs.append(Atomtypes(np.array(elements, dtype=object)))
@@ -344,10 +367,16 @@ class PDBParser(TopologyReaderBase):
                     wmsg = (f"Unknown element {elem} found for some atoms. "
                             f"These have been given an empty element record. "
                             f"If needed they can be guessed using "
-                            f"MDAnalysis.topology.guessers.")
+                            f"universe.guess_TopologyAttrs(context='default',"
+                            " to_guess=['elements']).")
                     warnings.warn(wmsg)
                     validated_elements.append('')
             attrs.append(Elements(np.array(validated_elements, dtype=object)))
+        else:
+            warnings.warn("Element information is missing, elements attribute "
+                          "will not be populated. If needed these can be"
+                          " guessed using universe.guess_TopologyAttrs("
+                          "context='default', to_guess=['elements']).")
 
         if any(formalcharges):
             try:
@@ -374,9 +403,6 @@ class PDBParser(TopologyReaderBase):
             else:
                 attrs.append(FormalCharges(np.array(formalcharges, dtype=int)))
 
-        masses = guess_masses(atomtypes)
-        attrs.append(Masses(masses, guessed=True))
-
         # Residue level stuff from here
         resids = np.array(resids, dtype=np.int32)
         resnames = np.array(resnames, dtype=object)
@@ -391,11 +417,13 @@ class PDBParser(TopologyReaderBase):
         n_residues = len(resids)
         attrs.append(Resnums(resnums))
         attrs.append(Resids(resids))
-        attrs.append(Resnums(resids.copy()))
         attrs.append(ICodes(icodes))
         attrs.append(Resnames(resnames))
 
-        if any(segids) and not any(val is None for val in segids):
+        if (
+            kwargs.get("force_chainids_to_segids", False) or
+            (any(segids) and not any(val is None for val in segids))
+        ):
             segidx, (segids,) = change_squash((segids,), (segids,))
             n_segments = len(segids)
             attrs.append(Segids(segids))
@@ -403,6 +431,8 @@ class PDBParser(TopologyReaderBase):
             n_segments = 1
             attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
             segidx = None
+            logger.info("Segment/chain ID is empty, "
+                        "setting segids to default value 'SYSTEM'.")
 
         top = Topology(n_atoms, n_residues, n_segments,
                        attrs=attrs,
