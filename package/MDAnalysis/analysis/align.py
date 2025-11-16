@@ -216,7 +216,7 @@ from MDAnalysis.lib.util import deprecate  # remove 3.0
 from MDAnalysis.lib.log import ProgressBar
 from ..due import due, Doi
 
-from .base import AnalysisBase
+from .base import AnalysisBase, ResultsGroup
 
 logger = logging.getLogger("MDAnalysis.analysis.align")
 
@@ -947,6 +947,16 @@ class AverageStructure(AnalysisBase):
 
     """
 
+    _analysis_algorithm_is_parallelizable = True
+
+    @classmethod
+    def get_supported_backends(cls):
+        return (
+            "serial",
+            "multiprocessing",
+            "dask",
+        )
+
     def __init__(
         self,
         mobile,
@@ -1162,6 +1172,20 @@ class AverageStructure(AnalysisBase):
         self._writer.close()
         if not self._verbose:
             logging.disable(logging.NOTSET)
+
+    @staticmethod
+    def _first(xs):
+        """Return the first item from a list."""
+        return xs[0]
+
+    def _get_aggregator(self):
+        return ResultsGroup(
+            lookup={
+                "universe": AverageStructure._first,    # first universe for ResultsGroup
+                "positions": ResultsGroup.ndarray_sum,
+                "rmsd": ResultsGroup.ndarray_sum,
+            }
+        )
 
     @property
     def universe(self):
