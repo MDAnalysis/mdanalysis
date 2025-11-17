@@ -14,7 +14,7 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, marinegor, PardhavMaradani
+??/??/?? IAlibay, marinegor, PardhavMaradani, orbeckst, tylerjereddy
 
  * 2.11.0
 
@@ -23,6 +23,10 @@ Fixes
 Enhancements
  * Add reading from mmCIF, also known as PDBx format, using crystallographic library
    `gemmi` as a backend (Issue #2367 and extension of #4303, PR #4712).
+ * Fix incorrect TPR file parsing for GROMACS topologies produced prior
+   to version 5.1.0 (Issue #5145, PR #5146)
+ * Fixes incorrect assignment of secondary structure to proline residues in
+   DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Changes
 
