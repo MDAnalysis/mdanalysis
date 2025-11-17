@@ -122,7 +122,6 @@ class TopologyReaderBase(IOBase, metaclass=_Topologymeta):
     """
 
     def __init__(self, filename):
-        
         if isinstance(filename, util.NamedStream):
             self.filename = filename
         elif isinstance(filename, (str, bytes, os.PathLike)): # Add specific case for Path 
