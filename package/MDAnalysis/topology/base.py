@@ -122,7 +122,7 @@ class TopologyReaderBase(IOBase, metaclass=_Topologymeta):
     """
 
     def __init__(self, filename):  
-       self.filename = filename # To cover remaining cases
+        self.filename = filename # To cover remaining cases
 
 
     def parse(self, **kwargs):  # pragma: no cover
