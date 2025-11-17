@@ -352,6 +352,8 @@ class DefaultGuesser(GuesserBase):
 
             # just in case
             if name in tables.atomelements:
+                if name == "CS" and  isinstance(eval(atomname[1:-1]), int): #"Adding these two lines correctly assigns this C*S atoms as carbons"
+                    name = "AC"  # AC maps to C in the elements table
                 return tables.atomelements[name]
 
             while name:
