@@ -21,13 +21,17 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import warnings
-from ..converters.ParmEd import (ParmEdConverter, ParmEdReader,
-                                 get_indices_from_subset, MDA2PMD,)
+from ..converters.ParmEd import (
+    ParmEdConverter,
+    ParmEdReader,
+    get_indices_from_subset,
+    MDA2PMD,
+)
 
 
 warnings.warn(
     "This module is deprecated as of MDAnalysis version 2.0.0. "
     "It will be removed in MDAnalysis version 3.0.0. "
     "Please import the ParmEd classes from MDAnalysis.converters instead.",
-    category=DeprecationWarning
+    category=DeprecationWarning,
 )

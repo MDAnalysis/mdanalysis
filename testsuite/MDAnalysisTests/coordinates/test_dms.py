@@ -28,7 +28,7 @@ from numpy.testing import assert_equal
 
 from MDAnalysis.lib.mdamath import triclinic_vectors
 
-from MDAnalysisTests.datafiles import (DMS)
+from MDAnalysisTests.datafiles import DMS
 
 
 class TestDMSReader(object):
@@ -44,7 +44,7 @@ class TestDMSReader(object):
         assert ts.dimensions is None
 
     # cythonised class can no longer raise AttributeError
-    # so changed to test of has_velocities 
+    # so changed to test of has_velocities
     def test_velocities(self, ts):
         assert_equal(ts.has_velocities, False)
 
@@ -56,28 +56,39 @@ class TestDMSReader(object):
     def test_coords_atom_0(self, universe):
         # Desired coordinates taken directly from the SQLite file. Check unit
         # conversion
-        coords_0 = np.array([-11.0530004501343,
-                             26.6800003051758,
-                             12.7419996261597, ],
-                            dtype=np.float32)
+        coords_0 = np.array(
+            [
+                -11.0530004501343,
+                26.6800003051758,
+                12.7419996261597,
+            ],
+            dtype=np.float32,
+        )
         assert_equal(universe.atoms[0].position, coords_0)
 
     def test_n_frames(self, universe):
-        assert_equal(universe.trajectory.n_frames, 1,
-                     "wrong number of frames in pdb")
+        assert_equal(
+            universe.trajectory.n_frames, 1, "wrong number of frames in pdb"
+        )
 
     def test_time(self, universe):
-        assert_equal(universe.trajectory.time, 0.0,
-                     "wrong time of the frame")
+        assert_equal(universe.trajectory.time, 0.0, "wrong time of the frame")
 
     def test_frame(self, universe):
-        assert_equal(universe.trajectory.frame, 0, "wrong frame number "
-                                                   "(0-based, should be 0 for single frame readers)")
+        assert_equal(
+            universe.trajectory.frame,
+            0,
+            "wrong frame number "
+            "(0-based, should be 0 for single frame readers)",
+        )
 
     def test_frame_index_0(self, universe):
         universe.trajectory[0]
-        assert_equal(universe.trajectory.ts.frame, 0,
-                     "frame number for frame index 0 should be 0")
+        assert_equal(
+            universe.trajectory.ts.frame,
+            0,
+            "frame number for frame index 0 should be 0",
+        )
 
     def test_frame_index_1_raises_IndexError(self, universe):
         with pytest.raises(IndexError):

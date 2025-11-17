@@ -35,24 +35,59 @@ from collections import namedtuple
 from ...guesser.tables import Z2SYMB
 
 TpxHeader = namedtuple(
-    "TpxHeader", [
-        "ver_str", "precision",
-        "fver", "fgen", "file_tag", "natoms", "ngtc", "fep_state", "lamb",
-        "bIr", "bTop", "bX", "bV", "bF", "bBox", "sizeOfTprBody"])
+    "TpxHeader",
+    [
+        "ver_str",
+        "precision",
+        "fver",
+        "fgen",
+        "file_tag",
+        "natoms",
+        "ngtc",
+        "fep_state",
+        "lamb",
+        "bIr",
+        "bTop",
+        "bX",
+        "bV",
+        "bF",
+        "bBox",
+        "sizeOfTprBody",
+    ],
+)
 Box = namedtuple("Box", "size rel v")
 Mtop = namedtuple("Mtop", "nmoltype moltypes nmolblock")
 Params = namedtuple("Params", "atnr ntypes functype reppow fudgeQQ")
-Atom = namedtuple("Atom", ["m", "q", "mB", "qB", "tp", "typeB", "ptype", "resind", "atomnumber"])
+Atom = namedtuple(
+    "Atom",
+    ["m", "q", "mB", "qB", "tp", "typeB", "ptype", "resind", "atomnumber"],
+)
 Atoms = namedtuple("Atoms", "atoms nr nres type typeB atomnames resnames")
 Ilist = namedtuple("Ilist", "nr ik, iatoms")
-Molblock = namedtuple("Molblock", [
-    "molb_type", "molb_nmol", "molb_natoms_mol",
-    "molb_nposres_xA", "molb_nposres_xB"])
+Molblock = namedtuple(
+    "Molblock",
+    [
+        "molb_type",
+        "molb_nmol",
+        "molb_natoms_mol",
+        "molb_nposres_xA",
+        "molb_nposres_xB",
+    ],
+)
 
 
 class MoleculeKind(object):
-    def __init__(self, name, atomkinds, bonds=None, angles=None,
-                 dihe=None, impr=None, donors=None, acceptors=None):
+    def __init__(
+        self,
+        name,
+        atomkinds,
+        bonds=None,
+        angles=None,
+        dihe=None,
+        impr=None,
+        donors=None,
+        acceptors=None,
+    ):
         self.name = name  # name of the molecule
         self.atomkinds = atomkinds
         self.bonds = bonds
@@ -105,7 +140,8 @@ class MoleculeKind(object):
 
 class AtomKind(object):
     def __init__(
-            self, id, name, type, resid, resname, mass, charge, atomic_number):
+        self, id, name, type, resid, resname, mass, charge, atomic_number
+    ):
         # id is only within the scope of a single molecule, not the whole system
         self.id = id
         self.name = name
@@ -125,7 +161,7 @@ class AtomKind(object):
         is not recognized, which happens if a particle is not really an
         atom (e.g a coarse-grained particle), an empty string is returned.
         """
-        return Z2SYMB.get(self.atomic_number, '')
+        return Z2SYMB.get(self.atomic_number, "")
 
     def __repr__(self):
         return (
@@ -152,4 +188,4 @@ class InteractionKind(object):
         # The format for all record is (type, atom1, atom2, ...)
         # but we are only interested in the atoms.
         for cursor in range(0, len(atom_ndx), self.natoms + 1):
-            yield atom_ndx[cursor + 1: cursor + 1 + self.natoms]
+            yield atom_ndx[cursor + 1 : cursor + 1 + self.natoms]

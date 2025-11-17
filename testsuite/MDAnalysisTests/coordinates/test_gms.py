@@ -23,11 +23,11 @@
 import pytest
 
 import numpy as np
-from numpy.testing import (assert_equal, assert_almost_equal)
+from numpy.testing import assert_equal, assert_almost_equal
 
 import MDAnalysis as mda
 from MDAnalysis.coordinates.GMS import GMSReader
-from MDAnalysisTests.datafiles import (GMS_ASYMOPT, GMS_ASYMSURF, GMS_SYMOPT)
+from MDAnalysisTests.datafiles import GMS_ASYMOPT, GMS_ASYMSURF, GMS_SYMOPT
 
 
 class _GMSBase(object):
@@ -36,10 +36,11 @@ class _GMSBase(object):
         return mda.Universe(self.filename)
 
     def test_n_frames(self, u):
-        assert_equal(u.trajectory.n_frames,
-                     self.n_frames,
-                     err_msg="Wrong number of frames read from {}".format(
-                         self.flavour))
+        assert_equal(
+            u.trajectory.n_frames,
+            self.n_frames,
+            err_msg="Wrong number of frames read from {}".format(self.flavour),
+        )
 
     def test_random_access(self, u):
         u = u
@@ -59,12 +60,12 @@ class _GMSBase(object):
     @staticmethod
     def _calcFD(u):
         u.trajectory.rewind()
-        pp = (u.trajectory.ts._pos[0] - u.trajectory.ts._pos[3])
-        z1 = np.sqrt(sum(pp ** 2))
+        pp = u.trajectory.ts._pos[0] - u.trajectory.ts._pos[3]
+        z1 = np.sqrt(sum(pp**2))
         for i in range(5):
             u.trajectory.next()
-        pp = (u.trajectory.ts._pos[0] - u.trajectory.ts._pos[3])
-        z2 = np.sqrt(sum(pp ** 2))
+        pp = u.trajectory.ts._pos[0] - u.trajectory.ts._pos[3]
+        z2 = np.sqrt(sum(pp**2))
         return z1 - z2
 
     def test_rewind(self, u):
@@ -77,15 +78,18 @@ class _GMSBase(object):
         assert_equal(u.trajectory.ts.frame, 1, "loading frame 1")
 
     def test_dt(self, u):
-        assert_almost_equal(u.trajectory.dt,
-                            1.0,
-                            4,
-                            err_msg="wrong timestep dt")
+        assert_almost_equal(
+            u.trajectory.dt, 1.0, 4, err_msg="wrong timestep dt"
+        )
 
     def test_step5distances(self, u):
-        assert_almost_equal(self._calcFD(u), self.step5d, decimal=5,
-                            err_msg="Wrong 1-4 atom distance change after "
-                                    "5 steps for {}".format(self.flavour))
+        assert_almost_equal(
+            self._calcFD(u),
+            self.step5d,
+            decimal=5,
+            err_msg="Wrong 1-4 atom distance change after "
+            "5 steps for {}".format(self.flavour),
+        )
 
 
 class TestGMSReader(_GMSBase):

@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
@@ -34,7 +34,7 @@ that defines a Gromacs_ index group. To be used in Gromacs like this::
 The index groups are named *mdanalysis001*, *mdanalysis002*, etc.
 
 .. _Gromacs: http://www.gromacs.org
-.. _ndx: http://www.gromacs.org/Documentation/File_Formats/Index_File
+.. _ndx: https://manual.gromacs.org/current/reference-manual/file-formats.html#ndx
 
 .. autoclass:: SelectionWriter
    :inherited-members:

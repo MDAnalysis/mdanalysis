@@ -119,31 +119,35 @@ from ..lib import mdamath
 class FHIAIMSReader(base.SingleFrameReaderBase):
     """Reader for the FHIAIMS geometry format.
 
-       Single frame reader for the `FHI-AIMS`_ input file format.  Reads
-       geometry (3D and molecules only), positions (absolut or fractional),
-       velocities if given, all according to the `FHI-AIMS format`_
-       specifications
+    Single frame reader for the `FHI-AIMS`_ input file format.  Reads
+    geometry (3D and molecules only), positions (absolut or fractional),
+    velocities if given, all according to the `FHI-AIMS format`_
+    specifications
 
     """
-    format = ['IN', 'FHIAIMS']
-    units = {'time': 'ps', 'length': 'Angstrom', 'velocity': 'Angstrom/ps'}
+
+    format = ["IN", "FHIAIMS"]
+    units = {"time": "ps", "length": "Angstrom", "velocity": "Angstrom/ps"}
 
     def _read_first_frame(self):
-        with util.openany(self.filename, 'rt') as fhiaimsfile:
+        with util.openany(self.filename, "rt") as fhiaimsfile:
             relative, positions, velocities, lattice_vectors = [], [], [], []
             skip_tags = ["#", "initial_moment"]
-            oldline = ''
+            oldline = ""
             for line in fhiaimsfile:
                 line = line.strip()
                 if line.startswith("atom"):
                     positions.append(line.split()[1:-1])
-                    relative.append('atom_frac' in line)
+                    relative.append("atom_frac" in line)
                     oldline = line
                     continue
                 if line.startswith("velocity"):
-                    if not 'atom' in oldline:
+                    if not "atom" in oldline:
                         raise ValueError(
-                            'Non-conforming line (velocity must follow atom): ({0})in FHI-AIMS input file {0}'.format(line, self.filename))
+                            "Non-conforming line (velocity must follow atom): ({0})in FHI-AIMS input file {0}".format(
+                                line, self.filename
+                            )
+                        )
                     velocities.append(line.split()[1:])
                     oldline = line
                     continue
@@ -155,7 +159,10 @@ class FHIAIMSReader(base.SingleFrameReaderBase):
                     oldline = line
                     continue
                 raise ValueError(
-                    'Non-conforming line: ({0})in FHI-AIMS input file {0}'.format(line, self.filename))
+                    "Non-conforming line: ({0})in FHI-AIMS input file {0}".format(
+                        line, self.filename
+                    )
+                )
 
         # positions and velocities are lists of lists of strings; they will be
         # cast to np.arrays(..., dtype=float32) during assignment to ts.positions/ts.velocities
@@ -163,14 +170,18 @@ class FHIAIMSReader(base.SingleFrameReaderBase):
 
         if len(velocities) not in (0, len(positions)):
             raise ValueError(
-                'Found incorrect number of velocity tags ({0}) in the FHI-AIMS file, should be {1}.'.format(
-                    len(velocities), len(positions)))
+                "Found incorrect number of velocity tags ({0}) in the FHI-AIMS file, should be {1}.".format(
+                    len(velocities), len(positions)
+                )
+            )
         if len(lattice_vectors) not in (0, 3):
             raise ValueError(
-                'Found partial periodicity in FHI-AIMS file. This cannot be handled by MDAnalysis.')
+                "Found partial periodicity in FHI-AIMS file. This cannot be handled by MDAnalysis."
+            )
         if len(lattice_vectors) == 0 and any(relative):
             raise ValueError(
-                'Found relative coordinates in FHI-AIMS file without lattice info.')
+                "Found relative coordinates in FHI-AIMS file without lattice info."
+            )
 
         # create Timestep
 
@@ -180,7 +191,9 @@ class FHIAIMSReader(base.SingleFrameReaderBase):
 
         if len(lattice_vectors) > 0:
             ts.dimensions = triclinic_box(*lattice_vectors)
-            ts.positions[relative] = np.matmul(ts.positions[relative], lattice_vectors)
+            ts.positions[relative] = np.matmul(
+                ts.positions[relative], lattice_vectors
+            )
 
         if len(velocities) > 0:
             ts.velocities = velocities
@@ -208,24 +221,24 @@ class FHIAIMSReader(base.SingleFrameReaderBase):
 class FHIAIMSWriter(base.WriterBase):
     """FHI-AIMS Writer.
 
-       Single frame writer for the `FHI-AIMS`_ format.  Writes geometry (3D and
-       molecules only), positions (absolut only), velocities if given, all
-       according to the `FHI-AIMS format`_ specifications.
+    Single frame writer for the `FHI-AIMS`_ format.  Writes geometry (3D and
+    molecules only), positions (absolut only), velocities if given, all
+    according to the `FHI-AIMS format`_ specifications.
 
-       If no atom names are given, it will set each atom name to "X".
+    If no atom names are given, it will set each atom name to "X".
 
     """
 
-    format = ['IN', 'FHIAIMS']
-    units = {'time': None, 'length': 'Angstrom', 'velocity': 'Angstrom/ps'}
+    format = ["IN", "FHIAIMS"]
+    units = {"time": None, "length": "Angstrom", "velocity": "Angstrom/ps"}
 
     #: format strings for the FHI-AIMS file (all include newline)
     fmt = {
         # coordinates output format, see  https://doi.org/10.6084/m9.figshare.12413477.v1
-        'xyz': "atom {pos[0]:12.8f} {pos[1]:12.8f} {pos[2]:12.8f} {name:<3s}\n",
-        'vel': "velocity {vel[0]:12.8f} {vel[1]:12.8f} {vel[2]:12.8f}\n",
+        "xyz": "atom {pos[0]:12.8f} {pos[1]:12.8f} {pos[2]:12.8f} {name:<3s}\n",
+        "vel": "velocity {vel[0]:12.8f} {vel[1]:12.8f} {vel[2]:12.8f}\n",
         # unitcell
-        'box_triclinic': "lattice_vector {box[0]:12.8f} {box[1]:12.8f} {box[2]:12.8f}\nlattice_vector {box[3]:12.8f} {box[4]:12.8f} {box[5]:12.8f}\nlattice_vector {box[6]:12.8f} {box[7]:12.8f} {box[8]:12.8f}\n"
+        "box_triclinic": "lattice_vector {box[0]:12.8f} {box[1]:12.8f} {box[2]:12.8f}\nlattice_vector {box[3]:12.8f} {box[4]:12.8f} {box[5]:12.8f}\nlattice_vector {box[6]:12.8f} {box[7]:12.8f} {box[8]:12.8f}\n",
     }
 
     def __init__(self, filename, convert_units=True, n_atoms=None, **kwargs):
@@ -239,7 +252,7 @@ class FHIAIMSWriter(base.WriterBase):
             number of atoms
 
         """
-        self.filename = util.filename(filename, ext='.in', keep=True)
+        self.filename = util.filename(filename, ext=".in", keep=True)
         self.n_atoms = n_atoms
 
     def _write_next_frame(self, obj):
@@ -268,20 +281,21 @@ class FHIAIMSWriter(base.WriterBase):
         try:
             names = ag.names
         except (AttributeError, NoDataError):
-            names = itertools.cycle(('X',))
-            missing_topology.append('names')
+            names = itertools.cycle(("X",))
+            missing_topology.append("names")
 
         try:
             atom_indices = ag.ids
         except (AttributeError, NoDataError):
-            atom_indices = range(1, ag.n_atoms+1)
-            missing_topology.append('ids')
+            atom_indices = range(1, ag.n_atoms + 1)
+            missing_topology.append("ids")
 
         if missing_topology:
             warnings.warn(
                 "Supplied AtomGroup was missing the following attributes: "
                 "{miss}. These will be written with default values. "
-                "".format(miss=', '.join(missing_topology)))
+                "".format(miss=", ".join(missing_topology))
+            )
 
         positions = ag.positions
         try:
@@ -290,7 +304,7 @@ class FHIAIMSWriter(base.WriterBase):
         except (AttributeError, NoDataError):
             has_velocities = False
 
-        with util.openany(self.filename, 'wt') as output_fhiaims:
+        with util.openany(self.filename, "wt") as output_fhiaims:
             # Lattice
             try:  # for AtomGroup/Universe
                 tri_dims = obj.universe.trajectory.ts.triclinic_dimensions
@@ -299,16 +313,19 @@ class FHIAIMSWriter(base.WriterBase):
             # full output
             if tri_dims is not None:
                 output_fhiaims.write(
-                    self.fmt['box_triclinic'].format(box=tri_dims.flatten()))
+                    self.fmt["box_triclinic"].format(box=tri_dims.flatten())
+                )
 
             # Atom descriptions and coords
             # Dont use enumerate here,
             # all attributes could be infinite cycles!
-            for atom_index, name in zip(
-                    range(ag.n_atoms), names):
-                output_fhiaims.write(self.fmt['xyz'].format(
-                    pos=positions[atom_index],
-                    name=name))
+            for atom_index, name in zip(range(ag.n_atoms), names):
+                output_fhiaims.write(
+                    self.fmt["xyz"].format(
+                        pos=positions[atom_index], name=name
+                    )
+                )
                 if has_velocities:
-                    output_fhiaims.write(self.fmt['vel'].format(
-                        vel=velocities[atom_index]))
+                    output_fhiaims.write(
+                        self.fmt["vel"].format(vel=velocities[atom_index])
+                    )

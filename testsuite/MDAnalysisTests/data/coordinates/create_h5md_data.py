@@ -8,19 +8,24 @@ def create_test_trj(uni, fname):
     uni.trajectory.ts.dt = 1
     orig_box = np.array([81.1, 82.2, 83.3, 75, 80, 85], dtype=np.float32)
     uni.trajectory.ts.dimensions = orig_box
-    uni.trajectory.units = {'time': 'ps',
-                            'length': 'Angstrom',
-                            'velocity': 'Angstrom/ps',
-                            'force': 'kJ/(mol*Angstrom)'}
+    uni.trajectory.units = {
+        "time": "ps",
+        "length": "Angstrom",
+        "velocity": "Angstrom/ps",
+        "force": "kJ/(mol*Angstrom)",
+    }
     print(uni.trajectory)
     print(uni.trajectory.ts.__class__)
-    with mda.Writer(fname, n_atoms,
-                    positions=True,
-                    velocities=True,
-                    forces=True,
-                    convert_units=False) as w:
+    with mda.Writer(
+        fname,
+        n_atoms,
+        positions=True,
+        velocities=True,
+        forces=True,
+        convert_units=False,
+    ) as w:
         for i in range(5):
-            uni.atoms.positions = 2 ** i * pos
+            uni.atoms.positions = 2**i * pos
             uni.trajectory.ts.time = i
             uni.trajectory.ts.velocities = uni.atoms.positions / 10
             uni.trajectory.ts.forces = uni.atoms.positions / 100
@@ -32,10 +37,11 @@ def create_test_trj(uni, fname):
 
 
 def main():
-    pdb = 'test_topology.pdb'
+    pdb = "test_topology.pdb"
     u = mda.Universe(pdb)
 
-    create_test_trj(u, 'test.h5md')
+    create_test_trj(u, "test.h5md")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

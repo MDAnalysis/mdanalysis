@@ -84,9 +84,7 @@ class OpenMMTopologyParser(TopologyReaderBase):
 
     @staticmethod
     def _format_hint(thing):
-        """Can this Parser read object *thing*?
-
-        """
+        """Can this Parser read object *thing*?"""
         try:
             from openmm import app
         except ImportError:
@@ -98,7 +96,7 @@ class OpenMMTopologyParser(TopologyReaderBase):
             return isinstance(thing, app.Topology)
 
     def _mda_topology_from_omm_topology(self, omm_topology):
-        """ Construct mda topology from omm topology
+        """Construct mda topology from omm topology
 
         Can be used for any openmm object that contains a topology object
 
@@ -130,9 +128,11 @@ class OpenMMTopologyParser(TopologyReaderBase):
             try:
                 from simtk.unit import daltons
             except ImportError:
-                msg = ("OpenMM is required for the OpenMMParser but "
-                       "it's not installed. Try installing it with \n"
-                       "conda install -c conda-forge openmm")
+                msg = (
+                    "OpenMM is required for the OpenMMParser but "
+                    "it's not installed. Try installing it with \n"
+                    "conda install -c conda-forge openmm"
+                )
                 raise ImportError(msg)
 
         atom_resindex = [a.residue.index for a in omm_topology.atoms()]
@@ -168,19 +168,21 @@ class OpenMMTopologyParser(TopologyReaderBase):
                 if elem.symbol.capitalize() in SYMB2Z:
                     validated_elements.append(elem.symbol)
                 else:
-                    validated_elements.append('')
+                    validated_elements.append("")
                 atomtypes.append(elem.symbol)
                 masses.append(elem.mass.value_in_unit(daltons))
             else:
-                validated_elements.append('')
+                validated_elements.append("")
                 masses.append(0.0)
-                atomtypes.append('X')
+                atomtypes.append("X")
 
         if not all(validated_elements):
             if any(validated_elements):
-                warnings.warn("Element information missing for some atoms. "
-                              "These have been given an empty element record ")
-                if any(i == 'X' for i in atomtypes):
+                warnings.warn(
+                    "Element information missing for some atoms. "
+                    "These have been given an empty element record "
+                )
+                if any(i == "X" for i in atomtypes):
                     warnings.warn(
                         "For absent elements, atomtype has been  "
                         "set to 'X' and mass has been set to 0.0. "
@@ -189,10 +191,12 @@ class OpenMMTopologyParser(TopologyReaderBase):
                         "to_guess=['masses', 'types']). "
                         "(for MDAnalysis version 2.x "
                         "this is done automatically,"
-                        " but it will be removed in 3.0).")
+                        " but it will be removed in 3.0)."
+                    )
 
-                attrs.append(Elements(np.array(validated_elements,
-                                               dtype=object)))
+                attrs.append(
+                    Elements(np.array(validated_elements, dtype=object))
+                )
 
             else:
                 wmsg = (
@@ -205,7 +209,8 @@ class OpenMMTopologyParser(TopologyReaderBase):
                     "These can be guessed using "
                     "universe.guess_TopologyAttrs("
                     "to_guess=['masses', 'types']) "
-                    "See MDAnalysis.guessers.")
+                    "See MDAnalysis.guessers."
+                )
 
                 warnings.warn(wmsg)
         else:
@@ -239,9 +244,7 @@ class OpenMMAppTopologyParser(OpenMMTopologyParser):
 
     @staticmethod
     def _format_hint(thing):
-        """Can this Parser read object *thing*?
-
-        """
+        """Can this Parser read object *thing*?"""
         try:
             from openmm import app
         except ImportError:
@@ -252,10 +255,7 @@ class OpenMMAppTopologyParser(OpenMMTopologyParser):
         else:
             return isinstance(
                 thing,
-                (
-                    app.PDBFile, app.Modeller,
-                    app.Simulation, app.PDBxFile
-                )
+                (app.PDBFile, app.Modeller, app.Simulation, app.PDBxFile),
             )
 
     def parse(self, **kwargs):

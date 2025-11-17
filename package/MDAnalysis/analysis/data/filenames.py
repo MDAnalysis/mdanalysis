@@ -103,16 +103,17 @@ Data files
 
 
 __all__ = [
-    "Rama_ref", "Janin_ref", 
+    "Rama_ref",
+    "Janin_ref",
     # reference plots for Ramachandran and Janin classes
 ]
 
 
 from importlib import resources
 
-_base_ref = resources.files('MDAnalysis.analysis.data')
-Rama_ref = (_base_ref / 'rama_ref_data.npy').as_posix()
-Janin_ref = (_base_ref / 'janin_ref_data.npy').as_posix()
+_base_ref = resources.files("MDAnalysis.analysis.data")
+Rama_ref = (_base_ref / "rama_ref_data.npy").as_posix()
+Janin_ref = (_base_ref / "janin_ref_data.npy").as_posix()
 
 # This should be the last line: clean up namespace
 del resources

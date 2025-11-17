@@ -24,8 +24,12 @@ from itertools import permutations
 
 import numpy as np
 import pytest
-from numpy.testing import (assert_allclose, assert_equal, assert_almost_equal,
-                           assert_array_equal)
+from numpy.testing import (
+    assert_allclose,
+    assert_equal,
+    assert_almost_equal,
+    assert_array_equal,
+)
 
 from MDAnalysis.lib import transformations as t
 
@@ -50,10 +54,7 @@ This should ensure that both versions work and are covered!
 _ATOL = 1e-06
 
 
-@pytest.mark.parametrize('f', [
-    t._py_identity_matrix,
-    t.identity_matrix
-])
+@pytest.mark.parametrize("f", [t._py_identity_matrix, t.identity_matrix])
 def test_identity_matrix(f):
     I = f()
     assert_allclose(I, np.dot(I, I))
@@ -61,10 +62,13 @@ def test_identity_matrix(f):
     assert_allclose(I, np.identity(4, dtype=np.float64))
 
 
-@pytest.mark.parametrize('f', [
-    t._py_translation_matrix,
-    t.translation_matrix,
-])
+@pytest.mark.parametrize(
+    "f",
+    [
+        t._py_translation_matrix,
+        t.translation_matrix,
+    ],
+)
 def test_translation_matrix(f):
     v = np.array([0.2, 0.2, 0.2])
     assert_allclose(v, f(v)[:3, 3])
@@ -77,15 +81,18 @@ def test_translation_from_matrix():
     assert_allclose(v0, v1)
 
 
-@pytest.mark.parametrize('f', [
-    t._py_reflection_matrix,
-    t.reflection_matrix,
-])
+@pytest.mark.parametrize(
+    "f",
+    [
+        t._py_reflection_matrix,
+        t.reflection_matrix,
+    ],
+)
 def test_reflection_matrix(f):
     v0 = np.array([0.2, 0.2, 0.2, 1.0])  # arbitrary values
     v1 = np.array([0.4, 0.4, 0.4])
     R = f(v0, v1)
-    assert_allclose(2., np.trace(R))
+    assert_allclose(2.0, np.trace(R))
     assert_allclose(v0, np.dot(R, v0))
     v2 = v0.copy()
     v2[:3] += v1
@@ -103,13 +110,16 @@ def test_reflection_from_matrix():
     assert_equal(t.is_same_transform(M0, M1), True)
 
 
-@pytest.mark.parametrize('f', [
-    t._py_rotation_matrix,
-    t.rotation_matrix,
-])
+@pytest.mark.parametrize(
+    "f",
+    [
+        t._py_rotation_matrix,
+        t.rotation_matrix,
+    ],
+)
 def test_rotation_matrix(f):
     R = f(np.pi / 2.0, [0, 0, 1], [1, 0, 0])
-    assert_allclose(np.dot(R, [0, 0, 0, 1]), [1., -1., 0., 1.])
+    assert_allclose(np.dot(R, [0, 0, 0, 1]), [1.0, -1.0, 0.0, 1.0])
     angle = 0.2 * 2 * np.pi  # arbitrary value
     direc = np.array([0.2, 0.2, 0.2])
     point = np.array([0.4, 0.4, 0.4])
@@ -121,7 +131,7 @@ def test_rotation_matrix(f):
     assert_equal(t.is_same_transform(R0, R1), True)
     I = np.identity(4, np.float64)
     assert_allclose(I, f(np.pi * 2, direc), atol=_ATOL)
-    assert_allclose(2., np.trace(f(np.pi / 2, direc, point)))
+    assert_allclose(2.0, np.trace(f(np.pi / 2, direc, point)))
 
 
 def test_rotation_from_matrix():
@@ -134,10 +144,13 @@ def test_rotation_from_matrix():
     assert_equal(t.is_same_transform(R0, R1), True)
 
 
-@pytest.mark.parametrize('f', [
-    t._py_scale_matrix,
-    t.scale_matrix,
-])
+@pytest.mark.parametrize(
+    "f",
+    [
+        t._py_scale_matrix,
+        t.scale_matrix,
+    ],
+)
 def test_scale_matrix(f):
     v = np.array([14.1, 15.1, 16.1, 1])
     S = f(-1.234)
@@ -157,10 +170,14 @@ def test_scale_from_matrix():
     S1 = t.scale_matrix(factor, origin, direction)
     assert_equal(t.is_same_transform(S0, S1), True)
 
-@pytest.mark.parametrize('f', [
-    t._py_projection_matrix,
-    t.projection_matrix,
-])
+
+@pytest.mark.parametrize(
+    "f",
+    [
+        t._py_projection_matrix,
+        t.projection_matrix,
+    ],
+)
 class TestProjectionMatrix(object):
     def test_projection_matrix_1(self, f):
         P = f((0, 0, 0), (1, 0, 0))
@@ -185,7 +202,6 @@ class TestProjectionMatrix(object):
         v1 = np.dot(P, v0)
         assert_allclose(v1[1], v0[1], atol=_ATOL)
         assert_allclose(v1[0], 3.0 - v1[1], atol=_ATOL)
-
 
 
 class TestProjectionFromMatrix(object):
@@ -215,25 +231,27 @@ class TestProjectionFromMatrix(object):
     def test_projection_from_matrix_3(self, data):
         point, normal, direct, persp = data
         P0 = t.projection_matrix(
-            point, normal, perspective=persp, pseudo=False)
+            point, normal, perspective=persp, pseudo=False
+        )
         result = t.projection_from_matrix(P0, pseudo=False)
         P1 = t.projection_matrix(*result)
         assert_equal(t.is_same_transform(P0, P1), True)
 
     def test_projection_from_matrix_4(self, data):
         point, normal, direct, persp = data
-        P0 = t.projection_matrix(
-            point, normal, perspective=persp, pseudo=True)
+        P0 = t.projection_matrix(point, normal, perspective=persp, pseudo=True)
         result = t.projection_from_matrix(P0, pseudo=True)
         P1 = t.projection_matrix(*result)
         assert_equal(t.is_same_transform(P0, P1), True)
 
 
-
-@pytest.mark.parametrize('f', [
-    t._py_clip_matrix,
-    t.clip_matrix,
-])
+@pytest.mark.parametrize(
+    "f",
+    [
+        t._py_clip_matrix,
+        t.clip_matrix,
+    ],
+)
 class TestClipMatrix(object):
     def test_clip_matrix_1(self, f):
         frustrum = np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6])  # arbitrary values
@@ -243,10 +261,12 @@ class TestClipMatrix(object):
         M = f(perspective=False, *frustrum)
         assert_allclose(
             np.dot(M, [frustrum[0], frustrum[2], frustrum[4], 1.0]),
-            np.array([-1., -1., -1., 1.]))
+            np.array([-1.0, -1.0, -1.0, 1.0]),
+        )
         assert_allclose(
             np.dot(M, [frustrum[1], frustrum[3], frustrum[5], 1.0]),
-            np.array([1., 1., 1., 1.]))
+            np.array([1.0, 1.0, 1.0, 1.0]),
+        )
 
     def test_clip_matrix_2(self, f):
         frustrum = np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6])  # arbitrary values
@@ -255,33 +275,36 @@ class TestClipMatrix(object):
         frustrum[5] += frustrum[4]
         M = f(perspective=True, *frustrum)
         v = np.dot(M, [frustrum[0], frustrum[2], frustrum[4], 1.0])
-        assert_allclose(v / v[3], np.array([-1., -1., -1., 1.]))
+        assert_allclose(v / v[3], np.array([-1.0, -1.0, -1.0, 1.0]))
         v = np.dot(M, [frustrum[1], frustrum[3], frustrum[4], 1.0])
-        assert_allclose(v / v[3], np.array([1., 1., -1., 1.]))
+        assert_allclose(v / v[3], np.array([1.0, 1.0, -1.0, 1.0]))
 
     def test_clip_matrix_frustrum_left_right_bounds(self, f):
-        '''ValueError should be raised if left > right.'''
+        """ValueError should be raised if left > right."""
         frustrum = np.array([0.4, 0.3, 0.3, 0.7, 0.5, 1.1])
         with pytest.raises(ValueError):
             f(*frustrum)
 
     def test_clip_matrix_frustrum_bottom_top_bounds(self, f):
-        '''ValueError should be raised if bottom > top.'''
+        """ValueError should be raised if bottom > top."""
         frustrum = np.array([0.1, 0.3, 0.71, 0.7, 0.5, 1.1])
         with pytest.raises(ValueError):
             f(*frustrum)
 
     def test_clip_matrix_frustrum_near_far_bounds(self, f):
-        '''ValueError should be raised if near > far.'''
+        """ValueError should be raised if near > far."""
         frustrum = np.array([0.1, 0.3, 0.3, 0.7, 1.5, 1.1])
         with pytest.raises(ValueError):
             f(*frustrum)
 
 
-@pytest.mark.parametrize('f', [
-    t._py_shear_matrix,
-    t.shear_matrix,
-])
+@pytest.mark.parametrize(
+    "f",
+    [
+        t._py_shear_matrix,
+        t.shear_matrix,
+    ],
+)
 def test_shear_matrix(f):
     angle = 0.2 * 4 * np.pi  # arbitrary values
     direct = np.array([0.2, 0.2, 0.2])
@@ -345,13 +368,16 @@ def test_compose_matrix():
     assert_equal(t.is_same_transform(M0, M1), True)
 
 
-@pytest.mark.parametrize('f', [
-    t._py_orthogonalization_matrix,
-    t.orthogonalization_matrix,
-])
+@pytest.mark.parametrize(
+    "f",
+    [
+        t._py_orthogonalization_matrix,
+        t.orthogonalization_matrix,
+    ],
+)
 class TestOrthogonalizationMatrix(object):
     def test_orthogonalization_matrix_1(self, f):
-        O = f((10., 10., 10.), (90., 90., 90.))
+        O = f((10.0, 10.0, 10.0), (90.0, 90.0, 90.0))
         assert_allclose(O[:3, :3], np.identity(3, float) * 10, atol=_ATOL)
 
     def test_orthogonalization_matrix_2(self, f):
@@ -359,10 +385,13 @@ class TestOrthogonalizationMatrix(object):
         assert_allclose(np.sum(O), 43.063229, atol=_ATOL)
 
 
-@pytest.mark.parametrize('f', [
-    t._py_superimposition_matrix,
-    t.superimposition_matrix,
-])
+@pytest.mark.parametrize(
+    "f",
+    [
+        t._py_superimposition_matrix,
+        t.superimposition_matrix,
+    ],
+)
 def test_superimposition_matrix(f):
     v0 = np.sin(np.linspace(0, 0.99, 30)).reshape(3, 10)  # arbitrary values
     M = f(v0, v0)
@@ -397,13 +426,16 @@ def test_superimposition_matrix(f):
     assert_allclose(v1, np.dot(M, v[:, :, 0]), atol=_ATOL)
 
 
-@pytest.mark.parametrize('f', [
-    t._py_euler_matrix,
-    t.euler_matrix,
-])
+@pytest.mark.parametrize(
+    "f",
+    [
+        t._py_euler_matrix,
+        t.euler_matrix,
+    ],
+)
 class TestEulerMatrix(object):
     def test_euler_matrix_1(self, f):
-        R = f(1, 2, 3, 'syxz')
+        R = f(1, 2, 3, "syxz")
         assert_allclose(np.sum(R[0]), -1.34786452)
 
     def test_euler_matrix_2(self, f):
@@ -411,15 +443,18 @@ class TestEulerMatrix(object):
         assert_allclose(np.sum(R[0]), -0.383436184)
 
 
-@pytest.mark.parametrize('f', [
-    t._py_euler_from_matrix,
-    t.euler_from_matrix,
-])
+@pytest.mark.parametrize(
+    "f",
+    [
+        t._py_euler_from_matrix,
+        t.euler_from_matrix,
+    ],
+)
 class TestEulerFromMatrix(object):
     def test_euler_from_matrix_1(self, f):
-        R0 = t.euler_matrix(1, 2, 3, 'syxz')
-        al, be, ga = f(R0, 'syxz')
-        R1 = t.euler_matrix(al, be, ga, 'syxz')
+        R0 = t.euler_matrix(1, 2, 3, "syxz")
+        al, be, ga = f(R0, "syxz")
+        R1 = t.euler_matrix(al, be, ga, "syxz")
         assert_allclose(R0, R1)
 
     def test_euler_from_matrix_2(self, f):
@@ -435,28 +470,37 @@ def test_euler_from_quaternion():
     assert_allclose(angles, [0.123, 0, 0], atol=_ATOL)
 
 
-@pytest.mark.parametrize('f', [
-    t._py_quaternion_from_euler,
-    t.quaternion_from_euler,
-])
+@pytest.mark.parametrize(
+    "f",
+    [
+        t._py_quaternion_from_euler,
+        t.quaternion_from_euler,
+    ],
+)
 def test_quaternion_from_euler(f):
-    q = f(1, 2, 3, 'ryxz')
+    q = f(1, 2, 3, "ryxz")
     assert_allclose(q, [0.435953, 0.310622, -0.718287, 0.444435], atol=_ATOL)
 
 
-@pytest.mark.parametrize('f', [
-    t._py_quaternion_about_axis,
-    t.quaternion_about_axis,
-])
+@pytest.mark.parametrize(
+    "f",
+    [
+        t._py_quaternion_about_axis,
+        t.quaternion_about_axis,
+    ],
+)
 def test_quaternion_about_axis(f):
     q = f(0.123, (1, 0, 0))
     assert_allclose(q, [0.99810947, 0.06146124, 0, 0], atol=_ATOL)
 
 
-@pytest.mark.parametrize('f', [
-    t._py_quaternion_matrix,
-    t.quaternion_matrix,
-])
+@pytest.mark.parametrize(
+    "f",
+    [
+        t._py_quaternion_matrix,
+        t.quaternion_matrix,
+    ],
+)
 class TestQuaternionMatrix(object):
     def test_quaternion_matrix_1(self, f):
         M = f([0.99810947, 0.06146124, 0, 0])
@@ -471,40 +515,53 @@ class TestQuaternionMatrix(object):
         assert_allclose(M, np.diag([1, -1, -1, 1]), atol=_ATOL)
 
 
-@pytest.mark.parametrize('f', [
-    t._py_quaternion_from_matrix,
-    t.quaternion_from_matrix,
-])
+@pytest.mark.parametrize(
+    "f",
+    [
+        t._py_quaternion_from_matrix,
+        t.quaternion_from_matrix,
+    ],
+)
 class TestQuaternionFromMatrix(object):
     def test_quaternion_from_matrix_1(self, f):
         q = f(t.identity_matrix(), True)
-        assert_allclose(q, [1., 0., 0., 0.], atol=_ATOL)
+        assert_allclose(q, [1.0, 0.0, 0.0, 0.0], atol=_ATOL)
 
     def test_quaternion_from_matrix_2(self, f):
-        q = f(np.diag([1., -1., -1., 1.]))
-        check = (np.allclose(
-            q, [0, 1, 0, 0], atol=_ATOL) or np.allclose(
-                q, [0, -1, 0, 0], atol=_ATOL))
+        q = f(np.diag([1.0, -1.0, -1.0, 1.0]))
+        check = np.allclose(q, [0, 1, 0, 0], atol=_ATOL) or np.allclose(
+            q, [0, -1, 0, 0], atol=_ATOL
+        )
         assert_equal(check, True)
 
     def test_quaternion_from_matrix_3(self, f):
         R = t.rotation_matrix(0.123, (1, 2, 3))
         q = f(R, True)
         assert_allclose(
-            q, [0.9981095, 0.0164262, 0.0328524, 0.0492786], atol=_ATOL)
+            q, [0.9981095, 0.0164262, 0.0328524, 0.0492786], atol=_ATOL
+        )
 
     def test_quaternion_from_matrix_4(self, f):
-        R = [[-0.545, 0.797, 0.260, 0], [0.733, 0.603, -0.313, 0],
-             [-0.407, 0.021, -0.913, 0], [0, 0, 0, 1]]
+        R = [
+            [-0.545, 0.797, 0.260, 0],
+            [0.733, 0.603, -0.313, 0],
+            [-0.407, 0.021, -0.913, 0],
+            [0, 0, 0, 1],
+        ]
         q = f(R)
         assert_allclose(q, [0.19069, 0.43736, 0.87485, -0.083611], atol=_ATOL)
 
     def test_quaternion_from_matrix_5(self, f):
-        R = [[0.395, 0.362, 0.843, 0], [-0.626, 0.796, -0.056, 0],
-             [-0.677, -0.498, 0.529, 0], [0, 0, 0, 1]]
+        R = [
+            [0.395, 0.362, 0.843, 0],
+            [-0.626, 0.796, -0.056, 0],
+            [-0.677, -0.498, 0.529, 0],
+            [0, 0, 0, 1],
+        ]
         q = f(R)
         assert_allclose(
-            q, [0.82336615, -0.13610694, 0.46344705, -0.29792603], atol=_ATOL)
+            q, [0.82336615, -0.13610694, 0.46344705, -0.29792603], atol=_ATOL
+        )
 
     def test_quaternion_from_matrix_6(self, f):
         R = t.random_rotation_matrix()
@@ -512,19 +569,25 @@ class TestQuaternionFromMatrix(object):
         assert_equal(t.is_same_transform(R, t.quaternion_matrix(q)), True)
 
 
-@pytest.mark.parametrize('f', [
-    t._py_quaternion_multiply,
-    t.quaternion_multiply,
-])
+@pytest.mark.parametrize(
+    "f",
+    [
+        t._py_quaternion_multiply,
+        t.quaternion_multiply,
+    ],
+)
 def test_quaternion_multiply(f):
     q = f([4, 1, -2, 3], [8, -5, 6, 7])
     assert_allclose(q, [28, -44, -14, 48])
 
 
-@pytest.mark.parametrize('f', [
-    t._py_quaternion_conjugate,
-    t.quaternion_conjugate,
-])
+@pytest.mark.parametrize(
+    "f",
+    [
+        t._py_quaternion_conjugate,
+        t.quaternion_conjugate,
+    ],
+)
 def test_quaternion_conjugate(f):
     q0 = t.random_quaternion()
     q1 = f(q0)
@@ -532,10 +595,13 @@ def test_quaternion_conjugate(f):
     assert_equal(check, True)
 
 
-@pytest.mark.parametrize('f', [
-    t._py_quaternion_inverse,
-    t.quaternion_inverse,
-])
+@pytest.mark.parametrize(
+    "f",
+    [
+        t._py_quaternion_inverse,
+        t.quaternion_inverse,
+    ],
+)
 def test_quaternion_inverse(f):
     q0 = t.random_quaternion()
     q1 = f(q0)
@@ -550,10 +616,13 @@ def test_quaternion_imag():
     assert_allclose(t.quaternion_imag([3.0, 0.0, 1.0, 2.0]), [0.0, 1.0, 2.0])
 
 
-@pytest.mark.parametrize('f', [
-    t._py_quaternion_slerp,
-    t.quaternion_slerp,
-])
+@pytest.mark.parametrize(
+    "f",
+    [
+        t._py_quaternion_slerp,
+        t.quaternion_slerp,
+    ],
+)
 def test_quaternion_slerp(f):
     q0 = t.random_quaternion()
     q1 = t.random_quaternion()
@@ -566,16 +635,20 @@ def test_quaternion_slerp(f):
     q = f(q0, q1, 0.5)
     angle = np.arccos(np.dot(q0, q))
 
-    check = (np.allclose(2.0, np.arccos(np.dot(q0, q1)) / angle) or
-             np.allclose(2.0, np.arccos(-np.dot(q0, q1)) / angle))
+    check = np.allclose(2.0, np.arccos(np.dot(q0, q1)) / angle) or np.allclose(
+        2.0, np.arccos(-np.dot(q0, q1)) / angle
+    )
 
     assert_equal(check, True)
 
 
-@pytest.mark.parametrize('f', [
-    t._py_random_quaternion,
-    t.random_quaternion,
-])
+@pytest.mark.parametrize(
+    "f",
+    [
+        t._py_random_quaternion,
+        t.random_quaternion,
+    ],
+)
 class TestRandomQuaternion(object):
     def test_random_quaternion_1(self, f):
         q = f()
@@ -587,21 +660,27 @@ class TestRandomQuaternion(object):
         assert_equal(q.shape[0] == 4, True)
 
 
-@pytest.mark.parametrize('f', [
-    t._py_random_rotation_matrix,
-    t.random_rotation_matrix,
-])
+@pytest.mark.parametrize(
+    "f",
+    [
+        t._py_random_rotation_matrix,
+        t.random_rotation_matrix,
+    ],
+)
 def test_random_rotation_matrix(f):
     R = f()
     assert_allclose(np.dot(R.T, R), np.identity(4), atol=_ATOL)
 
 
-@pytest.mark.parametrize('f', [
-    t._py_inverse_matrix,
-    t.inverse_matrix,
-])
+@pytest.mark.parametrize(
+    "f",
+    [
+        t._py_inverse_matrix,
+        t.inverse_matrix,
+    ],
+)
 class TestInverseMatrix(object):
-    @pytest.mark.parametrize('size', list(range(1, 7)))
+    @pytest.mark.parametrize("size", list(range(1, 7)))
     def test_inverse(self, size, f):
         # Create a known random state to generate numbers from
         # these numbers will then be uncorrelated but deterministic
@@ -616,10 +695,13 @@ class TestInverseMatrix(object):
         assert_allclose(M1, np.linalg.inv(M0.T))
 
 
-@pytest.mark.parametrize('f', [
-    t._py_is_same_transform,
-    t.is_same_transform,
-])
+@pytest.mark.parametrize(
+    "f",
+    [
+        t._py_is_same_transform,
+        t.is_same_transform,
+    ],
+)
 class TestIsSameTransform(object):
     def test_is_same_transform_1(self, f):
         assert_equal(f(np.identity(4), np.identity(4)), True)
@@ -628,10 +710,13 @@ class TestIsSameTransform(object):
         assert_equal(f(t.random_rotation_matrix(), np.identity(4)), False)
 
 
-@pytest.mark.parametrize('f', [
-    t._py_random_vector,
-    t.random_vector,
-])
+@pytest.mark.parametrize(
+    "f",
+    [
+        t._py_random_vector,
+        t.random_vector,
+    ],
+)
 class TestRandomVector(object):
     def test_random_vector_1(self, f):
         v = f(1000)
@@ -644,10 +729,13 @@ class TestRandomVector(object):
         assert_equal(np.any(v0 == v1), False)
 
 
-@pytest.mark.parametrize('f', [
-    t._py_unit_vector,
-    t.unit_vector,
-])
+@pytest.mark.parametrize(
+    "f",
+    [
+        t._py_unit_vector,
+        t.unit_vector,
+    ],
+)
 class TestUnitVector(object):
     def test_unit_vector_1(self, f):
         v0 = np.array([0.2, 0.2, 0.2])
@@ -680,10 +768,13 @@ class TestUnitVector(object):
         assert_equal(list(f([1.0])), [1.0])
 
 
-@pytest.mark.parametrize('f', [
-    t._py_vector_norm,
-    t.vector_norm,
-])
+@pytest.mark.parametrize(
+    "f",
+    [
+        t._py_vector_norm,
+        t.vector_norm,
+    ],
+)
 class TestVectorNorm(object):
     def test_vector_norm_1(self, f):
         v = np.array([0.2, 0.2, 0.2])
@@ -743,9 +834,13 @@ def test_rotaxis_equal_vectors():
 def test_rotaxis_different_vectors():
     # use random coordinate system
     e = np.eye(3)
-    r = np.array([[0.69884766, 0.59804425, -0.39237102],
-                  [0.18784672, 0.37585347, 0.90744023],
-                  [0.69016342, -0.7078681, 0.15032367]])
+    r = np.array(
+        [
+            [0.69884766, 0.59804425, -0.39237102],
+            [0.18784672, 0.37585347, 0.90744023],
+            [0.69016342, -0.7078681, 0.15032367],
+        ]
+    )
     re = np.dot(r, e)
 
     for i, j, l in permutations(range(3)):

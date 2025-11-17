@@ -24,44 +24,58 @@ import numpy as np
 import MDAnalysis as mda
 from MDAnalysis.analysis import align
 import MDAnalysis.analysis.pca
-from MDAnalysis.analysis.pca import (PCA, cosine_content,
-                                     rmsip, cumulative_overlap)
+from MDAnalysis.analysis.pca import (
+    PCA,
+    cosine_content,
+    rmsip,
+    cumulative_overlap,
+)
 
-from numpy.testing import (assert_almost_equal, assert_equal,
-                           assert_array_almost_equal, assert_allclose,)
+from numpy.testing import (
+    assert_almost_equal,
+    assert_equal,
+    assert_array_almost_equal,
+    assert_allclose,
+)
 
-from MDAnalysisTests.datafiles import (PSF, DCD, RANDOM_WALK, RANDOM_WALK_TOPO,
-                                       waterPSF, waterDCD)
+from MDAnalysisTests.datafiles import (
+    PSF,
+    DCD,
+    RANDOM_WALK,
+    RANDOM_WALK_TOPO,
+    waterPSF,
+    waterDCD,
+)
 import pytest
 
-SELECTION = 'backbone and name CA and resid 1-10'
+SELECTION = "backbone and name CA and resid 1-10"
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def u():
     return mda.Universe(PSF, DCD)
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def u_fresh():
     # each test gets a fresh universe
     return mda.Universe(PSF, DCD)
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def u_aligned():
     u = mda.Universe(PSF, DCD, in_memory=True)
     align.AlignTraj(u, u, select=SELECTION).run()
     return u
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def pca(u):
     u.transfer_to_memory()
     return PCA(u, select=SELECTION).run()
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def pca_aligned(u):
     # run on a copy so positions in u are unchanged
     u_copy = u.copy()
@@ -85,15 +99,17 @@ def test_cum_var(pca):
 
 
 def test_pcs(pca):
-    assert_equal(pca.results.p_components.shape, (pca._n_atoms * 3,
-                                                  pca._n_atoms * 3))
+    assert_equal(
+        pca.results.p_components.shape, (pca._n_atoms * 3, pca._n_atoms * 3)
+    )
 
 
 def test_pcs_n_components(u):
     pca = PCA(u, select=SELECTION).run()
-    assert_equal(pca.n_components, pca._n_atoms*3)
-    assert_equal(pca.results.p_components.shape, (pca._n_atoms * 3,
-                                                  pca._n_atoms * 3))
+    assert_equal(pca.n_components, pca._n_atoms * 3)
+    assert_equal(
+        pca.results.p_components.shape, (pca._n_atoms * 3, pca._n_atoms * 3)
+    )
     pca.n_components = 10
     assert_equal(pca.n_components, 10)
     assert_equal(pca.results.p_components.shape, (pca._n_atoms * 3, 10))
@@ -102,27 +118,27 @@ def test_pcs_n_components(u):
 def test_different_steps(pca, u):
     atoms = u.select_atoms(SELECTION)
     dot = pca.transform(atoms, start=5, stop=7, step=1)
-    assert_equal(dot.shape, (2, atoms.n_atoms*3))
+    assert_equal(dot.shape, (2, atoms.n_atoms * 3))
 
 
 def test_transform_different_atoms(pca, u):
-    atoms = u.select_atoms('backbone and name N and resid 1-10')
+    atoms = u.select_atoms("backbone and name N and resid 1-10")
     with pytest.warns(UserWarning):
         pca.transform(atoms, start=5, stop=7, step=1)
 
 
 def test_transform_rerun(u):
-    atoms = u.select_atoms('bynum 1-10')
+    atoms = u.select_atoms("bynum 1-10")
     u.transfer_to_memory()
-    pca = PCA(u, select='bynum 1-10').run(stop=5)
+    pca = PCA(u, select="bynum 1-10").run(stop=5)
     dot = pca.transform(atoms)
     assert_equal(dot.shape, (98, atoms.n_atoms * 3))
 
 
 def test_pca_not_run(u):
-    atoms = u.select_atoms('bynum 1-10')
+    atoms = u.select_atoms("bynum 1-10")
     u.transfer_to_memory()
-    pca = PCA(u, select='bynum 1-10')
+    pca = PCA(u, select="bynum 1-10")
     with pytest.raises(ValueError):
         dot = pca.transform(atoms, stop=5)
 
@@ -137,7 +153,7 @@ def test_no_frames(u):
 def test_can_run_frames(u):
     atoms = u.select_atoms(SELECTION)
     u.transfer_to_memory()
-    PCA(u, select=SELECTION).run(frames=[0,1])
+    PCA(u, select=SELECTION).run(frames=[0, 1])
 
 
 def test_can_run_frames(u):
@@ -168,37 +184,39 @@ def test_project_no_pca_run(u, pca):
     pca_class = PCA(u, select=SELECTION)
     with pytest.raises(ValueError) as exc:
         pca_class.project_single_frame()
-    assert 'Call run() on the PCA before projecting' in str(exc.value)
+    assert "Call run() on the PCA before projecting" in str(exc.value)
 
 
 def test_project_none_anchor(u, pca):
-    group = u.select_atoms('resnum 1')
+    group = u.select_atoms("resnum 1")
     with pytest.raises(ValueError) as exc:
         func = pca.project_single_frame(0, group=group, anchor=None)
-    assert ("'anchor' cannot be 'None'" +
-            " if 'group' is not 'None'") in str(exc.value)
+    assert ("'anchor' cannot be 'None'" + " if 'group' is not 'None'") in str(
+        exc.value
+    )
 
 
 def test_project_more_anchor(u, pca):
-    group = u.select_atoms('resnum 1')
+    group = u.select_atoms("resnum 1")
     with pytest.raises(ValueError) as exc:
-        project = pca.project_single_frame(0, group=group, anchor='backbone')
+        project = pca.project_single_frame(0, group=group, anchor="backbone")
     assert "More than one 'anchor' found in residues" in str(exc.value)
 
 
 def test_project_less_anchor(u, pca):
-    group = u.select_atoms('all')
+    group = u.select_atoms("all")
     with pytest.raises(ValueError) as exc:
-        project = pca.project_single_frame(0, group=group, anchor='name CB')
-    assert ("Some residues in 'group'" +
-            " do not have an 'anchor'") in str(exc.value)
+        project = pca.project_single_frame(0, group=group, anchor="name CB")
+    assert ("Some residues in 'group'" + " do not have an 'anchor'") in str(
+        exc.value
+    )
 
 
 def test_project_invalid_anchor(u):
-    pca = PCA(u, select='name CA').run()
-    group = u.select_atoms('all')
+    pca = PCA(u, select="name CA").run()
+    group = u.select_atoms("all")
     with pytest.raises(ValueError) as exc:
-        project = pca.project_single_frame(0, group=group, anchor='name N')
+        project = pca.project_single_frame(0, group=group, anchor="name N")
     assert "Some 'anchors' are not part of PCA class" in str(exc.value)
 
 
@@ -227,8 +245,7 @@ def test_project_reconstruct_whole(u, u_fresh):
 
 
 @pytest.mark.parametrize(
-    ("n1", "n2"),
-    [(0, 0), (0, [0]), ([0, 1], [0, 1]), (0, 1), (1, 0)]
+    ("n1", "n2"), [(0, 0), (0, [0]), ([0, 1], [0, 1]), (0, 1), (1, 0)]
 )
 def test_project_twice_projection(u_fresh, n1, n2):
     # Two succesive projections are applied. The second projection does nothing
@@ -252,17 +269,14 @@ def test_project_twice_projection(u_fresh, n1, n2):
 def test_project_extrapolate_translation(u_fresh):
     # when the projection is extended to non-PCA atoms,
     # non-PCA atoms' coordinates will be conserved relative to the anchor atom
-    pca = PCA(u_fresh, select='resnum 1 and backbone').run()
-    sel = 'resnum 1 and name CA CB CG'
+    pca = PCA(u_fresh, select="resnum 1 and backbone").run()
+    sel = "resnum 1 and name CA CB CG"
     group = u_fresh.select_atoms(sel)
-    project = pca.project_single_frame(0, group=group,
-                                       anchor='name CA')
+    project = pca.project_single_frame(0, group=group, anchor="name CA")
 
-    distances_original = (
-        mda.lib.distances.self_distance_array(group.positions)
-    )
-    distances_new = (
-        mda.lib.distances.self_distance_array(project(group).positions)
+    distances_original = mda.lib.distances.self_distance_array(group.positions)
+    distances_new = mda.lib.distances.self_distance_array(
+        project(group).positions
     )
 
     assert_allclose(distances_original, distances_new, rtol=1e-05)
@@ -273,7 +287,7 @@ def test_cosine_content():
     pca_random = PCA(rand).run()
     dot = pca_random.transform(rand.atoms)
     content = cosine_content(dot, 0)
-    assert_almost_equal(content, .99, 1)
+    assert_almost_equal(content, 0.99, 1)
 
 
 def test_mean_shape(pca_aligned, u):
@@ -285,19 +299,17 @@ def test_mean_shape(pca_aligned, u):
 def test_calculate_mean(pca_aligned, u, u_aligned):
     ag = u_aligned.select_atoms(SELECTION)
     coords = u_aligned.trajectory.coordinate_array[:, ag.ix]
-    assert_almost_equal(pca_aligned.mean, coords.mean(
-        axis=0), decimal=5)
+    assert_almost_equal(pca_aligned.mean, coords.mean(axis=0), decimal=5)
 
 
 def test_given_mean(pca, u):
-    pca = PCA(u, select=SELECTION, align=False,
-              mean=pca.mean).run()
+    pca = PCA(u, select=SELECTION, align=False, mean=pca.mean).run()
     assert_almost_equal(pca.cov, pca.cov, decimal=5)
 
 
 def test_wrong_num_given_mean(u):
     wrong_mean = [[0, 0, 0], [1, 1, 1]]
-    with pytest.raises(ValueError, match='Number of atoms in'):
+    with pytest.raises(ValueError, match="Number of atoms in"):
         pca = PCA(u, select=SELECTION, mean=wrong_mean).run()
 
 
@@ -316,22 +328,24 @@ def test_pca_rmsip_self(pca):
 
 
 def test_rmsip_ortho(pca):
-    value = rmsip(pca.results.p_components[:, :10].T,
-                  pca.results.p_components[:, 10:20].T)
+    value = rmsip(
+        pca.results.p_components[:, :10].T,
+        pca.results.p_components[:, 10:20].T,
+    )
     assert_almost_equal(value, 0.0)
 
 
 def test_pytest_too_many_components(pca):
     with pytest.raises(ValueError) as exc:
         pca.rmsip(pca, n_components=(1, 2, 3))
-    assert 'Too many values' in str(exc.value)
+    assert "Too many values" in str(exc.value)
 
 
 def test_asymmetric_rmsip(pca):
     a = pca.rmsip(pca, n_components=(10, 4))
     b = pca.rmsip(pca, n_components=(4, 10))
 
-    assert abs(a-b) > 0.1, 'RMSIP should be asymmetric'
+    assert abs(a - b) > 0.1, "RMSIP should be asymmetric"
     assert_almost_equal(b, 1.0)
 
 
@@ -346,51 +360,47 @@ def test_cumulative_overlap_ortho(pca):
     assert_almost_equal(value, 0.0)
 
 
-@pytest.mark.parametrize(
-    'method', ['rmsip',
-               'cumulative_overlap'])
+@pytest.mark.parametrize("method", ["rmsip", "cumulative_overlap"])
 def test_compare_not_run_other(u, pca, method):
     pca2 = PCA(u)
     func = getattr(pca, method)
     with pytest.raises(ValueError) as exc:
         func(pca2)
-    assert 'Call run()' in str(exc.value)
+    assert "Call run()" in str(exc.value)
 
 
-@pytest.mark.parametrize(
-    'method', ['rmsip',
-               'cumulative_overlap'])
+@pytest.mark.parametrize("method", ["rmsip", "cumulative_overlap"])
 def test_compare_not_run_self(u, pca, method):
     pca2 = PCA(u)
     func = getattr(pca2, method)
     with pytest.raises(ValueError) as exc:
         func(pca)
-    assert 'Call run()' in str(exc.value)
+    assert "Call run()" in str(exc.value)
 
 
-@pytest.mark.parametrize(
-    'method', ['rmsip',
-               'cumulative_overlap'])
+@pytest.mark.parametrize("method", ["rmsip", "cumulative_overlap"])
 def test_compare_wrong_class(u, pca, method):
     func = getattr(pca, method)
     with pytest.raises(ValueError) as exc:
         func(3)
-    assert 'must be another PCA class' in str(exc.value)
+    assert "must be another PCA class" in str(exc.value)
 
 
-@pytest.mark.parametrize("attr", ("p_components", "variance",
-                                  "cumulated_variance"))
+@pytest.mark.parametrize(
+    "attr", ("p_components", "variance", "cumulated_variance")
+)
 def test_pca_attr_warning(u, attr):
     pca = PCA(u, select=SELECTION).run(stop=2)
     wmsg = f"The `{attr}` attribute was deprecated in MDAnalysis 2.0.0"
     with pytest.warns(DeprecationWarning, match=wmsg):
         getattr(pca, attr) is pca.results[attr]
 
+
 @pytest.mark.parametrize(
     "classname,is_parallelizable",
     [
         (MDAnalysis.analysis.pca.PCA, False),
-    ]
+    ],
 )
 def test_class_is_parallelizable(classname, is_parallelizable):
     assert classname._analysis_algorithm_is_parallelizable == is_parallelizable
@@ -399,9 +409,8 @@ def test_class_is_parallelizable(classname, is_parallelizable):
 @pytest.mark.parametrize(
     "classname,backends",
     [
-        (MDAnalysis.analysis.pca.PCA,  ('serial',)),
-    ]
+        (MDAnalysis.analysis.pca.PCA, ("serial",)),
+    ],
 )
 def test_supported_backends(classname, backends):
     assert classname.get_supported_backends() == backends
-

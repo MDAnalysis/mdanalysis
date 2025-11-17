@@ -80,7 +80,43 @@ import warnings
 import numpy as np
 
 from ..lib import distances
-from .base import AnalysisBase
+from .base import AnalysisBase, ResultsGroup
+
+
+def nested_array_sum(arrs):
+    r"""Custom aggregator for nested arrays
+
+    This function takes a nested list or tuple of NumPy arrays, flattens it
+    into a single list, and aggregates the elements at alternating indices
+    into two separate arrays. The first array accumulates elements at even
+    indices, while the second accumulates elements at odd indices.
+
+    Parameters
+    ----------
+    arrs : list
+        List of arrays or nested lists of arrays
+
+    Returns
+    -------
+    list of ndarray
+        A list containing two NumPy arrays:
+        - The first array is the sum of all elements at even indices
+          in the sum of flattened arrays.
+        - The second array is the sum of all elements at odd indices
+          in the sum of flattened arrays.
+    """
+
+    def flatten(arr):
+        if isinstance(arr, (list, tuple)):
+            return [item for sublist in arr for item in flatten(sublist)]
+        return [arr]
+
+    flat = flatten(arrs)
+    aggregated_arr = [np.zeros_like(flat[0]), np.zeros_like(flat[1])]
+    for i in range(len(flat) // 2):
+        aggregated_arr[0] += flat[2 * i]  # 0, 2, 4, ...
+        aggregated_arr[1] += flat[2 * i + 1]  # 1, 3, 5, ...
+    return aggregated_arr
 
 
 class InterRDF(AnalysisBase):
@@ -131,6 +167,11 @@ class InterRDF(AnalysisBase):
         spatially correlated due to direct bonded connections.
     verbose : bool
         Show detailed progress of the calculation if set to `True`
+    backend : {'serial', 'OpenMP', 'distopia'}, optional
+        Keyword selecting the type of acceleration of the distance calculations.
+        Default is 'serial'.
+
+        .. versionadded:: 2.10.0
 
     Attributes
     ----------
@@ -216,25 +257,47 @@ class InterRDF(AnalysisBase):
        Store results as attributes `bins`, `edges`, `rdf` and `count`
        of the `results` attribute of
        :class:`~MDAnalysis.analysis.AnalysisBase`.
+
+    .. versionchanged:: 2.10.0
+       Enabled **parallel execution** with the ``multiprocessing`` and ``dask``
+       backends; use the new method :meth:`get_supported_backends` to see all
+       supported backends.
     """
-    def __init__(self,
-                 g1,
-                 g2,
-                 nbins=75,
-                 range=(0.0, 15.0),
-                 norm="rdf",
-                 exclusion_block=None,
-                 exclude_same=None,
-                 **kwargs):
+
+    @classmethod
+    def get_supported_backends(cls):
+        return (
+            "serial",
+            "multiprocessing",
+            "dask",
+        )
+
+    _analysis_algorithm_is_parallelizable = True
+
+    def __init__(
+        self,
+        g1,
+        g2,
+        nbins=75,
+        range=(0.0, 15.0),
+        norm="rdf",
+        exclusion_block=None,
+        exclude_same=None,
+        backend="serial",
+        **kwargs,
+    ):
         super(InterRDF, self).__init__(g1.universe.trajectory, **kwargs)
         self.g1 = g1
         self.g2 = g2
         self.norm = str(norm).lower()
 
-        self.rdf_settings = {'bins': nbins,
-                             'range': range}
+        self.rdf_settings = {"bins": nbins, "range": range}
         self._exclusion_block = exclusion_block
-        if exclude_same is not None and exclude_same not in ['residue', 'segment', 'chain']:
+        if exclude_same is not None and exclude_same not in [
+            "residue",
+            "segment",
+            "chain",
+        ]:
             raise ValueError(
                 "The exclude_same argument to InterRDF must be None, 'residue', 'segment' "
                 "or 'chain'."
@@ -243,12 +306,20 @@ class InterRDF(AnalysisBase):
             raise ValueError(
                 "The exclude_same argument to InterRDF cannot be used with exclusion_block."
             )
-        name_to_attr = {'residue': 'resindices', 'segment': 'segindices', 'chain': 'chainIDs'}
+        name_to_attr = {
+            "residue": "resindices",
+            "segment": "segindices",
+            "chain": "chainIDs",
+        }
         self.exclude_same = name_to_attr.get(exclude_same)
 
-        if self.norm not in ['rdf', 'density', 'none']:
-            raise ValueError(f"'{self.norm}' is an invalid norm. "
-                             "Use 'rdf', 'density' or 'none'.")
+        if self.norm not in ["rdf", "density", "none"]:
+            raise ValueError(
+                f"'{self.norm}' is an invalid norm. "
+                "Use 'rdf', 'density' or 'none'."
+            )
+
+        self.backend = backend
 
     def _prepare(self):
         # Empty histogram to store the RDF
@@ -261,19 +332,22 @@ class InterRDF(AnalysisBase):
 
         if self.norm == "rdf":
             # Cumulative volume for rdf normalization
-            self.volume_cum = 0
+            self.results.volume_cum = 0
         # Set the max range to filter the search radius
-        self._maxrange = self.rdf_settings['range'][1]
+        self._maxrange = self.rdf_settings["range"][1]
 
     def _single_frame(self):
-        pairs, dist = distances.capped_distance(self.g1.positions,
-                                                self.g2.positions,
-                                                self._maxrange,
-                                                box=self._ts.dimensions)
+        pairs, dist = distances.capped_distance(
+            self.g1.positions,
+            self.g2.positions,
+            self._maxrange,
+            box=self._ts.dimensions,
+            backend=self.backend,
+        )
         # Maybe exclude same molecule distances
         if self._exclusion_block is not None:
-            idxA = pairs[:, 0]//self._exclusion_block[0]
-            idxB = pairs[:, 1]//self._exclusion_block[1]
+            idxA = pairs[:, 0] // self._exclusion_block[0]
+            idxB = pairs[:, 1] // self._exclusion_block[1]
             mask = np.where(idxA != idxB)[0]
             dist = dist[mask]
 
@@ -288,14 +362,24 @@ class InterRDF(AnalysisBase):
         self.results.count += count
 
         if self.norm == "rdf":
-            self.volume_cum += self._ts.volume
+            self.results.volume_cum += self._ts.volume
+
+    def _get_aggregator(self):
+        return ResultsGroup(
+            lookup={
+                "count": ResultsGroup.ndarray_sum,
+                "volume_cum": ResultsGroup.ndarray_sum,
+                "bins": ResultsGroup.ndarray_sum,
+                "edges": ResultsGroup.ndarray_mean,
+            }
+        )
 
     def _conclude(self):
         norm = self.n_frames
         if self.norm in ["rdf", "density"]:
             # Volume in each radial shell
             vols = np.power(self.results.edges, 3)
-            norm *= 4/3 * np.pi * np.diff(vols)
+            norm *= 4 / 3 * np.pi * np.diff(vols)
 
         if self.norm == "rdf":
             # Number of each selection
@@ -310,6 +394,7 @@ class InterRDF(AnalysisBase):
                 N -= xA * xB * nblocks
 
             # Average number density
+            self.volume_cum = self.results.volume_cum
             box_vol = self.volume_cum / self.n_frames
             norm *= N / box_vol
 
@@ -317,33 +402,41 @@ class InterRDF(AnalysisBase):
 
     @property
     def edges(self):
-        wmsg = ("The `edges` attribute was deprecated in MDAnalysis 2.0.0 "
-                "and will be removed in MDAnalysis 3.0.0. Please use "
-                "`results.bins` instead")
+        wmsg = (
+            "The `edges` attribute was deprecated in MDAnalysis 2.0.0 "
+            "and will be removed in MDAnalysis 3.0.0. Please use "
+            "`results.bins` instead"
+        )
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.edges
 
     @property
     def count(self):
-        wmsg = ("The `count` attribute was deprecated in MDAnalysis 2.0.0 "
-                "and will be removed in MDAnalysis 3.0.0. Please use "
-                "`results.bins` instead")
+        wmsg = (
+            "The `count` attribute was deprecated in MDAnalysis 2.0.0 "
+            "and will be removed in MDAnalysis 3.0.0. Please use "
+            "`results.bins` instead"
+        )
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.count
 
     @property
     def bins(self):
-        wmsg = ("The `bins` attribute was deprecated in MDAnalysis 2.0.0 "
-                "and will be removed in MDAnalysis 3.0.0. Please use "
-                "`results.bins` instead")
+        wmsg = (
+            "The `bins` attribute was deprecated in MDAnalysis 2.0.0 "
+            "and will be removed in MDAnalysis 3.0.0. Please use "
+            "`results.bins` instead"
+        )
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.bins
 
     @property
     def rdf(self):
-        wmsg = ("The `rdf` attribute was deprecated in MDAnalysis 2.0.0 "
-                "and will be removed in MDAnalysis 3.0.0. Please use "
-                "`results.rdf` instead")
+        wmsg = (
+            "The `rdf` attribute was deprecated in MDAnalysis 2.0.0 "
+            "and will be removed in MDAnalysis 3.0.0. Please use "
+            "`results.rdf` instead"
+        )
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.rdf
 
@@ -401,6 +494,12 @@ class InterRDF_s(AnalysisBase):
 
         .. deprecated:: 2.3.0
             Instead of `density=True` use `norm='density'`
+
+    backend : {'serial', 'OpenMP', 'distopia'}, optional
+        Keyword selecting the type of acceleration of the distance calculations.
+        Default is 'serial'.
+
+        .. versionadded:: 2.10.0
 
     Attributes
     ----------
@@ -539,72 +638,123 @@ class InterRDF_s(AnalysisBase):
        Instead of `density=True` use `norm='density'`
     .. deprecated:: 2.3.0
        The `universe` parameter is superflous.
+    .. versionchanged:: 2.10.0
+       Enabled **parallel execution** with the ``multiprocessing`` and ``dask``
+       backends; use the new method :meth:`get_supported_backends` to see all
+       supported backends.
     """
-    def __init__(self,
-                 u,
-                 ags,
-                 nbins=75,
-                 range=(0.0, 15.0),
-                 norm="rdf",
-                 density=False,
-                 **kwargs):
-        super(InterRDF_s, self).__init__(ags[0][0].universe.trajectory,
-                                         **kwargs)
 
-        warnings.warn("The `u` attribute is superflous and will be removed "
-                      "in MDAnalysis 3.0.0.", DeprecationWarning)
+    @classmethod
+    def get_supported_backends(cls):
+        return (
+            "serial",
+            "multiprocessing",
+            "dask",
+        )
+
+    _analysis_algorithm_is_parallelizable = True
+
+    def _get_aggregator(self):
+        return ResultsGroup(
+            lookup={
+                "count": nested_array_sum,
+                "volume_cum": ResultsGroup.ndarray_sum,
+                "bins": ResultsGroup.ndarray_mean,
+                "edges": ResultsGroup.ndarray_mean,
+            }
+        )
+
+    def __init__(
+        self,
+        u,
+        ags,
+        nbins=75,
+        range=(0.0, 15.0),
+        norm="rdf",
+        density=False,
+        backend="serial",
+        **kwargs,
+    ):
+        super(InterRDF_s, self).__init__(
+            ags[0][0].universe.trajectory, **kwargs
+        )
+
+        warnings.warn(
+            "The `u` attribute is superflous and will be removed "
+            "in MDAnalysis 3.0.0.",
+            DeprecationWarning,
+        )
 
         self.ags = ags
         self.norm = str(norm).lower()
-        self.rdf_settings = {'bins': nbins,
-                             'range': range}
+        self.rdf_settings = {"bins": nbins, "range": range}
 
-        if self.norm not in ['rdf', 'density', 'none']:
-            raise ValueError(f"'{self.norm}' is an invalid norm. "
-                             "Use 'rdf', 'density' or 'none'.")
+        if self.norm not in ["rdf", "density", "none"]:
+            raise ValueError(
+                f"'{self.norm}' is an invalid norm. "
+                "Use 'rdf', 'density' or 'none'."
+            )
 
         if density:
-            warnings.warn("The `density` attribute was deprecated in "
-                          "MDAnalysis 2.3.0 and will be removed in "
-                          "MDAnalysis 3.0.0. Please use `norm=density` "
-                          "instead.", DeprecationWarning)
+            warnings.warn(
+                "The `density` attribute was deprecated in "
+                "MDAnalysis 2.3.0 and will be removed in "
+                "MDAnalysis 3.0.0. Please use `norm=density` "
+                "instead.",
+                DeprecationWarning,
+            )
             self.norm = "density"
+
+        self.backend = backend
 
     def _prepare(self):
         count, edges = np.histogram([-1], **self.rdf_settings)
-        self.results.count = [np.zeros((ag1.n_atoms, ag2.n_atoms, len(count)),
-                                        dtype=np.float64) for ag1, ag2 in self.ags]
+        self.results.count = [
+            np.zeros((ag1.n_atoms, ag2.n_atoms, len(count)), dtype=np.float64)
+            for ag1, ag2 in self.ags
+        ]
         self.results.edges = edges
         self.results.bins = 0.5 * (edges[:-1] + edges[1:])
 
         if self.norm == "rdf":
             # Cumulative volume for rdf normalization
-            self.volume_cum = 0
-        self._maxrange = self.rdf_settings['range'][1]
+            self.results.volume_cum = 0
+        self._maxrange = self.rdf_settings["range"][1]
 
     def _single_frame(self):
         for i, (ag1, ag2) in enumerate(self.ags):
-            pairs, dist = distances.capped_distance(ag1.positions,
-                                                    ag2.positions,
-                                                    self._maxrange,
-                                                    box=self._ts.dimensions)
+            pairs, dist = distances.capped_distance(
+                ag1.positions,
+                ag2.positions,
+                self._maxrange,
+                box=self._ts.dimensions,
+                backend=self.backend,
+            )
 
-            for j, (idx1, idx2) in enumerate(pairs):
-                count, _ = np.histogram(dist[j], **self.rdf_settings)
-                self.results.count[i][idx1, idx2, :] += count
+            # Fast manual implementation for distance histogram (equidistant bins)
+            nbins = self.rdf_settings["bins"]
+            rmin, rmax = self.rdf_settings["range"]
+            bin_indices = (dist - rmin) * nbins / (rmax - rmin)
+            bin_indices = bin_indices.astype(np.int64)
+            counts = (bin_indices >= 0) & (bin_indices < nbins)
+            counts = counts.astype(np.int64)
+            idx1s = pairs[:, 0]
+            idx2s = pairs[:, 1]
+            self.results.count[i][idx1s, idx2s, bin_indices] += counts
 
         if self.norm == "rdf":
-            self.volume_cum += self._ts.volume
+            self.results.volume_cum += self._ts.volume
 
     def _conclude(self):
         norm = self.n_frames
         if self.norm in ["rdf", "density"]:
             # Volume in each radial shell
             vols = np.power(self.results.edges, 3)
-            norm *= 4/3 * np.pi * np.diff(vols)
+            norm *= 4 / 3 * np.pi * np.diff(vols)
 
         if self.norm == "rdf":
             # Average number density
+            self.volume_cum = self.results.volume_cum
             norm *= 1 / (self.volume_cum / self.n_frames)
 
         # Empty lists to restore indices, RDF
@@ -639,40 +789,50 @@ class InterRDF_s(AnalysisBase):
 
     @property
     def edges(self):
-        wmsg = ("The `edges` attribute was deprecated in MDAnalysis 2.0.0 "
-                "and will be removed in MDAnalysis 3.0.0. Please use "
-                "`results.bins` instead")
+        wmsg = (
+            "The `edges` attribute was deprecated in MDAnalysis 2.0.0 "
+            "and will be removed in MDAnalysis 3.0.0. Please use "
+            "`results.bins` instead"
+        )
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.edges
 
     @property
     def count(self):
-        wmsg = ("The `count` attribute was deprecated in MDAnalysis 2.0.0 "
-                "and will be removed in MDAnalysis 3.0.0. Please use "
-                "`results.bins` instead")
+        wmsg = (
+            "The `count` attribute was deprecated in MDAnalysis 2.0.0 "
+            "and will be removed in MDAnalysis 3.0.0. Please use "
+            "`results.bins` instead"
+        )
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.count
 
     @property
     def bins(self):
-        wmsg = ("The `bins` attribute was deprecated in MDAnalysis 2.0.0 "
-                "and will be removed in MDAnalysis 3.0.0. Please use "
-                "`results.bins` instead")
+        wmsg = (
+            "The `bins` attribute was deprecated in MDAnalysis 2.0.0 "
+            "and will be removed in MDAnalysis 3.0.0. Please use "
+            "`results.bins` instead"
+        )
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.bins
 
     @property
     def rdf(self):
-        wmsg = ("The `rdf` attribute was deprecated in MDAnalysis 2.0.0 "
-                "and will be removed in MDAnalysis 3.0.0. Please use "
-                "`results.rdf` instead")
+        wmsg = (
+            "The `rdf` attribute was deprecated in MDAnalysis 2.0.0 "
+            "and will be removed in MDAnalysis 3.0.0. Please use "
+            "`results.rdf` instead"
+        )
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.rdf
 
     @property
     def cdf(self):
-        wmsg = ("The `cdf` attribute was deprecated in MDAnalysis 2.0.0 "
-                "and will be removed in MDAnalysis 3.0.0. Please use "
-                "`results.cdf` instead")
+        wmsg = (
+            "The `cdf` attribute was deprecated in MDAnalysis 2.0.0 "
+            "and will be removed in MDAnalysis 3.0.0. Please use "
+            "`results.cdf` instead"
+        )
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.cdf

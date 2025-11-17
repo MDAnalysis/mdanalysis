@@ -35,6 +35,7 @@ Classes
 -------
 
 """
+
 import warnings
 from typing import Callable
 from MDAnalysis.lib.util import is_installed
@@ -102,8 +103,9 @@ class BackendBase:
             checked during ``_validate()`` run
         """
         return {
-            isinstance(self.n_workers, int) and self.n_workers > 0:
-            f"n_workers should be positive integer, got {self.n_workers=}",
+            isinstance(self.n_workers, int)
+            and self.n_workers
+            > 0: f"n_workers should be positive integer, got {self.n_workers=}",
         }
 
     def _get_warnings(self):
@@ -183,8 +185,8 @@ class BackendSerial(BackendBase):
             checked during ``_validate()`` run
         """
         return {
-            self.n_workers == 1:
-            "n_workers is ignored when executing with backend='serial'"
+            self.n_workers
+            == 1: "n_workers is ignored when executing with backend='serial'"
         }
 
     def apply(self, func: Callable, computations: list) -> list:
@@ -307,10 +309,12 @@ class BackendDask(BackendBase):
         import dask
 
         computations = [delayed(func)(task) for task in computations]
-        results = dask.compute(computations,
-                               scheduler="processes",
-                               chunksize=1,
-                               num_workers=self.n_workers)[0]
+        results = dask.compute(
+            computations,
+            scheduler="processes",
+            chunksize=1,
+            num_workers=self.n_workers,
+        )[0]
         return results
 
     def _get_checks(self):
@@ -326,8 +330,9 @@ class BackendDask(BackendBase):
         """
         base_checks = super()._get_checks()
         checks = {
-            is_installed("dask"):
-            ("module 'dask' is missing. Please install 'dask': "
-             "https://docs.dask.org/en/stable/install.html")
+            is_installed("dask"): (
+                "module 'dask' is missing. Please install 'dask': "
+                "https://docs.dask.org/en/stable/install.html"
+            )
         }
         return base_checks | checks

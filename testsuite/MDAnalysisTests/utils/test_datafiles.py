@@ -29,10 +29,10 @@ def test_failed_import(monkeypatch):
     # Putting this test first to avoid datafiles already being loaded
     errmsg = "MDAnalysisTests package not installed."
 
-    monkeypatch.setitem(sys.modules, 'MDAnalysisTests.datafiles', None)
+    monkeypatch.setitem(sys.modules, "MDAnalysisTests.datafiles", None)
 
-    if 'MDAnalysis.tests.datafiles' in sys.modules:
-        monkeypatch.delitem(sys.modules, 'MDAnalysis.tests.datafiles')
+    if "MDAnalysis.tests.datafiles" in sys.modules:
+        monkeypatch.delitem(sys.modules, "MDAnalysis.tests.datafiles")
 
     with pytest.raises(ImportError, match=errmsg):
         import MDAnalysis.tests.datafiles
@@ -42,20 +42,35 @@ def test_import():
     try:
         import MDAnalysis.tests.datafiles
     except ImportError:
-        pytest.fail("Failed to 'import MDAnalysis.tests.datafiles --- install MDAnalysisTests")
+        pytest.fail(
+            "Failed to 'import MDAnalysis.tests.datafiles --- install MDAnalysisTests"
+        )
 
 
 def test_all_exports():
     import MDAnalysisTests.datafiles
-    missing = [name for name in dir(MDAnalysisTests.datafiles)
-               if
-               not name.startswith('_') and name not in MDAnalysisTests.datafiles.__all__ and name != 'MDAnalysisTests']
+
+    missing = [
+        name
+        for name in dir(MDAnalysisTests.datafiles)
+        if not name.startswith("_")
+        and name not in MDAnalysisTests.datafiles.__all__
+        and name != "MDAnalysisTests"
+    ]
     assert_equal(missing, [], err_msg="Variables need to be added to __all__.")
 
 
 def test_export_variables():
     import MDAnalysisTests.datafiles
     import MDAnalysis.tests.datafiles
-    missing = [name for name in MDAnalysisTests.datafiles.__all__
-               if name not in dir(MDAnalysis.tests.datafiles)]
-    assert_equal(missing, [], err_msg="Variables not exported to MDAnalysis.tests.datafiles")
+
+    missing = [
+        name
+        for name in MDAnalysisTests.datafiles.__all__
+        if name not in dir(MDAnalysis.tests.datafiles)
+    ]
+    assert_equal(
+        missing,
+        [],
+        err_msg="Variables not exported to MDAnalysis.tests.datafiles",
+    )

@@ -28,18 +28,22 @@ def test_coordinate_converterbase_warning():
     from MDAnalysis.coordinates.base import ConverterBase
     import MDAnalysis.converters.base
 
-    wmsg = ("ConverterBase moved from coordinates.base."
-            "ConverterBase to converters.base.ConverterBase "
-            "and will be removed from coordinates.base "
-            "in MDAnalysis release 3.0.0")
+    wmsg = (
+        "ConverterBase moved from coordinates.base."
+        "ConverterBase to converters.base.ConverterBase "
+        "and will be removed from coordinates.base "
+        "in MDAnalysis release 3.0.0"
+    )
 
     with pytest.warns(DeprecationWarning, match=wmsg):
+
         class DerivedConverter(ConverterBase):
             pass
 
     assert issubclass(DerivedConverter, ConverterBase)
-    assert not issubclass(DerivedConverter,
-                          MDAnalysis.converters.base.ConverterBase)
+    assert not issubclass(
+        DerivedConverter, MDAnalysis.converters.base.ConverterBase
+    )
 
 
 def test_converters_converterbase_no_warning():

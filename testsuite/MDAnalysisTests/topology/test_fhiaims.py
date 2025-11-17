@@ -30,28 +30,25 @@ from MDAnalysisTests.datafiles import FHIAIMS
 
 class TestFHIAIMS(ParserBase):
     parser = mda.topology.FHIAIMSParser.FHIAIMSParser
-    expected_attrs = ['names', 'elements']
-    guessed_attrs = ['masses', 'types']
+    expected_attrs = ["names", "elements"]
+    guessed_attrs = ["masses", "types"]
     expected_n_residues = 1
     expected_n_segments = 1
     expected_n_atoms = 6
     ref_filename = FHIAIMS
 
     def test_names(self, top):
-        assert_equal(top.names.values,
-                     ['O', 'H', 'H', 'O', 'H', 'H'])
+        assert_equal(top.names.values, ["O", "H", "H", "O", "H", "H"])
 
     def test_guessed_types(self, filename):
         u = mda.Universe(filename)
-        assert_equal(u.atoms.types,
-                     ['O', 'H', 'H', 'O', 'H', 'H'])
+        assert_equal(u.atoms.types, ["O", "H", "H", "O", "H", "H"])
 
     def test_guessed_masses(self, filename):
         u = mda.Universe(filename)
-        assert_allclose(u.atoms.masses,
-                        [15.999,  1.008,  1.008, 15.999,
-                         1.008,  1.008])
+        assert_allclose(
+            u.atoms.masses, [15.999, 1.008, 1.008, 15.999, 1.008, 1.008]
+        )
 
     def test_elements(self, top):
-        assert_equal(top.elements.values,
-                     ['O', 'H', 'H', 'O', 'H', 'H'])
+        assert_equal(top.elements.values, ["O", "H", "H", "O", "H", "H"])

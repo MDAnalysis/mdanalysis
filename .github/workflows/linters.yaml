@@ -31,7 +31,7 @@ jobs:
 
     - uses: actions/setup-python@v5
       with:
-        python-version: "3.10"
+        python-version: "3.11"
 
     - uses: psf/black@stable
       with:
@@ -55,7 +55,7 @@ jobs:
 
     - uses: actions/setup-python@v5
       with:
-        python-version: "3.10"
+        python-version: "3.11"
 
     - name: install
       run: |
@@ -80,12 +80,10 @@ jobs:
         with:
           environment-name: mda
           create-args: >-
-            python=3.10
+            python=3.11
             pip
-          # using jaime's shim to avoid pulling down the cudatoolkit
           condarc: |
             channels:
-              - jaimergp/label/unsupported-cudatoolkit-shim
               - conda-forge
               - bioconda
 
@@ -94,7 +92,7 @@ jobs:
         with:
           micromamba: true
           full-deps: true
-          numpy: numpy=1.23.2
+          numpy: numpy=1.26.0
           rdkit: rdkit=2023.09.3
 
       - name: install

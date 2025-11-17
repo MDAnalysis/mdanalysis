@@ -180,24 +180,32 @@ import MDAnalysis as mda
 
 from ...coordinates.memory import MemoryReader
 from .confdistmatrix import get_distance_matrix
-from .bootstrap import (get_distance_matrix_bootstrap_samples,
-                        get_ensemble_bootstrap_samples)
+from .bootstrap import (
+    get_distance_matrix_bootstrap_samples,
+    get_ensemble_bootstrap_samples,
+)
 from .clustering.cluster import cluster
 from .clustering.ClusteringMethod import AffinityPropagationNative
 from .dimensionality_reduction.DimensionalityReductionMethod import (
-    StochasticProximityEmbeddingNative)
+    StochasticProximityEmbeddingNative,
+)
 from .dimensionality_reduction.reduce_dimensionality import (
-    reduce_dimensionality)
+    reduce_dimensionality,
+)
 from .covariance import (
-    covariance_matrix, ml_covariance_estimator, shrinkage_covariance_estimator)
+    covariance_matrix,
+    ml_covariance_estimator,
+    shrinkage_covariance_estimator,
+)
 from .utils import merge_universes
 from .utils import trm_indices_diag, trm_indices_nodiag
 
 # Low boundary value for log() argument - ensure no nans
-EPSILON = 1E-15
+EPSILON = 1e-15
 
 xlogy = np.vectorize(
-    lambda x, y: 0.0 if (x <= EPSILON and y <= EPSILON) else x * np.log(y))
+    lambda x, y: 0.0 if (x <= EPSILON and y <= EPSILON) else x * np.log(y)
+)
 
 
 def discrete_kullback_leibler_divergence(pA, pB):
@@ -242,16 +250,15 @@ def discrete_jensen_shannon_divergence(pA, pB):
 
     djs : float
         Discrete Jensen-Shannon divergence
-"""
-    return 0.5 * (discrete_kullback_leibler_divergence(pA, (pA + pB) * 0.5) +
-                  discrete_kullback_leibler_divergence(pB, (pA + pB) * 0.5))
+    """
+    return 0.5 * (
+        discrete_kullback_leibler_divergence(pA, (pA + pB) * 0.5)
+        + discrete_kullback_leibler_divergence(pB, (pA + pB) * 0.5)
+    )
 
 
 # calculate harmonic similarity
-def harmonic_ensemble_similarity(sigma1,
-                                 sigma2,
-                                 x1,
-                                 x2):
+def harmonic_ensemble_similarity(sigma1, sigma2, x1, x2):
     """
     Calculate the harmonic ensemble similarity measure
     as defined in :footcite:p:`Tiberti2015`.
@@ -288,18 +295,22 @@ def harmonic_ensemble_similarity(sigma1,
     d_avg = x1 - x2
 
     # Distance measure
-    trace = np.trace(np.dot(sigma1, sigma2_inv) +
-                        np.dot(sigma2, sigma1_inv)
-                        - 2 * np.identity(sigma1.shape[0]))
+    trace = np.trace(
+        np.dot(sigma1, sigma2_inv)
+        + np.dot(sigma2, sigma1_inv)
+        - 2 * np.identity(sigma1.shape[0])
+    )
 
-    d_hes = 0.25 * (np.dot(np.transpose(d_avg),
-                              np.dot(sigma1_inv + sigma2_inv,
-                                        d_avg)) + trace)
+    d_hes = 0.25 * (
+        np.dot(np.transpose(d_avg), np.dot(sigma1_inv + sigma2_inv, d_avg))
+        + trace
+    )
     return d_hes
 
 
-def clustering_ensemble_similarity(cc, ens1, ens1_id, ens2, ens2_id,
-                                   select="name CA"):
+def clustering_ensemble_similarity(
+    cc, ens1, ens1_id, ens2, ens2_id, select="name CA"
+):
     """Clustering ensemble similarity: calculate the probability densities from
      the clusters and calculate discrete Jensen-Shannon divergence.
 
@@ -332,16 +343,26 @@ def clustering_ensemble_similarity(cc, ens1, ens1_id, ens2, ens2_id,
         Jensen-Shannon divergence between the two ensembles, as calculated by
         the clustering ensemble similarity method
     """
-    ens1_coordinates = ens1.trajectory.timeseries(ens1.select_atoms(select),
-                                                  order='fac')
-    ens2_coordinates = ens2.trajectory.timeseries(ens2.select_atoms(select),
-                                                  order='fac')
-    tmpA = np.array([np.where(c.metadata['ensemble_membership'] == ens1_id)[
-                            0].shape[0] / float(ens1_coordinates.shape[0]) for
-                        c in cc])
-    tmpB = np.array([np.where(c.metadata['ensemble_membership'] == ens2_id)[
-                            0].shape[0] / float(ens2_coordinates.shape[0]) for
-                        c in cc])
+    ens1_coordinates = ens1.trajectory.timeseries(
+        ens1.select_atoms(select), order="fac"
+    )
+    ens2_coordinates = ens2.trajectory.timeseries(
+        ens2.select_atoms(select), order="fac"
+    )
+    tmpA = np.array(
+        [
+            np.where(c.metadata["ensemble_membership"] == ens1_id)[0].shape[0]
+            / float(ens1_coordinates.shape[0])
+            for c in cc
+        ]
+    )
+    tmpB = np.array(
+        [
+            np.where(c.metadata["ensemble_membership"] == ens2_id)[0].shape[0]
+            / float(ens2_coordinates.shape[0])
+            for c in cc
+        ]
+    )
 
     # Exclude clusters which have 0 elements in both ensembles
     pA = tmpA[tmpA + tmpB > EPSILON]
@@ -350,8 +371,9 @@ def clustering_ensemble_similarity(cc, ens1, ens1_id, ens2, ens2_id,
     return discrete_jensen_shannon_divergence(pA, pB)
 
 
-def cumulative_clustering_ensemble_similarity(cc, ens1_id, ens2_id,
-                                              ens1_id_min=1, ens2_id_min=1):
+def cumulative_clustering_ensemble_similarity(
+    cc, ens1_id, ens2_id, ens1_id_min=1, ens2_id_min=1
+):
     """
     Calculate clustering ensemble similarity between joined ensembles.
     This means that, after clustering has been performed, some ensembles are
@@ -383,16 +405,28 @@ def cumulative_clustering_ensemble_similarity(cc, ens1_id, ens2_id,
             Jensen-Shannon divergence between the two ensembles, as
             calculated by the clustering ensemble similarity method
 
-"""
+    """
 
-    ensA = [np.where(np.logical_and(
-        c.metadata['ensemble_membership'] <= ens1_id,
-        c.metadata['ensemble_membership'])
-                     >= ens1_id_min)[0].shape[0] for c in cc]
-    ensB = [np.where(np.logical_and(
-        c.metadata['ensemble_membership'] <= ens2_id,
-        c.metadata['ensemble_membership'])
-                     >= ens2_id_min)[0].shape[0] for c in cc]
+    ensA = [
+        np.where(
+            np.logical_and(
+                c.metadata["ensemble_membership"] <= ens1_id,
+                c.metadata["ensemble_membership"],
+            )
+            >= ens1_id_min
+        )[0].shape[0]
+        for c in cc
+    ]
+    ensB = [
+        np.where(
+            np.logical_and(
+                c.metadata["ensemble_membership"] <= ens2_id,
+                c.metadata["ensemble_membership"],
+            )
+            >= ens2_id_min
+        )[0].shape[0]
+        for c in cc
+    ]
     sizeA = float(np.sum(ensA))
     sizeB = float(np.sum(ensB))
 
@@ -406,8 +440,7 @@ def cumulative_clustering_ensemble_similarity(cc, ens1_id, ens2_id,
     return discrete_jensen_shannon_divergence(pA, pB)
 
 
-def gen_kde_pdfs(embedded_space, ensemble_assignment, nensembles,
-                 nsamples):
+def gen_kde_pdfs(embedded_space, ensemble_assignment, nensembles, nsamples):
     """
     Generate Kernel Density Estimates (KDE) from embedded spaces and
     elaborate the coordinates for later use.
@@ -452,7 +485,8 @@ def gen_kde_pdfs(embedded_space, ensemble_assignment, nensembles,
 
     for i in range(1, nensembles + 1):
         this_embedded = embedded_space.transpose()[
-            np.where(np.array(ensemble_assignment) == i)].transpose()
+            np.where(np.array(ensemble_assignment) == i)
+        ].transpose()
         embedded_ensembles.append(this_embedded)
         kdes.append(scipy.stats.gaussian_kde(this_embedded))
 
@@ -467,9 +501,16 @@ def gen_kde_pdfs(embedded_space, ensemble_assignment, nensembles,
     return (kdes, resamples, embedded_ensembles)
 
 
-def dimred_ensemble_similarity(kde1, resamples1, kde2, resamples2,
-                               ln_P1_exp_P1=None, ln_P2_exp_P2=None,
-                               ln_P1P2_exp_P1=None, ln_P1P2_exp_P2=None):
+def dimred_ensemble_similarity(
+    kde1,
+    resamples1,
+    kde2,
+    resamples2,
+    ln_P1_exp_P1=None,
+    ln_P2_exp_P2=None,
+    ln_P1P2_exp_P1=None,
+    ln_P1P2_exp_P2=None,
+):
     r"""Calculate the Jensen-Shannon divergence according the Dimensionality
     reduction method.
 
@@ -541,21 +582,38 @@ def dimred_ensemble_similarity(kde1, resamples1, kde2, resamples2,
 
     """
 
-    if not ln_P1_exp_P1 and not ln_P2_exp_P2 and not ln_P1P2_exp_P1 and not \
-            ln_P1P2_exp_P2:
+    if (
+        not ln_P1_exp_P1
+        and not ln_P2_exp_P2
+        and not ln_P1P2_exp_P1
+        and not ln_P1P2_exp_P2
+    ):
         ln_P1_exp_P1 = np.average(np.log(kde1.evaluate(resamples1)))
         ln_P2_exp_P2 = np.average(np.log(kde2.evaluate(resamples2)))
-        ln_P1P2_exp_P1 = np.average(np.log(
-            0.5 * (kde1.evaluate(resamples1) + kde2.evaluate(resamples1))))
-        ln_P1P2_exp_P2 = np.average(np.log(
-            0.5 * (kde1.evaluate(resamples2) + kde2.evaluate(resamples2))))
+        ln_P1P2_exp_P1 = np.average(
+            np.log(
+                0.5 * (kde1.evaluate(resamples1) + kde2.evaluate(resamples1))
+            )
+        )
+        ln_P1P2_exp_P2 = np.average(
+            np.log(
+                0.5 * (kde1.evaluate(resamples2) + kde2.evaluate(resamples2))
+            )
+        )
 
     return 0.5 * (
-        ln_P1_exp_P1 - ln_P1P2_exp_P1 + ln_P2_exp_P2 - ln_P1P2_exp_P2)
+        ln_P1_exp_P1 - ln_P1P2_exp_P1 + ln_P2_exp_P2 - ln_P1P2_exp_P2
+    )
 
 
-def cumulative_gen_kde_pdfs(embedded_space, ensemble_assignment, nensembles,
-                            nsamples, ens_id_min=1, ens_id_max=None):
+def cumulative_gen_kde_pdfs(
+    embedded_space,
+    ensemble_assignment,
+    nensembles,
+    nsamples,
+    ens_id_min=1,
+    ens_id_max=None,
+):
     """
     Generate Kernel Density Estimates (KDE) from embedded spaces and
     elaborate the coordinates for later use. However, consider more than
@@ -615,9 +673,13 @@ def cumulative_gen_kde_pdfs(embedded_space, ensemble_assignment, nensembles,
     if not ens_id_max:
         ens_id_max = nensembles + 1
     for i in range(ens_id_min, ens_id_max):
-        this_embedded = embedded_space.transpose()[np.where(
-            np.logical_and(ensemble_assignment >= ens_id_min,
-                              ensemble_assignment <= i))].transpose()
+        this_embedded = embedded_space.transpose()[
+            np.where(
+                np.logical_and(
+                    ensemble_assignment >= ens_id_min, ensemble_assignment <= i
+                )
+            )
+        ].transpose()
         embedded_ensembles.append(this_embedded)
         kdes.append(scipy.stats.gaussian_kde(this_embedded))
 
@@ -628,8 +690,9 @@ def cumulative_gen_kde_pdfs(embedded_space, ensemble_assignment, nensembles,
     return (kdes, resamples, embedded_ensembles)
 
 
-def write_output(matrix, base_fname=None, header="", suffix="",
-                 extension="dat"):
+def write_output(
+    matrix, base_fname=None, header="", suffix="", extension="dat"
+):
     """
     Write output matrix with a nice format, to stdout and optionally a file.
 
@@ -662,9 +725,9 @@ def write_output(matrix, base_fname=None, header="", suffix="",
     matrix.square_print(header=header, fname=fname)
 
 
-def prepare_ensembles_for_convergence_increasing_window(ensemble,
-                                                        window_size,
-                                                        select="name CA"):
+def prepare_ensembles_for_convergence_increasing_window(
+    ensemble, window_size, select="name CA"
+):
     """
     Generate ensembles to be fed to ces_convergence or dres_convergence
     from a single ensemble. Basically, the different slices the algorithm
@@ -693,8 +756,9 @@ def prepare_ensembles_for_convergence_increasing_window(ensemble,
 
     """
 
-    ens_size = ensemble.trajectory.timeseries(ensemble.select_atoms(select),
-                                              order='fac').shape[0]
+    ens_size = ensemble.trajectory.timeseries(
+        ensemble.select_atoms(select), order="fac"
+    ).shape[0]
 
     rest_slices = ens_size // window_size
     residuals = ens_size % window_size
@@ -706,24 +770,30 @@ def prepare_ensembles_for_convergence_increasing_window(ensemble,
         slices_n.append(slices_n[-1] + window_size)
     slices_n.append(slices_n[-1] + residuals + window_size)
 
-    for s,sl in enumerate(slices_n[:-1]):
-        tmp_ensembles.append(mda.Universe(
-            ensemble.filename,
-            ensemble.trajectory.timeseries(order='fac')
-            [slices_n[s]:slices_n[s + 1], :, :],
-            format=MemoryReader))
+    for s, sl in enumerate(slices_n[:-1]):
+        tmp_ensembles.append(
+            mda.Universe(
+                ensemble.filename,
+                ensemble.trajectory.timeseries(order="fac")[
+                    slices_n[s] : slices_n[s + 1], :, :
+                ],
+                format=MemoryReader,
+            )
+        )
 
     return tmp_ensembles
 
 
-def hes(ensembles,
-        select="name CA",
-        cov_estimator="shrinkage",
-        weights='mass',
-        align=False,
-        estimate_error=False,
-        bootstrapping_samples=100,
-        calc_diagonal=False):
+def hes(
+    ensembles,
+    select="name CA",
+    cov_estimator="shrinkage",
+    weights="mass",
+    align=False,
+    estimate_error=False,
+    bootstrapping_samples=100,
+    calc_diagonal=False,
+):
     r"""Calculates the Harmonic Ensemble Similarity (HES) between ensembles.
 
     The HES is calculated with the symmetrized version of Kullback-Leibler
@@ -835,8 +905,11 @@ def hes(ensembles,
 
     """
 
-    if not isinstance(weights, (list, tuple, np.ndarray)) and weights == 'mass':
-        weights = ['mass' for _ in range(len(ensembles))]
+    if (
+        not isinstance(weights, (list, tuple, np.ndarray))
+        and weights == "mass"
+    ):
+        weights = ["mass" for _ in range(len(ensembles))]
     elif weights is not None:
         if len(weights) != len(ensembles):
             raise ValueError("need weights for every ensemble")
@@ -848,10 +921,9 @@ def hes(ensembles,
     # on the universe.
     if align:
         for e, w in zip(ensembles, weights):
-            mda.analysis.align.AlignTraj(e, ensembles[0],
-                                         select=select,
-                                         weights=w,
-                                         in_memory=True).run()
+            mda.analysis.align.AlignTraj(
+                e, ensembles[0], select=select, weights=w, in_memory=True
+            ).run()
     else:
         for ensemble in ensembles:
             ensemble.transfer_to_memory()
@@ -871,7 +943,8 @@ def hes(ensembles,
     else:
         logging.error(
             "Covariance estimator {0} is not supported. "
-            "Choose between 'shrinkage' and 'ml'.".format(cov_estimator))
+            "Choose between 'shrinkage' and 'ml'.".format(cov_estimator)
+        )
         return None
 
     out_matrix_eln = len(ensembles)
@@ -885,8 +958,9 @@ def hes(ensembles,
         for i, ensemble in enumerate(ensembles):
             ensembles_list.append(
                 get_ensemble_bootstrap_samples(
-                    ensemble,
-                    samples=bootstrapping_samples))
+                    ensemble, samples=bootstrapping_samples
+                )
+            )
         for t in range(bootstrapping_samples):
             logging.info("The coordinates will be bootstrapped.")
 
@@ -894,21 +968,30 @@ def hes(ensembles,
             sigmas = []
             values = np.zeros((out_matrix_eln, out_matrix_eln))
             for i, e_orig in enumerate(ensembles):
-                xs.append(np.average(
-                    ensembles_list[i][t].trajectory.timeseries(
-                        e_orig.select_atoms(select),
-                        order=('fac')),
-                    axis=0).flatten())
-                sigmas.append(covariance_matrix(ensembles_list[i][t],
-                                                weights=weights[i],
-                                                estimator=covariance_estimator,
-                                                select=select))
+                xs.append(
+                    np.average(
+                        ensembles_list[i][t].trajectory.timeseries(
+                            e_orig.select_atoms(select), order=("fac")
+                        ),
+                        axis=0,
+                    ).flatten()
+                )
+                sigmas.append(
+                    covariance_matrix(
+                        ensembles_list[i][t],
+                        weights=weights[i],
+                        estimator=covariance_estimator,
+                        select=select,
+                    )
+                )
 
             for pair in pairs_indices:
-                value = harmonic_ensemble_similarity(x1=xs[pair[0]],
-                                                     x2=xs[pair[1]],
-                                                     sigma1=sigmas[pair[0]],
-                                                     sigma2=sigmas[pair[1]])
+                value = harmonic_ensemble_similarity(
+                    x1=xs[pair[0]],
+                    x2=xs[pair[1]],
+                    sigma1=sigmas[pair[0]],
+                    sigma2=sigmas[pair[1]],
+                )
                 values[pair[0], pair[1]] = value
                 values[pair[1], pair[0]] = value
             data.append(values)
@@ -923,31 +1006,32 @@ def hes(ensembles,
 
     for e, w in zip(ensembles, weights):
         # Extract coordinates from each ensemble
-        coordinates_system = e.trajectory.timeseries(e.select_atoms(select),
-                                                     order='fac')
+        coordinates_system = e.trajectory.timeseries(
+            e.select_atoms(select), order="fac"
+        )
 
         # Average coordinates in each system
         xs.append(np.average(coordinates_system, axis=0).flatten())
 
         # Covariance matrices in each system
-        sigmas.append(covariance_matrix(e,
-                                        weights=w,
-                                        estimator=covariance_estimator,
-                                        select=select))
+        sigmas.append(
+            covariance_matrix(
+                e, weights=w, estimator=covariance_estimator, select=select
+            )
+        )
 
     for i, j in pairs_indices:
-        value = harmonic_ensemble_similarity(x1=xs[i],
-                                             x2=xs[j],
-                                             sigma1=sigmas[i],
-                                             sigma2=sigmas[j])
+        value = harmonic_ensemble_similarity(
+            x1=xs[i], x2=xs[j], sigma1=sigmas[i], sigma2=sigmas[j]
+        )
         values[i, j] = value
         values[j, i] = value
 
     # Save details as required
     details = {}
     for i in range(out_matrix_eln):
-        details['ensemble{0:d}_mean'.format(i + 1)] = xs[i]
-        details['ensemble{0:d}_covariance_matrix'.format(i + 1)] = sigmas[i]
+        details["ensemble{0:d}_mean".format(i + 1)] = xs[i]
+        details["ensemble{0:d}_covariance_matrix".format(i + 1)] = sigmas[i]
 
     return values, details
 
@@ -1099,39 +1183,42 @@ def ces(
         pairs_indices = list(trm_indices_nodiag(len(ensembles)))
 
     clustering_methods = clustering_method
-    if not hasattr(clustering_method, '__iter__'):
+    if not hasattr(clustering_method, "__iter__"):
         clustering_methods = [clustering_method]
 
-    any_method_accept_distance_matrix = \
-        np.any([method.accepts_distance_matrix for method in clustering_methods])
-    all_methods_accept_distance_matrix = \
-        np.all([method.accepts_distance_matrix for method in clustering_methods])
+    any_method_accept_distance_matrix = np.any(
+        [method.accepts_distance_matrix for method in clustering_methods]
+    )
+    all_methods_accept_distance_matrix = np.all(
+        [method.accepts_distance_matrix for method in clustering_methods]
+    )
 
     # Register which ensembles the samples belong to
     ensemble_assignment = []
     for i, ensemble in enumerate(ensembles):
-        ensemble_assignment += [i+1]*len(ensemble.trajectory)
+        ensemble_assignment += [i + 1] * len(ensemble.trajectory)
 
     # Calculate distance matrix if not provided
     if any_method_accept_distance_matrix and not distance_matrix:
-        distance_matrix = get_distance_matrix(merge_universes(ensembles),
-                                              select=select,
-                                              ncores=ncores)
+        distance_matrix = get_distance_matrix(
+            merge_universes(ensembles), select=select, ncores=ncores
+        )
     if estimate_error:
         if any_method_accept_distance_matrix:
-            distance_matrix = \
-                get_distance_matrix_bootstrap_samples(
-                    distance_matrix,
-                    ensemble_assignment,
-                    samples=bootstrapping_samples,
-                    ncores=ncores)
+            distance_matrix = get_distance_matrix_bootstrap_samples(
+                distance_matrix,
+                ensemble_assignment,
+                samples=bootstrapping_samples,
+                ncores=ncores,
+            )
         if not all_methods_accept_distance_matrix:
             ensembles_list = []
             for i, ensemble in enumerate(ensembles):
                 ensembles_list.append(
                     get_ensemble_bootstrap_samples(
-                        ensemble,
-                        samples=bootstrapping_samples))
+                        ensemble, samples=bootstrapping_samples
+                    )
+                )
             ensembles = []
             for j in range(bootstrapping_samples):
                 ensembles.append([])
@@ -1141,16 +1228,17 @@ def ces(
             # if all methods accept distances matrices, duplicate
             # ensemble so that it matches size of distance matrices
             # (no need to resample them since they will not be used)
-            ensembles = [ensembles]*bootstrapping_samples
-
+            ensembles = [ensembles] * bootstrapping_samples
 
     # Call clustering procedure
-    ccs = cluster(ensembles,
-                  method= clustering_methods,
-                  select=select,
-                  distance_matrix = distance_matrix,
-                  ncores = ncores,
-                  allow_collapsed_result=False)
+    ccs = cluster(
+        ensembles,
+        method=clustering_methods,
+        select=select,
+        distance_matrix=distance_matrix,
+        ncores=ncores,
+        allow_collapsed_result=False,
+    )
 
     # Do error analysis
     if estimate_error:
@@ -1166,20 +1254,20 @@ def ces(
                     failed_runs += 1
                     k += 1
                     continue
-                values[i].append(np.zeros((len(ensembles[j]),
-                                           len(ensembles[j]))))
+                values[i].append(
+                    np.zeros((len(ensembles[j]), len(ensembles[j])))
+                )
 
                 for pair in pairs_indices:
                     # Calculate dJS
-                    this_djs = \
-                        clustering_ensemble_similarity(ccs[k],
-                                                       ensembles[j][
-                                                           pair[0]],
-                                                       pair[0] + 1,
-                                                       ensembles[j][
-                                                           pair[1]],
-                                                       pair[1] + 1,
-                                                       select=select)
+                    this_djs = clustering_ensemble_similarity(
+                        ccs[k],
+                        ensembles[j][pair[0]],
+                        pair[0] + 1,
+                        ensembles[j][pair[1]],
+                        pair[1] + 1,
+                        select=select,
+                    )
                     values[i][-1][pair[0], pair[1]] = this_djs
                     values[i][-1][pair[1], pair[0]] = this_djs
                 k += 1
@@ -1187,7 +1275,7 @@ def ces(
             avgs.append(np.average(outs, axis=0))
             stds.append(np.std(outs, axis=0))
 
-        if hasattr(clustering_method, '__iter__'):
+        if hasattr(clustering_method, "__iter__"):
             pass
         else:
             avgs = avgs[0]
@@ -1205,19 +1293,20 @@ def ces(
 
             for pair in pairs_indices:
                 # Calculate dJS
-                this_val = \
-                    clustering_ensemble_similarity(ccs[i],
-                                                   ensembles[pair[0]],
-                                                   pair[0] + 1,
-                                                   ensembles[pair[1]],
-                                                   pair[1] + 1,
-                                                   select=select)
+                this_val = clustering_ensemble_similarity(
+                    ccs[i],
+                    ensembles[pair[0]],
+                    pair[0] + 1,
+                    ensembles[pair[1]],
+                    pair[1] + 1,
+                    select=select,
+                )
                 values[-1][pair[0], pair[1]] = this_val
                 values[-1][pair[1], pair[0]] = this_val
 
-    details['clustering'] = ccs
+    details["clustering"] = ccs
 
-    if allow_collapsed_result and not hasattr(clustering_method, '__iter__'):
+    if allow_collapsed_result and not hasattr(clustering_method, "__iter__"):
         values = values[0]
 
     return values, details
@@ -1374,43 +1463,54 @@ def dres(
         pairs_indices = list(trm_indices_nodiag(len(ensembles)))
 
     dimensionality_reduction_methods = dimensionality_reduction_method
-    if not hasattr(dimensionality_reduction_method, '__iter__'):
+    if not hasattr(dimensionality_reduction_method, "__iter__"):
         dimensionality_reduction_methods = [dimensionality_reduction_method]
 
-    any_method_accept_distance_matrix = \
-        np.any([method.accepts_distance_matrix for method in dimensionality_reduction_methods])
-    all_methods_accept_distance_matrix = \
-        np.all([method.accepts_distance_matrix for method in dimensionality_reduction_methods])
+    any_method_accept_distance_matrix = np.any(
+        [
+            method.accepts_distance_matrix
+            for method in dimensionality_reduction_methods
+        ]
+    )
+    all_methods_accept_distance_matrix = np.all(
+        [
+            method.accepts_distance_matrix
+            for method in dimensionality_reduction_methods
+        ]
+    )
 
     # Register which ensembles the samples belong to
     ensemble_assignment = []
     for i, ensemble in enumerate(ensembles):
-        ensemble_assignment += [i+1]*len(ensemble.trajectory)
+        ensemble_assignment += [i + 1] * len(ensemble.trajectory)
 
     # Calculate distance matrix if not provided
     if any_method_accept_distance_matrix and not distance_matrix:
-        distance_matrix = get_distance_matrix(merge_universes(ensembles),
-                                              select=select,
-                                              ncores=ncores)
+        distance_matrix = get_distance_matrix(
+            merge_universes(ensembles), select=select, ncores=ncores
+        )
     if estimate_error:
         if any_method_accept_distance_matrix:
-            distance_matrix = \
-                get_distance_matrix_bootstrap_samples(
-                    distance_matrix,
-                    ensemble_assignment,
-                    samples=bootstrapping_samples,
-                    ncores=ncores)
+            distance_matrix = get_distance_matrix_bootstrap_samples(
+                distance_matrix,
+                ensemble_assignment,
+                samples=bootstrapping_samples,
+                ncores=ncores,
+            )
         if not all_methods_accept_distance_matrix:
             ensembles_list = []
             for i, ensemble in enumerate(ensembles):
                 ensembles_list.append(
                     get_ensemble_bootstrap_samples(
-                        ensemble,
-                        samples=bootstrapping_samples))
+                        ensemble, samples=bootstrapping_samples
+                    )
+                )
             ensembles = []
             for j in range(bootstrapping_samples):
-                ensembles.append(ensembles_list[i, j] for i
-                                 in range(ensembles_list.shape[0]))
+                ensembles.append(
+                    ensembles_list[i, j]
+                    for i in range(ensembles_list.shape[0])
+                )
         else:
             # if all methods accept distances matrices, duplicate
             # ensemble so that it matches size of distance matrices
@@ -1422,9 +1522,10 @@ def dres(
         ensembles,
         method=dimensionality_reduction_methods,
         select=select,
-        distance_matrix = distance_matrix,
-        ncores = ncores,
-        allow_collapsed_result = False)
+        distance_matrix=distance_matrix,
+        ncores=ncores,
+        allow_collapsed_result=False,
+    )
 
     details = {}
     details["reduced_coordinates"] = coordinates
@@ -1435,24 +1536,28 @@ def dres(
         values = {}
         avgs = []
         stds = []
-        for i,method in enumerate(dimensionality_reduction_methods):
+        for i, method in enumerate(dimensionality_reduction_methods):
             values[i] = []
             for j in range(bootstrapping_samples):
 
-                values[i].append(np.zeros((len(ensembles[j]),
-                                           len(ensembles[j]))))
+                values[i].append(
+                    np.zeros((len(ensembles[j]), len(ensembles[j])))
+                )
 
                 kdes, resamples, embedded_ensembles = gen_kde_pdfs(
                     coordinates[k],
                     ensemble_assignment,
                     len(ensembles[j]),
-                    nsamples=nsamples)
+                    nsamples=nsamples,
+                )
 
                 for pair in pairs_indices:
-                    this_value = dimred_ensemble_similarity(kdes[pair[0]],
-                                                            resamples[pair[0]],
-                                                            kdes[pair[1]],
-                                                            resamples[pair[1]])
+                    this_value = dimred_ensemble_similarity(
+                        kdes[pair[0]],
+                        resamples[pair[0]],
+                        kdes[pair[1]],
+                        resamples[pair[1]],
+                    )
                     values[i][-1][pair[0], pair[1]] = this_value
                     values[i][-1][pair[1], pair[0]] = this_value
 
@@ -1461,7 +1566,7 @@ def dres(
             avgs.append(np.average(outs, axis=0))
             stds.append(np.std(outs, axis=0))
 
-        if hasattr(dimensionality_reduction_method, '__iter__'):
+        if hasattr(dimensionality_reduction_method, "__iter__"):
             pass
         else:
             avgs = avgs[0]
@@ -1471,24 +1576,29 @@ def dres(
 
     values = []
 
-    for i,method in enumerate(dimensionality_reduction_methods):
+    for i, method in enumerate(dimensionality_reduction_methods):
 
         values.append(np.zeros((len(ensembles), len(ensembles))))
-        kdes, resamples, embedded_ensembles = gen_kde_pdfs(coordinates[i],
-                                                           ensemble_assignment,
-                                                           len(ensembles),
-                                                           nsamples=nsamples)
+        kdes, resamples, embedded_ensembles = gen_kde_pdfs(
+            coordinates[i],
+            ensemble_assignment,
+            len(ensembles),
+            nsamples=nsamples,
+        )
 
         for pair in pairs_indices:
-            this_value = dimred_ensemble_similarity(kdes[pair[0]],
-                                                    resamples[pair[0]],
-                                                    kdes[pair[1]],
-                                                    resamples[pair[1]])
+            this_value = dimred_ensemble_similarity(
+                kdes[pair[0]],
+                resamples[pair[0]],
+                kdes[pair[1]],
+                resamples[pair[1]],
+            )
             values[-1][pair[0], pair[1]] = this_value
             values[-1][pair[1], pair[0]] = this_value
 
-    if allow_collapsed_result and not hasattr(dimensionality_reduction_method,
-                                              '__iter__'):
+    if allow_collapsed_result and not hasattr(
+        dimensionality_reduction_method, "__iter__"
+    ):
         values = values[0]
 
     return values, details
@@ -1576,13 +1686,16 @@ def ces_convergence(
         )
 
     ensembles = prepare_ensembles_for_convergence_increasing_window(
-        original_ensemble, window_size, select=select)
+        original_ensemble, window_size, select=select
+    )
 
-    ccs = cluster(ensembles,
-                  select=select,
-                  method=clustering_method,
-                  allow_collapsed_result=False,
-                  ncores=ncores)
+    ccs = cluster(
+        ensembles,
+        select=select,
+        method=clustering_method,
+        allow_collapsed_result=False,
+        ncores=ncores,
+    )
 
     out = []
     for cc in ccs:
@@ -1591,9 +1704,8 @@ def ces_convergence(
         out.append(np.zeros(len(ensembles)))
         for j, ensemble in enumerate(ensembles):
             out[-1][j] = cumulative_clustering_ensemble_similarity(
-                cc,
-                len(ensembles),
-                j + 1)
+                cc, len(ensembles), j + 1
+            )
 
     out = np.array(out).T
     return out
@@ -1680,19 +1792,20 @@ def dres_convergence(
         )
 
     ensembles = prepare_ensembles_for_convergence_increasing_window(
-        original_ensemble, window_size, select=select)
+        original_ensemble, window_size, select=select
+    )
 
-    coordinates, dimred_details = \
-        reduce_dimensionality(
-            ensembles,
-            select=select,
-            method=dimensionality_reduction_method,
-            allow_collapsed_result=False,
-            ncores=ncores)
+    coordinates, dimred_details = reduce_dimensionality(
+        ensembles,
+        select=select,
+        method=dimensionality_reduction_method,
+        allow_collapsed_result=False,
+        ncores=ncores,
+    )
 
     ensemble_assignment = []
     for i, ensemble in enumerate(ensembles):
-        ensemble_assignment += [i+1]*len(ensemble.trajectory)
+        ensemble_assignment += [i + 1] * len(ensemble.trajectory)
     ensemble_assignment = np.array(ensemble_assignment)
 
     out = []
@@ -1700,18 +1813,17 @@ def dres_convergence(
 
         out.append(np.zeros(len(ensembles)))
 
-        kdes, resamples, embedded_ensembles = \
-            cumulative_gen_kde_pdfs(
-                coordinates[i],
-                ensemble_assignment=ensemble_assignment,
-                nensembles=len(ensembles),
-                nsamples=nsamples)
+        kdes, resamples, embedded_ensembles = cumulative_gen_kde_pdfs(
+            coordinates[i],
+            ensemble_assignment=ensemble_assignment,
+            nensembles=len(ensembles),
+            nsamples=nsamples,
+        )
 
         for j, ensemble in enumerate(ensembles):
-            out[-1][j] = dimred_ensemble_similarity(kdes[-1],
-                                                    resamples[-1],
-                                                    kdes[j],
-                                                    resamples[j])
+            out[-1][j] = dimred_ensemble_similarity(
+                kdes[-1], resamples[-1], kdes[j], resamples[j]
+            )
 
     out = np.array(out).T
     return out

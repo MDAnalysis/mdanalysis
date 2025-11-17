@@ -235,16 +235,27 @@ class DistanceMatrix(AnalysisBase):
          :class:`DistanceMatrix` is now correctly works with `frames=...`
          parameter (#4432) by iterating over `self._sliced_trajectory`
     """
-    def __init__(self, universe, select='all', metric=rmsd, cutoff=1E0-5,
-                 weights=None, **kwargs):
+
+    def __init__(
+        self,
+        universe,
+        select="all",
+        metric=rmsd,
+        cutoff=1e0 - 5,
+        weights=None,
+        **kwargs,
+    ):
         # remember that this must be called before referencing self.n_frames
-        super(DistanceMatrix, self).__init__(universe.universe.trajectory,
-                                             **kwargs)
+        super(DistanceMatrix, self).__init__(
+            universe.universe.trajectory, **kwargs
+        )
 
         if isinstance(universe, UpdatingAtomGroup):
-            wmsg = ("U must be a static AtomGroup. Parsing an updating AtomGroup "
-                    "will result in a static AtomGroup with the current frame "
-                    "atom selection.")
+            wmsg = (
+                "U must be a static AtomGroup. Parsing an updating AtomGroup "
+                "will result in a static AtomGroup with the current frame "
+                "atom selection."
+            )
             warnings.warn(wmsg)
 
         self.atoms = universe.select_atoms(select)
@@ -266,20 +277,23 @@ class DistanceMatrix(AnalysisBase):
             self._ts = ts
             j_ref = self.atoms.positions
             dist = self._metric(i_ref, j_ref, weights=self._weights)
-            self.results.dist_matrix[self._frame_index,
-                                     j+self._frame_index] = (
-                                            dist if dist > self._cutoff else 0)
-            self.results.dist_matrix[j+self._frame_index,
-                                     self._frame_index] = (
-                                self.results.dist_matrix[self._frame_index,
-                                                         j+self._frame_index])
+            self.results.dist_matrix[
+                self._frame_index, j + self._frame_index
+            ] = (dist if dist > self._cutoff else 0)
+            self.results.dist_matrix[
+                j + self._frame_index, self._frame_index
+            ] = self.results.dist_matrix[
+                self._frame_index, j + self._frame_index
+            ]
         self._ts = self._sliced_trajectory[iframe]
 
     @property
     def dist_matrix(self):
-        wmsg = ("The `dist_matrix` attribute was deprecated in "
-                "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
-                "Please use `results.dist_matrix` instead.")
+        wmsg = (
+            "The `dist_matrix` attribute was deprecated in "
+            "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
+            "Please use `results.dist_matrix` instead."
+        )
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.dist_matrix
 
@@ -334,12 +348,14 @@ class DiffusionMap(object):
         elif isinstance(u, DistanceMatrix):
             self._dist_matrix = u
         else:
-            raise ValueError("U is not a Universe or AtomGroup or DistanceMatrix and"
-                             " so the DiffusionMap has no data to work with.")
+            raise ValueError(
+                "U is not a Universe or AtomGroup or DistanceMatrix and"
+                " so the DiffusionMap has no data to work with."
+            )
         self._epsilon = epsilon
 
     def run(self, start=None, stop=None, step=None):
-        """ Create and decompose the diffusion matrix in preparation
+        """Create and decompose the diffusion matrix in preparation
         for a diffusion map.
 
         Parameters
@@ -360,11 +376,14 @@ class DiffusionMap(object):
         # important for transform function and length of .run() method
         self._n_frames = self._dist_matrix.n_frames
         if self._n_frames > 5000:
-            warnings.warn("The distance matrix is very large, and can "
-                          "be very slow to compute. Consider picking a larger "
-                          "step size in distance matrix initialization.")
-        self._scaled_matrix = (self._dist_matrix.results.dist_matrix ** 2 /
-                               self._epsilon)
+            warnings.warn(
+                "The distance matrix is very large, and can "
+                "be very slow to compute. Consider picking a larger "
+                "step size in distance matrix initialization."
+            )
+        self._scaled_matrix = (
+            self._dist_matrix.results.dist_matrix**2 / self._epsilon
+        )
         # take negative exponent of scaled matrix to create Isotropic kernel
         self._kernel = np.exp(-self._scaled_matrix)
         D_inv = np.diag(1 / self._kernel.sum(1))
@@ -377,7 +396,7 @@ class DiffusionMap(object):
         return self
 
     def transform(self, n_eigenvectors, time):
-        """ Embeds a trajectory via the diffusion map
+        """Embeds a trajectory via the diffusion map
 
         Parameters
         ---------
@@ -392,5 +411,6 @@ class DiffusionMap(object):
         diffusion_space : array (n_frames, n_eigenvectors)
             The diffusion map embedding as defined by :footcite:p:`Ferguson2011`.
         """
-        return (self._eigenvectors[1:n_eigenvectors+1,].T *
-                (self.eigenvalues[1:n_eigenvectors+1]**time))
+        return self._eigenvectors[1 : n_eigenvectors + 1,].T * (
+            self.eigenvalues[1 : n_eigenvectors + 1] ** time
+        )

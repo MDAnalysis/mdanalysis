@@ -52,8 +52,7 @@ def test_index(res):
 
 
 def test_atom_order(res):
-    assert_equal(res.atoms.indices,
-                 sorted(res.atoms.indices))
+    assert_equal(res.atoms.indices, sorted(res.atoms.indices))
 
 
 def test_residue_pickle(res):

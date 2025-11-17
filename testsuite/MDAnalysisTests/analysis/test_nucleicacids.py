@@ -27,15 +27,19 @@ import pytest
 
 from pytest import approx
 
-from MDAnalysis.analysis.nucleicacids import (NucPairDist, WatsonCrickDist,
-                                              MajorPairDist, MinorPairDist)
+from MDAnalysis.analysis.nucleicacids import (
+    NucPairDist,
+    WatsonCrickDist,
+    MajorPairDist,
+    MinorPairDist,
+)
 
 from MDAnalysisTests.datafiles import RNA_PSF, RNA_PDB
 
 from MDAnalysis.core.groups import ResidueGroup
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def u():
     return mda.Universe(RNA_PSF, RNA_PDB)
 
@@ -51,10 +55,10 @@ def test_empty_ag_error(strand):
     strand2 = ResidueGroup([strand.residues[1]])
 
     with pytest.raises(ValueError, match="returns an empty AtomGroup"):
-        NucPairDist.select_strand_atoms(strand1, strand2, 'UNK1', 'O2')
+        NucPairDist.select_strand_atoms(strand1, strand2, "UNK1", "O2")
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def wc_rna(strand, client_NucPairDist):
     strand1 = ResidueGroup([strand.residues[0], strand.residues[21]])
     strand2 = ResidueGroup([strand.residues[1], strand.residues[22]])

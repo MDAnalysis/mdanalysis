@@ -24,8 +24,12 @@ import pickle
 
 import numpy as np
 
-from numpy.testing import (assert_almost_equal, assert_array_almost_equal,
-                           assert_array_equal, assert_equal)
+from numpy.testing import (
+    assert_almost_equal,
+    assert_array_almost_equal,
+    assert_array_equal,
+    assert_equal,
+)
 
 from MDAnalysis.lib.formats.libmdaxdr import TRRFile, XTCFile
 
@@ -49,9 +53,11 @@ def trr():
         yield f
 
 
-@pytest.mark.parametrize('fname, xdr', ((XTC_multi_frame, XTCFile),
-                                        (TRR_multi_frame, TRRFile)),
-                         indirect=True)
+@pytest.mark.parametrize(
+    "fname, xdr",
+    ((XTC_multi_frame, XTCFile), (TRR_multi_frame, TRRFile)),
+    indirect=True,
+)
 class TestCommonAPI(object):
     @staticmethod
     @pytest.fixture
@@ -115,15 +121,15 @@ class TestCommonAPI(object):
 
     def test_raise_not_existing(self, xdr, fname):
         with pytest.raises(IOError):
-            xdr('foo')
+            xdr("foo")
 
     def test_open_wrong_mode(self, xdr, fname):
         with pytest.raises(IOError):
-            xdr('foo', 'e')
+            xdr("foo", "e")
 
     def test_read_write_mode_file(self, xdr, tmpdir, fname):
-        fname = str(tmpdir.join('foo'))
-        with xdr(fname, 'w') as f:
+        fname = str(tmpdir.join("foo"))
+        with xdr(fname, "w") as f:
             with pytest.raises(IOError):
                 f.read()
 
@@ -174,11 +180,14 @@ class TestCommonAPI(object):
         assert reader.tell() == new_reader.tell()
 
 
-
-@pytest.mark.parametrize("xdrfile, fname, offsets",
-                         ((XTCFile, XTC_multi_frame, XTC_OFFSETS),
-                          (TRRFile, TRR_multi_frame, TRR_OFFSETS)),
-                         indirect=True)
+@pytest.mark.parametrize(
+    "xdrfile, fname, offsets",
+    (
+        (XTCFile, XTC_multi_frame, XTC_OFFSETS),
+        (TRRFile, TRR_multi_frame, TRR_OFFSETS),
+    ),
+    indirect=True,
+)
 class TestOffsets(object):
     @staticmethod
     @pytest.fixture
@@ -239,20 +248,22 @@ class TestOffsets(object):
         assert reader._bytes_tell() == big_offset
 
 
-@pytest.mark.parametrize("xdrfile, fname", ((XTCFile, XTC_multi_frame),
-                                            (TRRFile, TRR_multi_frame)))
+@pytest.mark.parametrize(
+    "xdrfile, fname", ((XTCFile, XTC_multi_frame), (TRRFile, TRR_multi_frame))
+)
 def test_steps(xdrfile, fname):
     with xdrfile(fname) as f:
         for i, frame in enumerate(f):
             assert frame.step == i
 
 
-@pytest.mark.parametrize("xdrfile, fname", ((XTCFile, XTC_multi_frame),
-                                            (TRRFile, TRR_multi_frame)))
+@pytest.mark.parametrize(
+    "xdrfile, fname", ((XTCFile, XTC_multi_frame), (TRRFile, TRR_multi_frame))
+)
 def test_time(xdrfile, fname):
     with xdrfile(fname) as f:
         for i, frame in enumerate(f):
-            assert frame.time == i * .5
+            assert frame.time == i * 0.5
 
 
 def test_box_xtc(xtc):
@@ -293,13 +304,13 @@ def test_forces_trr(trr):
 
 def test_lmbda_trr(trr):
     for i, frame in enumerate(trr):
-        assert_almost_equal(frame.lmbda, .01 * i)
+        assert_almost_equal(frame.lmbda, 0.01 * i)
 
 
 @pytest.fixture
 def written_xtc(tmpdir, xtc):
     fname = str(tmpdir.join("foo.xtc"))
-    with XTCFile(fname, 'w') as f:
+    with XTCFile(fname, "w") as f:
         for frame in xtc:
             f.write(*frame)
     with XTCFile(fname) as f:
@@ -313,7 +324,7 @@ def test_written_step_xtc(written_xtc):
 
 def test_written_time_xtc(written_xtc):
     for i, frame in enumerate(written_xtc):
-        assert frame.time == i * .5
+        assert frame.time == i * 0.5
 
 
 def test_written_prec_xtc(written_xtc):
@@ -334,10 +345,11 @@ def test_written_xyx_xtc(written_xtc):
 
 
 @pytest.mark.parametrize(
-    'dtype', (np.int32, np.int64, np.float32, np.float64, int, float))
+    "dtype", (np.int32, np.int64, np.float32, np.float64, int, float)
+)
 def test_write_xtc_dtype(tmpdir, dtype, xtc):
     fname = str(tmpdir.join("foo.xtc"))
-    with XTCFile(fname, 'w') as f:
+    with XTCFile(fname, "w") as f:
         for frame in xtc:
             x = frame.x.astype(dtype)
             box = frame.box.astype(dtype)
@@ -346,13 +358,14 @@ def test_write_xtc_dtype(tmpdir, dtype, xtc):
                 box=box,
                 step=frame.step,
                 time=frame.time,
-                precision=frame.prec)
+                precision=frame.prec,
+            )
 
 
-@pytest.mark.parametrize('array_like', (np.array, list))
+@pytest.mark.parametrize("array_like", (np.array, list))
 def test_write_xtc_array_like(tmpdir, array_like, xtc):
     fname = str(tmpdir.join("foo.xtc"))
-    with XTCFile(fname, 'w') as f:
+    with XTCFile(fname, "w") as f:
         for frame in xtc:
             x = array_like(frame.x)
             box = array_like(frame.box)
@@ -361,12 +374,13 @@ def test_write_xtc_array_like(tmpdir, array_like, xtc):
                 box=box,
                 step=frame.step,
                 time=frame.time,
-                precision=frame.prec)
+                precision=frame.prec,
+            )
 
 
 def test_write_prec(tmpdir, xtc):
-    outname = str(tmpdir.join('foo.xtc'))
-    with XTCFile(outname, 'w') as f_out:
+    outname = str(tmpdir.join("foo.xtc"))
+    with XTCFile(outname, "w") as f_out:
         assert f_out.n_atoms == 0
         frame = xtc.read()
         f_out.write(frame.x, frame.box, frame.step, frame.time, 100.0)
@@ -377,11 +391,10 @@ def test_write_prec(tmpdir, xtc):
 
 
 def test_different_box_xtc(tmpdir, xtc):
-    """test if we can write different box-sizes for different frames.
-    """
+    """test if we can write different box-sizes for different frames."""
     orig_box = None
-    fname = str(tmpdir.join('foo.xtc'))
-    with XTCFile(fname, 'w') as f_out:
+    fname = str(tmpdir.join("foo.xtc"))
+    with XTCFile(fname, "w") as f_out:
         assert f_out.n_atoms == 0
         frame = xtc.read()
         f_out.write(frame.x, frame.box, frame.step, frame.time, frame.prec)
@@ -398,8 +411,8 @@ def test_different_box_xtc(tmpdir, xtc):
 
 
 def test_write_different_x_xtc(tmpdir, xtc):
-    outname = str(tmpdir.join('foo.xtc'))
-    with XTCFile(outname, 'w') as f_out:
+    outname = str(tmpdir.join("foo.xtc"))
+    with XTCFile(outname, "w") as f_out:
         assert f_out.n_atoms == 0
         frame = xtc.read()
         f_out.write(frame.x, frame.box, frame.step, frame.time, frame.prec)
@@ -409,8 +422,8 @@ def test_write_different_x_xtc(tmpdir, xtc):
 
 
 def test_write_different_prec(tmpdir, xtc):
-    outname = str(tmpdir.join('foo.xtc'))
-    with XTCFile(outname, 'w') as f_out:
+    outname = str(tmpdir.join("foo.xtc"))
+    with XTCFile(outname, "w") as f_out:
         assert f_out.n_atoms == 0
         frame = xtc.read()
         f_out.write(frame.x, frame.box, frame.step, frame.time, frame.prec)
@@ -421,11 +434,19 @@ def test_write_different_prec(tmpdir, xtc):
 @pytest.fixture
 def written_trr(tmpdir, trr):
     fname = str(tmpdir.join("foo.trr"))
-    with TRRFile(fname, 'w') as f:
+    with TRRFile(fname, "w") as f:
         for frame in trr:
             natoms = frame.x.shape[0]
-            f.write(frame.x, frame.v, frame.f, frame.box, frame.step,
-                    frame.time, frame.lmbda, natoms)
+            f.write(
+                frame.x,
+                frame.v,
+                frame.f,
+                frame.box,
+                frame.step,
+                frame.time,
+                frame.lmbda,
+                natoms,
+            )
     with TRRFile(fname) as f:
         yield f
 
@@ -437,7 +458,7 @@ def test_written_step_trr(written_trr):
 
 def test_written_time_trr(written_trr):
     for i, frame in enumerate(written_trr):
-        assert frame.time == i * .5
+        assert frame.time == i * 0.5
 
 
 def test_written_box_trr(written_trr):
@@ -465,49 +486,67 @@ def test_written_forces_trr(written_trr):
 
 
 @pytest.mark.parametrize(
-    'dtype', (np.int32, np.int64, np.float32, np.float64, int, float))
+    "dtype", (np.int32, np.int64, np.float32, np.float64, int, float)
+)
 def test_write_trr_dtype(tmpdir, dtype, trr):
     fname = str(tmpdir.join("foo.trr"))
-    with TRRFile(fname, 'w') as fout:
+    with TRRFile(fname, "w") as fout:
         for frame in trr:
             natoms = frame.x.shape[0]
             x = frame.x.astype(dtype)
             v = frame.v.astype(dtype)
             f = frame.f.astype(dtype)
             box = frame.box.astype(dtype)
-            fout.write(x, v, f, box, frame.step, frame.time, frame.lmbda,
-                       natoms)
+            fout.write(
+                x, v, f, box, frame.step, frame.time, frame.lmbda, natoms
+            )
 
 
-@pytest.mark.parametrize('array_like', (np.array, list))
+@pytest.mark.parametrize("array_like", (np.array, list))
 def test_write_trr_array_like(tmpdir, array_like, trr):
     fname = str(tmpdir.join("foo.trr"))
-    with TRRFile(fname, 'w') as fout:
+    with TRRFile(fname, "w") as fout:
         for frame in trr:
             natoms = frame.x.shape[0]
             x = array_like(frame.x)
             v = array_like(frame.v)
             f = array_like(frame.f)
             box = array_like(frame.box)
-            fout.write(x, v, f, box, frame.step, frame.time, frame.lmbda,
-                       natoms)
+            fout.write(
+                x, v, f, box, frame.step, frame.time, frame.lmbda, natoms
+            )
 
 
 def test_write_different_box_trr(tmpdir, trr):
-    """test if we can write different box-sizes for different frames.
-    """
+    """test if we can write different box-sizes for different frames."""
     orig_box = None
-    fname = str(tmpdir.join('foo.trr'))
-    with TRRFile(fname, 'w') as f_out:
+    fname = str(tmpdir.join("foo.trr"))
+    with TRRFile(fname, "w") as f_out:
         assert f_out.n_atoms == 0
         frame = trr.read()
         natoms = frame.x.shape[0]
-        f_out.write(frame.x, frame.v, frame.f, frame.box, frame.step,
-                    frame.time, frame.lmbda, natoms)
+        f_out.write(
+            frame.x,
+            frame.v,
+            frame.f,
+            frame.box,
+            frame.step,
+            frame.time,
+            frame.lmbda,
+            natoms,
+        )
         orig_box = frame.box.copy()
         box = frame.box.copy() + 1
-        f_out.write(frame.x, frame.v, frame.f, box, frame.step, frame.time,
-                    frame.lmbda, natoms)
+        f_out.write(
+            frame.x,
+            frame.v,
+            frame.f,
+            box,
+            frame.step,
+            frame.time,
+            frame.lmbda,
+            natoms,
+        )
 
     with TRRFile(fname) as trr:
         assert len(trr) == 2
@@ -519,13 +558,21 @@ def test_write_different_box_trr(tmpdir, trr):
 
 @pytest.fixture
 def trr_writer(tmpdir, trr):
-    outname = str(tmpdir.join('foo.trr'))
-    with TRRFile(outname, 'w') as f_out:
+    outname = str(tmpdir.join("foo.trr"))
+    with TRRFile(outname, "w") as f_out:
         assert f_out.n_atoms == 0
         frame = trr.read()
         natoms = frame.x.shape[0]
-        f_out.write(frame.x, frame.v, frame.f, frame.box, frame.step,
-                    frame.time, frame.lmbda, natoms)
+        f_out.write(
+            frame.x,
+            frame.v,
+            frame.f,
+            frame.box,
+            frame.step,
+            frame.time,
+            frame.lmbda,
+            natoms,
+        )
         yield frame, f_out
 
 
@@ -533,8 +580,16 @@ def test_write_different_natoms(trr_writer):
     frame, writer = trr_writer
     natoms = frame.x.shape[0]
     with pytest.raises(IOError):
-        writer.write(frame.x, frame.v, frame.f, frame.box, frame.step,
-                     frame.time, frame.lmbda, natoms - 1)
+        writer.write(
+            frame.x,
+            frame.v,
+            frame.f,
+            frame.box,
+            frame.step,
+            frame.time,
+            frame.lmbda,
+            natoms - 1,
+        )
 
 
 def test_write_different_x_trr(trr_writer):
@@ -542,8 +597,16 @@ def test_write_different_x_trr(trr_writer):
     natoms = frame.x.shape[0]
     x = np.ones((natoms - 1, 3))
     with pytest.raises(IOError):
-        writer.write(x, frame.v, frame.f, frame.box, frame.step, frame.time,
-                     frame.lmbda, natoms)
+        writer.write(
+            x,
+            frame.v,
+            frame.f,
+            frame.box,
+            frame.step,
+            frame.time,
+            frame.lmbda,
+            natoms,
+        )
 
 
 def test_write_different_v(trr_writer):
@@ -551,8 +614,16 @@ def test_write_different_v(trr_writer):
     natoms = frame.x.shape[0]
     v = np.ones((natoms - 1, 3))
     with pytest.raises(IOError):
-        writer.write(frame.x, v, frame.f, frame.box, frame.step, frame.time,
-                     frame.lmbda, natoms)
+        writer.write(
+            frame.x,
+            v,
+            frame.f,
+            frame.box,
+            frame.step,
+            frame.time,
+            frame.lmbda,
+            natoms,
+        )
 
 
 def test_write_different_f(trr_writer):
@@ -560,5 +631,13 @@ def test_write_different_f(trr_writer):
     natoms = frame.x.shape[0]
     f = np.ones((natoms - 1, 3))
     with pytest.raises(IOError):
-        writer.write(frame.x, frame.v, f, frame.box, frame.step, frame.time,
-                     frame.lmbda, natoms)
+        writer.write(
+            frame.x,
+            frame.v,
+            f,
+            frame.box,
+            frame.step,
+            frame.time,
+            frame.lmbda,
+            natoms,
+        )

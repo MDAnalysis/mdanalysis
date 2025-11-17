@@ -49,26 +49,36 @@ import MDAnalysis as mda
 class TestWinLammpsDump(TestLammpsDumpReader):
     @pytest.fixture
     def u(self):
-        return mda.Universe(WIN_LAMMPSDUMP, format='LAMMPSDUMP')
+        return mda.Universe(WIN_LAMMPSDUMP, format="LAMMPSDUMP")
 
 
 class TestWinPDB(object):
     @staticmethod
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def multiverse():
         return mda.Universe(WIN_PDB_multiframe, guess_bonds=True)
 
     def test_n_frames(self, multiverse):
-        assert_equal(multiverse.trajectory.n_frames, 24,
-                     "Wrong number of frames read from PDB muliple model file")
+        assert_equal(
+            multiverse.trajectory.n_frames,
+            24,
+            "Wrong number of frames read from PDB muliple model file",
+        )
+
     def test_rewind(self, multiverse):
         u = multiverse
         u.trajectory[11]
-        assert_equal(u.trajectory.ts.frame, 11,
-                     "Failed to forward to 11th frame (frame index 11)")
+        assert_equal(
+            u.trajectory.ts.frame,
+            11,
+            "Failed to forward to 11th frame (frame index 11)",
+        )
         u.trajectory.rewind()
-        assert_equal(u.trajectory.ts.frame, 0,
-                     "Failed to rewind to 0th frame (frame index 0)")
+        assert_equal(
+            u.trajectory.ts.frame,
+            0,
+            "Failed to rewind to 0th frame (frame index 0)",
+        )
 
     def test_iteration(self, multiverse):
         u = multiverse
@@ -80,19 +90,23 @@ class TestWinPDB(object):
         for ts in u.trajectory:
             frames.append(ts)
         assert_equal(
-            len(frames), u.trajectory.n_frames,
+            len(frames),
+            u.trajectory.n_frames,
             "iterated number of frames %d is not the expected number %d; "
-            "trajectory iterator fails to rewind" %
-            (len(frames), u.trajectory.n_frames))
+            "trajectory iterator fails to rewind"
+            % (len(frames), u.trajectory.n_frames),
+        )
 
     def test_slice_iteration(self, multiverse):
         u = multiverse
         frames = []
         for ts in u.trajectory[4:-2:4]:
             frames.append(ts.frame)
-        assert_equal(np.array(frames),
-                     np.arange(u.trajectory.n_frames)[4:-2:4],
-                     err_msg="slicing did not produce the expected frames")
+        assert_equal(
+            np.array(frames),
+            np.arange(u.trajectory.n_frames)[4:-2:4],
+            err_msg="slicing did not produce the expected frames",
+        )
 
 
 class TestWinDLPolyHistory(TestDLPolyHistory):
@@ -113,11 +127,13 @@ class TestWinARC(object):
         assert len(WIN_ARC_U.trajectory) == 2
 
     def test_positions(self, WIN_ARC_U):
-        assert_almost_equal(WIN_ARC_U.atoms.positions[0],
-                            [-6.553398, -1.854369, 0.000000])
+        assert_almost_equal(
+            WIN_ARC_U.atoms.positions[0], [-6.553398, -1.854369, 0.000000]
+        )
 
     def test_positions_2(self, WIN_ARC_U):
         WIN_ARC_U.trajectory[1]
 
-        assert_almost_equal(WIN_ARC_U.atoms.positions[0],
-                            [-0.231579, -0.350841, -0.037475])
+        assert_almost_equal(
+            WIN_ARC_U.atoms.positions[0], [-0.231579, -0.350841, -0.037475]
+        )
