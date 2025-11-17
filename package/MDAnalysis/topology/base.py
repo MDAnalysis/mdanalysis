@@ -121,8 +121,8 @@ class TopologyReaderBase(IOBase, metaclass=_Topologymeta):
        Added keyword 'universe' to pass to Atom creation.
     """
 
-    def __init__(self, filename):
-         self.filename = filename # To cover remaining cases
+    def __init__(self, filename):  
+       self.filename = filename # To cover remaining cases
 
 
     def parse(self, **kwargs):  # pragma: no cover
