@@ -122,7 +122,14 @@ class TopologyReaderBase(IOBase, metaclass=_Topologymeta):
     """
 
     def __init__(self, filename):  
-        self.filename = filename # To cover remaining cases
+        if isinstance(filename, util.NamedStream):
+            self.filename = filename
+
+        elif isinstance(filename, (str, bytes, os.PathLike)):
+            self.filename = os.fspath(filename)
+
+        else:
+            self.filename = filename
 
 
     def parse(self, **kwargs):  # pragma: no cover
