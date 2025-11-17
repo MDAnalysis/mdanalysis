@@ -41,6 +41,7 @@ from functools import reduce
 import itertools
 import numpy as np
 import warnings
+import os
 
 from .. import _PARSERS, _PARSER_HINTS
 from ..coordinates.base import IOBase
@@ -124,8 +125,10 @@ class TopologyReaderBase(IOBase, metaclass=_Topologymeta):
         
         if isinstance(filename, util.NamedStream):
             self.filename = filename
+        elif isinstance(filename, (str, bytes, os.PathLike)): # Add specific case for Path 
+            self.filename = os.fspath(filename)
         else:
-            self.filename = str(filename)
+            self.filename = filename # To cover remaining cases
 
 
     def parse(self, **kwargs):  # pragma: no cover
