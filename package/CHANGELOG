@@ -14,11 +14,13 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, orbeckst, marinegor, tylerjereddy
+??/??/?? IAlibay, orbeckst, marinegor, tylerjereddy, ljwoods2
 
  * 2.11.0
 
 Fixes
+ * Fix incorrect assignment of topology_format to format (and vice versa)
+   when a parsing class is provided to either (Issue #5147, PR #5148)
  * Fix incorrect TPR file parsing for GROMACS topologies produced prior
    to version 5.1.0 (Issue #5145, PR #5146)
  * Fixes incorrect assignment of secondary structure to proline residues in
