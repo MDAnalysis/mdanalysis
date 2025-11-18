@@ -6,6 +6,7 @@ import pickle
 import sys
 from types import ModuleType
 from weakref import ref
+from pathlib import Path
 
 import pytest
 import numpy as np
