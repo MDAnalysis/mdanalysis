@@ -48,7 +48,6 @@ from ..coordinates.base import IOBase
 from ..lib import util
 
 
-
 class _Topologymeta(type):
     """Internal: Topology Parser registration voodoo
 
@@ -121,16 +120,19 @@ class TopologyReaderBase(IOBase, metaclass=_Topologymeta):
        Added keyword 'universe' to pass to Atom creation.
     """
 
-    def __init__(self, filename):  
+    def __init__(self, filename):
         if isinstance(filename, util.NamedStream):
             self.filename = filename
 
+        # Real filename types we’re okay with normalizing
         elif isinstance(filename, (str, bytes, os.PathLike)):
+            # os.fspath handles Path objects correctly
             self.filename = os.fspath(filename)
 
+        # Everything else (e.g. mmtf.MMTFDecoder, ParmEd structures, etc.)
+        # must be kept as-is so parsers can detect them by type.
         else:
             self.filename = filename
-
 
     def parse(self, **kwargs):  # pragma: no cover
         raise NotImplementedError("Override this in each subclass")
