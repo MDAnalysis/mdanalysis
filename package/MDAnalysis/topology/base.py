@@ -41,7 +41,7 @@ from functools import reduce
 import itertools
 import numpy as np
 import warnings
-import os
+import pathlib
 
 from .. import _PARSERS, _PARSER_HINTS
 from ..coordinates.base import IOBase
@@ -121,18 +121,13 @@ class TopologyReaderBase(IOBase, metaclass=_Topologymeta):
     """
 
     def __init__(self, filename):
-        if isinstance(filename, util.NamedStream):
+        if isinstance(filename, util.NamedStream): # Cover NamedStream case
             self.filename = filename
 
-        # Real filename types we’re okay with normalizing
-        elif isinstance(filename, (str, bytes, os.PathLike)):
-            # os.fspath handles Path objects correctly
-            self.filename = os.fspath(filename)
-
-        # Everything else (e.g. mmtf.MMTFDecoder, ParmEd structures, etc.)
-        # must be kept as-is so parsers can detect them by type.
+        elif isinstance(filename, pathlib.Path): # Cover Pathlib case
+            self.filename = str(filename)
         else:
-            self.filename = filename
+            self.filename = filename # Cover remainder of cases
 
     def parse(self, **kwargs):  # pragma: no cover
         raise NotImplementedError("Override this in each subclass")
