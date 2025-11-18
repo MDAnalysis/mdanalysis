@@ -127,6 +127,11 @@ class ParserBase(object):
 
     def test_pathlib_input(self, filename):
         """Check that pathlib.Path objects are accepted by the parser."""
+        if not isinstance(filename, (str, os.PathLike)):
+            pytest.skip(
+                f"Pathlib input test only applies to string/path-like filenames, "
+                f"got {type(filename).__name__}"
+            ) # Cover OpenMM Parser case
         path = pathlib.Path(filename)
 
         with self.parser(filename) as p:
