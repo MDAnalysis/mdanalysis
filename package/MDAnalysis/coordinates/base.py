@@ -1483,8 +1483,12 @@ class ReaderBase(ProtoReader):
 
         if isinstance(filename, NamedStream):
             self.filename = filename
+
+        elif isinstance(filename, (str, bytes, os.PathLike)):
+            self.filename = os.fspath(filename)
+
         else:
-            self.filename = str(filename)
+            self.filename = filename
         self.convert_units = convert_units
 
         ts_kwargs = {}
