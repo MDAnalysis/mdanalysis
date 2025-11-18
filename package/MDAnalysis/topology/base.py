@@ -121,13 +121,13 @@ class TopologyReaderBase(IOBase, metaclass=_Topologymeta):
     """
 
     def __init__(self, filename):
-        if isinstance(filename, util.NamedStream): # Cover NamedStream case
+        if isinstance(filename, util.NamedStream):  # Cover NamedStream case
             self.filename = filename
 
-        elif isinstance(filename, pathlib.Path): # Cover Pathlib case
+        elif isinstance(filename, pathlib.Path):  # Cover Pathlib case
             self.filename = str(filename)
         else:
-            self.filename = filename # Cover remainder of cases
+            self.filename = filename  # Cover remainder of cases
 
     def parse(self, **kwargs):  # pragma: no cover
         raise NotImplementedError("Override this in each subclass")
