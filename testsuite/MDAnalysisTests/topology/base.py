@@ -136,3 +136,5 @@ class ParserBase(object):
             top_path = p.parse()
 
         assert top_str.n_atoms == top_path.n_atoms
+        assert top_str.n_residues == top_path.n_residues
+        assert top_str.n_segments == top_path.n_segments
