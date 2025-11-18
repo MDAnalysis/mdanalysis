@@ -14,7 +14,7 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, orbeckst, marinegor, tylerjereddy, ljwoods2
+??/??/?? IAlibay, orbeckst, marinegor, tylerjereddy, ljwoods2, talagayev
 
  * 2.11.0
 
@@ -27,7 +27,8 @@ Fixes
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Changes
-
+ * Addition of Pathlib object handling for Universe, SingleFrameReaderBase
+   and Toplogy parsers (Issue #3937, PR#4535)
 Deprecations
 
 
