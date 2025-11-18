@@ -675,16 +675,18 @@ class BaseReaderTest(object):
                 atomgroup=atoms, asel=atoms, order="fac"
             )
 
-    def test_pathlib_input_base(self, reader):     
+    def test_pathlib_input_base(self, reader):
         if isinstance(reader, MemoryReader):
             if isinstance(reader, MemoryReader):
                 skip_reason = "MemoryReader"
-            pytest.skip(f"Skipping test for Pathlib input with reason: {skip_reason}")
+            pytest.skip(
+                f"Skipping test for Pathlib input with reason: {skip_reason}"
+            )
         path = Path(reader.filename)
         u_str = mda.Universe(reader.filename)
         u_path = mda.Universe(path)
         assert u_str.atoms.n_atoms == u_path.atoms.n_atoms
-            
+
 
 class MultiframeReaderTest(BaseReaderTest):
     def test_last_frame(self, ref, reader):

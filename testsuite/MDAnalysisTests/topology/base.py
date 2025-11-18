@@ -114,7 +114,6 @@ class ParserBase(object):
         u = mda.Universe(filename)
         assert isinstance(u, mda.Universe)
 
-
     def test_guessed_attributes(self, filename):
         """check that the universe created with certain parser have the same
         guessed attributes as  when it was guessed inside the parser"""

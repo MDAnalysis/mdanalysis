@@ -505,6 +505,7 @@ class TestReadTop(BaseITP):
         assert top_str.n_residues == top_path.n_residues
         assert top_str.n_segments == top_path.n_segments
 
+
 class TestErrors:
 
     parser = mda.topology.ITPParser.ITPParser
