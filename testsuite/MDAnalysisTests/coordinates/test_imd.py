@@ -343,7 +343,7 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
         assert top_str.n_atoms == ref.n_atoms
         assert top_path.n_atoms == ref.n_atoms
         assert top_str.n_atoms == top_path.n_atoms
-    
+
     def test_reload_auxiliaries_from_description(self, ref, reader):
         pytest.skip("Cannot create two IMDReaders on the same stream")
 

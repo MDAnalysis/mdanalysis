@@ -131,7 +131,7 @@ class ParserBase(object):
             pytest.skip(
                 f"Pathlib input test only applies to string/path-like filenames, "
                 f"got {type(filename).__name__}"
-            ) # Cover OpenMM Parser case
+            )  # Cover OpenMM Parser case
         path = pathlib.Path(filename)
 
         with self.parser(filename) as p:
