@@ -675,7 +675,7 @@ class BaseReaderTest(object):
                 atomgroup=atoms, asel=atoms, order="fac"
             )
 
-    def test_pathlib_input_base(self, reader):
+    def test_pathlib_input(self, reader):
         if isinstance(reader, MemoryReader):
             if isinstance(reader, MemoryReader):
                 skip_reason = "MemoryReader"
