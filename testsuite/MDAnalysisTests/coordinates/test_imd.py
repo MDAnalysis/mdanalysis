@@ -7,6 +7,7 @@ import sys
 from types import ModuleType
 from weakref import ref
 from pathlib import Path
+from MDAnalysis.topology.MinimalParser import MinimalParser
 
 import pytest
 import numpy as np
