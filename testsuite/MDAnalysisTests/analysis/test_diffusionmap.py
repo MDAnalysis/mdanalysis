@@ -102,7 +102,9 @@ def test_dist_weights_frames(u, client_DistanceMatrix):
 
 
 def test_distvalues_ag_universe(u, client_DistanceMatrix):
-    dist_universe = diffusionmap.DistanceMatrix(u, select="backbone").run(**client_DistanceMatrix)
+    dist_universe = diffusionmap.DistanceMatrix(u, select="backbone").run(
+        **client_DistanceMatrix
+    )
     ag = u.select_atoms("backbone")
     dist_ag = diffusionmap.DistanceMatrix(ag).run(**client_DistanceMatrix)
     assert_allclose(
@@ -111,9 +113,13 @@ def test_distvalues_ag_universe(u, client_DistanceMatrix):
 
 
 def test_distvalues_ag_select(u, client_DistanceMatrix):
-    dist_universe = diffusionmap.DistanceMatrix(u, select="backbone").run(**client_DistanceMatrix)
+    dist_universe = diffusionmap.DistanceMatrix(u, select="backbone").run(
+        **client_DistanceMatrix
+    )
     ag = u.select_atoms("protein")
-    dist_ag = diffusionmap.DistanceMatrix(ag, select="backbone").run(**client_DistanceMatrix)
+    dist_ag = diffusionmap.DistanceMatrix(ag, select="backbone").run(
+        **client_DistanceMatrix
+    )
     assert_allclose(
         dist_universe.results.dist_matrix, dist_ag.results.dist_matrix
     )
@@ -157,7 +163,9 @@ def test_not_universe_atomgroup_error(u):
 
 
 def test_DistanceMatrix_attr_warning(u, client_DistanceMatrix):
-    dist = diffusionmap.DistanceMatrix(u, select="backbone").run(**client_DistanceMatrix, step=3)
+    dist = diffusionmap.DistanceMatrix(u, select="backbone").run(
+        **client_DistanceMatrix, step=3
+    )
     wmsg = f"The `dist_matrix` attribute was deprecated in MDAnalysis 2.0.0"
     with pytest.warns(DeprecationWarning, match=wmsg):
         assert getattr(dist, "dist_matrix") is dist.results.dist_matrix

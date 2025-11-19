@@ -299,7 +299,9 @@ class DistanceMatrix(AnalysisBase):
     def _conclude(self):
         # Build the full pairwise distance matrix from stored positions
         # Calculate and store results
-        pos = np.asarray(self.results._positions, dtype=np.float64)  # (n_frames, n_atoms, n_dim)
+        pos = np.asarray(
+            self.results._positions, dtype=np.float64
+        )  # (n_frames, n_atoms, n_dim)
         n = pos.shape[0]
 
         D = np.zeros((n, n), dtype=np.float64)
@@ -324,9 +326,10 @@ class DistanceMatrix(AnalysisBase):
     def _get_aggregator(self):
         return ResultsGroup(
             lookup={
-                "_positions": ResultsGroup.ndarray_vstack, # Get positions
+                "_positions": ResultsGroup.ndarray_vstack,  # Get positions
             }
         )
+
 
 class DiffusionMap(object):
     """Non-linear dimension reduction method
