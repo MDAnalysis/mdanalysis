@@ -319,10 +319,9 @@ class DistanceMatrix(AnalysisBase):
             for j in range(i + 1, n):
                 pj = pos[j]
                 d = metric(pi, pj, weights=weights)
-                if d <= cutoff:
-                    d = 0.0
-                D[i, j] = d
-                D[j, i] = d
+                if d > cutoff:
+                    D[i, j] = d
+                    D[j, i] = d
 
         self.results.dist_matrix = D
         self._calculated = True
