@@ -298,6 +298,7 @@ class DistanceMatrix(AnalysisBase):
 
     def _conclude(self):
         # Build the full pairwise distance matrix from stored positions
+        # Calculate and store results
         pos = np.asarray(self.results._positions, dtype=np.float64)  # (n_frames, n_atoms, n_dim)
         n = pos.shape[0]
 
@@ -309,8 +310,6 @@ class DistanceMatrix(AnalysisBase):
 
         for i in range(n):
             pi = pos[i]
-            # diagonal is zero by definition of a metric
-            # D[i, i] already 0.0 from zeros(...)
             for j in range(i + 1, n):
                 pj = pos[j]
                 d = metric(pi, pj, weights=weights)
