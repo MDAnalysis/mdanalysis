@@ -60,6 +60,7 @@ import copy
 import warnings
 import contextlib
 import collections
+import inspect
 
 import MDAnalysis
 import sys
@@ -255,10 +256,33 @@ def _topology_from_file_like(topology_file, topology_format=None, **kwargs):
 
 def _resolve_formats(*coordinates, format=None, topology_format=None):
     if not coordinates:
+        # ensure that a TopologyReader is not used to attempt to parse a trajectory
+        # Issue #5147
+        # fully qualified absolute names prevents circular import
         if format is None:
-            format = topology_format
+            format = (
+                None
+                if (inspect.isclass(topology_format))
+                and (
+                    issubclass(
+                        topology_format,
+                        MDAnalysis.topology.base.TopologyReaderBase,
+                    )
+                )
+                else topology_format
+            )
         elif topology_format is None:
-            topology_format = format
+            topology_format = (
+                None
+                if (inspect.isclass(format))
+                and (
+                    issubclass(
+                        format,
+                        MDAnalysis.Analysis.coordinates.base.ProtoReader,
+                    )
+                )
+                else format
+            )
     return format, topology_format
 
 
