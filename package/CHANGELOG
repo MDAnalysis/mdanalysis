@@ -14,7 +14,7 @@ The rules for this file:
 
 
 -------------------------------------------------------------------------------
-??/??/?? IAlibay, orbeckst, marinegor, tylerjereddy, ljwoods2
+??/??/?? IAlibay, orbeckst, marinegor, tylerjereddy, ljwoods2, talagayev
 
  * 2.11.0
 
@@ -26,6 +26,9 @@ Fixes
  * Fixes incorrect assignment of secondary structure to proline residues in
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
+Enhancements
+ * Enables parallelization for analysis.diffusionmap.DistanceMatrix
+   (Issue #4679, PR #4745)
 Changes
 
 Deprecations
