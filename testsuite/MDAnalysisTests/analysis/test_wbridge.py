@@ -45,7 +45,7 @@ class TestWaterBridgeAnalysis(object):
 
     @staticmethod
     @pytest.fixture(scope="class")
-    def universe_DA_PBC():
+    def universe_DA_PBC(tmp_path_factory):
         """A universe with one hydrogen bond acceptor bonding to a hydrogen bond
         donor but in a PBC condition"""
         grofile = """Test gro file
@@ -54,8 +54,27 @@ class TestWaterBridgeAnalysis(object):
     1ALA      H    2   0.900   0.000   0.000
     4ALA      O    3   0.100   0.000   0.000
   1.0   1.0   1.0"""
-        u = MDAnalysis.Universe(StringIO(grofile), format="gro")
+        tmp_path = tmp_path_factory.mktemp("DA_PBC")
+        gro_path_pbc = tmp_path / "DA_PBC.gro"
+        gro_path_pbc.write_text(grofile)
+
+        # build a file-backed Universe (works with multiprocessing)
+        u = MDAnalysis.Universe(str(gro_path_pbc))
         return u
+
+    @staticmethod
+    @pytest.fixture(scope="class")
+    def universe_DA_PBC_10frames(universe_DA_PBC, tmp_path_factory):
+        u_single = universe_DA_PBC
+        n_atoms = u_single.atoms.n_atoms
+
+        tmp_path = tmp_path_factory.mktemp("DA_PBC_10")
+        dcd_path = tmp_path / "DA_PBC_10.dcd"
+        with MDAnalysis.Writer(str(dcd_path), n_atoms=n_atoms) as W:
+            for _ in range(10):
+                W.write(u_single)  # same coords each frame
+
+        return MDAnalysis.Universe(u_single.filename, str(dcd_path))
 
     @staticmethod
     @pytest.fixture(scope="class")
@@ -392,7 +411,7 @@ class TestWaterBridgeAnalysis(object):
         assert_equal(list(network.keys())[0][:4], (1, 0, 2, None))
 
     @pytest.mark.parametrize("distance_type", ["hydrogen", "heavy"])
-    def test_donor_accepter_pbc(self, universe_DA_PBC, distance_type):
+    def test_donor_accepter_pbc(self, universe_DA_PBC, distance_type, client_WaterBridgeAnalysis):
         """Test zeroth order donor to acceptor hydrogen bonding in PBC conditions"""
         wb = WaterBridgeAnalysis(
             universe_DA_PBC,
@@ -402,9 +421,29 @@ class TestWaterBridgeAnalysis(object):
             pbc=True,
             distance_type=distance_type,
         )
-        wb.run(verbose=False)
+        wb.run(**client_WaterBridgeAnalysis, verbose=False)
         network = wb.results.network[0]
         assert_equal(list(network.keys())[0][:4], (1, 0, 2, None))
+
+    @pytest.mark.parametrize("distance_type", ["hydrogen", "heavy"])
+    def test_donor_accepter_pbc_multi(self, universe_DA_PBC_10frames, distance_type, client_WaterBridgeAnalysis):
+        """Test zeroth order donor to acceptor hydrogen bonding in PBC conditions"""
+        wb = WaterBridgeAnalysis(
+            universe_DA_PBC_10frames,
+            "protein and (resid 1)",
+            "protein and (resid 4)",
+            order=0,
+            pbc=True,
+            distance_type=distance_type,
+        )
+        wb.run(**client_WaterBridgeAnalysis, verbose=False)
+
+        # One network entry per frame
+        assert len(wb.results.network) == 10
+
+        # Check that the first frame still has the expected connectivity
+        network0 = wb.results.network[0]
+        assert_equal(list(network0.keys())[0][:4], (1, 0, 2, None))
 
     @pytest.mark.parametrize("distance_type", ["hydrogen", "heavy"])
     def test_accepter_donor(self, universe_AD, distance_type):

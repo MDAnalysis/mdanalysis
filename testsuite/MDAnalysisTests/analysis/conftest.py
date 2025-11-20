@@ -14,6 +14,9 @@ from MDAnalysis.analysis.dssp.dssp import DSSP
 from MDAnalysis.analysis.hydrogenbonds.hbond_analysis import (
     HydrogenBondAnalysis,
 )
+from MDAnalysis.analysis.hydrogenbonds.wbridge_analysis import (
+    WaterBridgeAnalysis,
+)
 from MDAnalysis.analysis.nucleicacids import NucPairDist
 from MDAnalysis.analysis.contacts import Contacts
 from MDAnalysis.analysis.density import DensityAnalysis
@@ -207,4 +210,12 @@ def client_InterRDF(request):
 
 @pytest.fixture(scope="module", params=params_for_cls(InterRDF_s))
 def client_InterRDF_s(request):
+    return request.param
+
+
+# MDAnalysis.analysis.rdf
+
+
+@pytest.fixture(scope="module", params=params_for_cls(WaterBridgeAnalysis))
+def client_WaterBridgeAnalysis(request):
     return request.param

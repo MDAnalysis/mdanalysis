@@ -716,7 +716,7 @@ from MDAnalysis import MissingDataWarning, NoDataError, SelectionError
 from MDAnalysis.lib.distances import calc_angles, capped_distance
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
 
-from ..base import AnalysisBase
+from ..base import AnalysisBase, ResultsGroup
 
 logger = logging.getLogger("MDAnalysis.analysis.WaterBridgeAnalysis")
 
@@ -803,6 +803,16 @@ class WaterBridgeAnalysis(AnalysisBase):
     r_cov = defaultdict(
         lambda: 1.5, N=1.31, O=1.31, P=1.58, S=1.55  # default value
     )  # noqa: E741
+
+    _analysis_algorithm_is_parallelizable = True
+
+    @classmethod
+    def get_supported_backends(cls):
+        return (
+            "serial",
+            "multiprocessing",
+            "dask",
+        )
 
     def __init__(
         self,
@@ -2151,6 +2161,14 @@ class WaterBridgeAnalysis(AnalysisBase):
 
     def _conclude(self):
         self.results.timeseries = self._generate_timeseries()
+
+    def _get_aggregator(self):
+        return ResultsGroup(
+            lookup={
+                "timeseries": ResultsGroup.ndarray_hstack,  # Get positions
+                "network": ResultsGroup.ndarray_hstack,  # Get positions
+            }
+        )
 
     @property
     def network(self):
