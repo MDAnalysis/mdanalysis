@@ -347,7 +347,7 @@ class CompoundSplitting(object):
             ).T.ravel()
         else:
             compound_indices = np.sort(
-                np.floor(rg.random(n_atoms) * n_compounds).astype(np.int)
+                np.floor(rg.random(n_atoms) * n_compounds).astype(np.int64)
             )
 
         unique_indices = np.unique(compound_indices)
