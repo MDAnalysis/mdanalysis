@@ -1075,7 +1075,9 @@ class AverageStructure(AnalysisBase):
            :attr:`universe`, :attr:`positions`, and :attr:`rmsd` are now
            stored in a :class:`MDAnalysis.analysis.base.Results` instance.
         """
-        if in_memory or isinstance(mobile.trajectory, MemoryReader):
+        self._in_memory = in_memory or isinstance(mobile.trajectory, MemoryReader)
+
+        if in_memory:
             mobile.transfer_to_memory()
             filename = None
             logger.info("Moved mobile trajectory to in-memory representation")
@@ -1129,6 +1131,28 @@ class AverageStructure(AnalysisBase):
         self._weights = get_weights(self.ref_atoms, weights)
 
         logger.info("RMS-fitting on {0:d} atoms.".format(len(self.ref_atoms)))
+
+    def run(self, start=None, stop=None, step=None, verbose=None, **kwargs):
+        """
+        Run the analysis. If in_memory=True fall back to serial.
+        """
+        requested_backend = kwargs.pop("backend", None)
+
+        if getattr(self, "_in_memory", False):
+            # We are in the in_memory case: always run serial.
+            if requested_backend not in (None, "serial"):
+                warnings.warn(
+                    "The in-memory parallel trajectory usage is inefficient"
+                    "and not supported. Falling back to serial.",
+                    RuntimeWarning,
+                )
+            return super().run(start=start, stop=stop, step=step, verbose=verbose)
+        else:
+            if requested_backend is not None:
+                kwargs["backend"] = requested_backend
+            return super().run(
+                start=start, stop=stop, step=step, verbose=verbose, **kwargs
+            )
 
     def _prepare(self):
         current_frame = self.reference.universe.trajectory.ts.frame
