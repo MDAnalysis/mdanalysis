@@ -131,7 +131,7 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
         assert_allclose(
             d,
             self.ref_distances["endtoend"],
-            atol=10**(-self.prec),
+            atol=10 ** (-self.prec),
             rtol=0,
             err_msg="distance between M1:N and G214:C",
         )
@@ -322,13 +322,15 @@ class BaseReaderTest(object):
                 assert_equal(W.n_atoms, 100)
 
     def test_dt(self, ref, reader):
-        assert_allclose(reader.dt, ref.dt, atol=10**(-ref.prec), rtol=0)
+        assert_allclose(reader.dt, ref.dt, atol=10 ** (-ref.prec), rtol=0)
 
     def test_ts_dt_matches_reader(self, reader):
         assert_equal(reader.ts.dt, reader.dt)
 
     def test_total_time(self, ref, reader):
-        assert_allclose(reader.totaltime, ref.totaltime, atol=10**(-ref.prec), rtol=0)
+        assert_allclose(
+            reader.totaltime, ref.totaltime, atol=10 ** (-ref.prec), rtol=0
+        )
 
     def test_first_dimensions(self, ref, reader):
         reader.rewind()
@@ -336,7 +338,10 @@ class BaseReaderTest(object):
             assert reader.ts.dimensions is None
         else:
             assert_allclose(
-                reader.ts.dimensions, ref.dimensions, atol=10**(-ref.prec), rtol=0
+                reader.ts.dimensions,
+                ref.dimensions,
+                atol=10 ** (-ref.prec),
+                rtol=0,
             )
 
     def test_changing_dimensions(self, ref, reader):
@@ -346,7 +351,10 @@ class BaseReaderTest(object):
                 assert reader.ts.dimensions is None
             else:
                 assert_allclose(
-                    reader.ts.dimensions, ref.dimensions, atol=10**(-ref.prec), rtol=0
+                    reader.ts.dimensions,
+                    ref.dimensions,
+                    atol=10 ** (-ref.prec),
+                    rtol=0,
                 )
             reader[1]
             if ref.dimensions_second_frame is None:
@@ -355,8 +363,8 @@ class BaseReaderTest(object):
                 assert_allclose(
                     reader.ts.dimensions,
                     ref.dimensions_second_frame,
-                    atol=10**(-ref.prec),
-                    rtol=0
+                    atol=10 ** (-ref.prec),
+                    rtol=0,
                 )
 
     def test_volume(self, ref, reader):
@@ -392,7 +400,7 @@ class BaseReaderTest(object):
                 auxstep.data,
                 ref.aux_highf_all_data[i],
                 atol=1e-7,
-                rtol = 0,
+                rtol=0,
                 err_msg="Auxiliary data does not match for "
                 "step {}".format(i),
             )
@@ -457,7 +465,7 @@ class BaseReaderTest(object):
         for i, ts in enumerate(transformed):
             idealcoords = ref.iter_ts(i).positions + v1 + v2
             assert_allclose(
-                ts.positions, idealcoords, atol=10**(-ref.prec), rtol=0
+                ts.positions, idealcoords, atol=10 ** (-ref.prec), rtol=0
             )
 
     def test_transformations_2iter(self, ref, transformed):
@@ -469,11 +477,13 @@ class BaseReaderTest(object):
         for i, ts in enumerate(transformed):
             idealcoords.append(ref.iter_ts(i).positions + v1 + v2)
             assert_allclose(
-                ts.positions, idealcoords[i], atol=10**(-ref.prec), rtol=0
+                ts.positions, idealcoords[i], atol=10 ** (-ref.prec), rtol=0
             )
 
         for i, ts in enumerate(transformed):
-            assert_allclose(ts.positions, idealcoords[i], atol=10**(-ref.prec), rtol=0)
+            assert_allclose(
+                ts.positions, idealcoords[i], atol=10 ** (-ref.prec), rtol=0
+            )
 
     def test_transformations_slice(self, ref, transformed):
         # Are the transformations applied when iterating over a slice of the trajectory?
@@ -482,7 +492,7 @@ class BaseReaderTest(object):
         for i, ts in enumerate(transformed[2:3:1]):
             idealcoords = ref.iter_ts(ts.frame).positions + v1 + v2
             assert_allclose(
-                ts.positions, idealcoords, atol=10**(-ref.prec), rtol=0
+                ts.positions, idealcoords, atol=10 ** (-ref.prec), rtol=0
             )
 
     def test_transformations_switch_frame(self, ref, transformed):
@@ -494,25 +504,40 @@ class BaseReaderTest(object):
         first_ideal = ref.iter_ts(0).positions + v1 + v2
         if len(transformed) > 1:
             assert_allclose(
-                transformed[0].positions, first_ideal, atol=10**(-ref.prec), rtol=0
+                transformed[0].positions,
+                first_ideal,
+                atol=10 ** (-ref.prec),
+                rtol=0,
             )
             second_ideal = ref.iter_ts(1).positions + v1 + v2
             assert_allclose(
-                transformed[1].positions, second_ideal, atol=10**(-ref.prec), rtol=0
+                transformed[1].positions,
+                second_ideal,
+                atol=10 ** (-ref.prec),
+                rtol=0,
             )
 
             # What if we comeback to the previous frame?
             assert_allclose(
-                transformed[0].positions, first_ideal, atol=10**(-ref.prec), rtol=0
+                transformed[0].positions,
+                first_ideal,
+                atol=10 ** (-ref.prec),
+                rtol=0,
             )
 
             # How about we switch the frame to itself?
             assert_allclose(
-                transformed[0].positions, first_ideal, atol=10**(-ref.prec), rtol=0
+                transformed[0].positions,
+                first_ideal,
+                atol=10 ** (-ref.prec),
+                rtol=0,
             )
         else:
             assert_allclose(
-                transformed[0].positions, first_ideal, atol=10**(-ref.prec), rtol=0
+                transformed[0].positions,
+                first_ideal,
+                atol=10 ** (-ref.prec),
+                rtol=0,
             )
 
     def test_transformation_rewind(self, ref, transformed):
@@ -523,7 +548,10 @@ class BaseReaderTest(object):
         ideal_coords = ref.iter_ts(0).positions + v1 + v2
         transformed.rewind()
         assert_allclose(
-            transformed[0].positions, ideal_coords, atol=10**(-ref.prec), rtol=0
+            transformed[0].positions,
+            ideal_coords,
+            atol=10 ** (-ref.prec),
+            rtol=0,
         )
 
     def test_transformations_copy(self, ref, transformed):
@@ -540,7 +568,7 @@ class BaseReaderTest(object):
         for i, ts in enumerate(new):
             ideal_coords = ref.iter_ts(i).positions + v1 + v2
             assert_allclose(
-                ts.positions, ideal_coords, atol=10**(-ref.prec), rtol=0
+                ts.positions, ideal_coords, atol=10 ** (-ref.prec), rtol=0
             )
 
     def test_add_another_transformations_raises_ValueError(self, transformed):
@@ -816,7 +844,10 @@ class BaseWriterTest(object):
                 for ts_ref, ts_w in zip(universe.trajectory, written):
                     universe.dimensions[:3] += 1
                     assert_allclose(
-                        universe.dimensions, ts_w.dimensions, atol=10**(-ref.prec), rtol = 0
+                        universe.dimensions,
+                        ts_w.dimensions,
+                        atol=10 ** (-ref.prec),
+                        rtol=0,
                     )
 
     def test_write_trajectory_atomgroup(self, ref, reader, universe, tmpdir):
@@ -859,7 +890,7 @@ class BaseWriterTest(object):
                 assert_allclose(
                     copy_ts._pos,
                     sel.atoms.positions,
-                    atol=10**(-ref.prec),
+                    atol=10 ** (-ref.prec),
                     rtol=0,
                     err_msg="coordinate mismatch between original and written "
                     "trajectory at frame {} (orig) vs {} (copy)".format(
@@ -940,7 +971,7 @@ def assert_timestep_almost_equal(A, B, decimal=6, verbose=True):
         assert_allclose(
             A.positions,
             B.positions,
-            atol=10**(-decimal),
+            atol=10 ** (-decimal),
             rtol=0,
             err_msg="Timestep positions",
             verbose=verbose,
@@ -957,7 +988,7 @@ def assert_timestep_almost_equal(A, B, decimal=6, verbose=True):
         assert_allclose(
             A.velocities,
             B.velocities,
-            atol=10**(-decimal),
+            atol=10 ** (-decimal),
             rtol=0,
             err_msg="Timestep velocities",
             verbose=verbose,
@@ -974,7 +1005,7 @@ def assert_timestep_almost_equal(A, B, decimal=6, verbose=True):
         assert_allclose(
             A.forces,
             B.forces,
-            atol=10**(-decimal),
+            atol=10 ** (-decimal),
             rtol=0,
             err_msg="Timestep forces",
             verbose=verbose,
