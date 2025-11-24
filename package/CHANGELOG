@@ -31,6 +31,21 @@ Changes
 Deprecations
 
 
+11/24/25 IAlibay, orbeckst, marinegor, tylerjereddy, ljwoods2, marinegor, spyke7
+
+ * 2.11.0
+
+Fixes
+ * Fixes the verbose=False in EinsteinMSD, and only shows progress bar when 
+   verbose=True (Issue #5144, PR #5153)
+
+Changes
+ * The msd.py inside analysis is changed, and ProgressBar is implemented inside
+   _conclude_simple and _conclude_fft functions instead of tqdm (Issue #5144, PR #5153)
+
+Deprecations
+
+
 10/18/25 IAlibay, orbeckst, BHM-Bob, TRY-ER, Abdulrahman-PROG, pbuslaev,
          yuxuanzhuang, yuyuan871111, tanishy7777, tulga-rdn, Gareth-elliott,
          hmacdope, tylerjereddy, cbouy, talagayev, DrDomenicoMarson, amruthesht,
