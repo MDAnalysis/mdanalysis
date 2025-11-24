@@ -415,7 +415,11 @@ class EinsteinMSD(AnalysisBase):
         r"""Calculates the MSD via the simple "windowed" algorithm."""
         lagtimes = np.arange(1, self.n_frames)
         positions = self._position_array.astype(np.float64)
-        for lag in ProgressBar(lagtimes, verbose=self._verbose, desc="Calculating MSD for lagtimes"):
+        for lag in ProgressBar(
+            lagtimes,
+            verbose=self._verbose,
+            desc="Calculating MSD for lagtimes",
+        ):
             disp = positions[:-lag, :, :] - positions[lag:, :, :]
             sqdist = np.square(disp).sum(axis=-1)
             self.results.msds_by_particle[lag, :] = np.mean(sqdist, axis=0)
@@ -442,7 +446,11 @@ class EinsteinMSD(AnalysisBase):
             )
 
         positions = self._position_array.astype(np.float64)
-        for n in ProgressBar(range(self.n_particles), verbose=self._verbose, desc="Calculating MSD with FFT per particle"):
+        for n in ProgressBar(
+            range(self.n_particles),
+            verbose=self._verbose,
+            desc="Calculating MSD with FFT per particle",
+        ):
             self.results.msds_by_particle[:, n] = tidynamics.msd(
                 positions[:, n, :]
             )
