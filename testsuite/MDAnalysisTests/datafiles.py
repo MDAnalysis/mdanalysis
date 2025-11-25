@@ -392,8 +392,25 @@ __all__ = [
     "SURFACE_PDB",  # 111 FCC lattice topology for NSGrid bug #2345
     "SURFACE_TRR",  # full precision coordinates for NSGrid bug #2345
     "DSSP",  # DSSP test suite
-]
+    "WB_AD",
+    "WB_AWA",
+    "WB_AWA_AWWA",
+    "WB_AWD",
+    "WB_AWWA",
+    "WB_AWWWA",
+    "WB_AWWWWA",
+    "WB_BRANCH",
+    "WB_DA",
+    "WB_DA_PBC",
+    "WB_DWA",
+    "WB_DWD",
+    "WB_EMPTY",
+    "WB_LOOP",
+    "WB_DUPLICATE_WATER",
+    "WB_MULTIFRAME_GRO",
+    "WB_MULTIFRAME_DCD",
 
+]
 from importlib import resources
 import MDAnalysisTests.data
 
@@ -918,5 +935,22 @@ SURFACE_TRR = (_data_ref / "surface.trr").as_posix()
 # DSSP testing: from https://github.com/ShintaroMinami/PyDSSP
 DSSP = (_data_ref / "dssp").as_posix()
 
+WB_AD = (_data_ref / "waterbridge/wb_ad.gro").as_posix()
+WB_AWA = (_data_ref / "waterbridge/wb_awa.gro").as_posix()
+WB_AWA_AWWA = (_data_ref / "waterbridge/wb_awa_awwa.gro").as_posix()
+WB_AWD = (_data_ref / "waterbridge/wb_awd.gro").as_posix()
+WB_AWWA = (_data_ref / "waterbridge/wb_awwa.gro").as_posix()
+WB_AWWWA = (_data_ref / "waterbridge/wb_awwwa.gro").as_posix()
+WB_AWWWWA = (_data_ref / "waterbridge/wb_awwwwa.gro").as_posix()
+WB_BRANCH = (_data_ref / "waterbridge/wb_branch.gro").as_posix()
+WB_DA = (_data_ref / "waterbridge/wb_da.gro").as_posix()
+WB_DA_PBC = (_data_ref / "waterbridge/wb_da_pbc.gro").as_posix()
+WB_DWA = (_data_ref / "waterbridge/wb_dwa.gro").as_posix()
+WB_DWD = (_data_ref / "waterbridge/wb_dwd.gro").as_posix()
+WB_EMPTY = (_data_ref / "waterbridge/wb_empty.gro").as_posix()
+WB_LOOP = (_data_ref / "waterbridge/wb_loop.gro").as_posix()
+WB_DUPLICATE_WATER = (_data_ref / "waterbridge/wb_duplicate_water.gro").as_posix()
+WB_MULTIFRAME_GRO = (_data_ref / "waterbridge/wb_multiframe.gro").as_posix()
+WB_MULTIFRAME_DCD = (_data_ref / "waterbridge/wb_multiframe.dcd").as_posix()
 # This should be the last line: clean up namespace
 del resources
