@@ -261,11 +261,19 @@ class TestDensityAnalysis(DensityParameters):
             D = density.DensityAnalysis(ag, delta=self.delta, **kwargs).run(
                 **runargs, **client_DensityAnalysis
             )
-            assert D.results.density.grid.mean() == pytest.approx(ref_meandensity), "mean density does not match"
+            assert D.results.density.grid.mean() == pytest.approx(
+                ref_meandensity
+            ), "mean density does not match"
             D.results.density.export(self.outfile)
 
             D2 = density.Density(self.outfile)
-            np.testing.assert_allclose(D.results.density.grid, D2.grid, rtol=0, atol=10**(-self.precision), err_msg="DX export failed: different grid sizes")
+            np.testing.assert_allclose(
+                D.results.density.grid,
+                D2.grid,
+                rtol=0,
+                atol=10 ** (-self.precision),
+                err_msg="DX export failed: different grid sizes",
+            )
 
     @pytest.mark.parametrize("mode", ("static", "dynamic"))
     def test_run(self, mode, universe, tmpdir, client_DensityAnalysis):
