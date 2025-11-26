@@ -314,8 +314,18 @@ class TestWaterBridgeAnalysis(object):
     ):
         """Test case where the hydrogen bond donor from selection 1 form
         water bridge with hydrogen bond donor from selection 2"""
-        universe_multi = MDAnalysis.Universe(WB_MULTIFRAME_GRO, WB_MULTIFRAME_DCD)
-        print("Residues:", list(zip(universe_multi.residues.resids, universe_multi.residues.resnames)))
+        universe_multi = MDAnalysis.Universe(
+            WB_MULTIFRAME_GRO, WB_MULTIFRAME_DCD
+        )
+        print(
+            "Residues:",
+            list(
+                zip(
+                    universe_multi.residues.resids,
+                    universe_multi.residues.resnames,
+                )
+            ),
+        )
         sel1 = universe_multi.select_atoms("protein and (resid 1)")
         sel2 = universe_multi.select_atoms("protein and (resid 6)")
         print("sel1 len:", sel1.n_atoms)
