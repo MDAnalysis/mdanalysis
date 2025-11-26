@@ -29,6 +29,7 @@ Fixes
 Enhancements
  * Enables parallelization for analysis.diffusionmap.DistanceMatrix
    (Issue #4679, PR #4745)
+
 Changes
 
 Deprecations
