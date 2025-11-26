@@ -21,7 +21,6 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import pytest
-import scipy
 import scipy.spatial
 
 import MDAnalysis
@@ -30,12 +29,10 @@ from MDAnalysisTests.datafiles import GRO
 import MDAnalysis.analysis.distances
 
 from numpy.testing import (
-    assert_equal,
     assert_array_equal,
-    assert_almost_equal,
-    assert_array_almost_equal,
     assert_allclose,
 )
+
 import numpy as np
 
 
@@ -99,7 +96,7 @@ class TestContactMatrix(object):
         assert contacts.shape == shape, "wrong shape (should be {0})".format(
             shape
         )
-        assert_equal(contacts, res_no_pbc)
+        assert_array_equal(contacts, res_no_pbc)
 
     def test_sparse(self, coord, shape, res_no_pbc):
         contacts = MDAnalysis.analysis.distances.contact_matrix(
@@ -108,7 +105,7 @@ class TestContactMatrix(object):
         assert contacts.shape == shape, "wrong shape (should be {0})".format(
             shape
         )
-        assert_equal(contacts.toarray(), res_no_pbc)
+        assert_array_equal(contacts.toarray(), res_no_pbc)
 
     def test_box_numpy(self, coord, box, shape, res_pbc):
         contacts = MDAnalysis.analysis.distances.contact_matrix(
@@ -117,7 +114,7 @@ class TestContactMatrix(object):
         assert contacts.shape == shape, "wrong shape (should be {0})".format(
             shape
         )
-        assert_equal(contacts, res_pbc)
+        assert_array_equal(contacts, res_pbc)
 
     def test_box_sparse(self, coord, box, shape, res_pbc):
         contacts = MDAnalysis.analysis.distances.contact_matrix(
@@ -126,7 +123,7 @@ class TestContactMatrix(object):
         assert contacts.shape == shape, "wrong shape (should be {0})".format(
             shape
         )
-        assert_equal(contacts.toarray(), res_pbc)
+        assert_array_equal(contacts.toarray(), res_pbc)
 
 
 class TestDist(object):
@@ -187,7 +184,7 @@ class TestDist(object):
     def test_offset_calculation(self, ag, ag2):
         """Test that offsets fed to dist() are correctly calculated."""
         actual = MDAnalysis.analysis.distances.dist(ag, ag2, offset=33)[:2]
-        assert_equal(
+        assert_array_equal(
             actual, np.array([ag.atoms.resids + 33, ag2.atoms.resids + 33])
         )
 
@@ -242,7 +239,7 @@ class TestBetween(object):
         actual = MDAnalysis.analysis.distances.between(
             group, ag, ag2, self.distance
         ).indices
-        assert_equal(actual, expected)
+        assert_array_equal(actual, expected)
 
     @pytest.mark.parametrize("dists", [5.9, 0.0])
     def test_between_return_type(self, dists, group, ag, ag2):
