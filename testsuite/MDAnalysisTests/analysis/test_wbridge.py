@@ -1,4 +1,3 @@
-from io import StringIO
 from collections import defaultdict
 
 from numpy.testing import (
@@ -6,7 +5,6 @@ from numpy.testing import (
     assert_array_equal,
 )
 import pytest
-from pathlib import Path
 
 import MDAnalysis
 from MDAnalysis.analysis.hydrogenbonds.wbridge_analysis import (
