@@ -1076,10 +1076,12 @@ class AverageStructure(AnalysisBase):
            stored in a :class:`MDAnalysis.analysis.base.Results` instance.
         .. versionchanged:: 2.10.0
             Enabled **parallel execution** with the ``multiprocessing`` and ``dask``
-            backends for cases without in-memory representation; use the new method 
+            backends for cases without in-memory representation; use the new method
             :meth:`get_supported_backends` to see all supported backends.
         """
-        self._in_memory = in_memory or isinstance(mobile.trajectory, MemoryReader)
+        self._in_memory = in_memory or isinstance(
+            mobile.trajectory, MemoryReader
+        )
 
         if in_memory:
             mobile.transfer_to_memory()
@@ -1150,7 +1152,9 @@ class AverageStructure(AnalysisBase):
                     "and not supported. Falling back to serial.",
                     RuntimeWarning,
                 )
-            return super().run(start=start, stop=stop, step=step, verbose=verbose)
+            return super().run(
+                start=start, stop=stop, step=step, verbose=verbose
+            )
         else:
             if requested_backend is not None:
                 kwargs["backend"] = requested_backend
@@ -1209,7 +1213,7 @@ class AverageStructure(AnalysisBase):
     def _get_aggregator(self):
         return ResultsGroup(
             lookup={
-                "universe": AverageStructure._first,    # first universe for ResultsGroup
+                "universe": AverageStructure._first,  # first universe for ResultsGroup
                 "positions": ResultsGroup.ndarray_sum,
                 "rmsd": ResultsGroup.ndarray_sum,
             }
