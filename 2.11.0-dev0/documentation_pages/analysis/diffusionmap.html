@@ -409,6 +409,11 @@ dmap.run()</p>
 <p><span class="versionmodified changed">Changed in version 2.8.0: </span><a class="reference internal" href="#MDAnalysis.analysis.diffusionmap.DistanceMatrix" title="MDAnalysis.analysis.diffusionmap.DistanceMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">DistanceMatrix</span></code></a> is now correctly works with <cite>frames=…</cite>
 parameter (#4432) by iterating over <cite>self._sliced_trajectory</cite></p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.11.0: </span>Enabled <strong>parallel execution</strong> with the <code class="docutils literal notranslate"><span class="pre">multiprocessing</span></code> and <code class="docutils literal notranslate"><span class="pre">dask</span></code>
+backends; use the new method <code class="xref py py-meth docutils literal notranslate"><span class="pre">get_supported_backends()</span></code> to see all
+supported backends.</p>
+</div>
 </dd></dl>
 
 <p class="rubric">References</p>
