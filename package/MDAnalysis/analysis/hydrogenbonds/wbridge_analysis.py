@@ -1961,24 +1961,31 @@ class WaterBridgeAnalysis(AnalysisBase):
         """
         if analysis_func is None:
             analysis_func = self._count_by_time_analysis
-        if self.results.network:
-            result = []
-            for time, frame in zip(self.timesteps, self.results.network):
-                result_dict = defaultdict(int)
-                self._traverse_water_network(
-                    frame,
-                    [],
-                    analysis_func=analysis_func,
-                    output=result_dict,
-                    link_func=self._full_link,
-                    **kwargs,
-                )
-                result.append(
-                    (time, sum([result_dict[key] for key in result_dict]))
-                )
-            return result
-        else:
+
+        if not self.results.network:
             return None
+
+        # --- simple fallback for missing timesteps ---
+        if self.timesteps is None:
+            timesteps = range(len(self.results.network))
+        else:
+            timesteps = self.timesteps
+
+        result = []
+        for time, frame in zip(timesteps, self.results.network):
+            result_dict = defaultdict(int)
+            self._traverse_water_network(
+                frame,
+                [],
+                analysis_func=analysis_func,
+                output=result_dict,
+                link_func=self._full_link,
+                **kwargs,
+            )
+            result.append(
+                (time, sum([result_dict[key] for key in result_dict]))
+            )
+        return result
 
     def _timesteps_by_type_analysis(self, current, output, *args, **kwargs):
         s1_index, to_index, s1, to_residue, dist, angle = (
