@@ -62,6 +62,18 @@ class TestWaterBridgeAnalysis(object):
         wb.timesteps = range(len(wb.results.network))
         return wb
 
+    @staticmethod
+    @pytest.fixture(scope="class")
+    def universe_DWD_multi():
+        multi_universe = MDAnalysis.Universe(WB_DWD)
+        u_single = multi_universe
+        n_atoms = u_single.atoms.n_atoms
+        dcd_path = "WB_DWD_multi.dcd"
+        with MDAnalysis.Writer(dcd_path, n_atoms=n_atoms) as W:
+            for _ in range(10):
+                W.write(u_single)
+        return MDAnalysis.Universe(multi_universe.filename, dcd_path)
+
     def test_nodata(self):
         """Test if the funtions can run when there is no data.
         This is achieved by not runing the run() first."""
@@ -276,6 +288,48 @@ class TestWaterBridgeAnalysis(object):
         second = network[list(network.keys())[0]]
         assert_equal(list(second.keys())[0][:4], (2, None, 3, 4))
         assert_equal(second[list(second.keys())[0]], None)
+
+    @pytest.mark.parametrize("distance_type", ["hydrogen", "heavy"])
+    def test_donor_water_donor_multi(
+        self, universe_DWD_multi, distance_type, client_WaterBridgeAnalysis
+    ):
+        wb = WaterBridgeAnalysis(
+            universe_DWD_multi,
+            "protein and (resid 1)",
+            "protein and (resid 4)",
+            distance_type=distance_type,
+        )
+        wb.run(**client_WaterBridgeAnalysis, verbose=False)
+
+        assert len(wb.results.network) == 10
+        network0 = wb.results.network[0]
+        assert_equal(list(network0.keys())[0][:4], (1, 0, 2, None))
+        second = network0[list(network0.keys())[0]]
+        assert_equal(list(second.keys())[0][:4], (2, None, 3, 4))
+        assert_equal(second[list(second.keys())[0]], None)
+
+    @pytest.mark.parametrize("distance_type", ["hydrogen", "heavy"])
+    def test_donor_water_donor_multi(
+        self, distance_type, client_WaterBridgeAnalysis
+    ):
+        """Test case where the hydrogen bond donor from selection 1 form
+        water bridge with hydrogen bond donor from selection 2"""
+        universe_multi = MDAnalysis.Universe(WB_MULTIFRAME_GRO, WB_MULTIFRAME_DCD)
+        print("Residues:", list(zip(universe_multi.residues.resids, universe_multi.residues.resnames)))
+        sel1 = universe_multi.select_atoms("protein and (resid 1)")
+        sel2 = universe_multi.select_atoms("protein and (resid 6)")
+        print("sel1 len:", sel1.n_atoms)
+        print("sel2 len:", sel2.n_atoms)
+        wb = WaterBridgeAnalysis(
+            universe_multi,
+            "protein and (resid 1)",
+            "protein and (resid 5)",
+            distance_type=distance_type,
+            order=2,
+        )
+        wb.run(**client_WaterBridgeAnalysis, verbose=False)
+        network = wb.results.network[0]
+        assert_equal(wb.results.network[0], defaultdict(dict))
 
     def test_empty(self, client_WaterBridgeAnalysis):
         """Test case where no water bridge exists"""
