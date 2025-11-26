@@ -31,6 +31,21 @@ Changes
 Deprecations
 
 
+11/26/25 IAlibay, orbeckst, marinegor, tylerjereddy, ljwoods2, marinegor, spyke7
+
+ * 2.11.0
+
+Fixes
+ * Fixes the DeprecationWarning in hbonds_autocorrel.py so as the warning 
+   can be suppressed in mdacli which are not needed(Issue #5157, PR #5159)
+
+Changes
+ * In the hbonds\hbonds_autocorrel.py, removed the always keyword. And keeping
+   the message same (Issue #5157, PR #5159)
+
+Deprecations
+
+
 11/24/25 IAlibay, orbeckst, marinegor, tylerjereddy, ljwoods2, marinegor, spyke7
 
  * 2.11.0

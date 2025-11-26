@@ -44,14 +44,12 @@ See Also
 """
 import warnings
 
-with warnings.catch_warnings():
-    warnings.simplefilter("always", DeprecationWarning)
-    wmsg = (
+wmsg = (
         "This module was moved to "
         "MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel; "
         "hbonds.hbond_autocorrel will be removed in 3.0.0."
     )
-    warnings.warn(wmsg, category=DeprecationWarning)
+warnings.warn(wmsg, category=DeprecationWarning)    
 
 from MDAnalysis.lib.util import deprecate
 
