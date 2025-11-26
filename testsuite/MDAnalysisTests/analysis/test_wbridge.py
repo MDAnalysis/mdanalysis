@@ -33,6 +33,7 @@ from MDAnalysisTests.datafiles import (
     WB_MULTIFRAME_DCD,
 )
 
+
 class TestWaterBridgeAnalysis(object):
     @staticmethod
     @pytest.fixture(scope="class")
@@ -123,7 +124,7 @@ class TestWaterBridgeAnalysis(object):
                 selection2_type="aaa",
             )
 
-    def test_empty_selection(self):
+    def test_empty_selection(self, client_WaterBridgeAnalysis):
         """Test the case when selection yields empty result"""
         universe_DA = MDAnalysis.Universe(WB_DA)
         wb = WaterBridgeAnalysis(
@@ -132,10 +133,10 @@ class TestWaterBridgeAnalysis(object):
             "protein and (resid 10)",
             order=0,
         )
-        wb.run()
+        wb.run(**client_WaterBridgeAnalysis)
         assert wb.results.network == [{}]
 
-    def test_loop(self):
+    def test_loop(self, client_WaterBridgeAnalysis):
         """Test if loop can be handled correctly"""
         universe_loop = MDAnalysis.Universe(WB_LOOP)
         wb = WaterBridgeAnalysis(
@@ -143,11 +144,11 @@ class TestWaterBridgeAnalysis(object):
             "protein and (resid 1)",
             "protein and (resid 1 or resid 4)",
         )
-        wb.run()
+        wb.run(**client_WaterBridgeAnalysis)
         assert_equal(len(wb.results.network[0].keys()), 2)
 
     @pytest.mark.parametrize("distance_type", ["hydrogen", "heavy"])
-    def test_donor_accepter(self, distance_type):
+    def test_donor_accepter(self, distance_type, client_WaterBridgeAnalysis):
         """Test zeroth order donor to acceptor hydrogen bonding"""
         universe_DA = MDAnalysis.Universe(WB_DA)
         wb = WaterBridgeAnalysis(
@@ -159,12 +160,14 @@ class TestWaterBridgeAnalysis(object):
             debug=True,
             distance_type=distance_type,
         )
-        wb.run(verbose=False)
+        wb.run(**client_WaterBridgeAnalysis, verbose=False)
         network = wb.results.network[0]
         assert_equal(list(network.keys())[0][:4], (1, 0, 2, None))
 
     @pytest.mark.parametrize("distance_type", ["hydrogen", "heavy"])
-    def test_donor_accepter_pbc(self, distance_type, client_WaterBridgeAnalysis):
+    def test_donor_accepter_pbc(
+        self, distance_type, client_WaterBridgeAnalysis
+    ):
         """Test zeroth order donor to acceptor hydrogen bonding in PBC conditions"""
         universe_DA_PBC = MDAnalysis.Universe(WB_DA_PBC)
         wb = WaterBridgeAnalysis(
@@ -180,7 +183,7 @@ class TestWaterBridgeAnalysis(object):
         assert_equal(list(network.keys())[0][:4], (1, 0, 2, None))
 
     @pytest.mark.parametrize("distance_type", ["hydrogen", "heavy"])
-    def test_accepter_donor(self, distance_type):
+    def test_accepter_donor(self, distance_type, client_WaterBridgeAnalysis):
         """Test zeroth order acceptor to donor hydrogen bonding"""
         universe_AD = MDAnalysis.Universe(WB_AD)
         wb = WaterBridgeAnalysis(
@@ -190,12 +193,14 @@ class TestWaterBridgeAnalysis(object):
             order=0,
             distance_type=distance_type,
         )
-        wb.run(verbose=False)
+        wb.run(**client_WaterBridgeAnalysis, verbose=False)
         network = wb.results.network[0]
         assert_equal(list(network.keys())[0][:4], (0, None, 1, 2))
 
     @pytest.mark.parametrize("distance_type", ["hydrogen", "heavy"])
-    def test_acceptor_water_accepter(self, distance_type):
+    def test_acceptor_water_accepter(
+        self, distance_type, client_WaterBridgeAnalysis
+    ):
         """Test case where the hydrogen bond acceptor from selection 1 form
         water bridge with hydrogen bond acceptor from selection 2"""
         universe_AWA = MDAnalysis.Universe(WB_AWA)
@@ -205,7 +210,7 @@ class TestWaterBridgeAnalysis(object):
             "protein and (resid 4)",
             distance_type=distance_type,
         )
-        wb.run(verbose=False)
+        wb.run(**client_WaterBridgeAnalysis, verbose=False)
         network = wb.results.network[0]
         assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
         second = network[list(network.keys())[0]]
@@ -213,7 +218,9 @@ class TestWaterBridgeAnalysis(object):
         assert_equal(second[list(second.keys())[0]], None)
 
     @pytest.mark.parametrize("distance_type", ["hydrogen", "heavy"])
-    def test_donor_water_accepter(self, distance_type):
+    def test_donor_water_accepter(
+        self, distance_type, client_WaterBridgeAnalysis
+    ):
         """Test case where the hydrogen bond donor from selection 1 form
         water bridge with hydrogen bond acceptor from selection 2"""
         universe_DWA = MDAnalysis.Universe(WB_DWA)
@@ -223,7 +230,7 @@ class TestWaterBridgeAnalysis(object):
             "protein and (resid 4)",
             distance_type=distance_type,
         )
-        wb.run(verbose=False)
+        wb.run(**client_WaterBridgeAnalysis, verbose=False)
         network = wb.results.network[0]
         assert_equal(list(network.keys())[0][:4], (1, 0, 2, None))
         second = network[list(network.keys())[0]]
@@ -231,7 +238,9 @@ class TestWaterBridgeAnalysis(object):
         assert_equal(second[list(second.keys())[0]], None)
 
     @pytest.mark.parametrize("distance_type", ["hydrogen", "heavy"])
-    def test_acceptor_water_donor(self, distance_type):
+    def test_acceptor_water_donor(
+        self, distance_type, client_WaterBridgeAnalysis
+    ):
         """Test case where the hydrogen bond acceptor from selection 1 form
         water bridge with hydrogen bond donor from selection 2"""
         universe_AWD = MDAnalysis.Universe(WB_AWD)
@@ -241,7 +250,7 @@ class TestWaterBridgeAnalysis(object):
             "protein and (resid 4)",
             distance_type=distance_type,
         )
-        wb.run(verbose=False)
+        wb.run(**client_WaterBridgeAnalysis, verbose=False)
         network = wb.results.network[0]
         assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
         second = network[list(network.keys())[0]]
@@ -249,7 +258,9 @@ class TestWaterBridgeAnalysis(object):
         assert_equal(second[list(second.keys())[0]], None)
 
     @pytest.mark.parametrize("distance_type", ["hydrogen", "heavy"])
-    def test_donor_water_donor(self, distance_type):
+    def test_donor_water_donor(
+        self, distance_type, client_WaterBridgeAnalysis
+    ):
         """Test case where the hydrogen bond donor from selection 1 form
         water bridge with hydrogen bond donor from selection 2"""
         universe_DWD = MDAnalysis.Universe(WB_DWD)
@@ -259,21 +270,21 @@ class TestWaterBridgeAnalysis(object):
             "protein and (resid 4)",
             distance_type=distance_type,
         )
-        wb.run(verbose=False)
+        wb.run(**client_WaterBridgeAnalysis, verbose=False)
         network = wb.results.network[0]
         assert_equal(list(network.keys())[0][:4], (1, 0, 2, None))
         second = network[list(network.keys())[0]]
         assert_equal(list(second.keys())[0][:4], (2, None, 3, 4))
         assert_equal(second[list(second.keys())[0]], None)
 
-    def test_empty(self):
+    def test_empty(self, client_WaterBridgeAnalysis):
         """Test case where no water bridge exists"""
         universe_empty = MDAnalysis.Universe(WB_EMPTY)
         wb = WaterBridgeAnalysis(universe_empty, "protein", "protein")
-        wb.run(verbose=False)
+        wb.run(**client_WaterBridgeAnalysis, verbose=False)
         assert_equal(wb.results.network[0], defaultdict(dict))
 
-    def test_same_selection(self):
+    def test_same_selection(self, client_WaterBridgeAnalysis):
         """
         This test tests that if the selection 1 and selection 2 are both protein.
         However, the protein only forms one hydrogen bond with the water.
@@ -283,11 +294,13 @@ class TestWaterBridgeAnalysis(object):
         wb = WaterBridgeAnalysis(
             universe_DWA, "protein and resid 1", "protein and resid 1"
         )
-        wb.run(verbose=False)
+        wb.run(**client_WaterBridgeAnalysis, verbose=False)
         assert_equal(wb.results.network[0], defaultdict(dict))
 
     @pytest.mark.parametrize("distance_type", ["hydrogen", "heavy"])
-    def test_acceptor_2water_accepter(self, distance_type):
+    def test_acceptor_2water_accepter(
+        self, distance_type, client_WaterBridgeAnalysis
+    ):
         """Test case where the hydrogen bond acceptor from selection 1 form second order
         water bridge with hydrogen bond acceptor from selection 2"""
         # test first order
@@ -298,7 +311,7 @@ class TestWaterBridgeAnalysis(object):
             "protein and (resid 4)",
             distance_type=distance_type,
         )
-        wb.run(verbose=False)
+        wb.run(**client_WaterBridgeAnalysis, verbose=False)
         assert_equal(wb.results.network[0], defaultdict(dict))
         # test second order
         wb = WaterBridgeAnalysis(
@@ -308,7 +321,7 @@ class TestWaterBridgeAnalysis(object):
             order=2,
             distance_type=distance_type,
         )
-        wb.run(verbose=False)
+        wb.run(**client_WaterBridgeAnalysis, verbose=False)
         network = wb.results.network[0]
         assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
         second = network[list(network.keys())[0]]
@@ -324,7 +337,7 @@ class TestWaterBridgeAnalysis(object):
             order=3,
             distance_type=distance_type,
         )
-        wb.run(verbose=False)
+        wb.run(**client_WaterBridgeAnalysis, verbose=False)
         network = wb.results.network[0]
         assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
         second = network[list(network.keys())[0]]
@@ -334,7 +347,9 @@ class TestWaterBridgeAnalysis(object):
         assert_equal(third[list(third.keys())[0]], None)
 
     @pytest.mark.parametrize("distance_type", ["hydrogen", "heavy"])
-    def test_acceptor_3water_accepter(self, distance_type):
+    def test_acceptor_3water_accepter(
+        self, distance_type, client_WaterBridgeAnalysis
+    ):
         """Test case where the hydrogen bond acceptor from selection 1 form third order
         water bridge with hydrogen bond acceptor from selection 2"""
         universe_AWWWA = MDAnalysis.Universe(WB_AWWWA)
@@ -345,7 +360,7 @@ class TestWaterBridgeAnalysis(object):
             order=2,
             distance_type=distance_type,
         )
-        wb.run(verbose=False)
+        wb.run(**client_WaterBridgeAnalysis, verbose=False)
         assert_equal(wb.results.network[0], defaultdict(dict))
 
         wb = WaterBridgeAnalysis(
@@ -355,7 +370,7 @@ class TestWaterBridgeAnalysis(object):
             order=3,
             distance_type=distance_type,
         )
-        wb.run(verbose=False)
+        wb.run(**client_WaterBridgeAnalysis, verbose=False)
         network = wb.results.network[0]
         assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
         second = network[list(network.keys())[0]]
@@ -373,7 +388,7 @@ class TestWaterBridgeAnalysis(object):
             order=4,
             distance_type=distance_type,
         )
-        wb.run(verbose=False)
+        wb.run(**client_WaterBridgeAnalysis, verbose=False)
         network = wb.results.network[0]
         assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
         second = network[list(network.keys())[0]]
@@ -385,7 +400,9 @@ class TestWaterBridgeAnalysis(object):
         assert_equal(fourth[list(fourth.keys())[0]], None)
 
     @pytest.mark.parametrize("distance_type", ["hydrogen", "heavy"])
-    def test_acceptor_4water_accepter(self, distance_type):
+    def test_acceptor_4water_accepter(
+        self, distance_type, client_WaterBridgeAnalysis
+    ):
         """Test case where the hydrogen bond acceptor from selection 1 form fourth order
         water bridge with hydrogen bond acceptor from selection 2"""
         universe_AWWWWA = MDAnalysis.Universe(WB_AWWWWA)
@@ -396,7 +413,7 @@ class TestWaterBridgeAnalysis(object):
             order=3,
             distance_type=distance_type,
         )
-        wb.run(verbose=False)
+        wb.run(**client_WaterBridgeAnalysis, verbose=False)
         assert_equal(wb.results.network[0], defaultdict(dict))
 
         wb = WaterBridgeAnalysis(
@@ -406,7 +423,7 @@ class TestWaterBridgeAnalysis(object):
             order=4,
             distance_type=distance_type,
         )
-        wb.run(verbose=False)
+        wb.run(**client_WaterBridgeAnalysis, verbose=False)
         network = wb.results.network[0]
         assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
         second = network[list(network.keys())[0]]
@@ -426,7 +443,7 @@ class TestWaterBridgeAnalysis(object):
             order=5,
             distance_type=distance_type,
         )
-        wb.run(verbose=False)
+        wb.run(**client_WaterBridgeAnalysis, verbose=False)
         network = wb.results.network[0]
         assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
         second = network[list(network.keys())[0]]
@@ -440,7 +457,9 @@ class TestWaterBridgeAnalysis(object):
         assert_equal(fifth[list(fifth.keys())[0]], None)
 
     @pytest.mark.parametrize("distance_type", ["hydrogen", "heavy"])
-    def test_acceptor_22water_accepter(self, distance_type):
+    def test_acceptor_22water_accepter(
+        self, distance_type, client_WaterBridgeAnalysis
+    ):
         """Test case where the hydrogen bond acceptor from selection 1 form a second order
         water bridge with hydrogen bond acceptor from selection 2
         and the last water is linked to two residues in selection 2"""
@@ -452,7 +471,7 @@ class TestWaterBridgeAnalysis(object):
             order=2,
             distance_type=distance_type,
         )
-        wb.run(verbose=False)
+        wb.run(**client_WaterBridgeAnalysis, verbose=False)
         network = wb.results.network[0]
         assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
         second = network[list(network.keys())[0]]
@@ -463,7 +482,7 @@ class TestWaterBridgeAnalysis(object):
             sorted([key[:4] for key in list(third.keys())]),
         )
 
-    def test_timeseries_wba(self):
+    def test_timeseries_wba(self, client_WaterBridgeAnalysis):
         """Test if the time series data is correctly generated in water bridge analysis format"""
         universe_branch = MDAnalysis.Universe(WB_BRANCH)
         wb = WaterBridgeAnalysis(
@@ -473,7 +492,7 @@ class TestWaterBridgeAnalysis(object):
             order=2,
         )
         wb.output_format = "sele1_sele2"
-        wb.run(verbose=False)
+        wb.run(**client_WaterBridgeAnalysis, verbose=False)
         timeseries = sorted(wb.results.timeseries[0])
 
         assert_equal(
@@ -489,7 +508,7 @@ class TestWaterBridgeAnalysis(object):
             timeseries[3][:4], (6, 8, ("SOL", 3, "HW2"), ("ALA", 5, "O"))
         )
 
-    def test_timeseries_hba(self):
+    def test_timeseries_hba(self, client_WaterBridgeAnalysis):
         """Test if the time series data is correctly generated in hydrogen bond analysis format"""
         universe_branch = MDAnalysis.Universe(WB_BRANCH)
         wb = WaterBridgeAnalysis(
@@ -499,7 +518,7 @@ class TestWaterBridgeAnalysis(object):
             order=2,
         )
         wb.output_format = "donor_acceptor"
-        wb.run(verbose=False)
+        wb.run(**client_WaterBridgeAnalysis, verbose=False)
         timeseries = sorted(wb.results.timeseries[0])
 
         assert_equal(
@@ -516,7 +535,9 @@ class TestWaterBridgeAnalysis(object):
         )
 
     @pytest.mark.parametrize("distance_type", ["hydrogen", "heavy"])
-    def test_acceptor_12water_accepter(self, distance_type):
+    def test_acceptor_12water_accepter(
+        self, distance_type, client_WaterBridgeAnalysis
+    ):
         """Test of independent first order and second can be recognised correctely"""
         universe_AWA_AWWA = MDAnalysis.Universe(WB_AWA_AWWA)
         wb = WaterBridgeAnalysis(
@@ -526,7 +547,7 @@ class TestWaterBridgeAnalysis(object):
             order=1,
             distance_type=distance_type,
         )
-        wb.run(verbose=False)
+        wb.run(**client_WaterBridgeAnalysis, verbose=False)
         network = wb.results.network[0]
         assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
         second = network[list(network.keys())[0]]
@@ -540,14 +561,14 @@ class TestWaterBridgeAnalysis(object):
             order=2,
             distance_type=distance_type,
         )
-        wb.run(verbose=False)
+        wb.run(**client_WaterBridgeAnalysis, verbose=False)
         network = wb.results.network[0]
         assert_equal(
             [(0, None, 2, 1), (5, None, 7, 6)],
             sorted([key[:4] for key in list(network.keys())]),
         )
 
-    def test_count_by_type_single_link(self):
+    def test_count_by_type_single_link(self, client_WaterBridgeAnalysis):
         """
         This test tests the simplest water bridge to see if count_by_type() works.
         """
@@ -555,12 +576,12 @@ class TestWaterBridgeAnalysis(object):
         wb = WaterBridgeAnalysis(
             universe_DWA, "protein and (resid 1)", "protein and (resid 4)"
         )
-        wb.run(verbose=False)
+        wb.run(**client_WaterBridgeAnalysis, verbose=False)
         assert_equal(
             wb.count_by_type(), [(1, 4, "ALA", 1, "H", "ALA", 4, "O", 1.0)]
         )
 
-    def test_count_by_type_multiple_link(self):
+    def test_count_by_type_multiple_link(self, client_WaterBridgeAnalysis):
         """
         This test tests if count_by_type() can give the correct result for more than 1 links.
         """
@@ -571,7 +592,7 @@ class TestWaterBridgeAnalysis(object):
             "protein and (resid 4 or resid 8)",
             order=2,
         )
-        wb.run(verbose=False)
+        wb.run(**client_WaterBridgeAnalysis, verbose=False)
         assert_equal(
             sorted(wb.count_by_type()),
             [
@@ -725,7 +746,7 @@ class TestWaterBridgeAnalysis(object):
             wb_multiframe.count_by_time(), [(0, 1), (1, 1), (2, 1), (3, 1)]
         )
 
-    def test_count_by_time_weight(self):
+    def test_count_by_time_weight(self, client_WaterBridgeAnalysis):
         """
         This test tests if modyfing the analysis_func allows the weight to be changed
         in count_by_type().
@@ -738,7 +759,7 @@ class TestWaterBridgeAnalysis(object):
             "protein and (resid 4 or resid 8)",
             order=2,
         )
-        wb.run(verbose=False)
+        wb.run(**client_WaterBridgeAnalysis, verbose=False)
 
         def analysis(current, output, u):
             sele1_index, sele1_heavy_index, atom2, heavy_atom2, dist, angle = (
@@ -769,7 +790,7 @@ class TestWaterBridgeAnalysis(object):
             ],
         )
 
-    def test_count_by_time_empty(self):
+    def test_count_by_time_empty(self, client_WaterBridgeAnalysis):
         """
         See if count_by_time() can handle zero well.
         :return:
@@ -781,7 +802,7 @@ class TestWaterBridgeAnalysis(object):
             "protein and (resid 4 or resid 8)",
             order=2,
         )
-        wb.run(verbose=False)
+        wb.run(**client_WaterBridgeAnalysis, verbose=False)
 
         def analysis(current, output, u):
             pass
@@ -817,15 +838,15 @@ class TestWaterBridgeAnalysis(object):
             timesteps[3], [1, 12, "ALA", 1, "H", "ALA", 6, "O", 0, 2]
         )
 
-    def test_duplicate_water(self):
+    def test_duplicate_water(self, client_WaterBridgeAnalysis):
         u = MDAnalysis.Universe(WB_DUPLICATE_WATER)
         wb = WaterBridgeAnalysis(
             u, "resname LEU and name O", "resname LEU and name N H", order=4
         )
-        wb.run()
+        wb.run(**client_WaterBridgeAnalysis)
         assert len(wb.results.timeseries[0]) == 2
 
-    def test_warn_results_deprecated(self):
+    def test_warn_results_deprecated(self, client_WaterBridgeAnalysis):
         universe_DA = MDAnalysis.Universe(WB_DA)
         wb = WaterBridgeAnalysis(
             universe_DA,
@@ -833,7 +854,7 @@ class TestWaterBridgeAnalysis(object):
             "protein and (resid 10)",
             order=0,
         )
-        wb.run()
+        wb.run(**client_WaterBridgeAnalysis)
 
         wmsg = "The `network` attribute was deprecated in MDAnalysis 2.0.0"
         with pytest.warns(DeprecationWarning, match=wmsg):

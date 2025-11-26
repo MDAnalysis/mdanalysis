@@ -409,7 +409,6 @@ __all__ = [
     "WB_DUPLICATE_WATER",
     "WB_MULTIFRAME_GRO",
     "WB_MULTIFRAME_DCD",
-
 ]
 from importlib import resources
 import MDAnalysisTests.data
@@ -949,7 +948,9 @@ WB_DWA = (_data_ref / "waterbridge/wb_dwa.gro").as_posix()
 WB_DWD = (_data_ref / "waterbridge/wb_dwd.gro").as_posix()
 WB_EMPTY = (_data_ref / "waterbridge/wb_empty.gro").as_posix()
 WB_LOOP = (_data_ref / "waterbridge/wb_loop.gro").as_posix()
-WB_DUPLICATE_WATER = (_data_ref / "waterbridge/wb_duplicate_water.gro").as_posix()
+WB_DUPLICATE_WATER = (
+    _data_ref / "waterbridge/wb_duplicate_water.gro"
+).as_posix()
 WB_MULTIFRAME_GRO = (_data_ref / "waterbridge/wb_multiframe.gro").as_posix()
 WB_MULTIFRAME_DCD = (_data_ref / "waterbridge/wb_multiframe.dcd").as_posix()
 # This should be the last line: clean up namespace
