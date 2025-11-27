@@ -1,3 +1,4 @@
+from io import StringIO
 from collections import defaultdict
 
 from numpy.testing import (
