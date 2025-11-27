@@ -227,3 +227,4 @@ def client_DistanceMatrix(request):
 
 @pytest.fixture(scope="module", params=params_for_cls(WaterBridgeAnalysis))
 def client_WaterBridgeAnalysis(request):
+    return request.param
