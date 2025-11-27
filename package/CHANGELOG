@@ -30,6 +30,8 @@ Fixes
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Enhancements
+ * Enables parallelization for analysis.align.AverageStructure
+   (Issue #4659, PR #4738)
  * Enables parallelization for analysis.diffusionmap.DistanceMatrix
    (Issue #4679, PR #4745)
 

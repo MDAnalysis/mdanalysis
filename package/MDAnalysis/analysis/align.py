@@ -1074,7 +1074,7 @@ class AverageStructure(AnalysisBase):
         .. versionchanged:: 2.0.0
            :attr:`universe`, :attr:`positions`, and :attr:`rmsd` are now
            stored in a :class:`MDAnalysis.analysis.base.Results` instance.
-        .. versionchanged:: 2.10.0
+        .. versionchanged:: 2.11.0
             Enabled **parallel execution** with the ``multiprocessing`` and ``dask``
             backends for cases without in-memory representation; use the new method
             :meth:`get_supported_backends` to see all supported backends.
