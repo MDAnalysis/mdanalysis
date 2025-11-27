@@ -77,16 +77,12 @@ class TestDensity(object):
 
     def test_edges(self, bins, D):
         for dim, (edges, fixture) in enumerate(zip(D.edges, bins)):
-            assert_allclose(
-                edges, fixture, err_msg=f"edges[{dim}] mismatch"
-            )
+            assert_allclose(edges, fixture, err_msg=f"edges[{dim}] mismatch")
 
     def test_midpoints(self, bins, D):
         midpoints = [0.5 * (b[:-1] + b[1:]) for b in bins]
         for dim, (mp, fixture) in enumerate(zip(D.midpoints, midpoints)):
-            assert_allclose(
-                mp, fixture, err_msg=f"midpoints[{dim}] mismatch"
-            )
+            assert_allclose(mp, fixture, err_msg=f"midpoints[{dim}] mismatch")
 
     def test_delta(self, D):
         deltas = np.array([self.Lmax]) / np.array(self.nbins)
