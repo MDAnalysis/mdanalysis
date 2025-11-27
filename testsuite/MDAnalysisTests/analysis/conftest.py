@@ -10,6 +10,7 @@ from MDAnalysis.analysis.rms import RMSD, RMSF
 from MDAnalysis.analysis.dihedrals import Dihedral, Ramachandran, Janin
 from MDAnalysis.analysis.bat import BAT
 from MDAnalysis.analysis.gnm import GNMAnalysis
+from MDAnalysis.analysis.diffusionmap import DistanceMatrix
 from MDAnalysis.analysis.dssp.dssp import DSSP
 from MDAnalysis.analysis.hydrogenbonds.hbond_analysis import (
     HydrogenBondAnalysis,
@@ -207,4 +208,12 @@ def client_InterRDF(request):
 
 @pytest.fixture(scope="module", params=params_for_cls(InterRDF_s))
 def client_InterRDF_s(request):
+    return request.param
+
+
+# MDAnalysis.analysis.diffusionmap
+
+
+@pytest.fixture(scope="module", params=params_for_cls(DistanceMatrix))
+def client_DistanceMatrix(request):
     return request.param
