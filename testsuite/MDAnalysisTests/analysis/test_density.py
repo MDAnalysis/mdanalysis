@@ -27,7 +27,7 @@ import sys
 import warnings
 from unittest.mock import Mock, patch
 
-from numpy.testing import assert_equal, assert_almost_equal
+from numpy.testing import assert_equal, assert_allclose
 
 import gridData.OpenDX
 
@@ -77,20 +77,20 @@ class TestDensity(object):
 
     def test_edges(self, bins, D):
         for dim, (edges, fixture) in enumerate(zip(D.edges, bins)):
-            np.testing.assert_allclose(
+            assert_allclose(
                 edges, fixture, err_msg=f"edges[{dim}] mismatch"
             )
 
     def test_midpoints(self, bins, D):
         midpoints = [0.5 * (b[:-1] + b[1:]) for b in bins]
         for dim, (mp, fixture) in enumerate(zip(D.midpoints, midpoints)):
-            np.testing.assert_allclose(
+            assert_allclose(
                 mp, fixture, err_msg=f"midpoints[{dim}] mismatch"
             )
 
     def test_delta(self, D):
         deltas = np.array([self.Lmax]) / np.array(self.nbins)
-        np.testing.assert_allclose(D.delta, deltas)
+        assert_allclose(D.delta, deltas)
 
     def test_grid(self, D):
         dV = D.delta.prod()  # orthorhombic grids only!
@@ -100,7 +100,7 @@ class TestDensity(object):
     def test_origin(self, bins, D):
         midpoints = [0.5 * (b[:-1] + b[1:]) for b in bins]
         origin = [m[0] for m in midpoints]
-        np.testing.assert_allclose(D.origin, origin)
+        assert_allclose(D.origin, origin)
 
     def test_check_set_unit_keyerror(self, D):
         units = {"weight": "A"}
@@ -146,28 +146,28 @@ class TestDensity(object):
         D_orig = copy.deepcopy(D)
         D.convert_density(unit)
         assert D.units["density"] == D_orig.units["density"] == unit
-        np.testing.assert_allclose(D.grid, D_orig.grid)
+        assert_allclose(D.grid, D_orig.grid)
 
     def test_check_convert_density_units_density(self, D):
         unit = "nm^{-3}"
         D_orig = copy.deepcopy(D)
         D.convert_density(unit)
         assert D.units["density"] == "nm^{-3}"
-        np.testing.assert_allclose(D.grid, 10**3 * D_orig.grid)
+        assert_allclose(D.grid, 10**3 * D_orig.grid)
 
     def test_convert_length_same_length_units(self, D):
         unit = "A"
         D_orig = copy.deepcopy(D)
         D.convert_length(unit)
         assert D.units["length"] == D_orig.units["length"] == unit
-        np.testing.assert_allclose(D.grid, D_orig.grid)
+        assert_allclose(D.grid, D_orig.grid)
 
     def test_convert_length_other_length_units(self, D):
         unit = "nm"
         D_orig = copy.deepcopy(D)
         D.convert_length(unit)
         assert D.units["length"] == unit
-        np.testing.assert_allclose(D.grid, D_orig.grid)
+        assert_allclose(D.grid, D_orig.grid)
 
     def test_repr(self, D, D1):
         assert str(D) == "<Density density with (3, 4, 5) bins>"
@@ -178,14 +178,14 @@ class TestDensity(object):
         unit = "nm"
         D.convert_length(unit)
         for prev_edge, conv_edge in zip(D1.edges, D.edges):
-            np.testing.assert_allclose(prev_edge, 10 * conv_edge)
+            assert_allclose(prev_edge, 10 * conv_edge)
 
     def test_check_convert_density_edges(self, D):
         unit = "nm^{-3}"
         D_orig = copy.deepcopy(D)
         D.convert_density(unit)
         for new_den, orig_den in zip(D.edges, D_orig.edges):
-            np.testing.assert_allclose(new_den, orig_den)
+            assert_allclose(new_den, orig_den)
 
     @pytest.mark.parametrize("dxtype", ("float", "double", "int", "byte"))
     def test_export_types(self, D, dxtype, tmpdir, outfile="density.dx"):
@@ -267,7 +267,7 @@ class TestDensityAnalysis(DensityParameters):
             D.results.density.export(self.outfile)
 
             D2 = density.Density(self.outfile)
-            np.testing.assert_allclose(
+            assert_allclose(
                 D.results.density.grid,
                 D2.grid,
                 rtol=0,
