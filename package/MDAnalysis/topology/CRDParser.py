@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -28,11 +28,16 @@ CRD topology parser
 Read a list of atoms from a CHARMM CARD coordinate file (CRD_)
 to build a basic topology.  Reads atom ids (ATOMNO), atom names (TYPES),
 resids (RESID), residue numbers (RESNO), residue names (RESNames), segment ids
-(SEGID) and tempfactor (Weighting).  Atom element and mass are guessed based on
-the name of the atom.
+(SEGID) and tempfactor (Weighting).
 
 Residues are detected through a change is either resid or resname
 while segments are detected according to changes in segid.
+
+.. note::
+
+        By default, atomtypes and masses will be guessed on Universe creation.
+        This may change in release 3.0.
+        See :ref:`Guessers` for more information.
 
 .. _CRD: https://www.charmmtutorial.org/index.php/CHARMM:The_Basics
 
@@ -49,13 +54,10 @@ import numpy as np
 
 from ..lib.util import openany, FORTRANReader
 from .base import TopologyReaderBase, change_squash
-from . import guessers
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomids,
     Atomnames,
-    Atomtypes,
-    Masses,
     Resids,
     Resnames,
     Resnums,
@@ -76,11 +78,19 @@ class CRDParser(TopologyReaderBase):
      - Resnums
      - Segids
 
-    Guesses the following attributes:
-     - Atomtypes
-     - Masses
+
+    .. note::
+
+        By default, atomtypes and masses will be guessed on Universe creation.
+        This may change in release 3.0.
+        See :ref:`Guessers` for more information.
+
+    .. versionchanged:: 2.8.0
+       Type and mass are not longer guessed here. Until 3.0 these will still be
+       set by default through through universe.guess_TopologyAttrs() API.
     """
-    format = 'CRD'
+
+    format = "CRD"
 
     def parse(self, **kwargs):
         """Create the Topology object
@@ -93,8 +103,10 @@ class CRDParser(TopologyReaderBase):
         ----
         Could use the resnum and temp factor better
         """
-        extformat = FORTRANReader('2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10')
-        stdformat = FORTRANReader('2I5,1X,A4,1X,A4,3F10.5,1X,A4,1X,A4,F10.5')
+        extformat = FORTRANReader(
+            "2I10,2X,A8,2X,A8,3F20.10,2X,A8,2X,A8,F20.10"
+        )
+        stdformat = FORTRANReader("2I5,1X,A4,1X,A4,3F10.5,1X,A4,1X,A4,F10.5")
 
         atomids = []
         atomnames = []
@@ -107,21 +119,36 @@ class CRDParser(TopologyReaderBase):
         with openany(self.filename) as crd:
             for linenum, line in enumerate(crd):
                 # reading header
-                if line.split()[0] == '*':
+                if line.split()[0] == "*":
                     continue
-                elif line.split()[-1] == 'EXT' and int(line.split()[0]):
+                elif line.split()[-1] == "EXT" and int(line.split()[0]):
                     r = extformat
                     continue
-                elif line.split()[0] == line.split()[-1] and line.split()[0] != '*':
+                elif (
+                    line.split()[0] == line.split()[-1]
+                    and line.split()[0] != "*"
+                ):
                     r = stdformat
                     continue
                 # anything else should be an atom
                 try:
-                    (serial, resnum, resName, name,
-                     x, y, z, segid, resid, tempFactor) = r.read(line)
+                    (
+                        serial,
+                        resnum,
+                        resName,
+                        name,
+                        x,
+                        y,
+                        z,
+                        segid,
+                        resid,
+                        tempFactor,
+                    ) = r.read(line)
                 except Exception:
-                    errmsg = (f"Check CRD format at line {linenum + 1}: "
-                              f"{line.rstrip()}")
+                    errmsg = (
+                        f"Check CRD format at line {linenum + 1}: "
+                        f"{line.rstrip()}"
+                    )
                     raise ValueError(errmsg) from None
 
                 atomids.append(serial)
@@ -141,28 +168,28 @@ class CRDParser(TopologyReaderBase):
         resnums = np.array(resnums, dtype=np.int32)
         segids = np.array(segids, dtype=object)
 
-        # Guess some attributes
-        atomtypes = guessers.guess_types(atomnames)
-        masses = guessers.guess_masses(atomtypes)
+        atom_residx, (res_resids, res_resnames, res_resnums, res_segids) = (
+            change_squash(
+                (resids, resnames), (resids, resnames, resnums, segids)
+            )
+        )
+        res_segidx, (seg_segids,) = change_squash((res_segids,), (res_segids,))
 
-        atom_residx, (res_resids, res_resnames, res_resnums, res_segids) = change_squash(
-            (resids, resnames), (resids, resnames, resnums, segids))
-        res_segidx, (seg_segids,) = change_squash(
-            (res_segids,), (res_segids,))
-
-        top = Topology(len(atomids), len(res_resids), len(seg_segids),
-                       attrs=[
-                           Atomids(atomids),
-                           Atomnames(atomnames),
-                           Atomtypes(atomtypes, guessed=True),
-                           Masses(masses, guessed=True),
-                           Tempfactors(tempfactors),
-                           Resids(res_resids),
-                           Resnames(res_resnames),
-                           Resnums(res_resnums),
-                           Segids(seg_segids),
-                       ],
-                       atom_resindex=atom_residx,
-                       residue_segindex=res_segidx)
+        top = Topology(
+            len(atomids),
+            len(res_resids),
+            len(seg_segids),
+            attrs=[
+                Atomids(atomids),
+                Atomnames(atomnames),
+                Tempfactors(tempfactors),
+                Resids(res_resids),
+                Resnames(res_resnames),
+                Resnums(res_resnums),
+                Segids(seg_segids),
+            ],
+            atom_resindex=atom_residx,
+            residue_segindex=res_segidx,
+        )
 
         return top

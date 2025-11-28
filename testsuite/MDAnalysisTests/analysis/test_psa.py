@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -25,9 +25,24 @@ from importlib import reload
 import pytest
 
 from MDAnalysis.analysis import psa
+from MDAnalysisTests.util import import_not_available
 
 
+@pytest.mark.skipif(
+    import_not_available("pathsimanalysis"),
+    reason="Test skipped because PathSimAnalysis is not found",
+)
 def test_moved_to_mdakit_warning():
     wmsg = "MDAnalysis.analysis.psa is deprecated in favour of the MDAKit"
     with pytest.warns(DeprecationWarning, match=wmsg):
+        reload(psa)
+
+
+@pytest.mark.skipif(
+    not import_not_available("pathsimanalysis"),
+    reason="Test skipped because PathSimAnalysis is found",
+)
+def test_install_mdakit_warning():
+    wmsg = "Please install"
+    with pytest.warns(UserWarning, match=wmsg):
         reload(psa)

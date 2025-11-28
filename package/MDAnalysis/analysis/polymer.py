@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -28,7 +28,7 @@ Polymer analysis --- :mod:`MDAnalysis.analysis.polymer`
 
 :Author: Richard J. Gowers
 :Year: 2015, 2018
-:Copyright: GNU Public License v3
+:Copyright: Lesser GNU Public License v2.1+
 
 This module contains various commonly used tools in analysing polymers.
 """
@@ -40,12 +40,12 @@ import logging
 from .. import NoDataError
 from ..core.groups import requires, AtomGroup
 from ..lib.distances import calc_bonds
-from .base import AnalysisBase
+from .base import AnalysisBase, ResultsGroup
 
 logger = logging.getLogger(__name__)
 
 
-@requires('bonds')
+@requires("bonds")
 def sort_backbone(backbone):
     """Rearrange a linear AtomGroup into backbone order
 
@@ -67,32 +67,32 @@ def sort_backbone(backbone):
 
     .. versionadded:: 0.20.0
     """
-    if not backbone.n_fragments == 1:
-        raise ValueError("{} fragments found in backbone.  "
-                         "backbone must be a single contiguous AtomGroup"
-                         "".format(backbone.n_fragments))
+    degrees = [len(atom.bonded_atoms & backbone) for atom in backbone]
+    deg1_atoms = [atom for atom, d in zip(backbone, degrees) if d == 1]
+    wrong_atoms = [
+        atom for atom, d in zip(backbone, degrees) if d not in (1, 2)
+    ]
 
-    branches = [at for at in backbone
-                if len(at.bonded_atoms & backbone) > 2]
-    if branches:
-        # find which atom has too many bonds for easier debug
+    if len(wrong_atoms) > 0:
         raise ValueError(
-            "Backbone is not linear.  "
-            "The following atoms have more than two bonds in backbone: {}."
-            "".format(','.join(str(a) for a in branches)))
+            "Backbone contains atoms with connectivity degree not equal to 1 or 2. "
+            "This suggests branches or isolated atoms. Problematic atoms: {}."
+            "".format(", ".join(str(a) for a in wrong_atoms))
+        )
 
-    caps = [atom for atom in backbone
-           if len(atom.bonded_atoms & backbone) == 1]
-    if not caps:
-        # cyclical structure
-        raise ValueError("Could not find starting point of backbone, "
-                         "is the backbone cyclical?")
+    if len(deg1_atoms) != 2:
+        raise ValueError(
+            "Backbone connectivity invalid: "
+            "expected exactly 2 atoms with connectivity degree 1 (caps). "
+            "Cyclical structures are not supported. "
+            "Atoms with connectivity degree 1 found: {}."
+            "".format(", ".join(str(a) for a in deg1_atoms))
+        )
 
     # arbitrarily choose one of the capping atoms to be the startpoint
-    sorted_backbone = AtomGroup([caps[0]])
+    sorted_backbone = AtomGroup([deg1_atoms[0]])
 
-    # iterate until the sorted chain length matches the backbone size
-    while len(sorted_backbone) < len(backbone):
+    for _ in range(len(backbone) - 1):
         # current end of the chain
         end_atom = sorted_backbone[-1]
 
@@ -118,6 +118,9 @@ class PersistenceLength(AnalysisBase):
 
        C(n) = \langle \cos\theta_{i, i+n} \rangle =
                \langle \mathbf{a_i} \cdot \mathbf{a_{i+n}} \rangle
+
+    where :math:`a_i` and :math:`a_{i+n}` are unit vectors
+    along the bonds.
 
     An exponential decay is then fitted to this, which yields the
     persistence length
@@ -228,10 +231,21 @@ class PersistenceLength(AnalysisBase):
        Former ``results`` are now stored as ``results.bond_autocorrelation``.
        :attr:`lb`, :attr:`lp`, :attr:`fit` are now stored in a
        :class:`MDAnalysis.analysis.base.Results` instance.
+    .. versionchanged:: 2.10.0
+       introduced :meth:`get_supported_backends` allowing for parallel
+       execution on ``multiprocessing`` and ``dask`` backends.
     """
+
+    _analysis_algorithm_is_parallelizable = True
+
+    @classmethod
+    def get_supported_backends(cls):
+        return ("serial", "multiprocessing", "dask")
+
     def __init__(self, atomgroups, **kwargs):
         super(PersistenceLength, self).__init__(
-            atomgroups[0].universe.trajectory, **kwargs)
+            atomgroups[0].universe.trajectory, **kwargs
+        )
         self._atomgroups = atomgroups
 
         # Check that all chains are the same length
@@ -239,15 +253,18 @@ class PersistenceLength(AnalysisBase):
         chainlength = len(atomgroups[0])
         if not all(l == chainlength for l in lens):
             raise ValueError("Not all AtomGroups were the same size")
+        self.chainlength = chainlength
 
-        self._results = np.zeros(chainlength - 1, dtype=np.float32)
+    def _prepare(self):
+        self.results.raw_bond_autocorr = np.zeros(
+            self.chainlength - 1, dtype=np.float32
+        )
 
     def _single_frame(self):
         # could optimise this by writing a "self dot array"
         # we're only using the upper triangle of np.inner
         # function would accept a bunch of coordinates and spit out the
         # decorrel for that
-        n = len(self._atomgroups[0])
 
         for chain in self._atomgroups:
             # Vector from each atom to next
@@ -256,42 +273,55 @@ class PersistenceLength(AnalysisBase):
             vecs /= np.sqrt((vecs * vecs).sum(axis=1))[:, None]
 
             inner_pr = np.inner(vecs, vecs)
-            for i in range(n-1):
-                self._results[:(n-1)-i] += inner_pr[i, i:]
+            for i in range(self.chainlength - 1):
+                self.results.raw_bond_autocorr[
+                    : (self.chainlength - 1) - i
+                ] += inner_pr[i, i:]
+
+    def _get_aggregator(self):
+        return ResultsGroup(
+            lookup={
+                "raw_bond_autocorr": ResultsGroup.ndarray_sum,
+            }
+        )
 
     @property
     def lb(self):
-        wmsg = ("The `lb` attribute was deprecated in "
-                "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
-                "Please use `results.variance` instead.")
+        wmsg = (
+            "The `lb` attribute was deprecated in "
+            "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
+            "Please use `results.variance` instead."
+        )
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.lb
 
     @property
     def lp(self):
-        wmsg = ("The `lp` attribute was deprecated in "
-                "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
-                "Please use `results.variance` instead.")
+        wmsg = (
+            "The `lp` attribute was deprecated in "
+            "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
+            "Please use `results.variance` instead."
+        )
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.lp
 
     @property
     def fit(self):
-        wmsg = ("The `fit` attribute was deprecated in "
-                "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
-                "Please use `results.variance` instead.")
+        wmsg = (
+            "The `fit` attribute was deprecated in "
+            "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
+            "Please use `results.variance` instead."
+        )
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.fit
 
     def _conclude(self):
-        n = len(self._atomgroups[0])
-
-        norm = np.linspace(n - 1, 1, n - 1)
-        norm *= len(self._atomgroups) * self.n_frames
-
-        self.results.bond_autocorrelation = self._results / norm
+        norm = np.linspace(self.chainlength - 1, 1, self.chainlength - 1)
+        norm *= len(self._atomgroups) * self._trajectory.n_frames
+        self.results.bond_autocorrelation = (
+            self.results.raw_bond_autocorr / norm
+        )
         self._calc_bond_length()
-
         self._perform_fit()
 
     def _calc_bond_length(self):
@@ -309,13 +339,15 @@ class PersistenceLength(AnalysisBase):
             self.results.bond_autocorrelation
         except AttributeError:
             raise NoDataError("Use the run method first") from None
-        self.results.x = self.results.lb *\
-                            np.arange(len(self.results.bond_autocorrelation))
+        self.results.x = self.results.lb * np.arange(
+            len(self.results.bond_autocorrelation)
+        )
 
-        self.results.lp = fit_exponential_decay(self.results.x,
-                                                self.results.bond_autocorrelation)
+        self.results.lp = fit_exponential_decay(
+            self.results.x, self.results.bond_autocorrelation
+        )
 
-        self.results.fit = np.exp(-self.results.x/self.results.lp)
+        self.results.fit = np.exp(-self.results.x / self.results.lp)
 
     def plot(self, ax=None):
         """Visualize the results and fit
@@ -330,20 +362,21 @@ class PersistenceLength(AnalysisBase):
         ax : the axis that the graph was plotted on
         """
         import matplotlib.pyplot as plt
+
         if ax is None:
-            fig, ax = plt.subplots()
-        ax.plot(self.results.x,
-                self.results.bond_autocorrelation,
-                'ro',
-                label='Result')
-        ax.plot(self.results.x,
-                self.results.fit,
-                label='Fit')
-        ax.set_xlabel(r'x')
-        ax.set_ylabel(r'$C(x)$')
+            _, ax = plt.subplots()
+        ax.plot(
+            self.results.x,
+            self.results.bond_autocorrelation,
+            "ro",
+            label="Result",
+        )
+        ax.plot(self.results.x, self.results.fit, label="Fit")
+        ax.set_xlabel(r"x")
+        ax.set_ylabel(r"$C(x)$")
         ax.set_xlim(0.0, 40 * self.results.lb)
 
-        ax.legend(loc='best')
+        ax.legend(loc="best")
 
         return ax
 
@@ -368,8 +401,9 @@ def fit_exponential_decay(x, y):
     This function assumes that data starts at 1.0 and decays to 0.0
 
     """
+
     def expfunc(x, a):
-        return np.exp(-x/a)
+        return np.exp(-x / a)
 
     a = scipy.optimize.curve_fit(expfunc, x, y)[0][0]
 

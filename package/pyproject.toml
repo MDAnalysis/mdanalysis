@@ -3,15 +3,13 @@
 requires = [
     "Cython>=0.28",
     "packaging",
-    # lowest NumPy we can use for a given Python,
-    # In part adapted from: https://github.com/scipy/oldest-supported-numpy/blob/main/setup.cfg
-    # As per NEP29, we set the minimum version to 1.23.2 for Python <=3.11
-    # and 1.26.0 (first to support) for Python 3.12
-    "numpy==1.23.2; python_version<='3.11' and platform_python_implementation != 'PyPy'",
-    "numpy==1.26.0; python_version=='3.12' and platform_python_implementation != 'PyPy'",
-    # For unreleased versions of Python there is currently no known supported
-    # NumPy version. In that case we just let it be a bare NumPy install
-    "numpy<2.0; python_version>='3.13'",
+    # numpy requirement for wheel builds for distribution on PyPI - building
+    # against 2.x yields wheels that are also compatible with numpy 1.x at
+    # runtime.
+    # Note that building against numpy 1.x works fine too - users and
+    # redistributors can do this by installing the numpy version they like and
+    # disabling build isolation.
+    "numpy>=2.0.0",
     # Set to minimum version of setuptools that allows pyproject.toml
     "setuptools >= 40.9.0",
     "wheel",
@@ -29,9 +27,9 @@ authors = [
 maintainers = [
     {name = 'MDAnalysis Core Developers', email = 'mdanalysis@numfocus.org'}
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
-    'numpy>=1.23.2',
+    'numpy>=1.26.0',
     'GridDataFormats>=0.4.0',
     'mmtf-python>=1.0.0',
     'joblib>=0.12',
@@ -40,11 +38,8 @@ dependencies = [
     'tqdm>=4.43.0',
     'threadpoolctl',
     'packaging',
-    'fasteners',
+    'filelock',
     'mda-xdrlib',
-    'waterdynamics',
-    'pathsimanalysis',
-    'mdahole2',
 ]
 keywords = [
     "python", "science", "chemistry", "biophysics", "molecular-dynamics",
@@ -55,14 +50,15 @@ classifiers = [
     'Development Status :: 6 - Mature',
     'Environment :: Console',
     'Intended Audience :: Science/Research',
-    'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
+    'License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)',
     'Operating System :: POSIX',
     'Operating System :: MacOS :: MacOS X',
     'Operating System :: Microsoft :: Windows',
     'Programming Language :: Python',
-    'Programming Language :: Python :: 3.10',
     'Programming Language :: Python :: 3.11',
     'Programming Language :: Python :: 3.12',
+    'Programming Language :: Python :: 3.13',
+    'Programming Language :: Python :: 3.14',
     'Programming Language :: C',
     'Topic :: Scientific/Engineering',
     'Topic :: Scientific/Engineering :: Bio-Informatics',
@@ -79,7 +75,8 @@ extra_formats = [
     "pyedr>=0.7.0",
     "pytng>=0.2.3",
     "gsd>3.0.0",
-    "rdkit>=2020.03.1",
+    "rdkit>=2022.09.1",
+    "imdclient>=0.2.2",
 ]
 analysis = [
     "biopython>=1.80",
@@ -87,6 +84,9 @@ analysis = [
     "scikit-learn",
     "tidynamics>=1.0.0",
     'networkx>=2.0',
+    'waterdynamics',
+    'pathsimanalysis',
+    'mdahole2',
 ]
 doc = [
     "sphinx",
@@ -95,6 +95,9 @@ doc = [
     "sphinxcontrib-bibtex",
     "pybtex",
     "pybtex-docutils",
+]
+parallel = [
+    "dask",
 ]
 
 [project.urls]
@@ -120,3 +123,27 @@ find = {}
 MDAnalysis = [
     'analysis/data/*.npy',
 ]
+
+[tool.black]
+line-length = 79
+target-version = ['py311', 'py312', 'py313']
+extend-exclude = '''
+(
+__pycache__ 
+| MDAnalysis/coordinates/DCD\.py
+| MDAnalysis/coordinates/TRJ\.py
+| MDAnalysis/coordinates/__init__\.py
+| MDAnalysis/analysis/hydrogenbonds/hbond_analysis\.py
+| MDAnalysis/coordinates/DLPoly\.py
+| MDAnalysis/coordinates/TRZ\.py
+| MDAnalysis/coordinates/__init__\.py
+| MDAnalysis/coordinates/base\.py
+| MDAnalysis/topology/tpr/utils\.py
+| MDAnalysis/coordinates/MMCIF\.py
+| MDAnalysis/topology/MMCIFParser\.py
+| MDAnalysis/topology/PDBParser\.py
+| MDAnalysis/topology/__init__\.py
+| .*\.pyx
+)
+'''
+required-version = '24'

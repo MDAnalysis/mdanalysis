@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -387,13 +387,13 @@ cdef class DCDFile:
             raise EOFError('Trying to seek over max number of frames')
         self.reached_eof = False
 
-        cdef fio_size_t offset
+        cdef long long offset
         if frame == 0:
             offset = self._header_size
         else:
             offset = self._header_size
             offset += self._firstframesize
-            offset += self._framesize * (frame - 1)
+            offset += self._framesize * (<long long>frame - 1)
 
         cdef int ok = fio_fseek(self.fp, offset, _whence_vals['FIO_SEEK_SET'])
         if ok != 0:

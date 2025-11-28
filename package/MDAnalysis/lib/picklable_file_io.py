@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -107,27 +107,30 @@ class FileIOPicklable(io.FileIO):
 
     .. versionadded:: 2.0.0
     """
-    def __init__(self, name, mode='r'):
+
+    def __init__(self, name, mode="r"):
         self._mode = mode
         super().__init__(name, mode)
 
-
     def __setstate__(self, state):
         name = state["name_val"]
-        super().__init__(name, mode='r')
+        self.__init__(name, mode="r")
         try:
             self.seek(state["tell_val"])
         except KeyError:
             pass
 
     def __reduce_ex__(self, prot):
-        if self._mode != 'r':
-            raise RuntimeError("Can only pickle files that were opened "
-                               "in read mode, not {}".format(self._mode))
-        return (self.__class__,
-                (self.name, self._mode),
-                {"name_val": self.name,
-                 "tell_val": self.tell()})
+        if self._mode != "r":
+            raise RuntimeError(
+                "Can only pickle files that were opened "
+                "in read mode, not {}".format(self._mode)
+            )
+        return (
+            self.__class__,
+            (self.name, self._mode),
+            {"name_val": self.name, "tell_val": self.tell()},
+        )
 
 
 class BufferIOPicklable(io.BufferedReader):
@@ -156,38 +159,37 @@ class BufferIOPicklable(io.BufferedReader):
 
     .. versionadded:: 2.0.0
     """
+
     def __init__(self, raw):
         super().__init__(raw)
         self.raw_class = raw.__class__
-
 
     def __setstate__(self, state):
         raw_class = state["raw_class"]
         name = state["name_val"]
         raw = raw_class(name)
-        super().__init__(raw)
+        self.__init__(raw)
         self.seek(state["tell_val"])
 
     def __reduce_ex__(self, prot):
         # don't ask, for Python 3.12+ see:
         # https://github.com/python/cpython/pull/104370
-        return (self.raw_class,
-                (self.name,),
-                {"raw_class": self.raw_class,
-                 "name_val": self.name,
-                 "tell_val": self.tell()})
+        return (
+            self.raw_class,
+            (self.name,),
+            {
+                "raw_class": self.raw_class,
+                "name_val": self.name,
+                "tell_val": self.tell(),
+            },
+        )
+
 
 class TextIOPicklable(io.TextIOWrapper):
     """Character and line based picklable file-like object.
 
     This class provides a file-like :class:`io.TextIOWrapper` object that can
     be pickled. Note that this only works in read mode.
-
-    Note
-    ----
-    After pickling, the current position is reset. `universe.trajectory[i]` has
-    to be used to return to its original frame.
-
 
     Parameters
     ----------
@@ -207,30 +209,49 @@ class TextIOPicklable(io.TextIOWrapper):
 
 
     .. versionadded:: 2.0.0
+    .. versionchanged:: 2.8.0
+       The raw class instance instead of the class name
+       that is wrapped inside will be serialized.
+       After deserialization, the current position is no longer reset
+       so `universe.trajectory[i]` is not needed to seek to the
+       original position.
     """
+
     def __init__(self, raw):
         super().__init__(raw)
         self.raw_class = raw.__class__
 
-
     def __setstate__(self, args):
         raw_class = args["raw_class"]
         name = args["name_val"]
+        tell = args["tell_val"]
         # raw_class is used for further expansion this functionality to
         # Gzip files, which also requires a text wrapper.
         raw = raw_class(name)
-        super().__init__(raw)
+        self.__init__(raw)
+        if tell is not None:
+            self.seek(tell)
 
     def __reduce_ex__(self, prot):
+        try:
+            curr_loc = self.tell()
+        # some readers (e.g. GMS) disable tell() due to using next()
+        except OSError:
+            curr_loc = None
         try:
             name = self.name
         except AttributeError:
             # This is kind of ugly--BZ2File does not save its name.
             name = self.buffer._fp.name
-        return (self.__class__.__new__,
-                (self.__class__,),
-                {"raw_class": self.raw_class,
-                 "name_val": name})
+        return (
+            self.__class__.__new__,
+            (self.__class__,),
+            {
+                "raw_class": self.raw_class,
+                "name_val": name,
+                "tell_val": curr_loc,
+            },
+        )
 
 
 class BZ2Picklable(bz2.BZ2File):
@@ -282,20 +303,25 @@ class BZ2Picklable(bz2.BZ2File):
 
     .. versionadded:: 2.0.0
     """
-    def __init__(self, name, mode='rb'):
+
+    def __init__(self, name, mode="rb"):
         self._bz_mode = mode
         super().__init__(name, mode)
 
     def __getstate__(self):
-        if not self._bz_mode.startswith('r'):
-            raise RuntimeError("Can only pickle files that were opened "
-                               "in read mode, not {}".format(self._bz_mode))
+        if not self._bz_mode.startswith("r"):
+            raise RuntimeError(
+                "Can only pickle files that were opened "
+                "in read mode, not {}".format(self._bz_mode)
+            )
         return {"name_val": self._fp.name, "tell_val": self.tell()}
 
     def __setstate__(self, args):
-        super().__init__(args["name_val"])
+        name = args["name_val"]
+        tell = args["tell_val"]
+        self.__init__(name)
         try:
-            self.seek(args["tell_val"])
+            self.seek(tell)
         except KeyError:
             pass
 
@@ -349,26 +375,30 @@ class GzipPicklable(gzip.GzipFile):
 
     .. versionadded:: 2.0.0
     """
-    def __init__(self, name, mode='rb'):
+
+    def __init__(self, name, mode="rb"):
         self._gz_mode = mode
         super().__init__(name, mode)
 
     def __getstate__(self):
-        if not self._gz_mode.startswith('r'):
-            raise RuntimeError("Can only pickle files that were opened "
-                               "in read mode, not {}".format(self._gz_mode))
-        return {"name_val": self.name,
-                "tell_val": self.tell()}
+        if not self._gz_mode.startswith("r"):
+            raise RuntimeError(
+                "Can only pickle files that were opened "
+                "in read mode, not {}".format(self._gz_mode)
+            )
+        return {"name_val": self.name, "tell_val": self.tell()}
 
     def __setstate__(self, args):
-        super().__init__(args["name_val"])
+        name = args["name_val"]
+        tell = args["tell_val"]
+        self.__init__(name)
         try:
-            self.seek(args["tell_val"])
+            self.seek(tell)
         except KeyError:
             pass
 
 
-def pickle_open(name, mode='rt'):
+def pickle_open(name, mode="rt"):
     """Open file and return a stream with pickle function implemented.
 
     This function returns a FileIOPicklable object wrapped in a
@@ -429,18 +459,19 @@ def pickle_open(name, mode='rt'):
 
     .. versionadded:: 2.0.0
     """
-    if mode not in {'r', 'rt', 'rb'}:
-        raise ValueError("Only read mode ('r', 'rt', 'rb') "
-                         "files can be pickled.")
+    if mode not in {"r", "rt", "rb"}:
+        raise ValueError(
+            "Only read mode ('r', 'rt', 'rb') " "files can be pickled."
+        )
     name = os.fspath(name)
     raw = FileIOPicklable(name)
-    if mode == 'rb':
+    if mode == "rb":
         return BufferIOPicklable(raw)
-    elif mode in {'r', 'rt'}:
+    elif mode in {"r", "rt"}:
         return TextIOPicklable(raw)
 
 
-def bz2_pickle_open(name, mode='rb'):
+def bz2_pickle_open(name, mode="rb"):
     """Open a bzip2-compressed file in binary or text mode
     with pickle function implemented.
 
@@ -501,9 +532,10 @@ def bz2_pickle_open(name, mode='rb'):
 
     .. versionadded:: 2.0.0
     """
-    if mode not in {'r', 'rt', 'rb'}:
-        raise ValueError("Only read mode ('r', 'rt', 'rb') "
-                         "files can be pickled.")
+    if mode not in {"r", "rt", "rb"}:
+        raise ValueError(
+            "Only read mode ('r', 'rt', 'rb') " "files can be pickled."
+        )
     bz_mode = mode.replace("t", "")
     binary_file = BZ2Picklable(name, bz_mode)
     if "t" in mode:
@@ -512,7 +544,7 @@ def bz2_pickle_open(name, mode='rb'):
         return binary_file
 
 
-def gzip_pickle_open(name, mode='rb'):
+def gzip_pickle_open(name, mode="rb"):
     """Open a gzip-compressed file in binary or text mode
     with pickle function implemented.
 
@@ -573,9 +605,10 @@ def gzip_pickle_open(name, mode='rb'):
 
     .. versionadded:: 2.0.0
     """
-    if mode not in {'r', 'rt', 'rb'}:
-        raise ValueError("Only read mode ('r', 'rt', 'rb') "
-                         "files can be pickled.")
+    if mode not in {"r", "rt", "rb"}:
+        raise ValueError(
+            "Only read mode ('r', 'rt', 'rb') " "files can be pickled."
+        )
     gz_mode = mode.replace("t", "")
     binary_file = GzipPicklable(name, gz_mode)
     if "t" in mode:

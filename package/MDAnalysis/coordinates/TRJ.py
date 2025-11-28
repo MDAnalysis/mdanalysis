@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -115,10 +115,10 @@ AMBER ASCII trajectories are recognised by the suffix '.trj',
 .. Links
 
 .. _AMBER: http://ambermd.org
-.. _AMBER TRJ format: http://ambermd.org/formats.html#trajectory
+.. _AMBER TRJ format: https://ambermd.org/FileFormats.php#trajectory
 ..    The formats page was archived as
 ..    http://www.webcitation.org/query?url=http%3A%2F%2Fambermd.org%2Fformats.html&date=2018-02-11
-..    Use the archived version if the original disappears. [orbeckst]
+..    Use the archived version if the original (https://ambermd.org/FileFormats.php#trajectory) disappears. [orbeckst]
 .. _AMBER netcdf format: http://ambermd.org/netcdf/nctraj.xhtml
 ..    The formats page was archived as
 ..    http://www.webcitation.org/query?url=http%3A%2F%2Fambermd.org%2Fnetcdf%2Fnctraj.xhtml&date=2018-02-11
@@ -166,7 +166,7 @@ class TRJReader(base.ReaderBase):
     be set by passing the `dt` keyword argument to the constructor; it
     is assumed to be in ps. The default value is 1 ps.
 
-    .. _AMBER TRJ format: http://ambermd.org/formats.html#trajectory
+    .. _AMBER TRJ format: https://ambermd.org/FileFormats.php#trajectory
 
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based.

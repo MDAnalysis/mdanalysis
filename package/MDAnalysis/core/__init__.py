@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -50,7 +50,7 @@ the coordinates as a numpy array ::
 and write your own Python code.
 """
 
-__all__ = ['AtomGroup', 'Selection']
+__all__ = ["AtomGroup", "Selection"]
 
 from .groups import AtomGroup
 from .selection import Selection

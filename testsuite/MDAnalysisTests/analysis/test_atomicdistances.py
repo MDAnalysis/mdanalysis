@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -79,8 +79,9 @@ class TestAtomicDistances(object):
     @staticmethod
     @pytest.fixture()
     def expected_dist(ad_ag1, ad_ag2):
-        expected = np.zeros((len(ad_ag1.universe.trajectory),
-                             ad_ag1.atoms.n_atoms))
+        expected = np.zeros(
+            (len(ad_ag1.universe.trajectory), ad_ag1.atoms.n_atoms)
+        )
 
         # calculate distances without PBCs using dist()
         for i, ts in enumerate(ad_ag1.universe.trajectory):
@@ -90,8 +91,9 @@ class TestAtomicDistances(object):
     @staticmethod
     @pytest.fixture()
     def expected_pbc_dist(ad_ag1, ad_ag2):
-        expected = np.zeros((len(ad_ag1.universe.trajectory),
-                             ad_ag1.atoms.n_atoms))
+        expected = np.zeros(
+            (len(ad_ag1.universe.trajectory), ad_ag1.atoms.n_atoms)
+        )
 
         # calculate distances with PBCs using dist()
         for i, ts in enumerate(ad_ag1.universe.trajectory):
@@ -99,8 +101,8 @@ class TestAtomicDistances(object):
         return expected
 
     def test_ad_exceptions(self, ad_ag1, ad_ag3, ad_ag4):
-        '''Test exceptions raised when number of atoms do not
-        match or AtomGroups come from different trajectories.'''
+        """Test exceptions raised when number of atoms do not
+        match or AtomGroups come from different trajectories."""
 
         # number of atoms do not match
         match_exp_atoms = "AtomGroups do not"
@@ -114,22 +116,19 @@ class TestAtomicDistances(object):
 
     # only need to test that this class correctly applies distance calcs
     # calc_bonds() is tested elsewhere
-    def test_ad_pairwise_dist(self, ad_ag1, ad_ag2,
-                              expected_dist):
-        '''Ensure that pairwise distances between atoms are
-        correctly calculated without PBCs.'''
-        pairwise_no_pbc = (ad.AtomicDistances(ad_ag1, ad_ag2,
-                                              pbc=False).run())
+    def test_ad_pairwise_dist(self, ad_ag1, ad_ag2, expected_dist):
+        """Ensure that pairwise distances between atoms are
+        correctly calculated without PBCs."""
+        pairwise_no_pbc = ad.AtomicDistances(ad_ag1, ad_ag2, pbc=False).run()
         actual = pairwise_no_pbc.results
 
         # compare with expected values from dist()
         assert_allclose(actual, expected_dist)
 
-    def test_ad_pairwise_dist_pbc(self, ad_ag1, ad_ag2,
-                                  expected_pbc_dist):
-        '''Ensure that pairwise distances between atoms are
-        correctly calculated with PBCs.'''
-        pairwise_pbc = (ad.AtomicDistances(ad_ag1, ad_ag2).run())
+    def test_ad_pairwise_dist_pbc(self, ad_ag1, ad_ag2, expected_pbc_dist):
+        """Ensure that pairwise distances between atoms are
+        correctly calculated with PBCs."""
+        pairwise_pbc = ad.AtomicDistances(ad_ag1, ad_ag2).run()
         actual = pairwise_pbc.results
 
         # compare with expected values from dist()

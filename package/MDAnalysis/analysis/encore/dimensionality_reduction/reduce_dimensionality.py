@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -31,21 +31,29 @@ reduction algorithms, wrapping them to allow them to be used interchangably.
 
 .. versionadded:: 0.16.0
 
+.. deprecated:: 2.8.0
+   This module is deprecated in favour of the 
+   MDAKit `mdaencore <https://mdanalysis.org/mdaencore/>`_ and will be removed
+   in MDAnalysis 3.0.0.
+
 """
 import numpy as np
 from ..confdistmatrix import get_distance_matrix
 from ..utils import ParallelCalculation, merge_universes
 from ..dimensionality_reduction.DimensionalityReductionMethod import (
-    StochasticProximityEmbeddingNative)
+    StochasticProximityEmbeddingNative,
+)
 
 
-def reduce_dimensionality(ensembles,
-                          method=StochasticProximityEmbeddingNative(),
-                          select="name CA",
-                          distance_matrix=None,
-                          allow_collapsed_result=True,
-                          ncores=1,
-                          **kwargs):
+def reduce_dimensionality(
+    ensembles,
+    method=None,
+    select="name CA",
+    distance_matrix=None,
+    allow_collapsed_result=True,
+    ncores=1,
+    **kwargs,
+):
     """
     Reduce dimensions in frames from one or more ensembles, using one or more
     dimensionality reduction methods. The function optionally takes
@@ -147,13 +155,14 @@ def reduce_dimensionality(ensembles,
                              encore.StochasticProximityEmbeddingNative(dimension=2)])
 
     """
-
+    if method is None:
+        method = StochasticProximityEmbeddingNative()
     if ensembles is not None:
-        if not hasattr(ensembles, '__iter__'):
+        if not hasattr(ensembles, "__iter__"):
             ensembles = [ensembles]
 
         ensembles_list = ensembles
-        if not hasattr(ensembles[0], '__iter__'):
+        if not hasattr(ensembles[0], "__iter__"):
             ensembles_list = [ensembles]
 
         # Calculate merged ensembles and transfer to memory
@@ -165,37 +174,40 @@ def reduce_dimensionality(ensembles,
             merged_ensembles.append(merge_universes(ensembles))
 
     methods = method
-    if not hasattr(method, '__iter__'):
+    if not hasattr(method, "__iter__"):
         methods = [method]
 
     # Check whether any of the methods can make use of a distance matrix
-    any_method_accept_distance_matrix = \
-        np.any([_method.accepts_distance_matrix for _method in
-                methods])
-
-
+    any_method_accept_distance_matrix = np.any(
+        [_method.accepts_distance_matrix for _method in methods]
+    )
 
     # If distance matrices are provided, check that it matches the number
     # of ensembles
     if distance_matrix:
-        if not hasattr(distance_matrix, '__iter__'):
+        if not hasattr(distance_matrix, "__iter__"):
             distance_matrix = [distance_matrix]
-        if ensembles is not None and \
-                        len(distance_matrix) != len(merged_ensembles):
-            raise ValueError("Dimensions of provided list of distance matrices "
-                             "does not match that of provided list of "
-                             "ensembles: {0} vs {1}"
-                             .format(len(distance_matrix),
-                                     len(merged_ensembles)))
+        if ensembles is not None and len(distance_matrix) != len(
+            merged_ensembles
+        ):
+            raise ValueError(
+                "Dimensions of provided list of distance matrices "
+                "does not match that of provided list of "
+                "ensembles: {0} vs {1}".format(
+                    len(distance_matrix), len(merged_ensembles)
+                )
+            )
 
     else:
         # Calculate distance matrices for all merged ensembles - if not provided
         if any_method_accept_distance_matrix:
             distance_matrix = []
             for merged_ensemble in merged_ensembles:
-                distance_matrix.append(get_distance_matrix(merged_ensemble,
-                                                           select=select,
-                                                           **kwargs))
+                distance_matrix.append(
+                    get_distance_matrix(
+                        merged_ensemble, select=select, **kwargs
+                    )
+                )
 
     args = []
     for method in methods:
@@ -203,11 +215,14 @@ def reduce_dimensionality(ensembles,
             args += [(d,) for d in distance_matrix]
         else:
             for merged_ensemble in merged_ensembles:
-                coordinates = merged_ensemble.trajectory.timeseries(order="fac")
+                coordinates = merged_ensemble.trajectory.timeseries(
+                    order="fac"
+                )
 
                 # Flatten coordinate matrix into n_frame x n_coordinates
-                coordinates = np.reshape(coordinates,
-                                         (coordinates.shape[0], -1))
+                coordinates = np.reshape(
+                    coordinates, (coordinates.shape[0], -1)
+                )
 
                 args.append((coordinates,))
 
@@ -222,16 +237,16 @@ def reduce_dimensionality(ensembles,
     if ensembles is not None:
         ensemble_assignment = []
         for i, ensemble in enumerate(ensembles):
-            ensemble_assignment += [i+1]*len(ensemble.trajectory)
+            ensemble_assignment += [i + 1] * len(ensemble.trajectory)
         ensemble_assignment = np.array(ensemble_assignment)
-        details['ensemble_membership'] = ensemble_assignment
+        details["ensemble_membership"] = ensemble_assignment
 
     coordinates = []
     for result in results:
         coordinates.append(result[1][0])
         # details.append(result[1][1])
 
-    if allow_collapsed_result and len(coordinates)==1:
+    if allow_collapsed_result and len(coordinates) == 1:
         coordinates = coordinates[0]
         # details = details[0]
 

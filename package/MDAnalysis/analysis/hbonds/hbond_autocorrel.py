@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -25,7 +25,7 @@
 
 :Author: Richard J. Gowers
 :Year: 2014
-:Copyright: GNU Public License v3
+:Copyright: Lesser GNU Public License v2.1+
 
 .. versionadded:: 0.9.0
 
@@ -45,10 +45,12 @@ See Also
 import warnings
 
 with warnings.catch_warnings():
-    warnings.simplefilter('always', DeprecationWarning)
-    wmsg = ("This module was moved to "
-            "MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel; "
-            "hbonds.hbond_autocorrel will be removed in 3.0.0.")
+    warnings.simplefilter("always", DeprecationWarning)
+    wmsg = (
+        "This module was moved to "
+        "MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel; "
+        "hbonds.hbond_autocorrel will be removed in 3.0.0."
+    )
     warnings.warn(wmsg, category=DeprecationWarning)
 
 from MDAnalysis.lib.util import deprecate
@@ -56,16 +58,18 @@ from MDAnalysis.lib.util import deprecate
 from ..hydrogenbonds import hbond_autocorrel
 
 
-find_hydrogen_donors = deprecate(hbond_autocorrel.find_hydrogen_donors,
-                                 release="2.0.0", remove="3.0.0",
-                                 message="The function was moved to "
-                                 "MDAnalysis.analysis.hbonds.hbond_autocorrel.")
+find_hydrogen_donors = deprecate(
+    hbond_autocorrel.find_hydrogen_donors,
+    release="2.0.0",
+    remove="3.0.0",
+    message="The function was moved to "
+    "MDAnalysis.analysis.hbonds.hbond_autocorrel.",
+)
 
-HydrogenBondAutoCorrel = deprecate(hbond_autocorrel.HydrogenBondAutoCorrel,
-                                   release="2.0.0", remove="3.0.0",
-                                   message="The class was moved to "
-                                   "MDAnalysis.analysis.hbonds.hbond_autocorrel.")
-
-
-
-
+HydrogenBondAutoCorrel = deprecate(
+    hbond_autocorrel.HydrogenBondAutoCorrel,
+    release="2.0.0",
+    remove="3.0.0",
+    message="The class was moved to "
+    "MDAnalysis.analysis.hbonds.hbond_autocorrel.",
+)

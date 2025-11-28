@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v2 or any higher version
+# Released under the Lesser GNU Public Licence, v2.1 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -148,7 +148,9 @@ class TNGReader(base.ReaderBase):
         _forces_blockname,
     ]
 
-    @due.dcite(Doi("10.1002/jcc.23495"), description="The TNG paper", path=__name__)
+    @due.dcite(
+        Doi("10.1002/jcc.23495"), description="The TNG paper", path=__name__
+    )
     @store_init_arguments
     def __init__(self, filename: str, convert_units: bool = True, **kwargs):
         """Initialize a TNG trajectory
@@ -162,7 +164,9 @@ class TNGReader(base.ReaderBase):
 
         """
         if not HAS_PYTNG:
-            raise ImportError("TNGReader: To read TNG files please install pytng")
+            raise ImportError(
+                "TNGReader: To read TNG files please install pytng"
+            )
 
         super(TNGReader, self).__init__(filename, **kwargs)
 
@@ -193,27 +197,35 @@ class TNGReader(base.ReaderBase):
         self._has_positions = self._positions_blockname in self._block_names
         if self._has_positions:
             self._special_block_present[self._positions_blockname] = True
-            self.ts.positions = self._file_iterator.make_ndarray_for_block_from_name(
-                self._positions_blockname
+            self.ts.positions = (
+                self._file_iterator.make_ndarray_for_block_from_name(
+                    self._positions_blockname
+                )
             )
 
         self._has_velocities = self._velocities_blockname in self._block_names
         if self._has_velocities:
             self._special_block_present[self._velocities_blockname] = True
-            self.ts.velocities = self._file_iterator.make_ndarray_for_block_from_name(
-                self._velocities_blockname
+            self.ts.velocities = (
+                self._file_iterator.make_ndarray_for_block_from_name(
+                    self._velocities_blockname
+                )
             )
 
         self._has_forces = self._forces_blockname in self._block_names
         if self._has_forces:
             self._special_block_present[self._forces_blockname] = True
-            self.ts.forces = self._file_iterator.make_ndarray_for_block_from_name(
-                self._forces_blockname
+            self.ts.forces = (
+                self._file_iterator.make_ndarray_for_block_from_name(
+                    self._forces_blockname
+                )
             )
 
         # check for any additional blocks that will be read into ts.data
         self._additional_blocks = [
-            block for block in self._block_names if block not in self._special_blocks
+            block
+            for block in self._block_names
+            if block not in self._special_blocks
         ]
         self._check_strides_and_frames()
         self._frame = 0
@@ -265,7 +277,9 @@ class TNGReader(base.ReaderBase):
                         " It will not be read"
                     )
                 else:
-                    self._additional_blocks_to_read.append(block)  # pragma: no cover
+                    self._additional_blocks_to_read.append(
+                        block
+                    )  # pragma: no cover
             else:
                 self._additional_blocks_to_read.append(block)
 
@@ -289,7 +303,9 @@ class TNGReader(base.ReaderBase):
 
         """
         if not HAS_PYTNG:
-            raise ImportError("TNGReader: To read TNG files please install pytng")
+            raise ImportError(
+                "TNGReader: To read TNG files please install pytng"
+            )
         with pytng.TNGFileIterator(filename, "r") as tng:
             n_atoms = tng.n_atoms
         return n_atoms
@@ -471,7 +487,9 @@ class TNGReader(base.ReaderBase):
             add_block_stride = self._block_strides[block]
             # check we are on stride for our block
             if not (add_block_stride % self._global_stride):
-                block_data = self._file_iterator.make_ndarray_for_block_from_name(block)
+                block_data = (
+                    self._file_iterator.make_ndarray_for_block_from_name(block)
+                )
                 # additional blocks read into ts.data dictionary
                 ts.data[block] = curr_step.get_blockid(
                     self._block_dictionary[block], block_data
@@ -499,9 +517,15 @@ class TNGReader(base.ReaderBase):
         self.__dict__ = state
         # reconstruct file iterator
         self._file_iterator = pytng.TNGFileIterator(self.filename, "r")
-        # make sure we re-read the current frame to update C level objects in
-        # the file iterator
-        self._read_frame(self._frame)
+
+        # unlike self._read_frame(self._frame),
+        # the following lines update the state of the C-level file iterator
+        # without updating the ts object.
+        # This is necessary to preserve the modification,
+        # e.g. changing coordinates, in the ts object.
+        # see PR #3722 for more details.
+        step = self._frame_to_step(self._frame)
+        _ = self._file_iterator.read_step(step)
 
     def Writer(self):
         """Writer for TNG files
