@@ -1147,10 +1147,8 @@ class AverageStructure(AnalysisBase):
         if getattr(self, "_in_memory", False):
             # We are in the in_memory case: always run serial.
             if requested_backend not in (None, "serial"):
-                warnings.warn(
-                    "The in-memory parallel trajectory usage is inefficient"
-                    "and not supported. Falling back to serial.",
-                    RuntimeWarning,
+                raise ValueError(
+                    "The in-memory parallel trajectory usage is not supported. Use serial backend instead.",
                 )
             return super().run(
                 start=start, stop=stop, step=step, verbose=verbose

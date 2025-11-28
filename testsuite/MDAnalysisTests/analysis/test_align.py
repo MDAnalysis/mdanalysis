@@ -636,17 +636,32 @@ class TestAverageStructure(object):
     def test_average_structure_in_memory(
         self, universe, client_AverageStructure
     ):
-        avg = align.AverageStructure(universe, in_memory=True).run(
-            **client_AverageStructure
-        )
-        reference_coordinates = universe.trajectory.timeseries().mean(axis=1)
-        assert_allclose(
-            avg.results.universe.atoms.positions,
-            reference_coordinates,
-            rtol=0,
-            atol=1.5e-4,
-        )
-        assert avg.filename is None
+        backend = client_AverageStructure["backend"]
+
+        if backend != "serial":
+            # in_memory=True + non-serial backend is now explicitly unsupported
+            with pytest.raises(
+                ValueError,
+                match="The in-memory parallel trajectory usage is not supported. Use serial backend instead.",
+            ):
+                align.AverageStructure(universe, in_memory=True).run(
+                    **client_AverageStructure
+                )
+        else:
+            # serial backend: should still work and match the averaged coordinates
+            avg = align.AverageStructure(universe, in_memory=True).run(
+                **client_AverageStructure
+            )
+            reference_coordinates = universe.trajectory.timeseries().mean(
+                axis=1
+            )
+            assert_allclose(
+                avg.results.universe.atoms.positions,
+                reference_coordinates,
+                rtol=0,
+                atol=1.5e-4,
+            )
+            assert avg.filename is None
 
 
 class TestAlignmentProcessing:
