@@ -312,6 +312,13 @@ class DSSP(AnalysisBase):
         ag: AtomGroup = atoms.select_atoms("protein")
         super().__init__(ag.universe.trajectory)
 
+        n_residues = len(ag.residues)
+        min_residues = 5
+        if n_residues < min_residues:
+            raise ValueError(
+                f"DSSP requires at least {min_residues} residues for secondary structure analysis, but only {n_residues} residue(s) were provided in the selection."
+            )
+
         # define necessary selections
         self._heavy_atoms: dict[str, "AtomGroup"] = {
             t: ag.atoms[
