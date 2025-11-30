@@ -89,3 +89,24 @@ def test_exception_raises_with_atom_index(pdb_filename, client_DSSP):
         match="Residue <Residue SER, 298> contains*",
     ):
         DSSP(u, guess_hydrogens=False).run(**client_DSSP)
+
+
+def test_insufficient_residues_raises_error(client_DSSP):
+    """Test that DSSP raises clear error for insufficient residues."""
+    u = mda.Universe(TPR, XTC)
+
+    protein = u.select_atoms("protein")
+    resids = protein.residues.resids
+
+    with pytest.raises(ValueError, match="DSSP requires at least 6 residues"):
+        res2 = u.select_atoms(f"protein and resid {resids[0]}-{resids[1]}")
+        DSSP(res2)
+
+    with pytest.raises(ValueError, match="DSSP requires at least 6 residues"):
+        res4 = u.select_atoms(f"protein and resid {resids[0]}-{resids[3]}")
+        DSSP(res4)
+
+    res6 = u.select_atoms(f"protein and resid {resids[0]}-{resids[5]}")
+    dssp = DSSP(res6)
+    result = dssp.run(**client_DSSP, stop=1)
+    assert result.results.dssp.shape[1] == 6

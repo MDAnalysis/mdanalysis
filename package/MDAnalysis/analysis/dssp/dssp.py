@@ -240,6 +240,8 @@ class DSSP(AnalysisBase):
     Raises
     ------
     ValueError
+        If fewer than 6 residues are provided in the selection.
+    ValueError
         if ``guess_hydrogens`` is True but some non-PRO hydrogens are missing.
 
     Examples
@@ -357,11 +359,10 @@ class DSSP(AnalysisBase):
                 )
             )
 
-        n_residues = len(ag.residues)
-        MIN_RESIDUES = 5
-        if n_residues < MIN_RESIDUES:
+        if len(ag.residues) < 6:
             raise ValueError(
-                f"DSSP requires at least {MIN_RESIDUES} residues for secondary structure analysis, but only {n_residues} residue(s) were provided in the selection."
+                "DSSP requires at least 6 residues for secondary structure analysis, "
+                f"but only {len(ag.residues)} residue(s) were provided in the selection."
             )
 
     def _prepare(self):
