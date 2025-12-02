@@ -27,7 +27,7 @@ Mean Squared Displacement --- :mod:`MDAnalysis.analysis.msd`
 
 :Authors: Hugo MacDermott-Opeskin
 :Year: 2020
-:Copyright: Lesser GNU Public License v2.1
+:Copyright: Lesser GNU Public License v2.1+
 
 This module implements the calculation of Mean Squared Displacements (MSDs)
 by the Einstein relation. MSDs can be used to characterize the speed at
