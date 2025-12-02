@@ -27,7 +27,7 @@ Mean Squared Displacement --- :mod:`MDAnalysis.analysis.msd`
 
 :Authors: Hugo MacDermott-Opeskin
 :Year: 2020
-:Copyright: Lesser GNU Public License v2.1+
+:Copyright: Lesser GNU Public License v2.1
 
 This module implements the calculation of Mean Squared Displacements (MSDs)
 by the Einstein relation. MSDs can be used to characterize the speed at
@@ -65,12 +65,32 @@ the normal MDAnalysis citations.
 .. warning::
    To correctly compute the MSD using this analysis module, you must supply
    coordinates in the **unwrapped** convention, also known as **no-jump**. 
-   That is, when atoms pass the periodic boundary, they must not be wrapped 
+   That is, when atoms pass the periodic boundary, they must not be wrapped
    back into the primary simulation cell.
-   
-   In MDAnalysis you can use the 
+
+   In MDAnalysis you can use the
    :class:`~MDAnalysis.transformations.nojump.NoJump`
-   transformation. 
+   transformation to unwrap coordinates on-the-fly.
+
+   A minimal example:
+
+   .. code-block:: python
+
+       import MDAnalysis as mda
+       from MDAnalysis.transformations import NoJump
+
+       u = mda.Universe(TOP, TRAJ)
+
+       # Apply NoJump transformation to unwrap coordinates
+       nojump = NoJump(u)
+       u.trajectory.add_transformations(nojump)
+
+       # Now the trajectory is unwrapped and MSD can be computed normally:
+       from MDAnalysis.analysis.msd import EinsteinMSD
+       MSD = EinsteinMSD(u, select="all", msd_type="xyz")
+       MSD.run()
+
+   This replaces the need to preprocess trajectories externally.
    
    In GROMACS, for example, this can be done using `gmx trjconv`_ with the
    ``-pbc nojump`` flag.
