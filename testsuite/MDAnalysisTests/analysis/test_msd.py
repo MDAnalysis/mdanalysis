@@ -24,7 +24,7 @@
 from MDAnalysis.analysis.msd import EinsteinMSD as MSD
 import MDAnalysis as mda
 
-from numpy.testing import assert_allclose,assert_equal
+from numpy.testing import assert_allclose, assert_equal
 import numpy as np
 
 from MDAnalysisTests.datafiles import (
@@ -142,7 +142,7 @@ class TestMSDSimple(object):
         m_simple = MSD(step_traj, "all", msd_type=dim, fft=False)
         m_simple.run()
         poly = characteristic_poly(NSTEP, dim_factor)
-        assert_allclose(m_simple.results.timeseries, poly,  rtol=1e-4)
+        assert_allclose(m_simple.results.timeseries, poly, rtol=1e-4)
 
     @pytest.mark.parametrize(
         "dim, dim_factor",
@@ -165,9 +165,7 @@ class TestMSDSimple(object):
         m_simple.run(start=10, stop=1000, step=10)
         poly = characteristic_poly(NSTEP, dim_factor)
         # polynomial must take offset start into account
-        assert_allclose(
-            m_simple.results.timeseries, poly[0:990:10], rtol=1e-4
-        )
+        assert_allclose(m_simple.results.timeseries, poly[0:990:10], rtol=1e-4)
 
     def test_random_walk_u_simple(self, random_walk_u):
         # regress against random_walk test data
@@ -271,9 +269,7 @@ class TestMSDFFT(object):
         m_simple.run(start=10, stop=1000, step=10)
         poly = characteristic_poly(NSTEP, dim_factor)
         # polynomial must take offset start into account
-        assert_allclose(
-            m_simple.results.timeseries, poly[0:990:10], rtol=1e-3
-        )
+        assert_allclose(m_simple.results.timeseries, poly[0:990:10], rtol=1e-3)
 
     def test_random_walk_u_fft(self, random_walk_u):
         # regress against random_walk test data
