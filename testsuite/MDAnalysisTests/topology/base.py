@@ -57,16 +57,12 @@ class ParserBase(object):
         # attributes required as part of the API
         # ALL parsers must provide these
         for attr in mandatory_attrs:
-            assert hasattr(top, attr), "Missing required attribute: {}".format(
-                attr
-            )
+            assert hasattr(top, attr), "Missing required attribute: {}".format(attr)
 
     def test_expected_attributes(self, top):
         # Extra attributes as declared in specific implementations
         for attr in self.expected_attrs:
-            assert hasattr(top, attr), "Missing expected attribute: {}".format(
-                attr
-            )
+            assert hasattr(top, attr), "Missing expected attribute: {}".format(attr)
 
     def test_no_unexpected_attributes(self, top):
         attrs = set(
@@ -117,9 +113,7 @@ class ParserBase(object):
         """check that the universe created with certain parser have the same
         guessed attributes as  when it was guessed inside the parser"""
         u = mda.Universe(filename)
-        u_guessed_attrs = [
-            attr.attrname for attr in u._topology.guessed_attributes
-        ]
+        u_guessed_attrs = [attr.attrname for attr in u._topology.guessed_attributes]
         for attr in self.guessed_attrs:
             assert hasattr(u.atoms, attr)
             assert attr in u_guessed_attrs

@@ -160,9 +160,7 @@ class TXYZReader(base.ReaderBase):
 
     def open_trajectory(self):
         if self.xyzfile is not None:
-            raise IOError(
-                errno.EALREADY, "TXYZ file already opened", self.filename
-            )
+            raise IOError(errno.EALREADY, "TXYZ file already opened", self.filename)
 
         self.xyzfile = util.anyopen(self.filename)
 

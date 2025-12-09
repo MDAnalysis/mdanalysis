@@ -254,13 +254,10 @@ class _NoDeprecatedCallContext(object):
                 PendingDeprecationWarning,
             )
             if any(
-                issubclass(c, deprecation_categories)
-                for c in self._captured_categories
+                issubclass(c, deprecation_categories) for c in self._captured_categories
             ):
                 __tracebackhide__ = True
-                msg = (
-                    "Produced DeprecationWarning or PendingDeprecationWarning"
-                )
+                msg = "Produced DeprecationWarning or PendingDeprecationWarning"
                 raise AssertionError(msg)
 
 

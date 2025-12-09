@@ -79,7 +79,7 @@ equivalent::
 
     hel_xyz = hel.helix_analysis(u.atoms.positions, ref_axis=[0, 0, 1])
 
-    
+
 Classes
 -------
 
@@ -176,9 +176,7 @@ def local_screw_angles(global_axis, ref_axis, helix_directions):
 
     # angles from projection to perp
     refs = np.array([perp, ortho])  # (2, 3)
-    norms = _, ortho_norm = np.outer(
-        mdamath.pnorm(refs), mdamath.pnorm(proj_plane)
-    )
+    norms = _, ortho_norm = np.outer(mdamath.pnorm(refs), mdamath.pnorm(proj_plane))
     cos = cos_perp, cos_ortho = np.matmul(refs, proj_plane.T) / norms
     to_perp, to_ortho = np.arccos(np.clip(cos, -1, 1))  # (2, n_vec)
     to_ortho[ortho_norm == 0] = 0  # ?
@@ -291,9 +289,7 @@ def helix_analysis(positions, ref_axis=(0, 0, 1)):
     origins[-1] -= radii[-1] * local_helix_directions[-1]
 
     helix_axes = vector_of_best_fit(origins)
-    screw = local_screw_angles(
-        helix_axes, np.asarray(ref_axis), local_helix_directions
-    )
+    screw = local_screw_angles(helix_axes, np.asarray(ref_axis), local_helix_directions)
 
     results = {
         "local_twists": local_twists,
@@ -401,9 +397,7 @@ class HELANAL(AnalysisBase):
         flatten_single_helix=True,
         split_residue_sequences=True,
     ):
-        super(HELANAL, self).__init__(
-            universe.universe.trajectory, verbose=verbose
-        )
+        super(HELANAL, self).__init__(universe.universe.trajectory, verbose=verbose)
         selections = util.asiterable(select)
         atomgroups = [universe.select_atoms(s) for s in selections]
         consecutive = []
@@ -467,9 +461,7 @@ class HELANAL(AnalysisBase):
             self.results[key] = empty
 
         self.results.global_axis = [self._zeros_per_frame((3,)) for n in n_res]
-        self.results.all_bends = [
-            self._zeros_per_frame((n - 3, n - 3)) for n in n_res
-        ]
+        self.results.all_bends = [self._zeros_per_frame((n - 3, n - 3)) for n in n_res]
 
     def _single_frame(self):
         _f = self._frame_index
@@ -484,9 +476,7 @@ class HELANAL(AnalysisBase):
         self.results.global_tilts = tilts = []
         norm_ref = (self.ref_axis**2).sum() ** 0.5
         for axes in self.results.global_axis:
-            cos = np.matmul(self.ref_axis, axes.T) / (
-                mdamath.pnorm(axes) * norm_ref
-            )
+            cos = np.matmul(self.ref_axis, axes.T) / (mdamath.pnorm(axes) * norm_ref)
             cos = np.clip(cos, -1.0, 1.0)
             tilts.append(np.rad2deg(np.arccos(cos)))
 

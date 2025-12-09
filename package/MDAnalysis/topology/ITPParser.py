@@ -31,9 +31,9 @@ charges, chargegroups, masses, moltypes, and molnums.
 Any masses that are in the file will be read; any missing values will be guessed.
 Bonds, angles, dihedrals and impropers are also read from the file.
 
-If an ITP file is passed without a ``[ molecules ]`` directive, passing 
-``infer_system=True`` (the default option) will create a Universe with 
-1 molecule of each defined ``moleculetype``. 
+If an ITP file is passed without a ``[ molecules ]`` directive, passing
+``infer_system=True`` (the default option) will create a Universe with
+1 molecule of each defined ``moleculetype``.
 If a ``[ molecules ]`` section is present, ``infer_system`` is ignored.
 
 If files are included with the `#include` directive, they will also be read.
@@ -70,7 +70,7 @@ Examples
 Preprocessor variables
 ----------------------
 
-ITP files are often defined with lines that depend on 
+ITP files are often defined with lines that depend on
 whether a keyword flag is given. For example, this modified TIP5P water file:
 
 .. code-block:: none
@@ -98,8 +98,8 @@ whether a keyword flag is given. For example, this modified TIP5P water file:
     #endif
 
 
-Define these preprocessor variables by passing keyword arguments. Any arguments that you 
-pass in *override* any variables defined in the file. For example, the universe below 
+Define these preprocessor variables by passing keyword arguments. Any arguments that you
+pass in *override* any variables defined in the file. For example, the universe below
 will have charges of 3 for the HW1 and HW2 atoms::
 
     import MDAnalysis as mda
@@ -368,9 +368,7 @@ class Molecule:
             funct_values=(1, 3, 5, 8, 9, 10, 11),
         )
         if not dih:
-            self.add_param(
-                line, self.impropers, n_funct=4, funct_values=(2, 4)
-            )
+            self.add_param(line, self.impropers, n_funct=4, funct_values=(2, 4))
 
     def parse_constraints(self, line):
         self.add_param(line, self.bonds, n_funct=2, funct_values=(1, 2))
@@ -407,9 +405,7 @@ class Molecule:
 
         self.resolved_residue_attrs = True
 
-    def shift_indices(
-        self, atomid=0, resid=0, molnum=0, cgnr=0, n_res=0, n_atoms=0
-    ):
+    def shift_indices(self, atomid=0, resid=0, molnum=0, cgnr=0, n_res=0, n_atoms=0):
         """
         Get attributes ready for adding onto a larger topology.
 
@@ -577,9 +573,7 @@ class ITPParser(TopologyReaderBase):
                         self.parser = self.parse_molecules
 
                     elif self.current_mol:
-                        self.parser = self.current_mol.parsers.get(
-                            section, self._pass
-                        )
+                        self.parser = self.current_mol.parsers.get(section, self._pass)
 
                     else:
                         self.parser = self._pass
@@ -599,22 +593,14 @@ class ITPParser(TopologyReaderBase):
         if not all(self.charges):
             empty = self.charges == ""
             self.charges[empty] = [
-                (
-                    self.atomtypes.get(x)["charge"]
-                    if x in self.atomtypes.keys()
-                    else ""
-                )
+                (self.atomtypes.get(x)["charge"] if x in self.atomtypes.keys() else "")
                 for x in self.types[empty]
             ]
 
         if not all(self.masses):
             empty = self.masses == ""
             self.masses[empty] = [
-                (
-                    self.atomtypes.get(x)["mass"]
-                    if x in self.atomtypes.keys()
-                    else ""
-                )
+                (self.atomtypes.get(x)["mass"] if x in self.atomtypes.keys() else "")
                 for x in self.types[empty]
             ]
 
@@ -634,15 +620,11 @@ class ITPParser(TopologyReaderBase):
             empty = self.masses == ""
             self.masses[empty] = Masses.missing_value_label
 
-        attrs.append(
-            Masses(np.array(self.masses, dtype=np.float64), guessed=False)
-        )
+        attrs.append(Masses(np.array(self.masses, dtype=np.float64), guessed=False))
 
         self.elements = DefaultGuesser(None).guess_types(self.types)
         if all(e.capitalize() in SYMB2Z for e in self.elements):
-            attrs.append(
-                Elements(np.array(self.elements, dtype=object), guessed=True)
-            )
+            attrs.append(Elements(np.array(self.elements, dtype=object), guessed=True))
             warnings.warn(
                 "The elements attribute has been populated by guessing "
                 "elements from atom types. This behaviour has been "

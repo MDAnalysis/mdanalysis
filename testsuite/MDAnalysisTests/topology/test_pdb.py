@@ -302,10 +302,7 @@ def test_missing_elements_noattribute():
     1) a warning is raised if elements are missing
     2) the elements attribute is not set
     """
-    wmsg = (
-        "Element information is missing, elements attribute will not be "
-        "populated"
-    )
+    wmsg = "Element information is missing, elements attribute will not be " "populated"
     with pytest.warns(UserWarning, match=wmsg):
         u = mda.Universe(PDB_small)
     with pytest.raises(AttributeError):

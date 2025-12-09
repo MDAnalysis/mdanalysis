@@ -33,7 +33,7 @@ objects) or distance matrices, by resampling with replacement.
 .. versionadded:: 0.16.0
 
 .. deprecated:: 2.8.0
-   This module is deprecated in favour of the 
+   This module is deprecated in favour of the
    MDAKit `mdaencore <https://mdanalysis.org/mdaencore/>`_ and will be removed
    in MDAnalysis 3.0.0.
 
@@ -116,9 +116,7 @@ def get_distance_matrix_bootstrap_samples(
     confdistmatrix : list of encore.utils.TriangularMatrix
     """
 
-    bs_args = [
-        ([distance_matrix, ensemble_assignment]) for i in range(samples)
-    ]
+    bs_args = [([distance_matrix, ensemble_assignment]) for i in range(samples)]
 
     pc = ParallelCalculation(ncores, bootstrapped_matrix, bs_args)
 

@@ -30,7 +30,7 @@ Ensemble Similarity Calculations --- :mod:`MDAnalysis.analysis.encore.similarity
 .. versionadded:: 0.16.0
 
 .. deprecated:: 2.8.0
-   This module is deprecated in favour of the 
+   This module is deprecated in favour of the
    MDAKit `mdaencore <https://mdanalysis.org/mdaencore/>`_ and will be removed
    in MDAnalysis 3.0.0.
 
@@ -302,15 +302,12 @@ def harmonic_ensemble_similarity(sigma1, sigma2, x1, x2):
     )
 
     d_hes = 0.25 * (
-        np.dot(np.transpose(d_avg), np.dot(sigma1_inv + sigma2_inv, d_avg))
-        + trace
+        np.dot(np.transpose(d_avg), np.dot(sigma1_inv + sigma2_inv, d_avg)) + trace
     )
     return d_hes
 
 
-def clustering_ensemble_similarity(
-    cc, ens1, ens1_id, ens2, ens2_id, select="name CA"
-):
+def clustering_ensemble_similarity(cc, ens1, ens1_id, ens2, ens2_id, select="name CA"):
     """Clustering ensemble similarity: calculate the probability densities from
      the clusters and calculate discrete Jensen-Shannon divergence.
 
@@ -591,19 +588,13 @@ def dimred_ensemble_similarity(
         ln_P1_exp_P1 = np.average(np.log(kde1.evaluate(resamples1)))
         ln_P2_exp_P2 = np.average(np.log(kde2.evaluate(resamples2)))
         ln_P1P2_exp_P1 = np.average(
-            np.log(
-                0.5 * (kde1.evaluate(resamples1) + kde2.evaluate(resamples1))
-            )
+            np.log(0.5 * (kde1.evaluate(resamples1) + kde2.evaluate(resamples1)))
         )
         ln_P1P2_exp_P2 = np.average(
-            np.log(
-                0.5 * (kde1.evaluate(resamples2) + kde2.evaluate(resamples2))
-            )
+            np.log(0.5 * (kde1.evaluate(resamples2) + kde2.evaluate(resamples2)))
         )
 
-    return 0.5 * (
-        ln_P1_exp_P1 - ln_P1P2_exp_P1 + ln_P2_exp_P2 - ln_P1P2_exp_P2
-    )
+    return 0.5 * (ln_P1_exp_P1 - ln_P1P2_exp_P1 + ln_P2_exp_P2 - ln_P1P2_exp_P2)
 
 
 def cumulative_gen_kde_pdfs(
@@ -690,9 +681,7 @@ def cumulative_gen_kde_pdfs(
     return (kdes, resamples, embedded_ensembles)
 
 
-def write_output(
-    matrix, base_fname=None, header="", suffix="", extension="dat"
-):
+def write_output(matrix, base_fname=None, header="", suffix="", extension="dat"):
     """
     Write output matrix with a nice format, to stdout and optionally a file.
 
@@ -905,10 +894,7 @@ def hes(
 
     """
 
-    if (
-        not isinstance(weights, (list, tuple, np.ndarray))
-        and weights == "mass"
-    ):
+    if not isinstance(weights, (list, tuple, np.ndarray)) and weights == "mass":
         weights = ["mass" for _ in range(len(ensembles))]
     elif weights is not None:
         if len(weights) != len(ensembles):
@@ -957,9 +943,7 @@ def hes(
         ensembles_list = []
         for i, ensemble in enumerate(ensembles):
             ensembles_list.append(
-                get_ensemble_bootstrap_samples(
-                    ensemble, samples=bootstrapping_samples
-                )
+                get_ensemble_bootstrap_samples(ensemble, samples=bootstrapping_samples)
             )
         for t in range(bootstrapping_samples):
             logging.info("The coordinates will be bootstrapped.")
@@ -1254,9 +1238,7 @@ def ces(
                     failed_runs += 1
                     k += 1
                     continue
-                values[i].append(
-                    np.zeros((len(ensembles[j]), len(ensembles[j])))
-                )
+                values[i].append(np.zeros((len(ensembles[j]), len(ensembles[j]))))
 
                 for pair in pairs_indices:
                     # Calculate dJS
@@ -1467,16 +1449,10 @@ def dres(
         dimensionality_reduction_methods = [dimensionality_reduction_method]
 
     any_method_accept_distance_matrix = np.any(
-        [
-            method.accepts_distance_matrix
-            for method in dimensionality_reduction_methods
-        ]
+        [method.accepts_distance_matrix for method in dimensionality_reduction_methods]
     )
     all_methods_accept_distance_matrix = np.all(
-        [
-            method.accepts_distance_matrix
-            for method in dimensionality_reduction_methods
-        ]
+        [method.accepts_distance_matrix for method in dimensionality_reduction_methods]
     )
 
     # Register which ensembles the samples belong to
@@ -1508,8 +1484,7 @@ def dres(
             ensembles = []
             for j in range(bootstrapping_samples):
                 ensembles.append(
-                    ensembles_list[i, j]
-                    for i in range(ensembles_list.shape[0])
+                    ensembles_list[i, j] for i in range(ensembles_list.shape[0])
                 )
         else:
             # if all methods accept distances matrices, duplicate
@@ -1540,9 +1515,7 @@ def dres(
             values[i] = []
             for j in range(bootstrapping_samples):
 
-                values[i].append(
-                    np.zeros((len(ensembles[j]), len(ensembles[j])))
-                )
+                values[i].append(np.zeros((len(ensembles[j]), len(ensembles[j]))))
 
                 kdes, resamples, embedded_ensembles = gen_kde_pdfs(
                     coordinates[k],

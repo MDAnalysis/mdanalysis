@@ -1,5 +1,4 @@
-"""Test for MDAnalysis trajectory reader expectations
-"""
+"""Test for MDAnalysis trajectory reader expectations"""
 
 import importlib
 import pickle
@@ -84,9 +83,7 @@ class TestImport:
     def _setup_mock_imdclient(self, monkeypatch, version):
         """Helper method to set up mock imdclient with specified version."""
         # Remove IMD and imdclient modules to force fresh import
-        monkeypatch.delitem(
-            sys.modules, "MDAnalysis.coordinates.IMD", raising=False
-        )
+        monkeypatch.delitem(sys.modules, "MDAnalysis.coordinates.IMD", raising=False)
         monkeypatch.delitem(sys.modules, "imdclient", raising=False)
 
         module_name = "imdclient"
@@ -105,9 +102,7 @@ class TestImport:
         mocked_module.utils = utils_module
 
         monkeypatch.setitem(sys.modules, module_name, mocked_module)
-        monkeypatch.setitem(
-            sys.modules, f"{module_name}.IMDClient", IMDClient_module
-        )
+        monkeypatch.setitem(sys.modules, f"{module_name}.IMDClient", IMDClient_module)
         monkeypatch.setitem(sys.modules, f"{module_name}.utils", utils_module)
 
         return mocked_module
@@ -134,9 +129,7 @@ class TestImport:
             import MDAnalysis.coordinates.IMD
             from MDAnalysis.coordinates.IMD import HAS_IMDCLIENT
 
-            assert (
-                not HAS_IMDCLIENT
-            ), "HAS_IMDCLIENT should be False with version 0.0.0"
+            assert not HAS_IMDCLIENT, "HAS_IMDCLIENT should be False with version 0.0.0"
 
     def test_missing_ImportError(self, monkeypatch):
         """Test that IMDReader raises ImportError when HAS_IMDCLIENT=False."""
@@ -148,9 +141,7 @@ class TestImport:
             from MDAnalysis.coordinates.IMD import IMDReader
 
             # IMDReader should raise ImportError when HAS_IMDCLIENT=False
-            with pytest.raises(
-                ImportError, match="IMDReader requires the imdclient"
-            ):
+            with pytest.raises(ImportError, match="IMDReader requires the imdclient"):
                 IMDReader("imd://localhost:12345", n_atoms=5)
 
 
@@ -249,9 +240,7 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
         )
         # Send the rest of the frames- small enough to all fit in socket itself
         ref.server.send_frames(1, 5)
-        transformed.add_transformations(
-            translate([1, 1, 1]), translate([0, 0, 0.33])
-        )
+        transformed.add_transformations(translate([1, 1, 1]), translate([0, 0, 0.33]))
         return transformed
 
     def test_n_frames(self, ref, reader):
@@ -260,9 +249,7 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
 
     def test_first_frame(self, ref, reader):
         # don't rewind here as in inherited base test
-        assert_timestep_almost_equal(
-            reader.ts, ref.first_frame, decimal=ref.prec
-        )
+        assert_timestep_almost_equal(reader.ts, ref.first_frame, decimal=ref.prec)
 
     def test_get_writer_1(self, ref, reader, tmpdir):
         with pytest.raises(
@@ -289,9 +276,7 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
         pytest.skip("`total_time` is unknown for IMDReader")
 
     def test_changing_dimensions(self, ref, reader):
-        with pytest.raises(
-            RuntimeError, match="Stream-based readers can't be rewound"
-        ):
+        with pytest.raises(RuntimeError, match="Stream-based readers can't be rewound"):
             reader.rewind()
 
     def test_iter(self, ref, reader):
@@ -327,9 +312,7 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
         pytest.skip("Cannot create two IMDReaders on the same stream")
 
     def test_stop_iter(self, reader):
-        with pytest.raises(
-            RuntimeError, match="Stream-based readers can't be rewound"
-        ):
+        with pytest.raises(RuntimeError, match="Stream-based readers can't be rewound"):
             reader.rewind()
 
     def test_iter_rewinds(self, reader):
@@ -357,9 +340,7 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
         pytest.skip("IMDReader cannot be reopened")
 
     def test_pickle_reader(self, reader):
-        with pytest.raises(
-            NotImplementedError, match="does not support pickling"
-        ):
+        with pytest.raises(NotImplementedError, match="does not support pickling"):
             pickle.dumps(reader)
 
     def test_pickle_next_ts_reader(self, reader):

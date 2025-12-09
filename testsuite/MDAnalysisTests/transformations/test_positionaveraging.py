@@ -101,9 +101,7 @@ def test_posavging_specific(posaveraging_universes):
     for ts in posaveraging_universes.trajectory[fr_list]:
         np.copyto(specr_avgd[..., idx], ts.positions)
         idx += 1
-    assert_array_almost_equal(
-        ref_matrix_specr, specr_avgd[1, :, -1], decimal=5
-    )
+    assert_array_almost_equal(ref_matrix_specr, specr_avgd[1, :, -1], decimal=5)
 
 
 def test_posavging_specific_noreset(posaveraging_universes_noreset):
@@ -124,6 +122,4 @@ def test_posavging_specific_noreset(posaveraging_universes_noreset):
     for ts in posaveraging_universes_noreset.trajectory[fr_list]:
         np.copyto(specr_avgd[..., idx], ts.positions)
         idx += 1
-    assert_array_almost_equal(
-        ref_matrix_specr, specr_avgd[1, :, -1], decimal=5
-    )
+    assert_array_almost_equal(ref_matrix_specr, specr_avgd[1, :, -1], decimal=5)

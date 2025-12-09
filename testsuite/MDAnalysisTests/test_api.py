@@ -75,8 +75,7 @@ def test_all_import(submodule):
             name
             for name in module.__all__
             if name not in module.__dict__.keys()
-            and name
-            not in [os.path.splitext(f)[0] for f in os.listdir(module_path)]
+            and name not in [os.path.splitext(f)[0] for f in os.listdir(module_path)]
         ]
         assert_equal(
             missing,

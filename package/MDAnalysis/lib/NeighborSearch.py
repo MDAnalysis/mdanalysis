@@ -136,6 +136,4 @@ class AtomNeighborSearch(object):
         elif level == "S":
             return atomgroup.segments
         else:
-            raise NotImplementedError(
-                "{0}: level not implemented".format(level)
-            )
+            raise NotImplementedError("{0}: level not implemented".format(level))

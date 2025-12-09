@@ -89,7 +89,7 @@ This has only done a translational superposition. If you want to also do a
 rotational superposition use the superposition keyword. This will calculate a
 minimized RMSD between the reference and mobile structure::
 
-   >>> rmsd(mobile.select_atoms('name CA').positions, ref.select_atoms('name CA').positions, 
+   >>> rmsd(mobile.select_atoms('name CA').positions, ref.select_atoms('name CA').positions,
    ...      superposition=True)
    6.809396586471815
 
@@ -138,7 +138,7 @@ To **fit a whole trajectory** to a reference structure with the
    >>> trj = mda.Universe(PSF, DCD)         # trajectory of change 1AKE->4AKE
    >>> alignment = align.AlignTraj(trj, ref, filename='rmsfit.dcd')
    >>> alignment.run()
-   <MDAnalysis.analysis.align.AlignTraj object at ...> 
+   <MDAnalysis.analysis.align.AlignTraj object at ...>
 
 It is also possible to align two arbitrary structures by providing a
 mapping between atoms based on a sequence alignment. This allows
@@ -361,9 +361,7 @@ def _fit_to(
        where :math:`\bar{X}` is the center.
 
     """
-    R, min_rmsd = rotation_matrix(
-        mobile_coordinates, ref_coordinates, weights=weights
-    )
+    R, min_rmsd = rotation_matrix(mobile_coordinates, ref_coordinates, weights=weights)
 
     mobile_atoms.translate(-mobile_com)
     mobile_atoms.rotate(R)
@@ -845,8 +843,7 @@ class AlignTraj(AnalysisBase):
 
             if os.path.exists(filename) and not force:
                 raise IOError(
-                    "Filename already exists in path and force is not set"
-                    " to True"
+                    "Filename already exists in path and force is not set" " to True"
                 )
 
         # do this after setting the memory reader to have a reference to the
@@ -1092,9 +1089,7 @@ class AverageStructure(AnalysisBase):
             )
             logger.exception(err)
             raise SelectionError(err)
-        logger.info(
-            "RMS calculation " "for {0:d} atoms.".format(len(self.ref_atoms))
-        )
+        logger.info("RMS calculation " "for {0:d} atoms.".format(len(self.ref_atoms)))
 
         # store reference to mobile atoms
         self.mobile = mobile.atoms
@@ -1155,9 +1150,7 @@ class AverageStructure(AnalysisBase):
     def _conclude(self):
         self.results.positions /= self.n_frames
         self.results.rmsd /= self.n_frames
-        self.results.universe.load_new(
-            self.results.positions.reshape((1, -1, 3))
-        )
+        self.results.universe.load_new(self.results.positions.reshape((1, -1, 3)))
         self._writer.write(self.results.universe.atoms)
         self._writer.close()
         if not self._verbose:
@@ -1465,26 +1458,18 @@ def fasta2select(
             stdout, stderr = run_clustalw()
         except:
             logger.exception("ClustalW %(clustalw)r failed", vars())
-            logger.info(
-                "(You can get clustalw2 from http://www.clustal.org/clustal2/)"
-            )
+            logger.info("(You can get clustalw2 from http://www.clustal.org/clustal2/)")
             raise
         with open(alnfilename) as aln:
             alignment = Bio.AlignIO.read(aln, "clustal")
+        logger.info("Using clustalw sequence alignment {0!r}".format(alnfilename))
         logger.info(
-            "Using clustalw sequence alignment {0!r}".format(alnfilename)
-        )
-        logger.info(
-            "ClustalW Newick guide tree was also produced: {0!r}".format(
-                treefilename
-            )
+            "ClustalW Newick guide tree was also produced: {0!r}".format(treefilename)
         )
 
     nseq = len(alignment)
     if nseq != 2:
-        raise ValueError(
-            "Only two sequences in the alignment can be processed."
-        )
+        raise ValueError("Only two sequences in the alignment can be processed.")
 
     # implict assertion that we only have two sequences in the alignment
     orig_resids = [ref_resids, target_resids]
@@ -1500,9 +1485,7 @@ def fasta2select(
         else:
             orig_resids[iseq] = np.asarray(orig_resids[iseq])
     # add offsets to the sequence <--> resid translation table
-    seq2resids = [
-        resids + offset for resids, offset in zip(orig_resids, offsets)
-    ]
+    seq2resids = [resids + offset for resids, offset in zip(orig_resids, offsets)]
     del orig_resids
     del offsets
 
@@ -1773,9 +1756,7 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False, match_atoms=True):
             warnings.warn(msg, category=SelectionWarning)
         else:
             try:
-                mass_mismatches = (
-                    np.absolute(ag1.masses - ag2.masses) > tol_mass
-                )
+                mass_mismatches = np.absolute(ag1.masses - ag2.masses) > tol_mass
             except ValueError:
                 errmsg = (
                     "Failed to find matching atoms: len(reference) = {}, len(mobile) = {} "

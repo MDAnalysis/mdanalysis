@@ -497,9 +497,7 @@ def test_write_trr_dtype(tmpdir, dtype, trr):
             v = frame.v.astype(dtype)
             f = frame.f.astype(dtype)
             box = frame.box.astype(dtype)
-            fout.write(
-                x, v, f, box, frame.step, frame.time, frame.lmbda, natoms
-            )
+            fout.write(x, v, f, box, frame.step, frame.time, frame.lmbda, natoms)
 
 
 @pytest.mark.parametrize("array_like", (np.array, list))
@@ -512,9 +510,7 @@ def test_write_trr_array_like(tmpdir, array_like, trr):
             v = array_like(frame.v)
             f = array_like(frame.f)
             box = array_like(frame.box)
-            fout.write(
-                x, v, f, box, frame.step, frame.time, frame.lmbda, natoms
-            )
+            fout.write(x, v, f, box, frame.step, frame.time, frame.lmbda, natoms)
 
 
 def test_write_different_box_trr(tmpdir, trr):

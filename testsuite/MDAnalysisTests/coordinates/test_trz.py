@@ -60,16 +60,12 @@ class TestTRZReader(RefTRZ):
 
     def test_load_trz(self, universe):
         U = universe
-        assert_equal(
-            len(U.atoms), self.ref_n_atoms, "load Universe from PSF and TRZ"
-        )
+        assert_equal(len(U.atoms), self.ref_n_atoms, "load Universe from PSF and TRZ")
 
     def test_next_trz(self, universe):
         assert_equal(universe.trajectory.ts.frame, 0, "starts at first frame")
         universe.trajectory.next()
-        assert_equal(
-            universe.trajectory.ts.frame, 1, "next returns frame index 1"
-        )
+        assert_equal(universe.trajectory.ts.frame, 1, "next returns frame index 1")
 
     def test_rewind_trz(self, universe):
         # move to different frame and rewind to get first frame back
@@ -155,9 +151,7 @@ class TestTRZReader(RefTRZ):
         )
 
     def test_title(self, universe):
-        assert_equal(
-            self.ref_title, universe.trajectory.title, "wrong title in trz"
-        )
+        assert_equal(self.ref_title, universe.trajectory.title, "wrong title in trz")
 
     def test_get_writer(self, universe, tmpdir):
         self.outfile = os.path.join(str(tmpdir), "test-trz-writer.trz")
@@ -260,9 +254,7 @@ class TestTRZWriter(RefTRZ):
         u = mda.Universe.empty(10, trajectory=True)
         u.dimensions = None
 
-        with pytest.warns(
-            UserWarning, match="box will be written as all zero values"
-        ):
+        with pytest.warns(UserWarning, match="box will be written as all zero values"):
             with mda.Writer(outfile, n_atoms=10) as w:
                 w.write(u.atoms)
 

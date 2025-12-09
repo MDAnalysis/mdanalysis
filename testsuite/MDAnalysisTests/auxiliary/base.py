@@ -116,9 +116,7 @@ class BaseAuxReference(object):
         # for 'average': use low frequenct timestep, only step 2 within 0ps cutoff
         self.lowf_cutoff_average_rep = self.format_data([2, 2 * 2, 2**2])
         # for 'closest': use offset timestep; no timestep within 0ps cutoff
-        self.offset_cutoff_closest_rep = self.format_data(
-            [np.nan, np.nan, np.nan]
-        )
+        self.offset_cutoff_closest_rep = self.format_data([np.nan, np.nan, np.nan])
 
         ## testing selection of time/data. Overload for each auxilairy format
         ## as appropraite.
@@ -150,9 +148,7 @@ class BaseAuxReaderTest(object):
         assert reader.dt == ref.dt, "dt does not match"
 
     def test_initial_time(self, ref, reader):
-        assert (
-            reader.initial_time == ref.initial_time
-        ), "initial time does not match"
+        assert reader.initial_time == ref.initial_time, "initial time does not match"
 
     def test_first_step(self, ref, reader):
         # on first loading we should start at step 0
@@ -327,8 +323,7 @@ class BaseAuxReaderTest(object):
         assert_almost_equal(
             ts.aux.test,
             ref.lowf_cutoff_average_rep,
-            err_msg="Representative value does not match when "
-            "applying cutoff",
+            err_msg="Representative value does not match when " "applying cutoff",
         )
 
     def test_read_offset_timestep(self, ref, reader):
@@ -352,8 +347,7 @@ class BaseAuxReaderTest(object):
         assert_almost_equal(
             ts.aux.test,
             ref.offset_cutoff_closest_rep,
-            err_msg="Representative value does not match when "
-            "applying cutoff",
+            err_msg="Representative value does not match when " "applying cutoff",
         )
 
     def test_read_higher_freq_timestep(self, ref, reader):
@@ -405,8 +399,7 @@ class BaseAuxReaderTest(object):
         assert_equal(
             aux_info_0,
             aux_info_0_rewind,
-            "aux info was retrieved incorrectly "
-            "after reading the last step",
+            "aux info was retrieved incorrectly " "after reading the last step",
         )
 
     def test_get_description(self, ref, reader):
@@ -419,9 +412,7 @@ class BaseAuxReaderTest(object):
     def test_load_from_description(self, reader):
         description = reader.get_description()
         new = mda.auxiliary.core.auxreader(**description)
-        assert (
-            new == reader
-        ), "AuxReader reloaded from description does not match"
+        assert new == reader, "AuxReader reloaded from description does not match"
 
     def test_step_to_frame_out_of_bounds(self, reader, ref):
 
@@ -446,9 +437,7 @@ class BaseAuxReaderTest(object):
         # Test all 5 frames
         for idx in range(5):
 
-            frame, time_diff = reader.step_to_frame(
-                idx, ts, return_time_diff=True
-            )
+            frame, time_diff = reader.step_to_frame(idx, ts, return_time_diff=True)
 
             assert frame == idx
             np.testing.assert_almost_equal(time_diff, idx * 0.1)

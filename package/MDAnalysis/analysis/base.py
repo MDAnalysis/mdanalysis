@@ -122,7 +122,7 @@ you have your :meth:`_single_frame` method storing important values under
         def get_supported_backends(cls):
             return ('serial', 'multiprocessing', 'dask',)
 
-        
+
         def _get_aggregator(self):
           return ResultsGroup(lookup={'timeseries': ResultsGroup.ndarray_vstack})
 
@@ -387,14 +387,10 @@ class AnalysisBase(object):
         self._trajectory = trajectory
         if frames is not None:
             if not all(opt is None for opt in [start, stop, step]):
-                raise ValueError(
-                    "start/stop/step cannot be combined with frames"
-                )
+                raise ValueError("start/stop/step cannot be combined with frames")
             slicer = frames
         else:
-            start, stop, step = trajectory.check_slice_indices(
-                start, stop, step
-            )
+            start, stop, step = trajectory.check_slice_indices(start, stop, step)
             slicer = slice(start, stop, step)
         self.start, self.stop, self.step = start, stop, step
         return slicer
@@ -417,9 +413,7 @@ class AnalysisBase(object):
         self.frames = np.zeros(self.n_frames, dtype=int)
         self.times = np.zeros(self.n_frames)
 
-    def _setup_frames(
-        self, trajectory, start=None, stop=None, step=None, frames=None
-    ):
+    def _setup_frames(self, trajectory, start=None, stop=None, step=None, frames=None):
         """Pass a Reader object and define the desired iteration pattern
         through the trajectory
 
@@ -539,9 +533,7 @@ class AnalysisBase(object):
             progressbar_kwargs = {}
         logger.info("Choosing frames to analyze")
         # if verbose unchanged, use class default
-        verbose = (
-            getattr(self, "_verbose", False) if verbose is None else verbose
-        )
+        verbose = getattr(self, "_verbose", False) if verbose is None else verbose
 
         frames = indexed_frames[:, 1]
 
@@ -552,9 +544,7 @@ class AnalysisBase(object):
             return self
 
         for idx, ts in enumerate(
-            ProgressBar(
-                self._sliced_trajectory, verbose=verbose, **progressbar_kwargs
-            )
+            ProgressBar(self._sliced_trajectory, verbose=verbose, **progressbar_kwargs)
         ):
             self._frame_index = idx  # accessed later by subclasses
             self._ts = ts
@@ -607,9 +597,7 @@ class AnalysisBase(object):
         .. versionadded:: 2.8.0
         """
         if frames is None:
-            start, stop, step = self._trajectory.check_slice_indices(
-                start, stop, step
-            )
+            start, stop, step = self._trajectory.check_slice_indices(start, stop, step)
             used_frames = np.arange(start, stop, step)
         elif not all(opt is None for opt in [start, stop, step]):
             raise ValueError("start/stop/step cannot be combined with frames")
@@ -621,9 +609,7 @@ class AnalysisBase(object):
             used_frames = arange[used_frames]
 
         # similar to list(enumerate(frames))
-        enumerated_frames = np.vstack(
-            [np.arange(len(used_frames)), used_frames]
-        ).T
+        enumerated_frames = np.vstack([np.arange(len(used_frames)), used_frames]).T
         if len(enumerated_frames) == 0:
             return [np.empty((0, 2), dtype=np.int64)]
         elif len(enumerated_frames) < n_parts:
@@ -745,9 +731,7 @@ class AnalysisBase(object):
 
         # or pass along an instance of the class itself
         # after ensuring it has apply method
-        if not isinstance(backend, BackendBase) or not hasattr(
-            backend, "apply"
-        ):
+        if not isinstance(backend, BackendBase) or not hasattr(backend, "apply"):
             raise ValueError(
                 (
                     f"{backend=} is invalid: should have 'apply' method "
@@ -835,23 +819,18 @@ class AnalysisBase(object):
         # default to serial execution
         backend = "serial" if backend is None else backend
 
-        progressbar_kwargs = (
-            {} if progressbar_kwargs is None else progressbar_kwargs
-        )
+        progressbar_kwargs = {} if progressbar_kwargs is None else progressbar_kwargs
         if (progressbar_kwargs or verbose) and not (
             backend == "serial" or isinstance(backend, BackendSerial)
         ):
-            raise ValueError(
-                "Can not display progressbar with non-serial backend"
-            )
+            raise ValueError("Can not display progressbar with non-serial backend")
 
         # if number of workers not specified, try getting the number from
         # the backend instance if possible, or set to 1
         if n_workers is None:
             n_workers = (
                 backend.n_workers
-                if isinstance(backend, BackendBase)
-                and hasattr(backend, "n_workers")
+                if isinstance(backend, BackendBase) and hasattr(backend, "n_workers")
                 else 1
             )
 
@@ -1016,9 +995,7 @@ class AnalysisFromFunction(AnalysisBase):
         return ResultsGroup({"timeseries": ResultsGroup.flatten_sequence})
 
     def _single_frame(self):
-        self.results.timeseries.append(
-            self.function(*self.args, **self.kwargs)
-        )
+        self.results.timeseries.append(self.function(*self.args, **self.kwargs))
 
     def _conclude(self):
         self.results.frames = self.frames
@@ -1079,9 +1056,7 @@ def analysis_class(function):
 
     class WrapperClass(AnalysisFromFunction):
         def __init__(self, trajectory=None, *args, **kwargs):
-            super(WrapperClass, self).__init__(
-                function, trajectory, *args, **kwargs
-            )
+            super(WrapperClass, self).__init__(function, trajectory, *args, **kwargs)
 
         @classmethod
         def get_supported_backends(cls):

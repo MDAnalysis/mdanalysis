@@ -82,10 +82,7 @@ class CRDReader(base.SingleFrameReaderBase):
                             np.array(line[20:50].split()[0:3], dtype=float)
                         )
                 except Exception:
-                    errmsg = (
-                        f"Check CRD format at line {linenum}: "
-                        f"{line.rstrip()}"
-                    )
+                    errmsg = f"Check CRD format at line {linenum}: " f"{line.rstrip()}"
                     raise ValueError(errmsg) from None
 
         self.n_atoms = len(coords_list)
@@ -101,8 +98,7 @@ class CRDReader(base.SingleFrameReaderBase):
         if self.n_atoms != natoms:
             raise ValueError(
                 "Found %d coordinates in %r but the header claims that there "
-                "should be %d coordinates."
-                % (self.n_atoms, self.filename, natoms)
+                "should be %d coordinates." % (self.n_atoms, self.filename, natoms)
             )
 
     def Writer(self, filename, **kwargs):
@@ -217,9 +213,7 @@ class CRDWriter(base.WriterBase):
                 frame = 0  # should catch cases when we are analyzing a single PDB (?)
 
         atoms = selection.atoms  # make sure to use atoms (Issue 46)
-        coor = (
-            atoms.positions
-        )  # can write from selection == Universe (Issue 49)
+        coor = atoms.positions  # can write from selection == Universe (Issue 49)
 
         n_atoms = len(atoms)
         # Detect which format string we're using to output (EXT or not)
@@ -271,9 +265,7 @@ class CRDWriter(base.WriterBase):
         with util.openany(self.filename, "wt") as crd:
             # Write Title
             crd.write(
-                self.fmt["TITLE"].format(
-                    frame=frame, where=u.trajectory.filename
-                )
+                self.fmt["TITLE"].format(frame=frame, where=u.trajectory.filename)
             )
             crd.write("*\n")
 

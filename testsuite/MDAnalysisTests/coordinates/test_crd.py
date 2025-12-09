@@ -41,9 +41,7 @@ class TestCRDWriter(object):
     def outfile(self, tmpdir):
         return os.path.join(str(tmpdir), "test.crd")
 
-    @pytest.mark.parametrize(
-        "testfile", ["test.crd", "test.crd.bz2", "test.crd.gz"]
-    )
+    @pytest.mark.parametrize("testfile", ["test.crd", "test.crd.bz2", "test.crd.gz"])
     def test_write_atoms(self, u, testfile, tmpdir):
         # Test that written file when read gives same coordinates
         with tmpdir.as_cwd():
@@ -137,6 +135,4 @@ class TestCRDWriterMissingAttrs(object):
         for attr in attrs:
             assert_equal(getattr(u.atoms, attr), getattr(u2.atoms, attr))
         # Check missing attr is as expected
-        assert_equal(
-            getattr(u2.atoms, missing_attr), self.req_attrs[missing_attr]
-        )
+        assert_equal(getattr(u2.atoms, missing_attr), self.req_attrs[missing_attr])

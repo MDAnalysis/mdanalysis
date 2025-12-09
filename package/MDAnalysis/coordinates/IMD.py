@@ -2,30 +2,30 @@
 IMDReader --- :mod:`MDAnalysis.coordinates.IMD`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-This module provides support for reading molecular dynamics simulation data via the 
+This module provides support for reading molecular dynamics simulation data via the
 `Interactive Molecular Dynamics (IMD) protocol v3 <https://imdclient.readthedocs.io/en/latest/protocol_v3.html>`_.
 The IMD protocol allows two-way communicating molecular simulation data through a socket.
 Via IMD, a simulation engine sends data to a receiver (in this case, the IMDClient) and the receiver can send forces and specific control
-requests (such as pausing, resuming, or terminating the simulation) back to the simulation engine. 
+requests (such as pausing, resuming, or terminating the simulation) back to the simulation engine.
 
 .. note::
    This reader only supports IMDv3, which is implemented in GROMACS, LAMMPS, and NAMD at varying
-   stages of development. See the `imdclient simulation engine docs`_ for more. 
+   stages of development. See the `imdclient simulation engine docs`_ for more.
    While IMDv2 is widely available in simulation engines, it was designed primarily for visualization
    and gaps are allowed in the stream (i.e., an inconsistent number of integrator time steps between transmitted coordinate arrays is allowed)
 
 The :class:`IMDReader` connects to a simulation via a socket and receives coordinate,
 velocity, force, and energy data as the simulation progresses. This allows for real-time
-monitoring and analysis of ongoing simulations. It uses the `imdclient package <https://github.com/Becksteinlab/imdclient>`_ 
+monitoring and analysis of ongoing simulations. It uses the `imdclient package <https://github.com/Becksteinlab/imdclient>`_
 (dependency) to implement the IMDv3 protocol and manage the socket connection and data parsing.
 
 .. seealso::
    :class:`IMDReader`
       Technical details and parameter options for the reader class
-   
+
    `imdclient documentation <https://imdclient.readthedocs.io/>`_
       Complete documentation for the IMDClient package
-      
+
    `IMDClient GitHub repository <https://github.com/Becksteinlab/imdclient>`_
       Source code and development resources
 
@@ -35,7 +35,7 @@ Usage Example
 -------------
 
 As an example of reading a stream, after configuring GROMACS to run a simulation with IMDv3 enabled
-(see the `imdclient simulation engine docs`_ for 
+(see the `imdclient simulation engine docs`_ for
 up-to-date resources on configuring each simulation engine), use the following commands:
 
 .. code-block:: bash
@@ -55,8 +55,8 @@ The :class:`~MDAnalysis.coordinates.IMD.IMDReader` can then connect to the runni
         print(f'{ts.time:8.3f} {sel[0].position} {sel[0].velocity} {sel[0].force} {u.dimensions[0:3]}')
 
 .. important::
-   **Jupyter Notebook Users**: When using IMDReader in Jupyter notebooks, be aware that 
-   **kernel restarts will not gracefully close active IMD connections**. This can leave 
+   **Jupyter Notebook Users**: When using IMDReader in Jupyter notebooks, be aware that
+   **kernel restarts will not gracefully close active IMD connections**. This can leave
    socket connections open, potentially preventing new connections to the same stream.
 
    Always use ``try/except/finally`` blocks to ensure proper cleanup:
@@ -64,7 +64,7 @@ The :class:`~MDAnalysis.coordinates.IMD.IMDReader` can then connect to the runni
    .. code-block:: python
 
        import MDAnalysis as mda
-       
+
        try:
            u = mda.Universe("topol.tpr", "imd://localhost:8889")
        except Exception as e:
@@ -79,19 +79,19 @@ The :class:`~MDAnalysis.coordinates.IMD.IMDReader` can then connect to the runni
                # Ensure connection is closed
                u.trajectory.close()
 
-   Always explicitly call ``u.trajectory.close()`` when finished with analysis to 
+   Always explicitly call ``u.trajectory.close()`` when finished with analysis to
    ensure connection is closed properly.
 
 Important Limitations
 ---------------------
 
-.. warning::  
-   The IMDReader has some important limitations that are inherent in streaming data.  
+.. warning::
+   The IMDReader has some important limitations that are inherent in streaming data.
 
-Since IMD streams data in real-time from a running simulation, it has fundamental 
+Since IMD streams data in real-time from a running simulation, it has fundamental
 constraints that differ from traditional trajectory readers:
 
-* **No random access**: Cannot jump to arbitrary frame numbers or seek backwards  
+* **No random access**: Cannot jump to arbitrary frame numbers or seek backwards
 * **Forward-only access**: You can only move forward through frames as they arrive
 * **No trajectory length**: The total number of frames is unknown until the simulation ends
 * **Single-use iteration**: Cannot restart or rewind once the stream has been consumed
@@ -108,17 +108,17 @@ constraints that differ from traditional trajectory readers:
 Multiple Client Connections
 ---------------------------
 
-The ability to establish multiple simultaneous connections to the same IMD port is 
-**MD engine implementation dependent**. Some simulation engines may allow multiple 
-clients to connect concurrently, while others may reject or fail additional connection 
+The ability to establish multiple simultaneous connections to the same IMD port is
+**MD engine implementation dependent**. Some simulation engines may allow multiple
+clients to connect concurrently, while others may reject or fail additional connection
 attempts.
 
-See the `imdclient simulation engine docs`_ for further details. 
+See the `imdclient simulation engine docs`_ for further details.
 
 .. important::
-   Even when multiple connections are supported by the simulation engine, each connection 
-   receives its own independent data stream. These streams may contain different data 
-   depending on the simulation engine's configuration, so multiple connections should 
+   Even when multiple connections are supported by the simulation engine, each connection
+   receives its own independent data stream. These streams may contain different data
+   depending on the simulation engine's configuration, so multiple connections should
    not be assumed to provide identical data streams.
 
 Classes
@@ -302,9 +302,7 @@ class IMDReader(StreamReaderBase):
             self.ts.data["dt"] = imdf.dt
             self.ts.data["step"] = imdf.step
         if imdf.energies is not None:
-            self.ts.data.update(
-                {k: v for k, v in imdf.energies.items() if k != "step"}
-            )
+            self.ts.data.update({k: v for k, v in imdf.energies.items() if k != "step"})
         if imdf.box is not None:
             self.ts.dimensions = core.triclinic_box(*imdf.box)
         if imdf.positions is not None:

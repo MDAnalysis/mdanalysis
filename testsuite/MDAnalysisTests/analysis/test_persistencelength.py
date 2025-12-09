@@ -77,9 +77,7 @@ class TestPersistenceLength(object):
 
     def test_fit(self, p_run):
         assert_almost_equal(p_run.results.lp, 6.504, 3)
-        assert len(p_run.results.fit) == len(
-            p_run.results.bond_autocorrelation
-        )
+        assert len(p_run.results.fit) == len(p_run.results.bond_autocorrelation)
 
     def test_raise_NoDataError(self, p):
         # Ensure that a NoDataError is raised if perform_fit()

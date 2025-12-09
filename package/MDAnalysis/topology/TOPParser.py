@@ -256,9 +256,9 @@ class TOPParser(TopologyReaderBase):
 
             while next_section is not None:
                 try:
-                    (num_per_record, per_line, func, name, sect_num) = (
-                        sections[next_section]
-                    )
+                    (num_per_record, per_line, func, name, sect_num) = sections[
+                        next_section
+                    ]
                 except KeyError:
 
                     def next_getter():
@@ -305,12 +305,7 @@ class TOPParser(TopologyReaderBase):
 
         # Deal with recreating bonds and angle records here
         attrs["bonds"] = Bonds(
-            [
-                i
-                for i in itertools.chain(
-                    attrs.pop("bonda"), attrs.pop("bondh")
-                )
-            ]
+            [i for i in itertools.chain(attrs.pop("bonda"), attrs.pop("bondh"))]
         )
 
         attrs["angles"] = Angles(
@@ -349,9 +344,7 @@ class TOPParser(TopologyReaderBase):
         # Amber's 'RESIDUE_CHAINID' is a by-residue attribute, turn it into
         # a by-atom attribute when present. See PR #4007.
         if "segids" in attrs and len(attrs["segids"]) == n_res:
-            segidx, (segids,) = change_squash(
-                (attrs["segids"],), (attrs["segids"],)
-            )
+            segidx, (segids,) = change_squash((attrs["segids"],), (attrs["segids"],))
             chainids = [attrs["segids"][r] for r in residx]
 
             attrs["segids"] = Segids(segids)
@@ -594,8 +587,7 @@ class TOPParser(TopologyReaderBase):
         into chunks of size num_per_record, and only extract the atom ids.
         """
         vals = [
-            tuple(data[x : x + chunksize - 1])
-            for x in range(0, len(data), chunksize)
+            tuple(data[x : x + chunksize - 1]) for x in range(0, len(data), chunksize)
         ]
         return vals
 

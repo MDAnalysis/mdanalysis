@@ -36,9 +36,7 @@ def rotate_universes():
     # create the Universe objects for the tests
     reference = make_Universe(trajectory=True)
     transformed = make_Universe(["masses"], trajectory=True)
-    transformed.trajectory.ts.dimensions = np.array(
-        [372.0, 373.0, 374.0, 90, 90, 90]
-    )
+    transformed.trajectory.ts.dimensions = np.array([372.0, 373.0, 374.0, 90, 90, 90])
     return reference, transformed
 
 
@@ -74,9 +72,7 @@ def test_rotation_matrix():
     assert_array_almost_equal(matrix, ref_matrix, decimal=6)
 
 
-@pytest.mark.parametrize(
-    "point", (np.asarray([0, 0, 0]), np.asarray([[0, 0, 0]]))
-)
+@pytest.mark.parametrize("point", (np.asarray([0, 0, 0]), np.asarray([[0, 0, 0]])))
 def test_rotateby_custom_point(rotate_universes, point):
     # what happens when we use a custom point for the axis of rotation?
     ref_u = rotate_universes[0]
@@ -92,9 +88,7 @@ def test_rotateby_custom_point(rotate_universes, point):
     assert_array_almost_equal(transformed.positions, ref.positions, decimal=6)
 
 
-@pytest.mark.parametrize(
-    "vector", (np.asarray([1, 0, 0]), np.asarray([[1, 0, 0]]))
-)
+@pytest.mark.parametrize("vector", (np.asarray([1, 0, 0]), np.asarray([[1, 0, 0]])))
 def test_rotateby_vector(rotate_universes, vector):
     # what happens when we use a custom point for the axis of rotation?
     ref_u = rotate_universes[0]
@@ -157,9 +151,7 @@ def test_rotateby_atomgroup_cog_pbc(rotate_universes):
     center_pos = selection.center_of_geometry(pbc=True)
     matrix = rotation_matrix(np.deg2rad(angle), vector, center_pos)
     ref_u.atoms.transform(matrix)
-    transformed = rotateby(
-        angle, vector, ag=selection, weights=None, wrap=True
-    )(trans)
+    transformed = rotateby(angle, vector, ag=selection, weights=None, wrap=True)(trans)
     assert_array_almost_equal(transformed.positions, ref.positions, decimal=6)
 
 
@@ -176,9 +168,9 @@ def test_rotateby_atomgroup_com_pbc(rotate_universes):
     center_pos = selection.center_of_mass(pbc=True)
     matrix = rotation_matrix(np.deg2rad(angle), vector, center_pos)
     ref_u.atoms.transform(matrix)
-    transformed = rotateby(
-        angle, vector, ag=selection, weights="mass", wrap=True
-    )(trans)
+    transformed = rotateby(angle, vector, ag=selection, weights="mass", wrap=True)(
+        trans
+    )
     assert_array_almost_equal(transformed.positions, ref.positions, decimal=6)
 
 

@@ -28,7 +28,9 @@ class SimpleRmsBench(object):
         self.u.trajectory[-1]
         self.B = self.u.atoms.positions.copy()[:num_atoms]
         self.atoms = self.u.atoms[:num_atoms]
-        self.weights = self.atoms.masses/np.sum(self.atoms.masses) if use_weights else None
+        self.weights = (
+            self.atoms.masses / np.sum(self.atoms.masses) if use_weights else None
+        )
 
     def time_rmsd(self, num_atoms, weights, center, superposition):
         """Benchmark rmsd function using a setup similar to

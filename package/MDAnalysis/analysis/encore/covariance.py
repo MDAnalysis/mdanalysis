@@ -32,7 +32,7 @@ an ensemble of structures.
 .. versionadded:: 0.16.0
 
 .. deprecated:: 2.8.0
-   This module is deprecated in favour of the 
+   This module is deprecated in favour of the
    MDAKit `mdaencore <https://mdanalysis.org/mdaencore/>`_ and will be removed
    in MDAnalysis 3.0.0.
 
@@ -151,18 +151,14 @@ def shrinkage_covariance_estimator(
         p = 1 / float(t) * np.sum(np.dot(np.transpose(y), y)) - np.sum(
             np.sum(sample**2)
         )
-        rdiag = 1 / float(t) * np.sum(np.sum(y**2)) - np.sum(
-            np.diag(sample) ** 2
-        )
+        rdiag = 1 / float(t) * np.sum(np.sum(y**2)) - np.sum(np.diag(sample) ** 2)
         z = x * np.repeat(xmkt[:, np.newaxis], n, axis=1)
         v1 = (
             1 / float(t) * np.dot(np.transpose(y), z)
             - np.repeat(covmkt[:, np.newaxis], n, axis=1) * sample
         )
         roff1 = (
-            np.sum(
-                v1 * np.transpose(np.repeat(covmkt[:, np.newaxis], n, axis=1))
-            )
+            np.sum(v1 * np.transpose(np.repeat(covmkt[:, np.newaxis], n, axis=1)))
             / varmkt
             - np.sum(np.diag(v1) * covmkt) / varmkt
         )
@@ -240,10 +236,7 @@ def covariance_matrix(
     # Optionally correct with weights
     if weights is not None:
         # Calculate mass-weighted covariance matrix
-        if (
-            not isinstance(weights, (list, tuple, np.ndarray))
-            and weights == "mass"
-        ):
+        if not isinstance(weights, (list, tuple, np.ndarray)) and weights == "mass":
             if select:
                 weights = ensemble.select_atoms(select).masses
             else:
@@ -255,8 +248,7 @@ def covariance_matrix(
                 req_len = ensemble.atoms.n_atoms
             if req_len != len(weights):
                 raise ValueError(
-                    "number of weights is unequal to number of "
-                    "atoms in ensemble"
+                    "number of weights is unequal to number of " "atoms in ensemble"
                 )
 
         # broadcast to a (len(weights), 3) array

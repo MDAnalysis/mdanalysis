@@ -99,17 +99,13 @@ def test_cum_var(pca):
 
 
 def test_pcs(pca):
-    assert_equal(
-        pca.results.p_components.shape, (pca._n_atoms * 3, pca._n_atoms * 3)
-    )
+    assert_equal(pca.results.p_components.shape, (pca._n_atoms * 3, pca._n_atoms * 3))
 
 
 def test_pcs_n_components(u):
     pca = PCA(u, select=SELECTION).run()
     assert_equal(pca.n_components, pca._n_atoms * 3)
-    assert_equal(
-        pca.results.p_components.shape, (pca._n_atoms * 3, pca._n_atoms * 3)
-    )
+    assert_equal(pca.results.p_components.shape, (pca._n_atoms * 3, pca._n_atoms * 3))
     pca.n_components = 10
     assert_equal(pca.n_components, 10)
     assert_equal(pca.results.p_components.shape, (pca._n_atoms * 3, 10))
@@ -191,9 +187,7 @@ def test_project_none_anchor(u, pca):
     group = u.select_atoms("resnum 1")
     with pytest.raises(ValueError) as exc:
         func = pca.project_single_frame(0, group=group, anchor=None)
-    assert ("'anchor' cannot be 'None'" + " if 'group' is not 'None'") in str(
-        exc.value
-    )
+    assert ("'anchor' cannot be 'None'" + " if 'group' is not 'None'") in str(exc.value)
 
 
 def test_project_more_anchor(u, pca):
@@ -207,9 +201,7 @@ def test_project_less_anchor(u, pca):
     group = u.select_atoms("all")
     with pytest.raises(ValueError) as exc:
         project = pca.project_single_frame(0, group=group, anchor="name CB")
-    assert ("Some residues in 'group'" + " do not have an 'anchor'") in str(
-        exc.value
-    )
+    assert ("Some residues in 'group'" + " do not have an 'anchor'") in str(exc.value)
 
 
 def test_project_invalid_anchor(u):
@@ -275,9 +267,7 @@ def test_project_extrapolate_translation(u_fresh):
     project = pca.project_single_frame(0, group=group, anchor="name CA")
 
     distances_original = mda.lib.distances.self_distance_array(group.positions)
-    distances_new = mda.lib.distances.self_distance_array(
-        project(group).positions
-    )
+    distances_new = mda.lib.distances.self_distance_array(project(group).positions)
 
     assert_allclose(distances_original, distances_new, rtol=1e-05)
 
@@ -386,9 +376,7 @@ def test_compare_wrong_class(u, pca, method):
     assert "must be another PCA class" in str(exc.value)
 
 
-@pytest.mark.parametrize(
-    "attr", ("p_components", "variance", "cumulated_variance")
-)
+@pytest.mark.parametrize("attr", ("p_components", "variance", "cumulated_variance"))
 def test_pca_attr_warning(u, attr):
     pca = PCA(u, select=SELECTION).run(stop=2)
     wmsg = f"The `{attr}` attribute was deprecated in MDAnalysis 2.0.0"
