@@ -382,7 +382,13 @@ class EinsteinMSD(AnalysisBase):
             "xyz": [0, 1, 2],
         }
 
-        self.msd_type = self.msd_type.lower()
+        # Validate type first
+        if not isinstance(self.msd_type, str):
+            raise TypeError("msd_type must be a string")
+
+        # strip whitespace + lowercase
+        self.msd_type = self.msd_type.strip().lower()
+
 
         try:
             self._dim = keys[self.msd_type]
