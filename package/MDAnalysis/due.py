@@ -65,9 +65,7 @@ try:
     from duecredit import due, BibTeX, Doi, Url
 
     if "due" in locals() and not hasattr(due, "cite"):
-        raise RuntimeError(
-            "Imported due lacks .cite. DueCredit is now disabled"
-        )
+        raise RuntimeError("Imported due lacks .cite. DueCredit is now disabled")
 except Exception as err:
     if not isinstance(err, ImportError):
         import logging

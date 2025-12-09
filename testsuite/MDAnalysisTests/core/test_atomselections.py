@@ -127,9 +127,7 @@ class TestSelectionsCHARMM(object):
     def test_resid_range(self, universe):
         sel = universe.select_atoms("resid 100:105")
         assert_equal(sel.n_atoms, 89)
-        assert_equal(
-            sel.residues.resnames, ["GLY", "ILE", "ASN", "VAL", "ASP", "TYR"]
-        )
+        assert_equal(sel.residues.resnames, ["GLY", "ILE", "ASN", "VAL", "ASP", "TYR"])
 
     def test_selgroup(self, universe):
         sel = universe.select_atoms("not resid 100")
@@ -156,23 +154,15 @@ class TestSelectionsCHARMM(object):
         sel = universe.select_atoms("resnum 100:105")
         assert_equal(sel.n_atoms, 89)
         assert_equal(sel.residues.resids, range(100, 106))
-        assert_equal(
-            sel.residues.resnames, ["GLY", "ILE", "ASN", "VAL", "ASP", "TYR"]
-        )
+        assert_equal(sel.residues.resnames, ["GLY", "ILE", "ASN", "VAL", "ASP", "TYR"])
 
     def test_resname(self, universe):
         sel = universe.select_atoms("resname LEU")
-        assert_equal(
-            sel.n_atoms, 304, "Failed to find all 'resname LEU' atoms."
-        )
-        assert_equal(
-            sel.n_residues, 16, "Failed to find all 'resname LEU' residues."
-        )
+        assert_equal(sel.n_atoms, 304, "Failed to find all 'resname LEU' atoms.")
+        assert_equal(sel.n_residues, 16, "Failed to find all 'resname LEU' residues.")
         assert_equal(
             sorted(sel.indices),
-            sorted(
-                universe.select_atoms("segid 4AKE and resname LEU").indices
-            ),
+            sorted(universe.select_atoms("segid 4AKE and resname LEU").indices),
             "selected 'resname LEU' atoms are not the same as auto-generated s4AKE.LEU",
         )
 
@@ -186,9 +176,7 @@ class TestSelectionsCHARMM(object):
         assert_equal(sel.resnames, ["GLY"])
         assert_equal(
             sel.positions,
-            np.array(
-                [[20.38685226, -3.44224262, -5.92158318]], dtype=np.float32
-            ),
+            np.array([[20.38685226, -3.44224262, -5.92158318]], dtype=np.float32),
         )
 
     def test_atom_empty(self, universe):
@@ -330,10 +318,7 @@ class TestSelectionsCHARMM(object):
         assert_equal(
             len(sel),
             331,
-            (
-                "Found a wrong number of atoms with same resname as "
-                "resids 10 or 11"
-            ),
+            ("Found a wrong number of atoms with same resname as " "resids 10 or 11"),
         )
         # fmt: off
         target_resids = np.array(
@@ -428,9 +413,7 @@ class TestSelectionsCHARMM(object):
     def test_concatenated_selection(self, universe):
         E151 = universe.select_atoms("segid 4AKE").select_atoms("resid 151")
         # note that this is not quite phi... HN should be C of prec. residue
-        phi151 = E151.atoms.select_atoms(
-            "name HN", "name N", "name CA", "name CB"
-        )
+        phi151 = E151.atoms.select_atoms("name HN", "name N", "name CA", "name CB")
         assert_equal(len(phi151), 4)
         assert_equal(
             phi151[0].name,
@@ -442,9 +425,7 @@ class TestSelectionsCHARMM(object):
         """Test the `global` modifier keyword (Issue 268)"""
         ag = universe.select_atoms("resname LYS and name NZ")
         # Lys amines within 4 angstrom of the backbone.
-        ag1 = universe.select_atoms(
-            "resname LYS and name NZ and around 4 backbone"
-        )
+        ag1 = universe.select_atoms("resname LYS and name NZ and around 4 backbone")
         ag2 = ag.select_atoms("around 4 global backbone")
         assert_equal(ag2.indices, ag1.indices)
 
@@ -495,12 +476,8 @@ class TestSelectionsNAMD(object):
     def test_protein(self, universe):
         # must include non-standard residues
         sel = universe.select_atoms("protein or resname HAO or resname ORT")
-        assert_equal(
-            sel.n_atoms, universe.atoms.n_atoms, "failed to select peptide"
-        )
-        assert_equal(
-            sel.n_residues, 6, "failed to select all peptide residues"
-        )
+        assert_equal(sel.n_atoms, universe.atoms.n_atoms, "failed to select peptide")
+        assert_equal(sel.n_residues, 6, "failed to select all peptide residues")
 
     def test_resid_single(self, universe):
         sel = universe.select_atoms("resid 12")
@@ -590,9 +567,7 @@ class TestSelectionsTPR(object):
         # This test comes here because it's a system with solvent,
         # and thus multiple fragments.
         sel = universe.select_atoms(selstr)
-        errmsg = (
-            "Found a wrong number of atoms " "on the same fragment as id 1"
-        )
+        errmsg = "Found a wrong number of atoms " "on the same fragment as id 1"
         assert_equal(len(sel), 3341, errmsg)
         errmsg = (
             "Found a differ set of atoms when using the 'same "
@@ -695,9 +670,7 @@ class TestSelectionRDKit(object):
     def test_passing_max_matches_to_converter(self, u2):
         with pytest.warns(UserWarning, match="Your smarts-based") as wsmg:
             sel = u2.select_atoms("smarts C", smarts_kwargs=dict(maxMatches=2))
-            sel2 = u2.select_atoms(
-                "smarts C", smarts_kwargs=dict(maxMatches=1000)
-            )
+            sel2 = u2.select_atoms("smarts C", smarts_kwargs=dict(maxMatches=1000))
             assert sel.n_atoms == 2
             assert sel2.n_atoms == 3
 
@@ -908,9 +881,7 @@ class TestOrthogonalDistanceSelections(BaseDistanceSelection):
     def u(self):
         return mda.Universe(TRZ_psf, TRZ)
 
-    @pytest.mark.parametrize(
-        "meth, periodic", [("distmat", True), ("distmat", False)]
-    )
+    @pytest.mark.parametrize("meth, periodic", [("distmat", True), ("distmat", False)])
     def test_cyzone(self, u, meth, periodic):
         sel = Parser.parse("cyzone 5 4 -4 resid 2", u.atoms)
         sel.periodic = periodic
@@ -1178,9 +1149,7 @@ class TestPropSelection(object):
         # reference group, doing things forwards
         ref = ag[func(getattr(ag, self.plurals[prop]), 1.5)]
 
-        selstr = "prop 1.5 {op} {prop}".format(
-            op=self.opposites[op], prop=prop
-        )
+        selstr = "prop 1.5 {op} {prop}".format(op=self.opposites[op], prop=prop)
         sel = ag.select_atoms(selstr)
 
         assert_equal(set(ref.indices), set(sel.indices))
@@ -1211,9 +1180,7 @@ class TestSelectionErrors(object):
     @staticmethod
     @pytest.fixture()
     def universe():
-        return make_Universe(
-            ("names", "masses", "resids", "resnames", "resnums")
-        )
+        return make_Universe(("names", "masses", "resids", "resnames", "resnums"))
 
     @pytest.mark.parametrize(
         "selstr",
@@ -1316,9 +1283,7 @@ class TestImplicitOr(object):
         ],
     )
     def test_range_selections(self, seltype, ref, sel, universe):
-        self._check_sels(
-            ref.format(typ=seltype), sel.format(typ=seltype), universe
-        )
+        self._check_sels(ref.format(typ=seltype), sel.format(typ=seltype), universe)
 
 
 class TestICodeSelection(object):
@@ -1662,9 +1627,7 @@ def test_bool_sel_error():
 
 def test_error_selection_for_strange_dtype():
     with pytest.raises(ValueError, match="No base class defined for dtype"):
-        MDAnalysis.core.selection.gen_selection_class(
-            "star", "stars", dict, "atom"
-        )
+        MDAnalysis.core.selection.gen_selection_class("star", "stars", dict, "atom")
 
 
 @pytest.mark.parametrize(
@@ -1731,9 +1694,7 @@ def test_chirality(smi, chirality):
     assert u.atoms[0].chirality == ""
     assert u.atoms[1].chirality == chirality
 
-    assert_equal(
-        u.atoms[:3].chiralities, np.array(["", chirality, ""], dtype="U1")
-    )
+    assert_equal(u.atoms[:3].chiralities, np.array(["", chirality, ""], dtype="U1"))
 
 
 @pytest.mark.parametrize(

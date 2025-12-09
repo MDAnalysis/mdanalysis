@@ -311,24 +311,19 @@ class TestH5MDReaderWithRealTrajectory(object):
     @pytest.mark.parametrize("start, stop, step", ((0, 2, 1), (1, 2, 1)))
     def test_slice(self, universe, start, stop, step):
         frames = [
-            universe.trajectory.ts.frame
-            for ts in universe.trajectory[start:stop:step]
+            universe.trajectory.ts.frame for ts in universe.trajectory[start:stop:step]
         ]
         assert_equal(frames, np.arange(start, stop, step))
 
     @pytest.mark.parametrize("array_like", [list, np.array])
     def test_array_like(self, universe, array_like):
         array = array_like([0, 2])
-        frames = [
-            universe.trajectory.ts.frame for ts in universe.trajectory[array]
-        ]
+        frames = [universe.trajectory.ts.frame for ts in universe.trajectory[array]]
         assert_equal(frames, array)
 
     def test_list_indices(self, universe):
         indices = [0, 1, 2, 1, 2, 2, 0]
-        frames = [
-            universe.trajectory.ts.frame for ts in universe.trajectory[indices]
-        ]
+        frames = [universe.trajectory.ts.frame for ts in universe.trajectory[indices]]
         assert_equal(frames, indices)
 
     @pytest.mark.parametrize(
@@ -358,12 +353,8 @@ class TestH5MDReaderWithRealTrajectory(object):
             with h5py.File(outfile, "w") as g:
                 f.copy(source="particles", dest=g)
                 f.copy(source="h5md", dest=g)
-                g["particles" "/trajectory" f"/{dset}"].attrs[
-                    "unit"
-                ] = "random string"
-        with pytest.raises(
-            RuntimeError, match=" is not recognized by H5MDReader."
-        ):
+                g["particles" "/trajectory" f"/{dset}"].attrs["unit"] = "random string"
+        with pytest.raises(RuntimeError, match=" is not recognized by H5MDReader."):
             u = mda.Universe(TPR_xvf, outfile)
 
     def test_length_unit_from_box(self, h5md_file, universe, outfile):
@@ -374,14 +365,10 @@ class TestH5MDReaderWithRealTrajectory(object):
                 del g["particles/trajectory/position"]
         ref_u = universe
         uw = mda.Universe(TPR_xvf, outfile)
-        assert_equal(
-            ref_u.trajectory.units["length"], uw.trajectory.units["length"]
-        )
+        assert_equal(ref_u.trajectory.units["length"], uw.trajectory.units["length"])
         for ref_ts, new_ts in zip(ref_u.trajectory, uw.trajectory):
             assert_equal(ref_ts.dimensions, new_ts.dimensions)
-            assert_equal(
-                ref_ts.triclinic_dimensions, new_ts.triclinic_dimensions
-            )
+            assert_equal(ref_ts.triclinic_dimensions, new_ts.triclinic_dimensions)
 
     @pytest.mark.parametrize("group", ("position", "velocity", "force"))
     def test_changing_n_atoms(self, h5md_file, outfile, group):
@@ -406,9 +393,7 @@ class TestH5MDReaderWithRealTrajectory(object):
                 g["particles/trajectory" "/box/edges"].create_dataset(
                     "value", data=new_box
                 )
-        with pytest.raises(
-            ValueError, match="MDAnalysis only supports 3-dimensional"
-        ):
+        with pytest.raises(ValueError, match="MDAnalysis only supports 3-dimensional"):
             u = mda.Universe(TPR_xvf, outfile)
 
     def test_box_vector(self, h5md_file, outfile):
@@ -444,9 +429,7 @@ class TestH5MDReaderWithRealTrajectory(object):
                 del g["particles/trajectory/position"]
                 del g["particles/trajectory/velocity"]
                 del g["particles/trajectory/force"]
-        with pytest.raises(
-            NoDataError, match="Provide at least a position, velocity"
-        ):
+        with pytest.raises(NoDataError, match="Provide at least a position, velocity"):
             u = mda.Universe(TPR_xvf, outfile)
 
     def test_no_convert_units(self, h5md_file, outfile):
@@ -472,9 +455,7 @@ class TestH5MDReaderWithRealTrajectory(object):
                     del g["particles/trajectory"][name]["value"].attrs["unit"]
                 del g["particles/trajectory/position/time"].attrs["unit"]
                 del g["particles/trajectory/box/edges/value"].attrs["unit"]
-        with pytest.raises(
-            ValueError, match="H5MD file must have readable units if"
-        ):
+        with pytest.raises(ValueError, match="H5MD file must have readable units if"):
             u = mda.Universe(TPR_xvf, outfile, convert_units=True)
 
     @pytest.mark.xfail(reason="Issue #2884")
@@ -583,9 +564,7 @@ class TestH5MDWriterWithRealTrajectory(object):
             (0.5, IOError, "H5MDWriter: Timestep does not have"),
         ),
     )
-    def test_n_atoms_errors(
-        self, universe, Writer, outfile, scalar, error, match
-    ):
+    def test_n_atoms_errors(self, universe, Writer, outfile, scalar, error, match):
         n_atoms = universe.atoms.n_atoms * scalar
         with pytest.raises(error, match=match):
             with Writer(outfile, n_atoms) as W:
@@ -665,9 +644,7 @@ class TestH5MDWriterWithRealTrajectory(object):
             (False, False, False),
         ),
     )
-    def test_write_trajectory(
-        self, universe, Writer, outfile, pos, vel, force
-    ):
+    def test_write_trajectory(self, universe, Writer, outfile, pos, vel, force):
         try:
             with Writer(
                 outfile,
@@ -685,31 +662,21 @@ class TestH5MDWriterWithRealTrajectory(object):
 
             # check the trajectory contents match reference universes
             for ts, ref_ts in zip(uw.trajectory, universe.trajectory):
-                assert_almost_equal(
-                    ts.dimensions, ref_ts.dimensions, self.prec
-                )
+                assert_almost_equal(ts.dimensions, ref_ts.dimensions, self.prec)
                 if pos:
                     assert_almost_equal(ts._pos, ref_ts._pos, self.prec)
                 else:
-                    with pytest.raises(
-                        NoDataError, match="This Timestep has no"
-                    ):
+                    with pytest.raises(NoDataError, match="This Timestep has no"):
                         getattr(ts, "positions")
                 if vel:
-                    assert_almost_equal(
-                        ts._velocities, ref_ts._velocities, self.prec
-                    )
+                    assert_almost_equal(ts._velocities, ref_ts._velocities, self.prec)
                 else:
-                    with pytest.raises(
-                        NoDataError, match="This Timestep has no"
-                    ):
+                    with pytest.raises(NoDataError, match="This Timestep has no"):
                         getattr(ts, "velocities")
                 if force:
                     assert_almost_equal(ts._forces, ref_ts._forces, self.prec)
                 else:
-                    with pytest.raises(
-                        NoDataError, match="This Timestep has no"
-                    ):
+                    with pytest.raises(NoDataError, match="This Timestep has no"):
                         getattr(ts, "forces")
 
         # when (False, False, False)
@@ -743,14 +710,10 @@ class TestH5MDWriterWithRealTrajectory(object):
         for orig_ts, written_ts in zip(universe.trajectory, uw.trajectory):
             assert_almost_equal(ca.positions, caw.positions, self.prec)
             assert_almost_equal(orig_ts.time, written_ts.time, self.prec)
-            assert_almost_equal(
-                written_ts.dimensions, orig_ts.dimensions, self.prec
-            )
+            assert_almost_equal(written_ts.dimensions, orig_ts.dimensions, self.prec)
 
     @pytest.mark.parametrize("frames, n_frames", ((None, 1), ("all", 3)))
-    def test_ag_write(
-        self, universe, outfile, outtop, Writer, frames, n_frames
-    ):
+    def test_ag_write(self, universe, outfile, outtop, Writer, frames, n_frames):
         """test to write with ag.write()"""
         ca = universe.select_atoms("protein and name CA")
         ca.write(outtop)
@@ -764,9 +727,7 @@ class TestH5MDWriterWithRealTrajectory(object):
         for orig_ts, written_ts in zip(universe.trajectory, uw.trajectory):
             assert_almost_equal(ca.positions, caw.positions, self.prec)
             assert_almost_equal(orig_ts.time, written_ts.time, self.prec)
-            assert_almost_equal(
-                written_ts.dimensions, orig_ts.dimensions, self.prec
-            )
+            assert_almost_equal(written_ts.dimensions, orig_ts.dimensions, self.prec)
 
     @pytest.mark.parametrize(
         "timeunit, lengthunit, velocityunit, forceunit",
@@ -853,12 +814,8 @@ class TestH5MDWriterWithRealTrajectory(object):
                 for ts in universe_no_units.trajectory:
                     W.write(universe_no_units)
 
-    def test_no_units_w_convert_false(
-        self, universe_no_units, outfile, Writer
-    ):
-        with Writer(
-            outfile, universe_no_units.atoms.n_atoms, convert_units=False
-        ) as W:
+    def test_no_units_w_convert_false(self, universe_no_units, outfile, Writer):
+        with Writer(outfile, universe_no_units.atoms.n_atoms, convert_units=False) as W:
             for ts in universe_no_units.trajectory:
                 W.write(universe_no_units)
 
@@ -868,9 +825,7 @@ class TestH5MDWriterWithRealTrajectory(object):
 
     @pytest.mark.parametrize("convert_units", (True, False))
     def test_convert_units(self, universe, outfile, Writer, convert_units):
-        with Writer(
-            outfile, universe.atoms.n_atoms, convert_units=convert_units
-        ) as W:
+        with Writer(outfile, universe.atoms.n_atoms, convert_units=convert_units) as W:
             for ts in universe.trajectory:
                 W.write(universe)
 
@@ -880,9 +835,7 @@ class TestH5MDWriterWithRealTrajectory(object):
         for u1, u2 in zip(ref_units, uw_units):
             assert_equal(u1, u2)
 
-    @pytest.mark.parametrize(
-        "chunks", ((3, 1000, 1), (1, 1000, 3), (100, 100, 3))
-    )
+    @pytest.mark.parametrize("chunks", ((3, 1000, 1), (1, 1000, 3), (100, 100, 3)))
     def test_write_chunks(self, universe, outfile, Writer, chunks):
         with Writer(outfile, universe.atoms.n_atoms, chunks=chunks) as W:
             for ts in universe.trajectory:
@@ -924,9 +877,7 @@ class TestH5MDWriterWithRealTrajectory(object):
     def test_write_contiguous1(self, universe, Writer, outfile):
         n_atoms = universe.atoms.n_atoms
         n_frames = len(universe.trajectory)
-        with Writer(
-            outfile, n_atoms=n_atoms, n_frames=n_frames, chunks=False
-        ) as W:
+        with Writer(outfile, n_atoms=n_atoms, n_frames=n_frames, chunks=False) as W:
             for ts in universe.trajectory:
                 W.write(universe)
 
@@ -951,12 +902,8 @@ class TestH5MDWriterWithRealTrajectory(object):
         ):
             assert_equal(dset.chunks, None)
 
-    @pytest.mark.parametrize(
-        "filter, opts", (("gzip", 1), ("gzip", 9), ("lzf", None))
-    )
-    def test_write_with_compression(
-        self, universe, outfile, Writer, filter, opts
-    ):
+    @pytest.mark.parametrize("filter, opts", (("gzip", 1), ("gzip", 9), ("lzf", None)))
+    def test_write_with_compression(self, universe, outfile, Writer, filter, opts):
         with Writer(
             outfile,
             universe.atoms.n_atoms,
@@ -971,9 +918,7 @@ class TestH5MDWriterWithRealTrajectory(object):
         assert_equal(dset.compression, filter)
         assert_equal(dset.compression_opts, opts)
 
-    @pytest.mark.xfail(
-        os.name == "nt", reason="occasional PermissionError on windows"
-    )
+    @pytest.mark.xfail(os.name == "nt", reason="occasional PermissionError on windows")
     @pytest.mark.parametrize("driver", ("core", "stdio"))
     def test_write_with_drivers(self, universe, outfile, Writer, driver):
         with Writer(outfile, universe.atoms.n_atoms, driver=driver) as W:
@@ -1010,9 +955,7 @@ class TestH5MDWriterWithRealTrajectory(object):
             x,
             err_msg="Positions in Timestep were modified by writer.",
         )
-        assert_equal(
-            ts.time, time, err_msg="Time in Timestep was modified by writer."
-        )
+        assert_equal(ts.time, time, err_msg="Time in Timestep was modified by writer.")
 
 
 class TestH5PYNotInstalled(object):
@@ -1038,9 +981,7 @@ class TestH5PYNotInstalled(object):
 
     def test_writer_no_h5py(self, Writer, outfile):
         u = mda.Universe(TPR_xvf, TRR_xvf)
-        with pytest.raises(
-            RuntimeError, match="H5MDWriter: Please install h5py"
-        ):
+        with pytest.raises(RuntimeError, match="H5MDWriter: Please install h5py"):
             with Writer(outfile, u.atoms.n_atoms) as W:
                 for ts in u.trajectory:
                     W.write(universe)

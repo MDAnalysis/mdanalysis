@@ -139,9 +139,7 @@ class GSDParser(TopologyReaderBase):
 
             # set radii, masses, charges
             p = snap.particles
-            attrs["diameter"] = Radii(
-                np.array(p.diameter / 2.0, dtype=np.float32)
-            )
+            attrs["diameter"] = Radii(np.array(p.diameter / 2.0, dtype=np.float32))
             attrs["mass"] = Masses(np.array(p.mass, dtype=np.float64))
             attrs["charge"] = Charges(np.array(p.charge, dtype=np.float32))
 

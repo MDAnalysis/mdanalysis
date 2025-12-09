@@ -399,9 +399,7 @@ class H5MDReader(base.ReaderBase):
         version="1.1",
     )
     @store_init_arguments
-    def __init__(
-        self, filename, convert_units=True, driver=None, comm=None, **kwargs
-    ):
+    def __init__(self, filename, convert_units=True, driver=None, comm=None, **kwargs):
         """
         Parameters
         ----------
@@ -527,17 +525,15 @@ class H5MDReader(base.ReaderBase):
                 if value:
                     if "unit" in self._particle_group[name]["time"].attrs:
                         try:
-                            self.units["time"] = self._unit_translation[
-                                "time"
-                            ][self._particle_group[name]["time"].attrs["unit"]]
+                            self.units["time"] = self._unit_translation["time"][
+                                self._particle_group[name]["time"].attrs["unit"]
+                            ]
                             break
                         except KeyError:
                             raise RuntimeError(
                                 errmsg.format(
                                     unit,
-                                    self._particle_group[name]["time"].attrs[
-                                        "unit"
-                                    ],
+                                    self._particle_group[name]["time"].attrs["unit"],
                                 )
                             ) from None
 
@@ -552,33 +548,23 @@ class H5MDReader(base.ReaderBase):
                         raise RuntimeError(
                             errmsg.format(
                                 unit,
-                                self._particle_group[group]["value"].attrs[
-                                    "unit"
-                                ],
+                                self._particle_group[group]["value"].attrs["unit"],
                             )
                         ) from None
 
             # if position group is not provided, can still get 'length' unit
             # from unitcell box
-            if (not self._has["position"]) and (
-                "edges" in self._particle_group["box"]
-            ):
+            if (not self._has["position"]) and ("edges" in self._particle_group["box"]):
                 if "unit" in self._particle_group["box/edges/value"].attrs:
                     try:
-                        self.units["length"] = self._unit_translation[
-                            "length"
-                        ][
-                            self._particle_group["box/edges/value"].attrs[
-                                "unit"
-                            ]
+                        self.units["length"] = self._unit_translation["length"][
+                            self._particle_group["box/edges/value"].attrs["unit"]
                         ]
                     except KeyError:
                         raise RuntimeError(
                             errmsg.format(
                                 unit,
-                                self._particle_group["box/edges/value"].attrs[
-                                    "unit"
-                                ],
+                                self._particle_group["box/edges/value"].attrs["unit"],
                             )
                         ) from None
 
@@ -647,9 +633,7 @@ class H5MDReader(base.ReaderBase):
 
         # pulls first key out of 'particles'
         # allows for arbitrary name of group1 in 'particles'
-        self._particle_group = self._file["particles"][
-            list(self._file["particles"])[0]
-        ]
+        self._particle_group = self._file["particles"][list(self._file["particles"])[0]]
 
     @property
     def n_frames(self):
@@ -721,9 +705,9 @@ class H5MDReader(base.ReaderBase):
                 try:
                     # if has value as subkey read directly into data
                     if "value" in self._file["observables"][key]:
-                        self.ts.data[key] = self._file["observables"][key][
-                            "value"
-                        ][self._frame]
+                        self.ts.data[key] = self._file["observables"][key]["value"][
+                            self._frame
+                        ]
                     # if value is not a subkey, read dict of subkeys
                     else:
                         for subkey in self._file["observables"][key].keys():
@@ -742,9 +726,7 @@ class H5MDReader(base.ReaderBase):
         for name, value in self._has.items():
             if value:
                 if "time" in self._particle_group[name]:
-                    self.ts.time = self._particle_group[name]["time"][
-                        self._frame
-                    ]
+                    self.ts.time = self._particle_group[name]["time"][self._frame]
                     break
         for name, value in self._has.items():
             if value:
@@ -758,9 +740,7 @@ class H5MDReader(base.ReaderBase):
         """reads position, velocity, or force dataset array at current frame
         into corresponding ts attribute"""
 
-        n_atoms_now = self._particle_group[f"{dataset}/value"][
-            self._frame
-        ].shape[0]
+        n_atoms_now = self._particle_group[f"{dataset}/value"][self._frame].shape[0]
         if n_atoms_now != self.n_atoms:
             raise ValueError(
                 f"Frame {self._frame} of the {dataset} dataset"
@@ -784,10 +764,7 @@ class H5MDReader(base.ReaderBase):
 
         self.ts.time = self.convert_time_from_native(self.ts.time)
 
-        if (
-            "edges" in self._particle_group["box"]
-            and self.ts.dimensions is not None
-        ):
+        if "edges" in self._particle_group["box"] and self.ts.dimensions is not None:
             self.convert_pos_from_native(self.ts.dimensions[:3])
 
         if self._has["position"]:
@@ -895,9 +872,7 @@ class H5MDReader(base.ReaderBase):
 
     def __setstate__(self, state):
         self.__dict__ = state
-        self._particle_group = self._file["particles"][
-            list(self._file["particles"])[0]
-        ]
+        self._particle_group = self._file["particles"][list(self._file["particles"])[0]]
 
 
 class H5MDWriter(base.WriterBase):
@@ -1243,8 +1218,7 @@ class H5MDWriter(base.WriterBase):
 
         if ts.n_atoms != self.n_atoms:
             raise IOError(
-                "H5MDWriter: Timestep does not have"
-                " the correct number of atoms"
+                "H5MDWriter: Timestep does not have" " the correct number of atoms"
             )
 
         # This should only be called once when first timestep is read.
@@ -1303,9 +1277,7 @@ class H5MDWriter(base.WriterBase):
 
         """
 
-        self.h5md_file = h5py.File(
-            name=self.filename, mode="w", driver=self._driver
-        )
+        self.h5md_file = h5py.File(name=self.filename, mode="w", driver=self._driver)
 
         # fill in H5MD metadata from kwargs
         self.h5md_file.require_group("h5md")
@@ -1340,9 +1312,7 @@ class H5MDWriter(base.WriterBase):
         # if prompted by the writer with the self._write_* attributes
         self._has = {
             group: (
-                getattr(ts, f"has_{attr}")
-                if getattr(self, f"_write_{attr}")
-                else False
+                getattr(ts, f"has_{attr}") if getattr(self, f"_write_{attr}") else False
             )
             for group, attr in zip(
                 ("position", "velocity", "force"),
@@ -1493,9 +1463,7 @@ class H5MDWriter(base.WriterBase):
         if self.units[unit] is None:
             return
 
-        dset.attrs["unit"] = self._unit_translation_dict[unit][
-            self.units[unit]
-        ]
+        dset.attrs["unit"] = self._unit_translation_dict[unit][self.units[unit]]
 
     def _write_next_timestep(self, ts):
         """Write coordinates and unitcell information to H5MD file.
@@ -1539,9 +1507,7 @@ class H5MDWriter(base.WriterBase):
 
         if "edges" in self._traj["box"]:
             self._edges.resize(self._edges.shape[0] + 1, axis=0)
-            self._edges.write_direct(
-                ts.triclinic_dimensions, dest_sel=np.s_[i, :]
-            )
+            self._edges.write_direct(ts.triclinic_dimensions, dest_sel=np.s_[i, :])
         # These datasets are not resized if n_frames was provided as an
         # argument, as they were initialized with their full size.
         if self.has_positions:
@@ -1668,9 +1634,7 @@ class H5PYPicklable(h5py.File):
         return {"name": self.filename, "mode": self.mode, "driver": driver}
 
     def __setstate__(self, state):
-        self.__init__(
-            name=state["name"], mode=state["mode"], driver=state["driver"]
-        )
+        self.__init__(name=state["name"], mode=state["mode"], driver=state["driver"])
 
     def __getnewargs__(self):
         """Override the h5py getnewargs to skip its error message"""

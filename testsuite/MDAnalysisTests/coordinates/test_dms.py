@@ -67,9 +67,7 @@ class TestDMSReader(object):
         assert_equal(universe.atoms[0].position, coords_0)
 
     def test_n_frames(self, universe):
-        assert_equal(
-            universe.trajectory.n_frames, 1, "wrong number of frames in pdb"
-        )
+        assert_equal(universe.trajectory.n_frames, 1, "wrong number of frames in pdb")
 
     def test_time(self, universe):
         assert_equal(universe.trajectory.time, 0.0, "wrong time of the frame")
@@ -78,8 +76,7 @@ class TestDMSReader(object):
         assert_equal(
             universe.trajectory.frame,
             0,
-            "wrong frame number "
-            "(0-based, should be 0 for single frame readers)",
+            "wrong frame number " "(0-based, should be 0 for single frame readers)",
         )
 
     def test_frame_index_0(self, universe):

@@ -159,7 +159,7 @@ Versions prior to Gromacs 4.0.x are not supported.
    topology.
 
 .. versionchanged:: 2.7.0
-   If the TPR molblock is named "Protein_chain_XXX" then we assume that XXX is 
+   If the TPR molblock is named "Protein_chain_XXX" then we assume that XXX is
    describing the chain of a protein (in the sense of the PDB chainID) and set
    the topology attribute `chainID` to "XXX". In all other cases, the chainID
    remains the full molblock name. The `segID` is never changed.
@@ -242,9 +242,7 @@ class TPRParser(TopologyReaderBase):
         if state_ngtc > 0:
             if th.fver < 69:  # redundancy due to  different versions
                 tpr_utils.ndo_real(data, state_ngtc)
-            tpr_utils.ndo_real(
-                data, state_ngtc
-            )  # relevant to Berendsen tcoupl_lambda
+            tpr_utils.ndo_real(data, state_ngtc)  # relevant to Berendsen tcoupl_lambda
 
         if th.bTop:
             tpr_top = tpr_utils.do_mtop(

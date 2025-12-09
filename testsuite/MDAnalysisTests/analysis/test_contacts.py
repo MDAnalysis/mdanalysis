@@ -206,9 +206,7 @@ class TestContacts(object):
         aga = universe.select_atoms(self.sel_acidic)
         agb = universe.select_atoms(self.sel_basic)
 
-        cag = contacts.Contacts(
-            universe, select=(aga, agb), refgroup=(aga, agb)
-        )
+        cag = contacts.Contacts(universe, select=(aga, agb), refgroup=(aga, agb))
 
         csel = contacts.Contacts(
             universe,
@@ -244,9 +242,7 @@ class TestContacts(object):
 
     def test_end_zero(self, universe, client_Contacts):
         """test_end_zero: TestContactAnalysis1: stop frame 0 is not ignored"""
-        CA1 = self._run_Contacts(
-            universe, client_Contacts=client_Contacts, stop=0
-        )
+        CA1 = self._run_Contacts(universe, client_Contacts=client_Contacts, stop=0)
         assert len(CA1.results.timeseries) == 0
 
     def test_slicing(self, universe, client_Contacts):
@@ -275,9 +271,7 @@ class TestContacts(object):
         q.run(**client_Contacts)
 
         results = soft_cut(f, u, sel, sel)
-        assert_allclose(
-            q.results.timeseries[:, 1], results[:, 1], rtol=0, atol=1.5e-7
-        )
+        assert_allclose(q.results.timeseries[:, 1], results[:, 1], rtol=0, atol=1.5e-7)
 
     def test_villin_unfolded(self, client_Contacts):
         # both folded
@@ -293,9 +287,7 @@ class TestContacts(object):
         q.run(**client_Contacts)
 
         results = soft_cut(f, u, sel, sel)
-        assert_allclose(
-            q.results.timeseries[:, 1], results[:, 1], rtol=0, atol=1.5e-7
-        )
+        assert_allclose(q.results.timeseries[:, 1], results[:, 1], rtol=0, atol=1.5e-7)
 
     def test_hard_cut_method(self, universe, client_Contacts):
         ca = self._run_Contacts(universe, client_Contacts=client_Contacts)
@@ -324,9 +316,7 @@ class TestContacts(object):
         ]
         # fmt: on
         assert len(ca.results.timeseries) == len(expected)
-        assert_allclose(
-            ca.results.timeseries[:, 1], expected, rtol=0, atol=1.5e-7
-        )
+        assert_allclose(ca.results.timeseries[:, 1], expected, rtol=0, atol=1.5e-7)
 
     def test_radius_cut_method(self, universe, client_Contacts):
         acidic = universe.select_atoms(self.sel_acidic)
@@ -438,16 +428,12 @@ class TestContacts(object):
             pbc=pbc,
         )
         r.run(**client_Contacts)
-        assert_allclose(
-            r.results.timeseries[:, 1], expected, rtol=0, atol=1.5e-7
-        )
+        assert_allclose(r.results.timeseries[:, 1], expected, rtol=0, atol=1.5e-7)
 
     def test_warn_deprecated_attr(self, universe, client_Contacts):
         """Test for warning message emitted on using deprecated `timeseries`
         attribute"""
-        CA1 = self._run_Contacts(
-            universe, client_Contacts=client_Contacts, stop=1
-        )
+        CA1 = self._run_Contacts(universe, client_Contacts=client_Contacts, stop=1)
         wmsg = "The `timeseries` attribute was deprecated in MDAnalysis"
         with pytest.warns(DeprecationWarning, match=wmsg):
             assert_equal(CA1.timeseries, CA1.results.timeseries)
@@ -494,9 +480,7 @@ def test_q1q2(client_Contacts):
         0.93006358, 0.9346049, 0.93188011,
     ]
     # fmt: on
-    assert_allclose(
-        q1q2.results.timeseries[:, 1], q1_expected, rtol=0, atol=1.5e-7
-    )
+    assert_allclose(q1q2.results.timeseries[:, 1], q1_expected, rtol=0, atol=1.5e-7)
 
     # fmt: off
     q2_expected = [
@@ -522,6 +506,4 @@ def test_q1q2(client_Contacts):
         0.98616236, 0.9898524, 1.0,
     ]
     # fmt: on
-    assert_allclose(
-        q1q2.results.timeseries[:, 2], q2_expected, rtol=0, atol=1.5e-7
-    )
+    assert_allclose(q1q2.results.timeseries[:, 2], q2_expected, rtol=0, atol=1.5e-7)

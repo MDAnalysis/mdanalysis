@@ -367,9 +367,7 @@ class TestITPNoKeywords(BaseITP):
 
     def test_guessed_masses(self, filename):
         u = mda.Universe(filename)
-        assert_allclose(
-            u.atoms.masses, [15.999, 15.999, 15.999, 15.999, 15.999]
-        )
+        assert_allclose(u.atoms.masses, [15.999, 15.999, 15.999, 15.999, 15.999])
 
 
 class TestITPKeywords(TestITPNoKeywords):
@@ -394,9 +392,7 @@ class TestITPKeywords(TestITPNoKeywords):
     @pytest.fixture()
     def top(self, filename):
         with self.parser(filename) as p:
-            yield p.parse(
-                FLEXIBLE=True, EXTRA_ATOMS=True, HW1_CHARGE=1, HW2_CHARGE=3
-            )
+            yield p.parse(FLEXIBLE=True, EXTRA_ATOMS=True, HW1_CHARGE=1, HW2_CHARGE=3)
 
     def test_whether_settles_types(self, universe):
         for param in list(universe.bonds) + list(universe.angles):
@@ -429,9 +425,7 @@ class TestNestedIfs(BaseITP):
 
     @pytest.fixture
     def universe(self, filename):
-        return mda.Universe(
-            filename, HEAVY_H=True, EXTRA_ATOMS=True, HEAVY_SIX=True
-        )
+        return mda.Universe(filename, HEAVY_H=True, EXTRA_ATOMS=True, HEAVY_SIX=True)
 
     @pytest.fixture()
     def top(self, filename):
@@ -465,9 +459,7 @@ class TestReadTop(BaseITP):
 
     @pytest.fixture()
     def universe(self, filename):
-        return mda.Universe(
-            filename, topology_format="ITP", include_dir=GMX_DIR
-        )
+        return mda.Universe(filename, topology_format="ITP", include_dir=GMX_DIR)
 
     def test_output(self, filename):
         """Testing the call signature"""
@@ -488,9 +480,7 @@ class TestReadTop(BaseITP):
     def test_sequential(self, universe):
         resids = np.array(list(range(2, 12)) + list(range(13, 23)))
         assert_equal(universe.residues.resids[:20], resids)
-        assert_equal(
-            universe.residues.resindices, np.arange(self.expected_n_residues)
-        )
+        assert_equal(universe.residues.resindices, np.arange(self.expected_n_residues))
         assert_equal(universe.atoms.chargegroups[-1], 63)
 
 

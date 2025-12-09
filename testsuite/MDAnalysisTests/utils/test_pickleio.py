@@ -163,9 +163,7 @@ def test_pickle_with_write_mode(unpicklable_f, tmpdir):
 def test_GSD_pickle():
     gsd_io = gsd_pickle_open(GSD, mode="r")
     gsd_io_pickled = pickle.loads(pickle.dumps(gsd_io))
-    assert_equal(
-        gsd_io[0].particles.position, gsd_io_pickled[0].particles.position
-    )
+    assert_equal(gsd_io[0].particles.position, gsd_io_pickled[0].particles.position)
 
 
 @pytest.mark.skipif(not HAS_GSD, reason="gsd not installed")
@@ -189,9 +187,7 @@ def test_NCDF_mmap_pickle():
     assert_equal(ncdf_io_pickled.use_mmap, False)
 
 
-@pytest.mark.skipif(
-    not check_chemfiles_version(), reason="Wrong version of chemfiles"
-)
+@pytest.mark.skipif(not check_chemfiles_version(), reason="Wrong version of chemfiles")
 def test_Chemfiles_pickle():
     chemfiles_io = ChemfilesPicklable(XYZ)
     chemfiles_io_pickled = pickle.loads(pickle.dumps(chemfiles_io))
@@ -202,14 +198,10 @@ def test_Chemfiles_pickle():
     assert_equal(frame.positions[:], frame_pickled.positions[:])
 
 
-@pytest.mark.skipif(
-    not check_chemfiles_version(), reason="Wrong version of chemfiles"
-)
+@pytest.mark.skipif(not check_chemfiles_version(), reason="Wrong version of chemfiles")
 def test_Chemfiles_with_write_mode(tmpdir):
     with pytest.raises(ValueError, match=r"Only read mode"):
-        chemfiles_io = ChemfilesPicklable(
-            tmpdir.mkdir("xyz").join("t.xyz"), mode="w"
-        )
+        chemfiles_io = ChemfilesPicklable(tmpdir.mkdir("xyz").join("t.xyz"), mode="w")
 
 
 @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")

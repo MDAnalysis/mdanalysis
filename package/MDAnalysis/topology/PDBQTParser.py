@@ -57,7 +57,7 @@ Classes
 
 
 .. _PDBQT:
-   https://autodock.scripps.edu/wp-content/uploads/sites/56/2021/10/AutoDock4.2.6_UserGuide.pdf 
+   https://autodock.scripps.edu/wp-content/uploads/sites/56/2021/10/AutoDock4.2.6_UserGuide.pdf
 .. _AutoDock:
    http://autodock.scripps.edu/
 """

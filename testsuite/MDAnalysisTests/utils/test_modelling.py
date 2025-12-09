@@ -71,9 +71,7 @@ def capping(ref, ace, nma, output):
             "mobile": "resid {0} and backbone and not (resname NMA NME)".format(
                 resid_max
             ),
-            "reference": "resid {0} and (backbone or name OT2)".format(
-                resid_max
-            ),
+            "reference": "resid {0} and (backbone or name OT2)".format(resid_max),
         },
         strict=True,
     )
@@ -118,9 +116,7 @@ class TestCapping(object):
         assert_equal(ace.resids[0], 1)
         assert_equal(nma.resids[0], 16)
 
-        assert_array_equal(
-            peptide.trajectory.ts.dimensions, u.trajectory.ts.dimensions
-        )
+        assert_array_equal(peptide.trajectory.ts.dimensions, u.trajectory.ts.dimensions)
 
     def test_capping_inmemory(self, tmpdir):
         peptide = MDAnalysis.Universe(capping_input)
@@ -142,9 +138,7 @@ class TestCapping(object):
         assert_equal(ace.resids[0], 1)
         assert_equal(nma.resids[0], 16)
 
-        assert_array_equal(
-            peptide.trajectory.ts.dimensions, u.trajectory.ts.dimensions
-        )
+        assert_array_equal(peptide.trajectory.ts.dimensions, u.trajectory.ts.dimensions)
 
 
 @pytest.fixture()
@@ -169,9 +163,7 @@ def u_without_coords():
 
 class TestMerge(object):
     def test_merge(self, u_protein, u_ligand, u_water, tmpdir):
-        ids_before = [
-            a.index for u in [u_protein, u_ligand, u_water] for a in u.atoms
-        ]
+        ids_before = [a.index for u in [u_protein, u_ligand, u_water] for a in u.atoms]
         # Do the merge
         u0 = MDAnalysis.Merge(u_protein.atoms, u_ligand.atoms, u_water.atoms)
         # Check that the output Universe has the same number of atoms as the
@@ -184,19 +176,11 @@ class TestMerge(object):
         # segments as the starting AtomGroups
         assert_equal(
             len(u0.residues),
-            (
-                len(u_protein.residues)
-                + len(u_ligand.residues)
-                + len(u_water.residues)
-            ),
+            (len(u_protein.residues) + len(u_ligand.residues) + len(u_water.residues)),
         )
         assert_equal(
             len(u0.segments),
-            (
-                len(u_protein.segments)
-                + len(u_ligand.segments)
-                + len(u_water.segments)
-            ),
+            (len(u_protein.segments) + len(u_ligand.segments) + len(u_water.segments)),
         )
 
         # Make sure that all the atoms in the new universe are assigned to only
@@ -208,9 +192,7 @@ class TestMerge(object):
 
         # Make sure that the atom ids of the original universes are unchanged,
         # ie we didn't make the original Universes 'dirty'
-        ids_after = [
-            a.index for u in [u_protein, u_ligand, u_water] for a in u.atoms
-        ]
+        ids_after = [a.index for u in [u_protein, u_ligand, u_water] for a in u.atoms]
         assert_equal(
             len(ids_after),
             (len(u_protein.atoms) + len(u_ligand.atoms) + len(u_water.atoms)),
@@ -229,9 +211,7 @@ class TestMerge(object):
         assert_equal(ids_new, ids_new2)
 
     def test_merge_same_universe(self, u_protein):
-        u0 = MDAnalysis.Merge(
-            u_protein.atoms, u_protein.atoms, u_protein.atoms
-        )
+        u0 = MDAnalysis.Merge(u_protein.atoms, u_protein.atoms, u_protein.atoms)
         assert_equal(len(u0.atoms), 3 * len(u_protein.atoms))
         assert_equal(len(u0.residues), 3 * len(u_protein.residues))
         assert_equal(len(u0.segments), 3 * len(u_protein.segments))
@@ -307,18 +287,9 @@ class TestMergeTopology(object):
         # PDB reader yields empty Bonds group, which means bonds from
         # PSF/DCD survive the merge
         # assert(not hasattr(u_merge.atoms, 'bonds') or len(u_merge.atoms.bonds) == 0)
-        assert (
-            not hasattr(u_merge.atoms, "angles")
-            or len(u_merge.atoms.bonds) == 0
-        )
-        assert (
-            not hasattr(u_merge.atoms, "dihedrals")
-            or len(u_merge.atoms.bonds) == 0
-        )
-        assert (
-            not hasattr(u_merge.atoms, "impropers")
-            or len(u_merge.atoms.bonds) == 0
-        )
+        assert not hasattr(u_merge.atoms, "angles") or len(u_merge.atoms.bonds) == 0
+        assert not hasattr(u_merge.atoms, "dihedrals") or len(u_merge.atoms.bonds) == 0
+        assert not hasattr(u_merge.atoms, "impropers") or len(u_merge.atoms.bonds) == 0
 
     def test_merge_without_topology(self, u):
         # This shouldn't have topology as we merged single atoms

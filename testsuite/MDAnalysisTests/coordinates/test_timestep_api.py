@@ -175,9 +175,7 @@ class TestTimestep(object):
         assert_equal(ts.volume, self.ref_volume)
 
     def test_triclinic_vectors(self, ts):
-        assert_allclose(
-            ts.triclinic_dimensions, triclinic_vectors(ts.dimensions)
-        )
+        assert_allclose(ts.triclinic_dimensions, triclinic_vectors(ts.dimensions))
 
     def test_set_triclinic_vectors(self, ts):
         ref_vec = triclinic_vectors(self.newbox)
@@ -406,9 +404,7 @@ class TestTimestep(object):
         """Check basic copy"""
         ts2 = ref_ts.copy()
 
-        err_msg = (
-            "Timestep copy failed for format {form}" " on attribute {att}"
-        )
+        err_msg = "Timestep copy failed for format {form}" " on attribute {att}"
 
         # eq method checks:
         # - frame
@@ -417,9 +413,7 @@ class TestTimestep(object):
         assert ref_ts == ts2
 
         if not ref_ts.dimensions is None:
-            assert_array_almost_equal(
-                ref_ts.dimensions, ts2.dimensions, decimal=4
-            )
+            assert_array_almost_equal(ref_ts.dimensions, ts2.dimensions, decimal=4)
         else:
             assert ref_ts.dimensions == ts2.dimensions
 
@@ -511,9 +505,7 @@ class TestTimestep(object):
         ts = u.trajectory.ts
         func(self, self.name, ts)
 
-    @pytest.fixture(
-        params=filter(any, itertools.product([True, False], repeat=3))
-    )
+    @pytest.fixture(params=filter(any, itertools.product([True, False], repeat=3)))
     def some_ts(self, request):
         p, v, f = request.param
         return self._from_coords(p, v, f)
@@ -719,9 +711,7 @@ class TestBaseTimestepInterface(object):
         )
     )
     def universe(self, request):
-        topology, trajectory, trajectory_format, topology_format = (
-            request.param
-        )
+        topology, trajectory, trajectory_format, topology_format = request.param
         if trajectory_format is not None and topology_format is not None:
             return mda.Universe(
                 topology,

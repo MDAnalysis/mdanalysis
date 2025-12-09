@@ -192,12 +192,8 @@ def get_writer_for(filename, format=None, multiframe=None):
     format = format.upper()
     if multiframe is None:
         # Multiframe takes priority, else use singleframe
-        options = copy.copy(
-            _SINGLEFRAME_WRITERS
-        )  # do copy to avoid changing in place
-        options.update(
-            _MULTIFRAME_WRITERS
-        )  # update overwrites existing entries
+        options = copy.copy(_SINGLEFRAME_WRITERS)  # do copy to avoid changing in place
+        options.update(_MULTIFRAME_WRITERS)  # update overwrites existing entries
         errmsg = "No trajectory or frame writer for format '{0}'"
     elif multiframe is True:
         options = _MULTIFRAME_WRITERS

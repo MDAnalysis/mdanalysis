@@ -46,9 +46,7 @@ class TestFHIAIMS(ParserBase):
 
     def test_guessed_masses(self, filename):
         u = mda.Universe(filename)
-        assert_allclose(
-            u.atoms.masses, [15.999, 1.008, 1.008, 15.999, 1.008, 1.008]
-        )
+        assert_allclose(u.atoms.masses, [15.999, 1.008, 1.008, 15.999, 1.008, 1.008])
 
     def test_elements(self, top):
         assert_equal(top.elements.values, ["O", "H", "H", "O", "H", "H"])

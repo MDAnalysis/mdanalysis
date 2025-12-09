@@ -48,10 +48,10 @@ Citation
 When using MDAnalysis in published work, please cite
 
     R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
-    D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein. 
-    MDAnalysis: A Python package for the rapid analysis of molecular dynamics 
-    simulations. In S. Benthall and S. Rostrup, editors, Proceedings of the 15th 
-    Python in Science Conference, pages 98-105, Austin, TX, 2016. SciPy, 
+    D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+    MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+    simulations. In S. Benthall and S. Rostrup, editors, Proceedings of the 15th
+    Python in Science Conference, pages 98-105, Austin, TX, 2016. SciPy,
     doi:10.25080/majora-629e541a-00e
 
     N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and
@@ -179,9 +179,7 @@ _SELECTION_WRITERS: Dict = {}
 _CONVERTERS: Dict = {}
 # Registry of TopologyAttributes
 _TOPOLOGY_ATTRS: Dict = {}  # {attrname: cls}
-_TOPOLOGY_TRANSPLANTS: Dict = (
-    {}
-)  # {name: [attrname, method, transplant class]}
+_TOPOLOGY_TRANSPLANTS: Dict = {}  # {name: [attrname, method, transplant class]}
 _TOPOLOGY_ATTRNAMES: Dict = {}  # {lower case name w/o _ : name}
 _GUESSERS: Dict = {}
 
@@ -204,9 +202,7 @@ logging.getLogger("MDAnalysis").addHandler(log.NullHandler())
 del logging
 
 # only MDAnalysis DeprecationWarnings are loud by default
-warnings.filterwarnings(
-    action="once", category=DeprecationWarning, module="MDAnalysis"
-)
+warnings.filterwarnings(action="once", category=DeprecationWarning, module="MDAnalysis")
 
 
 from . import units

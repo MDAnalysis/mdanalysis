@@ -336,9 +336,7 @@ class ChainReader(base.ReaderBase):
 
         # calculate new start_frames to have a time continuous trajectory.
         if continuous:
-            check_allowed_filetypes(
-                self.readers, ["XTC", "TRR", "LAMMPSDUMP", "TRC"]
-            )
+            check_allowed_filetypes(self.readers, ["XTC", "TRR", "LAMMPSDUMP", "TRC"])
             if np.any(np.array(n_frames) == 1):
                 raise RuntimeError(
                     "ChainReader: Need at least two frames in "
@@ -388,9 +386,7 @@ class ChainReader(base.ReaderBase):
                 start_time = r2.time
                 r1[-1]
                 if r1.time < start_time:
-                    warnings.warn(
-                        "Missing frame in continuous chain", UserWarning
-                    )
+                    warnings.warn("Missing frame in continuous chain", UserWarning)
 
                 # check for interleaving
                 r1[1]
@@ -466,9 +462,7 @@ class ChainReader(base.ReaderBase):
         # trajectory index i
         i = bisect.bisect_right(self._start_frames, k) - 1
         if i < 0:
-            raise IndexError(
-                "Cannot find trajectory for virtual frame {0:d}".format(k)
-            )
+            raise IndexError("Cannot find trajectory for virtual frame {0:d}".format(k))
         # local frame index f in trajectory i (frame indices are 0-based)
         f = k - self._start_frames[i]
         return i, f
@@ -547,16 +541,11 @@ class ChainReader(base.ReaderBase):
         # Now each reader is either already instantiated with a common dt, or
         #  left at its default dt. In any case, we sum over individual times.
         trajindex, subframe = self._get_local_frame(self.frame)
-        return (
-            self.total_times[:trajindex].sum() + subframe * self.dts[trajindex]
-        )
+        return self.total_times[:trajindex].sum() + subframe * self.dts[trajindex]
 
     def _apply(self, method, **kwargs):
         """Execute `method` with `kwargs` for all readers."""
-        return [
-            reader.__getattribute__(method)(**kwargs)
-            for reader in self.readers
-        ]
+        return [reader.__getattribute__(method)(**kwargs) for reader in self.readers]
 
     def _get(self, attr):
         """Get value of `attr` for all readers."""

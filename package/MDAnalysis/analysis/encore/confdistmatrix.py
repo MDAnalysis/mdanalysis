@@ -35,7 +35,7 @@ class to compute an RMSD matrix in such a way is also available.
 .. versionadded:: 0.16.0
 
 .. deprecated:: 2.8.0
-   This module is deprecated in favour of the 
+   This module is deprecated in favour of the
    MDAKit `mdaencore <https://mdanalysis.org/mdaencore/>`_ and will be removed
    in MDAnalysis 3.0.0.
 
@@ -112,9 +112,7 @@ def conformational_distance_matrix(
 
     # framesn: number of frames
     framesn = len(
-        ensemble.trajectory.timeseries(
-            ensemble.select_atoms(select), order="fac"
-        )
+        ensemble.trajectory.timeseries(ensemble.select_atoms(select), order="fac")
     )
 
     # Prepare metadata recarray
@@ -162,29 +160,20 @@ def conformational_distance_matrix(
     else:
         fitting_coordinates = None
 
-    if (
-        not isinstance(weights, (list, tuple, np.ndarray))
-        and weights == "mass"
-    ):
+    if not isinstance(weights, (list, tuple, np.ndarray)) and weights == "mass":
         weights = ensemble.select_atoms(select).masses.astype(np.float64)
         if pairwise_align:
-            subset_weights = ensemble.select_atoms(
-                subset_select
-            ).masses.astype(np.float64)
+            subset_weights = ensemble.select_atoms(subset_select).masses.astype(
+                np.float64
+            )
         else:
             subset_weights = None
     elif weights is None:
         weights = np.ones(
-            (
-                ensemble.trajectory.timeseries(ensemble.select_atoms(select))[
-                    0
-                ].shape[0]
-            )
+            (ensemble.trajectory.timeseries(ensemble.select_atoms(select))[0].shape[0])
         ).astype(np.float64)
         if pairwise_align:
-            subset_weights = np.ones((fit_coords[0].shape[0])).astype(
-                np.float64
-            )
+            subset_weights = np.ones((fit_coords[0].shape[0])).astype(np.float64)
         else:
             subset_weights = None
     else:
@@ -291,9 +280,7 @@ def set_rmsd_matrix_elements(
         com_j = np.average(fit_coords[j], axis=0, weights=fit_weights)
         translated_j = coords[j] - com_j
         subset2_coords = fit_coords[j] - com_j
-        rotamat = rotation_matrix(
-            subset1_coords, subset2_coords, subset_weights
-        )[0]
+        rotamat = rotation_matrix(subset1_coords, subset2_coords, subset_weights)[0]
         rotated_i = np.transpose(np.dot(rotamat, np.transpose(translated_i)))
         rmsdmat[(i + 1) * i // 2 + j] = PureRMSD(
             rotated_i.astype(np.float64),
@@ -375,9 +362,7 @@ def get_distance_matrix(
 
     # Load the matrix if required
     if load_matrix:
-        logging.info(
-            "        Loading similarity matrix from: {0}".format(load_matrix)
-        )
+        logging.info("        Loading similarity matrix from: {0}".format(load_matrix))
         confdistmatrix = TriangularMatrix(
             size=ensemble.trajectory.timeseries(
                 ensemble.select_atoms(select), order="fac"
@@ -387,9 +372,7 @@ def get_distance_matrix(
         logging.info("        Done!")
         for key in confdistmatrix.metadata.dtype.names:
             logging.info(
-                "        {0} : {1}".format(
-                    key, str(confdistmatrix.metadata[key][0])
-                )
+                "        {0} : {1}".format(key, str(confdistmatrix.metadata[key][0]))
             )
 
         # Check matrix size for consistency
@@ -411,26 +394,17 @@ def get_distance_matrix(
         # Transfer universe to memory to ensure timeseries() support
         ensemble.transfer_to_memory()
 
-        if (
-            not isinstance(weights, (list, tuple, np.ndarray))
-            and weights == "mass"
-        ):
+        if not isinstance(weights, (list, tuple, np.ndarray)) and weights == "mass":
             weight_type = "Mass"
         elif weights is None:
             weight_type = "None"
         else:
             weight_type = "Custom"
-        logging.info(
-            "        Perform pairwise alignment: {0}".format(str(superimpose))
-        )
-        logging.info(
-            "        weighted alignment and RMSD: {0}".format(weight_type)
-        )
+        logging.info("        Perform pairwise alignment: {0}".format(str(superimpose)))
+        logging.info("        weighted alignment and RMSD: {0}".format(weight_type))
         if superimpose:
             logging.info(
-                "        Atoms subset for alignment: {0}".format(
-                    superimposition_subset
-                )
+                "        Atoms subset for alignment: {0}".format(superimposition_subset)
             )
         logging.info("    Calculating similarity matrix . . .")
 
