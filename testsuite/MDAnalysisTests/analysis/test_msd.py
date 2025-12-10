@@ -122,19 +122,21 @@ class TestMSDSimple(object):
         errmsg = f"invalid msd_type: {msdtype}"
         with pytest.raises(ValueError, match=errmsg):
             m = MSD(u, SELECTION, msd_type=msdtype)
+
     def test_msd_type_whitespace(self, u, SELECTION):
-        m = MSD(u,SELECTION, msd_type="  xy  ", fft=False)
+        m = MSD(u, SELECTION, msd_type="  xy  ", fft=False)
         assert m.dim_fac == 2
-        assert m._dim == [0,1]
+        assert m._dim == [0, 1]
+
     def test_msd_type_uppercase(self, u, SELECTION):
         m = MSD(u, SELECTION, msd_type=" Xz ", fft=False)
         assert m.dim_fac == 2
         assert m._dim == [0, 2]
+
     def test_msd_type_nonstring(self, u, SELECTION):
         with pytest.raises(TypeError):
             MSD(u, SELECTION, msd_type=123, fft=False)
-    
-    
+
     @pytest.mark.parametrize(
         "dim, dim_factor",
         [

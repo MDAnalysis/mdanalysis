@@ -389,7 +389,6 @@ class EinsteinMSD(AnalysisBase):
         # strip whitespace + lowercase
         self.msd_type = self.msd_type.strip().lower()
 
-
         try:
             self._dim = keys[self.msd_type]
         except KeyError:
