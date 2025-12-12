@@ -1,6 +1,7 @@
 from MDAnalysis.analysis.base import AnalysisBase
 import numpy as np
 
+
 class RMSFResidue(AnalysisBase):
     """
     Compute RMSF (Root Mean Square Fluctuation) per residue.
@@ -26,7 +27,9 @@ class RMSFResidue(AnalysisBase):
 
         # Residue metadata
         self.resids = np.array([res.resid for res in self.universe.residues])
-        self.resnames = np.array([res.resname for res in self.universe.residues])
+        self.resnames = np.array(
+            [res.resname for res in self.universe.residues]
+        )
 
         # Running statistics
         self._sum = np.zeros((self.n_residues, 3))
@@ -39,7 +42,7 @@ class RMSFResidue(AnalysisBase):
             if len(group) > 0:
                 mean_pos = group.positions.mean(axis=0)
                 self._sum[i] += mean_pos
-                self._sum_sq[i] += mean_pos ** 2
+                self._sum_sq[i] += mean_pos**2
 
         self._counts += 1
 
