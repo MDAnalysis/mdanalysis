@@ -43,7 +43,7 @@ def test_gnm(universe, tmpdir, client_GNMAnalysis):
     gnm.run(**client_GNMAnalysis)
     result = gnm.results
     assert len(result.times) == 10
-    assert_allclose(gnm.results.times, np.arange(0, 1000, 100), atol=1e-3,rtol=0)
+    assert_allclose(gnm.results.times, np.arange(0, 1000, 100), atol=1e-3, rtol=0)
     assert_allclose(
         gnm.results.eigenvalues,
         [
@@ -57,7 +57,7 @@ def test_gnm(universe, tmpdir, client_GNMAnalysis):
             4.0498182e-15,
             4.2058769e-15,
             3.9839431e-15,
-        ],atol=1e-3,rtol=0
+        ], atol=1e-3, rtol=0
     )
 
 
@@ -66,10 +66,10 @@ def test_gnm_run_step(universe, client_GNMAnalysis):
     gnm.run(step=3, **client_GNMAnalysis)
     result = gnm.results
     assert len(result.times) == 4
-    assert_allclose(gnm.results.times, np.arange(0, 1200, 300), atol=1e-3,rtol=0)
+    assert_allclose(gnm.results.times, np.arange(0, 1200, 300), atol=1e-3, rtol=0)
     assert_allclose(
         gnm.results.eigenvalues,
-        [2.0287113e-15, 4.3810359e-15, 2.5501084e-15, 3.9839431e-15],atol=1e-3,rtol=0
+        [2.0287113e-15, 4.3810359e-15, 2.5501084e-15, 3.9839431e-15], atol=1e-3, rtol=0
     )
 
 
@@ -92,7 +92,7 @@ def test_generate_kirchoff(universe):
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-        ],atol=1e-3,rtol=0
+        ], atol=1e-3, rtol=0
     )
     # fmt: on
 
@@ -111,8 +111,8 @@ def test_closeContactGNMAnalysis(universe, client_GNMAnalysis):
     gnm.run(stop=2, **client_GNMAnalysis)
     result = gnm.results
     assert len(result.times) == 2
-    assert_allclose(gnm.results.times, (0, 100), atol=1e-3,rtol=0)
-    assert_allclose(gnm.results.eigenvalues, [0.1502614, 0.1426407],atol=1e-3,rtol=0)
+    assert_allclose(gnm.results.times, (0, 100), atol=1e-3, rtol=0)
+    assert_allclose(gnm.results.eigenvalues, [0.1502614, 0.1426407], atol=1e-3, rtol=0)
     gen = gnm.generate_kirchoff()
     # fmt: off
     assert_allclose(
@@ -138,7 +138,7 @@ def test_closeContactGNMAnalysis(universe, client_GNMAnalysis):
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
             -2.263157894736841, -0.24333213169614382
-        ],atol=1e-3,rtol=0
+        ], atol=1e-3, rtol=0
     )
     # fmt: on
 
@@ -148,8 +148,8 @@ def test_closeContactGNMAnalysis_weights_None(universe, client_GNMAnalysis):
     gnm.run(stop=2, **client_GNMAnalysis)
     result = gnm.results
     assert len(result.times) == 2
-    assert_allclose(gnm.results.times, (0, 100), atol=1e-3,rtol=0)
-    assert_allclose(gnm.results.eigenvalues, [2.4328739, 2.2967251],atol=1e-3,rtol=0)
+    assert_allclose(gnm.results.times, (0, 100), atol=1e-3, rtol=0)
+    assert_allclose(gnm.results.eigenvalues, [2.4328739, 2.2967251], atol=1e-3, rtol=0)
     gen = gnm.generate_kirchoff()
     # fmt: off
     assert_allclose(
@@ -172,7 +172,7 @@ def test_closeContactGNMAnalysis_weights_None(universe, client_GNMAnalysis):
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -43.0, -3.0
-        ],atol=1e-3,rtol=0
+        ], atol=1e-3, rtol=0
     )
     # fmt: on
 
@@ -185,12 +185,12 @@ def test_closeContactGNMAnalysis_select_CA(universe, client_GNMAnalysis):
     gnm.run(stop=2, **client_GNMAnalysis)
     result = gnm.results
     assert len(result.times) == 2
-    assert_allclose(gnm.results.times, (0, 100), atol=1e-3,rtol=0)
+    assert_allclose(gnm.results.times, (0, 100), atol=1e-3, rtol=0)
     # without Issue #4924 fix, eigenvalues are [3.20010632e-16, 4.27574601e-16]
     # but use big totolerance to make sure PASS in each platform
     assert_allclose(
         gnm.results.eigenvalues,
-        [3.57984776e-16, 3.53892581e-16],atol=1e-3,rtol=0
+        [3.57984776e-16, 3.53892581e-16], atol=1e-3, rtol=0
     )
     gen = gnm.generate_kirchoff()
     # without Issue #4924 fix, gnm only use 0~14 residues for this data
@@ -216,6 +216,6 @@ def test_closeContactGNMAnalysis_select_CA(universe, client_GNMAnalysis):
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-        ],atol=1e-3,rtol=0
+        ], atol=1e-3, rtol=0
     )
     # fmt: on
