@@ -69,8 +69,33 @@ the normal MDAnalysis citations.
    back into the primary simulation cell.
    
    In MDAnalysis you can use the 
-   :class:`~MDAnalysis.transformations.nojump.NoJump`
-   transformation. 
+    :class:`~MDAnalysis.transformations.nojump.NoJump`
+    transformation. 
+    transformation to unwrap coordinates on-the-fly.
+    
+    A minimal example:
+    
+    .. code-block:: python
+    
+        import MDAnalysis as mda
+        from MDAnalysis.transformations import NoJump
+        
+        u = mda.Universe(TOP, TRAJ)
+        
+        # Apply NoJump transformation to unwrap coordinates
+        nojump = NoJump(u)
+        u.trajectory.add_transformations(nojump)
+        
+        # Now the trajectory is unwrapped and MSD can be computed normally:
+        from MDAnalysis.analysis.msd import EinsteinMSD
+        MSD = EinsteinMSD(u, select="all", msd_type="xyz")
+        MSD.run()
+    
+   This example assumes that the trajectory contains periodic box
+   dimensions. If no periodic boundary information is present, box
+   dimensions must be defined before applying ``NoJump``.
+   
+   This replaces the need to preprocess trajectories externally.
    
    In GROMACS, for example, this can be done using `gmx trjconv`_ with the
    ``-pbc nojump`` flag.
