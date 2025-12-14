@@ -370,7 +370,7 @@ class BaseReaderTest(object):
         vol = reader.ts.volume
         # Here we can only be sure about the numbers upto the decimal point due
         # to floating point impressions.
-        assert_allclose(vol, ref.volume, atol=1, rtol=0)
+        assert_allclose(vol, ref.volume, atol=0.01, rtol=0)
 
     def test_iter(self, ref, reader):
         for i, ts in enumerate(reader):
