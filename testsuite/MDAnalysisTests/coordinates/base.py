@@ -462,7 +462,7 @@ class BaseReaderTest(object):
         v2 = np.float32((0, 0, 0.33))
         for i, ts in enumerate(transformed):
             idealcoords = ref.iter_ts(i).positions + v1 + v2
-            assert_allclose(ts.positions, idealcoords, atol=1e-3, rtol=0)
+            assert_allclose(ts.positions, idealcoords, atol=ref.prec, rtol=0)
 
     def test_transformations_2iter(self, ref, transformed):
         # Are the transformations applied and
