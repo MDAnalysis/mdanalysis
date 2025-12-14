@@ -220,7 +220,6 @@ def client_DistanceMatrix(request):
     return request.param
 
 
-# MDAnalysis.analysis.align
 
 
 @pytest.fixture(scope="module", params=params_for_cls(AverageStructure))
