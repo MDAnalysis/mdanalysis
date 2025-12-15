@@ -166,12 +166,21 @@ import numpy as np
 import logging
 import warnings
 
-from ..lib import qcprot as qcp
+from ..lib import qcprot as qcp  # type: ignore[attr-defined]
 from ..analysis.base import AnalysisBase, ResultsGroup
 from ..exceptions import SelectionError
 from ..lib.util import asiterable, iterable, get_weights
 
-from typing import Optional, Union, List, Dict, Any, Sequence, Tuple, TYPE_CHECKING
+from typing import (
+    Optional,
+    Union,
+    List,
+    Dict,
+    Any,
+    Sequence,
+    Tuple,
+    TYPE_CHECKING,
+)
 from numpy.typing import NDArray
 
 if TYPE_CHECKING:
@@ -401,7 +410,9 @@ class RMSD(AnalysisBase):
         atomgroup: Union["AtomGroup", "Universe"],
         reference: Optional[Union["AtomGroup", "Universe"]] = None,
         select: Union[str, Dict[str, str], Tuple[str, str]] = "all",
-        groupselections: Optional[Sequence[Union[str, Dict[str, str], Tuple[str, str]]]] = None,
+        groupselections: Optional[
+            Sequence[Union[str, Dict[str, str], Tuple[str, str]]]
+        ] = None,
         weights: Optional[Union[str, NDArray, List[Any]]] = None,
         weights_groupselections: Union[bool, List[Any]] = False,
         tol_mass: float = 0.1,
@@ -654,7 +665,7 @@ class RMSD(AnalysisBase):
 
         if iterable(self.weights):
             element_lens = []
-            for element in self.weights:
+            for element in self.weights:  # type: ignore[union-attr]
                 if iterable(element):
                     element_lens.append(len(element))
                 else:
@@ -669,13 +680,13 @@ class RMSD(AnalysisBase):
             get_weights(self.mobile_atoms, self.weights)
 
         if self.weights_groupselections:
-            if len(self.weights_groupselections) != len(self.groupselections):
+            if len(self.weights_groupselections) != len(self.groupselections):  # type: ignore[arg-type]
                 raise ValueError(
                     "Length of weights_groupselections is not equal to "
                     "length of groupselections "
                 )
             for weights, atoms, selection in zip(
-                self.weights_groupselections,
+                self.weights_groupselections,  # type: ignore[arg-type]
                 self._groupselections_atoms,
                 self.groupselections,
             ):
@@ -703,7 +714,7 @@ class RMSD(AnalysisBase):
                 )
 
         weights_gs = self.weights_groupselections
-        assert isinstance(weights_gs, list)
+        assert isinstance(weights_gs, list)  # pragma: no cover
         for igroup, (weights, atoms) in enumerate(
             zip(weights_gs, self._groupselections_atoms)
         ):
@@ -747,7 +758,7 @@ class RMSD(AnalysisBase):
             # Move back to the original frame
             self.reference.universe.trajectory[current_frame]
 
-        self._ref_coordinates64 = self._ref_coordinates.astype(np.float64)
+        self._ref_coordinates64 = self._ref_coordinates.astype(np.float64)  # type: ignore[assignment]
 
         if self._groupselections_atoms:
             # Only carry out a rotation if we want to calculate secondary
@@ -758,7 +769,7 @@ class RMSD(AnalysisBase):
             self._rot = np.zeros(9, dtype=np.float64)  # allocate space
             self._R = self._rot.reshape(3, 3)
         else:
-            self._rot = None
+            self._rot = None  # type: ignore[assignment]
 
         self.results.rmsd = np.zeros(
             (self.n_frames, 3 + len(self._groupselections_atoms))
@@ -812,7 +823,9 @@ class RMSD(AnalysisBase):
 
             # 2) calculate secondary RMSDs (without any further
             #    superposition)
-            assert isinstance(self.weights_groupselections, list)
+            assert isinstance(
+                self.weights_groupselections, list
+            )  # pragma: no cover
             for igroup, (refpos, atoms) in enumerate(
                 zip(
                     self._groupselections_ref_coords64,
