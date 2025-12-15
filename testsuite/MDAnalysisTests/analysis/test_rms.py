@@ -382,6 +382,7 @@ class TestRMSD(object):
                 weights_groupselections=[universe.atoms.masses[:-1]],
             )
 
+
     def test_rmsd_list_of_weights_wrong_length(self, universe):
         with pytest.raises(ValueError):
             RMSD = MDAnalysis.analysis.rms.RMSD(
@@ -390,6 +391,24 @@ class TestRMSD(object):
                 weights="mass",
                 weights_groupselections=[None],
             )
+
+    def test_rmsd_groupselections_with_mass_weights(
+        self, universe, client_RMSD
+    ):
+        # Test to ensure line 694 coverage with weights="mass" in groupselections
+        # This tests the code path where weights="mass" is propagated to
+        # groupselections when weights_groupselections=False
+        RMSD = MDAnalysis.analysis.rms.RMSD(
+            universe,
+            select="backbone",
+            groupselections=["name CA", "backbone and resid 1:10"],
+            weights="mass",
+            weights_groupselections=False,
+        ).run(step=49, **client_RMSD)
+        
+        # Just verify it runs without error and produces valid results
+        assert RMSD.results.rmsd.shape[0] == 2  # 2 frames (0 and 49)
+        assert RMSD.results.rmsd.shape[1] == 5  # frame, time, rmsd, group1, group2
 
     def test_rmsd_group_selections(
         self, universe, correct_values_group, client_RMSD
