@@ -183,7 +183,7 @@ from typing import (
 )
 from numpy.typing import NDArray
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from ..core.groups import AtomGroup
     from ..core.universe import Universe
 
