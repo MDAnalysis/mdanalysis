@@ -69,9 +69,8 @@ the normal MDAnalysis citations.
    back into the primary simulation cell.
    
    In MDAnalysis you can use the 
-    :class:`~MDAnalysis.transformations.nojump.NoJump`
-    transformation. 
-    transformation to unwrap coordinates on-the-fly.
+   :class:`~MDAnalysis.transformations.nojump.NoJump`
+   transformation to unwrap coordinates on-the-fly.
     
     A minimal example:
     
