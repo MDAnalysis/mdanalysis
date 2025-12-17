@@ -459,7 +459,7 @@ def do_mtop(data, fver, tpr_resid_from_one=False, precision=4):
         if 58 < fver <= 83:
             for i in range(atnr * int(precision / 4) * 2):
                 data.unpack_int()
-        if fver > 83:
+        if fver >= 103:
             interm = data.unpack_uchar()
         if 83 < fver < 116:
             for i in range(2 * atnr):

@@ -66,6 +66,7 @@ from MDAnalysisTests.datafiles import (
     TPR_NNPOT_2025_0,
     TPR2020B2,
     INPCRD,
+    TPR_gh_5145,
 )
 import MDAnalysis as mda
 
@@ -422,6 +423,14 @@ from numpy.testing import assert_allclose, assert_equal
             (2263, 3),
             np.zeros(3),
             np.zeros(3),
+        ),
+        (
+            TPR_gh_5145,
+            [1.54000e00, 8.79000e-01, 1.36400e00],
+            [1.54000e00, 8.79000e-01, 1.36400e00],
+            (1, 3),
+            [-0.7155559, -0.1859867, -0.05803469],
+            [-0.7155559, -0.1859867, -0.05803469],
         ),
     ],
 )

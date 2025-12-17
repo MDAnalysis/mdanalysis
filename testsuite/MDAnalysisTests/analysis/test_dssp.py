@@ -1,8 +1,9 @@
-import pytest
 import glob
-import MDAnalysis as mda
 
+import MDAnalysis as mda
+import pytest
 from MDAnalysis.analysis.dssp import DSSP, translate
+
 from MDAnalysisTests.datafiles import DSSP as DSSP_FOLDER
 from MDAnalysisTests.datafiles import TPR, XTC
 
@@ -32,8 +33,6 @@ def test_trajectory(client_DSSP):
     assert (
         first_frame[:10] != last_frame[:10] == avg_frame[:10] == "-EEEEEE---"
     )
-    protein = mda.Universe(TPR, XTC).select_atoms("protein")
-    run = DSSP(protein).run(**client_DSSP, stop=10)
 
 
 def test_atomgroup(client_DSSP):

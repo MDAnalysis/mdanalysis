@@ -143,7 +143,7 @@ import numpy as np
 from MDAnalysis.core.universe import Universe
 from MDAnalysis.core.groups import AtomGroup, UpdatingAtomGroup
 from .rms import rmsd
-from .base import AnalysisBase
+from .base import AnalysisBase, ResultsGroup
 
 logger = logging.getLogger("MDAnalysis.analysis.diffusionmap")
 
@@ -234,7 +234,21 @@ class DistanceMatrix(AnalysisBase):
     .. versionchanged:: 2.8.0
          :class:`DistanceMatrix` is now correctly works with `frames=...`
          parameter (#4432) by iterating over `self._sliced_trajectory`
+    .. versionchanged:: 2.11.0
+       Enabled **parallel execution** with the ``multiprocessing`` and ``dask``
+       backends; use the new method :meth:`get_supported_backends` to see all
+       supported backends.
     """
+
+    _analysis_algorithm_is_parallelizable = True
+
+    @classmethod
+    def get_supported_backends(cls):
+        return (
+            "serial",
+            "multiprocessing",
+            "dask",
+        )
 
     def __init__(
         self,
@@ -265,27 +279,16 @@ class DistanceMatrix(AnalysisBase):
         self._calculated = False
 
     def _prepare(self):
-        self.results.dist_matrix = np.zeros((self.n_frames, self.n_frames))
+        # Perpare for parallelization workers
+        n_atoms = self.atoms.n_atoms
+        n_dim = self.atoms.positions.shape[1]
+        self.results._positions = np.zeros(
+            (self.n_frames, n_atoms, n_dim), dtype=np.float64
+        )
 
     def _single_frame(self):
-        iframe = self._frame_index
-        i_ref = self.atoms.positions
-        # diagonal entries need not be calculated due to metric(x,x) == 0 in
-        # theory, _ts not updated properly. Possible savings by setting a
-        # cutoff for significant decimal places to sparsify matrix
-        for j, ts in enumerate(self._sliced_trajectory[iframe:]):
-            self._ts = ts
-            j_ref = self.atoms.positions
-            dist = self._metric(i_ref, j_ref, weights=self._weights)
-            self.results.dist_matrix[
-                self._frame_index, j + self._frame_index
-            ] = (dist if dist > self._cutoff else 0)
-            self.results.dist_matrix[
-                j + self._frame_index, self._frame_index
-            ] = self.results.dist_matrix[
-                self._frame_index, j + self._frame_index
-            ]
-        self._ts = self._sliced_trajectory[iframe]
+        # Store current frame positions
+        self.results._positions[self._frame_index] = self.atoms.positions
 
     @property
     def dist_matrix(self):
@@ -298,7 +301,37 @@ class DistanceMatrix(AnalysisBase):
         return self.results.dist_matrix
 
     def _conclude(self):
+        # Build the full pairwise distance matrix from stored positions
+        # Calculate and store results
+        pos = np.asarray(
+            self.results._positions, dtype=np.float64
+        )  # (n_frames, n_atoms, n_dim)
+        n = pos.shape[0]
+
+        D = np.zeros((n, n), dtype=np.float64)
+
+        metric = self._metric
+        cutoff = self._cutoff
+        weights = self._weights
+
+        for i in range(n):
+            pi = pos[i]
+            for j in range(i + 1, n):
+                pj = pos[j]
+                d = metric(pi, pj, weights=weights)
+                if d > cutoff:
+                    D[i, j] = d
+                    D[j, i] = d
+
+        self.results.dist_matrix = D
         self._calculated = True
+
+    def _get_aggregator(self):
+        return ResultsGroup(
+            lookup={
+                "_positions": ResultsGroup.ndarray_vstack,  # Get positions
+            }
+        )
 
 
 class DiffusionMap(object):
