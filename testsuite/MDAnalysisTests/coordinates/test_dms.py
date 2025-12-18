@@ -93,3 +93,10 @@ class TestDMSReader(object):
     def test_frame_index_1_raises_IndexError(self, universe):
         with pytest.raises(IndexError):
             universe.trajectory[1]
+    
+    def test_convert_pos_from_native(self):
+        u= mda.Universe(DMS,convert_units=True)
+        
+        coords= u.atoms.positions
+        
+        assert coords.shape[0] == len(u.atoms)
