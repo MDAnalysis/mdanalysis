@@ -24,7 +24,7 @@
 import pytest
 
 import MDAnalysis as mda
-from MDAnalysis.topology.PDBParser import (
+from MDAnalysis.fetch.pdb import (
     DEFAULT_CACHE_NAME_DOWNLOADER,
     HAS_POOCH,
     SUPPORTED_FILE_FORMATS_DOWNLOADER,

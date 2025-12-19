@@ -57,16 +57,12 @@ See Also
 * :class:`MDAnalysis.core.universe.Universe`
 
 
-Classes and Functions
----------------------
+Classes
+-------
 
 .. autoclass:: PDBParser
    :members:
    :inherited-members:
-
-.. autofunction:: fetch_pdb
-
-.. autodata:: DEFAULT_CACHE_NAME_DOWNLOADER
 
 """
 import numpy as np
@@ -98,33 +94,6 @@ from ..core.topologyattrs import (
 
 # Set up a logger for the PDBParser
 logger = logging.getLogger("MDAnalysis.topology.PDBParser")
-
-try:
-    import pooch
-except ImportError:
-    HAS_POOCH = False
-else:
-    HAS_POOCH = True
-
-#: Name of the :mod:`pooch` cache directory ``pooch.os_cache(DEFAULT_CACHE_NAME_DOWNLOADER)``;
-#: see :func:`pooch.os_cache` for further details.
-#:
-#: .. versionadded:: 2.11.0
-DEFAULT_CACHE_NAME_DOWNLOADER = "MDAnalysis_pdbs"
-
-# These file formats are here https://www.rcsb.org/docs/programmatic-access/file-download-services#pdb-entry-files"
-SUPPORTED_FILE_FORMATS_DOWNLOADER = (
-    "cif",
-    "cif.gz",
-    "bcif",
-    "bcif.gz",
-    "xml",
-    "xml.gz",
-    "pdb",
-    "pdb.gz",
-    "pdb1",
-    "pdb1.gz",
-)
 
 
 def float_or_default(val, default):
@@ -546,132 +515,3 @@ def _parse_conect(conect):
     bond_atoms = (int(conect[11 + i * 5: 16 + i * 5]) for i in
                   range(n_bond_atoms))
     return atom_id, bond_atoms
-
-
-def fetch_pdb(
-    pdb_ids=None,
-    cache_path=None,
-    progressbar=False,
-    file_format="pdb.gz",
-):
-    """
-    Download one or more PDB files from the RCSB Protein Data Bank and cache
-    them locally.
-
-    Given one or multiple PDB IDs, downloads the corresponding structure files
-    format and stores them in a local cache directory. If files are cached on
-    disk, *fetch_pdb* will skip the download and use the cached version instead.
-
-    Returns the path(s) as a string to the downloaded file(s).
-
-    Parameters
-    ----------
-    pdb_ids : str or sequence of str
-        A single PDB ID as a string, or a sequence of PDB IDs to fetch.
-    cache_path : str or pathlib.Path
-        Directory where downloaded file(s) will be cached.
-        The default ``None`` argument uses the :mod:`pooch` default cache with
-        project name :data:`DEFAULT_CACHE_NAME_DOWNLOADER`.
-    file_format : str
-        The file extension/format to download (e.g., "cif", "pdb").
-        See the Notes section below for a list of all supported file formats.
-    progressbar : bool, optional
-        If True, display a progress bar during file downloads. Default is False.
-
-    Returns
-    -------
-    str or list of str
-        The path(s) to the downloaded file(s). Returns a single string if
-        one PDB ID is given, or a list of strings if multiple PDB IDs are
-        provided.
-
-    Raises
-    ------
-    ValueError
-        For an invalid file format. Supported file formats are under Notes.
-
-    :class:`requests.exceptions.HTTPError`
-        If an invalid PDB code is specified. Note that this is :mod:`requests`, not the
-        standard library :mod:`urllib.request`.
-
-    Notes
-    -----
-    This function uses the `RCSB File Download Services`_ for directly downloading
-    structure files via https.
-
-    .. _`RCSB File Download Services`:
-       https://www.rcsb.org/docs/programmatic-access/file-download-services
-
-    The RCSB currently provides data in ``'cif'`` , ``'cif.gz'`` , ``'bcif'`` ,
-    ``'bcif.gz'`` , ``'xml'`` , ``'xml.gz'`` , ``'pdb'`` , ``'pdb.gz'``,
-    ``'pdb1'``, ``'pdb1.gz'`` file formats and can therefore be downloaded.
-    Not all of these formats can be currently read with MDAnalysis.
-
-    Caching, controlled by the `cache_path` parameter, is handled internally by
-    :mod:`pooch`. The default cache name is taken from
-    :data:`DEFAULT_CACHE_NAME_DOWNLOADER`. To clear cache (and subsequently force
-    re-fetching), it is required to delete the cache folder as specified by
-    `cache_path`.
-
-    Examples
-    --------
-    Download a single PDB file:
-
-    >>> mda.fetch_pdb("1AKE", file_format="cif")
-    './MDAnalysis_pdbs/1AKE.cif'
-
-    Download multiple PDB files with a progress bar:
-
-    >>> mda.fetch_pdb(["1AKE", "4BWZ"], progressbar=True)
-    ['./MDAnalysis_pdbs/1AKE.pdb.gz', './MDAnalysis_pdbs/4BWZ.pdb.gz']
-
-    Download a single PDB file and convert it to a universe:
-
-    >>> mda.Universe(mda.fetch_pdb("1AKE"), file_format="pdb.gz")
-    <Universe with 3816 atoms>
-
-    Download multiple PDB files and convert each of them into a universe:
-
-    >>> [mda.Universe(pdb) for pdb in mda.fetch_pdb(["1AKE", "4BWZ"], progressbar=True)]
-    [<Universe with 3816 atoms>, <Universe with 2824 atoms>]
-
-
-    .. versionadded:: 2.11.0
-    """
-
-    if not HAS_POOCH:
-        raise ModuleNotFoundError(
-            "pooch is needed as a dependency for fetch_pdb()"
-        )
-    elif file_format not in SUPPORTED_FILE_FORMATS_DOWNLOADER:
-        raise ValueError(
-            "Invalid file format. Supported file formats "
-            f"are {SUPPORTED_FILE_FORMATS_DOWNLOADER}"
-        )
-
-    if isinstance(pdb_ids, str):
-        _pdb_ids = (pdb_ids,)
-    else:
-        _pdb_ids = pdb_ids
-
-    if cache_path is None:
-        cache_path = pooch.os_cache(DEFAULT_CACHE_NAME_DOWNLOADER)
-
-    # Have to do this dictionary approach instead of using pooch.retrieve in order
-    # to prevent the hardcoded known_hash warning from showing up.
-    registry_dictionary = {
-        f"{pdb_id}.{file_format}": None for pdb_id in _pdb_ids
-    }
-
-    downloader = pooch.create(
-        path=cache_path,
-        base_url="https://files.wwpdb.org/download/",
-        registry=registry_dictionary,
-    )
-
-    paths = [
-        downloader.fetch(fname=file_name, progressbar=progressbar)
-        for file_name in registry_dictionary.keys()
-    ]
-
-    return paths if not isinstance(pdb_ids, str) else paths[0]
