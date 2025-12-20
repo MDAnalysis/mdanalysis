@@ -10,11 +10,13 @@ designed to be used in per-frame manner in protein trajectories.
 """
 
 import numpy as np
+from scipy.spatial import KDTree
 
 CONST_Q1Q2 = 0.084
 CONST_F = 332
 DEFAULT_CUTOFF = -0.5
 DEFAULT_MARGIN = 1.0
+HBOND_SEARCH_CUTOFF = 5.0
 
 
 def _upsample(a: np.ndarray, window: int) -> np.ndarray:
@@ -176,51 +178,43 @@ def get_hbond_map(
     # h.shape == (n_residues, 3)
     # coord.shape == (n_residues, 4, 3)
 
-    # distance matrix
-    n_1, c_0, o_0 = coord[1:, 0], coord[0:-1, 2], coord[0:-1, 3]
+    # Extract atom positions
+    n_atoms = coord[1:, 0]  # N atoms from residue 1 to n-1
+    c_atoms = coord[:-1, 2]  # C atoms from residue 0 to n-2  
+    o_atoms = coord[:-1, 3]  # O atoms from residue 0 to n-2
+    
+    # We can use KDTree to find candidate pairs within cutoff distance without having to
+    # compute a full pairwise distance matrix, much faster especially for larger proteins
+    n_kdtree = KDTree(n_atoms)
+    o_kdtree = KDTree(o_atoms)
+    sdm = n_kdtree.sparse_distance_matrix(o_kdtree,  max_distance=HBOND_SEARCH_CUTOFF)
+    pairs = np.array(list(sdm.keys()))
+    
+    # Exclude local pairs (i, i), (i, i+1), (i, i+2)
+    pairs = pairs[abs(pairs[:, 0] - pairs[:, 1]) >= 2]  
+    
+    # Exclude donor H absence (Proline)
+    if donor_mask is not None:
+        donor_indices = np.where(np.array(donor_mask) == 0)[0]
+        mask = ~np.isin(pairs[:, 0], donor_indices - 1)
+        pairs = pairs[mask]
+    
+    # Compute the distances the candidate pairs only
+    o_indices = pairs[:, 1]
+    n_indices = pairs[:, 0]
+    d_on = np.linalg.norm(o_atoms[o_indices] - n_atoms[n_indices], axis=-1)
+    d_ch = np.linalg.norm(c_atoms[o_indices] - h_1[n_indices], axis=-1)
+    d_oh = np.linalg.norm(o_atoms[o_indices] - h_1[n_indices], axis=-1)
+    d_cn = np.linalg.norm(c_atoms[o_indices] - n_atoms[n_indices], axis=-1)
 
-    n = n_residues - 1
-    cmap = np.tile(c_0, (n, 1, 1))
-    omap = np.tile(o_0, (n, 1, 1))
-    nmap = np.tile(n_1, (1, 1, n)).reshape(n, n, 3)
-    hmap = np.tile(h_1, (1, 1, n)).reshape(n, n, 3)
-
-    d_on = np.linalg.norm(omap - nmap, axis=-1)
-    d_ch = np.linalg.norm(cmap - hmap, axis=-1)
-    d_oh = np.linalg.norm(omap - hmap, axis=-1)
-    d_cn = np.linalg.norm(cmap - nmap, axis=-1)
-
-    # electrostatic interaction energy
-    # e[i, j] = e(CO_i) - e(NH_j)
-    e = np.pad(
-        CONST_Q1Q2
-        * (1.0 / d_on + 1.0 / d_ch - 1.0 / d_oh - 1.0 / d_cn)
-        * CONST_F,
-        [[1, 0], [0, 1]],
-    )
+    e = np.zeros((n_residues, n_residues))
+    e[n_indices + 1, o_indices] = CONST_Q1Q2 * (1.0 / d_on + 1.0 / d_ch - 1.0 / d_oh - 1.0 / d_cn) * CONST_F
 
     if return_e:  # pragma: no cover
         return e
 
-    # mask for local pairs (i,i), (i,i+1), (i,i+2)
-    local_mask = ~np.eye(n_residues, dtype=bool)
-    local_mask *= ~np.diag(np.ones(n_residues - 1, dtype=bool), k=-1)
-    local_mask *= ~np.diag(np.ones(n_residues - 2, dtype=bool), k=-2)
-    # mask for donor H absence (Proline)
-    donor_mask = (
-        np.array(donor_mask).astype(float)
-        if donor_mask is not None
-        else np.ones(n_residues, dtype=float)
-    )
-    donor_mask = np.tile(donor_mask[:, np.newaxis], (1, n_residues))
-    # hydrogen bond map (continuous value extension of original definition)
     hbond_map = np.clip(cutoff - margin - e, a_min=-margin, a_max=margin)
     hbond_map = (np.sin(hbond_map / margin * np.pi / 2) + 1.0) / 2
-
-    assert hbond_map.shape == local_mask.shape == donor_mask.shape
-
-    hbond_map *= local_mask
-    hbond_map *= donor_mask
 
     return hbond_map
 
