@@ -62,7 +62,7 @@ SUPPORTED_FILE_FORMATS_DOWNLOADER = (
 
 
 def from_PDB(
-    pdb_ids=None,
+    pdb_ids,
     cache_path=None,
     progressbar=False,
     file_format="cif.gz",
