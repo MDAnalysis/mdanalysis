@@ -23,12 +23,8 @@
 
 """
 
-Classes and Functions
----------------------
-
-.. autoclass:: PDBParser
-   :members:
-   :inherited-members:
+Functions
+---------
 
 .. autofunction:: from_PDB
 
@@ -61,6 +57,7 @@ SUPPORTED_FILE_FORMATS_DOWNLOADER = (
     "pdb1",
     "pdb1.gz",
 )
+
 
 def from_PDB(
     pdb_ids=None,
