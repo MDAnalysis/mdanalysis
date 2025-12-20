@@ -221,8 +221,6 @@ from . import converters
 
 from .due import due, Doi, BibTeX
 
-from .fetch import from_PDB
-
 due.cite(
     Doi("10.25080/majora-629e541a-00e"),
     description="Molecular simulation analysis library",

@@ -55,7 +55,7 @@ def test_pooch_installation(tmp_path):
         ModuleNotFoundError,
         match="pooch is needed as a dependency for from_PDB()",
     ):
-        mda.from_PDB("1AKE", cache_path=tmp_path, file_format="cif")
+        mda.fetch.from_PDB("1AKE", cache_path=tmp_path, file_format="cif")
 
 
 @pytest.mark.skipif(not HAS_POOCH, reason="Pooch is not installed.")
@@ -68,12 +68,14 @@ class TestDocstringExamples:
 
     @pytest.mark.parametrize("pdb_id", ["1AKE", "4BWZ"])
     def test_one_file_download(self, tmp_path, pdb_id):
-        path = mda.from_PDB(pdb_id, cache_path=tmp_path, file_format="cif")
+        path = mda.fetch.from_PDB(
+            pdb_id, cache_path=tmp_path, file_format="cif"
+        )
         assert isinstance(path, Path)
         assert Path(path).name == f"{pdb_id}.cif"
 
     def test_multiple_files_download(self, tmp_path):
-        list_of_path_strings = mda.from_PDB(
+        list_of_path_strings = mda.fetch.from_PDB(
             ["1AKE", "4BWZ"], cache_path=tmp_path, progressbar=True
         )
         assert all(isinstance(pdb_id, Path) for pdb_id in list_of_path_strings)
@@ -91,7 +93,7 @@ class TestDocstringExamples:
     )
     def test_files_to_universe(self, tmp_path, pdb_id, n_atoms):
         u = mda.Universe(
-            mda.from_PDB(
+            mda.fetch.from_PDB(
                 pdb_id,
                 file_format="pdb.gz",
                 cache_path=tmp_path,
@@ -116,11 +118,11 @@ def clean_up_default_cache():
 class TestExpectedBehaviors:
 
     def test_no_cache_path(self, clean_up_default_cache):
-        assert isinstance(mda.from_PDB("1AKE", cache_path=None), Path)
+        assert isinstance(mda.fetch.from_PDB("1AKE", cache_path=None), Path)
 
     def test_str_input_gives_path_output(self, tmp_path):
         assert isinstance(
-            mda.from_PDB(
+            mda.fetch.from_PDB(
                 pdb_ids="1AKE", cache_path=tmp_path, file_format="cif"
             ),
             Path,
@@ -128,7 +130,7 @@ class TestExpectedBehaviors:
 
     def test_list_input_gives_list_output(self, tmp_path):
         assert isinstance(
-            mda.from_PDB(pdb_ids=["1AKE"], cache_path=tmp_path), list
+            mda.fetch.from_PDB(pdb_ids=["1AKE"], cache_path=tmp_path), list
         )
 
 
@@ -141,7 +143,7 @@ class TestExpectedErrors:
 
     def test_invalid_pdb(self, tmp_path):
         with pytest.raises(HTTPError):
-            mda.from_PDB(pdb_ids="foobar", cache_path=tmp_path)
+            mda.fetch.from_PDB(pdb_ids="foobar", cache_path=tmp_path)
 
     def test_invalid_file_format(self, tmp_path):
         with pytest.raises(
@@ -151,6 +153,6 @@ class TestExpectedErrors:
                 f"are {SUPPORTED_FILE_FORMATS_DOWNLOADER}"
             ),
         ):
-            mda.from_PDB(
+            mda.fetch.from_PDB(
                 pdb_ids="1AKE", cache_path=tmp_path, file_format="barfoo"
             )
