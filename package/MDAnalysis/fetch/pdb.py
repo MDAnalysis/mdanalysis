@@ -31,6 +31,8 @@ Functions
 .. autodata:: DEFAULT_CACHE_NAME_DOWNLOADER
 
 """
+from pathlib import Path
+
 try:
     import pooch
 except ImportError:
@@ -63,7 +65,7 @@ def from_PDB(
     pdb_ids=None,
     cache_path=None,
     progressbar=False,
-    file_format="pdb.gz",
+    file_format="cif.gz",
 ):
     """
     Download one or more PDB files from the RCSB Protein Data Bank and cache
@@ -181,7 +183,7 @@ def from_PDB(
     )
 
     paths = [
-        downloader.fetch(fname=file_name, progressbar=progressbar)
+        Path(downloader.fetch(fname=file_name, progressbar=progressbar))
         for file_name in registry_dictionary.keys()
     ]
 

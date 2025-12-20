@@ -46,11 +46,6 @@ except request.URLError:
     HAS_ACCESS_TO_WWPDB = False
 
 
-def true_basename(path):
-    """This is needed because pathlib.Path(foo.pdb.gz).stem as foo.pdb"""
-    return Path(path).stem.split(".")[0]
-
-
 @pytest.mark.skipif(
     HAS_POOCH,
     reason="Pooch is installed.",
@@ -74,17 +69,17 @@ class TestDocstringExamples:
     @pytest.mark.parametrize("pdb_id", ["1AKE", "4BWZ"])
     def test_one_file_download(self, tmp_path, pdb_id):
         path = mda.from_PDB(pdb_id, cache_path=tmp_path, file_format="cif")
-        assert isinstance(path, str)
-        assert true_basename(path) == pdb_id
+        assert isinstance(path, Path)
+        assert Path(path).name == f"{pdb_id}.cif"
 
     def test_multiple_files_download(self, tmp_path):
         list_of_path_strings = mda.from_PDB(
             ["1AKE", "4BWZ"], cache_path=tmp_path, progressbar=True
         )
-        assert all(isinstance(pdb_id, str) for pdb_id in list_of_path_strings)
+        assert all(isinstance(pdb_id, Path) for pdb_id in list_of_path_strings)
         assert all(
             [
-                true_basename(path) == name
+                Path(path).name == f"{name}.cif.gz"
                 for path, name in zip(
                     list_of_path_strings, ["1AKE", "4BWZ"], strict=True
                 )
@@ -121,14 +116,14 @@ def clean_up_default_cache():
 class TestExpectedBehaviors:
 
     def test_no_cache_path(self, clean_up_default_cache):
-        assert isinstance(mda.from_PDB("1AKE", cache_path=None), str)
+        assert isinstance(mda.from_PDB("1AKE", cache_path=None), Path)
 
-    def test_str_input_gives_str_output(self, tmp_path):
+    def test_str_input_gives_path_output(self, tmp_path):
         assert isinstance(
             mda.from_PDB(
                 pdb_ids="1AKE", cache_path=tmp_path, file_format="cif"
             ),
-            str,
+            Path,
         )
 
     def test_list_input_gives_list_output(self, tmp_path):
