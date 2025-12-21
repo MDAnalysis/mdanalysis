@@ -203,11 +203,11 @@ jobs:
 
     - name: pip install mdanalysis
       run: |
-        cd package && pip install .
+        cd package && pip install . --no-build-isolation
 
     - name: pip install mdanalysistests
       run: |
-        cd testsuite && pip install .
+        cd testsuite && pip install . --no-build-isolation
 
     - name: install_pip_extras
       run: |
