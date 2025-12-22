@@ -508,7 +508,10 @@ class TestStreamIteration:
         assert sliced_reader_step5.step == 5
 
     def test_iterate_current_frame_raises_error(self, reader):
-        with pytest.raises(ValueError, match="must have single current frame value"):
+        with pytest.raises(
+            ValueError,
+            match="must have single current frame value",
+        ):
             for ts in reader[[1]]:
                 pass
 
