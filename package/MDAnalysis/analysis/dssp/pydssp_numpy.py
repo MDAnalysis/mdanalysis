@@ -211,6 +211,8 @@ def get_hbond_map(
     d_oh = np.linalg.norm(o_atoms[o_indices] - h_1[n_indices], axis=-1)
     d_cn = np.linalg.norm(c_atoms[o_indices] - n_atoms[n_indices], axis=-1)
 
+    # electrostatic interaction energy
+    # e[i, j] = e(CO_i) - e(NH_j)
     e = np.zeros((n_residues, n_residues))
     e[n_indices + 1, o_indices] = (
         CONST_Q1Q2
