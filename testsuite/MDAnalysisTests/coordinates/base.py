@@ -322,13 +322,15 @@ class BaseReaderTest(object):
                 assert_equal(W.n_atoms, 100)
 
     def test_dt(self, ref, reader):
-        assert_allclose(reader.dt, ref.dt, atol=10**(-ref.prec), rtol=0)
+        assert_allclose(reader.dt, ref.dt, atol=10 ** (-ref.prec), rtol=0)
 
     def test_ts_dt_matches_reader(self, reader):
         assert_equal(reader.ts.dt, reader.dt)
 
     def test_total_time(self, ref, reader):
-        assert_allclose(reader.totaltime, ref.totaltime, atol=10**(-ref.prec), rtol=0)
+        assert_allclose(
+            reader.totaltime, ref.totaltime, atol=10 ** (-ref.prec), rtol=0
+        )
 
     def test_first_dimensions(self, ref, reader):
         reader.rewind()
@@ -338,7 +340,7 @@ class BaseReaderTest(object):
             assert_allclose(
                 reader.ts.dimensions,
                 ref.dimensions,
-                atol=10**(-ref.prec),
+                atol=10 ** (-ref.prec),
                 rtol=0,
             )
 
@@ -351,7 +353,7 @@ class BaseReaderTest(object):
                 assert_allclose(
                     reader.ts.dimensions,
                     ref.dimensions,
-                    atol=10**(-ref.prec),
+                    atol=10 ** (-ref.prec),
                     rtol=0,
                 )
             reader[1]
@@ -361,7 +363,7 @@ class BaseReaderTest(object):
                 assert_allclose(
                     reader.ts.dimensions,
                     ref.dimensions_second_frame,
-                    atol=10**(-ref.prec),
+                    atol=10 ** (-ref.prec),
                     rtol=0,
                 )
 
@@ -472,10 +474,14 @@ class BaseReaderTest(object):
         idealcoords = []
         for i, ts in enumerate(transformed):
             idealcoords.append(ref.iter_ts(i).positions + v1 + v2)
-            assert_allclose(ts.positions, idealcoords[i], atol=10**(-ref.prec), rtol=0)
+            assert_allclose(
+                ts.positions, idealcoords[i], atol=10 ** (-ref.prec), rtol=0
+            )
 
         for i, ts in enumerate(transformed):
-            assert_allclose(ts.positions, idealcoords[i], atol=10**(-ref.prec), rtol=0)
+            assert_allclose(
+                ts.positions, idealcoords[i], atol=10 ** (-ref.prec), rtol=0
+            )
 
     def test_transformations_slice(self, ref, transformed):
         # Are the transformations applied when iterating over a slice of the trajectory?
@@ -483,7 +489,9 @@ class BaseReaderTest(object):
         v2 = np.float32((0, 0, 0.33))
         for i, ts in enumerate(transformed[2:3:1]):
             idealcoords = ref.iter_ts(ts.frame).positions + v1 + v2
-            assert_allclose(ts.positions, idealcoords, atol=10**(-ref.prec), rtol=0)
+            assert_allclose(
+                ts.positions, idealcoords, atol=10 ** (-ref.prec), rtol=0
+            )
 
     def test_transformations_switch_frame(self, ref, transformed):
         # This test checks if the transformations are applied and if the coordinates
@@ -496,14 +504,14 @@ class BaseReaderTest(object):
             assert_allclose(
                 transformed[0].positions,
                 first_ideal,
-                atol=10**(-ref.prec),
+                atol=10 ** (-ref.prec),
                 rtol=0,
             )
             second_ideal = ref.iter_ts(1).positions + v1 + v2
             assert_allclose(
                 transformed[1].positions,
                 second_ideal,
-                atol=10**(-ref.prec),
+                atol=10 ** (-ref.prec),
                 rtol=0,
             )
 
@@ -511,7 +519,7 @@ class BaseReaderTest(object):
             assert_allclose(
                 transformed[0].positions,
                 first_ideal,
-                atol=10**(-ref.prec),
+                atol=10 ** (-ref.prec),
                 rtol=0,
             )
 
@@ -519,14 +527,14 @@ class BaseReaderTest(object):
             assert_allclose(
                 transformed[0].positions,
                 first_ideal,
-                atol=10**(-ref.prec),
+                atol=10 ** (-ref.prec),
                 rtol=0,
             )
         else:
             assert_allclose(
                 transformed[0].positions,
                 first_ideal,
-                atol=10**(-ref.prec),
+                atol=10 ** (-ref.prec),
                 rtol=0,
             )
 
@@ -540,7 +548,7 @@ class BaseReaderTest(object):
         assert_allclose(
             transformed[0].positions,
             ideal_coords,
-            atol=10**(-ref.prec),
+            atol=10 ** (-ref.prec),
             rtol=0,
         )
 
@@ -557,7 +565,9 @@ class BaseReaderTest(object):
         )
         for i, ts in enumerate(new):
             ideal_coords = ref.iter_ts(i).positions + v1 + v2
-            assert_allclose(ts.positions, ideal_coords, atol=10**(-ref.prec), rtol=0)
+            assert_allclose(
+                ts.positions, ideal_coords, atol=10 ** (-ref.prec), rtol=0
+            )
 
     def test_add_another_transformations_raises_ValueError(self, transformed):
         # After defining the transformations, the workflow cannot be changed
@@ -834,7 +844,7 @@ class BaseWriterTest(object):
                     assert_allclose(
                         universe.dimensions,
                         ts_w.dimensions,
-                        atol=10**(-ref.prec),
+                        atol=10 ** (-ref.prec),
                         rtol=0,
                     )
 
@@ -878,7 +888,7 @@ class BaseWriterTest(object):
                 assert_allclose(
                     copy_ts._pos,
                     sel.atoms.positions,
-                    atol=10**(-ref.prec),
+                    atol=10 ** (-ref.prec),
                     rtol=0,
                     err_msg="coordinate mismatch between original and written "
                     "trajectory at frame {} (orig) vs {} (copy)".format(
