@@ -514,8 +514,17 @@ class TestStreamIteration:
         ):
             for ts in reader[[1]]:
                 pass
+        ts = reader[[0]]
+        with pytest.raises(StopIteration):
+            next(ts)
+        with pytest.raises(
+            RuntimeError,
+            match="Current frame iterator does not support indexing",
+        ):
+            ts[0]
 
     def test_iterate_current_frame(self, reader):
+        assert len(reader[[reader.frame]]) == 1
         for ts in reader[[reader.frame]]:
             assert ts.frame == reader.frame
 
