@@ -173,10 +173,7 @@ def get_hbond_map(
     # h.shape == (n_residues, 3)
     # coord.shape == (n_residues, 4, 3)
 
-    # Extract atom positions
-    n_atoms = coord[1:, 0]  # N atoms from residue 1 to n-1
-    c_atoms = coord[:-1, 2]  # C atoms from residue 0 to n-2
-    o_atoms = coord[:-1, 3]  # O atoms from residue 0 to n-2
+    n_atoms, c_atoms, o_atoms = coord[1:, 0], coord[:-1, 2], coord[:-1, 3]
 
     # We can use KDTree to find candidate pairs within cutoff distance without having to
     # compute a full pairwise distance matrix, much faster especially for larger proteins
@@ -184,8 +181,8 @@ def get_hbond_map(
     o_kdtree = KDTree(o_atoms)
 
     # returned is a list of lists, with each neighbors[i] containing a list[int] of
-    # indices in the other o_kdtree that were within the cutoff. We can convert that
-    # to the array of pairs for easier querying
+    # indices in the other o_kdtree that were within the cutoff which we can change
+    # to an array of index pairs for slicing
     neighbors = n_kdtree.query_ball_tree(o_kdtree, r=HBOND_SEARCH_CUTOFF)
     pairs = np.array(
         [(i, j) for i, js in enumerate(neighbors) for j in js], dtype=np.int64
@@ -200,7 +197,8 @@ def get_hbond_map(
         mask = ~np.isin(pairs[:, 0], donor_indices - 1)
         pairs = pairs[mask]
 
-    # Compute the distances the candidate pairs only
+    # compute distances and energy as previously but only for the potential pairs
+    # still returning the same energy matrix that would have otherwise been made
     o_indices = pairs[:, 1]
     n_indices = pairs[:, 0]
     d_on = np.linalg.norm(o_atoms[o_indices] - n_atoms[n_indices], axis=-1)
