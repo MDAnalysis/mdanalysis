@@ -52,6 +52,8 @@ Iterator classes used by the by the :class:`ProtoReader`:
 
 .. autoclass:: StreamFrameIteratorSliced
 
+.. autoclass:: StreamFrameIteratorCurrent
+
 .. _ReadersBase:
 
 Readers
@@ -1882,10 +1884,11 @@ class StreamReaderBase(ReaderBase):
     See Also
     --------
     StreamFrameIteratorSliced : Iterator for stepped streaming access
+    StreamFrameIteratorCurrent : Iterator for current frame streaming access
     ReaderBase : Base class for standard trajectory readers
 
 
-    .. versionadded:: 2.10.0 
+    .. versionadded:: 2.10.0
     """
 
     def __init__(self, filename, convert_units=True, **kwargs):
@@ -2040,7 +2043,7 @@ class StreamReaderBase(ReaderBase):
 
         Returns
         -------
-        FrameIteratorAll or StreamFrameIteratorSliced
+        FrameIteratorAll or StreamFrameIteratorSliced or StreamFrameIteratorCurrent
             Iterator for the requested slice.
 
         Raises
@@ -2060,6 +2063,7 @@ class StreamReaderBase(ReaderBase):
         See Also
         --------
         StreamFrameIteratorSliced
+        StreamFrameIteratorCurrent
         """
         if isinstance(frame, slice):
             _, _, step = self.check_slice_indices(
@@ -2069,6 +2073,13 @@ class StreamReaderBase(ReaderBase):
                 return FrameIteratorAll(self)
             else:
                 return StreamFrameIteratorSliced(self, step)
+        elif isinstance(frame, (list, np.ndarray)):
+            if len(frame) == 1 and frame[0] == self.trajectory.frame:
+                return StreamFrameIteratorCurrent(self)
+            else:
+                raise ValueError(
+                    "Streamed trajectories must have single current frame value"
+                )
         else:
             raise TypeError(
                 "Streamed trajectories must be an indexed using a slice"
@@ -2311,3 +2322,38 @@ class StreamFrameIteratorSliced(FrameIteratorBase):
             
         """
         return self._step
+
+
+class StreamFrameIteratorCurrent(FrameIteratorBase):
+    """Iterator for current frame access in a streamed trajectory.
+
+    Created when an array with a single current frame value is passed.
+
+    Parameters
+    ----------
+    trajectory : StreamReaderBase
+        The streaming trajectory reader to iterate over. Must be a
+        stream-based reader that supports continuous data reading.
+
+    See Also
+    --------
+    StreamReaderBase
+    FrameIteratorBase
+
+    .. versionadded:: 2.11.0
+    """
+
+    def __init__(self, trajectory):
+        super(StreamFrameIteratorCurrent, self).__init__(trajectory)
+
+    def __len__(self):
+        return 1
+
+    def __iter__(self):
+        yield self.trajectory._read_frame_with_aux(self.trajectory.frame)
+
+    def __next__(self):
+        raise StopIteration from None
+
+    def __getitem__(self, frame):
+        raise RuntimeError("Current frame iterator does not support indexing")

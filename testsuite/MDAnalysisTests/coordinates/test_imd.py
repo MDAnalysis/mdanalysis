@@ -507,6 +507,15 @@ class TestStreamIteration:
         sliced_reader_step5 = reader[::5]
         assert sliced_reader_step5.step == 5
 
+    def test_iterate_current_frame_raises_error(self, reader):
+        with pytest.raises(ValueError, match="must have single current frame value"):
+            for ts in reader[[1]]:
+                pass
+
+    def test_iterate_current_frame(self, reader):
+        for ts in reader[[reader.frame]]:
+            assert ts.frame == reader.frame
+
 
 @pytest.mark.skipif(not HAS_IMDCLIENT, reason="IMDClient not installed")
 def test_n_atoms_not_specified(universe, imdsinfo):
