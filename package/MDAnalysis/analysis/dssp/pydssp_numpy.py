@@ -67,10 +67,7 @@ def _upsample(a: np.ndarray, window: int) -> np.ndarray:
 
 def _unfold(a: np.ndarray, window: int, axis: int):
     "Helper function for 2D array upsampling"
-    idx = (
-        np.arange(window)[:, None]
-        + np.arange(a.shape[axis] - window + 1)[None, :]
-    )
+    idx = np.arange(window)[:, None] + np.arange(a.shape[axis] - window + 1)[None, :]
     unfolded = np.take(a, idx, axis=axis)
     return np.moveaxis(unfolded, axis - 1, -1)
 
@@ -171,34 +168,38 @@ def get_hbond_map(
         h_1 = coord[1:, 4]
         coord = coord[:, :4]
     else:  # pragma: no cover
-        raise ValueError(
-            "Number of atoms should be 4 (N,CA,C,O) or 5 (N,CA,C,O,H)"
-        )
+        raise ValueError("Number of atoms should be 4 (N,CA,C,O) or 5 (N,CA,C,O,H)")
     # after this:
     # h.shape == (n_residues, 3)
     # coord.shape == (n_residues, 4, 3)
 
     # Extract atom positions
     n_atoms = coord[1:, 0]  # N atoms from residue 1 to n-1
-    c_atoms = coord[:-1, 2]  # C atoms from residue 0 to n-2  
+    c_atoms = coord[:-1, 2]  # C atoms from residue 0 to n-2
     o_atoms = coord[:-1, 3]  # O atoms from residue 0 to n-2
-    
+
     # We can use KDTree to find candidate pairs within cutoff distance without having to
     # compute a full pairwise distance matrix, much faster especially for larger proteins
     n_kdtree = KDTree(n_atoms)
     o_kdtree = KDTree(o_atoms)
-    sdm = n_kdtree.sparse_distance_matrix(o_kdtree,  max_distance=HBOND_SEARCH_CUTOFF)
-    pairs = np.array(list(sdm.keys()))
-    
+
+    # returned is a list of lists, with each neighbors[i] containing a list[int] or
+    # indices in the other o_kdtree that were within the cutoff. We can convert that
+    # to the array of pairs for easier querying
+    neighbors = n_kdtree.query_ball_tree(o_kdtree, r=HBOND_SEARCH_CUTOFF)
+    pairs = np.array(
+        [(i, j) for i, js in enumerate(neighbors) for j in js], dtype=np.int64
+    )
+
     # Exclude local pairs (i, i), (i, i+1), (i, i+2)
-    pairs = pairs[abs(pairs[:, 0] - pairs[:, 1]) >= 2]  
-    
+    pairs = pairs[abs(pairs[:, 0] - pairs[:, 1]) >= 2]
+
     # Exclude donor H absence (Proline)
     if donor_mask is not None:
         donor_indices = np.where(np.array(donor_mask) == 0)[0]
         mask = ~np.isin(pairs[:, 0], donor_indices - 1)
         pairs = pairs[mask]
-    
+
     # Compute the distances the candidate pairs only
     o_indices = pairs[:, 1]
     n_indices = pairs[:, 0]
@@ -208,7 +209,9 @@ def get_hbond_map(
     d_cn = np.linalg.norm(c_atoms[o_indices] - n_atoms[n_indices], axis=-1)
 
     e = np.zeros((n_residues, n_residues))
-    e[n_indices + 1, o_indices] = CONST_Q1Q2 * (1.0 / d_on + 1.0 / d_ch - 1.0 / d_oh - 1.0 / d_cn) * CONST_F
+    e[n_indices + 1, o_indices] = (
+        CONST_Q1Q2 * (1.0 / d_on + 1.0 / d_ch - 1.0 / d_oh - 1.0 / d_cn) * CONST_F
+    )
 
     if return_e:  # pragma: no cover
         return e
