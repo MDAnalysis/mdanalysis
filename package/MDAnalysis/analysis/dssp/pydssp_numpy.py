@@ -183,7 +183,7 @@ def get_hbond_map(
     n_kdtree = KDTree(n_atoms)
     o_kdtree = KDTree(o_atoms)
 
-    # returned is a list of lists, with each neighbors[i] containing a list[int] or
+    # returned is a list of lists, with each neighbors[i] containing a list[int] of
     # indices in the other o_kdtree that were within the cutoff. We can convert that
     # to the array of pairs for easier querying
     neighbors = n_kdtree.query_ball_tree(o_kdtree, r=HBOND_SEARCH_CUTOFF)
@@ -191,7 +191,7 @@ def get_hbond_map(
         [(i, j) for i, js in enumerate(neighbors) for j in js], dtype=np.int64
     )
 
-    # Exclude local pairs (i, i), (i, i+1), (i, i+2)
+    # Exclude local pairs (i, i), (i, i+1), (i, i+2) that are too close for HBonds
     pairs = pairs[abs(pairs[:, 0] - pairs[:, 1]) >= 2]
 
     # Exclude donor H absence (Proline)
