@@ -324,7 +324,8 @@ class DSSP(AnalysisBase):
         }
         self._donor_mask: Optional[np.ndarray] = ag.residues.resnames != "PRO"
         self._hydrogens: list["AtomGroup"] = [
-            res.atoms.select_atoms(f"name {hydrogen_name}") for res in ag.residues
+            res.atoms.select_atoms(f"name {hydrogen_name}")
+            for res in ag.residues
         ]
         # can't do it the other way because I need missing values to exist
         # so that I could fill them in later
@@ -380,7 +381,9 @@ class DSSP(AnalysisBase):
         coords = np.array(positions)
 
         if not self._guess_hydrogens:
-            guessed_h_coords = _get_hydrogen_atom_position(coords.swapaxes(0, 1))
+            guessed_h_coords = _get_hydrogen_atom_position(
+                coords.swapaxes(0, 1)
+            )
 
             h_coords = np.array(
                 [
@@ -397,7 +400,9 @@ class DSSP(AnalysisBase):
     def _single_frame(self):
         coords = self._get_coords()
         dssp = assign(
-            coords, donor_mask=self._donor_mask, box=self._trajectory.ts.dimensions
+            coords,
+            donor_mask=self._donor_mask,
+            box=self._trajectory.ts.dimensions,
         )
         self.results.dssp_ndarray.append(dssp)
 
