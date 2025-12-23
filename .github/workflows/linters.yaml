@@ -92,7 +92,6 @@ jobs:
         with:
           micromamba: true
           full-deps: false
-          gsd: ''
           numpy: numpy=1.26.0
           rdkit: rdkit=2023.09.3
 
