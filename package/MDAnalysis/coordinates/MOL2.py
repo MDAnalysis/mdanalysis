@@ -241,6 +241,10 @@ class MOL2Reader(base.ReaderBase):
 
         sections, coords = self.parse_block(block)
 
+        if "crysin" in sections:
+            dims = sections["crysin"][0].split()[:6]
+            self.ts.dimensions = np.array(dims, dtype=np.float32)
+
         for sect in ["molecule", "substructure"]:
             try:
                 self.ts.data[sect] = sections[sect]
