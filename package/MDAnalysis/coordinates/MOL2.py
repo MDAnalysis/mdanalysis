@@ -233,7 +233,10 @@ class MOL2Reader(base.ReaderBase):
         try:
             block = self.frames[frame]
         except IndexError:
-            errmsg = f"Invalid frame {frame} for trajectory with length " f"{len(self)}"
+            errmsg = (
+                f"Invalid frame {frame} for trajectory with length "
+                f"{len(self)}"
+            )
             raise IOError(errmsg) from None
 
         sections, coords = self.parse_block(block)
@@ -308,7 +311,9 @@ class MOL2Writer(base.WriterBase):
             units are converted to the MDAnalysis base format; [``True``]
         """
         self.filename = filename
-        self.convert_units = convert_units  # convert length and time to base units
+        self.convert_units = (
+            convert_units  # convert length and time to base units
+        )
 
         self.frames_written = 0
 
@@ -383,7 +388,9 @@ class MOL2Writer(base.WriterBase):
         atom_lines = "\n".join(atom_lines)
 
         try:
-            substructure = ["@<TRIPOS>SUBSTRUCTURE\n"] + ts.data["substructure"]
+            substructure = ["@<TRIPOS>SUBSTRUCTURE\n"] + ts.data[
+                "substructure"
+            ]
         except KeyError:
             substructure = ""
 
@@ -398,7 +405,9 @@ class MOL2Writer(base.WriterBase):
         molecule[1] = "{0}\n".format(" ".join(check_sums))
         molecule.insert(0, "@<TRIPOS>MOLECULE\n")
 
-        return_val = "".join(molecule) + atom_lines + bond_lines + "".join(substructure)
+        return_val = (
+            "".join(molecule) + atom_lines + bond_lines + "".join(substructure)
+        )
 
         molecule[0] = molecule_0_store
         molecule[1] = molecule_1_store
