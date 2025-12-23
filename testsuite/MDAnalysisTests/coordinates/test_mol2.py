@@ -57,9 +57,7 @@ class TestMol2(object):
         assert_equal(u.trajectory.n_frames, 200)
 
         u.trajectory[199]
-        assert_array_almost_equal(
-            u.atoms.positions[0], [1.7240, 11.2730, 14.1200]
-        )
+        assert_array_almost_equal(u.atoms.positions[0], [1.7240, 11.2730, 14.1200])
 
     def test_read_statusbit(self):
         u = Universe(mol2_ligand)
@@ -115,9 +113,7 @@ class TestMol2(object):
         assert_equal(len(u.atoms), 9)
         assert_equal(u.trajectory.n_frames, 2)
         u.trajectory[1]
-        assert_array_almost_equal(
-            u.atoms.positions[2], [-12.2710, -1.9540, -16.0480]
-        )
+        assert_array_almost_equal(u.atoms.positions[2], [-12.2710, -1.9540, -16.0480])
 
     def test_no_bonds(self, tmpdir):
         # Issue #3057
@@ -165,9 +161,7 @@ class TestMol2_traj(TestCase):
 
     def test_reverse_traj(self):
         frames = [ts.frame for ts in self.traj[20:5:-1]]
-        assert_equal(
-            frames, list(range(20, 5, -1)), "reversing traj [20:5:-1]"
-        )
+        assert_equal(frames, list(range(20, 5, -1)), "reversing traj [20:5:-1]")
 
     def test_n_frames(self):
         assert_equal(
@@ -234,7 +228,7 @@ def test_mol2_universe_write(tmpdir):
         assert_almost_equal(u.atoms.positions, u2.atoms.positions)
         # MDA does not current implement @<TRIPOS>CRYSIN reading
         assert u2.dimensions is None
-    
+
 
 def test_mol2_crysin_dimensions():
     # test that crysin records are read as dimensions
