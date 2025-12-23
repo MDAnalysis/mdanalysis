@@ -132,22 +132,22 @@ def from_PDB(
     --------
     Download a single PDB file:
 
-    >>> mda.from_PDB("1AKE", file_format="cif")
+    >>> mda.fetch.from_PDB("1AKE", file_format="cif")
     './MDAnalysis_pdbs/1AKE.cif'
 
     Download multiple PDB files with a progress bar:
 
-    >>> mda.from_PDB(["1AKE", "4BWZ"], progressbar=True)
+    >>> mda.fetch.from_PDB(["1AKE", "4BWZ"], progressbar=True)
     ['./MDAnalysis_pdbs/1AKE.pdb.gz', './MDAnalysis_pdbs/4BWZ.pdb.gz']
 
     Download a single PDB file and convert it to a universe:
 
-    >>> mda.Universe(mda.from_PDB("1AKE"), file_format="pdb.gz")
+    >>> mda.Universe(mda.fetch.from_PDB("1AKE"), file_format="pdb.gz")
     <Universe with 3816 atoms>
 
     Download multiple PDB files and convert each of them into a universe:
 
-    >>> [mda.Universe(pdb) for pdb in mda.from_PDB(["1AKE", "4BWZ"], progressbar=True)]
+    >>> [mda.Universe(pdb) for pdb in mda.fetch.from_PDB(["1AKE", "4BWZ"], progressbar=True)]
     [<Universe with 3816 atoms>, <Universe with 2824 atoms>]
 
 
