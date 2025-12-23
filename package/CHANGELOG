@@ -30,10 +30,10 @@ Fixes
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Enhancements
+ * Change `get_hbond_map` to use `distance_capped` to speedup finding H bonding pairs
+   and also take into account the periodic boundaries (PR #5182)
  * Enables parallelization for analysis.diffusionmap.DistanceMatrix
    (Issue #4679, PR #4745)
- * Change `get_hbond_map` to use KDTree for finding nearby potential H bonding pairs
-   rather than computing an entire pairwise distance matrix (PR #5182)
 
 Changes
  * The msd.py inside analysis is changed, and ProgressBar is implemented inside
