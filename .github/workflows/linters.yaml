@@ -91,7 +91,7 @@ jobs:
         uses: ./.github/actions/setup-deps
         with:
           micromamba: true
-          full-deps: true
+          full-deps: false
           gsd: ''
           numpy: numpy=1.26.0
           rdkit: rdkit=2023.09.3
