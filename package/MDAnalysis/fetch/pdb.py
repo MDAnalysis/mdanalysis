@@ -23,6 +23,9 @@
 
 """
 
+This suite of functions download structure files from the Research Collaboratory for
+Structural Bioinformatics (RCSB) Protein Data Batabank (PDB).
+
 Functions
 ---------
 
@@ -75,7 +78,7 @@ def from_PDB(
     format and stores them in a local cache directory. If files are cached on
     disk, *from_PDB* will skip the download and use the cached version instead.
 
-    Returns the path(s) as a string to the downloaded file(s).
+    Returns the path(s) as a :class:`~pathlib.Path` to the downloaded file(s).
 
     Parameters
     ----------
@@ -88,15 +91,15 @@ def from_PDB(
     file_format : str
         The file extension/format to download (e.g., "cif", "pdb").
         See the Notes section below for a list of all supported file formats.
-    progressbar : bool, optional
+    progressbar : bool
         If True, display a progress bar during file downloads. Default is False.
 
     Returns
     -------
-    str or list of str
-        The path(s) to the downloaded file(s). Returns a single string if
-        one PDB ID is given, or a list of strings if multiple PDB IDs are
-        provided.
+    :class:`~pathlib.Path` or list of :class:`~pathlib.Path`
+        The path(s) to the downloaded file(s). Returns a single
+        :class:`~pathlib.Path` if one pdb id is given, or a list of
+        :class:`~pathlib.Path` if multiple pdb ids are provided.
 
     Raises
     ------
@@ -104,8 +107,7 @@ def from_PDB(
         For an invalid file format. Supported file formats are under Notes.
 
     :class:`requests.exceptions.HTTPError`
-        If an invalid PDB code is specified. Note that this is :mod:`requests`, not the
-        standard library :mod:`urllib.request`.
+        If an invalid PDB code is specified.
 
     Notes
     -----

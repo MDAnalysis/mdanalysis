@@ -21,4 +21,19 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
+"""
+Web Retrieval Services --- :mod:`MDAnalysis.fetch`
+==================================================
+
+The :mod:`MDAnalysis.fetch` module contains various functions that are able to download
+resources from the internet. All functions return a :class:`~pathlib.Path` object.
+:class:`~pathlib.Path` objects are able to be passed as argument to initalize an
+instance of :class:`~MDAnalysis.core.universe.Universe`.
+
+To use these functions, the optional dependency :mod:`pooch` is required.
+
+"""
+
+__all__ = ["from_PDB"]
+
 from .pdb import from_PDB
