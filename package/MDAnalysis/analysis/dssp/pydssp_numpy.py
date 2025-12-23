@@ -10,7 +10,8 @@ designed to be used in per-frame manner in protein trajectories.
 """
 
 import numpy as np
-from scipy.spatial import KDTree
+
+from MDAnalysis.lib.distances import capped_distance
 
 CONST_Q1Q2 = 0.084
 CONST_F = 332
@@ -67,10 +68,7 @@ def _upsample(a: np.ndarray, window: int) -> np.ndarray:
 
 def _unfold(a: np.ndarray, window: int, axis: int):
     "Helper function for 2D array upsampling"
-    idx = (
-        np.arange(window)[:, None]
-        + np.arange(a.shape[axis] - window + 1)[None, :]
-    )
+    idx = np.arange(window)[:, None] + np.arange(a.shape[axis] - window + 1)[None, :]
     unfolded = np.take(a, idx, axis=axis)
     return np.moveaxis(unfolded, axis - 1, -1)
 
@@ -120,10 +118,11 @@ def _get_hydrogen_atom_position(coord: np.ndarray) -> np.ndarray:
 
 def get_hbond_map(
     coord: np.ndarray,
-    donor_mask: np.ndarray = None,
+    donor_mask: np.ndarray | None = None,
     cutoff: float = DEFAULT_CUTOFF,
     margin: float = DEFAULT_MARGIN,
     return_e: bool = False,
+    box: np.ndarray | None = None,
 ) -> np.ndarray:
     """Returns hydrogen bond map
 
@@ -147,6 +146,14 @@ def get_hbond_map(
     return_e : bool, optional
         if to return energy instead of hbond map, by default False
 
+    box : array_like, optional
+        The unitcell dimensions of the system, which can be orthogonal or
+        triclinic and must be provided in the same format as returned by
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
+        ``[lx, ly, lz, alpha, beta, gamma]``.
+
+         .. versionadded:: 2.11.0
+
     Returns
     -------
     np.ndarray
@@ -158,6 +165,8 @@ def get_hbond_map(
     .. versionchanged:: 2.10.0
        Support masking of hydrogen donors via `donor_mask` (especially needed
        for ignoring HN on proline residues). Backport of PRO fix from pydssp 0.9.1.
+    .. versionchanged:: 2.11.0
+       Speedup with KDTree and support periodic boundary checking via `box` param.
     """
     n_residues, n_atom_types, _xyz = coord.shape
     assert n_atom_types in (
@@ -171,29 +180,25 @@ def get_hbond_map(
         h_1 = coord[1:, 4]
         coord = coord[:, :4]
     else:  # pragma: no cover
-        raise ValueError(
-            "Number of atoms should be 4 (N,CA,C,O) or 5 (N,CA,C,O,H)"
-        )
+        raise ValueError("Number of atoms should be 4 (N,CA,C,O) or 5 (N,CA,C,O,H)")
     # after this:
     # h.shape == (n_residues, 3)
     # coord.shape == (n_residues, 4, 3)
 
     n_atoms, c_atoms, o_atoms = coord[1:, 0], coord[:-1, 2], coord[:-1, 3]
 
-    # We can use KDTree to find candidate pairs within cutoff distance without having to
-    # compute a full pairwise distance matrix, much faster especially for larger proteins
-    n_kdtree = KDTree(n_atoms)
-    o_kdtree = KDTree(o_atoms)
-
-    # returned is a list of lists, with each neighbors[i] containing a list[int] of
-    # indices in the other o_kdtree that were within the cutoff which we can change
-    # to an array of index pairs for slicing
-    neighbors = n_kdtree.query_ball_tree(o_kdtree, r=HBOND_SEARCH_CUTOFF)
-    pairs = np.array(
-        [(i, j) for i, js in enumerate(neighbors) for j in js], dtype=np.int64
+    # We can reduce the need for a complete pairwise distance matrix by first searching for
+    # candidate pairs within a certain distance cutoff and only computing the energy
+    # for these relevant pairs rather than "potential" HBonds between far apart residues
+    pairs = capped_distance(
+        n_atoms,
+        o_atoms,
+        max_cutoff=HBOND_SEARCH_CUTOFF,
+        return_distances=False,
+        box=box,
     )
 
-    # Exclude local pairs (i, i), (i, i+1), (i, i+2) that are too close for HBonds
+    # Exclude local pairs (i, i), (i, i+1), (i, i+2) that are too close for SS HBonds
     pairs = pairs[abs(pairs[:, 0] - pairs[:, 1]) >= 2]
 
     # Exclude donor H absence (Proline)
@@ -215,9 +220,7 @@ def get_hbond_map(
     # e[i, j] = e(CO_i) - e(NH_j)
     e = np.zeros((n_residues, n_residues))
     e[n_indices + 1, o_indices] = (
-        CONST_Q1Q2
-        * (1.0 / d_on + 1.0 / d_ch - 1.0 / d_oh - 1.0 / d_cn)
-        * CONST_F
+        CONST_Q1Q2 * (1.0 / d_on + 1.0 / d_ch - 1.0 / d_oh - 1.0 / d_cn) * CONST_F
     )
 
     if return_e:  # pragma: no cover
@@ -231,7 +234,8 @@ def get_hbond_map(
 
 def assign(
     coord: np.ndarray,
-    donor_mask: np.ndarray = None,
+    donor_mask: np.ndarray | None = None,
+    box: np.ndarray | None = None,
 ) -> np.ndarray:
     """Assigns secondary structure for a given coordinate array,
     either with or without assigned hydrogens
@@ -244,11 +248,19 @@ def assign(
         (N, CA, C, O) atoms coordinates (if k=4), or (N, CA, C, O, H) coordinates
         (when k=5).
 
-    donor_mask : np.array
+    donor_mask : np.array | None, optional
          Mask out any hydrogens that should not be considered (in particular HN
          in PRO). If ``None`` then all H will be used (behavior up to 2.9.0).
 
          .. versionadded:: 2.10.0
+
+    box : array_like, optional
+        The unitcell dimensions of the system, which can be orthogonal or
+        triclinic and must be provided in the same format as returned by
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
+        ``[lx, ly, lz, alpha, beta, gamma]``.
+
+        .. versionadded:: 2.11.0
 
     Returns
     -------
@@ -261,6 +273,8 @@ def assign(
 
     .. versionchanged:: 2.10.0
        Support masking of donors.
+    .. versionchanged:: 2.11.0
+       Speedup with KDTree and support periodic boundary checking via `box` param.
 
     """
     # get hydrogen bond map
