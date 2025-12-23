@@ -30,11 +30,11 @@ Fixes
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Enhancements
- * Enables parallelization for analysis.diffusionmap.DistanceMatrix
-   (Issue #4679, PR #4745)
  * Added a current frame iterator `StreamFrameIteratorCurrent` for streamed
    trajectories to enable `AnalysisBase.run` on per-frame streamed data
    (Issue #5183, PR #5184)
+ * Enables parallelization for analysis.diffusionmap.DistanceMatrix
+   (Issue #4679, PR #4745)
 
 Changes
  * The msd.py inside analysis is changed, and ProgressBar is implemented inside
