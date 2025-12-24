@@ -92,8 +92,6 @@ jobs:
         with:
           micromamba: true
           full-deps: true
-          numpy: numpy=1.26.0
-          rdkit: rdkit=2023.09.3
 
       - name: install
         run: |
