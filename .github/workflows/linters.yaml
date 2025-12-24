@@ -92,7 +92,6 @@ jobs:
         with:
           micromamba: true
           full-deps: true
-          rdkit: rdkit=2023.09.3
 
       - name: install
         run: |
