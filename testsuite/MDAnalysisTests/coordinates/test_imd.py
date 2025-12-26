@@ -469,8 +469,12 @@ class TestStreamIteration:
                 pass
 
     def test_index_stream_raises_error(self, reader):
-        with pytest.raises(TypeError, match="Streamed trajectories must be"):
-            reader[0]
+        reader[0]
+        with pytest.raises(
+            ValueError,
+            match="Streamed trajectories must specify current frame value",
+        ):
+            reader[1]
 
     def test_iterate_backwards_raises_error(self, reader):
         with pytest.raises(ValueError, match="Cannot go backwards"):

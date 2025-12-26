@@ -2065,7 +2065,14 @@ class StreamReaderBase(ReaderBase):
         StreamFrameIteratorSliced
         StreamFrameIteratorCurrent
         """
-        if isinstance(frame, slice):
+        if isinstance(frame, numbers.Integral):
+            if frame == self.trajectory.frame:
+                return self._read_frame_with_aux(frame)
+            else:
+                raise ValueError(
+                    "Streamed trajectories must specify current frame value"
+                )
+        elif isinstance(frame, slice):
             _, _, step = self.check_slice_indices(
                 frame.start, frame.stop, frame.step
             )
