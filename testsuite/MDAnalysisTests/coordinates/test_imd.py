@@ -531,6 +531,7 @@ class TestStreamIteration:
         assert len(reader[[reader.frame]]) == 1
         for ts in reader[[reader.frame]]:
             assert ts.frame == reader.frame
+        reader[np.array([reader.frame])]
 
 
 @pytest.mark.skipif(not HAS_IMDCLIENT, reason="IMDClient not installed")
