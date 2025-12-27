@@ -528,10 +528,27 @@ class TestStreamIteration:
             ts[0]
 
     def test_iterate_current_frame(self, reader):
+        cts = reader.ts
+        # test iterator length
         assert len(reader[[reader.frame]]) == 1
+        # test list iterator
         for ts in reader[[reader.frame]]:
+            assert ts == cts
             assert ts.frame == reader.frame
+        # test np.ndarray iterator
         reader[np.array([reader.frame])]
+        # test same timestep
+        assert reader[reader.frame] == cts
+        assert reader[reader.frame] == reader[reader.frame]
+        # should be able to iterate all 5 frames in reader
+        # due to server.send_frames(1, 5) in reader setup
+        for i in range(5):
+            ts = reader[i]
+            if i < 4:
+                reader.next()
+            else:
+                with pytest.raises(StopIteration):
+                    reader.next()
 
 
 @pytest.mark.skipif(not HAS_IMDCLIENT, reason="IMDClient not installed")

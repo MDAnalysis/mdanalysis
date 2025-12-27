@@ -286,6 +286,9 @@ class IMDReader(StreamReaderBase):
             raise RuntimeError(f"IMDReader: Read error: {e}") from e
 
     def _read_frame(self, frame):
+        if frame == self._frame:
+            logger.debug("IMDReader: Using current frame %d", self._frame)
+            return self.ts
 
         imdf = self._imdclient.get_imdframe()
 
