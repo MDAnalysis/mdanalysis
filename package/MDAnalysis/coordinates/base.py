@@ -2067,7 +2067,7 @@ class StreamReaderBase(ReaderBase):
         """
         if isinstance(frame, numbers.Integral):
             if frame == self.trajectory.frame:
-                return self._read_frame_with_aux(frame)
+                return self._read_frame(frame)
             else:
                 raise ValueError(
                     "Streamed trajectories must specify current frame value"
@@ -2357,7 +2357,7 @@ class StreamFrameIteratorCurrent(FrameIteratorBase):
         return 1
 
     def __iter__(self):
-        yield self.trajectory._read_frame_with_aux(self.trajectory.frame)
+        yield self.trajectory._read_frame(self.trajectory.frame)
 
     def __next__(self):
         raise StopIteration from None

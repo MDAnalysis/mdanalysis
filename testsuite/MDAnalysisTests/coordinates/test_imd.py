@@ -550,6 +550,14 @@ class TestStreamIteration:
                 with pytest.raises(StopIteration):
                     reader.next()
 
+    def test_iterate_current_frame_no_transformations(self, reader):
+        reader.add_transformations(
+            translate([1, 1, 1]), translate([0, 0, 0.33])
+        )
+        p1 = reader[reader.frame].positions.copy()
+        p2 = reader[reader.frame].positions
+        assert_allclose(p1, p2)
+
 
 @pytest.mark.skipif(not HAS_IMDCLIENT, reason="IMDClient not installed")
 class TestAnalysisClasses:
