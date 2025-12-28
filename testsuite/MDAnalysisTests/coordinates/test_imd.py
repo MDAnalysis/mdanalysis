@@ -644,6 +644,17 @@ class TestAnalysisClasses:
             frames=1,
         )
 
+    @pytest.fixture
+    def u4(self, create_imd_universe):
+        from MDAnalysisTests.datafiles import waterPSF, waterDCD
+
+        return create_imd_universe(
+            topo=waterPSF,
+            traj=waterDCD,
+            velocities=False,
+            forces=False,
+        )
+
     def test_atomicdistances(self, u1):
         from MDAnalysis.analysis.atomicdistances import AtomicDistances
 
@@ -792,21 +803,21 @@ class TestAnalysisClasses:
             dssp.run(frames=[u1.trajectory.frame])
             u1.trajectory.next()
 
-    def test_hba(self, u1):
+    def test_hba(self, u4):
         from MDAnalysis.analysis.hydrogenbonds import hbond_analysis
 
-        hba = hbond_analysis.HydrogenBondAnalysis(universe=u1)
-        for i in range(2):
-            hba.run(frames=[u1.trajectory.frame])
-            u1.trajectory.next()
+        hba = hbond_analysis.HydrogenBondAnalysis(universe=u4)
+        for i in range(3):
+            hba.run(frames=[u4.trajectory.frame])
+            u4.trajectory.next()
 
-    def test_wba(self, u1):
+    def test_wba(self, u4):
         from MDAnalysis.analysis.hydrogenbonds import WaterBridgeAnalysis
 
-        wba = WaterBridgeAnalysis(u1, "resname ARG", "resname ASP")
-        for i in range(2):
-            wba.run(frames=[u1.trajectory.frame])
-            u1.trajectory.next()
+        wba = WaterBridgeAnalysis(u4, "resid 1:10", "resid 10:20")
+        for i in range(3):
+            wba.run(frames=[u4.trajectory.frame])
+            u4.trajectory.next()
 
 
 @pytest.mark.skipif(not HAS_IMDCLIENT, reason="IMDClient not installed")
