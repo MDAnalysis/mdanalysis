@@ -11,7 +11,7 @@ designed to be used in per-frame manner in protein trajectories.
 
 import numpy as np
 
-from MDAnalysis.lib.distances import capped_distance
+from MDAnalysis.lib.distances import capped_distance, minimize_vectors
 
 CONST_Q1Q2 = 0.084
 CONST_F = 332
@@ -195,16 +195,16 @@ def get_hbond_map(
     # We can reduce the need for a complete pairwise distance matrix by first searching for
     # candidate pairs within a certain distance cutoff and only computing the energy
     # for these relevant pairs rather than "potential" HBonds between far apart residues
-    pairs = capped_distance(
+    pairs, d_on = capped_distance(
         n_atoms,
         o_atoms,
         max_cutoff=HBOND_SEARCH_CUTOFF,
-        return_distances=False,
         box=box,
     )
 
     # Exclude local pairs (i, i), (i, i+1), (i, i+2) that are too close for SS HBonds
-    pairs = pairs[abs(pairs[:, 0] - pairs[:, 1]) >= 2]
+    local_mask = abs(pairs[:, 0] - pairs[:, 1]) >= 2
+    pairs = pairs[local_mask]
 
     # Exclude donor H absence (Proline)
     if donor_mask is not None:
@@ -216,10 +216,21 @@ def get_hbond_map(
     # still returning the same energy matrix that would have otherwise been made
     o_indices = pairs[:, 1]
     n_indices = pairs[:, 0]
-    d_on = np.linalg.norm(o_atoms[o_indices] - n_atoms[n_indices], axis=-1)
-    d_ch = np.linalg.norm(c_atoms[o_indices] - h_1[n_indices], axis=-1)
-    d_oh = np.linalg.norm(o_atoms[o_indices] - h_1[n_indices], axis=-1)
-    d_cn = np.linalg.norm(c_atoms[o_indices] - n_atoms[n_indices], axis=-1)
+
+    # d_on = d_on[local_mask]
+    def _distances(x, y, box=None):
+        if box is None:
+            return np.linalg.norm(x[o_indices] - y[n_indices], axis=-1)
+        else:
+            return np.linalg.norm(
+                minimize_vectors(x[o_indices] - y[n_indices], box=box),
+                axis=-1,
+            )
+
+    d_on = _distances(o_atoms, n_atoms, box)
+    d_ch = _distances(c_atoms, h_1, box)
+    d_oh = _distances(o_atoms, h_1, box)
+    d_cn = _distances(c_atoms, n_atoms, box)
 
     # electrostatic interaction energy
     # e[i, j] = e(CO_i) - e(NH_j)
@@ -285,7 +296,7 @@ def assign(
 
     """
     # get hydrogen bond map
-    hbmap = get_hbond_map(coord, donor_mask=donor_mask)
+    hbmap = get_hbond_map(coord, donor_mask=donor_mask, box=box)
     hbmap = np.swapaxes(hbmap, -1, -2)  # convert into "i:C=O, j:N-H" form
 
     # identify turn 3, 4, 5
