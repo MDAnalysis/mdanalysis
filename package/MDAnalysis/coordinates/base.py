@@ -2008,7 +2008,9 @@ class StreamReaderBase(ReaderBase):
             raise RuntimeError(
                 "{}: Cannot reopen stream".format(self.__class__.__name__)
             )
-        self._frame = -1
+        if self._frame == 0:
+            # only reset when stream hasn't been iterated using next
+            self._frame = -1
         self._reopen_called = True
 
     def timeseries(self, **kwargs):

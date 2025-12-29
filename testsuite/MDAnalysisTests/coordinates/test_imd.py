@@ -558,6 +558,27 @@ class TestStreamIteration:
         p2 = reader[reader.frame].positions
         assert_allclose(p1, p2)
 
+    def test_iterate_continuity_1(self, reader):
+        step = -1
+        for ts in reader:
+            step += 1
+            assert ts.data["step"] == step
+            if step == 4:
+                break
+
+    def test_iterate_continuity_2(self, reader):
+        ts = reader[0]
+        assert ts.data["step"] == 0
+        reader.next()
+        ts = reader[1]
+        assert ts.data["step"] == 1
+        step = 1
+        for ts in reader:
+            step += 1
+            assert ts.data["step"] == step
+            if step == 4:
+                break
+
 
 @pytest.mark.skipif(not HAS_IMDCLIENT, reason="IMDClient not installed")
 class TestAnalysisClasses:
