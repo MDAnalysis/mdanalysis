@@ -144,6 +144,7 @@ Functions
 .. autofunction:: translate
 """
 
+import warnings
 from typing import Optional, Union
 
 import numpy as np
@@ -323,6 +324,12 @@ class DSSP(AnalysisBase):
             for t in heavyatom_names
         }
         self._donor_mask: Optional[np.ndarray] = ag.residues.resnames != "PRO"
+        self._box = self._trajectory.ts.dimensions
+        if np.array_equal(self._box, (1, 1, 1, 90, 90, 90)):
+            self._box = None
+            warnings.warn(
+                "Box dimensions are (1, 1, 1, 90, 90, 90), not using periodic boundary conditions in DSSP calculations"
+            )
         self._hydrogens: list["AtomGroup"] = [
             res.atoms.select_atoms(f"name {hydrogen_name}")
             for res in ag.residues
@@ -402,7 +409,7 @@ class DSSP(AnalysisBase):
         dssp = assign(
             coords,
             donor_mask=self._donor_mask,
-            box=self._trajectory.ts.dimensions,
+            box=self._box,
         )
         self.results.dssp_ndarray.append(dssp)
 
