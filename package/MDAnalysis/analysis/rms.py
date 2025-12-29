@@ -235,6 +235,7 @@ def rmsd(a, b, weights=None, center=False, superposition=False):
 
     Example
     -------
+    >>> import numpy as np
     >>> import MDAnalysis as mda
     >>> from MDAnalysis.analysis.rms import rmsd
     >>> from MDAnalysis.tests.datafiles import PSF, DCD
@@ -243,7 +244,9 @@ def rmsd(a, b, weights=None, center=False, superposition=False):
     >>> A = bb.positions.copy()  # coordinates of first frame
     >>> _ = u.trajectory[-1]  # forward to last frame
     >>> B = bb.positions.copy()  # coordinates of last frame
+    >>> # A and B now contain the coordinates we want to compare
     >>> rmsd(A, B, center=True)
+    6.838544558398293
     6.838544558398293
 
 
