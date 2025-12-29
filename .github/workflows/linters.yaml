@@ -92,6 +92,7 @@ jobs:
         with:
           micromamba: true
           full-deps: true
+          numpy: numpy=1.26.0
 
       - name: install
         run: |
