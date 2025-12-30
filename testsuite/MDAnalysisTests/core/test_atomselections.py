@@ -33,6 +33,7 @@ import pytest
 from MDAnalysis import SelectionError, SelectionWarning
 from MDAnalysis.core.selection import Parser
 from MDAnalysis.lib.distances import distance_array
+from MDAnalysis.lib.pkdtree import PeriodicKDTree
 from MDAnalysis.tests.datafiles import (
     DCD,
     GRO,
@@ -1774,3 +1775,46 @@ def test_formal_charge_selection(sel, size, name):
 
     assert len(ag) == size
     assert ag.atoms[0].name == name
+
+@pytest.fixture
+def universe():
+    #Fixture providing a small test Universe.
+    return mda.Universe(PSF, DCD)
+
+def test_cylindrical_layer_selection_periodic_kdtree(universe):
+    #Test cylindrical layer selection using PeriodicKDTree.
+    # Center point
+    center = universe.atoms[0].position
+    inner_radius = 5.0
+    outer_radius = 10.0
+    zmin, zmax = center[2] - 15.0, center[2] + 15.0
+
+    # MDAnalysis selection for cylindrical layer
+    sel = universe.select_atoms(
+        f"cylayer {inner_radius} {outer_radius} {zmin} {zmax} "
+        f"point {center[0]} {center[1]} {center[2]}"
+    )
+
+    # KDTree-based selection
+    kdtree = PeriodicKDTree(outer_radius, universe.dimensions)
+    kdtree.set_coords(universe.atoms.positions)
+    indices = kdtree.search(center, outer_radius)
+
+    # Filter by cylindrical layer (radius and z-range)
+    pos = universe.atoms.positions[indices]
+    dxy = np.sqrt((pos[:, 0] - center[0])**2 + (pos[:, 1] - center[1])**2)
+
+    mask = (
+        (inner_radius <= dxy) &
+        (dxy <= outer_radius) &
+        (zmin <= pos[:, 2]) &
+        (pos[:, 2] <= zmax)
+    )
+
+    expected = indices[mask]
+
+    # Assert KDTree selection matches MDAnalysis selection
+    assert_array_equal(
+        np.sort(expected),
+        np.sort(sel.indices)
+    )
