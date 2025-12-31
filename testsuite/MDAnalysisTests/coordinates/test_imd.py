@@ -527,35 +527,38 @@ class TestStreamIteration:
         ):
             ts[0]
 
-    def test_iterate_current_frame(self, reader):
+    @pytest.mark.parametrize("iter_type", [list, np.array])
+    def test_iterate_current_frame(self, reader, iter_type):
         cts = reader.ts
         # test iterator length
-        assert len(reader[[reader.frame]]) == 1
+        assert len(reader[iter_type([reader.frame])]) == 1
         # test list iterator
-        for ts in reader[[reader.frame]]:
+        for ts in reader[iter_type([reader.frame])]:
             assert ts == cts
             assert ts.frame == reader.frame
-        # test np.ndarray iterator
-        reader[np.array([reader.frame])]
+
+    def test_current_frame(self, reader):
+        cts = reader.ts
         # test same timestep
         assert reader[reader.frame] == cts
         assert reader[reader.frame] == reader[reader.frame]
         # should be able to iterate all 5 frames in reader
         # due to server.send_frames(1, 5) in reader setup
         for i in range(5):
-            ts = reader[i]
+            reader[i]
             if i < 4:
                 reader.next()
             else:
                 with pytest.raises(StopIteration):
                     reader.next()
 
-    def test_iterate_current_frame_no_transformations(self, reader):
+    def test_current_frame_transformations(self, reader):
         reader.add_transformations(
             translate([1, 1, 1]), translate([0, 0, 0.33])
         )
         p1 = reader[reader.frame].positions.copy()
         p2 = reader[reader.frame].positions
+        # test transformations not repeated
         assert_allclose(p1, p2)
 
     def test_iterate_continuity_1(self, reader):
