@@ -210,7 +210,7 @@ class DSSP(AnalysisBase):
     Parameters
     ----------
     atoms : Union[Universe, AtomGroup]
-        input at least 6 Universe or AtomGroup. In both cases, only protein residues will
+        input Universe or AtomGroup with at least 6 protein residues. In both cases, only protein residues will
         be chosen prior to the analysis via `select_atoms('protein')`.
         Heavy atoms of the protein are then selected by name
         `heavyatom_names`, and hydrogens are selected by name

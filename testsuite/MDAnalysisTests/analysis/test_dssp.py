@@ -99,14 +99,14 @@ def test_insufficient_residues_raises_error(client_DSSP):
     resids = protein.residues.resids
 
     with pytest.raises(ValueError, match="DSSP requires at least 6 residues"):
-        res2 = u.select_atoms(f"protein and resid {resids[0]}-{resids[1]}")
+        res2 = protein.residues[:2].atoms
         DSSP(res2)
 
     with pytest.raises(ValueError, match="DSSP requires at least 6 residues"):
-        res4 = u.select_atoms(f"protein and resid {resids[0]}-{resids[3]}")
+        res4 = protein.residues[:4].atoms
         DSSP(res4)
 
-    res6 = u.select_atoms(f"protein and resid {resids[0]}-{resids[5]}")
+    res6 = protein.residues[:6].atoms
     dssp = DSSP(res6)
     result = dssp.run(**client_DSSP, stop=1)
     assert result.results.dssp.shape[1] == 6

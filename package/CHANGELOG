@@ -20,8 +20,9 @@ The rules for this file:
  * 2.11.0
 
 Fixes
- * Fixes the error message for short peptide stretches inside dssp.py, 
-   and showing minimum value is 6 (Issue #5046, PR #5163)
+ * DSSP now explicitly checks for a minimum of 6 residues and raises a clear
+   error message, unlike the previous behavior where it would fail with an
+   incomprehensible broadcasting error at execution time (Issue #5046, PR #5163)
  * Fixes the verbose=False in EinsteinMSD, and only shows progress bar when
    verbose=True (Issue #5144, PR #5153)
  * Fix incorrect assignment of topology_format to format (and vice versa)
@@ -36,8 +37,6 @@ Enhancements
    (Issue #4679, PR #4745)
 
 Changes
- * Inside the DSSP class of dssp.py file, a value error is raised for 
-   value less than 6 (Issue #5046, PR #5163)
  * The msd.py inside analysis is changed, and ProgressBar is implemented inside
    _conclude_simple and _conclude_fft functions instead of tqdm (Issue #5144, PR #5153)
 
