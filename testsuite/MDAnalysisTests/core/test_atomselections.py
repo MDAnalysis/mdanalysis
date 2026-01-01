@@ -1776,13 +1776,15 @@ def test_formal_charge_selection(sel, size, name):
     assert len(ag) == size
     assert ag.atoms[0].name == name
 
+
 @pytest.fixture
 def universe():
-    #Fixture providing a small test Universe.
+    # Fixture providing a small test Universe.
     return mda.Universe(PSF, DCD)
 
+
 def test_cylindrical_layer_selection_periodic_kdtree(universe):
-    #Test cylindrical layer selection using PeriodicKDTree.
+    # Test cylindrical layer selection using PeriodicKDTree.
     # Center point
     center = universe.atoms[0].position
     inner_radius = 5.0
@@ -1802,19 +1804,16 @@ def test_cylindrical_layer_selection_periodic_kdtree(universe):
 
     # Filter by cylindrical layer (radius and z-range)
     pos = universe.atoms.positions[indices]
-    dxy = np.sqrt((pos[:, 0] - center[0])**2 + (pos[:, 1] - center[1])**2)
+    dxy = np.sqrt((pos[:, 0] - center[0]) ** 2 + (pos[:, 1] - center[1]) ** 2)
 
     mask = (
-        (inner_radius <= dxy) &
-        (dxy <= outer_radius) &
-        (zmin <= pos[:, 2]) &
-        (pos[:, 2] <= zmax)
+        (inner_radius <= dxy)
+        & (dxy <= outer_radius)
+        & (zmin <= pos[:, 2])
+        & (pos[:, 2] <= zmax)
     )
 
     expected = indices[mask]
 
     # Assert KDTree selection matches MDAnalysis selection
-    assert_array_equal(
-        np.sort(expected),
-        np.sort(sel.indices)
-    )
+    assert_array_equal(np.sort(expected), np.sort(sel.indices))
