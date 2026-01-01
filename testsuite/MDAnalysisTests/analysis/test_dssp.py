@@ -96,7 +96,6 @@ def test_insufficient_residues_raises_error(client_DSSP):
     u = mda.Universe(TPR, XTC)
 
     protein = u.select_atoms("protein")
-    resids = protein.residues.resids
 
     with pytest.raises(ValueError, match="DSSP requires at least 6 residues"):
         res2 = protein.residues[:2].atoms
