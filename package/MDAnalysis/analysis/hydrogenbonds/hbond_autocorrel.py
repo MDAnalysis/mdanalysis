@@ -306,7 +306,7 @@ class HydrogenBondAutoCorrel(AnalysisBase):
         nsamples=50,  # number of different points to sample in a run
         pbc=True,
     ):
-        
+
         super(HydrogenBondAutoCorrel, self).__init__(universe.trajectory)
         self.u = universe
 
@@ -321,20 +321,16 @@ class HydrogenBondAutoCorrel(AnalysisBase):
 
         if exclusions is not None:
             if len(exclusions[0]) != len(exclusions[1]):
-                raise ValueError(
-                    "'exclusion' must be two arrays of identical length"
-                )
-            self.exclusions = np.column_stack(
-                (exclusions[0], exclusions[1])
-            ).astype(np.intp)
+                raise ValueError("'exclusion' must be two arrays of identical length")
+            self.exclusions = np.column_stack((exclusions[0], exclusions[1])).astype(
+                np.intp
+            )
         else:
             self.exclusions = None
 
         self.bond_type = bond_type
         if self.bond_type not in ["continuous", "intermittent"]:
-            raise ValueError(
-                "bond_type must be either 'continuous' or 'intermittent'"
-            )
+            raise ValueError("bond_type must be either 'continuous' or 'intermittent'")
 
         self.a_crit = np.deg2rad(angle_crit)
         self.d_crit = dist_crit
@@ -354,6 +350,12 @@ class HydrogenBondAutoCorrel(AnalysisBase):
         }
 
     def _slice_traj(self, sample_time):
+
+        try:
+            self.u.trajectory[0]
+        except TypeError:
+            raise ValueError("Trajectory is unable to be sliced")
+
         """Set up start and end points in the trajectory for the
         different passes
         """
@@ -364,9 +366,7 @@ class HydrogenBondAutoCorrel(AnalysisBase):
         if req_frames > n_frames:
             warnings.warn(
                 "Number of required frames ({}) greater than the"
-                " number of frames in trajectory ({})".format(
-                    req_frames, n_frames
-                ),
+                " number of frames in trajectory ({})".format(req_frames, n_frames),
                 RuntimeWarning,
             )
 
@@ -394,56 +394,56 @@ class HydrogenBondAutoCorrel(AnalysisBase):
             self._skip = 1
 
     def run(self, start=None, stop=None, step=None, verbose=None, **kwargs):
-            """Run all the required passes
+        """Run all the required passes
 
-            Parameters
-            ----------
-            start : int, optional
-                start frame of trajectory (ignored, uses nruns logic)
-            stop : int, optional
-                end frame of trajectory (ignored, uses nruns logic)
-            step : int, optional
-                step size (ignored, uses nruns logic)
-            verbose : bool, optional
-                Show the progress bar
-            """
-            self._slice_traj(self.sample_time)
+        Parameters
+        ----------
+        start : int, optional
+            start frame of trajectory (ignored, uses nruns logic)
+        stop : int, optional
+            end frame of trajectory (ignored, uses nruns logic)
+        step : int, optional
+            step size (ignored, uses nruns logic)
+        verbose : bool, optional
+            Show the progress bar
+        """
+        self._slice_traj(self.sample_time)
 
-            main_results = np.zeros_like(
-                np.arange(self._starts[0], self._stops[0], self._skip),
-                dtype=np.float32,
-            )
-            # for normalising later
-            counter = np.zeros_like(main_results, dtype=np.float32)
+        main_results = np.zeros_like(
+            np.arange(self._starts[0], self._stops[0], self._skip),
+            dtype=np.float32,
+        )
+        # for normalising later
+        counter = np.zeros_like(main_results, dtype=np.float32)
 
-            for i, (start, stop) in ProgressBar(
-                enumerate(zip(self._starts, self._stops)),
-                total=self.nruns,
-                desc="Performing run",
-                verbose=verbose,
-            ):
+        for i, (start, stop) in ProgressBar(
+            enumerate(zip(self._starts, self._stops)),
+            total=self.nruns,
+            desc="Performing run",
+            verbose=verbose,
+        ):
 
-                # needed else trj seek thinks a np.int64 isn't an int?
-                results = self._single_run(int(start), int(stop))
+            # needed else trj seek thinks a np.int64 isn't an int?
+            results = self._single_run(int(start), int(stop))
 
-                nresults = len(results)
-                if nresults == len(main_results):
-                    main_results += results
-                    counter += 1.0
-                else:
-                    main_results[:nresults] += results
-                    counter[:nresults] += 1.0
+            nresults = len(results)
+            if nresults == len(main_results):
+                main_results += results
+                counter += 1.0
+            else:
+                main_results[:nresults] += results
+                counter[:nresults] += 1.0
 
-            main_results /= counter
+        main_results /= counter
 
-            self.solution["time"] = (
-                np.arange(len(main_results), dtype=np.float32)
-                * self.u.trajectory.dt
-                * self._skip
-            )
-            self.solution["results"] = main_results
-            
-            return self
+        self.solution["time"] = (
+            np.arange(len(main_results), dtype=np.float32)
+            * self.u.trajectory.dt
+            * self._skip
+        )
+        self.solution["results"] = main_results
+
+        return self
 
     def _single_run(self, start, stop):
         """Perform a single pass of the trajectory"""
@@ -477,9 +477,7 @@ class HydrogenBondAutoCorrel(AnalysisBase):
         aidx = aidx[idx2]
 
         nbonds = len(hidx)  # number of hbonds at t=0
-        results = np.zeros_like(
-            np.arange(start, stop, self._skip), dtype=np.float32
-        )
+        results = np.zeros_like(np.arange(start, stop, self._skip), dtype=np.float32)
 
         if self.time_cut:
             # counter for time criteria
@@ -488,9 +486,7 @@ class HydrogenBondAutoCorrel(AnalysisBase):
         for i, ts in enumerate(self.u.trajectory[start : stop : self._skip]):
             box = self.u.dimensions if self.pbc else None
 
-            d = calc_bonds(
-                self.h.positions[hidx], self.a.positions[aidx], box=box
-            )
+            d = calc_bonds(self.h.positions[hidx], self.a.positions[aidx], box=box)
             a = calc_angles(
                 self.d.positions[hidx],
                 self.h.positions[hidx],
@@ -615,9 +611,7 @@ class HydrogenBondAutoCorrel(AnalysisBase):
             """Sum of three exponential functions"""
             A3 = 1 - (A1 + A2)
             return (
-                A1 * np.exp(-x / tau1)
-                + A2 * np.exp(-x / tau2)
-                + A3 * np.exp(-x / tau3)
+                A1 * np.exp(-x / tau1) + A2 * np.exp(-x / tau2) + A3 * np.exp(-x / tau3)
             )
 
         if self.bond_type == "continuous":
@@ -658,9 +652,7 @@ class HydrogenBondAutoCorrel(AnalysisBase):
         self.solution["ier"] = ier
 
         if ier in [1, 2, 3, 4]:  # solution found if ier is one of these values
-            self.solution["estimate"] = self._my_solve(
-                self.solution["time"], *p
-            )
+            self.solution["estimate"] = self._my_solve(self.solution["time"], *p)
         else:
             warnings.warn("Solution to results not found", RuntimeWarning)
 

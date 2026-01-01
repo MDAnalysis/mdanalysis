@@ -15,6 +15,9 @@ from MDAnalysis.analysis.dssp.dssp import DSSP
 from MDAnalysis.analysis.hydrogenbonds.hbond_analysis import (
     HydrogenBondAnalysis,
 )
+from MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel import (
+    HydrogenBondAutoCorrel,
+)
 from MDAnalysis.analysis.nucleicacids import NucPairDist
 from MDAnalysis.analysis.contacts import Contacts
 from MDAnalysis.analysis.density import DensityAnalysis
@@ -217,3 +220,34 @@ def client_InterRDF_s(request):
 @pytest.fixture(scope="module", params=params_for_cls(DistanceMatrix))
 def client_DistanceMatrix(request):
     return request.param
+
+
+# MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel
+
+
+@pytest.fixture(
+    scope="module",
+    params=params_for_cls(HydrogenBondAutoCorrel, exclude=["multiprocessing"]),
+)
+def client_HydrogenBondAutoCorrel(request):
+    return request.param
+
+
+@pytest.fixture(scope="module")
+def hbond_autocorrel(trajectory):
+    """Fixture for HydrogenBondAutoCorrel analysis"""
+    u = trajectory
+    h = u.select_atoms("name H1")
+    n = u.select_atoms("name N")
+    o = u.select_atoms("name O")
+
+    return HydrogenBondAutoCorrel(
+        u,
+        hydrogens=h,
+        donors=n,
+        acceptors=o,
+        bond_type="continuous",
+        sample_time=10.0,
+        nruns=2,
+        nsamples=10,
+    )
