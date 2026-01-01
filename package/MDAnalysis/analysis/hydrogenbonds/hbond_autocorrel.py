@@ -212,6 +212,7 @@ from MDAnalysis.lib._cutil import _in2d
 from MDAnalysis.lib.log import ProgressBar
 from MDAnalysis.lib.distances import capped_distance, calc_angles, calc_bonds
 from MDAnalysis.core.groups import requires
+from MDAnalysis.analysis.base import AnalysisBase
 
 from MDAnalysis.due import due, Doi
 
@@ -243,7 +244,7 @@ def find_hydrogen_donors(hydrogens):
     return sum(h.bonded_atoms[0] for h in hydrogens)
 
 
-class HydrogenBondAutoCorrel(object):
+class HydrogenBondAutoCorrel(AnalysisBase):
     """Perform a time autocorrelation of the hydrogen bonds in the system.
 
     Parameters
@@ -305,17 +306,9 @@ class HydrogenBondAutoCorrel(object):
         nsamples=50,  # number of different points to sample in a run
         pbc=True,
     ):
-
-        # warnings.warn("This class is deprecated, use analysis.hbonds.HydrogenBondAnalysis "
-        #              "which has .autocorrelation function",
-        #              category=DeprecationWarning)
-
+        
+        super(HydrogenBondAutoCorrel, self).__init__(universe.trajectory)
         self.u = universe
-        # check that slicing is possible
-        try:
-            self.u.trajectory[0]
-        except Exception:
-            raise ValueError("Trajectory must support slicing") from None
 
         self.h = hydrogens
         self.a = acceptors
@@ -400,50 +393,57 @@ class HydrogenBondAutoCorrel(object):
             )
             self._skip = 1
 
-    def run(self, force=False):
-        """Run all the required passes
+    def run(self, start=None, stop=None, step=None, verbose=None, **kwargs):
+            """Run all the required passes
 
-        Parameters
-        ----------
-        force : bool, optional
-            Will overwrite previous results if they exist
-        """
-        # if results exist, don't waste any time
-        if self.solution["results"] is not None and not force:
-            return
+            Parameters
+            ----------
+            start : int, optional
+                start frame of trajectory (ignored, uses nruns logic)
+            stop : int, optional
+                end frame of trajectory (ignored, uses nruns logic)
+            step : int, optional
+                step size (ignored, uses nruns logic)
+            verbose : bool, optional
+                Show the progress bar
+            """
+            self._slice_traj(self.sample_time)
 
-        main_results = np.zeros_like(
-            np.arange(self._starts[0], self._stops[0], self._skip),
-            dtype=np.float32,
-        )
-        # for normalising later
-        counter = np.zeros_like(main_results, dtype=np.float32)
+            main_results = np.zeros_like(
+                np.arange(self._starts[0], self._stops[0], self._skip),
+                dtype=np.float32,
+            )
+            # for normalising later
+            counter = np.zeros_like(main_results, dtype=np.float32)
 
-        for i, (start, stop) in ProgressBar(
-            enumerate(zip(self._starts, self._stops)),
-            total=self.nruns,
-            desc="Performing run",
-        ):
+            for i, (start, stop) in ProgressBar(
+                enumerate(zip(self._starts, self._stops)),
+                total=self.nruns,
+                desc="Performing run",
+                verbose=verbose,
+            ):
 
-            # needed else trj seek thinks a np.int64 isn't an int?
-            results = self._single_run(int(start), int(stop))
+                # needed else trj seek thinks a np.int64 isn't an int?
+                results = self._single_run(int(start), int(stop))
 
-            nresults = len(results)
-            if nresults == len(main_results):
-                main_results += results
-                counter += 1.0
-            else:
-                main_results[:nresults] += results
-                counter[:nresults] += 1.0
+                nresults = len(results)
+                if nresults == len(main_results):
+                    main_results += results
+                    counter += 1.0
+                else:
+                    main_results[:nresults] += results
+                    counter[:nresults] += 1.0
 
-        main_results /= counter
+            main_results /= counter
 
-        self.solution["time"] = (
-            np.arange(len(main_results), dtype=np.float32)
-            * self.u.trajectory.dt
-            * self._skip
-        )
-        self.solution["results"] = main_results
+            self.solution["time"] = (
+                np.arange(len(main_results), dtype=np.float32)
+                * self.u.trajectory.dt
+                * self._skip
+            )
+            self.solution["results"] = main_results
+            
+            return self
 
     def _single_run(self, start, stop):
         """Perform a single pass of the trajectory"""
