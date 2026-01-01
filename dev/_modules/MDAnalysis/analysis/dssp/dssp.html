@@ -354,7 +354,7 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    atoms : Union[Universe, AtomGroup]</span>
-<span class="sd">        input Universe or AtomGroup. In both cases, only protein residues will</span>
+<span class="sd">        input Universe or AtomGroup with at least 6 protein residues. In both cases, only protein residues will</span>
 <span class="sd">        be chosen prior to the analysis via `select_atoms(&#39;protein&#39;)`.</span>
 <span class="sd">        Heavy atoms of the protein are then selected by name</span>
 <span class="sd">        `heavyatom_names`, and hydrogens are selected by name</span>
@@ -383,6 +383,8 @@
 
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If fewer than 6 residues are provided in the selection.</span>
 <span class="sd">    ValueError</span>
 <span class="sd">        if ``guess_hydrogens`` is True but some non-PRO hydrogens are missing.</span>
 
@@ -502,6 +504,12 @@
                     <span class="s2">&quot;Universe contains unequal numbers of (N,CA,C,O) atoms (&#39;name&#39; field).&quot;</span>
                     <span class="s2">&quot; Please select appropriate AtomGroup manually.&quot;</span>
                 <span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">residues</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">6</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;DSSP requires at least 6 residues for secondary structure analysis, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;but only </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">residues</span><span class="p">)</span><span class="si">}</span><span class="s2"> residue(s) were provided in the selection.&quot;</span>
             <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

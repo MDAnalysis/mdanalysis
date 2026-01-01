@@ -307,7 +307,7 @@ correct hydrogen atoms and report an issue in the MDAnalysis
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>atoms</strong> (<em>Union</em><em>[</em><a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a><em>, </em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em>]</em>) – input Universe or AtomGroup. In both cases, only protein residues will
+<li><p><strong>atoms</strong> (<em>Union</em><em>[</em><a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a><em>, </em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em>]</em>) – input Universe or AtomGroup with at least 6 protein residues. In both cases, only protein residues will
 be chosen prior to the analysis via <cite>select_atoms(‘protein’)</cite>.
 Heavy atoms of the protein are then selected by name
 <cite>heavyatom_names</cite>, and hydrogens are selected by name
@@ -334,7 +334,10 @@ for your specific case.</p>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if <code class="docutils literal notranslate"><span class="pre">guess_hydrogens</span></code> is True but some non-PRO hydrogens are missing.</p>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If fewer than 6 residues are provided in the selection.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – if <code class="docutils literal notranslate"><span class="pre">guess_hydrogens</span></code> is True but some non-PRO hydrogens are missing.</p></li>
+</ul>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
