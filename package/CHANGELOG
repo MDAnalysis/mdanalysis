@@ -15,7 +15,7 @@ The rules for this file:
 
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, orbeckst, marinegor, tylerjereddy, ljwoods2, marinegor,
-         spyke7, talagayev
+         spyke7, talagayev, PardhavMaradani
 
  * 2.11.0
 
@@ -33,6 +33,9 @@ Fixes
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Enhancements
+ * Added a current frame iterator `StreamFrameIteratorCurrent` for streamed
+   trajectories to enable `AnalysisBase.run` on per-frame streamed data
+   (Issue #5183, PR #5184)
  * Enables parallelization for analysis.diffusionmap.DistanceMatrix
    (Issue #4679, PR #4745)
 
