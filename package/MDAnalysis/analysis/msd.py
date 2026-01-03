@@ -382,18 +382,10 @@ class EinsteinMSD(AnalysisBase):
             "xyz": [0, 1, 2],
         }
 
-        # lowercase
         try:
-            self.msd_type = self.msd_type.lower()
+            self._dim = keys[self.msd_type.lower()]
         except AttributeError:
-            raise TypeError("msd_type must be a string-like")
-
-        # check for empty string
-        if not self.msd_type.strip():
-            raise ValueError("msd_type cannot be empty or whitespace")
-
-        try:
-            self._dim = keys[self.msd_type]
+            raise TypeError("msd_type must be a string")
         except KeyError:
             raise ValueError(
                 "invalid msd_type: {} specified, please specify one of xyz, "
