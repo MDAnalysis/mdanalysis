@@ -384,12 +384,9 @@ class EinsteinMSD(AnalysisBase):
 
         try:
             self._dim = keys[self.msd_type.lower()]
-        except AttributeError:
-            raise TypeError("msd_type must be a string")
-        except KeyError:
-            raise ValueError(
-                "invalid msd_type: {} specified, please specify one of xyz, "
-                "xy, xz, yz, x, y, z".format(self.msd_type)
+        except (AttributeError, KeyError):
+            raise TypeError(
+                "msd_type must be a string and one of: xyz, xy, xz, yz, x, y, z"
             )
 
         self.dim_fac = len(self._dim)
