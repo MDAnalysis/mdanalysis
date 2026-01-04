@@ -33,7 +33,6 @@ import pytest
 from MDAnalysis import SelectionError, SelectionWarning
 from MDAnalysis.core.selection import Parser
 from MDAnalysis.lib.distances import distance_array
-from MDAnalysis.lib.pkdtree import PeriodicKDTree
 from MDAnalysis.tests.datafiles import (
     DCD,
     GRO,
@@ -57,7 +56,7 @@ from MDAnalysis.tests.datafiles import (
     waterPSF,
 )
 from numpy.lib import NumpyVersion
-from numpy.testing import assert_array_equal, assert_equal
+from numpy.testing import assert_equal
 
 from MDAnalysisTests import make_Universe
 
@@ -1737,19 +1736,11 @@ def test_formal_charge_selection(sel, size, name):
     assert len(ag) == size
     assert ag.atoms[0].name == name
 
-
-@pytest.fixture(scope="module")
-def universe():
+def test_cylayer_selection_parses_correctly():
     u = mda.Universe(PSF, DCD)
     u.dimensions = np.array([100.0, 100.0, 100.0, 90.0, 90.0, 90.0])
-    return u
 
+    sel = u.select_atoms("cylayer 5 10 15 -15 name CA")
 
-def test_cylayer_selection_parses_correctly(universe):
-    universe.dimensions = np.array([100, 100, 100, 90, 90, 90])
-
-    sel = universe.select_atoms("cylayer 5 10 15 -15 name CA")
-
-    # Basic sanity checks
     assert len(sel) > 0
-    assert sel.n_atoms <= universe.atoms.n_atoms
+    assert sel.n_atoms <= u.atoms.n_atoms
