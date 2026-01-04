@@ -118,20 +118,12 @@ class TestMSDSimple(object):
             m = MSD(updating_ag, msd_type="xyz", fft=False)
 
     @pytest.mark.parametrize(
-        "msd_type, exc",
-        [
-            ("Xz", None),  # valid, mixed case.
-            (123, TypeError),  # non-string.
-        ],
+        "msdtype", ["foo", "bar", "yx", "zyx", 123, "", " xy "]
     )
-    def test_msdtype_error(self, u, SELECTION, msd_type, exc):
-        if exc is None:
-            m = MSD(u, SELECTION, msd_type=msd_type, fft=False)
-            assert m.dim_fac == 2
-            assert m._dim == [0, 2]
-        else:
-            with pytest.raises(exc):
-                MSD(u, SELECTION, msd_type=msd_type, fft=False)
+    def test_msdtype_error(self, u, SELECTION, msdtype):
+        errmsg = f"invalid msd_type: {msdtype}"
+        with pytest.raises(ValueError, match=errmsg):
+            m = MSD(u, SELECTION, msd_type=msdtype)
 
     @pytest.mark.parametrize(
         "dim, dim_factor",
