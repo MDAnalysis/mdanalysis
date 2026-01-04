@@ -122,8 +122,7 @@ class NoJump(TransformationBase):
         if self.prev is None and ts.frame != 0:
             raise ValueError(
                 "NoJump transformation must be applied starting from frame 0. "
-                f"Currently at frame {ts.frame}. Please reset trajectory to frame 0 "
-                "before adding this transformation."
+                f"Currently at frame {ts.frame}. Please reset trajectory to frame 0 before adding this transformation."
             )
 
         if ts.frame == 0:
