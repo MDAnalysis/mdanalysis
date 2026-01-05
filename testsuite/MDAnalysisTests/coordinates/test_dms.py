@@ -95,8 +95,11 @@ class TestDMSReader(object):
             universe.trajectory[1]
 
     def test_convert_pos_from_native(self):
-        u = mda.Universe(DMS, convert_units=True)
+        u_native = mda.Universe(DMS, convert_units=False)
+        u_conv = mda.Universe(DMS, convert_units=True)
 
-        coords = u.atoms.positions
-
-        assert coords.shape[0] == len(u.atoms)
+        np.testing.assert_allclose(
+            u_conv.atoms.positions,
+            u_native.atoms.positions,
+            rtol=1e-6,
+        )
