@@ -117,9 +117,11 @@ class TestMSDSimple(object):
         with pytest.raises(TypeError, match=errmsg):
             m = MSD(updating_ag, msd_type="xyz", fft=False)
 
-    @pytest.mark.parametrize("msdtype", ["foo", "bar", "yx", "zyx"])
+    @pytest.mark.parametrize(
+        "msdtype", ["foo", "bar", "yx", "zyx", 123, "", " xy "]
+    )
     def test_msdtype_error(self, u, SELECTION, msdtype):
-        errmsg = f"invalid msd_type: {msdtype}"
+        errmsg = f"Invalid msd_type {msdtype}, must be a string and one of: xyz, xy, xz, yz, x, y, z"
         with pytest.raises(ValueError, match=errmsg):
             m = MSD(u, SELECTION, msd_type=msdtype)
 
