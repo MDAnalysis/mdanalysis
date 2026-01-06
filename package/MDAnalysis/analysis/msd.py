@@ -91,7 +91,11 @@ the normal MDAnalysis citations.
     
    This example assumes that the trajectory contains periodic box
    dimensions. If no periodic boundary information is present, box
-   dimensions must be defined before applying ``NoJump``.
+   dimensions must be defined before applying ``NoJump``, which can
+   be accomplished by applying the
+   :class:`~MDAnalysis.transformations.boxdimensions.set_dimensions`
+   transformation *before* the 
+   :class:`~MDAnalysis.transformations.nojump.NoJump` transformation.
    
    This replaces the need to preprocess trajectories externally.
    
