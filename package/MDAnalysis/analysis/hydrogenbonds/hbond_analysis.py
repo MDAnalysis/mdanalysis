@@ -912,8 +912,16 @@ class HydrogenBondAnalysis(AnalysisBase):
              the number of hydrogen bonds over time.
         """
 
-        indices, tmp_counts = np.unique(self.results.hbonds[:, 0], axis=0,
-                                        return_counts=True)
+        indices, tmp_counts = np.unique(
+            self.results.hbonds[:, 0], axis=0, return_counts=True
+        )
+
+        # if we pass a specific subset of frames there won't be a start / end frame
+        # so we do a manual lookup and return instead. some frames might be zero
+        # so they would be missing from the np.unique return
+        if self.start is None:
+            count_lookup = {idx: count for idx, count in zip(indices, tmp_counts)}
+            return np.array([count_lookup.get(i, 0) for i in range(len(self.frames))])
 
         indices -= self.start
         indices /= self.step

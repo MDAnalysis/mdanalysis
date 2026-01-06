@@ -15,11 +15,13 @@ The rules for this file:
 
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, orbeckst, marinegor, tylerjereddy, ljwoods2, marinegor,
-         spyke7, talagayev, tanii1125
+         spyke7, talagayev
 
  * 2.11.0
 
 Fixes
+ * HydrogenBondAnalysis: Fixed `count_by_time()` when using `run(FrameIterator)` that
+   results in `self.start` and `self.end` being None (Issue #5200, PR #****)
  * DSSP now explicitly checks for a minimum of 6 residues and raises a clear
    error message, unlike the previous behavior where it would fail with an
    incomprehensible broadcasting error at execution time (Issue #5046, PR #5163)
