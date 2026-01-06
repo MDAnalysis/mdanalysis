@@ -82,8 +82,7 @@ the normal MDAnalysis citations.
         u = mda.Universe(TOP, TRAJ)
         
         # Apply NoJump transformation to unwrap coordinates
-        nojump = NoJump(u)
-        u.trajectory.add_transformations(nojump)
+        u.trajectory.add_transformations(NoJump(u))
         
         # Now the trajectory is unwrapped and MSD can be computed normally:
         from MDAnalysis.analysis.msd import EinsteinMSD
