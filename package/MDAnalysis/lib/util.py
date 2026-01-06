@@ -202,7 +202,7 @@ import bz2
 import errno
 import functools
 import gzip
-import importlib
+import importlib.util
 import inspect
 import io
 import itertools

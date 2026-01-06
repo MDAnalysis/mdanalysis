@@ -210,7 +210,7 @@ class DSSP(AnalysisBase):
     Parameters
     ----------
     atoms : Union[Universe, AtomGroup]
-        input Universe or AtomGroup. In both cases, only protein residues will
+        input Universe or AtomGroup with at least 6 protein residues. In both cases, only protein residues will
         be chosen prior to the analysis via `select_atoms('protein')`.
         Heavy atoms of the protein are then selected by name
         `heavyatom_names`, and hydrogens are selected by name
@@ -239,6 +239,8 @@ class DSSP(AnalysisBase):
 
     Raises
     ------
+    ValueError
+        If fewer than 6 residues are provided in the selection.
     ValueError
         if ``guess_hydrogens`` is True but some non-PRO hydrogens are missing.
 
@@ -355,6 +357,12 @@ class DSSP(AnalysisBase):
                     "Universe contains unequal numbers of (N,CA,C,O) atoms ('name' field)."
                     " Please select appropriate AtomGroup manually."
                 )
+            )
+
+        if len(ag.residues) < 6:
+            raise ValueError(
+                "DSSP requires at least 6 residues for secondary structure analysis, "
+                f"but only {len(ag.residues)} residue(s) were provided in the selection."
             )
 
     def _prepare(self):
