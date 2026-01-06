@@ -920,7 +920,7 @@ class HydrogenBondAnalysis(AnalysisBase):
         # so we do a manual lookup and return instead. some frames might be zero
         # so they would be missing from the np.unique return
         if self.start is None:
-            count_lookup = {idx: count for idx, count in zip(indices, tmp_counts)}
+            count_lookup = dict(zip(indices, tmp_counts))
             return np.array([count_lookup.get(i, 0) for i in range(len(self.frames))])
 
         indices -= self.start
