@@ -212,7 +212,34 @@
 <span class="sd">   </span>
 <span class="sd">   In MDAnalysis you can use the </span>
 <span class="sd">   :class:`~MDAnalysis.transformations.nojump.NoJump`</span>
-<span class="sd">   transformation. </span>
+<span class="sd">   transformation to unwrap coordinates on-the-fly.</span>
+<span class="sd">    </span>
+<span class="sd">   A minimal example:</span>
+
+<span class="sd">   .. code-block:: python</span>
+<span class="sd">      </span>
+<span class="sd">      import MDAnalysis as mda</span>
+<span class="sd">      from MDAnalysis.transformations import NoJump</span>
+<span class="sd">      </span>
+<span class="sd">      u = mda.Universe(TOP, TRAJ)</span>
+<span class="sd">      </span>
+<span class="sd">      # Apply NoJump transformation to unwrap coordinates</span>
+<span class="sd">      u.trajectory.add_transformations(NoJump(u))</span>
+<span class="sd">       </span>
+<span class="sd">      # Now the trajectory is unwrapped and MSD can be computed normally:</span>
+<span class="sd">      from MDAnalysis.analysis.msd import EinsteinMSD</span>
+<span class="sd">      MSD = EinsteinMSD(u, select=&quot;all&quot;, msd_type=&quot;xyz&quot;)</span>
+<span class="sd">      MSD.run()</span>
+
+<span class="sd">   This example assumes that the trajectory contains periodic box</span>
+<span class="sd">   dimensions. If no periodic boundary information is present, box</span>
+<span class="sd">   dimensions must be defined before applying ``NoJump``, which can</span>
+<span class="sd">   be accomplished by applying the</span>
+<span class="sd">   :class:`~MDAnalysis.transformations.boxdimensions.set_dimensions`</span>
+<span class="sd">   transformation *before* the </span>
+<span class="sd">   :class:`~MDAnalysis.transformations.nojump.NoJump` transformation.</span>
+<span class="sd">   </span>
+<span class="sd">   This replaces the need to preprocess trajectories externally.</span>
 <span class="sd">   </span>
 <span class="sd">   In GROMACS, for example, this can be done using `gmx trjconv`_ with the</span>
 <span class="sd">   ``-pbc nojump`` flag.</span>

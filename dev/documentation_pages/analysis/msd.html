@@ -214,7 +214,30 @@ That is, when atoms pass the periodic boundary, they must not be wrapped
 back into the primary simulation cell.</p>
 <p>In MDAnalysis you can use the
 <a class="reference internal" href="../transformations/nojump.html#MDAnalysis.transformations.nojump.NoJump" title="MDAnalysis.transformations.nojump.NoJump"><code class="xref py py-class docutils literal notranslate"><span class="pre">NoJump</span></code></a>
-transformation.</p>
+transformation to unwrap coordinates on-the-fly.</p>
+<p>A minimal example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">MDAnalysis</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mda</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.transformations</span><span class="w"> </span><span class="kn">import</span> <span class="n">NoJump</span>
+
+<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">TOP</span><span class="p">,</span> <span class="n">TRAJ</span><span class="p">)</span>
+
+<span class="c1"># Apply NoJump transformation to unwrap coordinates</span>
+<span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_transformations</span><span class="p">(</span><span class="n">NoJump</span><span class="p">(</span><span class="n">u</span><span class="p">))</span>
+
+<span class="c1"># Now the trajectory is unwrapped and MSD can be computed normally:</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.msd</span><span class="w"> </span><span class="kn">import</span> <span class="n">EinsteinMSD</span>
+<span class="n">MSD</span> <span class="o">=</span> <span class="n">EinsteinMSD</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">msd_type</span><span class="o">=</span><span class="s2">&quot;xyz&quot;</span><span class="p">)</span>
+<span class="n">MSD</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This example assumes that the trajectory contains periodic box
+dimensions. If no periodic boundary information is present, box
+dimensions must be defined before applying <code class="docutils literal notranslate"><span class="pre">NoJump</span></code>, which can
+be accomplished by applying the
+<a class="reference internal" href="../transformations/boxdimensions.html#MDAnalysis.transformations.boxdimensions.set_dimensions" title="MDAnalysis.transformations.boxdimensions.set_dimensions"><code class="xref py py-class docutils literal notranslate"><span class="pre">set_dimensions</span></code></a>
+transformation <em>before</em> the
+<a class="reference internal" href="../transformations/nojump.html#MDAnalysis.transformations.nojump.NoJump" title="MDAnalysis.transformations.nojump.NoJump"><code class="xref py py-class docutils literal notranslate"><span class="pre">NoJump</span></code></a> transformation.</p>
+<p>This replaces the need to preprocess trajectories externally.</p>
 <p>In GROMACS, for example, this can be done using <a class="reference external" href="https://manual.gromacs.org/current/onlinehelp/gmx-trjconv.html">gmx trjconv</a> with the
 <code class="docutils literal notranslate"><span class="pre">-pbc</span> <span class="pre">nojump</span></code> flag.</p>
 </div>
