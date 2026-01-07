@@ -393,7 +393,6 @@ def test_nojump_fails_when_not_at_frame_0():
         ValueError, match="must be applied starting from frame 0"
     ):
         u.trajectory.add_transformations(NoJump())
-        _ = u.trajectory[0]
 
 
 def test_nojump_fails_midtrajectory():
@@ -407,4 +406,3 @@ def test_nojump_fails_midtrajectory():
         ValueError, match="must be applied starting from frame 0"
     ):
         u.trajectory.add_transformations(NoJump())
-        _ = u.trajectory.timeseries()
