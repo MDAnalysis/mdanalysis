@@ -381,26 +381,14 @@ def test_notinvertible(nojump_universe):
         transformed_coordinates = u.trajectory.timeseries()[0]
 
 
-def test_nojump_fails_when_not_at_frame_0():
+@pytest.mark.parametrize("frame_index", [-1, 5])
+def test_nojump_fails_when_not_at_frame_0(frame_index):
     """
     Test that NoJump raises a clear error when applied to a trajectory
     that is not at frame 0.
     """
     u = mda.Universe(data.PSF_TRICLINIC, data.DCD_TRICLINIC)
-    u.trajectory[-1]
-
-    with pytest.raises(
-        ValueError, match="must be applied starting from frame 0"
-    ):
-        u.trajectory.add_transformations(NoJump())
-
-
-def test_nojump_fails_midtrajectory():
-    """
-    Test that NoJump raises a clear error when applied in the middle of a trajectory.
-    """
-    u = mda.Universe(data.PSF_TRICLINIC, data.DCD_TRICLINIC)
-    u.trajectory[5]
+    u.trajectory[frame_index]
 
     with pytest.raises(
         ValueError, match="must be applied starting from frame 0"
