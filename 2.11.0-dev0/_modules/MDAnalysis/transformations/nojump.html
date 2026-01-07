@@ -262,6 +262,13 @@
         <span class="k">except</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">LinAlgError</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Periodic box dimensions are not invertible at step </span><span class="si">{</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">prev</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;NoJump transformation must be applied starting from frame 0. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Currently at frame </span><span class="si">{</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="si">}</span><span class="s2">. Please reset trajectory to frame 0 before adding this transformation.&quot;</span>
+            <span class="p">)</span>
+
         <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="c1"># We don&#39;t need to apply the transformation here. However, we need to</span>
             <span class="c1"># ensure we have the 0th frame coordinates in reduced form. We also need to</span>
