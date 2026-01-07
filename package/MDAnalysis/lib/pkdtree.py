@@ -62,9 +62,7 @@ class AugmentedPKDTree(object):
 
     """
 
-    def __init__(
-        self, box: Optional[npt.ArrayLike] = None, leafsize: int = 10
-    ) -> None:
+    def __init__(self, box: Optional[npt.ArrayLike] = None, leafsize: int = 10) -> None:
         """
 
         Parameters
@@ -98,9 +96,7 @@ class AugmentedPKDTree(object):
         """
         return self.box is not None
 
-    def set_coords(
-        self, coords: npt.ArrayLike, cutoff: Optional[float] = None
-    ) -> None:
+    def set_coords(self, coords: npt.ArrayLike, cutoff: Optional[float] = None) -> None:
         """Constructs KDTree from the coordinates
 
         Wrapping of coordinates to the primary unit cell is enforced
@@ -147,9 +143,7 @@ class AugmentedPKDTree(object):
             # Bring the coordinates in the central cell
             self.coords = apply_PBC(coords, self.box)
             # generate duplicate images
-            self.aug, self.mapping = augment_coordinates(
-                self.coords, self.box, cutoff
-            )
+            self.aug, self.mapping = augment_coordinates(self.coords, self.box, cutoff)
             # Images + coords
             self.all_coords = np.concatenate([self.coords, self.aug])
             self.ckdt = cKDTree(self.all_coords, leafsize=self.leafsize)
@@ -157,8 +151,7 @@ class AugmentedPKDTree(object):
             # if cutoff distance is provided for non PBC calculations
             if cutoff is not None:
                 raise RuntimeError(
-                    "Donot provide cutoff distance for"
-                    " non PBC aware calculations"
+                    "Donot provide cutoff distance for" " non PBC aware calculations"
                 )
             self.coords = coords
             self.ckdt = cKDTree(self.coords, self.leafsize)
@@ -189,9 +182,7 @@ class AugmentedPKDTree(object):
         # Sanity check
         if self.pbc:
             if self.cutoff is None:
-                raise ValueError(
-                    "Cutoff needs to be provided when working with PBC."
-                )
+                raise ValueError("Cutoff needs to be provided when working with PBC.")
             if self.cutoff < radius:
                 raise RuntimeError("Set cutoff greater or equal to the radius.")
             # Bring all query points to the central cell
@@ -241,21 +232,15 @@ class AugmentedPKDTree(object):
 
         if self.pbc:
             if self.cutoff is None:
-                raise ValueError(
-                    "Cutoff needs to be provided when working with PBC."
-                )
+                raise ValueError("Cutoff needs to be provided when working with PBC.")
             if self.cutoff < radius:
                 raise RuntimeError("Set cutoff greater or equal to the radius.")
 
         pairs = np.array(list(self.ckdt.query_pairs(radius)), dtype=np.intp)
         if self.pbc:
             if len(pairs) > 1:
-                pairs[:, 0] = undo_augment(
-                    pairs[:, 0], self.mapping, len(self.coords)
-                )
-                pairs[:, 1] = undo_augment(
-                    pairs[:, 1], self.mapping, len(self.coords)
-                )
+                pairs[:, 0] = undo_augment(pairs[:, 0], self.mapping, len(self.coords))
+                pairs[:, 1] = undo_augment(pairs[:, 1], self.mapping, len(self.coords))
         if pairs.size > 0:
             # First sort the pairs then pick the unique pairs
             pairs = np.sort(pairs, axis=1)
@@ -303,9 +288,7 @@ class AugmentedPKDTree(object):
         # Sanity check
         if self.pbc:
             if self.cutoff is None:
-                raise ValueError(
-                    "Cutoff needs to be provided when working with PBC."
-                )
+                raise ValueError("Cutoff needs to be provided when working with PBC.")
             if self.cutoff < radius:
                 raise RuntimeError("Set cutoff greater or equal to the radius.")
             # Bring all query points to the central cell
@@ -317,9 +300,7 @@ class AugmentedPKDTree(object):
                 dtype=np.intp,
             )
             if pairs.size > 0:
-                pairs[:, 1] = undo_augment(
-                    pairs[:, 1], self.mapping, len(self.coords)
-                )
+                pairs[:, 1] = undo_augment(pairs[:, 1], self.mapping, len(self.coords))
         else:
             other_tree = cKDTree(centers, leafsize=self.leafsize)
             pairs = other_tree.query_ball_tree(self.ckdt, radius)
@@ -334,9 +315,7 @@ class AugmentedPKDTree(object):
 
 class PeriodicKDTree(object):
 
-    def __init__(
-        self, box: Optional[npt.ArrayLike] = None, leafsize: int = 10
-    ) -> None:
+    def __init__(self, box: Optional[npt.ArrayLike] = None, leafsize: int = 10) -> None:
         self.leafsize = leafsize
         self.dim = 3
         self.box = box
@@ -374,9 +353,7 @@ class PeriodicKDTree(object):
         """
         return self.box is not None
 
-    def set_coords(
-        self, coords: npt.ArrayLike, cutoff: Optional[float] = None
-    ) -> None:
+    def set_coords(self, coords: npt.ArrayLike, cutoff: Optional[float] = None) -> None:
         """Constructs KDTree from the coordinates
 
         Parameters
@@ -439,9 +416,7 @@ class PeriodicKDTree(object):
 
         if self.pbc:
             if self.cutoff is None:
-                raise ValueError(
-                    "Cutoff needs to be provided when working with PBC."
-                )
+                raise ValueError("Cutoff needs to be provided when working with PBC.")
             if self.cutoff < radius:
                 raise RuntimeError("Set cutoff greater or equal to the radius.")
             wrapped_centers = apply_PBC(centers, self.box)
@@ -494,9 +469,7 @@ class PeriodicKDTree(object):
 
         if self.pbc:
             if self.cutoff is None:
-                raise ValueError(
-                    "Cutoff needs to be provided when working with PBC."
-                )
+                raise ValueError("Cutoff needs to be provided when working with PBC.")
             if self.cutoff < radius:
                 raise RuntimeError("Set cutoff greater or equal to the radius.")
 
@@ -541,9 +514,7 @@ class PeriodicKDTree(object):
 
         if self.pbc:
             if self.cutoff is None:
-                raise ValueError(
-                    "Cutoff needs to be provided when working with PBC."
-                )
+                raise ValueError("Cutoff needs to be provided when working with PBC.")
             if self.cutoff < radius:
                 raise RuntimeError("Set cutoff greater or equal to the radius.")
             wrapped_centers = apply_PBC(centers, self.box)
