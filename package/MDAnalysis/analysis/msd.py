@@ -72,23 +72,23 @@ the normal MDAnalysis citations.
    :class:`~MDAnalysis.transformations.nojump.NoJump`
    transformation to unwrap coordinates on-the-fly.
     
-    A minimal example:
-    
-    .. code-block:: python
-    
-        import MDAnalysis as mda
-        from MDAnalysis.transformations import NoJump
-        
-        u = mda.Universe(TOP, TRAJ)
-        
-        # Apply NoJump transformation to unwrap coordinates
-        u.trajectory.add_transformations(NoJump(u))
-        
-        # Now the trajectory is unwrapped and MSD can be computed normally:
-        from MDAnalysis.analysis.msd import EinsteinMSD
-        MSD = EinsteinMSD(u, select="all", msd_type="xyz")
-        MSD.run()
-    
+   A minimal example:
+
+   .. code-block:: python
+      
+      import MDAnalysis as mda
+      from MDAnalysis.transformations import NoJump
+      
+      u = mda.Universe(TOP, TRAJ)
+      
+      # Apply NoJump transformation to unwrap coordinates
+      u.trajectory.add_transformations(NoJump(u))
+       
+      # Now the trajectory is unwrapped and MSD can be computed normally:
+      from MDAnalysis.analysis.msd import EinsteinMSD
+      MSD = EinsteinMSD(u, select="all", msd_type="xyz")
+      MSD.run()
+
    This example assumes that the trajectory contains periodic box
    dimensions. If no periodic boundary information is present, box
    dimensions must be defined before applying ``NoJump``, which can
