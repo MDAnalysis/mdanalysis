@@ -314,6 +314,15 @@ def test_reset_n_parts_to_n_frames(u):
         )
 
 
+def test_run_config_normalized_defaults(u_xtc):
+    n_frames = len(u_xtc.trajectory)
+    an = FrameAnalysis(u_xtc.trajectory).run(n_parts=3)
+    assert an.run_config.start == 0
+    assert an.run_config.stop == n_frames
+    assert an.run_config.step == 1
+    assert an.run_config.n_parts == 3
+
+
 @pytest.mark.parametrize(
     "run_kwargs,frames",
     [
