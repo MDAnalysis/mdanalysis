@@ -913,10 +913,11 @@ class HydrogenBondAnalysis(AnalysisBase):
         """
         hbond_frames = self.results.hbonds[:, 0].astype(int)
         frame_unique, frame_counts = np.unique(hbond_frames, return_counts=True)
+        frame_min, frame_max = self.frames.min(), self.frames.max()
 
-        counts = np.zeros(max(self.frames) + 1, dtype=int)
-        counts[frame_unique] = frame_counts
-        return counts[self.frames]
+        counts = np.zeros(frame_max - frame_min + 1, dtype=int)
+        counts[frame_unique - frame_min] = frame_counts
+        return counts[self.frames - frame_min]
 
     def count_by_type(self):
         """Counts the total number of each unique type of hydrogen bond.
