@@ -118,6 +118,13 @@ class NoJump(TransformationBase):
         except np.linalg.LinAlgError:
             msg = f"Periodic box dimensions are not invertible at step {ts.frame}"
             raise NoDataError(msg)
+
+        if self.prev is None and ts.frame != 0:
+            raise ValueError(
+                "NoJump transformation must be applied starting from frame 0. "
+                f"Currently at frame {ts.frame}. Please reset trajectory to frame 0 before adding this transformation."
+            )
+
         if ts.frame == 0:
             # We don't need to apply the transformation here. However, we need to
             # ensure we have the 0th frame coordinates in reduced form. We also need to
