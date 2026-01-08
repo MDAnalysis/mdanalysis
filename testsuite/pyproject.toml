@@ -24,10 +24,10 @@ classifiers = [
     "Operating System :: Microsoft :: Windows",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Programming Language :: C",
     "Topic :: Scientific/Engineering",
     "Topic :: Scientific/Engineering :: Bio-Informatics",
@@ -35,7 +35,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 readme = {file = "README", content-type = "text/x-rst"}
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dynamic = ["version", "dependencies"]
 
 [project.urls]
@@ -116,6 +116,7 @@ MDAnalysisTests = [
     "data/*.mmtf",
     "data/*.mmtf.gz",
     "data/analysis/*",
+    "data/analysis/msd/*",
     "data/*.gsd",
     "data/windows/*",
     "data/*.itp",
@@ -155,29 +156,13 @@ filterwarnings = [
 
 [tool.black]
 line-length = 79
-target-version = ['py310', 'py311', 'py312', 'py313']
+target-version = ['py311', 'py312', 'py313']
 extend-exclude = '''
 (
-__pycache__
-| testsuite/MDAnalysisTests/core/test_atomselections\.py
-| testsuite/MDAnalysisTests/analysis/test_atomicdistances\.py
-| testsuite/MDAnalysisTests/core/test_atomselections\.py
-| testsuite/MDAnalysisTests/datafiles\.py
+testsuite/MDAnalysisTests/datafiles\.py
 | testsuite/MDAnalysisTests/analysis/conftest\.py
-| testsuite/MDAnalysisTests/analysis/test_diffusionmap\.py
-| testsuite/MDAnalysisTests/analysis/conftest\.py
-| testsuite/MDAnalysisTests/analysis/test_align\.py
 | testsuite/MDAnalysisTests/coordinates/test_mmcif\.py
-| testsuite/MDAnalysisTests/datafiles\.py
 | testsuite/MDAnalysisTests/topology/test_mmcif\.py
-| testsuite/MDAnalysisTests/coordinates/test_cif\.py
-| testsuite/MDAnalysisTests/analysis/test_encore\.py
-| testsuite/MDAnalysisTests/parallelism/test_multiprocessing\.py
-| testsuite/MDAnalysisTests/coordinates/base\.py
-| testsuite/MDAnalysisTests/coordinates/test_gro\.py
-| testsuite/MDAnalysisTests/topology/base\.py
-| testsuite/MDAnalysisTests/analysis/test_hydrogenbonds_analysis\.py
-| testsuite/MDAnalysisTests/analysis/test_sasa\.py
 )
 '''
 required-version = '24'

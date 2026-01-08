@@ -32,6 +32,7 @@ from numpy.testing import (
     assert_array_equal,
     assert_almost_equal,
     assert_array_almost_equal,
+    assert_allclose,
 )
 
 from MDAnalysisTests.datafiles import (
@@ -145,7 +146,9 @@ class TestDCDWriter(BaseWriterTest):
 def test_write_random_unitcell(tmpdir):
     testname = str(tmpdir.join("test.dcd"))
     rstate = np.random.RandomState(1178083)
-    random_unitcells = rstate.uniform(high=80, size=(98, 6)).astype(np.float64)
+    random_unitcells = rstate.uniform(low=5, high=120, size=(98, 6)).astype(
+        np.float64
+    )
 
     u = mda.Universe(PSF, DCD)
     with mda.Writer(testname, n_atoms=u.atoms.n_atoms) as w:
@@ -155,8 +158,10 @@ def test_write_random_unitcell(tmpdir):
 
     u2 = mda.Universe(PSF, testname)
     for index, ts in enumerate(u2.trajectory):
-        assert_array_almost_equal(
-            u2.trajectory.dimensions, random_unitcells[index], decimal=5
+        assert_allclose(
+            u2.trajectory.dimensions,
+            random_unitcells[index],
+            rtol=1e-5,
         )
 
 
@@ -296,32 +301,35 @@ def test_reader_set_dt():
     )
 
 
-@pytest.mark.parametrize("ext, decimal", (("dcd", 4), ("xtc", 3)))
-def test_writer_dt(tmpdir, ext, decimal):
-    dt = 5.0  # set time step to 5 ps
-    universe_dcd = mda.Universe(PSF, DCD, dt=dt)
+def test_writer_dt(tmpdir):
+    dt = 5.0  # set time step to 5 ps for the written trajectory
+    universe_dcd = mda.Universe(PSF, DCD)
     t = universe_dcd.trajectory
-    outfile = str(tmpdir.join("test.{}".format(ext)))
-    # use istart=None explicitly so that both dcd and xtc start with time 1*dt
-    # (XTC ignores istart, DCD will set istart = nsavc)
+    outfile = str(tmpdir.join("test.dcd"))
+    # use istart=None explicitly so that dcd start with time 1*dt
+    # (DCD will set istart = nsavc)
     with mda.Writer(outfile, n_atoms=t.n_atoms, dt=dt, istart=None) as W:
         for ts in universe_dcd.trajectory:
             W.write(universe_dcd.atoms)
 
     uw = mda.Universe(PSF, outfile)
+
+    # check that we actually changed dt
+    assert not uw.trajectory.dt == pytest.approx(t.dt)
+
     assert_almost_equal(
         uw.trajectory.totaltime,
         (uw.trajectory.n_frames - 1) * dt,
-        decimal=decimal,
-        err_msg="Total time  mismatch for ext={}".format(ext),
+        decimal=4,
+        err_msg="Total time mismatch for DCD",
     )
     times = np.array([uw.trajectory.time for ts in uw.trajectory])
     frames = np.arange(1, uw.trajectory.n_frames + 1)  # traj starts at 1*dt
     assert_array_almost_equal(
         times,
         frames * dt,
-        decimal=decimal,
-        err_msg="Times mismatch for ext={}".format(ext),
+        decimal=4,
+        err_msg="Times mismatch for DCD",
     )
 
 
@@ -553,3 +561,43 @@ def test_large_dcdfile(large_dcdfile):
     u.trajectory[-1]
 
     assert_array_almost_equal(u.atoms.positions, u_small.atoms.positions)
+
+
+def test_dcd_writer_angle_cosines(tmpdir):
+    """Test that DCDWriter correctly converts angles to cosines as documented.
+
+    This test verifies the fix for issue #5069 where DCDWriter was incorrectly
+    writing angles in degrees instead of angle cosines.
+    """
+    u = mda.Universe(PSF_NAMD_TRICLINIC, DCD_NAMD_TRICLINIC)
+    original_dimensions = u.dimensions.copy()
+
+    outfile = str(tmpdir.join("test_angles.dcd"))
+    u.atoms.write(outfile, frames="all")
+
+    # Read back and check that dimensions are preserved
+    u2 = mda.Universe(PSF_NAMD_TRICLINIC, outfile)
+
+    # The dimensions should be identical when read back
+    assert_allclose(
+        u2.dimensions,
+        original_dimensions,
+        err_msg="DCDWriter failed to preserve unit cell dimensions (frame 0)",
+    )
+
+    # To get the originally stored dimensions, we need to directly access the DCD file.
+    u.trajectory._reopen()
+    frame = u.trajectory._file.read()
+    frame2 = u2.trajectory._file.read()
+
+    # direction cosines should be between -1 and 1
+    assert np.all(
+        np.abs(frame2.unitcell[[4, 3, 1]]) <= 1
+    ), "DCDWriter failed to preserve unit cell angles as cosines"
+
+    # Directly test the stored dimensions from the DCD header
+    assert_allclose(
+        frame2.unitcell,
+        frame.unitcell,  # stored as cos(angle) in the test trajectory
+        err_msg="DCDWriter failed to preserve unit cell dimensions as stored in the DCD file",
+    )

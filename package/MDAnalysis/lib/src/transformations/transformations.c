@@ -775,7 +775,7 @@ PyConverter_DoubleArray(
     PyObject *object,
     PyObject **address)
 {
-    *address = PyArray_FROM_OTF(object, NPY_DOUBLE, NPY_IN_ARRAY);
+    *address = PyArray_FROM_OTF(object, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
      if (*address == NULL) return NPY_FAIL;
      return NPY_SUCCEED;
 }
@@ -791,7 +791,7 @@ PyConverter_AnyDoubleArray(
         Py_INCREF(object);
         return NPY_SUCCEED;
     } else {
-        *address = PyArray_FROM_OTF(object, NPY_DOUBLE, NPY_ALIGNED);
+        *address = PyArray_FROM_OTF(object, NPY_DOUBLE, NPY_ARRAY_ALIGNED);
         if (*address == NULL) {
             PyErr_Format(PyExc_ValueError, "can not convert to array");
             return NPY_FAIL;
@@ -808,7 +808,7 @@ PyConverter_DoubleArrayOrNone(
     if ((object == NULL) || (object == Py_None)) {
         *address = NULL;
     } else {
-        *address = PyArray_FROM_OTF(object, NPY_DOUBLE, NPY_IN_ARRAY);
+        *address = PyArray_FROM_OTF(object, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
         if (*address == NULL) {
             PyErr_Format(PyExc_ValueError, "can not convert to array");
             return NPY_FAIL;
@@ -823,7 +823,7 @@ PyConverter_DoubleMatrix44(
     PyObject **address)
 {
     PyArrayObject *obj;
-    *address = PyArray_FROM_OTF(object, NPY_DOUBLE, NPY_IN_ARRAY);
+    *address = PyArray_FROM_OTF(object, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
     if (*address == NULL) {
         PyErr_Format(PyExc_ValueError, "can not convert to array");
         return NPY_FAIL;
@@ -846,7 +846,7 @@ PyConverter_DoubleMatrix44Copy(
 {
     PyArrayObject *obj;
     *address = PyArray_FROM_OTF(object, NPY_DOUBLE,
-                                NPY_ENSURECOPY|NPY_IN_ARRAY);
+                                NPY_ARRAY_ENSURECOPY|NPY_ARRAY_IN_ARRAY);
     if (*address == NULL) {
         PyErr_Format(PyExc_ValueError, "can not convert to array");
         return NPY_FAIL;
@@ -868,7 +868,7 @@ PyConverter_DoubleVector3(
     PyObject **address)
 {
     PyArrayObject *obj;
-    *address = PyArray_FROM_OTF(object, NPY_DOUBLE, NPY_IN_ARRAY);
+    *address = PyArray_FROM_OTF(object, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
     if (*address == NULL) {
         PyErr_Format(PyExc_ValueError, "can not convert to array");
         return NPY_FAIL;
@@ -890,7 +890,7 @@ PyConverter_DoubleVector4(
     PyObject **address)
 {
     PyArrayObject *obj;
-    *address = PyArray_FROM_OTF(object, NPY_DOUBLE, NPY_IN_ARRAY);
+    *address = PyArray_FROM_OTF(object, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
     if (*address == NULL) {
         PyErr_Format(PyExc_ValueError, "can not convert to array");
         return NPY_FAIL;
@@ -913,7 +913,7 @@ PyConverter_DoubleVector4Copy(
 {
     PyArrayObject *obj;
     *address = PyArray_FROM_OTF(object, NPY_DOUBLE,
-                                NPY_ENSURECOPY|NPY_IN_ARRAY);
+                                NPY_ARRAY_ENSURECOPY|NPY_ARRAY_IN_ARRAY);
     if (*address == NULL) {
         PyErr_Format(PyExc_ValueError, "can not convert to array");
         return NPY_FAIL;
@@ -938,7 +938,7 @@ PyConverter_DoubleVector3OrNone(
         *address = NULL;
     } else {
         PyArrayObject *obj;
-        *address = PyArray_FROM_OTF(object, NPY_DOUBLE, NPY_IN_ARRAY);
+        *address = PyArray_FROM_OTF(object, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
         if (*address == NULL) {
             PyErr_Format(PyExc_ValueError, "can not convert to array");
             return NPY_FAIL;
@@ -3137,7 +3137,7 @@ py_inverse_matrix(
         goto _fail;
 
     matrix = (PyArrayObject *)PyArray_FROM_OTF(object, NPY_DOUBLE,
-                                               NPY_IN_ARRAY);
+                                               NPY_ARRAY_IN_ARRAY);
     if (matrix == NULL) {
         PyErr_Format(PyExc_ValueError, "not an array");
         goto _fail;

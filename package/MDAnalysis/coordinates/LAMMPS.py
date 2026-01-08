@@ -26,8 +26,8 @@
 ===============================================================================
 
 Classes to read and write LAMMPS_ DCD binary trajectories, LAMMPS DATA files
-and LAMMPS dump files.  Trajectories can be read regardless of system-endianness
-as this is auto-detected.
+and LAMMPS dump files.  Trajectories can be read regardless of
+system-endianness as this is auto-detected.
 
 LAMMPS can `write DCD`_ trajectories but unlike a `CHARMM trajectory`_
 (which is often called a DCD even though CHARMM itself calls them
@@ -81,7 +81,7 @@ To scan through a trajectory to find a desirable frame and write to a LAMMPS
 data file,
 
    >>> import MDAnalysis
-   >>> from MDAnalysis.tests.datafiles import LAMMPSdata2, LAMMPSdcd2 
+   >>> from MDAnalysis.tests.datafiles import LAMMPSdata2, LAMMPSdcd2
    >>> u = MDAnalysis.Universe(LAMMPSdata2, LAMMPSdcd2, format="LAMMPS",
    ...                          lengthunit="nm", timeunit="ns")
    >>> take_this_frame = False
@@ -105,15 +105,16 @@ See Also
 
    For further discussion follow the reports for `Issue 84`_ and `Issue 64`_.
 
-.. _LAMMPS: http://lammps.sandia.gov/
-.. _write DCD: http://lammps.sandia.gov/doc/dump.html
-.. _CHARMM trajectory: http://www.charmm.org/documentation/c36b1/dynamc.html#%20Trajectory
+.. _LAMMPS: https://www.lammps.org/
+.. _write DCD: https://docs.lammps.org/dump.html
+.. _CHARMM trajectory:
+   http://www.charmm.org/documentation/c36b1/dynamc.html#%20Trajectory
 .. _AKMA: http://www.charmm.org/documentation/c36b1/usage.html#%20AKMA
-.. _units real: http://lammps.sandia.gov/doc/units.html
-.. _units command: http://lammps.sandia.gov/doc/units.html
+.. _units real: https://docs.lammps.org/units.html
+.. _units command: https://docs.lammps.org/units.html
 .. _`Issue 64`: https://github.com/MDAnalysis/mdanalysis/issues/64
 .. _`Issue 84`: https://github.com/MDAnalysis/mdanalysis/issues/84
-.. _`LAMMPS dump format`: http://lammps.sandia.gov/doc/dump.html
+.. _`LAMMPS dump format`: https://docs.lammps.org/dump.html
 
 Classes
 -------
@@ -180,9 +181,8 @@ class DCDWriter(DCD.DCDWriter):
             try:
                 if units.unit_types[unit] != unit_type:
                     raise TypeError(
-                        "LAMMPS DCDWriter: wrong unit {0!r} for unit type {1!r}".format(
-                            unit, unit_type
-                        )
+                        f"LAMMPS DCDWriter: wrong unit {unit} for "
+                        f"unit type {unit_type}"
                     )
             except KeyError:
                 errmsg = f"LAMMPS DCDWriter: unknown unit {unit}"
@@ -198,7 +198,7 @@ class DCDReader(DCD.DCDReader):
     "Angstrom", corresponding to LAMMPS `units style`_ "**real**". See
     :mod:`MDAnalysis.units` for other recognized values.
 
-    .. _units style: http://lammps.sandia.gov/doc/units.html
+    .. _units style: https://docs.lammps.org/units.html
     """
 
     format = "LAMMPS"
@@ -216,14 +216,11 @@ class DCDReader(DCD.DCDReader):
             try:
                 if units.unit_types[unit] != unit_type:
                     raise TypeError(
-                        "LAMMPS DCDReader: wrong unit {0!r} for unit type {1!r}".format(
-                            unit, unit_type
-                        )
+                        f"LAMMPS DCDReader: wrong unit {unit} for "
+                        f"unit type {unit_type}"
                     )
             except KeyError:
-                raise ValueError(
-                    "LAMMPS DCDReader: unknown unit {0!r}".format(unit)
-                )
+                raise ValueError(f"LAMMPS DCDReader: unknown unit {unit}")
         super(DCDReader, self).__init__(dcdfilename, **kwargs)
 
 
@@ -240,11 +237,11 @@ class DATAReader(base.SingleFrameReaderBase):
 
     @store_init_arguments
     def __init__(self, filename, **kwargs):
-        self.n_atoms = kwargs.pop("n_atoms", None)
-        if self.n_atoms is None:  # this should be done by parsing DATA first
+        n_atoms = kwargs.pop("n_atoms", None)
+        if n_atoms is None:  # this should be done by parsing DATA first
             raise ValueError("DATAReader requires n_atoms keyword")
         self.atom_style = kwargs.pop("atom_style", None)
-        super(DATAReader, self).__init__(filename, **kwargs)
+        super(DATAReader, self).__init__(filename, n_atoms=n_atoms, **kwargs)
 
     def _read_first_frame(self):
         with DATAParser(self.filename) as p:
@@ -344,7 +341,7 @@ class DATAWriter(base.WriterBase):
                 x, y, z = coords
                 self.f.write(
                     f"{index:d} {moltag:d} {atype:d} {charge:f}"
-                    f" {x:f} {y:f} {z:f}\n"
+                    f" {x:.10f} {y:.10f} {z:.10f}\n"
                 )
         else:
             for index, moltag, atype, coords in zip(
@@ -352,7 +349,7 @@ class DATAWriter(base.WriterBase):
             ):
                 x, y, z = coords
                 self.f.write(
-                    f"{index:d} {moltag:d} {atype:d}" f" {x:f} {y:f} {z:f}\n"
+                    f"{index:d} {moltag:d} {atype:d} {x:.10f} {y:.10f} {z:.10f}\n"
                 )
 
     def _write_velocities(self, atoms):
@@ -365,7 +362,7 @@ class DATAWriter(base.WriterBase):
         )
         for index, vel in zip(indices, velocities):
             self.f.write(
-                "{i:d} {x:f} {y:f} {z:f}\n".format(
+                "{i:d} {x:.10f} {y:.10f} {z:.10f}\n".format(
                     i=index, x=vel[0], y=vel[1], z=vel[2]
                 )
             )
@@ -613,12 +610,13 @@ class DumpReader(base.ReaderBase):
         <https://docs.lammps.org/read_data.html>`__  in the lammps
         documentation for more information.
     **kwargs
-       Other keyword arguments used in :class:`~MDAnalysis.coordinates.base.ReaderBase`
+       Other keyword arguments used in
+       :class:`~MDAnalysis.coordinates.base.ReaderBase`
 
 
-    .. versionchanged:: 2.7.0
+    .. versionchanged:: 2.8.0
        Reading of arbitrary, additional columns is now supported.
-       (Issue #3608)
+       (Issue `#3504 <https://github.com/MDAnalysis/mdanalysis/issues/3504>`__)
     .. versionchanged:: 2.4.0
        Now imports velocities and forces, translates the box to the origin,
        and optionally unwraps trajectories with image flags upon loading.
@@ -832,9 +830,8 @@ class DumpReader(base.ReaderBase):
                 raise ValueError("No coordinate information detected")
         elif not self.lammps_coordinate_convention in convention_to_col_ix:
             raise ValueError(
-                f"No coordinates following convention "
-                "{self.lammps_coordinate_convention} found in "
-                "timestep"
+                "No coordinates following convention "
+                f"{self.lammps_coordinate_convention} found in timestep"
             )
 
         coord_cols = convention_to_col_ix[self.lammps_coordinate_convention]

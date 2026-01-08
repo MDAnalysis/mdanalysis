@@ -112,27 +112,27 @@ Analysis classes
    :inherited-members:
 
    .. attribute:: results.dssp
-   
-      Contains the time series of the DSSP assignment as a 
+
+      Contains the time series of the DSSP assignment as a
       :class:`numpy.ndarray` array of shape ``(n_frames, n_residues)`` where each row
-      contains the assigned secondary structure character for each residue (whose 
+      contains the assigned secondary structure character for each residue (whose
       corresponding resid is stored in :attr:`results.resids`). The three characters
       are ['H', 'E', '-'] and representi alpha-helix, sheet and loop, respectively.
 
    .. attribute:: results.dssp_ndarray
-   
+
       Contains the one-hot encoding of the time series of the DSSP assignment
-      as a :class:`numpy.ndarray` Boolean array of shape ``(n_frames, n_residues, 3)`` 
+      as a :class:`numpy.ndarray` Boolean array of shape ``(n_frames, n_residues, 3)``
       where for each residue the encoding is stored as ``(3,)`` shape
-      :class:`numpy.ndarray` of Booleans so that ``True`` at index 0 represents loop 
-      ('-'), ``True`` at index 1 represents helix ('H'), and ``True`` at index 2 
+      :class:`numpy.ndarray` of Booleans so that ``True`` at index 0 represents loop
+      ('-'), ``True`` at index 1 represents helix ('H'), and ``True`` at index 2
       represents sheet 'E'.
 
       .. SeeAlso:: :func:`translate`
-      
+
 
    .. attribute:: results.resids
-   
+
       A :class:`numpy.ndarray` of length ``n_residues`` that contains the residue IDs
       (resids) for the protein residues that were assigned a secondary structure.
 
@@ -144,12 +144,14 @@ Functions
 .. autofunction:: translate
 """
 
-from typing import Union
-import numpy as np
-from MDAnalysis import Universe, AtomGroup
+from typing import Optional, Union
 
+import numpy as np
+
+from MDAnalysis import AtomGroup, Universe
+
+from ...due import Doi, due
 from ..base import AnalysisBase, ResultsGroup
-from ...due import due, Doi
 
 due.cite(
     Doi("10.1002/bip.360221211"),
@@ -163,8 +165,8 @@ del Doi
 
 try:  # pragma: no cover
     from pydssp.pydssp_numpy import (
-        assign,
         _get_hydrogen_atom_position,
+        assign,
     )
 
     HAS_PYDSSP = True
@@ -172,8 +174,8 @@ try:  # pragma: no cover
 except ModuleNotFoundError:
     HAS_PYDSSP = False
     from .pydssp_numpy import (
-        assign,
         _get_hydrogen_atom_position,
+        assign,
     )
 
 
@@ -208,7 +210,7 @@ class DSSP(AnalysisBase):
     Parameters
     ----------
     atoms : Union[Universe, AtomGroup]
-        input Universe or AtomGroup. In both cases, only protein residues will
+        input Universe or AtomGroup with at least 6 protein residues. In both cases, only protein residues will
         be chosen prior to the analysis via `select_atoms('protein')`.
         Heavy atoms of the protein are then selected by name
         `heavyatom_names`, and hydrogens are selected by name
@@ -237,6 +239,8 @@ class DSSP(AnalysisBase):
 
     Raises
     ------
+    ValueError
+        If fewer than 6 residues are provided in the selection.
     ValueError
         if ``guess_hydrogens`` is True but some non-PRO hydrogens are missing.
 
@@ -280,6 +284,11 @@ class DSSP(AnalysisBase):
        Enabled **parallel execution** with the ``multiprocessing`` and ``dask``
        backends; use the new method :meth:`get_supported_backends` to see all
        supported backends.
+
+    .. versionchanged:: 2.10.0
+       Change treatment of proline and follow pydssp 0.9.1 (prolines are now explicitly
+       forbidden to participate in the hydrogen bond network). Previous version could yield
+       wrong assignment of prolines.
     """
 
     _analysis_algorithm_is_parallelizable = True
@@ -315,6 +324,7 @@ class DSSP(AnalysisBase):
             ]
             for t in heavyatom_names
         }
+        self._donor_mask: Optional[np.ndarray] = ag.residues.resnames != "PRO"
         self._hydrogens: list["AtomGroup"] = [
             res.atoms.select_atoms(f"name {hydrogen_name}")
             for res in ag.residues
@@ -347,6 +357,12 @@ class DSSP(AnalysisBase):
                     "Universe contains unequal numbers of (N,CA,C,O) atoms ('name' field)."
                     " Please select appropriate AtomGroup manually."
                 )
+            )
+
+        if len(ag.residues) < 6:
+            raise ValueError(
+                "DSSP requires at least 6 residues for secondary structure analysis, "
+                f"but only {len(ag.residues)} residue(s) were provided in the selection."
             )
 
     def _prepare(self):
@@ -391,7 +407,7 @@ class DSSP(AnalysisBase):
 
     def _single_frame(self):
         coords = self._get_coords()
-        dssp = assign(coords)
+        dssp = assign(coords, donor_mask=self._donor_mask)
         self.results.dssp_ndarray.append(dssp)
 
     def _conclude(self):

@@ -36,24 +36,33 @@ from numpy.testing import assert_almost_equal, assert_equal
 from MDAnalysisTests.datafiles import Plength, TRZ_psf, TRZ
 
 
+def test_class_is_parallelizable():
+    assert polymer.PersistenceLength._analysis_algorithm_is_parallelizable
+
+
+def test_supported_backends():
+    assert polymer.PersistenceLength.get_supported_backends() == (
+        "serial",
+        "multiprocessing",
+        "dask",
+    )
+
+
 class TestPersistenceLength(object):
     @staticmethod
     @pytest.fixture()
     def u():
         return mda.Universe(Plength)
 
-    @staticmethod
     @pytest.fixture()
-    def p(u):
+    def p(self, u):
         ags = [r.atoms.select_atoms("name C* N*") for r in u.residues]
-
         p = polymer.PersistenceLength(ags)
         return p
 
-    @staticmethod
     @pytest.fixture()
-    def p_run(p):
-        return p.run()
+    def p_run(self, p, client_PersistenceLength):
+        return p.run(**client_PersistenceLength)
 
     def test_ag_ValueError(self, u):
         ags = [u.atoms[:10], u.atoms[10:110]]
@@ -81,15 +90,11 @@ class TestPersistenceLength(object):
     def test_plot_ax_return(self, p_run):
         """Ensure that a matplotlib axis object is
         returned when plot() is called."""
-        actual = p_run.plot()
-        expected = matplotlib.axes.Axes
-        assert isinstance(actual, expected)
+        assert isinstance(p_run.plot(), matplotlib.axes.Axes)
 
     def test_plot_with_ax(self, p_run):
         fig, ax = plt.subplots()
-
         ax2 = p_run.plot(ax=ax)
-
         assert ax2 is ax
 
     def test_current_axes(self, p_run):
@@ -98,8 +103,7 @@ class TestPersistenceLength(object):
         assert ax2 is not ax
 
     @pytest.mark.parametrize("attr", ("lb", "lp", "fit"))
-    def test(self, p, attr):
-        p_run = p.run(step=3)
+    def test(self, p_run, attr):
         wmsg = f"The `{attr}` attribute was deprecated in MDAnalysis 2.0.0"
         with pytest.warns(DeprecationWarning, match=wmsg):
             getattr(p_run, attr) is p_run.results[attr]
@@ -145,25 +149,31 @@ class TestSortBackbone(object):
 
         assert_equal(s_ag.ids, [0, 1, 4, 6, 8])
 
-    def test_not_fragment(self, u):
-        # two fragments don't work
-        bad_ag = u.residues[0].atoms[:2] + u.residues[1].atoms[:2]
-        with pytest.raises(ValueError):
-            polymer.sort_backbone(bad_ag)
-
     def test_branches(self, u):
         # includes side branches, can't sort
         bad_ag = u.atoms[:10]  # include -H etc
 
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="branches or isolated atoms"):
             polymer.sort_backbone(bad_ag)
+
+    def test_isolated(self, u):
+        u = mda.Universe.empty(4, trajectory=True)
+        bondlist = [(0, 1), (1, 2)]
+        u.add_TopologyAttr(Bonds(bondlist))
+        with pytest.raises(ValueError, match="branches or isolated atoms"):
+            polymer.sort_backbone(u.atoms)
+
+    def test_missing_internal(self, u):
+        u = mda.Universe.empty(4, trajectory=True)
+        bondlist = [(0, 1), (2, 3)]
+        u.add_TopologyAttr(Bonds(bondlist))
+        with pytest.raises(ValueError, match="Backbone connectivity invalid"):
+            polymer.sort_backbone(u.atoms)
 
     def test_circular(self):
         u = mda.Universe.empty(6, trajectory=True)
         # circular structure
         bondlist = [(0, 1), (1, 2), (2, 3), (3, 4), (4, 5), (5, 0)]
         u.add_TopologyAttr(Bonds(bondlist))
-
-        with pytest.raises(ValueError) as ex:
+        with pytest.raises(ValueError, match="Cyclical"):
             polymer.sort_backbone(u.atoms)
-        assert "cyclical" in str(ex.value)

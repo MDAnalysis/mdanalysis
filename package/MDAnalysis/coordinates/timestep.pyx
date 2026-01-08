@@ -938,8 +938,8 @@ cdef class Timestep:
         return 1.0
 
     @dt.setter
-    def dt(self, new):
-        self.data['dt'] = new
+    def dt(self, new_dt):
+        self.data['dt'] = new_dt
 
     @dt.deleter
     def dt(self):
@@ -966,8 +966,8 @@ cdef class Timestep:
             return self.dt * self.frame + offset
 
     @time.setter
-    def time(self, new):
-        self.data['time'] = new
+    def time(self, new_time):
+        self.data['time'] = new_time
 
     @time.deleter
     def time(self):
