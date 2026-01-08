@@ -486,9 +486,10 @@ class AnalysisBase(object):
             :meth:`_setup_frames` for the whole trajectory, second time in
             :meth:`_compute` for each of the computation groups.
 
-        .. versionchanged:: 2.9.0
-            Add `self._run_slicer` attribute to store the slicer for the
-            whole trajectory being analyzed.
+        .. versionchanged:: 2.11.0
+            Add `self.run_state.slicer` attribute to store the slicer for the
+            whole trajectory being analyzed and `self.run_state.n_frames` for
+            number of frames being analyzed.
         """
         slicer = self._define_run_frames(trajectory, start, stop, step, frames)
         self.run_state.slicer = slicer
@@ -503,7 +504,7 @@ class AnalysisBase(object):
 
           - ``self._frame_index``: index of the frame in results array
           Note that this is not the same as the frame number in the trajectory
-          - ``self._run_frame_index``: index of the frame in the trajectory
+          - ``self.run_state.frame_index``: index of the frame in the trajectory
           This is useful for parallel runs, where you can't rely on the
           `self._frame_index`.
           - ``self._ts`` -- Timestep instance
@@ -866,6 +867,10 @@ class AnalysisBase(object):
             Introduced ``backend``, ``n_workers``, ``n_parts`` and
             ``unsupported_backend`` keywords, and refactored the method logic to
             support parallelizable execution.
+
+        .. versionchanged:: 2.11.0
+            The input parameters are now stored in :attr:`run_config`
+            and runtime-generated attributes in :attr:`run_state`.
         """
         # default to serial execution
         backend = "serial" if backend is None else backend
