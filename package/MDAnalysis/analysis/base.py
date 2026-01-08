@@ -174,6 +174,7 @@ logger = logging.getLogger(__name__)
 @dataclass(frozen=True)
 class RunConfig:
     """Stores resolved `run()` configuration with normalized defaults."""
+
     start: Optional[int] = None
     stop: Optional[int] = None
     step: Optional[int] = None
@@ -188,6 +189,7 @@ class RunConfig:
 class RunState:
     """Stores runtime-generated attributes that can be used
     during the analysis."""
+
     slicer: Optional[Union[slice, np.ndarray]] = None
     n_frames: Optional[int] = None
     computation_groups: Optional[List[np.ndarray]] = None
@@ -975,7 +977,7 @@ class AnalysisBase(object):
         .. versionadded:: 2.8.0
         """
         return ResultsGroup(lookup=None)
-    
+
     @property
     def run_config(self) -> RunConfig:
         """Stores normalized arguments for `run()`.
