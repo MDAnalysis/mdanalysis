@@ -487,9 +487,10 @@ class AnalysisBase(object):
             :meth:`_compute` for each of the computation groups.
 
         .. versionchanged:: 2.11.0
-            Add `self.run_state.slicer` attribute to store the slicer for the
-            whole trajectory being analyzed and `self.run_state.n_frames` for
-            number of frames being analyzed.
+            Added :attr:`run_config` and :attr:`run_state` to expose normalized
+            run settings and runtime state. The slicer and total frame count for
+            the whole run are stored in :attr:`self.run_state.slicer` and
+            :attr:`self.run_state.n_frames`.
         """
         slicer = self._define_run_frames(trajectory, start, stop, step, frames)
         self.run_state.slicer = slicer
@@ -870,9 +871,8 @@ class AnalysisBase(object):
             support parallelizable execution.
 
         .. versionchanged:: 2.11.0
-            The run parameters with normalized defaults are now stored in
-            :attr:`run_config` and runtime-generated attributes in
-            :attr:`run_state`.
+            Added :attr:`run_config` and :attr:`run_state` to expose normalized
+            run settings and runtime state.
         """
         # default to serial execution
         backend = "serial" if backend is None else backend
