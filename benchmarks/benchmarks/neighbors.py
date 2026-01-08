@@ -12,10 +12,12 @@ class NeighborsBench:
 
     def setup(self, number_of_atoms, cutoff):
         """Setup called before each benchmark with each parameter combination."""
-        self.box = np.array([170.0, 70.0, 120.0, 90.0, 90.0, 90.0], dtype=np.float32)
-        self.positions = (np.random.rand(number_of_atoms, 3) * self.box[:3]).astype(
-            np.float32
+        self.box = np.array(
+            [170.0, 70.0, 120.0, 90.0, 90.0, 90.0], dtype=np.float32
         )
+        self.positions = (
+            np.random.rand(number_of_atoms, 3) * self.box[:3]
+        ).astype(np.float32)
         self.centre = (self.box[:3] / 2.0).reshape(1, 3)
         self.cutoff = cutoff
 
