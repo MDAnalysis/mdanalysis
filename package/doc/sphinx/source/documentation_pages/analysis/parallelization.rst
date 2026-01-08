@@ -129,9 +129,9 @@ order to understand how parallelization is implemented:
 parameters :attr:`start`, :attr:`stop`, :attr:`step` or :attr:`frames` are consistent with the given
 trajectory and prepares the :attr:`slicer` object that defines the iteration
 pattern through the trajectory with :meth:`_define_run_frames`.
-The attribute :attr:`self._run_slicer` is assigned based on the `slicer`.
+The attribute :attr:`self.run_state.slicer` is assigned based on the `slicer`.
 Users can later access the full sliced trajectory being analyzed via
-:attr:`self._trajectory[self._run_slicer]`.
+:attr:`self._trajectory[self.run_state.slicer]`.
 
 :meth:`_prepare_sliced_trajectory` assigns to
 the :attr:`self._sliced_trajectory` attribute, computes the number of frames in
@@ -163,9 +163,10 @@ iterates over :attr:`self._sliced_trajectory`, assigning
 :attr:`self._frame_index` and :attr:`self._ts` as frame index (within a
 computation group) and timestamp, and also setting respective
 :attr:`self.frames` and :attr:`self.times` array values. Additionally,
-:attr:`self._run_frame_index` is assigned the run frame index
-within the full sliced trajectory (:attr:`self._trajectory[self._run_slicer]`)
-that is being analyzed.
+:attr:`self.run_state.frame_index` is assigned the run frame index
+within the full sliced trajectory (:attr:`self._trajectory[self.run_state.slicer]`)
+that is being analyzed. The total number of frames for the full run is
+available as :attr:`self.run_state.n_frames`.
 This run frame index is particularly useful for analyses requiring it, such as 
 :class:`MDAnalysis.analysis.diffusionmap.DistanceMatrix` that needs to know the
 frame index in the trajectory sliced that is being analyzed.
@@ -177,6 +178,23 @@ attributes from other processes into a single
 :class:`MDAnalysis.analysis.results.Results` instance, making it look for the
 subsequent :meth:`_conclude` method as if the run was performed in a serial
 fashion, without parallelization.
+
+
+Run configuration/state
+-----------------------
+
+``AnalysisBase`` stores run inputs and runtime metadata in two attributes:
+
+- :attr:`self.run_config` holds the normalized `run()` inputs (defaults resolved
+  for ``start``, ``stop``, ``step``, ``backend``, ``n_workers``, and ``n_parts``).
+- :attr:`self.run_state` holds runtime state such as the full-run
+  :attr:`self.run_state.slicer`, the total :attr:`self.run_state.n_frames`, the
+  computation groups, and the per-frame :attr:`self.run_state.frame_index`.
+
+In parallel runs, :attr:`self._frame_index` is the local index within a
+computation group, while :attr:`self.run_state.frame_index` is the global index
+within the analyzed selection. For the absolute trajectory frame number, use
+:attr:`self._ts.frame`.
 
 
 Helper classes for parallelization
@@ -375,13 +393,13 @@ In this way, you will override the check for supported backends.
 Retrieving correct frame index in parallel analysis
 ===================================================
 
-To retrieve the correct frame index during parallel analysis, use the 
-:attr:`self._run_frame_index` attribute. This attribute represents the correct 
-frame index within the full sliced trajectory 
-(:attr:`self._trajectory[self._run_slicer]`).
+To retrieve the correct frame index during parallel analysis, use the
+:attr:`self.run_state.frame_index` attribute. This attribute represents the correct
+frame index within the full sliced trajectory
+(:attr:`self._trajectory[self.run_state.slicer]`).
 
-For an example illustrating when to use :attr:`_frame_index` versus 
-:attr:`_run_frame_index` and :attr:`self._run_slicer`,
+For an example illustrating when to use :attr:`_frame_index` versus
+:attr:`self.run_state.frame_index` and :attr:`self.run_state.slicer`,
 see the following code snippet:
 
 .. code-block:: python
@@ -403,12 +421,12 @@ see the following code snippet:
             self.results.run_frame_index = []
             self.results.n_frames = []
             self.results.run_n_frames = []
-            self.run_n_frames = len(self._trajectory[self._run_slicer])
+            self.run_n_frames = self.run_state.n_frames
 
         def _single_frame(self):
             """Process a single frame during the analysis."""
             frame_index = self._frame_index
-            run_frame_index = self._run_frame_index
+            run_frame_index = self.run_state.frame_index
 
             # Append results for the current frame
             self.results.frame_index.append(frame_index)
