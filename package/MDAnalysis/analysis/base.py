@@ -173,7 +173,7 @@ logger = logging.getLogger(__name__)
 
 @dataclass(frozen=True)
 class RunConfig:
-    """Stores user-provided arguments for `run()`."""
+    """Stores resolved `run()` configuration with normalized defaults."""
     start: Optional[int] = None
     stop: Optional[int] = None
     step: Optional[int] = None
@@ -869,8 +869,9 @@ class AnalysisBase(object):
             support parallelizable execution.
 
         .. versionchanged:: 2.11.0
-            The input parameters are now stored in :attr:`run_config`
-            and runtime-generated attributes in :attr:`run_state`.
+            The run parameters with normalized defaults are now stored in
+            :attr:`run_config` and runtime-generated attributes in
+            :attr:`run_state`.
         """
         # default to serial execution
         backend = "serial" if backend is None else backend
@@ -914,17 +915,6 @@ class AnalysisBase(object):
                     f"{executor.n_workers=} is greater than {n_parts=}"
                 )
             )
-        
-        self._run_config = RunConfig(
-            start=start,
-            stop=stop,
-            step=step,
-            frames=frames,
-            backend=backend,
-            n_workers=n_workers,
-            n_parts=n_parts,
-            unsupported_backend=unsupported_backend,
-        )
 
         # start preparing the run
         worker_func = partial(
@@ -943,6 +933,16 @@ class AnalysisBase(object):
             start=start, stop=stop, step=step, frames=frames, n_parts=n_parts
         )
         self.run_state.computation_groups = computation_groups
+        self._run_config = RunConfig(
+            start=self.start,
+            stop=self.stop,
+            step=self.step,
+            frames=frames,
+            backend=backend,
+            n_workers=n_workers,
+            n_parts=len(computation_groups),
+            unsupported_backend=unsupported_backend,
+        )
 
         # get all results from workers in other processes.
         # we need `AnalysisBase` classes
@@ -977,7 +977,7 @@ class AnalysisBase(object):
     
     @property
     def run_config(self) -> RunConfig:
-        """Stores user-provided arguments for `run()`.
+        """Stores normalized arguments for `run()`.
         It includes `start`, `stop`, `step`, `frames`, `backend`, `n_workers`,
         `n_parts` and `unsupported_backend` attributes.
         """
