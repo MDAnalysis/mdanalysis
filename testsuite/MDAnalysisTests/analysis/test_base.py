@@ -323,6 +323,19 @@ def test_run_config_normalized_defaults(u_xtc):
     assert an.run_config.n_parts == 3
 
 
+def test_run_state_slicer_and_n_frames(u_xtc, client_FrameAnalysis):
+    start, stop, step = 1, 10, 2
+    an = FrameAnalysis(u_xtc.trajectory).run(
+        start=start, stop=stop, step=step, **client_FrameAnalysis
+    )
+    start_idx, stop_idx, step_idx = u_xtc.trajectory.check_slice_indices(
+        start, stop, step
+    )
+    expected_slice = slice(start_idx, stop_idx, step_idx)
+    assert an.run_state.slicer == expected_slice
+    assert an.run_state.n_frames == len(u_xtc.trajectory[expected_slice])
+
+
 @pytest.mark.parametrize(
     "run_kwargs,frames",
     [
