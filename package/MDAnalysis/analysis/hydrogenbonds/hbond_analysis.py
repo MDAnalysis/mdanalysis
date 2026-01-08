@@ -911,25 +911,12 @@ class HydrogenBondAnalysis(AnalysisBase):
              Can be used along with :attr:`HydrogenBondAnalysis.times` to plot
              the number of hydrogen bonds over time.
         """
+        hbond_frames = self.results.hbonds[:, 0].astype(int)
+        frame_unique, frame_counts = np.unique(hbond_frames, return_counts=True)
 
-        indices, tmp_counts = np.unique(
-            self.results.hbonds[:, 0], axis=0, return_counts=True
-        )
-
-        # if we pass a specific subset of frames there won't be a start / end frame
-        # so we do a manual lookup and return instead. some frames might be zero
-        # so they would be missing from the np.unique return
-        if self.start is None:
-            count_lookup = dict(zip(indices, tmp_counts))
-            return np.array([count_lookup.get(i, 0) for i in range(len(self.frames))])
-
-        indices -= self.start
-        indices /= self.step
-
-        counts = np.zeros_like(self.frames)
-        counts[indices.astype(np.intp)] = tmp_counts
-
-        return counts
+        counts = np.zeros(max(self.frames) + 1, dtype=int)
+        counts[frame_unique] = frame_counts
+        return counts[self.frames]
 
     def count_by_type(self):
         """Counts the total number of each unique type of hydrogen bond.

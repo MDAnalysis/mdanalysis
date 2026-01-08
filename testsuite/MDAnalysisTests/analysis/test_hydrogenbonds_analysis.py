@@ -778,5 +778,5 @@ class TestHydrogenBondAnalysisFrameIterator:
         )
         hbonds.run(frames=frames)
         assert np.array_equal(
-            hbonds.count_by_time(), np.array([2, 1, 4, 0, 0, 3, 3])
+            hbonds.count_by_time(), np.array([2, 1, 4, 3, 3, 2, 2])
         )
