@@ -504,9 +504,10 @@ class AnalysisBase(object):
 
           - ``self._frame_index``: index of the frame in results array
           Note that this is not the same as the frame number in the trajectory
-          - ``self.run_state.frame_index``: index of the frame in the trajectory
-          This is useful for parallel runs, where you can't rely on the
-          `self._frame_index`.
+          - ``self.run_state.frame_index``: index of the frame within the
+          analyzed selection (global run index). This is useful for parallel
+          runs, where you can't rely on the `self._frame_index`. Use
+          ``self._ts.frame`` for the absolute frame number in the trajectory.
           - ``self._ts`` -- Timestep instance
           - ``self._sliced_trajectory`` -- trajectory that you're iterating over
           - ``self.results`` -- :class:`MDAnalysis.analysis.results.Results` instance
