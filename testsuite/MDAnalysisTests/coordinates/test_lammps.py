@@ -990,3 +990,21 @@ class TestLammpsTriclinic(object):
             )
 
         assert_allclose(u_data.dimensions, reference_box, rtol=1e-5, atol=0)
+def test_missing_coords_error(tmpdir):
+        # creating a dummy lammps file without x, y, z columns
+        f = tmpdir.join("bad_lammps.dump")
+        f.write("""ITEM: TIMESTEP
+        0
+        ITEM: NUMBER OF ATOMS
+        1
+        ITEM: BOX BOUNDS pp pp pp
+        0.0 10.0
+        0.0 10.0
+        0.0 10.0
+        ITEM: ATOMS id type
+        1 1
+        """)
+
+        # reader should raise ValueError because coordinates are missing
+        with pytest.raises(ValueError, match="No coordinate information"):
+          mda.coordinates.LAMMPS.DumpReader(str(f))
