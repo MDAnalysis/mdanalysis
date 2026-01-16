@@ -249,7 +249,7 @@ class MOL2Reader(base.ReaderBase):
         if "crysin" in sections:
             try:
                 line = sections["crysin"][0].strip()
-                dims =[float(x) for x in line.split()[:6]] 
+                dims = [float(x) for x in line.split()[:6]]
                 self.ts.dimensions = np.array(dims, dtype=np.float32)
             except (ValueError, IndexError):
                 pass
