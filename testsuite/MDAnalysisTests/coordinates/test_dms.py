@@ -105,4 +105,3 @@ class TestDMSReader(object):
             u_conv.atoms.positions,
             u_native.atoms.positions,
         )
-        
