@@ -98,8 +98,11 @@ class TestDMSReader(object):
         u_native = mda.Universe(DMS, convert_units=False)
         u_conv = mda.Universe(DMS, convert_units=True)
 
+        # DMS native coordinates are already in Angstroms, which matches
+        # MDAnalysis base length units, so enabling unit conversion should
+        # not change the coordinate values.
         np.testing.assert_allclose(
             u_conv.atoms.positions,
             u_native.atoms.positions,
-            rtol=1e-6,
         )
+        
