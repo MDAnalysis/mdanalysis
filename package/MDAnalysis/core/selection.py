@@ -1489,6 +1489,65 @@ class NucleicSugarSelection(NucleicSelection):
         return group.unique
 
 
+class SugarSelection(Selection):
+    """Select atoms in carbohydrate residues with recognized GLYCAM names.
+
+    Recognized residue names in :attr:`SugarSelection.sugar_res`.
+    """
+
+    token = "sugar"
+
+    sugar_res = {
+        # GLYCAM06 Hexoses (D-Glc, D-Gal, D-Man)
+        # Linkage indicators: 0 (terminal), 2, 3, 4, 6
+        # Isomers: A (alpha), B (beta)
+
+        # Glucose (G)
+        "0GA",
+        "0GB",
+        "2GA",
+        "2GB",
+        "3GA",
+        "3GB",
+        "4GA",
+        "4GB",
+        "6GA",
+        "6GB",
+        # Galactose (L)
+        "0LA",
+        "0LB",
+        "2LA",
+        "2LB",
+        "3LA",
+        "3LB",
+        "4LA",
+        "4LB",
+        "6LA",
+        "6LB",
+        # Mannose (M)
+        "0MA",
+        "0MB",
+        "2MA",
+        "2MB",
+        "3MA",
+        "3MB",
+        "4MA",
+        "4MB",
+        "6MA",
+        "6MB",
+    }
+
+    def _apply(self, group):
+        resname_attr = group.universe._topology.resnames
+        matches = [
+            ix
+            for (nm, ix) in resname_attr.namedict.items()
+            if nm in self.sugar_res
+        ]
+        nmidx = resname_attr.nmidx[group.resindices]
+        return group[np.isin(nmidx, matches)]
+
+
 class PropertySelection(Selection):
     """Some of the possible properties:
     x, y, z, radius, mass,
