@@ -1501,7 +1501,6 @@ class SugarSelection(Selection):
         # GLYCAM06 Hexoses (D-Glc, D-Gal, D-Man)
         # Linkage indicators: 0 (terminal), 2, 3, 4, 6
         # Isomers: A (alpha), B (beta)
-
         # Glucose (G)
         "0GA",
         "0GB",
