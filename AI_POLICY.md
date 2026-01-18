@@ -11,7 +11,7 @@ For the purposes of this document, _content_ is defined as any contribution to M
 
 MDAnalysis does not accept any substantial uses of AI-generated content in contributions.
 
-AI tools may be used in limited cases, for example when it is used for small amounts of AI-assisted code (e.g. autocompletion using copillot, cursor, etc...)
+AI tools may be used in limited cases, for example when it is used for small amounts of AI-assisted code (e.g. autocompletion using copilot, cursor, etc...)
 or for language translation purposes. **Such uses must always be declared.**
 
 ## Policy details
@@ -32,7 +32,7 @@ Some limited exceptions are described in sections #2 and #3 for integrated devel
 
 ### 2. Limited AI assitance exemption: IDEs and autocompletion
 
-AI tools are now so deeply integrated into many modern developpment environments, and it may be impractical to avoid them entirely.
+AI tools are now so deeply integrated into many modern development environments, and it may be impractical to avoid them entirely.
 We recognise that this is particularly true for modern integrated development environments (IDEs), which may use AI to power features like autocompletion.
 
 In these limited cases of code generation, typically ranging from a single variable to a couple of lines of code,
@@ -46,7 +46,7 @@ As per section #0, where possible please state that you are using AI assistance 
 MDAnalysis aims to foster an inclusive environment for all contributors and users. We recognise that language barrier can limit participation
 in open-source projects, particularly for non-native English speakers.
 
-Whilst we you to communicate to us in your own words (and languages if needed), we acknowledge that AI-based translation tools may sometimes
+Whilst we wish you to communicate to us in your own words (and languages if needed), we acknowledge that AI-based translation tools may sometimes
 be necessary for communicating in issues / discussions. If such tools are used, we ask you to disclose their use and purpose.
 
 ### 4. Contributors are responsible authors and must be aware of, and declare, any derivate work
