@@ -760,3 +760,23 @@ class TestHydrogenBondAnalysisEmptySelections:
         assert h.hydrogens_sel == ""
         assert h.acceptors_sel == ""
         assert h.results.hbonds.size == 0
+
+
+class TestHydrogenBondAnalysisFrameIterator:
+    @staticmethod
+    @pytest.fixture(scope="class")
+    def universe():
+        return MDAnalysis.Universe(waterPSF, waterDCD)
+
+    def test_frame_iterator(self, universe):
+        frames = np.array([0, 1, 2, 5, 6, 7, 8])
+        hbonds = HydrogenBondAnalysis(
+            universe=universe,
+            hydrogens_sel="name H1 H2",
+            acceptors_sel="name OH2",
+            update_selections=False,
+        )
+        hbonds.run(frames=frames)
+        assert np.array_equal(
+            hbonds.count_by_time(), np.array([2, 1, 4, 3, 3, 2, 2])
+        )
