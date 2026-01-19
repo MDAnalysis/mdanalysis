@@ -992,23 +992,27 @@ class TestLammpsTriclinic(object):
         assert_allclose(u_data.dimensions, reference_box, rtol=1e-5, atol=0)
 
 
-def test_missing_coords_error(tmpdir):
-    # creating a dummy lammps file without x, y, z columns
+def test_missing_requested_coordinate_convention(tmpdir):
     f = tmpdir.join("bad_lammps.dump")
     f.write(
-        """ITEM: TIMESTEP
-        0
-        ITEM: NUMBER OF ATOMS
-        1
-        ITEM: BOX BOUNDS pp pp pp
-        0.0 10.0
-        0.0 10.0
-        0.0 10.0
-        ITEM: ATOMS id type
-        1 1
-        """
+        "ITEM: TIMESTEP\n"
+        "0\n"
+        "ITEM: NUMBER OF ATOMS\n"
+        "1\n"
+        "ITEM: BOX BOUNDS pp pp pp\n"
+        "0.0 10.0\n"
+        "0.0 10.0\n"
+        "0.0 10.0\n"
+        "ITEM: ATOMS id type xs ys zs\n"
+        "1 1 0.5 0.5 0.5\n"
     )
 
-    # reader should raise ValueError because coordinates are missing
-    with pytest.raises(ValueError, match="No coordinate information"):
-        mda.coordinates.LAMMPS.DumpReader(str(f))
+    with pytest.raises(
+        ValueError,
+        match=r"No coordinates following convention unwrapped found in timestep",
+    ):
+        mda.Universe(
+            str(f),
+            format="LAMMPSDUMP",
+            lammps_coordinate_convention="unwrapped",
+        )
