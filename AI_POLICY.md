@@ -36,7 +36,7 @@ AI tools are now so deeply integrated into many modern development environments,
 We recognise that this is particularly true for modern integrated development environments (IDEs), which may use AI to power features like autocompletion.
 
 In these limited cases of code generation, typically ranging from a single variable to a couple of lines of code,
-AI assitance is deemed acceptable. However, if code generate exceeds minimal, sporadic amounts (e.g. repeated or large multi-line blocks),
+AI assitance is deemed acceptable. However, if code generation exceeds minimal, sporadic amounts (e.g. repeated or large multi-line blocks),
 it would be considered fully AI-generated and, as defined in section #1, is not acceptable.
 
 As per section #0, where possible please state that you are using AI assistance via an IDE.
@@ -63,7 +63,7 @@ All code merged into MDAnalysis must be reviewed by a human reviewer. Instructio
 Any failures to comply with this policy should be reported to the MDAnalysis core developers.
 The core developers may enforce this policy through a range of actions, which may include restricting or banning individuals from future contributions.
 
-There is a zero tolerance policy for intentially failing to disclose or misrepresenting the extent of AI usage.
+There is a zero tolerance policy for intentionally failing to disclose or misrepresenting the extent of AI usage.
 
 ## Acknowledgements
 
