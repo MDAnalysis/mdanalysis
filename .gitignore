@@ -23,7 +23,6 @@ examples/output.txt
 # ignore coverage files
 .coverage*
 !.coveragerc
-.noseids
 htmlcov
 # ignore trajectory offset caches
 .adk_oplsaa.trr_offsets.pkl
