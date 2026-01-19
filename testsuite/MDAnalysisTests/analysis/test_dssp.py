@@ -1,8 +1,9 @@
-import pytest
 import glob
-import MDAnalysis as mda
 
+import MDAnalysis as mda
+import pytest
 from MDAnalysis.analysis.dssp import DSSP, translate
+
 from MDAnalysisTests.datafiles import DSSP as DSSP_FOLDER
 from MDAnalysisTests.datafiles import TPR, XTC
 
@@ -32,8 +33,6 @@ def test_trajectory(client_DSSP):
     assert (
         first_frame[:10] != last_frame[:10] == avg_frame[:10] == "-EEEEEE---"
     )
-    protein = mda.Universe(TPR, XTC).select_atoms("protein")
-    run = DSSP(protein).run(**client_DSSP, stop=10)
 
 
 def test_atomgroup(client_DSSP):
@@ -90,3 +89,23 @@ def test_exception_raises_with_atom_index(pdb_filename, client_DSSP):
         match="Residue <Residue SER, 298> contains*",
     ):
         DSSP(u, guess_hydrogens=False).run(**client_DSSP)
+
+
+def test_insufficient_residues_raises_error(client_DSSP):
+    """Test that DSSP raises clear error for insufficient residues."""
+    u = mda.Universe(TPR, XTC)
+
+    protein = u.select_atoms("protein")
+
+    with pytest.raises(ValueError, match="DSSP requires at least 6 residues"):
+        res2 = protein.residues[:2].atoms
+        DSSP(res2)
+
+    with pytest.raises(ValueError, match="DSSP requires at least 6 residues"):
+        res4 = protein.residues[:4].atoms
+        DSSP(res4)
+
+    res6 = protein.residues[:6].atoms
+    dssp = DSSP(res6)
+    result = dssp.run(**client_DSSP, stop=1)
+    assert result.results.dssp.shape[1] == 6

@@ -77,10 +77,11 @@ class _Topologymeta(type):
     .. versionchanged:: 1.0.0
        Added format_hint functionality
     """
+
     def __init__(cls, name, bases, classdict):
         type.__init__(type, name, bases, classdict)
         try:
-            fmt = util.asiterable(classdict['format'])
+            fmt = util.asiterable(classdict["format"])
         except KeyError:
             pass
         else:
@@ -88,8 +89,11 @@ class _Topologymeta(type):
                 fmt_name = fmt_name.upper()
                 _PARSERS[fmt_name] = cls
 
-                if '_format_hint' in classdict:
-                    _PARSER_HINTS[fmt_name] = classdict['_format_hint'].__func__
+                if "_format_hint" in classdict:
+                    _PARSER_HINTS[fmt_name] = classdict[
+                        "_format_hint"
+                    ].__func__
+
 
 class TopologyReaderBase(IOBase, metaclass=_Topologymeta):
     """Base class for topology readers
@@ -114,6 +118,7 @@ class TopologyReaderBase(IOBase, metaclass=_Topologymeta):
     .. versionchanged:: 0.9.2
        Added keyword 'universe' to pass to Atom creation.
     """
+
     def __init__(self, filename):
         self.filename = filename
 
@@ -137,7 +142,8 @@ def squash_by(child_parent_ids, *attributes):
     *parent_attrs - len(parent) of the other attributes
     """
     unique_resids, sort_mask, atom_idx = np.unique(
-        child_parent_ids, return_index=True, return_inverse=True)
+        child_parent_ids, return_index=True, return_inverse=True
+    )
 
     return atom_idx, unique_resids, [attr[sort_mask] for attr in attributes]
 
@@ -176,16 +182,19 @@ def change_squash(criteria, to_squash):
     new_resnames: ['RsA', 'RsB', 'RsC']
     new_segids: ['A', 'A', 'B']
     """
+
     def get_borders(*arrays):
         """Generator of indices to slice arrays when they change"""
-        borders = np.nonzero(reduce(np.logical_or,
-                                    (a[:-1] != a[1:] for a in arrays)))
+        borders = np.nonzero(
+            reduce(np.logical_or, (a[:-1] != a[1:] for a in arrays))
+        )
         # Add Nones so we can slice from start to end
         return [None] + list(borders[0] + 1) + [None]
 
     l0 = len(criteria[0])
-    if not all(len(other) == l0
-               for other in itertools.chain(criteria[1:], to_squash)):
+    if not all(
+        len(other) == l0 for other in itertools.chain(criteria[1:], to_squash)
+    ):
         raise ValueError("All arrays must be equally sized")
 
     # 1) Detect where resids change

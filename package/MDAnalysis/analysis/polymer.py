@@ -40,7 +40,7 @@ import logging
 from .. import NoDataError
 from ..core.groups import requires, AtomGroup
 from ..lib.distances import calc_bonds
-from .base import AnalysisBase
+from .base import AnalysisBase, ResultsGroup
 
 logger = logging.getLogger(__name__)
 
@@ -67,37 +67,32 @@ def sort_backbone(backbone):
 
     .. versionadded:: 0.20.0
     """
-    if not backbone.n_fragments == 1:
-        raise ValueError(
-            "{} fragments found in backbone.  "
-            "backbone must be a single contiguous AtomGroup"
-            "".format(backbone.n_fragments)
-        )
-
-    branches = [at for at in backbone if len(at.bonded_atoms & backbone) > 2]
-    if branches:
-        # find which atom has too many bonds for easier debug
-        raise ValueError(
-            "Backbone is not linear.  "
-            "The following atoms have more than two bonds in backbone: {}."
-            "".format(",".join(str(a) for a in branches))
-        )
-
-    caps = [
-        atom for atom in backbone if len(atom.bonded_atoms & backbone) == 1
+    degrees = [len(atom.bonded_atoms & backbone) for atom in backbone]
+    deg1_atoms = [atom for atom, d in zip(backbone, degrees) if d == 1]
+    wrong_atoms = [
+        atom for atom, d in zip(backbone, degrees) if d not in (1, 2)
     ]
-    if not caps:
-        # cyclical structure
+
+    if len(wrong_atoms) > 0:
         raise ValueError(
-            "Could not find starting point of backbone, "
-            "is the backbone cyclical?"
+            "Backbone contains atoms with connectivity degree not equal to 1 or 2. "
+            "This suggests branches or isolated atoms. Problematic atoms: {}."
+            "".format(", ".join(str(a) for a in wrong_atoms))
+        )
+
+    if len(deg1_atoms) != 2:
+        raise ValueError(
+            "Backbone connectivity invalid: "
+            "expected exactly 2 atoms with connectivity degree 1 (caps). "
+            "Cyclical structures are not supported. "
+            "Atoms with connectivity degree 1 found: {}."
+            "".format(", ".join(str(a) for a in deg1_atoms))
         )
 
     # arbitrarily choose one of the capping atoms to be the startpoint
-    sorted_backbone = AtomGroup([caps[0]])
+    sorted_backbone = AtomGroup([deg1_atoms[0]])
 
-    # iterate until the sorted chain length matches the backbone size
-    while len(sorted_backbone) < len(backbone):
+    for _ in range(len(backbone) - 1):
         # current end of the chain
         end_atom = sorted_backbone[-1]
 
@@ -123,6 +118,9 @@ class PersistenceLength(AnalysisBase):
 
        C(n) = \langle \cos\theta_{i, i+n} \rangle =
                \langle \mathbf{a_i} \cdot \mathbf{a_{i+n}} \rangle
+
+    where :math:`a_i` and :math:`a_{i+n}` are unit vectors
+    along the bonds.
 
     An exponential decay is then fitted to this, which yields the
     persistence length
@@ -233,7 +231,16 @@ class PersistenceLength(AnalysisBase):
        Former ``results`` are now stored as ``results.bond_autocorrelation``.
        :attr:`lb`, :attr:`lp`, :attr:`fit` are now stored in a
        :class:`MDAnalysis.analysis.base.Results` instance.
+    .. versionchanged:: 2.10.0
+       introduced :meth:`get_supported_backends` allowing for parallel
+       execution on ``multiprocessing`` and ``dask`` backends.
     """
+
+    _analysis_algorithm_is_parallelizable = True
+
+    @classmethod
+    def get_supported_backends(cls):
+        return ("serial", "multiprocessing", "dask")
 
     def __init__(self, atomgroups, **kwargs):
         super(PersistenceLength, self).__init__(
@@ -246,15 +253,18 @@ class PersistenceLength(AnalysisBase):
         chainlength = len(atomgroups[0])
         if not all(l == chainlength for l in lens):
             raise ValueError("Not all AtomGroups were the same size")
+        self.chainlength = chainlength
 
-        self._results = np.zeros(chainlength - 1, dtype=np.float32)
+    def _prepare(self):
+        self.results.raw_bond_autocorr = np.zeros(
+            self.chainlength - 1, dtype=np.float32
+        )
 
     def _single_frame(self):
         # could optimise this by writing a "self dot array"
         # we're only using the upper triangle of np.inner
         # function would accept a bunch of coordinates and spit out the
         # decorrel for that
-        n = len(self._atomgroups[0])
 
         for chain in self._atomgroups:
             # Vector from each atom to next
@@ -263,8 +273,17 @@ class PersistenceLength(AnalysisBase):
             vecs /= np.sqrt((vecs * vecs).sum(axis=1))[:, None]
 
             inner_pr = np.inner(vecs, vecs)
-            for i in range(n - 1):
-                self._results[: (n - 1) - i] += inner_pr[i, i:]
+            for i in range(self.chainlength - 1):
+                self.results.raw_bond_autocorr[
+                    : (self.chainlength - 1) - i
+                ] += inner_pr[i, i:]
+
+    def _get_aggregator(self):
+        return ResultsGroup(
+            lookup={
+                "raw_bond_autocorr": ResultsGroup.ndarray_sum,
+            }
+        )
 
     @property
     def lb(self):
@@ -297,14 +316,12 @@ class PersistenceLength(AnalysisBase):
         return self.results.fit
 
     def _conclude(self):
-        n = len(self._atomgroups[0])
-
-        norm = np.linspace(n - 1, 1, n - 1)
-        norm *= len(self._atomgroups) * self.n_frames
-
-        self.results.bond_autocorrelation = self._results / norm
+        norm = np.linspace(self.chainlength - 1, 1, self.chainlength - 1)
+        norm *= len(self._atomgroups) * self._trajectory.n_frames
+        self.results.bond_autocorrelation = (
+            self.results.raw_bond_autocorr / norm
+        )
         self._calc_bond_length()
-
         self._perform_fit()
 
     def _calc_bond_length(self):
@@ -347,7 +364,7 @@ class PersistenceLength(AnalysisBase):
         import matplotlib.pyplot as plt
 
         if ax is None:
-            fig, ax = plt.subplots()
+            _, ax = plt.subplots()
         ax.plot(
             self.results.x,
             self.results.bond_autocorrelation,

@@ -508,16 +508,13 @@ class TestHELANAL(object):
 
     def test_residue_gaps_split(self, psf_ca):
         sel = "resid 6:50 or resid 100:130 or resid 132:148"
-        with pytest.warns(UserWarning) as rec:
+        wmsg = "has gaps in the residues. Splitting into 3 helices"
+        with pytest.warns(UserWarning, match=wmsg):
             ha = hel.HELANAL(psf_ca, select=sel).run()
             assert len(ha.atomgroups) == 3
             assert len(ha.atomgroups[0]) == 45
             assert len(ha.atomgroups[1]) == 31
             assert len(ha.atomgroups[2]) == 17
-        assert len(rec) == 1
-        warnmsg = rec[0].message.args[0]
-        assert "has gaps in the residues" in warnmsg
-        assert "Splitting into 3 helices" in warnmsg
 
     def test_residue_gaps_no_split(self, psf_ca):
         sel = "resid 6:50 or resid 100:130 or resid 132:148"

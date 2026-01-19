@@ -76,7 +76,7 @@ Classes
 .. autoclass:: MMTFParser
    :members:
 
-.. _Macromolecular Transmission Format (MMTF) format: https://mmtf.rcsb.org/
+.. _Macromolecular Transmission Format (MMTF) format: https://www.rcsb.org/news/feature/65a1af31c76ca3abcc925d0c
 """
 from collections import defaultdict
 import mmtf

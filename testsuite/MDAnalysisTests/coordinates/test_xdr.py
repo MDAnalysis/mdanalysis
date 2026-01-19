@@ -25,8 +25,10 @@ from unittest.mock import patch
 
 import re
 import os
+import sys
 import shutil
 import subprocess
+import time
 from pathlib import Path
 
 import numpy as np
@@ -60,6 +62,7 @@ import MDAnalysis as mda
 from MDAnalysis.coordinates.base import Timestep
 from MDAnalysis.coordinates import XDR
 from MDAnalysisTests.util import get_userid
+from filelock import FileLock
 
 
 @pytest.mark.parametrize(
@@ -120,6 +123,11 @@ class _GromacsReader(object):
     @pytest.fixture(scope="class")
     def universe(self):
         return mda.Universe(GRO, self.filename, convert_units=True)
+
+    # fixture for testing #4905
+    @pytest.fixture(scope="class")
+    def universe_with_dt_set(self):
+        return mda.Universe(GRO, self.filename, convert_units=True, dt=2500)
 
     def test_rewind_xdrtrj(self, universe):
         universe.trajectory.rewind()
@@ -196,6 +204,14 @@ class _GromacsReader(object):
             universe.trajectory.dt, 100.0, 4, err_msg="wrong timestep dt"
         )
 
+    def test_dt_when_dt_set(self, universe_with_dt_set):
+        assert_almost_equal(
+            universe_with_dt_set.trajectory.dt,
+            2500.0,
+            4,
+            err_msg="wrong timestep dt when dt set",
+        )
+
     def test_totaltime(self, universe):
         # test_totaltime(): need to reduce precision because dt is only precise
         # to ~4 decimals and accumulating the inaccuracy leads to even lower
@@ -205,6 +221,17 @@ class _GromacsReader(object):
             900.0,
             3,
             err_msg="wrong total length of trajectory",
+        )
+
+    def test_totaltime_when_dt_set(self, universe_with_dt_set):
+        # test_totaltime(): need to reduce precision because dt is only precise
+        # to ~4 decimals and accumulating the inaccuracy leads to even lower
+        # precision in the totaltime (consequence of fixing Issue 64)
+        assert_almost_equal(
+            universe_with_dt_set.trajectory.totaltime,
+            22500.0,
+            3,
+            err_msg="wrong total length of trajectory when dt set",
         )
 
     def test_frame(self, universe):
@@ -217,6 +244,15 @@ class _GromacsReader(object):
             universe.trajectory.time, 400.0, 3, err_msg="wrong time of frame"
         )
 
+    def test_time_when_dt_set(self, universe_with_dt_set):
+        universe_with_dt_set.trajectory[4]
+        assert_almost_equal(
+            universe_with_dt_set.trajectory.time,
+            10000.0,
+            3,
+            err_msg="wrong time of frame when dt set",
+        )
+
     def test_get_Writer(self, universe, tmpdir):
         ext = os.path.splitext(self.filename)[1]
         outfile = str(tmpdir.join("xdr-reader-test" + ext))
@@ -224,11 +260,12 @@ class _GromacsReader(object):
             assert_equal(universe.trajectory.format, W.format)
             assert_equal(universe.atoms.n_atoms, W.n_atoms)
 
-    def test_Writer(self, tmpdir):
+    @pytest.mark.parametrize("dt", [None, 1000])
+    def test_Writer(self, tmpdir, dt):
         universe = mda.Universe(GRO, self.filename, convert_units=True)
         ext = os.path.splitext(self.filename)[1]
         outfile = str(tmpdir.join("/xdr-reader-test" + ext))
-        with universe.trajectory.Writer(outfile) as W:
+        with universe.trajectory.Writer(outfile, dt=dt) as W:
             W.write(universe.atoms)
             universe.trajectory.next()
             W.write(universe.atoms)
@@ -241,6 +278,17 @@ class _GromacsReader(object):
         assert_almost_equal(
             u.atoms.positions, universe.atoms.positions, self.prec
         )
+        if dt:
+            # test total trajectory length
+            assert_almost_equal(
+                u.trajectory.totaltime,
+                dt,
+                3,
+                err_msg=(
+                    "wrong total length of trajectory upon setting dt "
+                    "explicitly"
+                ),
+            )
 
     def test_EOFraisesStopIteration(self, universe):
         def go_beyond_EOF():
@@ -518,9 +566,7 @@ class TestTRRWriter(_GromacsWriter):
 
     def test_data_preservation(self, universe, Writer, outfile):
 
-        with Writer(
-            outfile, universe.atoms.n_atoms, dt=universe.trajectory.dt
-        ) as W:
+        with Writer(outfile, universe.atoms.n_atoms) as W:
             for ts in universe.trajectory:
                 W.write(universe)
 
@@ -977,24 +1023,27 @@ class _GromacsReader_offsets(object):
             reader = self._reader(traj)
         reader[idx_frame]
 
-    @pytest.mark.skipif(get_userid() == 0, reason="cannot readonly as root")
-    def test_persistent_offsets_readonly(self, tmpdir):
+    def test_persistent_offsets_readonly(self, tmpdir, trajectory):
         shutil.copy(self.filename, str(tmpdir))
 
-        if os.name == "nt":
-            # Windows platform has a unique way to deny write access
-            subprocess.call(
-                "icacls {fname} /deny Users:W".format(fname=tmpdir), shell=True
-            )
-        else:
-            os.chmod(str(tmpdir), 0o555)
-
         filename = str(tmpdir.join(os.path.basename(self.filename)))
-        # try to write a offsets file
-        with pytest.warns(
-            UserWarning, match="Couldn't save offsets"
-        ) and pytest.warns(UserWarning, match="Cannot write"):
-            self._reader(filename)
+        print("filename", filename)
+        ref_offset = trajectory._xdr.offsets
+        # Mock filelock acquire to raise an error
+        with patch.object(
+            FileLock, "acquire", side_effect=PermissionError
+        ):  # Simulate failure
+            with pytest.warns(UserWarning, match="Cannot write lock"):
+                reader = self._reader(filename)
+                saved_offsets = reader._xdr.offsets
+
+            # Check if offsets are handled properly and match reference offsets
+            assert_almost_equal(
+                saved_offsets,  # Compare with reference offsets
+                ref_offset,
+                err_msg="error loading frame offsets",
+            )
+
         assert_equal(os.path.exists(XDR.offsets_filename(filename)), False)
         # check the lock file is not created as well.
         assert_equal(
@@ -1002,21 +1051,12 @@ class _GromacsReader_offsets(object):
             False,
         )
 
-        # pre-teardown permission fix - leaving permission blocked dir
-        # is problematic on py3.9 + Windows it seems. See issue
-        # [4123](https://github.com/MDAnalysis/mdanalysis/issues/4123)
-        # for more details.
-        if os.name == "nt":
-            subprocess.call(f"icacls {tmpdir} /grant Users:W", shell=True)
-        else:
-            os.chmod(str(tmpdir), 0o777)
-
-        shutil.rmtree(tmpdir)
-
-    def test_offset_lock_created(self):
-        assert os.path.exists(
-            XDR.offsets_filename(self.filename, ending="lock")
-        )
+    @pytest.mark.skipif(
+        sys.platform.startswith("win"),
+        reason="The lock file only exists when it's locked in windows",
+    )
+    def test_offset_lock_created(self, traj):
+        assert os.path.exists(XDR.offsets_filename(traj, ending="lock"))
 
 
 class TestXTCReader_offsets(_GromacsReader_offsets):

@@ -52,13 +52,13 @@ def test_eg(dist, dmap):
     # makes no sense to test values here, no physical meaning
 
 
-def test_dist_weights(u):
+def test_dist_weights(u, client_DistanceMatrix):
     backbone = u.select_atoms("backbone")
     weights_atoms = np.ones(len(backbone.atoms))
     dist = diffusionmap.DistanceMatrix(
         u, select="backbone", weights=weights_atoms
     )
-    dist.run(step=3)
+    dist.run(**client_DistanceMatrix, step=3)
     dmap = diffusionmap.DiffusionMap(dist)
     dmap.run()
     assert_array_almost_equal(dmap.eigenvalues, [1, 1, 1, 1], 4)
@@ -76,11 +76,11 @@ def test_dist_weights(u):
     )
 
 
-def test_dist_weights_frames(u):
+def test_dist_weights_frames(u, client_DistanceMatrix):
     backbone = u.select_atoms("backbone")
     weights_atoms = np.ones(len(backbone.atoms))
     dist = diffusionmap.DistanceMatrix(
-        u, select="backbone", weights=weights_atoms
+        u, **client_DistanceMatrix, select="backbone", weights=weights_atoms
     )
     frames = np.arange(len(u.trajectory))
     dist.run(frames=frames[::3])
@@ -101,19 +101,25 @@ def test_dist_weights_frames(u):
     )
 
 
-def test_distvalues_ag_universe(u):
-    dist_universe = diffusionmap.DistanceMatrix(u, select="backbone").run()
+def test_distvalues_ag_universe(u, client_DistanceMatrix):
+    dist_universe = diffusionmap.DistanceMatrix(u, select="backbone").run(
+        **client_DistanceMatrix
+    )
     ag = u.select_atoms("backbone")
-    dist_ag = diffusionmap.DistanceMatrix(ag).run()
+    dist_ag = diffusionmap.DistanceMatrix(ag).run(**client_DistanceMatrix)
     assert_allclose(
         dist_universe.results.dist_matrix, dist_ag.results.dist_matrix
     )
 
 
-def test_distvalues_ag_select(u):
-    dist_universe = diffusionmap.DistanceMatrix(u, select="backbone").run()
+def test_distvalues_ag_select(u, client_DistanceMatrix):
+    dist_universe = diffusionmap.DistanceMatrix(u, select="backbone").run(
+        **client_DistanceMatrix
+    )
     ag = u.select_atoms("protein")
-    dist_ag = diffusionmap.DistanceMatrix(ag, select="backbone").run()
+    dist_ag = diffusionmap.DistanceMatrix(ag, select="backbone").run(
+        **client_DistanceMatrix
+    )
     assert_allclose(
         dist_universe.results.dist_matrix, dist_ag.results.dist_matrix
     )
@@ -156,8 +162,10 @@ def test_not_universe_atomgroup_error(u):
         diffusionmap.DiffusionMap(trj_only)
 
 
-def test_DistanceMatrix_attr_warning(u):
-    dist = diffusionmap.DistanceMatrix(u, select="backbone").run(step=3)
+def test_DistanceMatrix_attr_warning(u, client_DistanceMatrix):
+    dist = diffusionmap.DistanceMatrix(u, select="backbone").run(
+        **client_DistanceMatrix, step=3
+    )
     wmsg = f"The `dist_matrix` attribute was deprecated in MDAnalysis 2.0.0"
     with pytest.warns(DeprecationWarning, match=wmsg):
         assert getattr(dist, "dist_matrix") is dist.results.dist_matrix

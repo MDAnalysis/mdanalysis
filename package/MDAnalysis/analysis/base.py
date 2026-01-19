@@ -184,6 +184,12 @@ class AnalysisBase(object):
     All results should be stored as attributes of the
     :class:`MDAnalysis.analysis.results.Results` container.
 
+    .. Note::
+       The instance attributes are created during and on conclusion of
+       calling the :meth:`AnalysisBase.run` method. Accessing an attribute
+       before it has been created will raise an :exc:`AttributeError`.
+
+
     Parameters
     ----------
     trajectory : MDAnalysis.coordinates.base.ReaderBase
@@ -194,14 +200,28 @@ class AnalysisBase(object):
     Attributes
     ----------
     times: numpy.ndarray
-        array of Timestep times. Only exists after calling
-        :meth:`AnalysisBase.run`
+        Array of times of the Timesteps that were analyzed.
+        Only exists after calling :meth:`AnalysisBase.run`.
     frames: numpy.ndarray
-        array of Timestep frame indices. Only exists after calling
-        :meth:`AnalysisBase.run`
+        Array of frame indices that were analyzed.
+        Only exists after calling :meth:`AnalysisBase.run`.
     results: :class:`Results`
-        results of calculation are stored after call
-        to :meth:`AnalysisBase.run`
+        Results of calculation are stored here, after call
+        to :meth:`AnalysisBase.run`.
+    n_frames: int
+        number of *analyzed* frames, i.e., after taking into account
+        the `start`, `stop`, and `step` values from
+        :meth:`AnalysisBase.run`.
+        Only exists after calling :meth:`AnalysisBase.run`.
+    start: int
+        Frame index of the first trajectory frame that was analyzed.
+        Only exists after calling :meth:`AnalysisBase.run`.
+    stop: int
+        Frame index of the last trajectory frame that was analyzed.
+        Only exists after calling :meth:`AnalysisBase.run`.
+    step: int
+        Every `step` frame was analyzed, as ``trajectory[start:stop:step]``.
+        Only exists after calling :meth:`AnalysisBase.run`.
 
 
     Example
