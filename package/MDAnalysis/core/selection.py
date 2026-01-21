@@ -1457,7 +1457,6 @@ class SugarSelection(Selection):
         return group[np.isin(nmidx, matches)]
 
 
-
 class NucleicSelection(Selection):
     """All atoms in nucleic acid residues with recognized residue names.
 
