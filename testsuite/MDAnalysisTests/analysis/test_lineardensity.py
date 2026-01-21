@@ -32,7 +32,7 @@ from MDAnalysis.core._get_readers import get_reader_for
 from MDAnalysisTests.util import no_deprecated_call
 
 
-def test_invalid_grouping():
+def test_invalid_grouping(client_LinearDensity):
     """Invalid groupings raise AttributeError"""
     universe = mda.Universe(waterPSF, waterDCD)
     sel_string = "all"
@@ -40,7 +40,7 @@ def test_invalid_grouping():
     with pytest.raises(AttributeError):
         # centroid is attribute of AtomGroup, but not valid here
         ld = LinearDensity(selection, grouping="centroid", binsize=5)
-        ld.run()
+        ld.run(**client_LinearDensity)
 
 
 # test data for grouping='atoms'
@@ -163,11 +163,14 @@ def test_lineardensity(
     expected_charges,
     expected_xmass,
     expected_xcharge,
+    client_LinearDensity,
 ):
     universe = mda.Universe(waterPSF, waterDCD)
     sel_string = "all"
     selection = universe.select_atoms(sel_string)
-    ld = LinearDensity(selection, grouping, binsize=5).run()
+    ld = LinearDensity(selection, grouping, binsize=5).run(
+        **client_LinearDensity
+    )
     assert_allclose(ld.masses, expected_masses)
     assert_allclose(ld.charges, expected_charges)
     # rtol changed here due to floating point imprecision
@@ -209,11 +212,11 @@ def testing_Universe():
     return u
 
 
-def test_updating_atomgroup(testing_Universe):
+def test_updating_atomgroup(testing_Universe, client_LinearDensity):
     expected_z_pos = np.array([0.0, 0.91329641, 0.08302695, 0.0, 0.0, 0.0])
     u = testing_Universe
     selection = u.select_atoms("prop z < 3", updating=True)
-    ld = LinearDensity(selection, binsize=1).run()
+    ld = LinearDensity(selection, binsize=1).run(**client_LinearDensity)
     assert_allclose(ld.results.z.mass_density, expected_z_pos)
     # Test whether histogram bins are saved correctly.
     expected_bin_edges = np.arange(0, 7)
@@ -255,6 +258,8 @@ def test_old_name_deprecations():
 
 
 # TODO: deprecated, remove in 3.0.0
+# the parallelization here is not related to the parallelization through
+# the AnalysisBase, so it is tested only in serial
 def test_parallel_analysis(testing_Universe):
     """tests _add_other_result() method. Runs LinearDensity for all atoms of
     a universe and for two subsets, then adds the results of the two subsets
@@ -275,4 +280,22 @@ def test_parallel_analysis(testing_Universe):
     )
     assert_allclose(
         ld1.results.x.mass_density, ld_whole.results.x.mass_density
+    )
+
+
+def test_class_is_parallelizable():
+    assert (
+        mda.analysis.lineardensity.LinearDensity._analysis_algorithm_is_parallelizable
+        == True
+    )
+
+
+def test_supported_backends():
+    assert (
+        mda.analysis.lineardensity.LinearDensity.get_supported_backends()
+        == (
+            "serial",
+            "multiprocessing",
+            "dask",
+        )
     )

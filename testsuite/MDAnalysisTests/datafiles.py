@@ -56,6 +56,7 @@ __all__ = [
     "PSF_cmap",  # ala3 PSF from ParmEd test files with cmap
     "PSF_inscode",  # PSF file with insertion codes
     "PDB_small",  # PDB
+    "PDB_xsmall",  # The first 10 residues of PDB_small
     "PDB_closed",
     "PDB_multiframe",
     "PDB_helix",
@@ -95,6 +96,8 @@ __all__ = [
     "PDB_xvf",
     "TPR_xvf",
     "TRR_xvf",  # Gromacs coords/veloc/forces (cobrotoxin, OPLS-AA, Gromacs 4.5.5 tpr)
+    "TPR_xvf_2024_4",
+    "TPR_gh_5145",  # regression guard for gh-5145
     "H5MD_xvf",  # TPR_xvf + TRR_xvf converted to h5md format
     "H5MD_energy",  # H5MD trajectory with observables/atoms/energy
     "H5MD_malformed",  # H5MD trajectory with malformed observable group
@@ -132,6 +135,7 @@ __all__ = [
     "TPR2023",
     "TPR2024",
     "TPR2024_4",
+    "TPR2025_0",
     "TPR510_bonded",
     "TPR2016_bonded",
     "TPR2018_bonded",
@@ -146,6 +150,7 @@ __all__ = [
     "TPR2023_bonded",
     "TPR2024_bonded",
     "TPR2024_4_bonded",
+    "TPR2025_0_bonded",
     "TPR_EXTRA_2021",
     "TPR_EXTRA_2020",
     "TPR_EXTRA_2018",
@@ -155,6 +160,8 @@ __all__ = [
     "TPR_EXTRA_2023",
     "TPR_EXTRA_2024",
     "TPR_EXTRA_2024_4",
+    "TPR_EXTRA_2025_0",
+    "TPR_NNPOT_2025_0",
     "PDB_sub_sol",
     "PDB_sub_dry",  # TRRReader sub selection
     "TRR_sub_sol",
@@ -257,6 +264,8 @@ __all__ = [
     "LAMMPSdata_additional_columns",  # structure for the additional column lammpstrj
     "LAMMPSDUMP",
     "LAMMPSDUMP_long",  # lammpsdump file with a few zeros sprinkled in the first column first frame
+    "LAMMPSDUMP_allinfo",  # lammpsdump file with resids, masses, charges and element symbols
+    "LAMMPSDUMP_nomass_elemx",  # lammps dump file with no masses, but with element symbols and one symbol 'X'
     "LAMMPSDUMP_allcoords",  # lammpsdump file with all coordinate conventions (x,xs,xu,xsu) present, from LAMMPS rdf example
     "LAMMPSDUMP_nocoords",  # lammpsdump file with no coordinates
     "LAMMPSDUMP_triclinic",  # lammpsdump file to test triclinic dimension parsing, albite with most atoms deleted
@@ -266,6 +275,7 @@ __all__ = [
     "LAMMPSDUMP_chain2",  # Lammps dump file with chain reader
     "LAMMPS_chain",  # Lammps data file with chain reader
     "LAMMPSDUMP_additional_columns",  # lammpsdump file with additional data (an additional charge column)
+    "LAMMPSDUMP_non_linear",  # lammpsdump file to test calculating non-linear msd method
     "unordered_res",  # pdb file with resids non sequential
     "GMS_ASYMOPT",  # GAMESS C1  optimization
     "GMS_SYMOPT",  # GAMESS D4h optimization
@@ -329,6 +339,9 @@ __all__ = [
     "GSD_long",
     "TRC_PDB_VAC",
     "TRC_TRAJ1_VAC",
+    "TRC_TRAJ1_VAC_WHITESPACE",  # contains inconsistent trailing whitespace in POSITIONRED
+    "TRC_TRAJ1_VAC_MISSING_POS",  # contains one missing position in the last frame
+    "TRC_TRAJ1_VAC_EXTRA_POS",  # contains one extra position in the last frame
     "TRC_TRAJ2_VAC",  # 2x 3 frames of vacuum trajectory from GROMOS11 tutorial
     "TRC_CLUSTER_VAC",  # three frames without TIMESTEP and GENBOX block but with unsupported POSITION block
     "TRC_TRICLINIC_SOLV",
@@ -453,6 +466,7 @@ PSF_inscode = (_data_ref / "1a2c_ins_code.psf").as_posix()
 
 PDB_varying = (_data_ref / "varying_occ_tmp.pdb").as_posix()
 PDB_small = (_data_ref / "adk_open.pdb").as_posix()
+PDB_xsmall = (_data_ref / "adk_open_10res.pdb").as_posix()
 PDB_closed = (_data_ref / "adk_closed.pdb").as_posix()
 
 ALIGN = (_data_ref / "align.pdb").as_posix()
@@ -516,6 +530,8 @@ TNG_traj_vels_forces = (
 ).as_posix()
 PDB_xvf = (_data_ref / "cobrotoxin.pdb").as_posix()
 TPR_xvf = (_data_ref / "cobrotoxin.tpr").as_posix()
+TPR_xvf_2024_4 = (_data_ref / "cobrotoxin_2024_4.tpr").as_posix()
+TPR_gh_5145 = (_data_ref / "281_small.tpr").as_posix()
 TRR_xvf = (_data_ref / "cobrotoxin.trr").as_posix()
 H5MD_xvf = (_data_ref / "cobrotoxin.h5md").as_posix()
 H5MD_energy = (_data_ref / "cu.h5md").as_posix()
@@ -551,6 +567,7 @@ TPR2022RC1 = (_data_ref / "tprs/2lyz_gmx_2022-rc1.tpr").as_posix()
 TPR2023 = (_data_ref / "tprs/2lyz_gmx_2023.tpr").as_posix()
 TPR2024 = (_data_ref / "tprs/2lyz_gmx_2024.tpr").as_posix()
 TPR2024_4 = (_data_ref / "tprs/2lyz_gmx_2024_4.tpr").as_posix()
+TPR2025_0 = (_data_ref / "tprs/2lyz_gmx_2025_0.tpr").as_posix()
 # double precision
 TPR455Double = (_data_ref / "tprs/drew_gmx_4.5.5.double.tpr").as_posix()
 TPR460 = (_data_ref / "tprs/ab42_gmx_4.6.tpr").as_posix()
@@ -582,7 +599,11 @@ TPR2022RC1_bonded = (
 TPR2023_bonded = (_data_ref / "tprs/all_bonded/dummy_2023.tpr").as_posix()
 TPR2024_bonded = (_data_ref / "tprs/all_bonded/dummy_2024.tpr").as_posix()
 TPR2024_4_bonded = (_data_ref / "tprs/all_bonded/dummy_2024_4.tpr").as_posix()
+TPR2025_0_bonded = (_data_ref / "tprs/all_bonded/dummy_2025_0.tpr").as_posix()
 # all interactions
+TPR_EXTRA_2025_0 = (
+    _data_ref / "tprs/virtual_sites/extra-interactions-2025_0.tpr"
+).as_posix()
 TPR_EXTRA_2024_4 = (
     _data_ref / "tprs/virtual_sites/extra-interactions-2024_4.tpr"
 ).as_posix()
@@ -610,6 +631,8 @@ TPR_EXTRA_2016 = (
 TPR_EXTRA_407 = (
     _data_ref / "tprs/virtual_sites/extra-interactions-4.0.7.tpr"
 ).as_posix()
+# ALA dipeptide with neural network potential and a few other options
+TPR_NNPOT_2025_0 = (_data_ref / "tprs/ala_nnpot_gmx_2025_0.tpr").as_posix()
 
 XYZ_psf = (_data_ref / "2r9r-1b.psf").as_posix()
 XYZ_bz2 = (_data_ref / "2r9r-1b.xyz.bz2").as_posix()
@@ -740,6 +763,10 @@ LAMMPSdata_triclinic = (_data_ref / "lammps/albite_triclinic.data").as_posix()
 LAMMPSdata_PairIJ = (_data_ref / "lammps/pairij_coeffs.data.bz2").as_posix()
 LAMMPSDUMP = (_data_ref / "lammps/wat.lammpstrj.bz2").as_posix()
 LAMMPSDUMP_long = (_data_ref / "lammps/wat.lammpstrj_long.bz2").as_posix()
+LAMMPSDUMP_allinfo = (_data_ref / "lammps/mass_q_elem.lammpstrj").as_posix()
+LAMMPSDUMP_nomass_elemx = (
+    _data_ref / "lammps/nomass_elemx.lammpstrj"
+).as_posix()
 LAMMPSDUMP_allcoords = (
     _data_ref / "lammps/spce_all_coords.lammpstrj.bz2"
 ).as_posix()
@@ -760,6 +787,9 @@ LAMMPSdata_additional_columns = (
 ).as_posix()
 LAMMPSDUMP_additional_columns = (
     _data_ref / "lammps/additional_columns.lammpstrj"
+).as_posix()
+LAMMPSDUMP_non_linear = (
+    _data_ref / "analysis/msd/test_non_linear.dump.bz2"
 ).as_posix()
 
 unordered_res = (_data_ref / "unordered_res.pdb").as_posix()
@@ -820,6 +850,15 @@ GSD_long = (_data_ref / "example_longer.gsd").as_posix()
 
 TRC_PDB_VAC = (_data_ref / "gromos11/gromos11_traj_vac.pdb.gz").as_posix()
 TRC_TRAJ1_VAC = (_data_ref / "gromos11/gromos11_traj_vac_1.trc.gz").as_posix()
+TRC_TRAJ1_VAC_WHITESPACE = (
+    _data_ref / "gromos11/gromos11_traj_vac_1_whitespace.trc.gz"
+).as_posix()
+TRC_TRAJ1_VAC_MISSING_POS = (
+    _data_ref / "gromos11/gromos11_traj_vac_1_missing_pos.trc.gz"
+).as_posix()
+TRC_TRAJ1_VAC_EXTRA_POS = (
+    _data_ref / "gromos11/gromos11_traj_vac_1_extra_pos.trc.gz"
+).as_posix()
 TRC_TRAJ2_VAC = (_data_ref / "gromos11/gromos11_traj_vac_2.trc.gz").as_posix()
 TRC_PDB_SOLV = (_data_ref / "gromos11/gromos11_traj_solv.pdb.gz").as_posix()
 TRC_TRAJ_SOLV = (_data_ref / "gromos11/gromos11_traj_solv.trc.gz").as_posix()

@@ -26,13 +26,10 @@ Reading trajectories with *chemfiles* --- :mod:`MDAnalysis.coordinates.chemfiles
 MDAnalysis interoperates with the `chemfiles`_ library. The *chemfiles* C++ library
 supports an expanding set of file formats, some of which are not natively supported by
 MDAnalysis. Using the *CHEMFILES* reader you can use  `chemfiles`_ for the low-level
-file reading. Check the list of `chemfile-supported file formats <formats>`_.
+file reading. Check the list of `chemfile-supported file formats`_.
 
 .. _chemfiles: https://chemfiles.org
-.. _formats: https://chemfiles.org/chemfiles/0.10.0/formats.html#list-of-supported-formats
-.. NOTE: MDAnalysis currently restricts chemfiles to 0.10 <= version < 0.11. Update the link
-..       above to the latest documentation once this restriction is lifted.
-..       https://chemfiles.org/chemfiles/latest/formats.html#list-of-supported-formats
+.. _chemfile-supported file formats: https://chemfiles.org/chemfiles/latest/formats.html#list-of-supported-formats
 
 Using the CHEMFILES reader
 --------------------------
@@ -159,7 +156,8 @@ class ChemfilesReader(base.ReaderBase):
         """
         if not check_chemfiles_version():
             raise RuntimeError(
-                "Please install Chemfiles > {}" "".format(MIN_CHEMFILES_VERSION)
+                "Please install Chemfiles > {}"
+                "".format(MIN_CHEMFILES_VERSION)
             )
         super(ChemfilesReader, self).__init__(filename, **kwargs)
         self._format = chemfiles_format
@@ -278,7 +276,7 @@ class ChemfilesWriter(base.WriterBase):
         mode="w",
         chemfiles_format="",
         topology=None,
-        **kwargs
+        **kwargs,
     ):
         """
         Parameters
@@ -306,13 +304,16 @@ class ChemfilesWriter(base.WriterBase):
         """
         if not check_chemfiles_version():
             raise RuntimeError(
-                "Please install Chemfiles > {}" "".format(MIN_CHEMFILES_VERSION)
+                "Please install Chemfiles > {}"
+                "".format(MIN_CHEMFILES_VERSION)
             )
         self.filename = filename
         self.n_atoms = n_atoms
         if mode != "a" and mode != "w":
             raise IOError("Expected 'a' or 'w' as mode in ChemfilesWriter")
-        self._file = chemfiles.Trajectory(self.filename, mode, chemfiles_format)
+        self._file = chemfiles.Trajectory(
+            self.filename, mode, chemfiles_format
+        )
         self._closed = False
         if topology is not None:
             if isinstance(topology, str):
@@ -427,7 +428,9 @@ class ChemfilesWriter(base.WriterBase):
             if hasattr(atom, "resid"):
                 resname = getattr(atom, "resname", "")
                 if atom.resid not in residues.keys():
-                    residues[atom.resid] = chemfiles.Residue(resname, atom.resid)
+                    residues[atom.resid] = chemfiles.Residue(
+                        resname, atom.resid
+                    )
                 residue = residues[atom.resid]
 
                 atom_idx = len(topology.atoms)

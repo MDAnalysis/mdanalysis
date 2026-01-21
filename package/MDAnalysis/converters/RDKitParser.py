@@ -44,30 +44,31 @@ Classes
 
 import logging
 import warnings
+
 import numpy as np
 
-from ..topology.base import TopologyReaderBase, change_squash
+from ..core.topology import Topology
 from ..core.topologyattrs import (
+    AltLocs,
+    Aromaticities,
     Atomids,
     Atomnames,
     Atomtypes,
-    Elements,
-    Masses,
-    Charges,
-    Aromaticities,
     Bonds,
+    ChainIDs,
+    Charges,
+    Elements,
+    ICodes,
+    Masses,
+    Occupancies,
     Resids,
-    Resnums,
     Resnames,
+    Resnums,
     RSChirality,
     Segids,
-    AltLocs,
-    ChainIDs,
-    ICodes,
-    Occupancies,
     Tempfactors,
 )
-from ..core.topology import Topology
+from ..topology.base import TopologyReaderBase, change_squash
 
 logger = logging.getLogger("MDAnalysis.converters.RDKitParser")
 
@@ -170,8 +171,7 @@ class RDKitParser(TopologyReaderBase):
             from rdkit import Chem
         except ImportError:  # if no rdkit, probably not rdkit
             return False
-        else:
-            return isinstance(thing, Chem.Mol)
+        return isinstance(thing, Chem.Mol)
 
     def parse(self, **kwargs):
         """Parse RDKit into Topology
@@ -306,7 +306,7 @@ class RDKitParser(TopologyReaderBase):
             attrs.append(Atomnames(np.array(names, dtype=object)))
         else:
             for atom in mol.GetAtoms():
-                name = "%s%d" % (atom.GetSymbol(), atom.GetIdx())
+                name = f"{atom.GetSymbol()}{atom.GetIdx()}"
                 names.append(name)
             attrs.append(Atomnames(np.array(names, dtype=object)))
 

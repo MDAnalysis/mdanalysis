@@ -10,6 +10,7 @@ from MDAnalysis.analysis.rms import RMSD, RMSF
 from MDAnalysis.analysis.dihedrals import Dihedral, Ramachandran, Janin
 from MDAnalysis.analysis.bat import BAT
 from MDAnalysis.analysis.gnm import GNMAnalysis
+from MDAnalysis.analysis.diffusionmap import DistanceMatrix
 from MDAnalysis.analysis.dssp.dssp import DSSP
 from MDAnalysis.analysis.hydrogenbonds.hbond_analysis import (
     HydrogenBondAnalysis,
@@ -17,6 +18,9 @@ from MDAnalysis.analysis.hydrogenbonds.hbond_analysis import (
 from MDAnalysis.analysis.nucleicacids import NucPairDist
 from MDAnalysis.analysis.contacts import Contacts
 from MDAnalysis.analysis.density import DensityAnalysis
+from MDAnalysis.analysis.lineardensity import LinearDensity
+from MDAnalysis.analysis.polymer import PersistenceLength
+from MDAnalysis.analysis.rdf import InterRDF, InterRDF_s
 from MDAnalysis.lib.util import is_installed
 
 
@@ -175,4 +179,41 @@ def client_Contacts(request):
 
 @pytest.fixture(scope="module", params=params_for_cls(DensityAnalysis))
 def client_DensityAnalysis(request):
+    return request.param
+
+
+# MDAnalysis.analysis.lineardensity
+
+
+@pytest.fixture(scope="module", params=params_for_cls(LinearDensity))
+def client_LinearDensity(request):
+    return request.param
+
+
+# MDAnalysis.analysis.polymer
+
+
+@pytest.fixture(scope="module", params=params_for_cls(PersistenceLength))
+def client_PersistenceLength(request):
+    return request.param
+
+
+# MDAnalysis.analysis.rdf
+
+
+@pytest.fixture(scope="module", params=params_for_cls(InterRDF))
+def client_InterRDF(request):
+    return request.param
+
+
+@pytest.fixture(scope="module", params=params_for_cls(InterRDF_s))
+def client_InterRDF_s(request):
+    return request.param
+
+
+# MDAnalysis.analysis.diffusionmap
+
+
+@pytest.fixture(scope="module", params=params_for_cls(DistanceMatrix))
+def client_DistanceMatrix(request):
     return request.param

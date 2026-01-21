@@ -1,6 +1,5 @@
 name: mda-dev
 channels:
-  - defaults
   - conda-forge
 dependencies:
   - chemfiles>=0.10
@@ -18,9 +17,9 @@ dependencies:
   - mmtf-python
   - mock
   - networkx
-  - numpy>=1.23.2
+  - numpy>=1.26.0
   - pytest
-  - python==3.10
+  - python==3.11
   - pytng>=0.2.3
   - scikit-learn
   - scipy
@@ -31,6 +30,7 @@ dependencies:
   - sphinxcontrib-bibtex
   - mdaencore
   - waterdynamics
+  - imdclient>=0.2.2
   - pip:
       - mdahole2
       - pathsimanalysis
