@@ -37,6 +37,7 @@ Fixes
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Enhancements
+ * Addition of 'sugar' token for GLYCAM, PDB and CHARMM sugar selection (Issue #4790)
  * Enables parallelization for analysis.diffusionmap.DistanceMatrix
    (Issue #4679, PR #4745)
 
@@ -81,7 +82,6 @@ Fixes
    directly passing them. (Issue #3520, PR #5006)
 
 Enhancements
- * Addition of 'sugar' token for GLYCAM, PDB and CHARMM sugar selection (Issue #4790)
  * Add conversion factor for speed unit A/ns and additional representations (Å/fs, A/µs,
    Å/μs, Å/ms) (PR #5053)
  * Improved performance of `analysis.rdf.InterRDF_s` > 20-fold
