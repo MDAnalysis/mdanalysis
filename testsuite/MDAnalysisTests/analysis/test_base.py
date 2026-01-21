@@ -48,16 +48,36 @@ class FrameAnalysis(base.AnalysisBase):
 
     def _prepare(self):
         self.results.found_frames = []
+        self.results.frame_index = []
+        self.results.run_frame_index = []
+        self.results.n_frames = []
+        self.results.run_n_frames = []
+
+        # self.n_frames is defined elsewhere
+        self.run_n_frames = len(self._trajectory[self.run_state.slicer])
 
     def _single_frame(self):
+        frame_index = self._frame_index
+        run_frame_index = self.run_state.frame_index
+
         self.results.found_frames.append(self._ts.frame)
+        self.results.frame_index.append(frame_index)
+        self.results.run_frame_index.append(run_frame_index)
+        self.results.n_frames.append(self.n_frames)
+        self.results.run_n_frames.append(self.run_n_frames)
 
     def _conclude(self):
         self.found_frames = list(self.results.found_frames)
 
     def _get_aggregator(self):
         return base.ResultsGroup(
-            {"found_frames": base.ResultsGroup.ndarray_hstack}
+            {
+                "found_frames": base.ResultsGroup.ndarray_hstack,
+                "frame_index": base.ResultsGroup.ndarray_hstack,
+                "run_frame_index": base.ResultsGroup.ndarray_hstack,
+                "n_frames": base.ResultsGroup.ndarray_hstack,
+                "run_n_frames": base.ResultsGroup.ndarray_hstack,
+            }
         )
 
 
@@ -294,6 +314,28 @@ def test_reset_n_parts_to_n_frames(u):
         )
 
 
+def test_run_config_normalized_defaults(u_xtc):
+    n_frames = len(u_xtc.trajectory)
+    an = FrameAnalysis(u_xtc.trajectory).run(n_parts=3)
+    assert an.run_config.start == 0
+    assert an.run_config.stop == n_frames
+    assert an.run_config.step == 1
+    assert an.run_config.n_parts == 3
+
+
+def test_run_state_slicer_and_n_frames(u_xtc, client_FrameAnalysis):
+    start, stop, step = 1, 10, 2
+    an = FrameAnalysis(u_xtc.trajectory).run(
+        start=start, stop=stop, step=step, **client_FrameAnalysis
+    )
+    start_idx, stop_idx, step_idx = u_xtc.trajectory.check_slice_indices(
+        start, stop, step
+    )
+    expected_slice = slice(start_idx, stop_idx, step_idx)
+    assert an.run_state.slicer == expected_slice
+    assert an.run_state.n_frames == len(u_xtc.trajectory[expected_slice])
+
+
 @pytest.mark.parametrize(
     "run_kwargs,frames",
     [
@@ -450,12 +492,17 @@ def test_frames_times(client_FrameAnalysis):
         start=1, stop=8, step=2, **client_FrameAnalysis
     )
     frames = np.array([1, 3, 5, 7])
-    assert an.n_frames == len(frames)
+    n_frames = len(frames)
+    frame_indices = np.arange(n_frames)
+
+    assert an.n_frames == n_frames
     assert_equal(an.found_frames, frames)
     assert_equal(an.frames, frames, err_msg=FRAMES_ERR)
     assert_allclose(
         an.times, frames * 100, rtol=0, atol=1.5e-4, err_msg=TIMES_ERR
     )
+    assert_equal(an.results.run_frame_index, frame_indices)
+    assert_equal(an.results.run_n_frames, [n_frames] * n_frames)
 
 
 def test_verbose(u):

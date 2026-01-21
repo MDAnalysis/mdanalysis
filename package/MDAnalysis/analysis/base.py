@@ -152,7 +152,8 @@ import itertools
 import logging
 import warnings
 from functools import partial
-from typing import Iterable, Union
+from typing import Iterable, Union, Optional, List
+from dataclasses import dataclass
 
 import numpy as np
 from .. import coordinates
@@ -168,6 +169,31 @@ from .backends import (
 from .results import Results, ResultsGroup
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass(frozen=True)
+class RunConfig:
+    """Stores resolved `run()` configuration with normalized defaults."""
+
+    start: Optional[int] = None
+    stop: Optional[int] = None
+    step: Optional[int] = None
+    frames: Optional[np.ndarray] = None
+    backend: Optional[Union[str, BackendBase]] = None
+    n_workers: Optional[int] = None
+    n_parts: Optional[int] = None
+    unsupported_backend: bool = False
+
+
+@dataclass
+class RunState:
+    """Stores runtime-generated attributes that can be used
+    during the analysis."""
+
+    slicer: Optional[Union[slice, np.ndarray]] = None
+    n_frames: Optional[int] = None
+    computation_groups: Optional[List[np.ndarray]] = None
+    frame_index: Optional[int] = None
 
 
 class AnalysisBase(object):
@@ -461,8 +487,16 @@ class AnalysisBase(object):
             each of the workers and gets executed twice: one time in
             :meth:`_setup_frames` for the whole trajectory, second time in
             :meth:`_compute` for each of the computation groups.
+
+        .. versionchanged:: 2.11.0
+            Added :attr:`run_config` and :attr:`run_state` to expose normalized
+            run settings and runtime state. The slicer and total frame count for
+            the whole run are stored in :attr:`self.run_state.slicer` and
+            :attr:`self.run_state.n_frames`.
         """
         slicer = self._define_run_frames(trajectory, start, stop, step, frames)
+        self.run_state.slicer = slicer
+        self.run_state.n_frames = len(trajectory[slicer])
         self._prepare_sliced_trajectory(slicer)
 
     def _single_frame(self):
@@ -472,6 +506,11 @@ class AnalysisBase(object):
         Attributes accessible during your calculations:
 
           - ``self._frame_index``: index of the frame in results array
+          Note that this is not the same as the frame number in the trajectory
+          - ``self.run_state.frame_index``: index of the frame within the
+          analyzed selection (global run index). This is useful for parallel
+          runs, where you can't rely on the `self._frame_index`. Use
+          ``self._ts.frame`` for the absolute frame number in the trajectory.
           - ``self._ts`` -- Timestep instance
           - ``self._sliced_trajectory`` -- trajectory that you're iterating over
           - ``self.results`` -- :class:`MDAnalysis.analysis.results.Results` instance
@@ -557,6 +596,7 @@ class AnalysisBase(object):
             )
         ):
             self._frame_index = idx  # accessed later by subclasses
+            self.run_state.frame_index = indexed_frames[idx, 0]
             self._ts = ts
             self.frames[idx] = ts.frame
             self.times[idx] = ts.time
@@ -798,7 +838,7 @@ class AnalysisBase(object):
             By default, performs calculations in a serial fashion.
             Otherwise, user can choose a backend: ``str`` is matched to a
             builtin backend (one of ``serial``, ``multiprocessing`` and
-            ``dask``), or a :class:`MDAnalysis.analysis.results.BackendBase`
+            ``dask``), or a :class:`MDAnalysis.analysis.backends.BackendBase`
             subclass.
 
             .. versionadded:: 2.8.0
@@ -831,6 +871,10 @@ class AnalysisBase(object):
             Introduced ``backend``, ``n_workers``, ``n_parts`` and
             ``unsupported_backend`` keywords, and refactored the method logic to
             support parallelizable execution.
+
+        .. versionchanged:: 2.11.0
+            Added :attr:`run_config` and :attr:`run_state` to expose normalized
+            run settings and runtime state.
         """
         # default to serial execution
         backend = "serial" if backend is None else backend
@@ -891,6 +935,17 @@ class AnalysisBase(object):
         computation_groups = self._setup_computation_groups(
             start=start, stop=stop, step=step, frames=frames, n_parts=n_parts
         )
+        self.run_state.computation_groups = computation_groups
+        self._run_config = RunConfig(
+            start=self.start,
+            stop=self.stop,
+            step=self.step,
+            frames=frames,
+            backend=backend,
+            n_workers=n_workers,
+            n_parts=len(computation_groups),
+            unsupported_backend=unsupported_backend,
+        )
 
         # get all results from workers in other processes.
         # we need `AnalysisBase` classes
@@ -922,6 +977,34 @@ class AnalysisBase(object):
         .. versionadded:: 2.8.0
         """
         return ResultsGroup(lookup=None)
+
+    @property
+    def run_config(self) -> RunConfig:
+        """Stores normalized arguments for `run()`.
+        It includes `start`, `stop`, `step`, `frames`, `backend`, `n_workers`,
+        `n_parts` and `unsupported_backend` attributes.
+        """
+        return self._run_config
+
+    @property
+    def run_state(self) -> RunState:
+        """
+        Stores runtime-generated attributes that can be used
+        during the analysis.
+
+        It includes `slicer`, `n_frames`, `computation_groups` and `frame_index`
+        attributes.
+
+        The `slicer`, `n_frames`, `frame_index` attributes are used to store the
+        information for the whole trajectory being analyzed.
+        They are different from e.g. `self.n_frames` which is used to store the
+        information for the current computation group being analyzed.
+        """
+        # lazy initialization for the OldAPIAnalysis as it doesn't have the same
+        # `__init__` function as the current AnalysisBase.
+        if not hasattr(self, "_run_state"):
+            self._run_state = RunState()
+        return self._run_state
 
 
 class AnalysisFromFunction(AnalysisBase):

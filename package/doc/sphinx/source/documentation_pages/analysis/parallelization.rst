@@ -118,22 +118,29 @@ For MDAnalysis developers
 From a developer point of view, there are a few methods that are important in
 order to understand how parallelization is implemented:
 
-#. :meth:`MDAnalysis.analysis.base.AnalysisBase._define_run_frames`
+#. :meth:`MDAnalysis.analysis.base.AnalysisBase._setup_frames`
 #. :meth:`MDAnalysis.analysis.base.AnalysisBase._prepare_sliced_trajectory`
 #. :meth:`MDAnalysis.analysis.base.AnalysisBase._configure_backend`
 #. :meth:`MDAnalysis.analysis.base.AnalysisBase._setup_computation_groups`
 #. :meth:`MDAnalysis.analysis.base.AnalysisBase._compute`
 #. :meth:`MDAnalysis.analysis.base.AnalysisBase._get_aggregator`
 
-The first two methods share the functionality of :meth:`_setup_frames`.
-:meth:`_define_run_frames` is run once during analysis, as it checks that input
-parameters `start`, `stop`, `step` or `frames` are consistent with the given
-trajectory and prepares the ``slicer`` object that defines the iteration
-pattern through the trajectory. :meth:`_prepare_sliced_trajectory` assigns to
+:meth:`_setup_frames` is run once during analysis :attr:`run()`, as it checks that input
+parameters :attr:`start`, :attr:`stop`, :attr:`step` or :attr:`frames` are consistent with the given
+trajectory and prepares the :attr:`slicer` object that defines the iteration
+pattern through the trajectory with :meth:`_define_run_frames`.
+The attribute :attr:`self.run_state.slicer` is assigned based on the `slicer`.
+Users can later access the full sliced trajectory being analyzed via
+:attr:`self._trajectory[self.run_state.slicer]`.
+
+:meth:`_prepare_sliced_trajectory` assigns to
 the :attr:`self._sliced_trajectory` attribute, computes the number of frames in
 it, and fills the :attr:`self.frames` and :attr:`self.times` arrays. In case
 the computation will be later split between other processes, this method will
-be called again on each of the computation groups.
+be called again on each of the computation groups. In parallel analysis,
+:attr:`self._sliced_trajectory` represents a split of the original sliced
+trajectory, and :attr:`self.n_frames` is the number of frames in each split
+computation group (not the total number of frames in the sliced trajectory).
 
 The method :meth:`_configure_backend` performs basic health checks for a given
 analysis class -- namely, it compares a given backend (if it's a :class:`str`
@@ -155,7 +162,15 @@ analysis get initialized with the :meth:`_prepare` method. Then the function
 iterates over :attr:`self._sliced_trajectory`, assigning
 :attr:`self._frame_index` and :attr:`self._ts` as frame index (within a
 computation group) and timestamp, and also setting respective
-:attr:`self.frames` and :attr:`self.times` array values.
+:attr:`self.frames` and :attr:`self.times` array values. Additionally,
+:attr:`self.run_state.frame_index` is assigned the run frame index
+within the full sliced trajectory (:attr:`self._trajectory[self.run_state.slicer]`)
+that is being analyzed. The total number of frames for the full run is
+available as :attr:`self.run_state.n_frames`.
+This run frame index is particularly useful for analyses requiring it, such as 
+:class:`MDAnalysis.analysis.diffusionmap.DistanceMatrix` that needs to know the
+frame index in the trajectory sliced that is being analyzed.
+See :ref:`retrieving-correct-frame-index` for more details.
 
 After :meth:`_compute` has finished, the main analysis instance calls the
 :meth:`_get_aggregator` method, which merges the :attr:`self.results`
@@ -163,6 +178,23 @@ attributes from other processes into a single
 :class:`MDAnalysis.analysis.results.Results` instance, making it look for the
 subsequent :meth:`_conclude` method as if the run was performed in a serial
 fashion, without parallelization.
+
+
+Run configuration/state
+-----------------------
+
+``AnalysisBase`` stores run inputs and runtime metadata in two attributes:
+
+- :attr:`self.run_config` holds the normalized `run()` inputs (defaults resolved
+  for ``start``, ``stop``, ``step``, ``backend``, ``n_workers``, and ``n_parts``).
+- :attr:`self.run_state` holds runtime state such as the full-run
+  :attr:`self.run_state.slicer`, the total :attr:`self.run_state.n_frames`, the
+  computation groups, and the per-frame :attr:`self.run_state.frame_index`.
+
+In parallel runs, :attr:`self._frame_index` is the local index within a
+computation group, while :attr:`self.run_state.frame_index` is the global index
+within the analyzed selection. For the absolute trajectory frame number, use
+:attr:`self._ts.frame`.
 
 
 Helper classes for parallelization
@@ -357,6 +389,82 @@ In this way, you will override the check for supported backends.
    with a supported backend. When reporting *always mention if you used*
    ``unsupported_backend=True``.
     
+.. _retrieving-correct-frame-index:
+Retrieving correct frame index in parallel analysis
+===================================================
+
+To retrieve the correct frame index during parallel analysis, use the
+:attr:`self.run_state.frame_index` attribute. This attribute represents the correct
+frame index within the full sliced trajectory
+(:attr:`self._trajectory[self.run_state.slicer]`).
+
+For an example illustrating when to use :attr:`_frame_index` versus
+:attr:`self.run_state.frame_index` and :attr:`self.run_state.slicer`,
+see the following code snippet:
+
+.. code-block:: python
+
+    from MDAnalysis.analysis.base import AnalysisBase
+    from MDAnalysis.analysis.results import ResultsGroup
+
+    class MyAnalysis(AnalysisBase):
+        _analysis_algorithm_is_parallelizable = True
+
+        @classmethod
+        def get_supported_backends(cls):
+            """Define the supported backends for the analysis."""
+            return ('serial', 'multiprocessing', 'dask')
+
+        def _prepare(self):
+            """Initialize result attributes and compute frame count."""
+            self.results.frame_index = []
+            self.results.run_frame_index = []
+            self.results.n_frames = []
+            self.results.run_n_frames = []
+            self.run_n_frames = self.run_state.n_frames
+
+        def _single_frame(self):
+            """Process a single frame during the analysis."""
+            frame_index = self._frame_index
+            run_frame_index = self.run_state.frame_index
+
+            # Append results for the current frame
+            self.results.frame_index.append(frame_index)
+            self.results.run_frame_index.append(run_frame_index)
+            self.results.n_frames.append(self.n_frames)
+            self.results.run_n_frames.append(self.run_n_frames)
+
+        def _get_aggregator(self):
+            """Return an aggregator to combine results from multiple workers."""
+            return ResultsGroup(
+                lookup={
+                    'frame_index': ResultsGroup.flatten_sequence,
+                    'run_frame_index': ResultsGroup.flatten_sequence,
+                    'n_frames': ResultsGroup.flatten_sequence,
+                    'run_n_frames': ResultsGroup.flatten_sequence,
+                }
+            )
+
+    # Example usage: serial analysis
+    ana = MyAnalysis(u.trajectory)
+    ana.run(step=2)
+    print(ana.results)
+    # Output:
+    # {'frame_index': [0, 1, 2, 3, 4], 
+    #  'run_frame_index': [0, 1, 2, 3, 4], 
+    #  'n_frames': [5, 5, 5, 5, 5], 
+    #  'run_n_frames': [5, 5, 5, 5, 5]}
+
+    # Example usage: parallel analysis
+    ana = MyAnalysis(u.trajectory)
+    ana.run(step=2, backend='dask', n_workers=2)
+    print(ana.results)
+    # Output:
+    # {'frame_index': [0, 1, 2, 0, 1], 
+    #  'run_frame_index': [0, 1, 2, 3, 4], 
+    #  'n_frames': [3, 3, 3, 2, 2], 
+    #  'run_n_frames': [5, 5, 5, 5, 5]}
+
 
 .. rubric:: References
 .. footbibliography::

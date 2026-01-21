@@ -15,7 +15,7 @@ The rules for this file:
 
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, orbeckst, marinegor, tylerjereddy, ljwoods2, marinegor,
-         spyke7, talagayev, tanii1125, BradyAJohnston
+         spyke7, talagayev, tanii1125, BradyAJohnston, yuxuanzhuang,
 
  * 2.11.0
 
@@ -37,6 +37,8 @@ Fixes
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Enhancements
+ * Added `RunConfig` and `RunState` to make it possible to retrieve information
+   of the full trajectory slice in AnalysisBase. (Issue #4891 PR #4892)
  * Enables parallelization for analysis.diffusionmap.DistanceMatrix
    (Issue #4679, PR #4745)
 
