@@ -921,8 +921,8 @@ SURFACE_TRR = (_data_ref / "surface.trr").as_posix()
 DSSP = (_data_ref / "dssp").as_posix()
 
 # Files for testing the identification of `sugar` token
-GLYCAM = (_data_ref / 'GLYCAM_sugars.pdb').as_posix()
-SUGAR_PDB = (_data_ref / '6kya.pdb.gz').as_posix()
+GLYCAM = (_data_ref / "GLYCAM_sugars.pdb").as_posix()
+SUGAR_PDB = (_data_ref / "6kya.pdb.gz").as_posix()
 
 # This should be the last line: clean up namespace
 del resources
