@@ -129,12 +129,11 @@ def cog(u, ag, frame_id):
 
 def test_multiprocess_COG(u):
     ag = u.atoms[2:5]
-
     ref = np.array([cog(u, ag, i) for i in range(3)])
 
-    p = multiprocessing.Pool(2)
-    res = np.array([p.apply(cog, args=(u, ag, i)) for i in range(3)])
-    p.close()
+    with multiprocessing.Pool(2) as p:
+        res = np.array(p.starmap(cog, [(u, ag, i) for i in range(3)]))
+
     assert_equal(ref, res)
 
 
@@ -147,10 +146,9 @@ def test_universe_unpickle_in_new_process():
     u = mda.Universe(GRO, XTC)
     ref = [getnames(u, i) for i in range(3)]
 
-    p = multiprocessing.Pool(2)
-    res = [p.apply(getnames, args=(u, i)) for i in range(3)]
-    p.close()
-
+    with multiprocessing.Pool(2) as p:
+        res = [p.apply_async(getnames, args=(u, i)) for i in range(3)]
+        res = [r.get() for r in res]
     assert_equal(ref, res)
 
 
