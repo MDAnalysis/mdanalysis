@@ -131,7 +131,8 @@ def test_multiprocess_COG(u):
     ag = u.atoms[2:5]
     ref = np.array([cog(u, ag, i) for i in range(3)])
 
-    with multiprocessing.Pool(2) as p:
+    ctx = multiprocessing.get_context("spawn")
+    with ctx.Pool(2) as p:
         res = np.array(p.starmap(cog, [(u, ag, i) for i in range(3)]))
 
     assert_equal(ref, res)
@@ -146,7 +147,8 @@ def test_universe_unpickle_in_new_process():
     u = mda.Universe(GRO, XTC)
     ref = [getnames(u, i) for i in range(3)]
 
-    with multiprocessing.Pool(2) as p:
+    ctx = multiprocessing.get_context("spawn")
+    with ctx.Pool(2) as p:
         res = [p.apply_async(getnames, args=(u, i)) for i in range(3)]
         res = [r.get() for r in res]
     assert_equal(ref, res)
@@ -160,7 +162,9 @@ def test_creating_multiple_universe_without_offset(temp_xtc, ncopies=3):
     #  a problem (see PR #3375 and issues #3230, #1988)
 
     args = (GRO, str(temp_xtc))
-    with multiprocessing.Pool(2) as p:
+
+    ctx = multiprocessing.get_context("spawn")
+    with ctx.Pool(2) as p:
         universes = [p.apply_async(mda.Universe, args) for i in range(ncopies)]
         universes = [universe.get() for universe in universes]
 
