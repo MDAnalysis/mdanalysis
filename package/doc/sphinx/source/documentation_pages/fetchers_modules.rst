@@ -6,7 +6,7 @@ Fetchers modules
 
 The fetch module contains code that are able to retrieve data from
 the internet. All code in this module currently depends on the 
-dependency :ref:`pooch` which is required in order to run this
+dependency :mod:`pooch` which is required in order to run this
 module. 
 
 .. rubric:: Fetcher functions
