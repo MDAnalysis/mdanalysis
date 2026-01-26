@@ -1,4 +1,4 @@
-.. _ihatelife:
+.. Contains the formatted docstrings from the topology modules located in 'mdanalysis/MDAnalysis/fetch'
 
 Fetcher Modules
 ==============
