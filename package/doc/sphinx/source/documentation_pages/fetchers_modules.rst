@@ -1,18 +1,18 @@
-.. Contains the formatted docstrings from the topology modules located in 'mdanalysis/MDAnalysis/fetch'
+.. Contains the formatted docstrings from the fetch modules located in 'mdanalysis/MDAnalysis/fetch'
 
-Fetcher Modules
-==============
+**************************
+Fetchers modules
+**************************
 
-The fetch module contains functions that are able to retrieve data from the internet.
-
-Overview
---------
-test
+The fetch module contains code that are able to retrieve data from
+the internet. All code in this module currently depends on the 
+dependency :ref:`pooch` which is required in order to run this
+module. 
 
 .. rubric:: Fetcher functions
 
 .. toctree::
    :maxdepth: 1
-   :numbered:
 
+   fetchers/init
    fetchers/PDB

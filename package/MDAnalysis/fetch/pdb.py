@@ -22,16 +22,22 @@
 #
 
 """
+PDB Fetchers --- :mod:`MDAnalysis.fetch.pdb`
+============================================
 
 This suite of functions download structure files from the Research Collaboratory for
 Structural Bioinformatics (RCSB) Protein Data Batabank (PDB).
+
+Variables
+---------
+
+.. autodata:: DEFAULT_CACHE_NAME_DOWNLOADER
+
 
 Functions
 ---------
 
 .. autofunction:: from_PDB
-
-.. autodata:: DEFAULT_CACHE_NAME_DOWNLOADER
 
 """
 from pathlib import Path

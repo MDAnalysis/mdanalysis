@@ -1,1 +1,1 @@
-.. automodule:: MDAnalysis.fetch
+.. automodule:: MDAnalysis.fetch.pdb
