@@ -124,6 +124,7 @@ Thank you!
    ./documentation_pages/topology_modules
    ./documentation_pages/guesser_modules
    ./documentation_pages/coordinates_modules
+   ./documentation_pages/fetchers_modules
    ./documentation_pages/converters
    ./documentation_pages/trajectory_transformations
    ./documentation_pages/selections_modules
