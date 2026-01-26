@@ -89,6 +89,10 @@ root-mean-square distance analysis in the following way:
    plt.xlabel("time (ps)")
    plt.ylabel("RMSD (Å)")
 
+If you want to run two or more different analyses on the same trajectory you
+can also efficently combine them using the
+:class:`MDAnalysis.analysis.base.AnalysisCollection` class.
+
 
 Writing new analysis tools
 --------------------------
@@ -147,6 +151,7 @@ simple wrappers that make it even easier to create fully-featured analysis
 tools if only the single-frame analysis function needs to be written.
 
 """
+from typing import Self
 import inspect
 import itertools
 import logging
@@ -170,7 +175,128 @@ from .results import Results, ResultsGroup
 logger = logging.getLogger(__name__)
 
 
-class AnalysisBase(object):
+class _Runner:
+    """Private Runner class that provides a common ``run`` method.
+
+    Class is used inside ``AnalysisBase`` as well as in ``AnalysisCollection``
+    """
+
+    def _run(
+        self,
+        analysis_instances: tuple["AnalysisBase", ...],
+        start: int = None,
+        stop: int = None,
+        step: int = None,
+        frames: Iterable = None,
+        verbose: bool = None,
+        n_workers: int = None,
+        n_parts: int = None,
+        backend: Union[str, BackendBase] = None,
+        *,
+        unsupported_backend: bool = False,
+        progressbar_kwargs=None,
+    ) -> None:
+        """Implementation of common run method."""
+
+        # default to serial execution
+        backend = "serial" if backend is None else backend
+
+        progressbar_kwargs = (
+            {} if progressbar_kwargs is None else progressbar_kwargs
+        )
+        if (progressbar_kwargs or verbose) and not (
+            backend == "serial" or isinstance(backend, BackendSerial)
+        ):
+            raise ValueError(
+                "Can not display progressbar with non-serial backend"
+            )
+
+        # if number of workers not specified, try getting the number from
+        # the backend instance if possible, or set to 1
+        if n_workers is None:
+            n_workers = (
+                backend.n_workers
+                if isinstance(backend, BackendBase)
+                and hasattr(backend, "n_workers")
+                else 1
+            )
+
+        # set n_parts and check that is has a reasonable value
+        n_parts = n_workers if n_parts is None else n_parts
+
+        # Set up
+        executors = []
+        for analysis_object in analysis_instances:
+            # do this as early as possible to check client parameters
+            # before any computations occur
+            executor = self._configure_backend(
+                backend=backend,
+                n_workers=n_workers,
+                unsupported_backend=unsupported_backend,
+            )
+            if (
+                hasattr(executor, "n_workers") and n_parts < executor.n_workers
+            ):  # using executor's value here for non-default executors
+                warnings.warn(
+                    (
+                        f"Analysis not making use of all workers: "
+                        f"{executor.n_workers=} is greater than {n_parts=}"
+                    )
+                )
+            executors.append(executor)
+
+            # start preparing the run
+            worker_func = partial(
+                analysis_object._compute,
+                progressbar_kwargs=progressbar_kwargs,
+                verbose=verbose,
+            )
+            analysis_object._setup_frames(
+                trajectory=analysis_object._trajectory,
+                start=start,
+                stop=stop,
+                step=step,
+                frames=frames,
+            )
+
+            computation_groups = analysis_object._setup_computation_groups(
+                start=start,
+                stop=stop,
+                step=step,
+                frames=frames,
+                n_parts=n_parts,
+            )
+
+        # run computations
+        for analysis_object, executor in zip(analysis_instances, executors):
+            # get all results from workers in other processes.
+            # we need `AnalysisBase` classes
+            # since they hold `frames`, `times` and `results` attributes
+            remote_objects: list["AnalysisBase"] = executor.apply(
+                worker_func, computation_groups
+            )
+            analysis_instances.frames = np.hstack(
+                [obj.frames for obj in remote_objects]
+            )
+            analysis_instances.times = np.hstack(
+                [obj.times for obj in remote_objects]
+            )
+
+            # aggregate results from results obtained in remote workers
+            remote_results = [obj.results for obj in remote_objects]
+            results_aggregator = analysis_instances._get_aggregator()
+            analysis_instances.results = results_aggregator.merge(
+                remote_results
+            )
+
+        # finalize
+        for analysis_object in analysis_instances:
+            analysis_object._conclude()
+
+        return self
+
+
+class AnalysisBase(_Runner):
     r"""Base class for defining multi-frame analysis
 
     The class is designed as a template for creating multi-frame analyses.
@@ -769,7 +895,7 @@ class AnalysisBase(object):
         *,
         unsupported_backend: bool = False,
         progressbar_kwargs=None,
-    ):
+    ) -> Self:
         """Perform the calculation
 
         Parameters
@@ -832,82 +958,19 @@ class AnalysisBase(object):
             ``unsupported_backend`` keywords, and refactored the method logic to
             support parallelizable execution.
         """
-        # default to serial execution
-        backend = "serial" if backend is None else backend
-
-        progressbar_kwargs = (
-            {} if progressbar_kwargs is None else progressbar_kwargs
-        )
-        if (progressbar_kwargs or verbose) and not (
-            backend == "serial" or isinstance(backend, BackendSerial)
-        ):
-            raise ValueError(
-                "Can not display progressbar with non-serial backend"
-            )
-
-        # if number of workers not specified, try getting the number from
-        # the backend instance if possible, or set to 1
-        if n_workers is None:
-            n_workers = (
-                backend.n_workers
-                if isinstance(backend, BackendBase)
-                and hasattr(backend, "n_workers")
-                else 1
-            )
-
-        # set n_parts and check that is has a reasonable value
-        n_parts = n_workers if n_parts is None else n_parts
-
-        # do this as early as possible to check client parameters
-        # before any computations occur
-        executor = self._configure_backend(
-            backend=backend,
-            n_workers=n_workers,
-            unsupported_backend=unsupported_backend,
-        )
-        if (
-            hasattr(executor, "n_workers") and n_parts < executor.n_workers
-        ):  # using executor's value here for non-default executors
-            warnings.warn(
-                (
-                    f"Analysis not making use of all workers: "
-                    f"{executor.n_workers=} is greater than {n_parts=}"
-                )
-            )
-
-        # start preparing the run
-        worker_func = partial(
-            self._compute,
-            progressbar_kwargs=progressbar_kwargs,
-            verbose=verbose,
-        )
-        self._setup_frames(
-            trajectory=self._trajectory,
+        return self._run(
+            analysis_instances=(self,),
             start=start,
             stop=stop,
             step=step,
             frames=frames,
+            verbose=verbose,
+            n_workers=n_workers,
+            n_parts=n_parts,
+            backend=backend,
+            unsupported_backend=unsupported_backend,
+            progressbar_kwargs=progressbar_kwargs,
         )
-        computation_groups = self._setup_computation_groups(
-            start=start, stop=stop, step=step, frames=frames, n_parts=n_parts
-        )
-
-        # get all results from workers in other processes.
-        # we need `AnalysisBase` classes
-        # since they hold `frames`, `times` and `results` attributes
-        remote_objects: list["AnalysisBase"] = executor.apply(
-            worker_func, computation_groups
-        )
-        self.frames = np.hstack([obj.frames for obj in remote_objects])
-        self.times = np.hstack([obj.times for obj in remote_objects])
-
-        # aggregate results from results obtained in remote workers
-        remote_results = [obj.results for obj in remote_objects]
-        results_aggregator = self._get_aggregator()
-        self.results = results_aggregator.merge(remote_results)
-
-        self._conclude()
-        return self
 
     def _get_aggregator(self) -> ResultsGroup:
         """Returns a default aggregator that takes entire results
@@ -922,6 +985,121 @@ class AnalysisBase(object):
         .. versionadded:: 2.8.0
         """
         return ResultsGroup(lookup=None)
+
+
+class AnalysisCollection(_Runner):
+    """
+    Class for running a collection of analysis classes on a single trajectory.
+
+    Running a collection of analyses with ``AnalysisCollection`` can result in
+    a speedup compared to running the individual analyses since the trajectory
+    loop ins only performed once.
+
+    The class assumes that each analysis is a child of
+    :class:`MDAnalysis.analysis.base.AnalysisBase`. Additionally, the
+    trajectory of all `analysis_instances` must be the same.
+
+    By default, it is ensured that all analysis instances use the
+    *same original* timestep and not an altered one from a previous analysis
+    object.
+
+    Parameters
+    ----------
+    *analysis_instances : tuple
+        List of analysis classes to run on the same trajectory.
+
+    Raises
+    ------
+    AttributeError
+        If all the provided ``analysis_instances`` do not work on the same
+        trajectory.
+    AttributeError
+        If an ``analysis_object`` is not a child of
+        :class:`MDAnalysis.analysis.base.AnalysisBase`.
+
+    Example
+    -------
+    .. code-block:: python
+
+        import MDAnalysis as mda
+        from MDAnalysis.analysis.rdf import InterRDF
+        from MDAnalysis.analysis.base import AnalysisCollection
+        from MDAnalysisTests.datafiles import TPR, XTC
+
+        u = mda.Universe(TPR, XTC)
+
+        # Select atoms
+        ag_O = u.select_atoms("name O")
+        ag_H = u.select_atoms("name H")
+
+        # Create individual analysis instances
+        rdf_OO = InterRDF(ag_O, ag_O)
+        rdf_OH = InterRDF(ag_H, ag_H)
+
+        # Create a collection for common trajectory
+        collection = AnalysisCollection(rdf_OO, rdf_OH)
+
+        # Run the collected analysis
+        collection.run(start=0, stop=100, step=10)
+
+        # Results are stored in the individual instances
+        print(rdf_OO.results)
+        print(rdf_OH.results)
+
+
+    .. versionadded:: 2.11.0
+
+    """
+
+    def __init__(self, *analysis_instances):
+        for analysis_object in analysis_instances:
+            if (
+                analysis_instances[0]._trajectory
+                != analysis_object._trajectory
+            ):
+                raise ValueError(
+                    "`analysis_instances` do not have the same " "trajectory."
+                )
+            if not isinstance(analysis_object, AnalysisBase):
+                raise AttributeError(
+                    f"Analysis object {analysis_object} is "
+                    "not a child of `AnalysisBase`."
+                )
+
+        self._analysis_instances = analysis_instances
+
+    def run(
+        self,
+        start: int = None,
+        stop: int = None,
+        step: int = None,
+        frames: Iterable = None,
+        verbose: bool = None,
+        n_workers: int = None,
+        n_parts: int = None,
+        backend: Union[str, BackendBase] = None,
+        *,
+        unsupported_backend: bool = False,
+        progressbar_kwargs=None,
+    ) -> Self:
+        """Perform the calculation.
+
+        Same parameters as in :meth:`AnalysisBase.run`, but applied to all
+        analysis instances in the collection.
+        """
+        return self._run(
+            analysis_instances=self._analysis_instances,
+            start=start,
+            stop=stop,
+            step=step,
+            frames=frames,
+            verbose=verbose,
+            n_workers=n_workers,
+            n_parts=n_parts,
+            backend=backend,
+            unsupported_backend=unsupported_backend,
+            progressbar_kwargs=progressbar_kwargs,
+        )
 
 
 class AnalysisFromFunction(AnalysisBase):
@@ -1007,7 +1185,7 @@ class AnalysisFromFunction(AnalysisBase):
 
         self.kwargs = kwargs
 
-        super(AnalysisFromFunction, self).__init__(trajectory)
+        super().__init__(trajectory)
 
     def _prepare(self):
         self.results.timeseries = []

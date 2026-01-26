@@ -20,10 +20,10 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-import pickle
-from collections import UserDict
 
 import MDAnalysis as mda
+from MDAnalysis.analysis import base
+from MDAnalysis.analysis.rdf import InterRDF
 import numpy as np
 import pytest
 from MDAnalysis.analysis import backends, base
@@ -653,3 +653,63 @@ def test_analysis_class_decorator():
 
     with no_deprecated_call():
         d = Distances(u.atoms[:10], u.atoms[10:20]).run()
+
+
+def test_run(u_xtc):
+    ag_O = u_xtc.select_atoms("name O")
+    ag_H = u_xtc.select_atoms("name H")
+
+    rdf_OO = InterRDF(ag_O, ag_O)
+    rdf_OH = InterRDF(ag_O, ag_H)
+
+    collection = base.AnalysisCollection(rdf_OO, rdf_OH)
+    collection.run(start=0, stop=100, step=10)
+
+    assert rdf_OO.results is not None
+    assert rdf_OH.results is not None
+
+
+def test_trajectory_manipulation(u_xtc):
+    """Test that the timestep is the same for each analysis class."""
+
+    class CustomAnalysis(base.AnalysisBase):
+        """Custom class that is shifting positions in every step by 10."""
+
+        def __init__(self, trajectory):
+            self._trajectory = trajectory
+
+        def _prepare(self):
+            pass
+
+        def _single_frame(self):
+            self._ts.positions += 10
+            self.ref_pos = self._ts.positions.copy()[0, 0]
+
+    ana_1 = CustomAnalysis(u_xtc.trajectory)
+    ana_2 = CustomAnalysis(u_xtc.trajectory)
+
+    collection = base.AnalysisCollection(ana_1, ana_2)
+    collection.run(frames=[0])
+
+    assert ana_2.ref_pos == ana_1.ref_pos
+
+
+def test_inconsistent_trajectory(u_xtc):
+    v = mda.Universe(TPR, XTC)
+
+    match = "`analysis_instances` do not have the same trajectory."
+    with pytest.raises(ValueError, match=match):
+        base.AnalysisCollection(
+            InterRDF(u_xtc.atoms, u_xtc.atoms), InterRDF(v.atoms, v.atoms)
+        )
+
+
+def test_no_base_child(u_xtc):
+    class CustomAnalysis:
+        def __init__(self, trajectory):
+            self._trajectory = trajectory
+
+    match = "not a child of `AnalysisBase`"
+    # collection for common trajectory loop with inconsistent trajectory
+    with pytest.raises(AttributeError, match=match):
+        base.AnalysisCollection(CustomAnalysis(u_xtc.trajectory))
