@@ -179,3 +179,40 @@ class TestPerformanceTiming:
         # Should still record timing even with no frames
         assert hasattr(analysis.results, 'timing')
         assert 'prepare' in analysis.results.timing
+
+    def test_timing_does_not_affect_analysis_results(self, universe):
+        """Verify that enabling timing doesn't change analysis results"""
+        analysis_no_timing = DummyAnalysis(universe.trajectory, enable_timing=False)
+        analysis_no_timing.run(stop=5)
+        
+        # Reload universe for clean state
+        universe2 = mda.Universe(PSF, DCD)
+        analysis_with_timing = DummyAnalysis(universe2.trajectory, enable_timing=True)
+        analysis_with_timing.run(stop=5)
+        
+        # Results should be identical regardless of timing enabled
+        assert analysis_no_timing.results.data == analysis_with_timing.results.data
+
+    def test_timing_logical_relationships_with_tolerance(self, universe):
+        """Test that timing values have correct logical relationships"""
+        analysis = DummyAnalysis(universe.trajectory, enable_timing=True)
+        analysis.run(stop=5)
+        
+        timing = analysis.results.timing
+        # Allow 1ms floating point tolerance due to measurement precision
+        tolerance = 0.001
+        
+        # prepare should not exceed total
+        assert timing['prepare'] <= timing['total'] + tolerance, \
+            "Prepare time should not exceed total time"
+        # frame_iteration should not exceed total
+        assert timing['frame_iteration'] <= timing['total'] + tolerance, \
+            "Frame iteration time should not exceed total time"
+
+    def test_timing_values_no_negative(self, universe):
+        """Ensure timing values are never negative (catches clock issues)"""
+        analysis = DummyAnalysis(universe.trajectory, enable_timing=True)
+        analysis.run(stop=5)
+        
+        for key, value in analysis.results.timing.items():
+            assert value >= 0, f"Timing value for '{key}' is negative: {value}"
