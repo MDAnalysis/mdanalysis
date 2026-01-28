@@ -150,6 +150,7 @@ tools if only the single-frame analysis function needs to be written.
 import inspect
 import itertools
 import logging
+import time
 import warnings
 from functools import partial
 from typing import Iterable, Union
@@ -196,6 +197,10 @@ class AnalysisBase(object):
         A trajectory Reader
     verbose : bool, optional
         Turn on more logging and debugging
+    enable_timing : bool, optional
+        Enable performance timing measurements during :meth:`run`.
+        When enabled, timing data will be stored in :attr:`results.timing`.
+        Default is False.
 
     Attributes
     ----------
@@ -345,9 +350,10 @@ class AnalysisBase(object):
         """
         return self._analysis_algorithm_is_parallelizable
 
-    def __init__(self, trajectory, verbose=False, **kwargs):
+    def __init__(self, trajectory, verbose=False, enable_timing=False, **kwargs):
         self._trajectory = trajectory
         self._verbose = verbose
+        self._enable_timing = enable_timing
         self.results = Results()
 
     def _define_run_frames(
@@ -546,11 +552,26 @@ class AnalysisBase(object):
         frames = indexed_frames[:, 1]
 
         logger.info("Starting preparation")
+        # Record timing if enabled
+        if self._enable_timing:
+            prepare_start = time.perf_counter()
+        
         self._prepare_sliced_trajectory(slicer=frames)
         self._prepare()
+        
+        if self._enable_timing:
+            prepare_end = time.perf_counter()
+            if not hasattr(self.results, 'timing'):
+                self.results.timing = {}
+            self.results.timing['prepare'] = prepare_end - prepare_start
+        
         if len(frames) == 0:  # if `frames` were empty in `run` or `stop=0`
             return self
 
+        # Record frame iteration timing if enabled
+        if self._enable_timing:
+            frame_start = time.perf_counter()
+        
         for idx, ts in enumerate(
             ProgressBar(
                 self._sliced_trajectory, verbose=verbose, **progressbar_kwargs
@@ -561,6 +582,11 @@ class AnalysisBase(object):
             self.frames[idx] = ts.frame
             self.times[idx] = ts.time
             self._single_frame()
+        
+        if self._enable_timing:
+            frame_end = time.perf_counter()
+            self.results.timing['frame_iteration'] = frame_end - frame_start
+        
         logger.info("Finishing up")
         return self
 
@@ -892,6 +918,10 @@ class AnalysisBase(object):
             start=start, stop=stop, step=step, frames=frames, n_parts=n_parts
         )
 
+        # Record overall run timing if enabled
+        if self._enable_timing:
+            run_start = time.perf_counter()
+
         # get all results from workers in other processes.
         # we need `AnalysisBase` classes
         # since they hold `frames`, `times` and `results` attributes
@@ -907,6 +937,14 @@ class AnalysisBase(object):
         self.results = results_aggregator.merge(remote_results)
 
         self._conclude()
+        
+        # Record conclude timing if enabled
+        if self._enable_timing:
+            run_end = time.perf_counter()
+            if not hasattr(self.results, 'timing'):
+                self.results.timing = {}
+            self.results.timing['total'] = run_end - run_start
+        
         return self
 
     def _get_aggregator(self) -> ResultsGroup:
