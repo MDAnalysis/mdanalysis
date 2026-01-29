@@ -109,3 +109,18 @@ def test_insufficient_residues_raises_error(client_DSSP):
     dssp = DSSP(res6)
     result = dssp.run(**client_DSSP, stop=1)
     assert result.results.dssp.shape[1] == 6
+
+
+def test_dssp_run_raises_on_streamed_trajectory():
+    """Issue #5183: DSSP.run() should fail for streamed trajectories
+    with unknown frame count.
+    """
+    u = mda.Universe(TPR, XTC).select_atoms("protein").universe
+    traj = u.trajectory
+    original_n_frames = traj.n_frames
+    try:
+        traj.n_frames = None
+        with pytest.raises(RuntimeError):
+            DSSP(u).run()
+    finally:
+        traj.n_frames = original_n_frames

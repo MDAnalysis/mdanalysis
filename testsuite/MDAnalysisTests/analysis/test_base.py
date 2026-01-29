@@ -653,3 +653,21 @@ def test_analysis_class_decorator():
 
     with no_deprecated_call():
         d = Distances(u.atoms[:10], u.atoms[10:20]).run()
+
+
+def test_analysisbase_run_raises_on_streamed_trajectory(u):
+    """Issue #5183: AnalysisBase.run() must fail for streamed trajectories
+    with unknown frame count.
+    """
+    class MinimalAnalysis(base.AnalysisBase):
+        def _single_frame(self):
+            pass
+
+    traj = u.trajectory
+    original_n_frames = traj.n_frames
+    try:
+        traj.n_frames = None
+        with pytest.raises(RuntimeError):
+            MinimalAnalysis(traj).run()
+    finally:
+        traj.n_frames = original_n_frames
