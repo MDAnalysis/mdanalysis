@@ -26,7 +26,9 @@ PDB Fetchers --- :mod:`MDAnalysis.fetch.pdb`
 ============================================
 
 This suite of functions download structure files from the Research Collaboratory for
-Structural Bioinformatics (RCSB) Protein Data Batabank (PDB).
+Structural Bioinformatics (RCSB) `Protein Data Batabank`_ (PDB).
+
+.. _Protein Data Batabank: https://www.rcsb.org/
 
 Variables
 ---------
