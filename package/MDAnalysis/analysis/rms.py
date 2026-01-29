@@ -266,7 +266,7 @@ def rmsd(
     >>> _ = u.trajectory[-1]  # forward to last frame
     >>> B = bb.positions.copy()  # coordinates of last frame
     >>> rmsd(A, B, center=True)
-    6.838544558398293
+    np.float64(6.838544558398293)
 
 
     .. versionchanged:: 0.8.1
