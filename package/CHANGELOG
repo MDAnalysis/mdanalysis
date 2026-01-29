@@ -15,11 +15,18 @@ The rules for this file:
 
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, orbeckst, marinegor, tylerjereddy, ljwoods2, marinegor,
-         spyke7, talagayev, jauy123, BradyAJohnston
+         spyke7, talagayev, tanii1125, BradyAJohnston, jauy123
 
  * 2.11.0
 
 Fixes
+ * HydrogenBondAnalysis: Fixed `count_by_time()` when using `run(FrameIterator)` that
+   results in `self.start` and `self.end` being None (Issue #5200, PR #5202)
+ * NoJump shows a more informative message and fails  when applied
+   outside of the first frame (Issue #4915, PR #5201)
+ * DSSP now explicitly checks for a minimum of 6 residues and raises a clear
+   error message, unlike the previous behavior where it would fail with an
+   incomprehensible broadcasting error at execution time (Issue #5046, PR #5163)
  * Fixes the verbose=False in EinsteinMSD, and only shows progress bar when
    verbose=True (Issue #5144, PR #5153)
  * Fix incorrect assignment of topology_format to format (and vice versa)
@@ -30,7 +37,8 @@ Fixes
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Enhancements
-* Added function `topology.PDBParser.fetch_pdb` (accessible as
+* Added new top-level MDAnalysis.fetchers` module (PR #4943)
+* Added new function `topology.PDBParser.fetch_pdb` (accessible as
   `MDAnalysis.fetch_pdb()`) to download structure files from wwPDB using
   `pooch` as optional dependency (Issue #4907, PR #4943) 
  * Enables parallelization for analysis.diffusionmap.DistanceMatrix

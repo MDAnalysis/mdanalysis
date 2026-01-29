@@ -70,7 +70,34 @@ the normal MDAnalysis citations.
    
    In MDAnalysis you can use the 
    :class:`~MDAnalysis.transformations.nojump.NoJump`
-   transformation. 
+   transformation to unwrap coordinates on-the-fly.
+    
+   A minimal example:
+
+   .. code-block:: python
+      
+      import MDAnalysis as mda
+      from MDAnalysis.transformations import NoJump
+      
+      u = mda.Universe(TOP, TRAJ)
+      
+      # Apply NoJump transformation to unwrap coordinates
+      u.trajectory.add_transformations(NoJump(u))
+       
+      # Now the trajectory is unwrapped and MSD can be computed normally:
+      from MDAnalysis.analysis.msd import EinsteinMSD
+      MSD = EinsteinMSD(u, select="all", msd_type="xyz")
+      MSD.run()
+
+   This example assumes that the trajectory contains periodic box
+   dimensions. If no periodic boundary information is present, box
+   dimensions must be defined before applying ``NoJump``, which can
+   be accomplished by applying the
+   :class:`~MDAnalysis.transformations.boxdimensions.set_dimensions`
+   transformation *before* the 
+   :class:`~MDAnalysis.transformations.nojump.NoJump` transformation.
+   
+   This replaces the need to preprocess trajectories externally.
    
    In GROMACS, for example, this can be done using `gmx trjconv`_ with the
    ``-pbc nojump`` flag.
@@ -382,14 +409,11 @@ class EinsteinMSD(AnalysisBase):
             "xyz": [0, 1, 2],
         }
 
-        self.msd_type = self.msd_type.lower()
-
         try:
-            self._dim = keys[self.msd_type]
-        except KeyError:
+            self._dim = keys[self.msd_type.lower()]
+        except (AttributeError, KeyError):
             raise ValueError(
-                "invalid msd_type: {} specified, please specify one of xyz, "
-                "xy, xz, yz, x, y, z".format(self.msd_type)
+                f"Invalid msd_type {self.msd_type}, must be a string and one of: xyz, xy, xz, yz, x, y, z"
             )
 
         self.dim_fac = len(self._dim)
