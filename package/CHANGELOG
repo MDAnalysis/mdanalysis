@@ -37,10 +37,9 @@ Fixes
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Enhancements
-* Added new top-level MDAnalysis.fetchers` module (PR #4943)
-* Added new function `topology.PDBParser.fetch_pdb` (accessible as
-  `MDAnalysis.fetch_pdb()`) to download structure files from wwPDB using
-  `pooch` as optional dependency (Issue #4907, PR #4943) 
+ * Added new top-level `MDAnalysis.fetch` module (PR #4943)
+ * Added new function `MDAnalysis.fetch.from_PDB` to download structure files from wwPDB
+   using `pooch` as optional dependency (Issue #4907, PR #4943) 
  * Enables parallelization for analysis.diffusionmap.DistanceMatrix
    (Issue #4679, PR #4745)
 
