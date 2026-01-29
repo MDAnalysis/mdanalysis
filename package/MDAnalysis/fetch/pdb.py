@@ -106,7 +106,7 @@ def from_PDB(
     -------
     :class:`~pathlib.Path` or list of :class:`~pathlib.Path`
         The path(s) to the downloaded file(s). Returns a single
-        :class:`~pathlib.Path` if one pdb id is given, or a list of
+        :class:`~pathlib.Path` if a single pdb id is given, or a list of
         :class:`~pathlib.Path` if multiple pdb ids are provided.
 
     Raises
