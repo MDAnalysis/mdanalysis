@@ -207,6 +207,7 @@ else:
     HAS_BIOPYTHON = True
 
 import MDAnalysis as mda
+
 import MDAnalysis.lib.qcprot as qcp
 from MDAnalysis.exceptions import SelectionError, SelectionWarning
 import MDAnalysis.analysis.rms as rms
@@ -216,7 +217,8 @@ from MDAnalysis.lib.util import deprecate  # remove 3.0
 from MDAnalysis.lib.log import ProgressBar
 from ..due import due, Doi
 
-from .base import AnalysisBase
+from .base import AnalysisBase, ResultsGroup
+from .backends import BackendSerial
 
 logger = logging.getLogger("MDAnalysis.analysis.align")
 
@@ -947,6 +949,16 @@ class AverageStructure(AnalysisBase):
 
     """
 
+    _analysis_algorithm_is_parallelizable = True
+
+    @classmethod
+    def get_supported_backends(cls):
+        return (
+            "serial",
+            "multiprocessing",
+            "dask",
+        )
+
     def __init__(
         self,
         mobile,
@@ -1064,8 +1076,16 @@ class AverageStructure(AnalysisBase):
         .. versionchanged:: 2.0.0
            :attr:`universe`, :attr:`positions`, and :attr:`rmsd` are now
            stored in a :class:`MDAnalysis.analysis.base.Results` instance.
+        .. versionchanged:: 2.11.0
+            Enabled **parallel execution** with the ``multiprocessing`` and ``dask``
+            backends for cases without in-memory representation; use the new method
+            :meth:`get_supported_backends` to see all supported backends.
         """
-        if in_memory or isinstance(mobile.trajectory, MemoryReader):
+        self._in_memory = in_memory or isinstance(
+            mobile.trajectory, MemoryReader
+        )
+
+        if in_memory:
             mobile.transfer_to_memory()
             filename = None
             logger.info("Moved mobile trajectory to in-memory representation")
@@ -1120,6 +1140,23 @@ class AverageStructure(AnalysisBase):
 
         logger.info("RMS-fitting on {0:d} atoms.".format(len(self.ref_atoms)))
 
+    def _configure_backend(
+        self, backend, n_workers, unsupported_backend=False
+    ):
+        configured_backend = super()._configure_backend(
+            backend=backend,
+            n_workers=n_workers,
+            unsupported_backend=unsupported_backend,
+        )
+        # Raise an error in cases where in-memory is used with parallel backends
+        if self._in_memory and not isinstance(
+            configured_backend, BackendSerial
+        ):
+            raise ValueError(
+                "The in-memory parallel trajectory usage is not supported. Use serial backend instead."
+            )
+        return configured_backend
+
     def _prepare(self):
         current_frame = self.reference.universe.trajectory.ts.frame
         try:
@@ -1162,6 +1199,20 @@ class AverageStructure(AnalysisBase):
         self._writer.close()
         if not self._verbose:
             logging.disable(logging.NOTSET)
+
+    @staticmethod
+    def _first(xs):
+        """Return the first item from a list."""
+        return xs[0]
+
+    def _get_aggregator(self):
+        return ResultsGroup(
+            lookup={
+                "universe": AverageStructure._first,  # first universe for ResultsGroup
+                "positions": ResultsGroup.ndarray_sum,
+                "rmsd": ResultsGroup.ndarray_sum,
+            }
+        )
 
     @property
     def universe(self):
