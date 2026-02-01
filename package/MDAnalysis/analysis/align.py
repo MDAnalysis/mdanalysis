@@ -1140,12 +1140,18 @@ class AverageStructure(AnalysisBase):
 
         logger.info("RMS-fitting on {0:d} atoms.".format(len(self.ref_atoms)))
 
-    def _configure_backend(self, backend, n_workers, unsupported_backend=False):
+    def _configure_backend(
+        self, backend, n_workers, unsupported_backend=False
+    ):
         configured_backend = super()._configure_backend(
-            backend=backend, n_workers=n_workers, unsupported_backend=unsupported_backend
+            backend=backend,
+            n_workers=n_workers,
+            unsupported_backend=unsupported_backend,
         )
         # Raise an error in cases where in-memory is used with parallel backends
-        if self._in_memory and not isinstance(configured_backend, BackendSerial):
+        if self._in_memory and not isinstance(
+            configured_backend, BackendSerial
+        ):
             raise ValueError(
                 "The in-memory parallel trajectory usage is not supported. Use serial backend instead."
             )
