@@ -1,6 +1,8 @@
 # 🤖 MDAnalysis AI-generated contributions policy 🤖
 
-This document defines MDAnalysis' policy regarding AI-generated content.
+### Version: 1.0 (2026-02-03)
+
+This document defines the [MDAnalysis organization's](https://github.com/MDAnalysis/) policy regarding AI-generated content. This policy applies to all aspects of the MDAnalysis project, including but not limited to all the github repositories under the organization.
 
 For the purposes of this document, _content_ is defined as any contribution to MDAnalysis, both code and non-code, including but not limited to:
 - Code submitted for inclusion in MDAnalysis
