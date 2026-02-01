@@ -51,7 +51,7 @@ As per section #0, it is your responsibility to report the extent of AI assitanc
 MDAnalysis aims to foster an inclusive environment for all contributors and users. We recognise that language barrier can limit participation
 in open-source projects, particularly for non-native English speakers.
 
-Whilst we wish you to communicate to us in your own words (and languages if needed), we acknowledge that AI-based translation tools may sometimes
+Whilst we prefer you communicate with us in your own words (and languages if needed), we acknowledge that AI-based translation tools may sometimes
 be necessary for communicating in issues / discussions. If such tools are used, we ask you to disclose their use and purpose.
 
 ### 4. Contributors are responsible authors and must be aware of, and declare, any derivate work
