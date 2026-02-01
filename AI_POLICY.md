@@ -41,7 +41,7 @@ it would be considered fully AI-generated and, as defined in section #1, is not 
 
 As per section #0, where possible please state that you are using AI assistance via an IDE.
 
-### 3. Limited AI assitance exemption: language translation
+### 3. Limited AI assistance exemption: language translation
 
 MDAnalysis aims to foster an inclusive environment for all contributors and users. We recognise that language barrier can limit participation
 in open-source projects, particularly for non-native English speakers.
