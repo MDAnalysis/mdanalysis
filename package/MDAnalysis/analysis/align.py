@@ -207,6 +207,7 @@ else:
     HAS_BIOPYTHON = True
 
 import MDAnalysis as mda
+
 import MDAnalysis.lib.qcprot as qcp
 from MDAnalysis.exceptions import SelectionError, SelectionWarning
 import MDAnalysis.analysis.rms as rms
@@ -217,6 +218,7 @@ from MDAnalysis.lib.log import ProgressBar
 from ..due import due, Doi
 
 from .base import AnalysisBase, ResultsGroup
+from .backends import BackendSerial
 
 logger = logging.getLogger("MDAnalysis.analysis.align")
 
@@ -1138,27 +1140,16 @@ class AverageStructure(AnalysisBase):
 
         logger.info("RMS-fitting on {0:d} atoms.".format(len(self.ref_atoms)))
 
-    def run(self, start=None, stop=None, step=None, verbose=None, **kwargs):
-        """
-        Run the analysis. If in_memory=True fall back to serial.
-        """
-        requested_backend = kwargs.pop("backend", None)
-
-        if getattr(self, "_in_memory", False):
-            # We are in the in_memory case: always run serial.
-            if requested_backend not in (None, "serial"):
-                raise ValueError(
-                    "The in-memory parallel trajectory usage is not supported. Use serial backend instead.",
-                )
-            return super().run(
-                start=start, stop=stop, step=step, verbose=verbose
+    def _configure_backend(self, backend, n_workers, unsupported_backend=False):
+        configured_backend = super()._configure_backend(
+            backend=backend, n_workers=n_workers, unsupported_backend=unsupported_backend
+        )
+        # Raise an error in cases where in-memory is used with parallel backends
+        if self._in_memory and not isinstance(configured_backend, BackendSerial):
+            raise ValueError(
+                "The in-memory parallel trajectory usage is not supported. Use serial backend instead."
             )
-        else:
-            if requested_backend is not None:
-                kwargs["backend"] = requested_backend
-            return super().run(
-                start=start, stop=stop, step=step, verbose=verbose, **kwargs
-            )
+        return configured_backend
 
     def _prepare(self):
         current_frame = self.reference.universe.trajectory.ts.frame
