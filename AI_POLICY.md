@@ -61,7 +61,7 @@ Contributors must be aware of whether their work derives from external sources /
 
 ### 5. Human reviewers are required
 
-All code merged into MDAnalysis must be reviewed by a human reviewer. Instructions / suggestions from human reviewers always take precedence over those of non-human reviewers.
+All code merged into MDAnalysis repositories must be reviewed by a human reviewer. Instructions / suggestions from human reviewers always take precedence over those of non-human reviewers.
 
 ### 6. Consequences for failure to comply to this policy
 
