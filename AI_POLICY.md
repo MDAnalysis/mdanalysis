@@ -39,7 +39,7 @@ In these limited cases of code generation, typically ranging from a single varia
 AI assitance is deemed acceptable. However, if code generation exceeds minimal, sporadic amounts (e.g. repeated or large multi-line blocks),
 it would be considered fully AI-generated and, as defined in section #1, is not acceptable.
 
-As per section #0, where possible please state that you are using AI assistance via an IDE.
+As per section #0, it is your responsibility to report the extent of AI assitance you used.
 
 ### 3. Limited AI assistance exemption: language translation
 
