@@ -1024,7 +1024,8 @@ class WaterBridgeAnalysis(AnalysisBase):
         # final result accessed as self.results.network
         self.results.network = []
         self.results.timeseries = None
-        self.timesteps = None  # time for each frame
+        self.results.timesteps = None
+        self._timesteps = []
 
         self._log_parameters()
 
@@ -1311,7 +1312,7 @@ class WaterBridgeAnalysis(AnalysisBase):
 
         self._update_selection()
 
-        self.timesteps = []
+        self._timesteps = []
         if len(self._s1) and len(self._s2):
             self._update_water_selection()
         else:
@@ -1405,8 +1406,37 @@ class WaterBridgeAnalysis(AnalysisBase):
             )
         return result
 
+    def _iter_timesteps(self):
+        """Iterable timesteps aligned with results.network.
+
+        In parallel backends, aggregation can occasionally yield a 0-d object
+        array containing None (e.g. array(None, dtype=object)). This helper
+        normalizes such cases and falls back to frame indices.
+        """
+        n = len(self.results.network)
+        ts = self.results.timesteps
+
+        if ts is None:
+            return range(n)
+
+        ts = np.asarray(ts)
+
+        # e.g. array(None, dtype=object) or scalar time
+        if ts.ndim == 0:
+            item = ts.item()
+            if item is None:
+                return range(n)
+            # if only one frame, accept scalar; otherwise fall back
+            return [item] if n == 1 else range(n)
+
+        # empty or mismatched length -> fall back
+        if ts.size != n:
+            return range(n)
+
+        return ts
+
     def _single_frame(self):
-        self.timesteps.append(self._ts.time)
+        self._timesteps.append(self._ts.time)
         self.box = self.u.dimensions if self.pbc else None
 
         if self.update_selection:
@@ -1965,11 +1995,22 @@ class WaterBridgeAnalysis(AnalysisBase):
         if not self.results.network:
             return None
 
-        # --- simple fallback for missing timesteps ---
-        if self.timesteps is None:
-            timesteps = range(len(self.results.network))
+        # Fallback when missing/empty/mismatched timesteps as missing
+        # happens when some parts end up contributing no timesteps
+        # Calculate frames and how many timesteps produced
+        n = len(self.results.network)
+        timesteps = self.results.timesteps
+
+        # Fallback if None are produced
+        if timesteps is None:
+            timesteps = range(n)
+            self.results.timesteps = np.asarray(list(timesteps), dtype=float)
         else:
-            timesteps = self.timesteps
+            timesteps = np.asarray(timesteps)
+            # Check lenght for validation
+            if timesteps.ndim != 1 or timesteps.size != n:
+                timesteps = range(n)
+                self.results.timesteps = np.asarray(list(timesteps), dtype=float)
 
         result = []
         for time, frame in zip(timesteps, self.results.network):
@@ -2033,11 +2074,12 @@ class WaterBridgeAnalysis(AnalysisBase):
 
         if self.results.network:
             result = defaultdict(list)
-            if self.timesteps is None:
+            timesteps = self.results.timesteps
+            if timesteps is None:
                 timesteps = range(len(self.results.network))
-            else:
-                timesteps = self.timesteps
             for time, frame in zip(timesteps, self.results.network):
+                if isinstance(time, (float, np.floating)) and float(time).is_integer():
+                    time = int(time)
                 self._traverse_water_network(
                     frame,
                     [],
@@ -2137,7 +2179,11 @@ class WaterBridgeAnalysis(AnalysisBase):
         # standard array, like this:
         out = np.empty((num_records,), dtype=dtype)
         cursor = 0  # current row
-        for t, hframe in zip(self.timesteps, timeseries):
+        timesteps = self.results.timesteps
+        if timesteps is None:
+            timesteps = range(len(timeseries))
+
+        for t, hframe in zip(timesteps, timeseries):
             for (
                 donor_index,
                 acceptor_index,
@@ -2167,13 +2213,17 @@ class WaterBridgeAnalysis(AnalysisBase):
         return table
 
     def _conclude(self):
+        # saving timesteps in results for parallelization
+        self.results.timesteps = np.asarray(self._timesteps)
+
         self.results.timeseries = self._generate_timeseries()
 
     def _get_aggregator(self):
         return ResultsGroup(
             lookup={
-                "timeseries": ResultsGroup.ndarray_hstack,  # Get positions
-                "network": ResultsGroup.ndarray_hstack,  # Get positions
+                "timeseries": ResultsGroup.ndarray_hstack,
+                "timesteps": ResultsGroup.ndarray_hstack,
+                "network": ResultsGroup.ndarray_hstack,
             }
         )
 
@@ -2196,3 +2246,12 @@ class WaterBridgeAnalysis(AnalysisBase):
         )
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.timeseries
+
+    @property
+    def timesteps(self):
+        wmsg = (
+            "The `timesteps` attribute is deprecated and will be removed in "
+            "MDAnalysis 3.0.0. Please use `results.timesteps` instead."
+        )
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.timesteps
