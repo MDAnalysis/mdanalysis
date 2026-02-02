@@ -6,7 +6,6 @@ from numpy.testing import (
     assert_array_equal,
 )
 import pytest
-from pathlib import Path
 
 from MDAnalysis.lib.util import NamedStream
 
@@ -37,6 +36,22 @@ from MDAnalysisTests.datafiles import (
 
 
 class TestWaterBridgeAnalysis(object):
+    @staticmethod
+    @pytest.fixture(scope="class")
+    def universe_loop():
+        """A universe with one hydrogen bond acceptor bonding to a water which
+        bonds back to the first hydrogen bond  acceptor and thus form a loop"""
+        grofile = """Test gro file
+5
+    1ALA      O    1   0.000   0.001   0.000
+    2SOL     OW    2   0.300   0.001   0.000
+    2SOL    HW1    3   0.200   0.002   0.000
+    2SOL    HW2    4   0.200   0.000   0.000
+    4ALA      O    5   0.600   0.000   0.000
+  1.0   1.0   1.0"""
+        u = MDAnalysis.Universe(StringIO(grofile), format="gro")
+        return u
+
     @staticmethod
     @pytest.fixture(scope="class")
     def wb_multiframe():
@@ -150,9 +165,8 @@ class TestWaterBridgeAnalysis(object):
         wb.run(**client_WaterBridgeAnalysis)
         assert wb.results.network == [{}]
 
-    def test_loop(self, client_WaterBridgeAnalysis):
+    def test_loop(self, universe_loop, client_WaterBridgeAnalysis):
         """Test if loop can be handled correctly"""
-        universe_loop = MDAnalysis.Universe(WB_LOOP)
         wb = WaterBridgeAnalysis(
             universe_loop,
             "protein and (resid 1)",

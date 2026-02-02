@@ -70,7 +70,34 @@ the normal MDAnalysis citations.
    
    In MDAnalysis you can use the 
    :class:`~MDAnalysis.transformations.nojump.NoJump`
-   transformation. 
+   transformation to unwrap coordinates on-the-fly.
+    
+   A minimal example:
+
+   .. code-block:: python
+      
+      import MDAnalysis as mda
+      from MDAnalysis.transformations import NoJump
+      
+      u = mda.Universe(TOP, TRAJ)
+      
+      # Apply NoJump transformation to unwrap coordinates
+      u.trajectory.add_transformations(NoJump(u))
+       
+      # Now the trajectory is unwrapped and MSD can be computed normally:
+      from MDAnalysis.analysis.msd import EinsteinMSD
+      MSD = EinsteinMSD(u, select="all", msd_type="xyz")
+      MSD.run()
+
+   This example assumes that the trajectory contains periodic box
+   dimensions. If no periodic boundary information is present, box
+   dimensions must be defined before applying ``NoJump``, which can
+   be accomplished by applying the
+   :class:`~MDAnalysis.transformations.boxdimensions.set_dimensions`
+   transformation *before* the 
+   :class:`~MDAnalysis.transformations.nojump.NoJump` transformation.
+   
+   This replaces the need to preprocess trajectories externally.
    
    In GROMACS, for example, this can be done using `gmx trjconv`_ with the
    ``-pbc nojump`` flag.
@@ -247,9 +274,8 @@ Classes
 import numpy as np
 import logging
 from ..due import due, Doi
-from .base import AnalysisBase
+from .base import AnalysisBase, ProgressBar
 from ..core import groups
-from tqdm import tqdm
 import collections
 
 logger = logging.getLogger("MDAnalysis.analysis.msd")
@@ -383,14 +409,11 @@ class EinsteinMSD(AnalysisBase):
             "xyz": [0, 1, 2],
         }
 
-        self.msd_type = self.msd_type.lower()
-
         try:
-            self._dim = keys[self.msd_type]
-        except KeyError:
+            self._dim = keys[self.msd_type.lower()]
+        except (AttributeError, KeyError):
             raise ValueError(
-                "invalid msd_type: {} specified, please specify one of xyz, "
-                "xy, xz, yz, x, y, z".format(self.msd_type)
+                f"Invalid msd_type {self.msd_type}, must be a string and one of: xyz, xy, xz, yz, x, y, z"
             )
 
         self.dim_fac = len(self._dim)
@@ -416,7 +439,11 @@ class EinsteinMSD(AnalysisBase):
         r"""Calculates the MSD via the simple "windowed" algorithm."""
         lagtimes = np.arange(1, self.n_frames)
         positions = self._position_array.astype(np.float64)
-        for lag in tqdm(lagtimes):
+        for lag in ProgressBar(
+            lagtimes,
+            verbose=self._verbose,
+            desc="Calculating MSD for lagtimes",
+        ):
             disp = positions[:-lag, :, :] - positions[lag:, :, :]
             sqdist = np.square(disp).sum(axis=-1)
             self.results.msds_by_particle[lag, :] = np.mean(sqdist, axis=0)
@@ -443,7 +470,11 @@ class EinsteinMSD(AnalysisBase):
             )
 
         positions = self._position_array.astype(np.float64)
-        for n in tqdm(range(self.n_particles)):
+        for n in ProgressBar(
+            range(self.n_particles),
+            verbose=self._verbose,
+            desc="Calculating MSD with FFT per particle",
+        ):
             self.results.msds_by_particle[:, n] = tidynamics.msd(
                 positions[:, n, :]
             )

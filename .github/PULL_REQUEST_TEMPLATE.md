@@ -8,6 +8,10 @@ Changes made in this Pull Request:
 <!-- Describe the changes that this PR makes. If applicable, use the following bullet list. --> 
 -
 
+## LLM / AI generated code disclosure
+<!-- Please update this disclosure to reflect if you did or did not use LLMs / AI to generate code -->
+LLMs or other AI-powered tools (beyond simple IDE use cases) were used in this contribution: yes / no
+
 ## PR Checklist
 <!-- Please use the following checklist to ensure the PR is ready to be reviewed/merged. -->
  - [ ] Issue raised/referenced?
@@ -15,6 +19,7 @@ Changes made in this Pull Request:
  - [ ] Documentation updated/added?
  - [ ] `package/CHANGELOG` file updated?
  - [ ] Is your name in `package/AUTHORS`? (If it is not, add it!)
+ - [ ] LLM/AI disclosure was updated.
 
 ## Developers Certificate of Origin
 <!-- 
