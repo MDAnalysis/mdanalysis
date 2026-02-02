@@ -66,7 +66,7 @@ All code merged into MDAnalysis repositories must be reviewed by a human reviewe
 ### 6. Consequences for failure to comply to this policy
 
 Any failures to comply with this policy should be reported to the MDAnalysis core developers through
-our our [standard communications channels](https://www.mdanalysis.org/pages/community/#ask-questions--get-help) or email to mdanalysis@numfocus.org .
+our [standard communications channels](https://www.mdanalysis.org/pages/community/#ask-questions--get-help) or email to mdanalysis@numfocus.org .
 The core developers may enforce this policy through a range of actions, which may include restricting or banning individuals from future contributions.
 
 There is a zero tolerance policy for intentionally failing to disclose or misrepresenting the extent of AI usage.
