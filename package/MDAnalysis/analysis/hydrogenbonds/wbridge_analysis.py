@@ -2010,7 +2010,9 @@ class WaterBridgeAnalysis(AnalysisBase):
             # Check lenght for validation
             if timesteps.ndim != 1 or timesteps.size != n:
                 timesteps = range(n)
-                self.results.timesteps = np.asarray(list(timesteps), dtype=float)
+                self.results.timesteps = np.asarray(
+                    list(timesteps), dtype=float
+                )
 
         result = []
         for time, frame in zip(timesteps, self.results.network):
@@ -2078,7 +2080,10 @@ class WaterBridgeAnalysis(AnalysisBase):
             if timesteps is None:
                 timesteps = range(len(self.results.network))
             for time, frame in zip(timesteps, self.results.network):
-                if isinstance(time, (float, np.floating)) and float(time).is_integer():
+                if (
+                    isinstance(time, (float, np.floating))
+                    and float(time).is_integer()
+                ):
                     time = int(time)
                 self._traverse_water_network(
                     frame,
