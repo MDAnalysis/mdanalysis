@@ -5,7 +5,7 @@
 This document defines the [MDAnalysis organization's](https://github.com/MDAnalysis/) policy regarding AI-generated content. This policy applies to all aspects of the MDAnalysis project, including all the GitHub repositories under the organization.
 
 For the purposes of this document, _content_ is defined as any contribution to the MDAnalysis organization, both code and non-code, including but not limited to:
-- Code submitted for inclusion in MDAnalysis
+- Code submitted for inclusion in MDAnalysis, or other organization-owned repositories
 - Documentation of any kind
 - Communication content (e.g. issues, discussions, pull request descriptions, and reviews)
 
