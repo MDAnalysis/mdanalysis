@@ -221,7 +221,7 @@ def client_InterRDF_s(request):
 def client_DistanceMatrix(request):
     return request.param
 
-  
+
 # MDAnalysis.analysis.hydrogenbonds.wbridge_analysis
 
 
