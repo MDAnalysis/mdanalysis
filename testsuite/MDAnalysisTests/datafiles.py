@@ -392,23 +392,23 @@ __all__ = [
     "SURFACE_PDB",  # 111 FCC lattice topology for NSGrid bug #2345
     "SURFACE_TRR",  # full precision coordinates for NSGrid bug #2345
     "DSSP",  # DSSP test suite
-    "WB_AD",
-    "WB_AWA",
-    "WB_AWA_AWWA",
-    "WB_AWD",
-    "WB_AWWA",
-    "WB_AWWWA",
-    "WB_AWWWWA",
-    "WB_BRANCH",
-    "WB_DA",
-    "WB_DA_PBC",
-    "WB_DWA",
-    "WB_DWD",
-    "WB_EMPTY",
-    "WB_LOOP",
-    "WB_DUPLICATE_WATER",
-    "WB_MULTIFRAME_GRO",
-    "WB_MULTIFRAME_DCD",
+    "WB_AD", # GRO file with one hydrogen bond donor bonding to a hydrogen bond acceptor
+    "WB_AWA", # GRO file with two hydrogen bond acceptors that are joined by a water
+    "WB_AWA_AWWA", # GRO file with one hydrogen bond acceptors are bonded through one or two water
+    "WB_AWD", # GRO file with one hydrogen bond acceptor bonding to a hydrogen bond donor through a water
+    "WB_AWWA", # GRO file with one hydrogen bond acceptor bonding to a hydrogen bond acceptor through two waters
+    "WB_AWWWA", # GRO file with one hydrogen bond acceptor bonding to a hydrogen bond acceptor through three waters
+    "WB_AWWWWA", # GRO file with one hydrogen bond acceptor bonding to a hydrogen bond acceptor through four waters
+    "WB_BRANCH", # GRO file with one hydrogen bond acceptor bonding to two hydrogen bond acceptor in selection 2
+    "WB_DA", # GRO file with one hydrogen bond acceptor bonding to a hydrogen bond donor
+    "WB_DA_PBC", # GRO file with one hydrogen bond acceptor bonding to a hydrogen bond donor but in a PBC condition
+    "WB_DWA", # GRO file with one hydrogen bond donor bonding to a hydrogen bond acceptor through a water
+    "WB_DWD", # GRO file with one hydrogen bond donor bonding to a hydrogen bond donor through a water
+    "WB_EMPTY", # GRO file with no hydrogen bonds
+    "WB_LOOP", # GRO with hydrogen bond acceptor bonding to water which bonds back to the first hydrogen bond acceptor to form a loop
+    "WB_DUPLICATE_WATER", # GRO file with duplicate waters, reference to case #3119
+    "WB_MULTIFRAME_GRO", # topology file of containing water bridges for multiple frame tests
+    "WB_MULTIFRAME_DCD", # trajectory file of containing water bridges for multiple frame tests
 ]
 from importlib import resources
 import MDAnalysisTests.data
