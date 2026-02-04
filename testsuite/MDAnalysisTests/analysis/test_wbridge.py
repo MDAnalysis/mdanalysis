@@ -14,6 +14,9 @@ from MDAnalysis.analysis.hydrogenbonds.wbridge_analysis import (
     WaterBridgeAnalysis,
 )
 
+
+# Note: Currently the datafiles are added as a go-around for the
+# incompatibility with StringIO with a fix in the future. Issue #5221
 from MDAnalysisTests.datafiles import (
     WB_AD,
     WB_AWA,
