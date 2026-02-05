@@ -1901,7 +1901,9 @@ class GroupBase(_MutableBase):
 
                 # Build mapping from compound index to shift index
                 unique_compound_indices = unique_int_1d(compound_indices)
-                index_to_shift = np.empty(compound_indices.max() + 1, dtype=int)
+                index_to_shift = np.empty(
+                    compound_indices.max() + 1, dtype=int
+                )
                 index_to_shift[unique_compound_indices] = np.arange(
                     len(unique_compound_indices)
                 )
