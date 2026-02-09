@@ -444,7 +444,6 @@ class TestWrap(object):
                 group.atoms.positions, ref_wrapped_pos, decimal=self.precision
             )
 
-
     @pytest.mark.parametrize(
         "compound",
         ("segments", "residues", "molecules", "fragments"),
@@ -468,6 +467,7 @@ class TestWrap(object):
         assert_almost_equal(
             wrapped_pos, ref_wrapped_pos, decimal=self.precision
         )
+
 
 class TestWrapTRZ(object):
     """Tests the functionality of AtomGroup.wrap() using a TRZ universe."""
