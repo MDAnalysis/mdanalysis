@@ -1869,8 +1869,21 @@ Written by MDAnalysis
         )
 
     def test_empty_universe_bounds(self):
-        with pytest.raises(ValueError, match="atom_resindex contains invalid residue indices."):
-            mda.Universe.empty(n_atoms=2, n_residues=2, atom_resindex=[0, 2], trajectory=True)
+        with pytest.raises(
+            ValueError, match="atom_resindex contains invalid residue indices."
+        ):
+            mda.Universe.empty(
+                n_atoms=2, n_residues=2, atom_resindex=[0, 2], trajectory=True
+            )
 
-        with pytest.raises(ValueError, match="residue_segindex contains invalid segment indices."):
-            mda.Universe.empty(n_atoms=2, n_residues=2, n_segments=2, atom_resindex=[0, 1], residue_segindex=[0, 2])
+        with pytest.raises(
+            ValueError,
+            match="residue_segindex contains invalid segment indices.",
+        ):
+            mda.Universe.empty(
+                n_atoms=2,
+                n_residues=2,
+                n_segments=2,
+                atom_resindex=[0, 1],
+                residue_segindex=[0, 2],
+            )
