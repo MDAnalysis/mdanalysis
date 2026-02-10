@@ -22,7 +22,7 @@ or for language translation purposes. **Such uses must always be declared.**
 Please understand the reviewing capacity is very limited for the project, so large PRs which appear to not have the requisite understanding might not get reviewed, and eventually closed or redirected.
 Understanding from authors about what code they are contributing and how it fits into the larger picture is crucial.
 If reviewers feel there is a lack of understanding from looking at the code, PR descriptions or just general interactions with a contributor, we reserve the right to close the PR to save time and resources.
-Where previously more time and effort may have been put into reviewing and educating contributors, this is no longer possible due to overwhelming influx of 'AI slop'.
+Given the limited reviewing capacity, time and effort of reviewing and educating contributors will be more targeted to PRs of initial high quality and/or contributors where interactions are constructive and of good quality.
 
 ## Policy details
 
