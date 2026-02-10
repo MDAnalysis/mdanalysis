@@ -745,6 +745,22 @@ class Universe(object):
                 UserWarning,
             )
 
+        if atom_resindex is not None:
+            atom_resindex = np.asarray(atom_resindex)
+            if np.any(atom_resindex >= n_residues) or np.any(atom_resindex < 0):
+                raise ValueError(
+                    "atom_resindex contains invalid residue indices. "
+                    "All values must be between 0 and n_residues-1."
+                    )
+            
+        if residue_segindex is not None:
+            residue_segindex = np.asarray(residue_segindex)
+            if np.any(residue_segindex >= n_segments) or np.any(residue_segindex < 0):
+                raise ValueError(
+                    "residue_segindex contains invalid segment indices. "
+                    "All values must be between 0 and n_segments-1."
+                    )
+
         if residue_segindex is None and n_segments > 1:
             warnings.warn(
                 "Segments specified but no segment_resindex given.  "
