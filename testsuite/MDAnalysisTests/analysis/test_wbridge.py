@@ -63,7 +63,7 @@ class TestWaterBridgeAnalysis(object):
                 }
             }
         )
-        wb.results.timesteps = np.arange(len(wb.results.network))
+        wb.times = np.arange(len(wb.results.network))
         return wb
 
     @staticmethod
