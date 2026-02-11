@@ -1960,12 +1960,8 @@ class WaterBridgeAnalysis(AnalysisBase):
             analysis_func = self._count_by_time_analysis
         if self.results.network:
             result = []
-            n = len(self.results.network)
-            times = np.asarray(self.times)
-            if times.size != n:
-                raise ValueError("times/results length mismatch")
 
-            for time, frame in zip(times, self.results.network):
+            for time, frame in zip(self.times, self.results.network):
                 result_dict = defaultdict(int)
                 self._traverse_water_network(
                     frame,
@@ -2028,12 +2024,8 @@ class WaterBridgeAnalysis(AnalysisBase):
 
         if self.results.network:
             result = defaultdict(list)
-            n = len(self.results.network)
-            times = np.asarray(self.times)
-            if times.size != n:
-                raise ValueError("times/results length mismatch")
 
-            for time, frame in zip(times, self.results.network):
+            for time, frame in zip(self.times, self.results.network):
                 self._traverse_water_network(
                     frame,
                     [],
@@ -2133,12 +2125,8 @@ class WaterBridgeAnalysis(AnalysisBase):
         # standard array, like this:
         out = np.empty((num_records,), dtype=dtype)
         cursor = 0  # current row
-        n = len(timeseries)
-        times = np.asarray(self.times)
-        if times.size != n:
-            raise ValueError("times/results length mismatch")
 
-        for t, hframe in zip(times, timeseries):
+        for t, hframe in zip(self.times, timeseries):
             for (
                 donor_index,
                 acceptor_index,
