@@ -731,6 +731,10 @@ class WaterBridgeAnalysis(AnalysisBase):
 
     .. versionadded:: 0.17.0
 
+    .. versionchanged:: 2.11.0
+       Enabled **parallel execution** with the ``multiprocessing`` and ``dask``
+       backends; use the new method :meth:`get_supported_backends` to see all
+       supported backends.
     """
 
     # use tuple(set()) here so that one can just copy&paste names from the
