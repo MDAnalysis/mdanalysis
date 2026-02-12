@@ -44,6 +44,8 @@ __all__ = [
     "contact_matrix",
     "dist",
     "between",
+    "min_distance",
+    "distance_statistics",
 ]
 
 import numpy as np
@@ -218,3 +220,79 @@ def between(group, A, B, distance):
     resA = ns_group.search(A, distance)
     resB = ns_group.search(B, distance)
     return resB.intersection(resA)
+
+
+def min_distance(A, B, box=None):
+    """Calculate the minimum distance between two atom groups.
+
+    This function computes the shortest distance between any atom in group A
+    and any atom in group B. Useful for protein-ligand analysis, membrane-protein
+    distances, or identifying close contacts between molecular regions.
+
+    Parameters
+    ----------
+    A : AtomGroup
+        First atom group
+    B : AtomGroup
+        Second atom group
+    box : array_like, optional
+        Simulation cell dimensions for periodic boundary conditions in the form
+        ``[lx, ly, lz, alpha, beta, gamma]``. If provided, minimum image
+        convention is applied.
+
+    Returns
+    -------
+    float
+        Minimum distance between any atom in A and any atom in B (in Angstroms)
+
+    .. versionadded:: 2.8.0
+    """
+    distances = distance_array(A.positions, B.positions, box=box)
+    return np.min(distances)
+
+
+def distance_statistics(A, B, box=None):
+    """Calculate statistical measures of distances between two atom groups.
+
+    Computes minimum, maximum, mean, and standard deviation of all pairwise
+    distances between atoms in groups A and B. Useful for characterizing
+    the overall separation and distribution of distances between molecular regions.
+
+    Parameters
+    ----------
+    A : AtomGroup
+        First atom group
+    B : AtomGroup
+        Second atom group
+    box : array_like, optional
+        Simulation cell dimensions for periodic boundary conditions in the form
+        ``[lx, ly, lz, alpha, beta, gamma]``. If provided, minimum image
+        convention is applied.
+
+    Returns
+    -------
+    dict
+        Dictionary containing:
+        
+        - 'min' : float
+            Minimum distance
+        - 'max' : float
+            Maximum distance
+        - 'mean' : float
+            Mean of all pairwise distances
+        - 'std' : float
+            Standard deviation of distances
+        - 'n_distances' : int
+            Total number of pairwise distances calculated
+
+    .. versionadded:: 2.8.0
+    """
+    distances = distance_array(A.positions, B.positions, box=box)
+    
+    return {
+        'min': float(np.min(distances)),
+        'max': float(np.max(distances)),
+        'mean': float(np.mean(distances)),
+        'std': float(np.std(distances)),
+        'n_distances': distances.size
+    }

@@ -247,3 +247,114 @@ class TestBetween(object):
         returns an AtomGroup even when the returned group is empty."""
         actual = MDAnalysis.analysis.distances.between(group, ag, ag2, dists)
         assert isinstance(actual, MDAnalysis.core.groups.AtomGroup)
+
+class TestMinDistance(object):
+    @staticmethod
+    @pytest.fixture()
+    def u():
+        return MDAnalysis.Universe(GRO)
+
+    @staticmethod
+    @pytest.fixture()
+    def ag(u):
+        return u.atoms[:10]
+
+    @staticmethod
+    @pytest.fixture()
+    def ag2(u):
+        return u.atoms[12:33]
+
+    @staticmethod
+    @pytest.fixture()
+    def box():
+        return np.array([8, 8, 8, 90, 90, 90], dtype=np.float32)
+
+    @pytest.fixture()
+    def expected(self, ag, ag2):
+        distance_matrix = scipy.spatial.distance.cdist(ag.positions, ag2.positions)
+        return np.min(distance_matrix)
+
+    def test_min_distance_simple_case(self, ag, ag2, expected):
+        """Test MDAnalysis.analysis.distances.min_distance() for
+        a simple input case. Checks returned minimum distance
+        against expected value."""
+        actual = MDAnalysis.analysis.distances.min_distance(ag, ag2)
+        assert_allclose(actual, expected)
+
+    def test_min_distance_return_type(self, ag, ag2):
+        """Test that MDAnalysis.analysis.distances.min_distance()
+        returns a float."""
+        actual = MDAnalysis.analysis.distances.min_distance(ag, ag2)
+        assert isinstance(actual, float)
+
+    def test_min_distance_box(self, ag, ag2, box):
+        """Test that MDAnalysis.analysis.distances.min_distance()
+        correctly accounts for periodic boundary conditions."""
+        actual = MDAnalysis.analysis.distances.min_distance(ag, ag2, box=box)
+        assert isinstance(actual, float)
+        assert actual >= 0.0
+
+    def test_min_distance_identical_groups(self, ag):
+        """Test that min_distance() returns 0 when the two AtomGroups are identical."""
+        actual = MDAnalysis.analysis.distances.min_distance(ag, ag)
+        assert_allclose(actual, 0.0)
+
+    def test_min_distance_single_atom_groups(self, u):
+        """Test that min_distance() returns the correct distance when both AtomGroups contain a single atom."""
+        ag1 = u.atoms[0:1]
+        ag2 = u.atoms[1:2]
+        expected = np.linalg.norm(ag1.positions - ag2.positions)
+        actual = MDAnalysis.analysis.distances.min_distance(ag1, ag2)
+        assert_allclose(actual, expected)
+
+class TestDistanceStatistics(object):
+    @staticmethod
+    @pytest.fixture()
+    def u():
+        return MDAnalysis.Universe(GRO)
+
+    @staticmethod
+    @pytest.fixture()
+    def ag(u):
+        return u.atoms[:10]
+
+    @staticmethod
+    @pytest.fixture()
+    def ag2(u):
+        return u.atoms[12:33]
+
+    @staticmethod
+    @pytest.fixture()
+    def box():
+        return np.array([8, 8, 8, 90, 90, 90], dtype=np.float32)
+
+    @pytest.fixture()
+    def expected(self, ag, ag2):
+        distance_matrix = scipy.spatial.distance.cdist(ag.positions, ag2.positions)
+        return {
+            'min': np.min(distance_matrix),
+            'max': np.max(distance_matrix),
+            'mean': np.mean(distance_matrix),
+            'std': np.std(distance_matrix)
+        }
+
+    def test_distance_statistics_simple_case(self, ag, ag2, expected):
+        """Test MDAnalysis.analysis.distances.distance_statistics() for
+        a simple input case. Checks returned distance statistics
+        against expected values."""
+        actual = MDAnalysis.analysis.distances.distance_statistics(ag, ag2)
+        for key in expected:
+            assert_allclose(actual[key], expected[key])
+
+    def test_distance_statistics_return_type(self, ag, ag2):
+        """Test that MDAnalysis.analysis.distances.distance_statistics()
+        returns a dictionary."""
+        actual = MDAnalysis.analysis.distances.distance_statistics(ag, ag2)
+        assert isinstance(actual, dict)
+
+    def test_distance_statistics_box(self, ag, ag2, box):
+        """Test that MDAnalysis.analysis.distances.distance_statistics()
+        works correctly when a box is provided."""
+        actual = MDAnalysis.analysis.distances.distance_statistics(ag, ag2, box=box)
+        assert isinstance(actual, dict)
+        assert all(key in actual for key in ['min', 'max', 'mean', 'std'])
