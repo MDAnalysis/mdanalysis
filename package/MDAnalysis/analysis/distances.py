@@ -273,7 +273,7 @@ def distance_statistics(A, B, box=None):
     -------
     dict
         Dictionary containing:
-        
+
         - 'min' : float
             Minimum distance
         - 'max' : float
@@ -288,11 +288,11 @@ def distance_statistics(A, B, box=None):
     .. versionadded:: 2.8.0
     """
     distances = distance_array(A.positions, B.positions, box=box)
-    
+
     return {
-        'min': float(np.min(distances)),
-        'max': float(np.max(distances)),
-        'mean': float(np.mean(distances)),
-        'std': float(np.std(distances)),
-        'n_distances': distances.size
+        "min": float(np.min(distances)),
+        "max": float(np.max(distances)),
+        "mean": float(np.mean(distances)),
+        "std": float(np.std(distances)),
+        "n_distances": distances.size,
     }
