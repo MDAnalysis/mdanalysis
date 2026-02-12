@@ -39,6 +39,7 @@ Fixes
 Enhancements
  * Enables parallelization for analysis.hydrogenbonds.wbridge_analysis.WaterBridgeAnalysis
    (Issue #4666, PR #5151)
+ * Adds support for parsing `.tpr` files produced by GROMACS 2026.0
  * Enables parallelization for analysis.diffusionmap.DistanceMatrix
    (Issue #4679, PR #4745)
 
