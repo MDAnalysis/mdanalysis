@@ -44,8 +44,6 @@ __all__ = [
     "contact_matrix",
     "dist",
     "between",
-    "min_distance",
-    "distance_statistics",
 ]
 
 import numpy as np
