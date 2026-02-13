@@ -128,7 +128,10 @@ class GSDReader(base.ReaderBase):
         self.open_trajectory()
 
     def _read_frame(self, frame):
+        # Convert numpy integer types to Python int for gsd compatibility
+        # GSD's HOOMDTrajectory only accepts Python int, not np.int64
         try:
+            frame = int(frame)
             myframe = self._file[frame]
         except IndexError:
             raise IOError from None

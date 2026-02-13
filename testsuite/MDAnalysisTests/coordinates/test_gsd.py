@@ -22,6 +22,7 @@
 #
 import os
 
+import numpy as np
 import pytest
 from numpy.testing import assert_almost_equal
 
@@ -73,3 +74,22 @@ class TestGSDReader:
     def test_gsd_data_step(self, GSD_U):
         assert GSD_U.trajectory[0].data["step"] == 0
         assert GSD_U.trajectory[1].data["step"] == 500
+
+    def test_gsd_numpy_int_indexing(self, GSD_U):
+        """Test that GSDReader accepts numpy integer types (Issue #5224).
+        
+        The parallelization framework generates frame indices as np.int64,
+        but GSD's HOOMDTrajectory only accepts Python int. This test ensures
+        the reader properly converts numpy scalar integers.
+        """
+        # Test with np.int64 (most common from numpy arrays)
+        ts = GSD_U.trajectory[np.int64(0)]
+        assert ts.frame == 0
+        
+        # Test with negative indexing
+        ts = GSD_U.trajectory[np.int64(-1)]
+        assert ts.frame == 1
+        
+        # Test with other numpy integer types
+        ts = GSD_U.trajectory[np.int32(1)]
+        assert ts.frame == 1
