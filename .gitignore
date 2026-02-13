@@ -51,6 +51,3 @@ benchmarks/results
 .idea
 .vscode
 *.lock
-
-# virtual environments
-venv/

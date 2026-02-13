@@ -93,3 +93,10 @@ class TestGSDReader:
         # Test with other numpy integer types
         ts = GSD_U.trajectory[np.int32(1)]
         assert ts.frame == 1
+
+        # Directly test _read_frame with numpy integers to ensure coverage
+        ts = GSD_U.trajectory._read_frame(np.int64(0))
+        assert ts.frame == 0
+        
+        ts = GSD_U.trajectory._read_frame(np.int32(1))
+        assert ts.frame == 1
