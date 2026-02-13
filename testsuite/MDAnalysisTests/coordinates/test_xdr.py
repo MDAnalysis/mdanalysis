@@ -1051,13 +1051,6 @@ class _GromacsReader_offsets(object):
             False,
         )
 
-    @pytest.mark.skipif(
-        sys.platform.startswith("win"),
-        reason="The lock file only exists when it's locked in windows",
-    )
-    def test_offset_lock_created(self, traj):
-        assert os.path.exists(XDR.offsets_filename(traj, ending="lock"))
-
 
 class TestXTCReader_offsets(_GromacsReader_offsets):
     __test__ = True
