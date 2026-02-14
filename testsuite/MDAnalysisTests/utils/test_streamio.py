@@ -214,8 +214,6 @@ class TestNamedStream_filename_behavior(object):
 
     def test_join(self, tmpdir, funcname="join"):
         # join not included because of different call signature
-        # but added first argument for the sake of it showing up in the verbose
-        # nose output
         ns = self.create_NamedStream()
         fn = self.textname
         reference = str(tmpdir.join(fn))
