@@ -32,4 +32,3 @@ def test_moved_to_guessers_warning():
     wmsg = "has been moved to MDAnalysis.guesser.tables"
     with pytest.warns(DeprecationWarning, match=wmsg):
         reload(tables)
-

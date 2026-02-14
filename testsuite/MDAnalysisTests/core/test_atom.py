@@ -27,7 +27,8 @@ import numpy as np
 import MDAnalysis as mda
 from MDAnalysis import NoDataError
 from MDAnalysisTests.datafiles import (
-    PSF, DCD,
+    PSF,
+    DCD,
     XYZ_mini,
 )
 from numpy.testing import assert_almost_equal
@@ -52,16 +53,16 @@ class TestAtom(object):
 
     def test_attributes_names(self, atom):
         a = atom
-        assert a.name == 'CG'
-        assert a.resname == 'LEU'
+        assert a.name == "CG"
+        assert a.resname == "LEU"
 
     def test_setting_attribute_name(self, atom):
-        atom.name = 'AA'
-        assert atom.name == 'AA'
+        atom.name = "AA"
+        assert atom.name == "AA"
 
     def test_setting_attribute_type(self, atom):
-        atom.type = 'Z'
-        assert atom.type == 'Z'
+        atom.type = "Z"
+        assert atom.type == "Z"
 
     def test_setting_attribute_mass(self, atom):
         atom.mass = 13
@@ -72,7 +73,9 @@ class TestAtom(object):
         assert atom.charge == 6
 
     def test_attributes_positions(self, atom):
-        known_pos = np.array([3.94543672, -12.4060812, -7.26820087], dtype=np.float32)
+        known_pos = np.array(
+            [3.94543672, -12.4060812, -7.26820087], dtype=np.float32
+        )
         a = atom
         # new position property (mutable)
         assert_almost_equal(a.position, known_pos)
@@ -81,13 +84,13 @@ class TestAtom(object):
         assert_almost_equal(a.position, pos)
 
     def test_atom_selection(self, universe, atom):
-        asel = universe.select_atoms('atom 4AKE 67 CG').atoms[0]
+        asel = universe.select_atoms("atom 4AKE 67 CG").atoms[0]
         assert atom == asel
 
     def test_hierarchy(self, universe, atom):
         u = universe
         a = atom
-        assert a.segment == u.select_atoms('segid 4AKE').segments[0]
+        assert a.segment == u.select_atoms("segid 4AKE").segments[0]
         assert a.residue == u.residues[66]
 
     def test_bad_add(self, atom):
@@ -136,16 +139,16 @@ class TestAtomNoForceNoVel(object):
 
     def test_velocity_fail(self, a):
         with pytest.raises(NoDataError):
-            getattr(a, 'velocity')
+            getattr(a, "velocity")
 
     def test_force_fail(self, a):
         with pytest.raises(NoDataError):
-            getattr(a, 'force')
+            getattr(a, "force")
 
     def test_velocity_set_fail(self, a):
         with pytest.raises(NoDataError):
-            setattr(a, 'velocity', [1.0, 1.0, 1.0])
+            setattr(a, "velocity", [1.0, 1.0, 1.0])
 
     def test_force_set_fail(self, a):
         with pytest.raises(NoDataError):
-            setattr(a, 'force', [1.0, 1.0, 1.0])
+            setattr(a, "force", [1.0, 1.0, 1.0])

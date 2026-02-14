@@ -8,11 +8,11 @@
 
 |docs| |devdocs| |discussions|
 
-|anaconda| |asv|
+|pypi| |anaconda| |asv|
 
 MDAnalysis_ is a Python library for the analysis of computer simulations of many-body systems at the molecular scale, spanning use cases from interactions of drugs with proteins to novel materials. It is widely used in the scientific community and is written by scientists for scientists. 
 
-It works with a wide range of popular simulation packages including Gromacs, Amber, NAMD, CHARMM, DL_Poly, HooMD, LAMMPS and many others — see the lists of supported `trajectory formats`_ and `topology formats`_.
+It works with a wide range of popular simulation packages including GROMACS, Amber, NAMD, CHARMM, DL_POLY, HOOMD, LAMMPS and many others — see the lists of supported `trajectory formats`_ and `topology formats`_.
 MDAnalysis also includes widely used analysis algorithms in the `MDAnalysis.analysis`_ module.
 
 .. _numfocus-fiscal-sponsor-attribution:
@@ -79,7 +79,7 @@ described in the `Installation Quick Start`_.
 **Source code** is hosted in a git repository at
 https://github.com/MDAnalysis/mdanalysis and is packaged under the
 GNU Lesser General Public License, version 3 or any later version (LGPLv3+).
-Invidiual source code components are provided under the
+Individual source code components are provided under the
 GNU Lesser General Public License, version 2.1 or any later version (LGPLv2.1+).
 Please see the file LICENSE_ for more information.
 
@@ -119,9 +119,9 @@ For citations of included algorithms and sub-modules please see the references_.
 
 
 .. _NumFOCUS: https://numfocus.org/
-.. _open governance model: https://www.mdanalysis.org/about/#governance
+.. _open governance model: https://www.mdanalysis.org/pages/governance/
 .. _tax-deductible donation: https://numfocus.org/donate-to-mdanalysis
-.. _`Code of Conduct`: https://www.mdanalysis.org/pages/conduct/
+.. _`Code of Conduct`: https://www.mdanalysis.org/conduct/
 .. _trajectory formats: https://docs.mdanalysis.org/documentation_pages/coordinates/init.html#id1
 .. _topology formats: https://docs.mdanalysis.org/documentation_pages/topology/init.html#supported-topology-formats
 .. _MDAnalysis: https://www.mdanalysis.org
@@ -178,6 +178,10 @@ For citations of included algorithms and sub-modules please see the references_.
 .. |cov|   image:: https://codecov.io/gh/MDAnalysis/mdanalysis/branch/develop/graph/badge.svg
    :alt: Coverage Status
    :target: https://codecov.io/gh/MDAnalysis/mdanalysis
+
+.. |pypi| image:: https://img.shields.io/pypi/v/MDAnalysis
+   :alt: PyPI Version
+   :target: https://pypi.org/project/MDAnalysis/
 
 .. |anaconda| image:: https://anaconda.org/conda-forge/mdanalysis/badges/version.svg
    :alt: Anaconda

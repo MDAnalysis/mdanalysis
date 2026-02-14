@@ -23,4 +23,4 @@
 from . import libmdaxdr
 from . import libdcd
 
-__all__ = ['libmdaxdr', 'libdcd']
+__all__ = ["libmdaxdr", "libdcd"]

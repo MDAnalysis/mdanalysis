@@ -229,6 +229,16 @@ If you use H5MD files using
    pp. 18 – 26, 2021. doi:`10.25080/majora-1b6fd038-005.
    <https://www.doi.org/10.25080/majora-1b6fd038-005>`_
 
+.. comment::
+
+   If you use IMD capability with :mod:`MDAnalysis.coordinates.IMD.py`, please cite [IMDv3paper]_.
+
+   .. [IMDv3paper] Authors (YEAR).
+      IMDv3 Manuscript Title.
+      *Journal*, 185. doi:`insert-doi-here <https://doi.org/>`_
+
+.. todo:: Fill in the final IMDv3 citation once the paper is published.
+   See https://github.com/MDAnalysis/mdanalysis/issues/5094
 
 .. _citations-using-duecredit:
 

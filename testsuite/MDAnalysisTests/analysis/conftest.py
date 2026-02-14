@@ -10,10 +10,17 @@ from MDAnalysis.analysis.rms import RMSD, RMSF
 from MDAnalysis.analysis.dihedrals import Dihedral, Ramachandran, Janin
 from MDAnalysis.analysis.bat import BAT
 from MDAnalysis.analysis.gnm import GNMAnalysis
+from MDAnalysis.analysis.diffusionmap import DistanceMatrix
 from MDAnalysis.analysis.dssp.dssp import DSSP
 from MDAnalysis.analysis.hydrogenbonds.hbond_analysis import (
     HydrogenBondAnalysis,
 )
+from MDAnalysis.analysis.nucleicacids import NucPairDist
+from MDAnalysis.analysis.contacts import Contacts
+from MDAnalysis.analysis.density import DensityAnalysis
+from MDAnalysis.analysis.lineardensity import LinearDensity
+from MDAnalysis.analysis.polymer import PersistenceLength
+from MDAnalysis.analysis.rdf import InterRDF, InterRDF_s
 from MDAnalysis.lib.util import is_installed
 
 
@@ -44,100 +51,169 @@ def params_for_cls(cls, exclude: list[str] = None):
     ]
 
     params = [
-        pytest.param({
-            "backend": backend,
-            "n_workers": nproc
-        }, ) for backend in installed_backends for nproc in (2, )
+        pytest.param(
+            {"backend": backend, "n_workers": nproc},
+        )
+        for backend in installed_backends
+        for nproc in (2,)
         if backend != "serial"
     ]
     params.extend([{"backend": "serial"}])
     return params
 
 
-@pytest.fixture(scope='module', params=params_for_cls(FrameAnalysis))
+@pytest.fixture(scope="module", params=params_for_cls(FrameAnalysis))
 def client_FrameAnalysis(request):
     return request.param
 
 
-@pytest.fixture(scope='module', params=params_for_cls(AnalysisBase))
+@pytest.fixture(scope="module", params=params_for_cls(AnalysisBase))
 def client_AnalysisBase(request):
     return request.param
 
 
-@pytest.fixture(scope='module', params=params_for_cls(AnalysisFromFunction))
+@pytest.fixture(scope="module", params=params_for_cls(AnalysisFromFunction))
 def client_AnalysisFromFunction(request):
     return request.param
 
 
-@pytest.fixture(scope='module',
-                params=params_for_cls(AnalysisFromFunction,
-                                      exclude=['multiprocessing']))
+@pytest.fixture(
+    scope="module",
+    params=params_for_cls(AnalysisFromFunction, exclude=["multiprocessing"]),
+)
 def client_AnalysisFromFunctionAnalysisClass(request):
     return request.param
 
 
-@pytest.fixture(scope='module', params=params_for_cls(IncompleteAnalysis))
+@pytest.fixture(scope="module", params=params_for_cls(IncompleteAnalysis))
 def client_IncompleteAnalysis(request):
     return request.param
 
 
-@pytest.fixture(scope='module', params=params_for_cls(OldAPIAnalysis))
+@pytest.fixture(scope="module", params=params_for_cls(OldAPIAnalysis))
 def client_OldAPIAnalysis(request):
     return request.param
 
 
 # MDAnalysis.analysis.rms
 
-@pytest.fixture(scope='module', params=params_for_cls(RMSD))
+
+@pytest.fixture(scope="module", params=params_for_cls(RMSD))
 def client_RMSD(request):
     return request.param
 
 
-@pytest.fixture(scope='module', params=params_for_cls(RMSF))
+@pytest.fixture(scope="module", params=params_for_cls(RMSF))
 def client_RMSF(request):
     return request.param
 
 
 # MDAnalysis.analysis.dihedrals
 
-@pytest.fixture(scope='module', params=params_for_cls(Dihedral))
+
+@pytest.fixture(scope="module", params=params_for_cls(Dihedral))
 def client_Dihedral(request):
     return request.param
 
 
-@pytest.fixture(scope='module', params=params_for_cls(Ramachandran))
+@pytest.fixture(scope="module", params=params_for_cls(Ramachandran))
 def client_Ramachandran(request):
     return request.param
 
 
-@pytest.fixture(scope='module', params=params_for_cls(Janin))
+@pytest.fixture(scope="module", params=params_for_cls(Janin))
 def client_Janin(request):
     return request.param
 
 
 # MDAnalysis.analysis.gnm
-  
-@pytest.fixture(scope='module', params=params_for_cls(GNMAnalysis))
+
+
+@pytest.fixture(scope="module", params=params_for_cls(GNMAnalysis))
 def client_GNMAnalysis(request):
     return request.param
 
 
 # MDAnalysis.analysis.bat
 
-@pytest.fixture(scope='module', params=params_for_cls(BAT))
+
+@pytest.fixture(scope="module", params=params_for_cls(BAT))
 def client_BAT(request):
     return request.param
 
 
 # MDAnalysis.analysis.dssp.dssp
 
+
 @pytest.fixture(scope="module", params=params_for_cls(DSSP))
 def client_DSSP(request):
     return request.param
 
-  
+
 # MDAnalysis.analysis.hydrogenbonds
-  
-@pytest.fixture(scope='module', params=params_for_cls(HydrogenBondAnalysis))
+
+
+@pytest.fixture(scope="module", params=params_for_cls(HydrogenBondAnalysis))
 def client_HydrogenBondAnalysis(request):
+    return request.param
+
+
+# MDAnalysis.analysis.nucleicacids
+
+
+@pytest.fixture(scope="module", params=params_for_cls(NucPairDist))
+def client_NucPairDist(request):
+    return request.param
+
+
+# MDAnalysis.analysis.contacts
+
+
+@pytest.fixture(scope="module", params=params_for_cls(Contacts))
+def client_Contacts(request):
+    return request.param
+
+
+# MDAnalysis.analysis.density
+
+
+@pytest.fixture(scope="module", params=params_for_cls(DensityAnalysis))
+def client_DensityAnalysis(request):
+    return request.param
+
+
+# MDAnalysis.analysis.lineardensity
+
+
+@pytest.fixture(scope="module", params=params_for_cls(LinearDensity))
+def client_LinearDensity(request):
+    return request.param
+
+
+# MDAnalysis.analysis.polymer
+
+
+@pytest.fixture(scope="module", params=params_for_cls(PersistenceLength))
+def client_PersistenceLength(request):
+    return request.param
+
+
+# MDAnalysis.analysis.rdf
+
+
+@pytest.fixture(scope="module", params=params_for_cls(InterRDF))
+def client_InterRDF(request):
+    return request.param
+
+
+@pytest.fixture(scope="module", params=params_for_cls(InterRDF_s))
+def client_InterRDF_s(request):
+    return request.param
+
+
+# MDAnalysis.analysis.diffusionmap
+
+
+@pytest.fixture(scope="module", params=params_for_cls(DistanceMatrix))
+def client_DistanceMatrix(request):
     return request.param

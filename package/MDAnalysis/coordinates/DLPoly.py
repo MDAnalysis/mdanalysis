@@ -26,7 +26,7 @@
 
 Read DL Poly_ format coordinate files
 
-.. _Poly: http://www.stfc.ac.uk/SCD/research/app/ccg/software/DL_POLY/44516.aspx
+.. _Poly: https://www.sc.stfc.ac.uk/software/type/computational-materials-and-molecular-science/?searchquery=dl_poly
 """
 import numpy as np
 

@@ -3,32 +3,30 @@ import numpy as np
 from MDAnalysis.guesser import DefaultGuesser
 
 try:
-    from MDAnalysisTests.datafiles import GRO
     from MDAnalysis.exceptions import NoDataError
+    from MDAnalysisTests.datafiles import GRO
 except:
     pass
+
 
 class TopologyGuessBench(object):
     """Benchmarks for individual
     topology functions
     """
+
     params = (10, 100, 1000, 10000)
-    param_names = ['num_atoms']
-    
+    param_names = ["num_atoms"]
+
     def setup(self, num_atoms):
         self.u = MDAnalysis.Universe(GRO)
         self.ag = self.u.atoms[:num_atoms]
-        self.vdwradii = {'H':1.0,
-                         'C':1.0,
-                         'N':1.0,
-                         'O':1.0,
-                         'DUMMY':1.0}
+        self.vdwradii = {"H": 1.0, "C": 1.0, "N": 1.0, "O": 1.0, "DUMMY": 1.0}
 
     def time_guessbonds(self, num_atoms):
         """Benchmark for guessing bonds"""
-        DefaultGuesser(None).guess_bonds(self.ag, self.ag.positions,
-                             box=self.ag.dimensions,
-                             vdwradii=self.vdwradii)
+        DefaultGuesser(None).guess_bonds(
+            self.ag, self.ag.positions, box=self.ag.dimensions, vdwradii=self.vdwradii
+        )
 
 
 class BondsBench(object):
@@ -37,11 +35,11 @@ class BondsBench(object):
     """
 
     params = (1000, 10000, 100000, 1000000)
-    param_names = ['num_bonds']
+    param_names = ["num_bonds"]
 
     def setup(self, num_bonds):
-        self.u = MDAnalysis.Universe.empty(2*num_bonds)
-        bonds = np.arange(2*num_bonds).reshape(num_bonds, 2)
+        self.u = MDAnalysis.Universe.empty(2 * num_bonds)
+        bonds = np.arange(2 * num_bonds).reshape(num_bonds, 2)
         self.u.add_bonds(bonds)
 
     def time_bonds(self, num_bonds):

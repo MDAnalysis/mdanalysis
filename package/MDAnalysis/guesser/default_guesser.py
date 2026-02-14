@@ -161,7 +161,8 @@ class DefaultGuesser(GuesserBase):
     .. versionadded:: 2.8.0
 
     """
-    context = 'default'
+
+    context = "default"
 
     def __init__(
         self,
@@ -170,7 +171,7 @@ class DefaultGuesser(GuesserBase):
         vdwradii=None,
         fudge_factor=0.55,
         lower_bound=0.1,
-        **kwargs
+        **kwargs,
     ):
         super().__init__(
             universe,
@@ -178,17 +179,17 @@ class DefaultGuesser(GuesserBase):
             vdwradii=vdwradii,
             fudge_factor=fudge_factor,
             lower_bound=lower_bound,
-            **kwargs
+            **kwargs,
         )
         self._guesser_methods = {
-            'masses': self.guess_masses,
-            'types': self.guess_types,
-            'elements': self.guess_types,
-            'bonds': self.guess_bonds,
-            'angles': self.guess_angles,
-            'dihedrals': self.guess_dihedrals,
-            'impropers': self.guess_improper_dihedrals,
-            'aromaticities': self.guess_aromaticities,
+            "masses": self.guess_masses,
+            "types": self.guess_types,
+            "elements": self.guess_types,
+            "bonds": self.guess_bonds,
+            "angles": self.guess_angles,
+            "dihedrals": self.guess_dihedrals,
+            "impropers": self.guess_improper_dihedrals,
+            "aromaticities": self.guess_aromaticities,
         }
 
     def guess_masses(self, atom_types=None, indices_to_guess=None):
@@ -225,18 +226,21 @@ class DefaultGuesser(GuesserBase):
                 except NoDataError:
                     try:
                         atom_types = self.guess_types(
-                            atom_types=self._universe.atoms.names)
+                            atom_types=self._universe.atoms.names
+                        )
                     except NoDataError:
                         raise NoDataError(
                             "there is no reference attributes"
                             " (elements, types, or names)"
-                            " in this universe to guess mass from") from None
+                            " in this universe to guess mass from"
+                        ) from None
 
         if indices_to_guess is not None:
             atom_types = atom_types[indices_to_guess]
 
-        masses = np.array([self.get_atom_mass(atom)
-                           for atom in atom_types], dtype=np.float64)
+        masses = np.array(
+            [self.get_atom_mass(atom) for atom in atom_types], dtype=np.float64
+        )
         return masses
 
     def get_atom_mass(self, element):
@@ -256,7 +260,8 @@ class DefaultGuesser(GuesserBase):
                     "Unknown masses are set to 0.0 for current version, "
                     "this will be deprecated in version 3.0.0 and replaced by"
                     " Masse's no_value_label (np.nan)",
-                    PendingDeprecationWarning)
+                    PendingDeprecationWarning,
+                )
                 return 0.0
 
     def guess_atom_mass(self, atomname):
@@ -295,13 +300,16 @@ class DefaultGuesser(GuesserBase):
             except NoDataError:
                 raise NoDataError(
                     "there is no reference attributes in this universe "
-                    "to guess types from") from None
+                    "to guess types from"
+                ) from None
 
         if indices_to_guess is not None:
             atom_types = atom_types[indices_to_guess]
 
-        return np.array([self.guess_atom_element(atom)
-                        for atom in atom_types], dtype=object)
+        return np.array(
+            [self.guess_atom_element(atom) for atom in atom_types],
+            dtype=object,
+        )
 
     def guess_atom_element(self, atomname):
         """Guess the element of the atom from the name.
@@ -315,7 +323,7 @@ class DefaultGuesser(GuesserBase):
         still not found, we iteratively continue to remove the last character
         or first character until we find a match. If ultimately no match
         is found, the first character of the stripped name is returned.
-        
+
         If the input name is an empty string, an empty string is returned.
 
         The table comes from CHARMM and AMBER atom
@@ -331,16 +339,16 @@ class DefaultGuesser(GuesserBase):
         :func:`guess_atom_type`
         :mod:`MDAnalysis.guesser.tables`
         """
-        NUMBERS = re.compile(r'[0-9]')  # match numbers
-        SYMBOLS = re.compile(r'[*+-]')  # match *, +, -
-        if atomname == '':
-            return ''
+        NUMBERS = re.compile(r"[0-9]")  # match numbers
+        SYMBOLS = re.compile(r"[*+-]")  # match *, +, -
+        if atomname == "":
+            return ""
         try:
             return tables.atomelements[atomname.upper()]
         except KeyError:
             # strip symbols and numbers
-            no_symbols = re.sub(SYMBOLS, '', atomname)
-            name = re.sub(NUMBERS, '', no_symbols).upper()
+            no_symbols = re.sub(SYMBOLS, "", atomname)
+            name = re.sub(NUMBERS, "", no_symbols).upper()
 
             # just in case
             if name in tables.atomelements:
@@ -393,7 +401,7 @@ class DefaultGuesser(GuesserBase):
 
         Raises
         ------
-        :exc:`ValueError` 
+        :exc:`ValueError`
            If inputs are malformed or `vdwradii` data is missing.
 
 
@@ -410,32 +418,37 @@ class DefaultGuesser(GuesserBase):
         if len(atoms) != len(coords):
             raise ValueError("'atoms' and 'coord' must be the same length")
 
-        fudge_factor = self._kwargs.get('fudge_factor', 0.55)
+        fudge_factor = self._kwargs.get("fudge_factor", 0.55)
 
         # so I don't permanently change it
         vdwradii = tables.vdwradii.copy()
-        user_vdwradii = self._kwargs.get('vdwradii', None)
+        user_vdwradii = self._kwargs.get("vdwradii", None)
         # this should make algo use their values over defaults
         if user_vdwradii:
             vdwradii.update(user_vdwradii)
 
         # Try using types, then elements
-        if hasattr(atoms, 'types'):
+        if hasattr(atoms, "types"):
             atomtypes = atoms.types
         else:
             atomtypes = self.guess_types(atom_types=atoms.names)
 
         # check that all types have a defined vdw
         if not all(val in vdwradii for val in set(atomtypes)):
-            raise ValueError(("vdw radii for types: " +
-                              ", ".join([t for t in set(atomtypes) if
-                                         t not in vdwradii]) +
-                              ". These can be defined manually using the" +
-                              f" keyword 'vdwradii'"))
+            raise ValueError(
+                (
+                    "vdw radii for types: "
+                    + ", ".join(
+                        [t for t in set(atomtypes) if t not in vdwradii]
+                    )
+                    + ". These can be defined manually using the"
+                    + f" keyword 'vdwradii'"
+                )
+            )
 
-        lower_bound = self._kwargs.get('lower_bound', 0.1)
+        lower_bound = self._kwargs.get("lower_bound", 0.1)
 
-        box = self._kwargs.get('box', None)
+        box = self._kwargs.get("box", None)
 
         if box is not None:
             box = np.asarray(box)
@@ -447,14 +460,14 @@ class DefaultGuesser(GuesserBase):
 
         bonds = []
 
-        pairs, dist = distances.self_capped_distance(coords,
-                                                     max_cutoff=2.0 * max_vdw,
-                                                     min_cutoff=lower_bound,
-                                                     box=box)
+        pairs, dist = distances.self_capped_distance(
+            coords, max_cutoff=2.0 * max_vdw, min_cutoff=lower_bound, box=box
+        )
         for idx, (i, j) in enumerate(pairs):
-            d = (vdwradii[atomtypes[i]] +
-                 vdwradii[atomtypes[j]]) * fudge_factor
-            if (dist[idx] < d):
+            d = (
+                vdwradii[atomtypes[i]] + vdwradii[atomtypes[j]]
+            ) * fudge_factor
+            if dist[idx] < d:
                 bonds.append((atoms[i].index, atoms[j].index))
         return tuple(bonds)
 
@@ -480,18 +493,21 @@ class DefaultGuesser(GuesserBase):
         --------
         :meth:`guess_bonds`
 
-      """
+        """
         from ..core.universe import Universe
 
         angles_found = set()
-   
+
         if bonds is None:
-            if hasattr(self._universe.atoms, 'bonds'):
+            if hasattr(self._universe.atoms, "bonds"):
                 bonds = self._universe.atoms.bonds
             else:
                 temp_u = Universe.empty(n_atoms=len(self._universe.atoms))
-                temp_u.add_bonds(self.guess_bonds(
-                    self._universe.atoms, self._universe.atoms.positions))
+                temp_u.add_bonds(
+                    self.guess_bonds(
+                        self._universe.atoms, self._universe.atoms.positions
+                    )
+                )
                 bonds = temp_u.atoms.bonds
 
         for b in bonds:
@@ -501,7 +517,8 @@ class DefaultGuesser(GuesserBase):
                     if other_b != b:  # if not the same bond I start as
                         third_a = other_b.partner(atom)
                         desc = tuple(
-                            [other_a.index, atom.index, third_a.index])
+                            [other_a.index, atom.index, third_a.index]
+                        )
                         # first index always less than last
                         if desc[0] > desc[-1]:
                             desc = desc[::-1]
@@ -530,15 +547,18 @@ class DefaultGuesser(GuesserBase):
         from ..core.universe import Universe
 
         if angles is None:
-            if hasattr(self._universe.atoms, 'angles'):
+            if hasattr(self._universe.atoms, "angles"):
                 angles = self._universe.atoms.angles
 
             else:
                 temp_u = Universe.empty(n_atoms=len(self._universe.atoms))
 
-                temp_u.add_bonds(self.guess_bonds(
-                    self._universe.atoms, self._universe.atoms.positions))
-     
+                temp_u.add_bonds(
+                    self.guess_bonds(
+                        self._universe.atoms, self._universe.atoms.positions
+                    )
+                )
+
                 temp_u.add_angles(self.guess_angles(temp_u.atoms.bonds))
 
                 angles = temp_u.atoms.angles
@@ -549,8 +569,9 @@ class DefaultGuesser(GuesserBase):
             a_tup = tuple([a.index for a in b])  # angle as tuple of numbers
             # if searching with b[0], want tuple of (b[2], b[1], b[0], +new)
             # search the first and last atom of each angle
-            for atom, prefix in zip([b.atoms[0], b.atoms[-1]],
-                                    [a_tup[::-1], a_tup]):
+            for atom, prefix in zip(
+                [b.atoms[0], b.atoms[-1]], [a_tup[::-1], a_tup]
+            ):
                 for other_b in atom.bonds:
                     if not other_b.partner(atom) in b:
                         third_a = other_b.partner(atom)
@@ -580,14 +601,17 @@ class DefaultGuesser(GuesserBase):
         from ..core.universe import Universe
 
         if angles is None:
-            if hasattr(self._universe.atoms, 'angles'):
+            if hasattr(self._universe.atoms, "angles"):
                 angles = self._universe.atoms.angles
 
             else:
                 temp_u = Universe.empty(n_atoms=len(self._universe.atoms))
 
-                temp_u.add_bonds(self.guess_bonds(
-                    self._universe.atoms, self._universe.atoms.positions))
+                temp_u.add_bonds(
+                    self.guess_bonds(
+                        self._universe.atoms, self._universe.atoms.positions
+                    )
+                )
 
                 temp_u.add_angles(self.guess_angles(temp_u.atoms.bonds))
 
@@ -652,7 +676,12 @@ class DefaultGuesser(GuesserBase):
 
         mol = atomgroup.convert_to("RDKIT")
         from rdkit.Chem.rdPartialCharges import ComputeGasteigerCharges
+
         ComputeGasteigerCharges(mol, throwOnParamFailure=True)
-        return np.array([atom.GetDoubleProp("_GasteigerCharge")
-                         for atom in mol.GetAtoms()],
-                        dtype=np.float32)
+        return np.array(
+            [
+                atom.GetDoubleProp("_GasteigerCharge")
+                for atom in mol.GetAtoms()
+            ],
+            dtype=np.float32,
+        )

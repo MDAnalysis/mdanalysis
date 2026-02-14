@@ -27,8 +27,10 @@ import pytest
 
 """Test if importing MDAnalysis has unwanted side effects (PR #1794)."""
 
-@pytest.mark.skipif(os.name == 'nt',
-                    reason="fork-related import checks irrelevant on Windows")
+
+@pytest.mark.skipif(
+    os.name == "nt", reason="fork-related import checks irrelevant on Windows"
+)
 class TestMDAImport(object):
     # Tests concerning importing MDAnalysis.
     def test_os_dot_fork_not_called(self):
@@ -37,7 +39,7 @@ class TestMDAImport(object):
         # no previously imported modules interfere with it. It is therefore
         # offloaded to the script "fork_called.py".
         loc = os.path.dirname(os.path.realpath(__file__))
-        script = os.path.join(loc, 'fork_called.py')
+        script = os.path.join(loc, "fork_called.py")
         encoding = sys.stdout.encoding
         if encoding is None:
             encoding = "utf-8"
@@ -47,16 +49,17 @@ class TestMDAImport(object):
         # CalledProcessError. That error's output member then contains the
         # failed script's stderr and we can print it:
         try:
-            out = subprocess.check_output([sys.executable, script],
-                                          stderr=subprocess.STDOUT)\
-                                         .decode(encoding)
+            out = subprocess.check_output(
+                [sys.executable, script], stderr=subprocess.STDOUT
+            ).decode(encoding)
         except subprocess.CalledProcessError as err:
             print(err.output)
-            raise(err)
+            raise (err)
 
     def test_os_dot_fork_not_none(self):
         # In MDAnalysis.core.universe, os.fork is set to None prior to importing
         # the uuid module and restored afterwards (see PR #1794 for details).
         # This tests asserts that os.fork has been restored.
         import MDAnalysis
+
         assert os.fork is not None

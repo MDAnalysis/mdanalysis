@@ -69,7 +69,8 @@ class ConfigParser(TopologyReaderBase):
        Removed type and mass guessing (attributes guessing takes place now
        through universe.guess_TopologyAttrs() API).
     """
-    format = 'CONFIG'
+
+    format = "CONFIG"
 
     def parse(self, **kwargs):
         with openany(self.filename) as inf:
@@ -117,10 +118,9 @@ class ConfigParser(TopologyReaderBase):
             Atomids(ids),
             Resids(np.array([1])),
             Resnums(np.array([1])),
-            Segids(np.array(['SYSTEM'], dtype=object)),
+            Segids(np.array(["SYSTEM"], dtype=object)),
         ]
-        top = Topology(n_atoms, 1, 1,
-                       attrs=attrs)
+        top = Topology(n_atoms, 1, 1, attrs=attrs)
 
         return top
 
@@ -130,7 +130,8 @@ class HistoryParser(TopologyReaderBase):
 
     .. versionadded:: 0.10.1
     """
-    format = 'HISTORY'
+
+    format = "HISTORY"
 
     def parse(self, **kwargs):
         with openany(self.filename) as inf:
@@ -143,10 +144,10 @@ class HistoryParser(TopologyReaderBase):
             line = inf.readline()
             while not (len(line.split()) == 4 or len(line.split()) == 5):
                 line = inf.readline()
-                if line == '':
+                if line == "":
                     raise EOFError("End of file reached when reading HISTORY.")
 
-            while line and not line.startswith('timestep'):
+            while line and not line.startswith("timestep"):
                 name = line[:8].strip()
                 names.append(name)
                 try:
@@ -179,9 +180,8 @@ class HistoryParser(TopologyReaderBase):
             Atomids(ids),
             Resids(np.array([1])),
             Resnums(np.array([1])),
-            Segids(np.array(['SYSTEM'], dtype=object)),
+            Segids(np.array(["SYSTEM"], dtype=object)),
         ]
-        top = Topology(n_atoms, 1, 1,
-                       attrs=attrs)
+        top = Topology(n_atoms, 1, 1, attrs=attrs)
 
         return top

@@ -26,8 +26,10 @@ import MDAnalysis as mda
 import pytest
 from MDAnalysis.coordinates.memory import MemoryReader
 from MDAnalysisTests.datafiles import DCD, PSF
-from MDAnalysisTests.coordinates.base import (BaseReference,
-                                              MultiframeReaderTest)
+from MDAnalysisTests.coordinates.base import (
+    BaseReference,
+    MultiframeReaderTest,
+)
 from MDAnalysis.coordinates.memory import Timestep
 from numpy.testing import assert_equal, assert_almost_equal
 
@@ -51,27 +53,29 @@ class MemoryReference(BaseReference):
         self.first_frame = Timestep(self.n_atoms)
         self.first_frame.positions = np.array(self.universe.trajectory[0])
         self.first_frame.frame = 0
-        self.first_frame.time = self.first_frame.frame*self.dt
+        self.first_frame.time = self.first_frame.frame * self.dt
 
         self.second_frame = Timestep(self.n_atoms)
         self.second_frame.positions = np.array(self.universe.trajectory[1])
         self.second_frame.frame = 1
-        self.second_frame.time = self.second_frame.frame*self.dt
+        self.second_frame.time = self.second_frame.frame * self.dt
 
         self.last_frame = Timestep(self.n_atoms)
-        self.last_frame.positions = \
-            np.array(self.universe.trajectory[self.n_frames - 1])
+        self.last_frame.positions = np.array(
+            self.universe.trajectory[self.n_frames - 1]
+        )
         self.last_frame.frame = self.n_frames - 1
-        self.last_frame.time = self.last_frame.frame*self.dt
+        self.last_frame.time = self.last_frame.frame * self.dt
 
         self.jump_to_frame = self.first_frame.copy()
         self.jump_to_frame.positions = np.array(self.universe.trajectory[3])
         self.jump_to_frame.frame = 3
-        self.jump_to_frame.time = self.jump_to_frame.frame*self.dt
+        self.jump_to_frame.time = self.jump_to_frame.frame * self.dt
 
     def reader(self, trajectory):
-        return mda.Universe(self.topology,
-                            trajectory, in_memory=True).trajectory
+        return mda.Universe(
+            self.topology, trajectory, in_memory=True
+        ).trajectory
 
     def iter_ts(self, i):
         ts = self.universe.trajectory[i]
@@ -82,7 +86,7 @@ class MemoryReference(BaseReference):
 
 class TestMemoryReader(MultiframeReaderTest):
     @staticmethod
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def ref():
         return MemoryReference()
 
@@ -96,14 +100,18 @@ class TestMemoryReader(MultiframeReaderTest):
         # filename attribute of MemoryReader should be None when generated from an array
         universe = mda.Universe(PSF, DCD)
         coordinates = universe.trajectory.timeseries(universe.atoms)
-        universe2 = mda.Universe(PSF, coordinates, format=MemoryReader, order='afc')
+        universe2 = mda.Universe(
+            PSF, coordinates, format=MemoryReader, order="afc"
+        )
         assert universe2.trajectory.filename is None
 
     def test_default_memory_layout(self):
         universe1 = mda.Universe(PSF, DCD, in_memory=True)
-        universe2 = mda.Universe(PSF, DCD, in_memory=True, order='fac')
-        assert_equal(universe1.trajectory.get_array().shape,
-                     universe2.trajectory.get_array().shape)
+        universe2 = mda.Universe(PSF, DCD, in_memory=True, order="fac")
+        assert_equal(
+            universe1.trajectory.get_array().shape,
+            universe2.trajectory.get_array().shape,
+        )
 
     def test_iteration(self, ref, reader):
         frames = 0
@@ -111,35 +119,36 @@ class TestMemoryReader(MultiframeReaderTest):
             frames += 1
         assert frames == ref.n_frames
 
-    def test_extract_array_afc(self,reader):
-        assert_equal(reader.timeseries(order='afc').shape, (3341, 98, 3))
+    def test_extract_array_afc(self, reader):
+        assert_equal(reader.timeseries(order="afc").shape, (3341, 98, 3))
 
     def test_extract_array_afc(self, reader):
-        assert_equal(reader.timeseries(order='afc').shape, (3341, 98, 3))
+        assert_equal(reader.timeseries(order="afc").shape, (3341, 98, 3))
 
     def test_extract_array_fac(self, reader):
-        assert_equal(reader.timeseries(order='fac').shape, (98, 3341, 3))
+        assert_equal(reader.timeseries(order="fac").shape, (98, 3341, 3))
 
     def test_extract_array_cfa(self, reader):
-        assert_equal(reader.timeseries(order='cfa').shape, (3, 98, 3341))
+        assert_equal(reader.timeseries(order="cfa").shape, (3, 98, 3341))
 
     def test_extract_array_acf(self, reader):
-        assert_equal(reader.timeseries(order='acf').shape, (3341, 3, 98))
+        assert_equal(reader.timeseries(order="acf").shape, (3341, 3, 98))
 
     def test_extract_array_fca(self, reader):
-        assert_equal(reader.timeseries(order='fca').shape, (98, 3, 3341))
+        assert_equal(reader.timeseries(order="fca").shape, (98, 3, 3341))
 
     def test_extract_array_caf(self, reader):
-        assert_equal(reader.timeseries(order='caf').shape, (3, 3341, 98))
+        assert_equal(reader.timeseries(order="caf").shape, (3, 3341, 98))
 
     def test_timeseries_skip1(self, ref, reader):
-        assert_equal(reader.timeseries(ref.universe.atoms).shape,
-                     (3341, 98, 3))
+        assert_equal(
+            reader.timeseries(ref.universe.atoms).shape, (3341, 98, 3)
+        )
 
     def test_timeseries_skip10(self, reader):
         # Check that timeseries skip works similar to numpy slicing
         array1 = reader.timeseries(step=10)
-        array2 = reader.timeseries()[:,::10,:]
+        array2 = reader.timeseries()[:, ::10, :]
         assert_equal(array1, array2)
 
     def test_timeseries_view(self, reader):
@@ -150,8 +159,10 @@ class TestMemoryReader(MultiframeReaderTest):
         # timeseries() is expected to provide a view of the underlying array
         # also in the case where we slice the array using the start, stop and
         # step options.
-        assert reader.timeseries(start=5,stop=15,step=2,order='fac').base is\
-               reader.get_array()
+        assert (
+            reader.timeseries(start=5, stop=15, step=2, order="fac").base
+            is reader.get_array()
+        )
 
     def test_timeseries_view_from_universe_atoms(self, ref, reader):
         # timeseries() is expected to provide a view of the underlying array
@@ -163,9 +174,9 @@ class TestMemoryReader(MultiframeReaderTest):
         # timeseries() is expected to provide a view of the underlying array
         # also in the special case when using "all" in selections.
         selection = ref.universe.select_atoms("all")
-        assert_equal(reader.timeseries(
-            asel=selection).base is reader.get_array(),
-            True)
+        assert_equal(
+            reader.timeseries(asel=selection).base is reader.get_array(), True
+        )
 
     def test_timeseries_noview(self, ref, reader):
         # timeseries() is expected NOT to provide a view of the underlying array
@@ -186,9 +197,15 @@ class TestMemoryReader(MultiframeReaderTest):
 
     def test_float32(self, ref):
         # Check that we get float32 positions even when initializing with float64
-        coordinates = np.random.uniform(size=(100, ref.universe.atoms.n_atoms, 3)).cumsum(0)
-        universe = mda.Universe(ref.universe.filename, coordinates, format=MemoryReader)
-        assert_equal(universe.trajectory.get_array().dtype, np.dtype('float32'))
+        coordinates = np.random.uniform(
+            size=(100, ref.universe.atoms.n_atoms, 3)
+        ).cumsum(0)
+        universe = mda.Universe(
+            ref.universe.filename, coordinates, format=MemoryReader
+        )
+        assert_equal(
+            universe.trajectory.get_array().dtype, np.dtype("float32")
+        )
 
     def test_position_assignation(self, reader):
         # When coordinates are assigned to a timestep, is the change persistent?
@@ -198,19 +215,20 @@ class TestMemoryReader(MultiframeReaderTest):
         assert_almost_equal(reader.ts.positions, new_positions)
 
     def test_timeseries_warns_deprecation(self, reader):
-        with pytest.warns(DeprecationWarning, match="MemoryReader.timeseries "
-                          "inclusive"):
+        with pytest.warns(
+            DeprecationWarning, match="MemoryReader.timeseries " "inclusive"
+        ):
             reader.timeseries(start=0, stop=3, step=1)
 
     def test_timeseries_asel_warns_deprecation(self, ref, reader):
         selection = ref.universe.atoms
         with pytest.warns(DeprecationWarning, match="asel argument to"):
             reader.timeseries(asel=selection)
-    
+
     def test_timeseries_atomgroup(self, ref, reader):
         selection = ref.universe.atoms
         reader.timeseries(atomgroup=selection)
-    
+
     def test_timeseries_atomgroup_asel_mutex(self, ref, reader):
         selection = ref.universe.atoms
         with pytest.raises(ValueError, match="Cannot provide both"):
@@ -219,27 +237,27 @@ class TestMemoryReader(MultiframeReaderTest):
 
 class TestMemoryReaderVelsForces(object):
     @staticmethod
-    @pytest.fixture(params=['2d', '3d'])
+    @pytest.fixture(params=["2d", "3d"])
     def ref_pos(request):
-        if request.param == '2d':
+        if request.param == "2d":
             return np.arange(30).reshape(10, 3)
-        elif request.param == '3d':
+        elif request.param == "3d":
             return np.arange(30).reshape(1, 10, 3)
 
     @staticmethod
-    @pytest.fixture(params=['2d', '3d'])
+    @pytest.fixture(params=["2d", "3d"])
     def ref_vels(request):
-        if request.param == '2d':
+        if request.param == "2d":
             return np.arange(30).reshape(10, 3) + 100
-        elif request.param == '3d':
+        elif request.param == "3d":
             return np.arange(30).reshape(1, 10, 3) + 100
 
     @staticmethod
-    @pytest.fixture(params=['2d', '3d'])
+    @pytest.fixture(params=["2d", "3d"])
     def ref_forces(request):
-        if request.param == '2d':
+        if request.param == "2d":
             return np.arange(30).reshape(10, 3) + 1000
-        elif request.param == '3d':
+        elif request.param == "3d":
             return np.arange(30).reshape(1, 10, 3) + 1000
 
     @staticmethod
@@ -250,31 +268,27 @@ class TestMemoryReaderVelsForces(object):
             assert_equal(arr1, arr2)
 
     def test_velocities(self, ref_pos, ref_vels):
-        mr = MemoryReader(ref_pos,
-                          velocities=ref_vels)
+        mr = MemoryReader(ref_pos, velocities=ref_vels)
 
         assert mr.ts.has_velocities
         self.assert_equal_dims(mr.ts.velocities, ref_vels)
         assert not mr.ts.has_forces
 
     def test_forces(self, ref_pos, ref_forces):
-        mr = MemoryReader(ref_pos,
-                          forces=ref_forces)
+        mr = MemoryReader(ref_pos, forces=ref_forces)
 
         assert not mr.ts.has_velocities
         assert mr.ts.has_forces
         self.assert_equal_dims(mr.ts.forces, ref_forces)
 
     def test_both(self, ref_pos, ref_vels, ref_forces):
-        mr = MemoryReader(ref_pos,
-                          velocities=ref_vels,
-                          forces=ref_forces)
+        mr = MemoryReader(ref_pos, velocities=ref_vels, forces=ref_forces)
         assert mr.ts.has_velocities
         self.assert_equal_dims(mr.ts.velocities, ref_vels)
         assert mr.ts.has_forces
         self.assert_equal_dims(mr.ts.forces, ref_forces)
 
-    @pytest.mark.parametrize('param', ['velocities', 'forces'])
+    @pytest.mark.parametrize("param", ["velocities", "forces"])
     def test_wrongshape(self, ref_pos, param):
         with pytest.raises(ValueError):
             mr = MemoryReader(ref_pos, **{param: np.zeros((3, 2, 1))})
@@ -328,17 +342,23 @@ class TestMemoryReaderModifications(object):
     @pytest.fixture()
     def mr_reader(self):
         pos = np.arange(self.n_frames * self.n_atoms * 3).reshape(
-            self.n_frames, self.n_atoms, 3)
-        vel = np.arange(self.n_frames * self.n_atoms * 3).reshape(
-            self.n_frames, self.n_atoms, 3) + 200
-        frc = np.arange(self.n_frames * self.n_atoms * 3).reshape(
-            self.n_frames, self.n_atoms, 3) + 400
+            self.n_frames, self.n_atoms, 3
+        )
+        vel = (
+            np.arange(self.n_frames * self.n_atoms * 3).reshape(
+                self.n_frames, self.n_atoms, 3
+            )
+            + 200
+        )
+        frc = (
+            np.arange(self.n_frames * self.n_atoms * 3).reshape(
+                self.n_frames, self.n_atoms, 3
+            )
+            + 400
+        )
         box = np.arange(self.n_frames * 6).reshape(self.n_frames, 6) + 600
 
-        return MemoryReader(pos,
-                            velocities=vel,
-                            forces=frc,
-                            dimensions=box)
+        return MemoryReader(pos, velocities=vel, forces=frc, dimensions=box)
 
     @pytest.fixture()
     def mr_universe(self, mr_reader):
@@ -347,7 +367,9 @@ class TestMemoryReaderModifications(object):
 
         return u
 
-    @pytest.mark.parametrize('attr', ['positions', 'velocities', 'forces', 'dimensions'])
+    @pytest.mark.parametrize(
+        "attr", ["positions", "velocities", "forces", "dimensions"]
+    )
     def test_copying(self, mr_reader, attr):
         mr2 = mr_reader.copy()
         # update the attribute
@@ -365,7 +387,9 @@ class TestMemoryReaderModifications(object):
         # check our old change is still there
         assert_almost_equal(getattr(ts, attr), 7)
 
-    @pytest.mark.parametrize('attr', ['positions', 'velocities', 'forces', 'dimensions'])
+    @pytest.mark.parametrize(
+        "attr", ["positions", "velocities", "forces", "dimensions"]
+    )
     def test_attr_set(self, mr_universe, attr):
         # same as above, but via a Universe/AtomGroup
         u = mr_universe
@@ -384,8 +408,7 @@ class TestMemoryReaderModifications(object):
         assert u.atoms.forces.shape == (self.n_atoms, 3)
         assert u.atoms.dimensions.shape == (6,)
 
-    @pytest.mark.parametrize('attr', ['velocities', 'forces', 'dimensions'])
+    @pytest.mark.parametrize("attr", ["velocities", "forces", "dimensions"])
     def test_non_numpy_arr(self, attr):
         with pytest.raises(TypeError):
-            mr = MemoryReader(np.zeros((10, 30, 3)),
-                              **{attr: 'not an array'})
+            mr = MemoryReader(np.zeros((10, 30, 3)), **{attr: "not an array"})

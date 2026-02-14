@@ -56,12 +56,13 @@ class MinimalParser(TopologyReaderBase):
 
     This requires that the coordinate format has
     """
-    format = 'MINIMAL'
+
+    format = "MINIMAL"
 
     def parse(self, **kwargs):
         """Return the minimal *Topology* object"""
         try:
-            n_atoms = kwargs['n_atoms']
+            n_atoms = kwargs["n_atoms"]
         except KeyError:
             reader = get_reader_for(self.filename)
             n_atoms = reader.parse_n_atoms(self.filename, **kwargs)

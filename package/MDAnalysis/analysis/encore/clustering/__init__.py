@@ -26,8 +26,9 @@ from . import ClusterCollection
 from .ClusteringMethod import AffinityPropagationNative
 from .ClusterCollection import ClusterCollection, Cluster
 
-__all__ = ['ClusterCollection', 'Cluster', 'AffinityPropagationNative']
+__all__ = ["ClusterCollection", "Cluster", "AffinityPropagationNative"]
 
 if ClusteringMethod.sklearn:
     from .ClusteringMethod import AffinityPropagation, DBSCAN
-    __all__ += ['AffinityPropagation', 'DBSCAN']
+
+    __all__ += ["AffinityPropagation", "DBSCAN"]

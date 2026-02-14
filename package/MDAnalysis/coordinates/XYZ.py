@@ -87,7 +87,8 @@ import errno
 import numpy as np
 import warnings
 import logging
-logger = logging.getLogger('MDAnalysis.coordinates.XYZ')
+
+logger = logging.getLogger("MDAnalysis.coordinates.XYZ")
 
 from . import base
 from .timestep import Timestep
@@ -135,13 +136,20 @@ class XYZWriter(base.WriterBase):
        :class:`~MDAnalysis.core.groups.AtomGroup` before invoking the writer.
     """
 
-    format = 'XYZ'
+    format = "XYZ"
     multiframe = True
     # these are assumed!
-    units = {'time': 'ps', 'length': 'Angstrom'}
+    units = {"time": "ps", "length": "Angstrom"}
 
-    def __init__(self, filename, n_atoms=None, convert_units=True,
-                 remark=None, **kwargs):
+    def __init__(
+        self,
+        filename,
+        n_atoms=None,
+        convert_units=True,
+        remark=None,
+        precision=5,
+        **kwargs,
+    ):
         """Initialize the XYZ trajectory writer
 
         Parameters
@@ -161,6 +169,10 @@ class XYZWriter(base.WriterBase):
         remark: str (optional)
             single line of text ("molecule name"). By default writes MDAnalysis
             version and frame
+        precision: int (optional)
+            set precision of saved trjactory to this number of decimal places.
+
+            .. versionadded:: 2.9.0
 
 
         .. versionchanged:: 1.0.0
@@ -175,9 +187,10 @@ class XYZWriter(base.WriterBase):
         self.remark = remark
         self.n_atoms = n_atoms
         self.convert_units = convert_units
+        self.precision = precision
 
         # can also be gz, bz2
-        self._xyz = util.anyopen(self.filename, 'wt')
+        self._xyz = util.anyopen(self.filename, "wt")
 
     def _get_atoms_elements_or_names(self, atoms):
         """Return a list of atom elements (if present) or fallback to atom names"""
@@ -187,11 +200,13 @@ class XYZWriter(base.WriterBase):
             try:
                 return atoms.atoms.names
             except (AttributeError, NoDataError):
-                wmsg = ("Input AtomGroup or Universe does not have atom "
-                        "elements or names attributes, writer will default "
-                        "atom names to 'X'")
+                wmsg = (
+                    "Input AtomGroup or Universe does not have atom "
+                    "elements or names attributes, writer will default "
+                    "atom names to 'X'"
+                )
                 warnings.warn(wmsg)
-                return itertools.cycle(('X',))
+                return itertools.cycle(("X",))
 
     def close(self):
         """Close the trajectory file and finalize the writing"""
@@ -228,7 +243,7 @@ class XYZWriter(base.WriterBase):
             errmsg = "Input obj is neither an AtomGroup or Universe"
             raise TypeError(errmsg) from None
         else:
-            if hasattr(obj, 'universe'):
+            if hasattr(obj, "universe"):
                 # For AtomGroup and children (Residue, ResidueGroup, Segment)
                 ts_full = obj.universe.trajectory.ts
                 if ts_full.n_atoms == atoms.n_atoms:
@@ -236,7 +251,7 @@ class XYZWriter(base.WriterBase):
                 else:
                     # Only populate a time step with the selected atoms.
                     ts = ts_full.copy_slice(atoms.indices)
-            elif hasattr(obj, 'trajectory'):
+            elif hasattr(obj, "trajectory"):
                 # For Universe only --- get everything
                 ts = obj.trajectory.ts
             # update atom names
@@ -249,36 +264,46 @@ class XYZWriter(base.WriterBase):
         Write coordinate information in *ts* to the trajectory
 
         .. versionchanged:: 1.0.0
-           Print out :code:`remark` if present, otherwise use generic one 
+           Print out :code:`remark` if present, otherwise use generic one
            (Issue #2692).
            Renamed from `write_next_timestep` to `_write_next_frame`.
         """
         if ts is None:
-            if not hasattr(self, 'ts'):
-                raise NoDataError('XYZWriter: no coordinate data to write to '
-                                  'trajectory file')
+            if not hasattr(self, "ts"):
+                raise NoDataError(
+                    "XYZWriter: no coordinate data to write to "
+                    "trajectory file"
+                )
             else:
                 ts = self.ts
 
         if self.n_atoms is not None:
             if self.n_atoms != ts.n_atoms:
-                raise ValueError('n_atoms keyword was specified indicating '
-                                 'that this should be a trajectory of the '
-                                 'same model. But the provided TimeStep has a '
-                                 'different number ({}) then expected ({})'
-                                 ''.format(ts.n_atoms, self.n_atoms))
+                raise ValueError(
+                    "n_atoms keyword was specified indicating "
+                    "that this should be a trajectory of the "
+                    "same model. But the provided TimeStep has a "
+                    "different number ({}) then expected ({})"
+                    "".format(ts.n_atoms, self.n_atoms)
+                )
         else:
-            if (not isinstance(self.atomnames, itertools.cycle) and
-                len(self.atomnames) != ts.n_atoms):
-                logger.info('Trying to write a TimeStep with unknown atoms. '
-                            'Expected {} atoms, got {}. Try using "write" if you are '
-                            'using "_write_next_frame" directly'.format(
-                                len(self.atomnames), ts.n_atoms))
+            if (
+                not isinstance(self.atomnames, itertools.cycle)
+                and len(self.atomnames) != ts.n_atoms
+            ):
+                logger.info(
+                    "Trying to write a TimeStep with unknown atoms. "
+                    'Expected {} atoms, got {}. Try using "write" if you are '
+                    'using "_write_next_frame" directly'.format(
+                        len(self.atomnames), ts.n_atoms
+                    )
+                )
                 self.atomnames = np.array([self.atomnames[0]] * ts.n_atoms)
 
         if self.convert_units:
             coordinates = self.convert_pos_to_native(
-                ts.positions, inplace=False)
+                ts.positions, inplace=False
+            )
         else:
             coordinates = ts.positions
 
@@ -287,8 +312,11 @@ class XYZWriter(base.WriterBase):
 
         # Write remark
         if self.remark is None:
-            remark = "frame {} | Written by MDAnalysis {} (release {})\n".format(
-                ts.frame, self.__class__.__name__, __version__)
+            remark = (
+                "frame {} | Written by MDAnalysis {} (release {})\n".format(
+                    ts.frame, self.__class__.__name__, __version__
+                )
+            )
 
             self._xyz.write(remark)
         else:
@@ -296,8 +324,10 @@ class XYZWriter(base.WriterBase):
 
         # Write content
         for atom, (x, y, z) in zip(self.atomnames, coordinates):
-            self._xyz.write("{0!s:>8}  {1:10.5f} {2:10.5f} {3:10.5f}\n"
-                            "".format(atom, x, y, z))
+            self._xyz.write(
+                "{0!s:>8}  {1:10.{p}f} {2:10.{p}f} {3:10.{p}f}\n"
+                "".format(atom, x, y, z, p=self.precision)
+            )
 
 
 class XYZReader(base.ReaderBase):
@@ -334,7 +364,7 @@ class XYZReader(base.ReaderBase):
 
     format = "XYZ"
     # these are assumed!
-    units = {'time': 'ps', 'length': 'Angstrom'}
+    units = {"time": "ps", "length": "Angstrom"}
     _Timestep = Timestep
 
     @store_init_arguments
@@ -357,7 +387,7 @@ class XYZReader(base.ReaderBase):
         self._read_next_timestep()
 
     @property
-    @cached('n_atoms')
+    @cached("n_atoms")
     def n_atoms(self):
         """number of atoms in a frame"""
         with util.anyopen(self.filename) as f:
@@ -366,7 +396,7 @@ class XYZReader(base.ReaderBase):
         return int(n)
 
     @property
-    @cached('n_frames')
+    @cached("n_frames")
     def n_frames(self):
         try:
             return self._read_xyz_n_frames()
@@ -426,7 +456,8 @@ class XYZReader(base.ReaderBase):
     def open_trajectory(self):
         if self.xyzfile is not None:
             raise IOError(
-                errno.EALREADY, 'XYZ file already opened', self.filename)
+                errno.EALREADY, "XYZ file already opened", self.filename
+            )
 
         self.xyzfile = util.anyopen(self.filename)
 
