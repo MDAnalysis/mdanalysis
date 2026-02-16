@@ -54,6 +54,7 @@ SUPPORTED_VERSIONS = (
     133,
     134,
     137,
+    138,
 )
 
 # Some constants
