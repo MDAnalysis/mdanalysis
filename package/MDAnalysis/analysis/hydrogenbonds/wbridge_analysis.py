@@ -716,7 +716,7 @@ from MDAnalysis import MissingDataWarning, NoDataError, SelectionError
 from MDAnalysis.lib.distances import calc_angles, capped_distance
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
 
-from ..base import AnalysisBase
+from ..base import AnalysisBase, ResultsGroup
 
 logger = logging.getLogger("MDAnalysis.analysis.WaterBridgeAnalysis")
 
@@ -731,6 +731,10 @@ class WaterBridgeAnalysis(AnalysisBase):
 
     .. versionadded:: 0.17.0
 
+    .. versionchanged:: 2.11.0
+       Enabled **parallel execution** with the ``multiprocessing`` and ``dask``
+       backends; use the new method :meth:`get_supported_backends` to see all
+       supported backends.
     """
 
     # use tuple(set()) here so that one can just copy&paste names from the
@@ -803,6 +807,16 @@ class WaterBridgeAnalysis(AnalysisBase):
     r_cov = defaultdict(
         lambda: 1.5, N=1.31, O=1.31, P=1.58, S=1.55  # default value
     )  # noqa: E741
+
+    _analysis_algorithm_is_parallelizable = True
+
+    @classmethod
+    def get_supported_backends(cls):
+        return (
+            "serial",
+            "multiprocessing",
+            "dask",
+        )
 
     def __init__(
         self,
@@ -1014,7 +1028,6 @@ class WaterBridgeAnalysis(AnalysisBase):
         # final result accessed as self.results.network
         self.results.network = []
         self.results.timeseries = None
-        self.timesteps = None  # time for each frame
 
         self._log_parameters()
 
@@ -1301,7 +1314,6 @@ class WaterBridgeAnalysis(AnalysisBase):
 
         self._update_selection()
 
-        self.timesteps = []
         if len(self._s1) and len(self._s2):
             self._update_water_selection()
         else:
@@ -1396,7 +1408,6 @@ class WaterBridgeAnalysis(AnalysisBase):
         return result
 
     def _single_frame(self):
-        self.timesteps.append(self._ts.time)
         self.box = self.u.dimensions if self.pbc else None
 
         if self.update_selection:
@@ -1953,7 +1964,8 @@ class WaterBridgeAnalysis(AnalysisBase):
             analysis_func = self._count_by_time_analysis
         if self.results.network:
             result = []
-            for time, frame in zip(self.timesteps, self.results.network):
+
+            for time, frame in zip(self.times, self.results.network):
                 result_dict = defaultdict(int)
                 self._traverse_water_network(
                     frame,
@@ -2016,11 +2028,8 @@ class WaterBridgeAnalysis(AnalysisBase):
 
         if self.results.network:
             result = defaultdict(list)
-            if self.timesteps is None:
-                timesteps = range(len(self.results.network))
-            else:
-                timesteps = self.timesteps
-            for time, frame in zip(timesteps, self.results.network):
+
+            for time, frame in zip(self.times, self.results.network):
                 self._traverse_water_network(
                     frame,
                     [],
@@ -2120,7 +2129,8 @@ class WaterBridgeAnalysis(AnalysisBase):
         # standard array, like this:
         out = np.empty((num_records,), dtype=dtype)
         cursor = 0  # current row
-        for t, hframe in zip(self.timesteps, timeseries):
+
+        for t, hframe in zip(self.times, timeseries):
             for (
                 donor_index,
                 acceptor_index,
@@ -2151,6 +2161,14 @@ class WaterBridgeAnalysis(AnalysisBase):
 
     def _conclude(self):
         self.results.timeseries = self._generate_timeseries()
+
+    def _get_aggregator(self):
+        return ResultsGroup(
+            lookup={
+                "timeseries": ResultsGroup.ndarray_hstack,
+                "network": ResultsGroup.ndarray_hstack,
+            }
+        )
 
     @property
     def network(self):

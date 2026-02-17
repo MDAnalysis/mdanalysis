@@ -396,8 +396,24 @@ __all__ = [
     "SURFACE_PDB",  # 111 FCC lattice topology for NSGrid bug #2345
     "SURFACE_TRR",  # full precision coordinates for NSGrid bug #2345
     "DSSP",  # DSSP test suite
+    "WB_AD",  # GRO file with one hydrogen bond donor bonding to a hydrogen bond acceptor
+    "WB_AWA",  # GRO file with two hydrogen bond acceptors that are joined by a water
+    "WB_AWA_AWWA",  # GRO file with one hydrogen bond acceptors are bonded through one or two water
+    "WB_AWD",  # GRO file with one hydrogen bond acceptor bonding to a hydrogen bond donor through a water
+    "WB_AWWA",  # GRO file with one hydrogen bond acceptor bonding to a hydrogen bond acceptor through two waters
+    "WB_AWWWA",  # GRO file with one hydrogen bond acceptor bonding to a hydrogen bond acceptor through three waters
+    "WB_AWWWWA",  # GRO file with one hydrogen bond acceptor bonding to a hydrogen bond acceptor through four waters
+    "WB_BRANCH",  # GRO file with one hydrogen bond acceptor bonding to two hydrogen bond acceptor in selection 2
+    "WB_DA",  # GRO file with one hydrogen bond acceptor bonding to a hydrogen bond donor
+    "WB_DA_PBC",  # GRO file with one hydrogen bond acceptor bonding to a hydrogen bond donor but in a PBC condition
+    "WB_DWA",  # GRO file with one hydrogen bond donor bonding to a hydrogen bond acceptor through a water
+    "WB_DWD",  # GRO file with one hydrogen bond donor bonding to a hydrogen bond donor through a water
+    "WB_EMPTY",  # GRO file with no hydrogen bonds
+    "WB_LOOP",  # GRO with hydrogen bond acceptor bonding to water which bonds back to the first hydrogen bond acceptor to form a loop
+    "WB_DUPLICATE_WATER",  # GRO file with duplicate waters, reference to case #3119
+    "WB_MULTIFRAME_GRO",  # topology file of containing water bridges for multiple frame tests
+    "WB_MULTIFRAME_DCD",  # trajectory file of containing water bridges for multiple frame tests
 ]
-
 from importlib import resources
 import MDAnalysisTests.data
 
@@ -928,5 +944,27 @@ SURFACE_TRR = (_data_ref / "surface.trr").as_posix()
 # DSSP testing: from https://github.com/ShintaroMinami/PyDSSP
 DSSP = (_data_ref / "dssp").as_posix()
 
+
+# Water Bridge files. Currently used due to the
+# incompatibility of StringIO with parallelization backends. Issue #5221
+WB_AD = (_data_ref / "waterbridge/wb_ad.gro").as_posix()
+WB_AWA = (_data_ref / "waterbridge/wb_awa.gro").as_posix()
+WB_AWA_AWWA = (_data_ref / "waterbridge/wb_awa_awwa.gro").as_posix()
+WB_AWD = (_data_ref / "waterbridge/wb_awd.gro").as_posix()
+WB_AWWA = (_data_ref / "waterbridge/wb_awwa.gro").as_posix()
+WB_AWWWA = (_data_ref / "waterbridge/wb_awwwa.gro").as_posix()
+WB_AWWWWA = (_data_ref / "waterbridge/wb_awwwwa.gro").as_posix()
+WB_BRANCH = (_data_ref / "waterbridge/wb_branch.gro").as_posix()
+WB_DA = (_data_ref / "waterbridge/wb_da.gro").as_posix()
+WB_DA_PBC = (_data_ref / "waterbridge/wb_da_pbc.gro").as_posix()
+WB_DWA = (_data_ref / "waterbridge/wb_dwa.gro").as_posix()
+WB_DWD = (_data_ref / "waterbridge/wb_dwd.gro").as_posix()
+WB_EMPTY = (_data_ref / "waterbridge/wb_empty.gro").as_posix()
+WB_LOOP = (_data_ref / "waterbridge/wb_loop.gro").as_posix()
+WB_DUPLICATE_WATER = (
+    _data_ref / "waterbridge/wb_duplicate_water.gro"
+).as_posix()
+WB_MULTIFRAME_GRO = (_data_ref / "waterbridge/wb_multiframe.gro").as_posix()
+WB_MULTIFRAME_DCD = (_data_ref / "waterbridge/wb_multiframe.dcd").as_posix()
 # This should be the last line: clean up namespace
 del resources
