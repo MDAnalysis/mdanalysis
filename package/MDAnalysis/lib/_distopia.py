@@ -190,3 +190,15 @@ def calc_self_distance_array_triclinic(
     coords: np.ndarray, box: np.ndarray, results: np.ndarray
 ) -> None:
     distopia.self_distance_array_triclinic(coords, box, results=results)
+
+
+def calc_minimize_vectors_ortho(
+    vectors: np.ndarray, box: np.ndarray, output: np.ndarray
+) -> None:
+    distopia.minimize_vectors_ortho(vectors, box[:3], output)
+
+
+def calc_minimize_vectors_triclinic(
+    vectors: np.ndarray, box: np.ndarray, output: np.ndarray
+) -> None:
+    distopia.minimize_vectors_triclinic(vectors, box, output)

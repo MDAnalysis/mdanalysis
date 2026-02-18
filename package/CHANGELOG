@@ -15,7 +15,7 @@ The rules for this file:
 
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, orbeckst, marinegor, tylerjereddy, ljwoods2, marinegor,
-         spyke7, talagayev, tanii1125, BradyAJohnston
+         spyke7, talagayev, tanii1125, BradyAJohnston, PardhavMaradani
 
  * 2.11.0
 
@@ -37,6 +37,7 @@ Fixes
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Enhancements
+ * Adds support for backend options in `minimize_vectors` (Issue #5234, PR #5235)
  * Adds support for parsing `.tpr` files produced by GROMACS 2026.0
  * Enables parallelization for analysis.diffusionmap.DistanceMatrix
    (Issue #4679, PR #4745)

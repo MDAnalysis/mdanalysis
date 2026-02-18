@@ -21,6 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 #
+# distutils: language = c++
 
 """
 Parallel distance calculation library --- :mod:`MDAnalysis.lib.c_distances_openmp`
@@ -30,9 +31,11 @@ Parallel distance calculation library --- :mod:`MDAnalysis.lib.c_distances_openm
 Contains OpenMP versions of the contents of "calc_distances.h"
 """
 
+cimport cython
 from libc.stdint cimport uint64_t
 import numpy
 cimport numpy
+from cython cimport floating
 numpy.import_array()
 
 cdef extern from "string.h":
@@ -59,6 +62,10 @@ cdef extern from "calc_distances.h":
     void _calc_dihedral_triclinic(coordinate* atom1, coordinate* atom2, coordinate* atom3, coordinate* atom4, uint64_t numatom, float* box, double* angles)
     void _ortho_pbc(coordinate* coords, uint64_t numcoords, float* box)
     void _triclinic_pbc(coordinate* coords, uint64_t numcoords, float* box)
+
+cdef extern from "calc_distances.hpp":
+    void _calc_minimize_vectors_ortho[T](T* vectors, uint64_t numvectors, T* box, T* output)
+    void _calc_minimize_vectors_triclinic[T](T* vectors, uint64_t numvectors, T* box, T* output)
 
 
 OPENMP_ENABLED = True if USED_OPENMP else False
@@ -241,3 +248,23 @@ def triclinic_pbc(numpy.ndarray coords, numpy.ndarray box):
     numcoords = coords.shape[0]
 
     _triclinic_pbc(<coordinate*> coords.data, numcoords, <float*> box.data)
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def calc_minimize_vectors_ortho(
+    floating[:, ::1] vectors,
+    floating[::1] box,
+    floating[:, ::1] output):
+    cdef uint64_t numvectors = vectors.shape[0]
+    _calc_minimize_vectors_ortho(&vectors[0, 0], numvectors, &box[0], &output[0, 0])
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def calc_minimize_vectors_triclinic(
+    floating[:, ::1] vectors,
+    floating[:, ::1] box,
+    floating[:, ::1] output):
+    cdef uint64_t numvectors = vectors.shape[0]
+    _calc_minimize_vectors_triclinic(&vectors[0, 0], numvectors, &box[0][0], &output[0, 0])
