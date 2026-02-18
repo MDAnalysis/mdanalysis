@@ -33,7 +33,6 @@
         "scipy": [],
 	    "six": [],
 	    "pytest": [],
-	    "nose": [],
 	    "mock": [],
         "MDAnalysisTests": [],
     },
