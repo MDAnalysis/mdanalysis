@@ -365,7 +365,7 @@ def extensions(config):
     )
     distances = MDAExtension(
         "MDAnalysis.lib.c_distances",
-        ["MDAnalysis/lib/c_distances" + source_suffix],
+        ["MDAnalysis/lib/c_distances" + cpp_source_suffix],
         language="c++",
         include_dirs=include_dirs + ["MDAnalysis/lib/include"],
         libraries=mathlib,
@@ -375,7 +375,7 @@ def extensions(config):
     )
     distances_omp = MDAExtension(
         "MDAnalysis.lib.c_distances_openmp",
-        ["MDAnalysis/lib/c_distances_openmp" + source_suffix],
+        ["MDAnalysis/lib/c_distances_openmp" + cpp_source_suffix],
         language="c++",
         include_dirs=include_dirs + ["MDAnalysis/lib/include"],
         libraries=mathlib + parallel_libraries,
