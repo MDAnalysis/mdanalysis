@@ -41,6 +41,8 @@ authors.py
 .hypothesis/
 # ignore results from asv
 benchmarks/results
+# ignore asv envs
+benchmarks/env
 
 # duecredit
 .duecredit.p
