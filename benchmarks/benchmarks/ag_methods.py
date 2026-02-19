@@ -189,6 +189,11 @@ class AtomGroupMethodsBench(object):
         """
         self.ag.wrap()
 
+    def time_wrap_compound(self, num_atoms):
+        """Benchmark wrap() operation on
+        atomgroup with default params.
+        """
+        self.ag.wrap(compound="residue")
 
 class AtomGroupAttrsBench(object):
     """Benchmarks for the various MDAnalysis
