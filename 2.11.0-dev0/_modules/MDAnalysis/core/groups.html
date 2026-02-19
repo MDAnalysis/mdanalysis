@@ -2041,13 +2041,17 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">compound_indices</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">_get_compound_indices</span><span class="p">(</span><span class="n">comp</span><span class="p">)</span>
 
-                <span class="c1"># apply the shifts:</span>
+                <span class="c1"># Build mapping from compound index to shift index</span>
                 <span class="n">unique_compound_indices</span> <span class="o">=</span> <span class="n">unique_int_1d</span><span class="p">(</span><span class="n">compound_indices</span><span class="p">)</span>
-                <span class="n">shift_idx</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">unique_compound_indices</span><span class="p">:</span>
-                    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">compound_indices</span> <span class="o">==</span> <span class="n">i</span><span class="p">)</span>
-                    <span class="n">positions</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">+=</span> <span class="n">shifts</span><span class="p">[</span><span class="n">shift_idx</span><span class="p">]</span>
-                    <span class="n">shift_idx</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">index_to_shift</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span>
+                    <span class="n">compound_indices</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span>
+                <span class="p">)</span>
+                <span class="n">index_to_shift</span><span class="p">[</span><span class="n">unique_compound_indices</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span>
+                    <span class="nb">len</span><span class="p">(</span><span class="n">unique_compound_indices</span><span class="p">)</span>
+                <span class="p">)</span>
+
+                <span class="c1"># Apply shifts</span>
+                <span class="n">positions</span> <span class="o">+=</span> <span class="n">shifts</span><span class="p">[</span><span class="n">index_to_shift</span><span class="p">[</span><span class="n">compound_indices</span><span class="p">]]</span>
 
         <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
             <span class="n">atoms</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="n">positions</span>
