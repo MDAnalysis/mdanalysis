@@ -2486,7 +2486,7 @@ def test_minimize_vectors(box, shift, dtype, backend):
 
     box2 = mdamath.triclinic_box(*box).astype(dtype)
 
-    res = distances.minimize_vectors(shifted_vec, box2)
+    res = distances.minimize_vectors(shifted_vec, box2, backend=backend)
 
     assert_allclose(res, vec, atol=0.00001)
     assert res.dtype == dtype
