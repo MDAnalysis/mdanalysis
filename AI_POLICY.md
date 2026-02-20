@@ -1,7 +1,7 @@
 # 🤖 MDAnalysis AI-generated contributions policy 🤖
 
-### Version: 1.0 (2026-02-03)
-### License: [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/)
+* Version: **1.1 (2026-02-17)**
+* License: **[CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/)**
 
 This document defines the [MDAnalysis organization's](https://github.com/MDAnalysis/) policy regarding AI-generated content. This policy applies to all aspects of the MDAnalysis project, including all the GitHub repositories under the organization.
 
@@ -19,6 +19,11 @@ MDAnalysis does not accept any substantial uses of AI-generated content in contr
 
 AI tools may be used in limited cases, for example when it is used for small amounts of AI-assisted code (e.g. autocompletion using copilot, cursor, etc...)
 or for language translation purposes. **Such uses must always be declared.**
+
+Please understand the reviewing capacity is very limited for the project, so large PRs which appear to not have the requisite understanding might not get reviewed, and eventually closed or redirected.
+Understanding from authors about what code they are contributing and how it fits into the larger picture is crucial.
+If reviewers feel there is a lack of understanding from looking at the code, PR descriptions or just general interactions with a contributor, we reserve the right to close the PR to save time and resources.
+Given the limited reviewing capacity, time and effort of reviewing and educating contributors will be more targeted to PRs of initial high quality and/or contributors where interactions are constructive and of good quality.
 
 ## Policy details
 
