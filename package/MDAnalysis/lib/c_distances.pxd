@@ -1,4 +1,3 @@
-# distutils: language = c++
 from libc.stdint cimport uint64_t, UINT64_MAX
 
 
