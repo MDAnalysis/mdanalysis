@@ -396,7 +396,7 @@ class PeriodicKDTree(object):
           Required for periodic calculations.
         """
         if self._use_augmented:
-            assert self._tree is not None
+
             self._tree.set_coords(coords, cutoff)
             self._built = True
             self.cutoff = cutoff
@@ -438,7 +438,7 @@ class PeriodicKDTree(object):
             raise RuntimeError("Unbuilt tree. Run tree.set_coords(...)")
 
         if self._use_augmented:
-            assert self._tree is not None
+
             return self._tree.search(centers, radius)
 
         centers = np.asarray(centers, dtype=np.float32)
@@ -498,7 +498,7 @@ class PeriodicKDTree(object):
             raise RuntimeError("Unbuilt Tree. Run tree.set_coords(...)")
 
         if self._use_augmented:
-            assert self._tree is not None
+
             return self._tree.search_pairs(radius)
 
         if self.pbc:
@@ -543,7 +543,7 @@ class PeriodicKDTree(object):
             raise RuntimeError("Unbuilt tree. Run tree.set_coords(...)")
 
         if self._use_augmented:
-            assert self._tree is not None
+
             return self._tree.search_tree(centers, radius)
 
         centers = np.asarray(centers, dtype=np.float32)
