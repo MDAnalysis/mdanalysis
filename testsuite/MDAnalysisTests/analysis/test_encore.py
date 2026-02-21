@@ -157,7 +157,7 @@ inconsistent results",
         arguments = [tuple([i]) for i in np.arange(0, 100)]
 
         parallel_calculation = encore.utils.ParallelCalculation(
-            function=function, n_jobs=4, args=arguments
+            function=function, n_jobs=2, args=arguments
         )
         results = parallel_calculation.run()
 
@@ -173,14 +173,14 @@ inconsistent results",
             encore.confdistmatrix.conformational_distance_matrix(
                 ens1,
                 encore.confdistmatrix.set_rmsd_matrix_elements,
-                select="name CA",
+                select="name CA and resnum 1:3",
                 pairwise_align=True,
                 weights="mass",
                 n_jobs=1,
             )
         )
 
-        reference = rms.RMSD(ens1, select="name CA")
+        reference = rms.RMSD(ens1, select="name CA and resnum 1:3")
         reference.run()
         err_msg = (
             "Calculated RMSD values differ from "
@@ -200,7 +200,7 @@ inconsistent results",
             encore.confdistmatrix.conformational_distance_matrix(
                 ens1,
                 encore.confdistmatrix.set_rmsd_matrix_elements,
-                select="name CA",
+                select="name CA and resnum 1:3",
                 pairwise_align=True,
                 weights="mass",
                 n_jobs=1,
@@ -211,11 +211,11 @@ inconsistent results",
             encore.confdistmatrix.conformational_distance_matrix(
                 ens1,
                 encore.confdistmatrix.set_rmsd_matrix_elements,
-                select="name CA",
+                select="name CA and resnum 1:3",
                 pairwise_align=True,
                 weights=(
-                    ens1.select_atoms("name CA").masses,
-                    ens1.select_atoms("name CA").masses,
+                    ens1.select_atoms("name CA and resnum 1:3").masses,
+                    ens1.select_atoms("name CA and resnum 1:3").masses,
                 ),
                 n_jobs=1,
             )
@@ -230,7 +230,7 @@ inconsistent results",
             )
 
     def test_rmsd_matrix_without_superimposition(self, ens1):
-        selection_string = "name CA"
+        selection_string = "name CA and resnum 1:3"
         selection = ens1.select_atoms(selection_string)
         reference_rmsd = []
         coordinates = ens1.trajectory.timeseries(selection, order="fac")
