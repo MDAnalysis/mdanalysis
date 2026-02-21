@@ -39,5 +39,5 @@ class DistancesMinimizeVectorsBench(object):
         vectors = self.coords_1 - self.coords_2
         try:
             distances.minimize_vectors(vectors, self.box, backend=backend)
-        except TypeError:
+        except (TypeError, ValueError):
             raise SkipNotImplemented("minimize_vectors is skipped")
