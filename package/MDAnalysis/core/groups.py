@@ -1899,13 +1899,17 @@ class GroupBase(_MutableBase):
             else:
                 compound_indices = atoms._get_compound_indices(comp)
 
-                # apply the shifts:
+                # Build mapping from compound index to shift index
                 unique_compound_indices = unique_int_1d(compound_indices)
-                shift_idx = 0
-                for i in unique_compound_indices:
-                    mask = np.where(compound_indices == i)
-                    positions[mask] += shifts[shift_idx]
-                    shift_idx += 1
+                index_to_shift = np.empty(
+                    compound_indices.max() + 1, dtype=int
+                )
+                index_to_shift[unique_compound_indices] = np.arange(
+                    len(unique_compound_indices)
+                )
+
+                # Apply shifts
+                positions += shifts[index_to_shift[compound_indices]]
 
         if inplace:
             atoms.positions = positions
