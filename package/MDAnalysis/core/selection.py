@@ -2830,6 +2830,23 @@ class SugarSelection(Selection):
         "ROH",
         "OME",
         "TBT",
+        # Bacterial GLYCAM Nomenclature
+        # Retrieved from DOI:10.64898/2026.01.26.700271
+        "0KO",
+        "0KX",
+        "0LH",
+        "0DH",
+        "0FC",
+        "0LD",
+        "0aN",
+        "0MR",
+        "0LG",
+        "0mP",
+        "0eC",
+        "0gF",
+        "0QE",
+        "0ZF",
+        "0dR",
     }
 
     def _apply(self, group):
