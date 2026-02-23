@@ -1330,7 +1330,7 @@ class SugarSelection(Selection):
         "ANE5AC",
         "BNE5AC",
         # GLYCAM Abbreviations
-        # Glucose Nomenculature
+        # Glucose Nomenclature
         "0GA",
         "0GB",
         "1GA",
@@ -1399,7 +1399,7 @@ class SugarSelection(Selection):
         "QgB",
         "PgA",
         "PgB",
-        # N-Acetyl Glucosamine Nomenculature
+        # N-Acetyl Glucosamine Nomenclature
         "0YA",
         "0YB",
         "1YA",
@@ -1436,7 +1436,7 @@ class SugarSelection(Selection):
         "UyB",
         "QyA",
         "QyB",
-        # Glucosamine Nomenculature
+        # Glucosamine Nomenclature
         "0YN",
         "0Yn",
         "0YNP",
@@ -1463,7 +1463,7 @@ class SugarSelection(Selection):
         "3ys",
         "4yS",
         "4ys",
-        # Glucuronic Acid Nomenculature
+        # Glucuronic Acid Nomenclature
         "0ZA",
         "0ZB",
         "1ZA",
@@ -1501,7 +1501,7 @@ class SugarSelection(Selection):
         "TzA",
         "TzB",
         "0ZBP",
-        # Quinovose Nomenculature
+        # Quinovose Nomenclature
         "0QA",
         "0QB",
         "1QA",
@@ -1538,7 +1538,7 @@ class SugarSelection(Selection):
         "WqB",
         "TqA",
         "TqB",
-        # Mannose Nomenculature
+        # Mannose Nomenclature
         "0MA",
         "0MB",
         "1MA",
@@ -1607,7 +1607,7 @@ class SugarSelection(Selection):
         "QmB",
         "PmA",
         "PmB",
-        # N-Acetyl Mannosamine Nomenculature
+        # N-Acetyl Mannosamine Nomenclature
         "0WA",
         "0WB",
         "1WA",
@@ -1644,7 +1644,7 @@ class SugarSelection(Selection):
         "UwB",
         "QwA",
         "QwB",
-        # Rhamnose Nomenculature
+        # Rhamnose Nomenclature
         "0HA",
         "0HB",
         "1HA",
@@ -1681,7 +1681,7 @@ class SugarSelection(Selection):
         "WhB",
         "ThA",
         "ThB",
-        # Tyvelose Nomenculature
+        # Tyvelose Nomenclature
         "0TV",
         "0Tv",
         "1TV",
@@ -1702,7 +1702,7 @@ class SugarSelection(Selection):
         "4tv",
         "YtV",
         "Ytv",
-        # Arabinose Nomenculature
+        # Arabinose Nomenclature
         "0AA",
         "0AB",
         "1AA",
@@ -1763,7 +1763,7 @@ class SugarSelection(Selection):
         "5aU",
         "ZaD",
         "ZaU",
-        # Galactose Nomenculature
+        # Galactose Nomenclature
         "0LA",
         "0LB",
         "1LA",
@@ -1832,7 +1832,7 @@ class SugarSelection(Selection):
         "QlB",
         "PlA",
         "PlB",
-        # N-Acetyl Galactosamine Nomenculature
+        # N-Acetyl Galactosamine Nomenclature
         "0VA",
         "0VB",
         "1VA",
@@ -1869,7 +1869,7 @@ class SugarSelection(Selection):
         "UvB",
         "QvA",
         "QvB",
-        # Galacturonic Acid Nomenculature
+        # Galacturonic Acid Nomenclature
         "0OA",
         "0OB",
         "1OA",
@@ -1906,7 +1906,7 @@ class SugarSelection(Selection):
         "WoB",
         "ToA",
         "ToB",
-        # Gulose Nomenculature
+        # Gulose Nomenclature
         "0KA",
         "0KB",
         "1KA",
@@ -1975,7 +1975,7 @@ class SugarSelection(Selection):
         "QkB",
         "PkA",
         "PkB",
-        # Altrose Nomenculature
+        # Altrose Nomenclature
         "0EA",
         "0EB",
         "1EA",
@@ -2044,7 +2044,7 @@ class SugarSelection(Selection):
         "QeB",
         "PeA",
         "PeB",
-        # Allose Nomenculature
+        # Allose Nomenclature
         "0NA",
         "0NB",
         "1NA",
@@ -2113,7 +2113,7 @@ class SugarSelection(Selection):
         "QnB",
         "PnA",
         "PnB",
-        # Talose Nomenculature
+        # Talose Nomenclature
         "0TA",
         "0TB",
         "1TA",
@@ -2182,7 +2182,7 @@ class SugarSelection(Selection):
         "QtB",
         "PtA",
         "PtB",
-        # Iduronic Acid Nomenculature
+        # Iduronic Acid Nomenclature
         "0UA",
         "0UB",
         "1UA",
@@ -2220,7 +2220,7 @@ class SugarSelection(Selection):
         "TuA",
         "TuB",
         "YuAP",
-        # Fucose Nomenculature
+        # Fucose Nomenclature
         "0FA",
         "0FB",
         "1FA",
@@ -2257,7 +2257,7 @@ class SugarSelection(Selection):
         "WfB",
         "TfA",
         "TfB",
-        # Lyxose Nomenculature
+        # Lyxose Nomenclature
         "0DA",
         "0DB",
         "1DA",
@@ -2318,7 +2318,7 @@ class SugarSelection(Selection):
         "5dU",
         "ZdD",
         "ZdU",
-        # Abequose Nomenculature
+        # Abequose Nomenclature
         "0AE",
         "2AE",
         "4AE",
@@ -2327,7 +2327,7 @@ class SugarSelection(Selection):
         "2AF",
         "4AF",
         "YAF",
-        # Xylose Nomenculature
+        # Xylose Nomenclature
         "0XA",
         "0XB",
         "1XA",
@@ -2388,7 +2388,7 @@ class SugarSelection(Selection):
         "5xU",
         "ZxD",
         "ZxU",
-        # Ribose Nomenculature
+        # Ribose Nomenclature
         "0RA",
         "0RB",
         "1RA",
@@ -2449,12 +2449,12 @@ class SugarSelection(Selection):
         "5rU",
         "ZrD",
         "ZrU",
-        # Bacillosamine Nomenculature
+        # Bacillosamine Nomenclature
         "0BC",
         "3BC",
         "0bC",
         "3bC",
-        # Fructose Nomenculature
+        # Fructose Nomenclature
         "0CA",
         "0CB",
         "1CA",
@@ -2523,7 +2523,7 @@ class SugarSelection(Selection):
         "UcU",
         "QcD",
         "QcU",
-        # Tagatose Nomenculature
+        # Tagatose Nomenclature
         "0JA",
         "0JB",
         "1JA",
@@ -2592,7 +2592,7 @@ class SugarSelection(Selection):
         "UjU",
         "QjD",
         "QjU",
-        # Sorbose Nomenculature
+        # Sorbose Nomenclature
         "0BA",
         "0BB",
         "1BA",
@@ -2661,7 +2661,7 @@ class SugarSelection(Selection):
         "UbU",
         "QbD",
         "QbU",
-        # Psicose Nomenculature
+        # Psicose Nomenclature
         "0PA",
         "0PB",
         "1PA",
@@ -2730,7 +2730,7 @@ class SugarSelection(Selection):
         "UpU",
         "QpD",
         "QpU",
-        # N-Acetyl Neuraminic Acid Nomenculature
+        # N-Acetyl Neuraminic Acid Nomenclature
         "0SA",
         "0SB",
         "4SA",
@@ -2795,7 +2795,7 @@ class SugarSelection(Selection):
         "JsB",
         "KsA",
         "KsB",
-        # N-Glycolyl Neuraminic Acid Nomenculature
+        # N-Glycolyl Neuraminic Acid Nomenclature
         "0GL",
         "4GL",
         "7GL",
@@ -2826,7 +2826,7 @@ class SugarSelection(Selection):
         "IgL",
         "JgL",
         "KgL",
-        # Aglycon Nomenculature
+        # Aglycon Nomenclature
         "ROH",
         "OME",
         "TBT",
