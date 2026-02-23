@@ -2834,15 +2834,13 @@ class SugarSelection(Selection):
 
     def _apply(self, group):
         resname_attr = group.universe._topology.resnames
-        # which values in resname attr are in sugar_res?
         matches = [
             ix
             for (nm, ix) in resname_attr.namedict.items()
             if nm in self.sugar_res
         ]
-        # index of each atom's resname
         nmidx = resname_attr.nmidx[group.resindices]
-        # intersect atom's resname index and matches to sugar_res
+
         return group[np.isin(nmidx, matches)]
 
 
