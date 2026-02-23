@@ -38,6 +38,7 @@ Fixes
  * MOL2Parser now reads unit cell dimensions from @<TRIPOS>CRYSIN records (Issue #3341)
 
 Enhancements
+ * Improved performance of `AtomGroup.wrap()` with compounds (PR #5220)
  * Adds support for parsing `.tpr` files produced by GROMACS 2026.0
  * Enables parallelization for analysis.diffusionmap.DistanceMatrix
    (Issue #4679, PR #4745)
