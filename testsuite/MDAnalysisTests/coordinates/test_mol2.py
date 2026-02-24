@@ -30,6 +30,7 @@ from numpy.testing import (
     assert_array_almost_equal,
     TestCase,
     assert_almost_equal,
+    assert_allclose,
 )
 
 from MDAnalysisTests.datafiles import (
@@ -241,4 +242,4 @@ def test_mol2_crysin_dimensions():
     u = mda.Universe(mol2_crysin)
 
     expected = np.array([40.0, 50.0, 60.0, 90.0, 90.0, 90.0], dtype=np.float32)
-    assert_array_almost_equal(u.dimensions, expected, decimal=3)
+    assert_allclose(u.dimensions, expected, atol=1e-3)
