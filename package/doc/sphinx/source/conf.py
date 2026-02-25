@@ -171,6 +171,7 @@ extra_nav_links["MDAKits"] = "https://mdakits.mdanalysis.org/"
 html_theme_options = {
     "mda_official": True,
     "extra_nav_links": extra_nav_links,
+    "display_version": True,
 }
 
 # Theme options are theme-specific and customize the look and feel of a theme

@@ -169,6 +169,9 @@ class XDRBaseReader(base.ReaderBase):
             self.n_atoms = self._xdr.n_atoms
 
         if not refresh_offsets:
+            lock_name = offsets_filename(self.filename, ending="lock")
+            open(lock_name, "a").close()
+        
             self._load_offsets()
         else:
             self._read_offsets(store=True)
@@ -194,23 +197,18 @@ class XDRBaseReader(base.ReaderBase):
                 self.convert_pos_from_native(self.ts.dimensions[:3])
 
     @classmethod
-    def parse_n_atoms(cls, filename, **kwargs):
-        with cls._file(filename) as f:
-            n_atoms = f.n_atoms
-        return n_atoms
-
-    def close(self):
-        """close reader"""
-        self._xdr.close()
-
     def _load_offsets(self):
         """load frame offsets from file, reread them from the trajectory if that
         fails. To prevent the competition of generating the same offset file
         from multiple processes, an `InterProcessLock` is used."""
+        
         fname = offsets_filename(self.filename)
         lock_name = offsets_filename(self.filename, ending="lock")
 
-        #  check if the location of the lock is writable.
+        # create lock file
+        open(lock_name, "a").close()
+
+        # check if the location of the lock is writable.
         try:
             with FileLock(lock_name) as filelock:
                 pass
@@ -224,6 +222,7 @@ class XDRBaseReader(base.ReaderBase):
                 return
             else:
                 raise
+            
 
         with FileLock(lock_name) as filelock:
             if not isfile(fname):
@@ -236,6 +235,7 @@ class XDRBaseReader(base.ReaderBase):
             # this warning can be avoided by loading Universe like:
             # u = mda.Universe(data.TPR, data.XTC, refresh_offsets=True)
             # refer to Issue #1893
+            
             data = read_numpy_offsets(fname)
             if not data:
                 warnings.warn(

@@ -237,7 +237,7 @@ def return_empty_on_apply(func):
 
 class _Selectionmeta(type):
     def __init__(cls, name, bases, classdict):
-        type.__init__(type, name, bases, classdict)
+        super().__init__(name, bases, classdict)
         try:
             _SELECTIONDICT[classdict["token"]] = cls
             _SELECTIONDICT[classdict["token"].lower()] = cls
