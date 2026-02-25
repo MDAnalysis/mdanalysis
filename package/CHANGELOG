@@ -38,6 +38,8 @@ Fixes
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Enhancements
+ * Allow NCDF reader to read Amber Restart Files with extension `.ncrst`
+   (Issue #5030, PR #5031)
  * Improved performance of `AtomGroup.wrap()` with compounds (PR #5220)
  * Adds support for parsing `.tpr` files produced by GROMACS 2026.0
  * Enables parallelization for analysis.diffusionmap.DistanceMatrix
@@ -48,12 +50,13 @@ Changes
    _conclude_simple and _conclude_fft functions instead of tqdm (Issue #5144, PR #5153)
 
 Deprecations
+ *
 
 
 10/18/25 IAlibay, orbeckst, BHM-Bob, TRY-ER, Abdulrahman-PROG, pbuslaev,
-         yuxuanzhuang, yuyuan871111, tanishy7777, tulga-rdn, Gareth-elliott,
-         hmacdope, tylerjereddy, cbouy, talagayev, DrDomenicoMarson, amruthesht,
-         p-j-smith, gitzhangch, raulloiscuns
+         yuxuanzhuang, yuyuan871111, tanishy7777, jpkrowe, tulga-rdn,
+         Gareth-elliott, hmacdope, tylerjereddy, cbouy, talagayev,
+         DrDomenicoMarson, amruthesht, p-j-smith, gitzhangch, raulloiscuns
 
  * 2.10.0
 
@@ -126,7 +129,6 @@ Enhancements
    MDAnalysisTest.util (PR #5038)
  * Enables parallelization for `analysis.polymer.PersistenceLength` (Issue #4671, PR #5074)
 
-
 Changes
  * Output precision for LAMMPS Data files set to 10 decimals (PR #5053)
  * Support for Python 3.10 was removed, in line with SPEC0 (PR #5121).
@@ -136,7 +138,6 @@ Changes
  * Removed undocumented and unused attribute
    `analysis.lineardensity.LinearDensity.totalmass` (PR #5007)
  * Remove `default` channel from RTD conda env. (Issue # 5036, PR # 5037)
-
 
 Deprecations
  * The RDKit converter parameter `NoImplicit` has been deprecated in favour of

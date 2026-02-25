@@ -197,7 +197,10 @@ __all__ = [
     "CPPTRAJ_TRAJ_TOP",
     "CPPTRAJ_TRAJ",  # Amber ncdf extracted from CPPTRAJ without time variable
     "PRMcs",  # Amber (format, Issue 1331)
-    "PRMNCRST",  # Amber ncrst with positions/forces/velocities
+    "PRMNCRST",  # Amber topology for ncrst with positions/forces/velocities
+    "TRJNCRST",  # Amber ncrst with positions/forces/velocties
+    "PRMNCRSTbox",
+    "NCRSTbox",
     "PRM_NCBOX",
     "TRJ_NCBOX",  # Amber parm7 + nc w/ pos/forces/vels/box
     "PRMNEGATIVE",  # Amber negative ATOMIC_NUMBER (Issue 2306)
@@ -680,6 +683,9 @@ NCDFtruncoct = (_data_ref / "Amber/tz2.truncoct.nc").as_posix()
 PRMcs = (_data_ref / "Amber/chitosan.prmtop").as_posix()
 
 PRMNCRST = (_data_ref / "Amber/ace_mbondi3.parm7").as_posix()
+TRJNCRST = (_data_ref / "Amber/ace_mbondi3.ncrst").as_posix()
+PRMNCRSTbox = (_data_ref / "Amber/ace_tip3p.parm7").as_posix()
+NCRSTbox = (_data_ref / "Amber/ace_tip3p.ncrst").as_posix()
 
 PRM_NCBOX = (_data_ref / "Amber/ace_tip3p.parm7").as_posix()
 TRJ_NCBOX = (_data_ref / "Amber/ace_tip3p.nc").as_posix()
