@@ -444,6 +444,30 @@ class TestWrap(object):
                 group.atoms.positions, ref_wrapped_pos, decimal=self.precision
             )
 
+    @pytest.mark.parametrize(
+        "compound",
+        ("segments", "residues", "molecules", "fragments"),
+    )
+    @pytest.mark.parametrize("center", ("com", "cog"))
+    @pytest.mark.parametrize("is_triclinic", (False, True))
+    def test_wrap_shuffled_index(self, compound, center, is_triclinic):
+        # get a pristine test universe
+        u = UnWrapUniverse(is_triclinic=is_triclinic)
+        # shuffle atom order to make compound indices non-contiguous
+        rng = np.random.RandomState(1234)
+        shuffle = rng.permutation(u.atoms.n_atoms)
+        group = u.atoms[shuffle]
+        # get expected wrapped coordinates in shuffled order
+        ref_wrapped_pos = u.wrapped_coords(compound, center)[shuffle]
+        # wrap the shuffled group:
+        wrapped_pos = group.wrap(
+            compound=compound, center=center, inplace=False
+        )
+        # check for correct result:
+        assert_almost_equal(
+            wrapped_pos, ref_wrapped_pos, decimal=self.precision
+        )
+
 
 class TestWrapTRZ(object):
     """Tests the functionality of AtomGroup.wrap() using a TRZ universe."""
