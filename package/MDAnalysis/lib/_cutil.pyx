@@ -37,7 +37,7 @@ from cython.operator cimport dereference as deref
 
 cnp.import_array()
 
-__all__ = ['unique_int_1d', 'make_whole', 'find_fragments',
+__all__ = ['unique_int_1d', 'inverse_int_index', 'make_whole', 'find_fragments',
            '_sarrus_det_single', '_sarrus_det_multiple']
 
 cdef extern from "calc_distances.h":
@@ -91,6 +91,42 @@ def unique_int_1d(cnp.intp_t[:] values):
 
     return np.array(result)
 
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def inverse_int_index(cnp.intp_t[:] values,
+                      cnp.intp_t[:] unique_vals):
+    """
+    Construct inverse index map such that:
+
+        unique_vals[mask] == values
+
+    Parameters
+    ----------
+    values : numpy.ndarray
+        1D array of integers.
+    unique_vals : numpy.ndarray
+        1D array of unique integers (unsorted).
+
+    Returns
+    -------
+    numpy.ndarray
+        Integer mask mapping values -> index in unique_vals.
+    """
+
+    cdef Py_ssize_t n = values.shape[0]
+    cdef Py_ssize_t m = unique_vals.shape[0]
+    cdef Py_ssize_t i
+
+    cdef dict lookup = {}
+    cdef cnp.intp_t[:] mask = np.empty(n, dtype=np.intp)
+
+    for i in range(m):
+        lookup[unique_vals[i]] = i
+
+    for i in range(n):
+        mask[i] = lookup[values[i]]
+
+    return np.array(mask)
 
 @cython.boundscheck(False)
 def _in2d(cnp.intp_t[:, :] arr1, cnp.intp_t[:, :] arr2):
