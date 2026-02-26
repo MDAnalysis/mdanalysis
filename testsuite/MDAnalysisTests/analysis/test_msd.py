@@ -301,7 +301,7 @@ class TestMSDNonLinear:
             ("z", 1),
         ],
     )
-    def test_detect_non_linear_from_frames(self, u_nonlinear):
+    def test_detect_non_linear_from_frames(self, u_nonlinear, dim, dim_factor):
         msd_auto = MSD(u_nonlinear, select="all", msd_type="xyz", fft=False)
         res1 = msd_auto.run(frames=[0, 1, 3, 6])
 
