@@ -41,6 +41,9 @@ Enhancements
  * Adds support for parsing `.tpr` files produced by GROMACS 2026.0
  * Enables parallelization for analysis.diffusionmap.DistanceMatrix
    (Issue #4679, PR #4745)
+ * Improve performance of inverse index mapping in AtomGroup by
+   replacing O(n^2) logic with optimized Cython implementation.
+   (Issue #3387, PR #5252)
 
 Changes
  * The msd.py inside analysis is changed, and ProgressBar is implemented inside
