@@ -2,6 +2,7 @@ global-include *.pyx
 global-include *.pxd
 global-include *.c
 global-include *.h
+global-include *.hpp
 global-include *.cpp
 include MDAnalysis/lib/src/transformations/*
 recursive-include doc * 

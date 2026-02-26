@@ -2468,7 +2468,9 @@ def test_used_openmpflag():
     "shift", itertools.product(range(-2, 3), range(-2, 3), range(-2, 3))
 )
 @pytest.mark.parametrize("dtype", (np.float32, np.float64))
-def test_minimize_vectors(box, shift, dtype):
+@pytest.mark.parametrize("backend", ("serial", "openmp"))
+# @pytest.mark.parametrize("backend", distopia_conditional_backend())
+def test_minimize_vectors(box, shift, dtype, backend):
     # test vectors pointing in all directions
     # these currently all obey minimum convention as they're much smaller than the box
     vec = np.array(
@@ -2484,7 +2486,7 @@ def test_minimize_vectors(box, shift, dtype):
 
     box2 = mdamath.triclinic_box(*box).astype(dtype)
 
-    res = distances.minimize_vectors(shifted_vec, box2)
+    res = distances.minimize_vectors(shifted_vec, box2, backend=backend)
 
     assert_allclose(res, vec, atol=0.00001)
     assert res.dtype == dtype

@@ -27,3 +27,7 @@ cdef extern from "calc_distances.h":
     void _triclinic_pbc(coordinate* coords, uint64_t numcoords, float* box)
     void minimum_image(double* x, float* box, float* inverse_box)
     void minimum_image_triclinic(float* x, float* box, float* inverse_box)
+
+cdef extern from "calc_distances.hpp":
+    void _calc_minimize_vectors_ortho[T](T* vectors, uint64_t numvectors, T* box, T* output)
+    void _calc_minimize_vectors_triclinic[T](T* vectors, uint64_t numvectors, T* box, T* output)

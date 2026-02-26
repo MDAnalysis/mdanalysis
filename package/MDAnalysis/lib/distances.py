@@ -151,7 +151,10 @@ from .util import check_coords, check_box
 from .mdamath import triclinic_vectors
 from ._augment import augment_coordinates, undo_augment
 from .nsgrid import FastNS
-from .c_distances import _minimize_vectors_ortho, _minimize_vectors_triclinic
+from .c_distances import (
+    calc_minimize_vectors_ortho,
+    calc_minimize_vectors_triclinic,
+)
 from ._distopia import HAS_DISTOPIA
 
 
@@ -2103,7 +2106,11 @@ def apply_PBC(
 
 
 @check_coords("vectors", enforce_copy=False, enforce_dtype=False)
-def minimize_vectors(vectors: npt.NDArray, box: npt.NDArray) -> npt.NDArray:
+def minimize_vectors(
+    vectors: npt.NDArray,
+    box: npt.NDArray,
+    backend: str = "serial",
+) -> npt.NDArray:
     """Apply minimum image convention to an array of vectors
 
     This function is required for calculating the correct vectors between two
@@ -2121,6 +2128,8 @@ def minimize_vectors(vectors: npt.NDArray, box: npt.NDArray) -> npt.NDArray:
         triclinic and must be provided in the same format as returned by
         :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
+    backend : {'serial', 'OpenMP'}, optional
+        Keyword selecting the type of acceleration.
 
     Returns
     -------
@@ -2130,6 +2139,8 @@ def minimize_vectors(vectors: npt.NDArray, box: npt.NDArray) -> npt.NDArray:
 
 
     .. versionadded:: 2.1.0
+    .. versionchanged:: 2.11.0
+       Added *backend* keyword.
     """
     boxtype, box = check_box(box)
     output = np.empty_like(vectors)
@@ -2138,8 +2149,16 @@ def minimize_vectors(vectors: npt.NDArray, box: npt.NDArray) -> npt.NDArray:
     box = box.astype(vectors.dtype)
 
     if boxtype == "ortho":
-        _minimize_vectors_ortho(vectors, box, output)
+        _run(
+            "calc_minimize_vectors_ortho",
+            args=(vectors, box, output),
+            backend=backend,
+        )
     else:
-        _minimize_vectors_triclinic(vectors, box.ravel(), output)
+        _run(
+            "calc_minimize_vectors_triclinic",
+            args=(vectors, box, output),
+            backend=backend,
+        )
 
     return output
