@@ -301,6 +301,21 @@ class TestMSDNonLinear:
             ("z", 1),
         ],
     )
+    def test_detect_non_linear_from_frames(self, u_nonlinear):
+        msd_auto = MSD(u_nonlinear, select="all", msd_type="xyz", fft=False)
+        res1 = msd_auto.run(frames=[0, 1, 3, 6])
+
+        msd_explicit = MSD(
+            u_nonlinear, select="all", msd_type="xyz", non_linear=True
+        )
+        res2 = msd_explicit.run(frames=[0, 1, 3, 6])
+
+        assert_allclose(
+            res1.results.msds_by_particle,
+            res2.results.msds_by_particle,
+            rtol=1e-5,
+        )
+
     def test_all_msd_types(self, u_nonlinear, dim, dim_factor):
         msd = MSD(u_nonlinear, select="all", msd_type=dim, non_linear=True)
         msd.run()
