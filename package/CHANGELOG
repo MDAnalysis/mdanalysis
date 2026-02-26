@@ -15,11 +15,12 @@ The rules for this file:
 
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, orbeckst, marinegor, tylerjereddy, ljwoods2, marinegor,
-         spyke7, talagayev, tanii1125, BradyAJohnston, hejamu
+         spyke7, talagayev, tanii1125, BradyAJohnston, hejamu, jeremyleung521
 
  * 2.11.0
 
 Fixes
+ * Drop/Replace lock file test in test_xdr (Issue #5236, PR #5237)
  * HydrogenBondAnalysis: Fixed `count_by_time()` when using `run(FrameIterator)` that
    results in `self.start` and `self.end` being None (Issue #5200, PR #5202)
  * NoJump shows a more informative message and fails  when applied
