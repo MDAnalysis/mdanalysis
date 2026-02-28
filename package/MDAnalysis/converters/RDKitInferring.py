@@ -234,7 +234,7 @@ class MDAnalysisInferrer:
 
         Notes
         -----
-        This algorithm is order dependant. For example, for a carboxylate group
+        This algorithm is order dependent. For example, for a carboxylate group
         ``R-C(-O)-O`` the first oxygen read will receive a double bond and the
         other one will be charged. It will also affect more complex conjugated
         systems.

@@ -1583,7 +1583,7 @@ class WaterBridgeAnalysis(AnalysisBase):
             if len(route) == 1:
                 result["start"][route[0]] = None
             else:
-                # exclude the the selection which goes back to itself
+                # exclude the selection which goes back to itself
                 if sorted(route[0][0:3:2]) == sorted(route[-1][0:3:2]):
                     return
 

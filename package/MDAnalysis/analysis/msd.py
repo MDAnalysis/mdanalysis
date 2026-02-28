@@ -174,7 +174,7 @@ determine self-diffusivity. This linear segment represents the so called
 excluded along with poorly averaged data at long time-lags. We can select the
 "middle" of the MSD by indexing the MSD and the time-lags. Appropriately
 linear segments of the MSD can be confirmed with a log-log plot as is often
-reccomended :footcite:p:`Maginn2019` where the "middle" segment can be identified
+recommended :footcite:p:`Maginn2019` where the "middle" segment can be identified
 as having a slope of 1.
 
 .. code-block:: python

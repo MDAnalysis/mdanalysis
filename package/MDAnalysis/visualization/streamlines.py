@@ -31,7 +31,7 @@
 
 The :func:`generate_streamlines` function can generate a 2D flow field from a
 MD trajectory, for instance, lipid molecules in a flat membrane. It can make
-use of multiple cores to perform the analyis in parallel (using
+use of multiple cores to perform the analysis in parallel (using
 :mod:`multiprocessing`).
 
 See Also

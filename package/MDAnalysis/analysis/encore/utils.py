@@ -332,7 +332,7 @@ class ParallelCalculation(object):
 
 def trm_indices(a, b):
     """
-    Generate (i,j) indeces of a triangular matrix, between elements a and b.
+    Generate (i,j) indices of a triangular matrix, between elements a and b.
     The matrix size is automatically determined from the number of elements.
     For instance: trm_indices((0,0),(2,1)) yields (0,0) (1,0) (1,1) (2,0)
     (2,1).
@@ -361,7 +361,7 @@ def trm_indices(a, b):
 
 
 def trm_indices_nodiag(n):
-    """generate (i,j) indeces of a triangular matrix of n rows (or columns),
+    """generate (i,j) indices of a triangular matrix of n rows (or columns),
     without diagonal (e.g. no elements (0,0),(1,1),...,(n,n))
 
     Parameters
@@ -377,7 +377,7 @@ def trm_indices_nodiag(n):
 
 
 def trm_indices_diag(n):
-    """generate (i,j) indeces of a triangular matrix of n rows (or columns),
+    """generate (i,j) indices of a triangular matrix of n rows (or columns),
     with diagonal
 
     Parameters

@@ -86,17 +86,17 @@ class DielectricConstant(AnalysisBase):
     Attributes
     ----------
     results.M : numpy.ndarray
-      Directional dependant dipole moment
+      Directional dependent dipole moment
       :math:`\langle \boldsymbol M \rangle` in :math:`eÅ`.
     results.M2 : numpy.ndarray
-      Directional dependant squared dipole moment
+      Directional dependent squared dipole moment
       :math:`\langle \boldsymbol M^2 \rangle` in :math:`(eÅ)^2`
     results.fluct : float
-      Directional dependant dipole moment fluctuation
+      Directional dependent dipole moment fluctuation
       :math:`\langle \boldsymbol M^2 \rangle - \langle \boldsymbol M \rangle^2`
       in :math:`(eÅ)^2`
     results.eps : numpy.ndarray
-      Directional dependant static dielectric constant
+      Directional dependent static dielectric constant
     results.eps_mean : float
       Static dielectric constant
 

@@ -543,7 +543,7 @@ class ITPParser(TopologyReaderBase):
             Default: "/usr/local/gromacs/share/gromacs/top/"
 
         infer_system: bool, optional (default True)
-            If a ``[ molecules ]`` directive is not found within the the
+            If a ``[ molecules ]`` directive is not found within the
             topology file, create a Topology with one of every
             ``[ moleculetype ]`` defined. If a ``[ molecules ]`` directive is
             found, this keyword is ignored.

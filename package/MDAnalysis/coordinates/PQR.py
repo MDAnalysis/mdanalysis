@@ -64,7 +64,7 @@ are:
 *residueNumber*
     An integer which provides the residue index.
 *X Y Z*
-    Three floats which provide the atomic coordiantes.
+    Three floats which provide the atomic coordinates.
 *charge*
     A float which provides the atomic charge (in electrons).
 *radius*

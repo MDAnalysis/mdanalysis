@@ -1033,7 +1033,7 @@ class AuxReader(metaclass=_AuxReaderMeta):
 
         Type differs between auxiliary formats, depending how the data for each
         step is read in and stored - e.g. data from .xvg files is read in as
-        a list and `data_selector` must be a list of valid indicies. If data
+        a list and `data_selector` must be a list of valid indices. If data
         selection is not enabled by the reader, ``data_selector`` will default
         to ``None``.
 

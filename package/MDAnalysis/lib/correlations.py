@@ -129,7 +129,7 @@ def autocorrelation(list_of_sets, tau_max, window_step=1):
         the autocorelation values for each of the tau values
     timeseries_data : list of list of int
         the raw data from which the autocorrelation is computed, i.e :math:`S(\tau)` at each window.
-        This allows the time dependant evolution of :math:`S(\tau)` to be investigated.
+        This allows the time dependent evolution of :math:`S(\tau)` to be investigated.
 
     .. versionadded:: 0.19.2
     """

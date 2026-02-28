@@ -859,7 +859,7 @@ class RMSF(AnalysisBase):
         ------
         ValueError
              raised if negative values are calculated, which indicates that a
-             numerical overflow or underflow occured
+             numerical overflow or underflow occurred
 
 
         Notes

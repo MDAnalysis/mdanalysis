@@ -1393,7 +1393,7 @@ def fasta2select(
         substitutes the suffix with '.aln'.
     treefilename: str (optional)
         filename of ClustalW guide tree (Newick format);
-        if default ``None``  the the filename is generated from *alnfilename*
+        if default ``None``  the filename is generated from *alnfilename*
         with the suffix '.dnd' instead of '.aln'
     clustalw : str (optional)
         path to the ClustalW (or ClustalW2) binary; only

@@ -706,7 +706,7 @@ class AtomAttr(TopologyAttr):
 
     def get_residues(self, rg):
         """By default, the values for each atom present in the set of residues
-        are returned in a single array. This behavior can be overriden in child
+        are returned in a single array. This behavior can be overridden in child
         attributes.
 
         """
@@ -718,7 +718,7 @@ class AtomAttr(TopologyAttr):
 
     def get_segments(self, sg):
         """By default, the values for each atom present in the set of residues
-        are returned in a single array. This behavior can be overriden in child
+        are returned in a single array. This behavior can be overridden in child
         attributes.
 
         """
@@ -2636,7 +2636,7 @@ class Charges(AtomAttr):
         accordingly.
 
         Note that when there is an unsymmetrical plane in the molecule or 
-        group, the magnitude of the quadrupole moment is dependant on the 
+        group, the magnitude of the quadrupole moment is dependent on the 
         ``center`` chosen and cannot be translated.
 
         Parameters
@@ -2867,7 +2867,7 @@ class ResidueAttr(TopologyAttr):
 
     def get_segments(self, sg):
         """By default, the values for each residue present in the set of
-        segments are returned in a single array. This behavior can be overriden
+        segments are returned in a single array. This behavior can be overridden
         in child attributes.
 
         """

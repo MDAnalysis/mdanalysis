@@ -261,7 +261,7 @@ class TRCReader(base.ReaderBase):
                         # writers do actually produce trailing whitespace.
                         # By default we try to assume a consistent size of the
                         # POSITIONRED block. We then try to skip reading subsequent
-                        # occurences of this block.
+                        # occurrences of this block.
                         # If we end up somewhere unexpected, we will throw
                         # a warning and fall back to iterating over the file.
 

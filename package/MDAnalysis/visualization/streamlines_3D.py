@@ -31,7 +31,7 @@
 
 The :func:`generate_streamlines_3d` function can generate a 3D flow field from
 a MD trajectory, for instance, lipid molecules in a virus capsid. It can make
-use of multiple cores to perform the analyis in parallel (using
+use of multiple cores to perform the analysis in parallel (using
 :mod:`multiprocessing`).
 
 .. rubric: References

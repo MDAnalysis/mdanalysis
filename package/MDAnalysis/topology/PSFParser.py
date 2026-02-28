@@ -225,7 +225,7 @@ class PSFParser(TopologyReaderBase):
         http://www.ks.uiuc.edu/Research/vmd/current/devel.html :
 
         psfplugin: Added more logic to the PSF plugin to determine cases where the
-        CHARMM "EXTended" PSF format cannot accomodate long atom types, and we add
+        CHARMM "EXTended" PSF format cannot accommodate long atom types, and we add
         a "NAMD" keyword to the PSF file flags line at the top of the file. Upon
         reading, if we detect the "NAMD" flag there, we know that it is possible
         to parse the file correctly using a simple space-delimited scanf() format

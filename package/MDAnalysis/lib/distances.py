@@ -1605,7 +1605,7 @@ def transform_RtoS(coords, box, backend="serial"):
     Returns
     -------
     newcoords : numpy.ndarray (``dtype=numpy.float32``, ``shape=coords.shape``)
-        An array containing fractional coordiantes.
+        An array containing fractional coordinates.
 
 
     .. versionchanged:: 0.13.0
@@ -1654,7 +1654,7 @@ def transform_StoR(coords, box, backend="serial"):
     Returns
     -------
     newcoords : numpy.ndarray (``dtype=numpy.float32``, ``shape=coords.shape``)
-        An array containing real space coordiantes.
+        An array containing real space coordinates.
 
 
     .. versionchanged:: 0.13.0

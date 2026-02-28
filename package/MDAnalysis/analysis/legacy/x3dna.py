@@ -521,7 +521,7 @@ class BaseX3DNA(object):
     def plot(self, **kwargs):
         """Plot time-averaged base parameters for each basse pair in a 1D graph.
 
-        One plot is produced for each parameter. It shows the the mean and
+        One plot is produced for each parameter. It shows the mean and
         standard deviation for each individual base pair. Each plot is saved to
         PNG file with name "<parameter_name>.png".
 

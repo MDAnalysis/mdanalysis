@@ -2344,7 +2344,7 @@ class GroupBase(_MutableBase):
 
         The original order of this group is kept, as well as any duplicate
         elements. If an element of this Group is duplicated and appears in
-        the other Group or Component, then all the occurences of that element
+        the other Group or Component, then all the occurrences of that element
         are removed from the returned Group.
 
         Parameters

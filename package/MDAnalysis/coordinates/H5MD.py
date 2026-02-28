@@ -765,7 +765,7 @@ class H5MDReader(base.ReaderBase):
             raise ValueError(
                 f"Frame {self._frame} of the {dataset} dataset"
                 f" has {n_atoms_now} atoms but the initial frame"
-                " of either the postion, velocity, or force"
+                " of either the position, velocity, or force"
                 f" dataset had {self.n_atoms} atoms."
                 " MDAnalysis is unable to deal"
                 " with variable topology!"

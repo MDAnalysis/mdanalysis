@@ -48,7 +48,7 @@ def ml_covariance_estimator(coordinates, reference_coordinates=None):
     ----------
 
     coordinates : numpy.array
-        Flattened array of coordiantes
+        Flattened array of coordinates
 
     reference_coordinates : numpy.array
         Optional reference to use instead of mean

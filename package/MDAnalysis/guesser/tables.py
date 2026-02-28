@@ -62,7 +62,7 @@ def kv2dict(s, convertor: Any = str):
 
     * Leading whitespace is ignored.
 
-    The *convertor* is a function that converts its single argument to
+    The *converter* is a function that converts its single argument to
     a valid Python type. The default is :func:`str` but other
     possibilities are :func:`int` (for integers) or :func:`float` for
     floating point numbers.

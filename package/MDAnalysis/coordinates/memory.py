@@ -318,7 +318,7 @@ class MemoryReader(base.ProtoReader):
         self._kwargs = kwargs
 
         # See Issue #1685. The block below checks if the coordinate array
-        # passed is of shape (N, 3) and if it is, the coordiante array is
+        # passed is of shape (N, 3) and if it is, the coordinate array is
         # reshaped to (1, N, 3)
         try:
             if coordinate_array.ndim == 2 and coordinate_array.shape[1] == 3:

@@ -155,7 +155,7 @@ class InterRDF(AnalysisBase):
           For 'rdf' calculate :math:`g_{ab}(r)`. For
           'density' the :ref:`single particle density<equation-nab>`
           :math:`n_{ab}(r)` is computed. 'none' computes the number of
-          particles occurences in each spherical shell.
+          particles occurrences in each spherical shell.
 
           .. versionadded:: 2.3.0
 
@@ -476,7 +476,7 @@ class InterRDF_s(AnalysisBase):
         For 'rdf' calculate :math:`g_{ab}(r)`. For
         'density' the :ref:`single particle density<equation-nab>`
         :math:`n_{ab}(r)` is computed. 'none' computes the number of
-        particles occurences in each spherical shell.
+        particles occurrences in each spherical shell.
 
         .. versionadded:: 2.3.0
 

@@ -81,7 +81,7 @@ specific format. These are:
 Normally, one does not explicitly need to select a reader. This is handled
 automatically when creating a :class:`~MDAnalysis.core.universe.Universe` and
 the appropriate reader for the file type is selected (typically by the file
-extension but this choice can be overriden with the ``format`` argument to
+extension but this choice can be overridden with the ``format`` argument to
 :class:`~MDAnalysis.core.universe.Universe`).
 
 If additional simulation data is available, it may be added to and read
@@ -475,7 +475,7 @@ formats that contain only a single coordinate frame. These readers are derived
 from a subclass of :class:`~MDAnalysis.coordinates.base.ProtoReader` named
 :class:`MDAnalysis.coordinates.base.SingleFrameReaderBase`.
 
-Typically, many methods and attributes are overriden but the ones listed below
+Typically, many methods and attributes are overridden but the ones listed below
 *must* be implemented.
 
 .. SeeAlso::
@@ -674,7 +674,7 @@ multiple frames to a trajectory file. Every time the
 :meth:`~MDAnalysis.coordinates.base.WriterBase.write` method is called,
 another frame is appended to the trajectory.
 
-Typically, many methods and attributes are overriden.
+Typically, many methods and attributes are overridden.
 
 Signature::
 

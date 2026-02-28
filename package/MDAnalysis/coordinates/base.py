@@ -1175,7 +1175,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         return self._auxs.keys()
 
     def _check_for_aux(self, auxname):
-        """ Check for the existance of an auxiliary *auxname*. If present,
+        """ Check for the existence of an auxiliary *auxname*. If present,
         return the AuxReader; if not, raise ValueError
         """
         if auxname in self.aux_list:
@@ -1576,7 +1576,7 @@ class WriterBase(IOBase, metaclass=_Writermeta):
         """Read dimensions from timestep *ts* and return appropriate unitcell.
 
         The default is to return ``[A,B,C,alpha,beta,gamma]``; if this
-        is not appropriate then this method has to be overriden.
+        is not appropriate then this method has to be overridden.
         """
         # override if the native trajectory format does NOT use
         # [A,B,C,alpha,beta,gamma]

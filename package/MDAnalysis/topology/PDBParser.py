@@ -454,7 +454,7 @@ class PDBParser(TopologyReaderBase):
                           " be parsed")
             raise AttributeError  # gets caught in parse
 
-        # Mapping between the atom array indicies a.index and atom ids
+        # Mapping between the atom array indices a.index and atom ids
         # (serial) in the original PDB file
         mapping = dict((s, i) for i, s in enumerate(serials))
 
