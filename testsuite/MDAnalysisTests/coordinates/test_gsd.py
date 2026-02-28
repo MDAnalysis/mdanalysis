@@ -81,8 +81,9 @@ class TestGSDReader:
         ts = traj[np.int64(0)]
         assert ts.frame == 0
         assert_almost_equal(
-            ts.positions[0],[-5.4000001, -10.19999981, -10.19999981],
-            err_msg="positions changed unexpectedly at frame 0"
+            ts.positions[0],
+            [-5.4000001, -10.19999981, -10.19999981],
+            err_msg="positions changed unexpectedly at frame 0",
         )
         for i in range(len(traj)):
             ts = traj[np.int64(i)]
