@@ -16,3 +16,15 @@ If you're contributing code, please check out [How to contribute](https://www.md
 
 MDAnalysis devs are most easily reached through the [development list](https://groups.google.com/forum/#!forum/mdnalysis-devel).
 
+#### Local quality checks
+
+Before opening a pull request, please run the same style checks locally using pre-commit:
+
+```bash
+python -m pip install pre-commit
+pre-commit install
+pre-commit run --all-files
+```
+
+Running these checks before pushing helps keep pull requests focused and reduces CI turnaround time.
+
