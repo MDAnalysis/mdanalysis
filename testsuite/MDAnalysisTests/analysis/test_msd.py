@@ -1849,12 +1849,12 @@ class TestMSDNonLinear:
             result_msd_per_particle, expected_msd_per_particle, rtol=1e-5
         )
 
-    def test_detect_non_linear_from_frames(self, u_nonlinear):
-        msd_auto = MSD(u_nonlinear, select="all", msd_type="xyz", fft=False)
+    def test_detect_non_linear_from_frames(self, step_traj):
+        msd_auto = MSD(step_traj, select="all", msd_type="xyz", fft=False)
         res1 = msd_auto.run(frames=[0, 1, 3, 6])
 
         msd_explicit = MSD(
-            u_nonlinear, select="all", msd_type="xyz", non_linear=True
+            step_traj, select="all", msd_type="xyz", non_linear=True
         )
         res2 = msd_explicit.run(frames=[0, 1, 3, 6])
 
