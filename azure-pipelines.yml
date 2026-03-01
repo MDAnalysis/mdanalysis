@@ -63,6 +63,23 @@ jobs:
       versionSpec: $(PYTHON_VERSION)
       addToPath: true
       architecture: $(PYTHON_ARCH)
+
+  - script: echo "##vso[task.setvariable variable=PIP_CACHE_DIR]$(HOME)/.cache/pip"
+    condition: eq(variables['Agent.OS'], 'Linux')
+    displayName: 'Set PIP_CACHE_DIR for Linux'
+
+  - script: echo "##vso[task.setvariable variable=PIP_CACHE_DIR]$(LocalAppData)\pip\Cache"
+    condition: eq(variables['Agent.OS'], 'Windows_NT')
+    displayName: 'Set PIP_CACHE_DIR for Windows'
+
+  - task: Cache@2
+    inputs:
+      key: 'pip | "$(Agent.OS)" | "$(PYTHON_VERSION)" | "$(BUILD_TYPE)" | "$(imageName)"'
+      restoreKeys: |
+        pip | "$(Agent.OS)" | "$(PYTHON_VERSION)" | "$(BUILD_TYPE)"
+        pip | "$(Agent.OS)" | "$(PYTHON_VERSION)"
+      path: $(PIP_CACHE_DIR)
+    displayName: 'Cache pip'
   # a PEP518 compliant wheel build shoud be
   # able to build MDAnalysis in an isolated
   # environment *before* any deps are installed
