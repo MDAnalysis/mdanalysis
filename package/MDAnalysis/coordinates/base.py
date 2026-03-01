@@ -1430,7 +1430,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
                 raise TypeError(
                     "All transformations must be callable; "
                     f"got object of type {type(transform)}"
-            )
+                )
         try:
             self.transformations = transformations
         except ValueError:
