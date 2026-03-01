@@ -64,13 +64,19 @@ jobs:
       addToPath: true
       architecture: $(PYTHON_ARCH)
 
-  - script: echo "##vso[task.setvariable variable=PIP_CACHE_DIR]$(HOME)/.cache/pip"
-    condition: eq(variables['Agent.OS'], 'Linux')
-    displayName: 'Set PIP_CACHE_DIR for Linux'
-
-  - script: echo "##vso[task.setvariable variable=PIP_CACHE_DIR]$(LocalAppData)\pip\Cache"
+  - powershell: |
+      $cachePath = Join-Path $env:LOCALAPPDATA "pip\Cache"
+      if (!(Test-Path $cachePath)) { New-Item -ItemType Directory -Force -Path $cachePath }
+      Write-Host "##vso[task.setvariable variable=PIP_CACHE_DIR]$cachePath"
+    displayName: 'Set pip cache directory (Windows)'
     condition: eq(variables['Agent.OS'], 'Windows_NT')
-    displayName: 'Set PIP_CACHE_DIR for Windows'
+
+  - bash: |
+      CACHE_DIR="$HOME/.cache/pip"
+      mkdir -p "$CACHE_DIR"
+      echo "##vso[task.setvariable variable=PIP_CACHE_DIR]$CACHE_DIR"
+    displayName: 'Set pip cache directory (Linux)'
+    condition: eq(variables['Agent.OS'], 'Linux')
 
   - task: Cache@2
     inputs:
