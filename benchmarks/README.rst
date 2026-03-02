@@ -99,7 +99,7 @@ suitable reference. As a quick summary of guidelines:
 Advanced Notes
 --------------
 
-- the depedencies installed in the clean conda benchmarking environments,
+- the dependencies installed in the clean conda benchmarking environments,
   and indeed the decision to use conda over virtualenv, can be controlled
   in the ``asv.conf.json`` file, as can which versions of Python are probed
 
