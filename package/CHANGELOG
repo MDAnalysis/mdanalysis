@@ -50,6 +50,7 @@ Enhancements
  * Adds support for parsing `.tpr` files produced by GROMACS 2026.0
  * Enables parallelization for analysis.diffusionmap.DistanceMatrix
    (Issue #4679, PR #4745)
+ * Implement pip dependency caching for Azure Pipelines (PR #5267)
 
 Changes
  * The msd.py inside analysis is changed, and ProgressBar is implemented inside
