@@ -1387,6 +1387,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
 
     def add_transformations(self, *transformations):
         """Add all transformations to be applied to the trajectory.
+
         This function take as list of transformations as an argument. These
         transformations are functions that will be called by the Reader and given
         a :class:`Timestep` object as argument, which will be transformed and returned
@@ -1422,6 +1423,11 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         See Also
         --------
         :mod:`MDAnalysis.transformations`
+
+        Raises
+        ------
+        TypeError
+            If any transformation is not callable
 
         """
 
