@@ -918,8 +918,7 @@ class GroupBase(_MutableBase):
                 mask = inverse_int_index(self.ix, indices)
             else :
                 for i, x in enumerate(indices):
-                    values = np.where(self.ix == x)[0]
-                    mask[values] = i
+                    mask[self.ix == x] = i
             self._unique_restore_mask = mask
 
         issorted = int_array_is_sorted(indices)
