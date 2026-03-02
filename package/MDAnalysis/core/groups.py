@@ -913,7 +913,13 @@ class GroupBase(_MutableBase):
 
         indices = unique_int_1d_unsorted(self.ix)
         if set_mask:
-            mask = inverse_int_index(self.ix, indices)
+            mask = np.zeros_like(self.ix)
+            if len(indices) * 50 > len(self.ix) :
+                mask = inverse_int_index(self.ix, indices)
+            else :
+                for i, x in enumerate(indices):
+                    values = np.where(self.ix == x)[0]
+                    mask[values] = i
             self._unique_restore_mask = mask
 
         issorted = int_array_is_sorted(indices)
