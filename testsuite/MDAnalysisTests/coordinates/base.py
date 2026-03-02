@@ -292,7 +292,9 @@ class BaseReaderTest(object):
 
     def test_add_transformations_rejects_non_callable(self):
         u = mda.Universe.empty(1, trajectory=True)
-        with pytest.raises(TypeError, match="All transformations must be callable"):
+        with pytest.raises(
+            TypeError, match="All transformations must be callable"
+        ):
             u.trajectory.add_transformations([1, 2, 3])
 
     def test_n_atoms(self, ref, reader):
