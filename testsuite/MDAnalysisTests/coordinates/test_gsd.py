@@ -22,12 +22,11 @@
 #
 import os
 
+import numpy as np
 import pytest
 from numpy.testing import assert_almost_equal
 
 import MDAnalysis as mda
-import numpy as np
-
 from MDAnalysis.coordinates.GSD import GSDReader, HAS_GSD
 from MDAnalysisTests.datafiles import GSD
 
