@@ -84,7 +84,8 @@ class TestGSDReader:
             [-5.4000001, -10.19999981, -10.19999981],
             err_msg="positions changed unexpectedly at frame 0",
         )
-        traj._read_frame(np.int64(1))
+        frame_idx = np.int64(1)
+        traj._read_frame(frame_idx)
         assert traj.ts.frame == 1
         for i in range(len(traj)):
             ts = traj[np.int64(i)]
