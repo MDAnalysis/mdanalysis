@@ -15,11 +15,13 @@ The rules for this file:
 
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, orbeckst, marinegor, tylerjereddy, ljwoods2, marinegor,
-         spyke7, talagayev, tanii1125, BradyAJohnston, jauy123
+         spyke7, talagayev, tanii1125, BradyAJohnston, hejamu, jeremyleung521,
+         jauy123
 
  * 2.11.0
 
 Fixes
+ * Drop/Replace lock file test in test_xdr (Issue #5236, PR #5237)
  * HydrogenBondAnalysis: Fixed `count_by_time()` when using `run(FrameIterator)` that
    results in `self.start` and `self.end` being None (Issue #5200, PR #5202)
  * NoJump shows a more informative message and fails  when applied
@@ -40,6 +42,8 @@ Enhancements
  * Added new top-level `MDAnalysis.fetch` module (PR #4943)
  * Added new function `MDAnalysis.fetch.from_PDB` to download structure files from wwPDB
    using `pooch` as optional dependency (Issue #4907, PR #4943) 
+ * Improved performance of `AtomGroup.wrap()` with compounds (PR #5220)
+ * Adds support for parsing `.tpr` files produced by GROMACS 2026.0
  * Enables parallelization for analysis.diffusionmap.DistanceMatrix
    (Issue #4679, PR #4745)
 

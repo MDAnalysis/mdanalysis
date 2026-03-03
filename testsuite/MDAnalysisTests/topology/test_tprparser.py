@@ -34,13 +34,13 @@ from MDAnalysis.tests.datafiles import (TPR, TPR400, TPR402, TPR403, TPR404,
                                         TPR2016, TPR2018, TPR2019B3, TPR2020,
                                         TPR2020B2, TPR2021, TPR2022RC1,
                                         TPR2023, TPR2024, TPR2024_4,
-                                        TPR2025_0,
+                                        TPR2025_0, TPR2026_0,
                                         TPR_EXTRA_407, TPR_EXTRA_2016,
                                         TPR_EXTRA_2018, TPR_EXTRA_2020,
                                         TPR_EXTRA_2021, TPR_EXTRA_2022RC1,
                                         TPR_EXTRA_2023, TPR_EXTRA_2024,
                                         TPR_EXTRA_2024_4, XTC, TPR334_bonded,
-                                        TPR_EXTRA_2025_0,
+                                        TPR_EXTRA_2025_0, TPR_EXTRA_2026_0,
                                         TPR455Double, TPR510_bonded,
                                         TPR2016_bonded, TPR2018_bonded,
                                         TPR2019B3_bonded, TPR2020_bonded,
@@ -50,7 +50,8 @@ from MDAnalysis.tests.datafiles import (TPR, TPR400, TPR402, TPR403, TPR404,
                                         TPR2021Double, TPR2022RC1_bonded,
                                         TPR2023_bonded, TPR2024_4_bonded,
                                         TPR2025_0_bonded, TPR2024_bonded,
-                                        TPR_NNPOT_2025_0)
+                                        TPR2026_0_bonded,
+                                        TPR_NNPOT_2025_0, TPR_NNPOT_2026_0)
 from numpy.testing import assert_equal
 
 # fmt: on
@@ -70,6 +71,8 @@ BONDED_TPRS = (
     TPR2024_bonded,
     TPR2024_4_bonded,
     TPR2025_0_bonded,
+    TPR2026_0_bonded,
+    TPR_EXTRA_2026_0,
     TPR_EXTRA_2025_0,
     TPR_EXTRA_2024_4,
     TPR_EXTRA_2024,
@@ -154,7 +157,7 @@ class TestTPRGromacsVersions(TPRAttrs):
             TPR451, TPR452, TPR453, TPR454, TPR455, TPR502, TPR504, TPR505,
             TPR510, TPR2016, TPR2018, TPR2019B3, TPR2020, TPR2020Double,
             TPR2021, TPR2021Double, TPR2022RC1, TPR2023, TPR2024, TPR2024_4,
-            TPR2025_0,
+            TPR2025_0, TPR2026_0,
         ]
     )
     # fmt: on
@@ -220,7 +223,7 @@ class TestTPRNnpot(TPRAttrs):
     ref_molnums = np.array([0] * 2)
     ref_chainIDs = ["A"]
 
-    @pytest.fixture(params=[TPR_NNPOT_2025_0])
+    @pytest.fixture(params=[TPR_NNPOT_2025_0, TPR_NNPOT_2026_0])
     def filename(self, request):
         return request.param
 
@@ -357,7 +360,7 @@ def test_settle(bonds_water):
     assert bonds_water[-1][1] == 2262
 
 
-@pytest.mark.parametrize("tpr_path", [TPR_NNPOT_2025_0])
+@pytest.mark.parametrize("tpr_path", [TPR_NNPOT_2025_0, TPR_NNPOT_2026_0])
 def test_ala2(tpr_path):
     topology = MDAnalysis.topology.TPRParser.TPRParser(tpr_path).parse()
     # Check that bonds etc are read correctly
