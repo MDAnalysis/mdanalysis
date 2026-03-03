@@ -77,6 +77,7 @@ class TestGSDReader:
 
     def test_gsd_indexing_with_numpy_int(self, GSD_U):
         traj = GSD_U.trajectory
+        traj.rewind()
         ts = traj[np.int64(0)]
         assert ts.frame == 0
         assert_almost_equal(
