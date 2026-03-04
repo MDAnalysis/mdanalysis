@@ -16,10 +16,14 @@ The rules for this file:
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, orbeckst, marinegor, tylerjereddy, ljwoods2, marinegor,
          spyke7, talagayev, tanii1125, BradyAJohnston, hejamu, AYUSH-AGARWAL-G1THUB
+         jeremyleung521, harshitgajjela-droid
 
  * 2.11.0
 
 Fixes
+ * Fixed bug in add_transformations allowing non-callable transformations
+   (Issue #2558, PR #2558)
+ * Drop/Replace lock file test in test_xdr (Issue #5236, PR #5237)
  * HydrogenBondAnalysis: Fixed `count_by_time()` when using `run(FrameIterator)` that
    results in `self.start` and `self.end` being None (Issue #5200, PR #5202)
  * NoJump shows a more informative message and fails  when applied
