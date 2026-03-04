@@ -9,6 +9,8 @@ Once you have the :meth:`~MDAnalysis.core.universe.Universe` object, you can
 select atoms (using a syntax very similar to `CHARMM's atom selection
 syntax`_)::
 
+  >>> import MDAnalysis as mda
+  >>> universe = mda.Universe("topology.psf", "trajectory.dcd")
   >>> kalp = universe.select_atoms("segid KALP")
 
 .. _`CHARMM's atom selection syntax`:
@@ -39,6 +41,8 @@ packages with the help of :ref:`Selection exporters`.
     For example, the below code will return the first, second, and
     sixth atom in ``ag``::
 
+        >>> import MDAnalysis as mda
+        >>> u = mda.Universe("topology.psf", "trajectory.dcd")
         >>> ag = u.select_atoms("name N")
         >>> ag2 = ag[[5, 1, 0]]
         >>> ag3 = ag2.select_atoms("name N")
