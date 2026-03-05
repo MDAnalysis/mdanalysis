@@ -27,9 +27,10 @@ class EinsteinMSDCustom:
 
     def setup(self, n_frames, fft):
         """Setup method for MSD benchmark with custom number of frames."""
-        np.random.seed(42)
         n_atoms = 100
-        res = np.random.random((n_frames, n_atoms, 3)).astype(np.float32)
+
+        rng = np.random.default_rng()
+        res = rng.random((n_frames, n_atoms, 3)).astype(np.float32)
 
         self.u = mda.Universe.empty(n_atoms, n_frames=n_frames, trajectory=True)
         self.u.trajectory.set_array(res)
