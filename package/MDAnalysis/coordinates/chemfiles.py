@@ -76,6 +76,7 @@ Helper functions
 .. autofunction:: check_chemfiles_version
 
 """
+
 import numpy as np
 import warnings
 from packaging.version import Version
@@ -156,8 +157,7 @@ class ChemfilesReader(base.ReaderBase):
         """
         if not check_chemfiles_version():
             raise RuntimeError(
-                "Please install Chemfiles > {}"
-                "".format(MIN_CHEMFILES_VERSION)
+                "Please install Chemfiles > {}" "".format(MIN_CHEMFILES_VERSION)
             )
         super(ChemfilesReader, self).__init__(filename, **kwargs)
         self._format = chemfiles_format
@@ -304,16 +304,13 @@ class ChemfilesWriter(base.WriterBase):
         """
         if not check_chemfiles_version():
             raise RuntimeError(
-                "Please install Chemfiles > {}"
-                "".format(MIN_CHEMFILES_VERSION)
+                "Please install Chemfiles > {}" "".format(MIN_CHEMFILES_VERSION)
             )
         self.filename = filename
         self.n_atoms = n_atoms
         if mode != "a" and mode != "w":
             raise IOError("Expected 'a' or 'w' as mode in ChemfilesWriter")
-        self._file = chemfiles.Trajectory(
-            self.filename, mode, chemfiles_format
-        )
+        self._file = chemfiles.Trajectory(self.filename, mode, chemfiles_format)
         self._closed = False
         if topology is not None:
             if isinstance(topology, str):
@@ -428,9 +425,7 @@ class ChemfilesWriter(base.WriterBase):
             if hasattr(atom, "resid"):
                 resname = getattr(atom, "resname", "")
                 if atom.resid not in residues.keys():
-                    residues[atom.resid] = chemfiles.Residue(
-                        resname, atom.resid
-                    )
+                    residues[atom.resid] = chemfiles.Residue(resname, atom.resid)
                 residue = residues[atom.resid]
 
                 atom_idx = len(topology.atoms)

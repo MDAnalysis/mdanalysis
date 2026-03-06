@@ -57,6 +57,7 @@ Connectivity
    Unused function :func:`_angle()` has now been removed.
 
 """
+
 import numpy as np
 
 from ..exceptions import NoDataError
@@ -163,9 +164,7 @@ def angle(a: npt.ArrayLike, b: npt.ArrayLike) -> float:
     return np.arccos(x)
 
 
-def stp(
-    vec1: npt.ArrayLike, vec2: npt.ArrayLike, vec3: npt.ArrayLike
-) -> float:
+def stp(vec1: npt.ArrayLike, vec2: npt.ArrayLike, vec3: npt.ArrayLike) -> float:
     r"""Takes the scalar triple product of three vectors.
 
     Returns the volume *V* of the parallel epiped spanned by the three
@@ -251,9 +250,7 @@ def sarrus_det(matrix: npt.NDArray) -> Union[float, npt.NDArray]:
     return _sarrus_det_multiple(m.reshape((-1, 3, 3))).reshape(shape[:-2])
 
 
-def triclinic_box(
-    x: npt.ArrayLike, y: npt.ArrayLike, z: npt.ArrayLike
-) -> npt.NDArray:
+def triclinic_box(x: npt.ArrayLike, y: npt.ArrayLike, z: npt.ArrayLike) -> npt.NDArray:
     """Convert the three triclinic box vectors to
     ``[lx, ly, lz, alpha, beta, gamma]``.
 
@@ -368,9 +365,7 @@ def triclinic_vectors(
     dim = np.asarray(dimensions, dtype=np.float64)
     lx, ly, lz, alpha, beta, gamma = dim
     # Only positive edge lengths and angles in (0, 180) are allowed:
-    if not (
-        np.all(dim > 0.0) and alpha < 180.0 and beta < 180.0 and gamma < 180.0
-    ):
+    if not (np.all(dim > 0.0) and alpha < 180.0 and beta < 180.0 and gamma < 180.0):
         # invalid box, return zero vectors:
         box_matrix = np.zeros((3, 3), dtype=dtype)
     # detect orthogonal boxes:

@@ -36,9 +36,7 @@ def translate_universes():
     # this universe has no masses and some tests need it as such
     reference = make_Universe(trajectory=True)
     transformed = make_Universe(["masses"], trajectory=True)
-    transformed.trajectory.ts.dimensions = np.array(
-        [372.0, 373.0, 374.0, 90, 90, 90]
-    )
+    transformed.trajectory.ts.dimensions = np.array([372.0, 373.0, 374.0, 90, 90, 90])
 
     return reference, transformed
 
@@ -78,9 +76,7 @@ def test_translate_transformations_api(translate_universes):
     vector = np.float32([1, 2, 3])
     ref.positions += vector
     trans_u.trajectory.add_transformations(translate(vector))
-    assert_array_almost_equal(
-        trans_u.trajectory.ts.positions, ref.positions, decimal=6
-    )
+    assert_array_almost_equal(trans_u.trajectory.ts.positions, ref.positions, decimal=6)
 
 
 def test_center_in_box_bad_ag(translate_universes):
@@ -219,6 +215,4 @@ def test_center_transformations_api(translate_universes):
     ref.positions += box_center - ref_center
     ag = trans_u.residues[0].atoms
     trans_u.trajectory.add_transformations(center_in_box(ag))
-    assert_array_almost_equal(
-        trans_u.trajectory.ts.positions, ref.positions, decimal=6
-    )
+    assert_array_almost_equal(trans_u.trajectory.ts.positions, ref.positions, decimal=6)

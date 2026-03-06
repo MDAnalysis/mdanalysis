@@ -32,6 +32,7 @@ returned.
 .. autoclass:: PositionAverager
 
 """
+
 import numpy as np
 import warnings
 
@@ -148,9 +149,7 @@ class PositionAverager(TransformationBase):
         max_threads=None,
         parallelizable=False,
     ):
-        super().__init__(
-            max_threads=max_threads, parallelizable=parallelizable
-        )
+        super().__init__(max_threads=max_threads, parallelizable=parallelizable)
         self.avg_frames = avg_frames
         self.check_reset = check_reset
         self.current_avg = 0

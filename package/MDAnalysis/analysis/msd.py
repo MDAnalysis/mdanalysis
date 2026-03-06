@@ -64,26 +64,26 @@ the normal MDAnalysis citations.
 
 .. warning::
    To correctly compute the MSD using this analysis module, you must supply
-   coordinates in the **unwrapped** convention, also known as **no-jump**. 
-   That is, when atoms pass the periodic boundary, they must not be wrapped 
+   coordinates in the **unwrapped** convention, also known as **no-jump**.
+   That is, when atoms pass the periodic boundary, they must not be wrapped
    back into the primary simulation cell.
-   
-   In MDAnalysis you can use the 
+
+   In MDAnalysis you can use the
    :class:`~MDAnalysis.transformations.nojump.NoJump`
    transformation to unwrap coordinates on-the-fly.
-    
+
    A minimal example:
 
    .. code-block:: python
-      
+
       import MDAnalysis as mda
       from MDAnalysis.transformations import NoJump
-      
+
       u = mda.Universe(TOP, TRAJ)
-      
+
       # Apply NoJump transformation to unwrap coordinates
       u.trajectory.add_transformations(NoJump(u))
-       
+
       # Now the trajectory is unwrapped and MSD can be computed normally:
       from MDAnalysis.analysis.msd import EinsteinMSD
       MSD = EinsteinMSD(u, select="all", msd_type="xyz")
@@ -94,11 +94,11 @@ the normal MDAnalysis citations.
    dimensions must be defined before applying ``NoJump``, which can
    be accomplished by applying the
    :class:`~MDAnalysis.transformations.boxdimensions.set_dimensions`
-   transformation *before* the 
+   transformation *before* the
    :class:`~MDAnalysis.transformations.nojump.NoJump` transformation.
-   
+
    This replaces the need to preprocess trajectories externally.
-   
+
    In GROMACS, for example, this can be done using `gmx trjconv`_ with the
    ``-pbc nojump`` flag.
 
@@ -363,9 +363,7 @@ class EinsteinMSD(AnalysisBase):
         **kwargs,
     ):
         if isinstance(u, groups.UpdatingAtomGroup):
-            raise TypeError(
-                "UpdatingAtomGroups are not valid for MSD computation"
-            )
+            raise TypeError("UpdatingAtomGroups are not valid for MSD computation")
 
         super(EinsteinMSD, self).__init__(u.universe.trajectory, **kwargs)
 
@@ -389,12 +387,8 @@ class EinsteinMSD(AnalysisBase):
     def _prepare(self):
         # self.n_frames only available here
         # these need to be zeroed prior to each run() call
-        self.results.msds_by_particle = np.zeros(
-            (self.n_frames, self.n_particles)
-        )
-        self._position_array = np.zeros(
-            (self.n_frames, self.n_particles, self.dim_fac)
-        )
+        self.results.msds_by_particle = np.zeros((self.n_frames, self.n_particles))
+        self._position_array = np.zeros((self.n_frames, self.n_particles, self.dim_fac))
         # self.results.timeseries not set here
 
     def _parse_msd_type(self):
@@ -422,9 +416,7 @@ class EinsteinMSD(AnalysisBase):
         r"""Constructs array of positions for MSD calculation."""
         # shape of position array set here, use span in last dimension
         # from this point on
-        self._position_array[self._frame_index] = self.ag.positions[
-            :, self._dim
-        ]
+        self._position_array[self._frame_index] = self.ag.positions[:, self._dim]
 
     def _conclude(self):
         if self.non_linear:
@@ -457,8 +449,7 @@ class EinsteinMSD(AnalysisBase):
         try:
             import tidynamics
         except ImportError:
-            raise ImportError(
-                """ERROR --- tidynamics was not found!
+            raise ImportError("""ERROR --- tidynamics was not found!
 
                 tidynamics is required to compute an FFT based MSD (default)
 
@@ -466,8 +457,7 @@ class EinsteinMSD(AnalysisBase):
 
                     pip install tidynamics
 
-                or set fft=False"""
-            )
+                or set fft=False""")
 
         positions = self._position_array.astype(np.float64)
         for n in ProgressBar(
@@ -475,9 +465,7 @@ class EinsteinMSD(AnalysisBase):
             verbose=self._verbose,
             desc="Calculating MSD with FFT per particle",
         ):
-            self.results.msds_by_particle[:, n] = tidynamics.msd(
-                positions[:, n, :]
-            )
+            self.results.msds_by_particle[:, n] = tidynamics.msd(positions[:, n, :])
         self.results.timeseries = self.results.msds_by_particle.mean(axis=1)
         self.results.delta_t_values = np.arange(self.n_frames) * (
             self.times[1] - self.times[0]

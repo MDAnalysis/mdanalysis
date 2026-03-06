@@ -113,6 +113,4 @@ def test_gromacs_flavour():
     assert_almost_equal(u.atoms[0].radius, 1.48, decimal=5)
     assert_almost_equal(u.atoms[0].charge, -0.67, decimal=5)
     # coordinatey things
-    assert_almost_equal(
-        u.atoms[0].position, [15.710, 17.670, 23.340], decimal=4
-    )
+    assert_almost_equal(u.atoms[0].position, [15.710, 17.670, 23.340], decimal=4)

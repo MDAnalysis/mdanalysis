@@ -91,12 +91,8 @@ class wrap(TransformationBase):
        limiting threads and checking if it can be used in parallel analysis.
     """
 
-    def __init__(
-        self, ag, compound="atoms", max_threads=None, parallelizable=True
-    ):
-        super().__init__(
-            max_threads=max_threads, parallelizable=parallelizable
-        )
+    def __init__(self, ag, compound="atoms", max_threads=None, parallelizable=True):
+        super().__init__(max_threads=max_threads, parallelizable=parallelizable)
 
         self.ag = ag
         self.compound = compound
@@ -156,9 +152,7 @@ class unwrap(TransformationBase):
     """
 
     def __init__(self, ag, max_threads=None, parallelizable=True):
-        super().__init__(
-            max_threads=max_threads, parallelizable=parallelizable
-        )
+        super().__init__(max_threads=max_threads, parallelizable=parallelizable)
 
         self.ag = ag
 

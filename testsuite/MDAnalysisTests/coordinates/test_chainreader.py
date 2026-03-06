@@ -82,9 +82,7 @@ class TestChainReader(object):
         assert_equal(universe.trajectory.ts.frame, 1, "loading frame 2")
 
     def test_n_atoms(self, universe):
-        assert_equal(
-            universe.trajectory.n_atoms, 3341, "wrong number of atoms"
-        )
+        assert_equal(universe.trajectory.n_atoms, 3341, "wrong number of atoms")
 
     def test_n_frames(self, universe):
         assert_equal(
@@ -161,9 +159,7 @@ class TestChainReader(object):
                 ts_orig._pos,
                 ts_new._pos,
                 self.prec,
-                err_msg="Coordinates disagree at frame {0:d}".format(
-                    ts_orig.frame
-                ),
+                err_msg="Coordinates disagree at frame {0:d}".format(ts_orig.frame),
             )
 
     def test_transform_iteration(self, universe, transformed):
@@ -193,26 +189,18 @@ class TestChainReader(object):
         vector = np.float32([10, 10, 10])
         # grab a frame:
         ref = universe.trajectory[2].positions + vector
-        assert_almost_equal(
-            transformed.trajectory[2].positions, ref, decimal=6
-        )
+        assert_almost_equal(transformed.trajectory[2].positions, ref, decimal=6)
         # now switch to another frame
         newref = universe.trajectory[10].positions + vector
-        assert_almost_equal(
-            transformed.trajectory[10].positions, newref, decimal=6
-        )
+        assert_almost_equal(transformed.trajectory[10].positions, newref, decimal=6)
         # what happens when we comeback to the previous frame?
-        assert_almost_equal(
-            transformed.trajectory[2].positions, ref, decimal=6
-        )
+        assert_almost_equal(transformed.trajectory[2].positions, ref, decimal=6)
 
     def test_transfrom_rewind(self, universe, transformed):
         vector = np.float32([10, 10, 10])
         ref = universe.trajectory[0].positions + vector
         transformed.trajectory.rewind()
-        assert_almost_equal(
-            transformed.trajectory.ts.positions, ref, decimal=6
-        )
+        assert_almost_equal(transformed.trajectory.ts.positions, ref, decimal=6)
 
 
 class TestChainReaderCommonDt(object):
@@ -242,9 +230,7 @@ class TestChainReaderFormats(object):
     """Test of ChainReader with explicit formats (Issue 76)."""
 
     def test_set_all_format_tuples(self):
-        universe = mda.Universe(
-            GRO, [(PDB, "pdb"), (XTC, "xtc"), (TRR, "trr")]
-        )
+        universe = mda.Universe(GRO, [(PDB, "pdb"), (XTC, "xtc"), (TRR, "trr")])
         assert universe.trajectory.n_frames == 21
         assert_equal(universe.trajectory.filenames, [PDB, XTC, TRR])
 
@@ -390,9 +376,7 @@ class TestChainReaderContinuous(object):
     )
     def test_order(self, seq_info, tmpdir, fmt):
         folder = str(tmpdir)
-        utop, fnames = build_trajectories(
-            folder, sequences=seq_info.seq, fmt=fmt
-        )
+        utop, fnames = build_trajectories(folder, sequences=seq_info.seq, fmt=fmt)
         u = mda.Universe(utop._topology, fnames, continuous=True, to_guess=())
         assert u.trajectory.n_frames == seq_info.n_frames
         for i, ts in enumerate(u.trajectory):
@@ -457,12 +441,8 @@ class TestChainReaderContinuous(object):
                 # TODO: remove when we no longer have a dependency
                 # that still imports six
                 if sys.version_info >= (3, 10):
-                    warnings.filterwarnings(
-                        action="ignore", category=ImportWarning
-                    )
-                mda.Universe(
-                    utop._topology, fnames, continuous=True, to_guess=()
-                )
+                    warnings.filterwarnings(action="ignore", category=ImportWarning)
+                mda.Universe(utop._topology, fnames, continuous=True, to_guess=())
 
     def test_single_frames(self, tmpdir):
         folder = str(tmpdir)

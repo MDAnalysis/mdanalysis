@@ -39,6 +39,7 @@ The selection is named *mdanalysis001*.
 .. _CHARMM: http://www.charmm.org
 .. _CHARMM selection: http://www.charmm.org/documentation/c34b1/select.html
 """
+
 from . import base
 
 
@@ -47,9 +48,7 @@ class SelectionWriter(base.SelectionWriterBase):
     ext = "str"
     continuation = "-"
     commentfmt = "! %s"
-    default_numterms = (
-        4  # be conservative because CHARMM only reads 72 columns
-    )
+    default_numterms = 4  # be conservative because CHARMM only reads 72 columns
 
     def _translate(self, atoms, **kwargs):
         # CHARMM index is 1-based
@@ -60,11 +59,7 @@ class SelectionWriter(base.SelectionWriterBase):
 
     def _write_head(self, out, **kwargs):
         out.write(self.comment("MDAnalysis CHARMM selection"))
-        out.write(
-            "DEFINE {name!s} SELECT ".format(**kwargs)
-            + self.continuation
-            + "\n"
-        )
+        out.write("DEFINE {name!s} SELECT ".format(**kwargs) + self.continuation + "\n")
 
     def _write_tail(self, out, **kwargs):
         out.write("END")

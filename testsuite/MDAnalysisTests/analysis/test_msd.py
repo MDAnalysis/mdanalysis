@@ -117,9 +117,7 @@ class TestMSDSimple(object):
         with pytest.raises(TypeError, match=errmsg):
             m = MSD(updating_ag, msd_type="xyz", fft=False)
 
-    @pytest.mark.parametrize(
-        "msdtype", ["foo", "bar", "yx", "zyx", 123, "", " xy "]
-    )
+    @pytest.mark.parametrize("msdtype", ["foo", "bar", "yx", "zyx", 123, "", " xy "])
     def test_msdtype_error(self, u, SELECTION, msdtype):
         errmsg = f"Invalid msd_type {msdtype}, must be a string and one of: xyz, xy, xz, yz, x, y, z"
         with pytest.raises(ValueError, match=errmsg):
@@ -137,9 +135,7 @@ class TestMSDSimple(object):
             ("z", 1),
         ],
     )
-    def test_simple_step_traj_all_dims(
-        self, step_traj, NSTEP, dim, dim_factor
-    ):
+    def test_simple_step_traj_all_dims(self, step_traj, NSTEP, dim, dim_factor):
         # testing the "simple" algorithm on constant velocity trajectory
         # should fit the polynomial y=dim_factor*x**2
         m_simple = MSD(step_traj, "all", msd_type=dim, fft=False)
@@ -159,18 +155,14 @@ class TestMSDSimple(object):
             ("z", 1),
         ],
     )
-    def test_simple_start_stop_step_all_dims(
-        self, step_traj, NSTEP, dim, dim_factor
-    ):
+    def test_simple_start_stop_step_all_dims(self, step_traj, NSTEP, dim, dim_factor):
         # testing the "simple" algorithm on constant velocity trajectory
         # test start stop step is working correctly
         m_simple = MSD(step_traj, "all", msd_type=dim, fft=False)
         m_simple.run(start=10, stop=1000, step=10)
         poly = characteristic_poly(NSTEP, dim_factor)
         # polynomial must take offset start into account
-        assert_almost_equal(
-            m_simple.results.timeseries, poly[0:990:10], decimal=4
-        )
+        assert_almost_equal(m_simple.results.timeseries, poly[0:990:10], decimal=4)
 
     def test_random_walk_u_simple(self, random_walk_u):
         # regress against random_walk test data
@@ -265,18 +257,14 @@ class TestMSDFFT(object):
             ("z", 1),
         ],
     )
-    def test_fft_start_stop_step_all_dims(
-        self, step_traj, NSTEP, dim, dim_factor
-    ):
+    def test_fft_start_stop_step_all_dims(self, step_traj, NSTEP, dim, dim_factor):
         # testing the fft algorithm on constant velocity trajectory
         # test start stop step is working correctly
         m_simple = MSD(step_traj, "all", msd_type=dim, fft=True)
         m_simple.run(start=10, stop=1000, step=10)
         poly = characteristic_poly(NSTEP, dim_factor)
         # polynomial must take offset start into account
-        assert_almost_equal(
-            m_simple.results.timeseries, poly[0:990:10], decimal=3
-        )
+        assert_almost_equal(m_simple.results.timeseries, poly[0:990:10], decimal=3)
 
     def test_random_walk_u_fft(self, random_walk_u):
         # regress against random_walk test data
@@ -1756,9 +1744,7 @@ class TestMSDNonLinear:
             ]
         )
         assert result_msd_per_particle.shape == expected_msd_per_particle.shape
-        assert_allclose(
-            result_msd_per_particle, expected_msd_per_particle, rtol=1e-5
-        )
+        assert_allclose(result_msd_per_particle, expected_msd_per_particle, rtol=1e-5)
 
     def test_start_stop_step(self, u_nonlinear):
         msd = MSD(u_nonlinear, select="all", msd_type="xyz", non_linear=True)
@@ -1845,6 +1831,4 @@ class TestMSDNonLinear:
         assert result_msd_per_particle.shape == expected_msd_per_particle.shape
         assert_allclose(result_msd, expected_msd, rtol=1e-5)
         assert_allclose(result_delta_t, expected_delta_t, rtol=1e-5)
-        assert_allclose(
-            result_msd_per_particle, expected_msd_per_particle, rtol=1e-5
-        )
+        assert_allclose(result_msd_per_particle, expected_msd_per_particle, rtol=1e-5)

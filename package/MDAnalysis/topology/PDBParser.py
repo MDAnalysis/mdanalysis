@@ -65,6 +65,7 @@ Classes
    :inherited-members:
 
 """
+
 import numpy as np
 import warnings
 import logging
@@ -149,16 +150,22 @@ def hy36decode(width, s):
     int
         Base-10 integer corresponding to hybrid36.
     """
-    if (len(s) == width):
+    if len(s) == width:
         f = s[0]
-        if (f == "-" or f == " " or f.isdigit()):
+        if f == "-" or f == " " or f.isdigit():
             return int(s)
-        elif (f in DIGITS_UPPER_VALUES):
-            return decode_pure(digits_values=DIGITS_UPPER_VALUES,
-                               s=s) - 10 * 36 ** (width - 1) + 10 ** width
-        elif (f in DIGITS_LOWER_VALUES):
-            return decode_pure(digits_values=DIGITS_LOWER_VALUES,
-                               s=s) + 16 * 36 ** (width - 1) + 10 ** width
+        elif f in DIGITS_UPPER_VALUES:
+            return (
+                decode_pure(digits_values=DIGITS_UPPER_VALUES, s=s)
+                - 10 * 36 ** (width - 1)
+                + 10**width
+            )
+        elif f in DIGITS_LOWER_VALUES:
+            return (
+                decode_pure(digits_values=DIGITS_LOWER_VALUES, s=s)
+                + 16 * 36 ** (width - 1)
+                + 10**width
+            )
     raise ValueError("invalid number literal.")
 
 
@@ -217,7 +224,8 @@ class PDBParser(TopologyReaderBase):
         be generated if the segids is not present or if the chainids are not
         completely equal to segids.
     """
-    format = ['PDB', 'ENT']
+
+    format = ["PDB", "ENT"]
 
     def parse(self, **kwargs):
         """Parse atom information from PDB file
@@ -231,11 +239,11 @@ class PDBParser(TopologyReaderBase):
         try:
             bonds = self._parsebonds(top.ids.values)
         except AttributeError:
-            warnings.warn("Invalid atom serials were present, "
-                          "bonds will not be parsed")
+            warnings.warn(
+                "Invalid atom serials were present, " "bonds will not be parsed"
+            )
         except RuntimeError:
-            warnings.warn("CONECT records was corrupt, "
-                          "bonds will not be parsed")
+            warnings.warn("CONECT records was corrupt, " "bonds will not be parsed")
         else:
             # Issue 2832: don't append Bonds if there are no bonds
             if bonds:
@@ -268,9 +276,9 @@ class PDBParser(TopologyReaderBase):
                 line = line.strip()  # Remove extra spaces
                 if not line:  # Skip line if empty
                     continue
-                if line.startswith('END'):
+                if line.startswith("END"):
                     break
-                if not line.startswith(('ATOM', 'HETATM')):
+                if not line.startswith(("ATOM", "HETATM")):
                     continue
 
                 record_types.append(line[:6].strip())
@@ -306,8 +314,9 @@ class PDBParser(TopologyReaderBase):
                             resid += 10000
                         resid_prev = resid
                 except ValueError:
-                    warnings.warn("PDB file is missing resid information.  "
-                                  "Defaulted to '1'")
+                    warnings.warn(
+                        "PDB file is missing resid information.  " "Defaulted to '1'"
+                    )
                     resid = 1
                 finally:
                     resids.append(resid)
@@ -320,8 +329,9 @@ class PDBParser(TopologyReaderBase):
 
         # Warn about wrapped serials
         if self._wrapped_serials:
-            warnings.warn("Serial numbers went over 100,000.  "
-                          "Higher serials have been guessed")
+            warnings.warn(
+                "Serial numbers went over 100,000.  " "Higher serials have been guessed"
+            )
 
         # If segids is not equal to chainids, warn the user
         if any([a != b for a, b in zip(segids, chainids)]):
@@ -329,14 +339,17 @@ class PDBParser(TopologyReaderBase):
 
         # If segids not present, try to use chainids
         if not any(segids):
-            logger.info("Setting segids from chainIDs because no segids "
-                        "found in the PDB file.")
+            logger.info(
+                "Setting segids from chainIDs because no segids "
+                "found in the PDB file."
+            )
             segids = chainids
 
         # If force_chainids_to_segids is set, use chainids as segids
         if kwargs.get("force_chainids_to_segids", False):
-            logger.info("force_chainids_to_segids is set. "
-                        "Using chain IDs as segment IDs.")
+            logger.info(
+                "force_chainids_to_segids is set. " "Using chain IDs as segment IDs."
+            )
             segids = chainids
 
         n_atoms = len(serials)
@@ -344,13 +357,13 @@ class PDBParser(TopologyReaderBase):
         attrs = []
         # Make Atom TopologyAttrs
         for vals, Attr, dtype in (
-                (names, Atomnames, object),
-                (altlocs, AltLocs, object),
-                (chainids, ChainIDs, object),
-                (record_types, RecordTypes, object),
-                (serials, Atomids, np.int32),
-                (tempfactors, Tempfactors, np.float32),
-                (occupancies, Occupancies, np.float32),
+            (names, Atomnames, object),
+            (altlocs, AltLocs, object),
+            (chainids, ChainIDs, object),
+            (record_types, RecordTypes, object),
+            (serials, Atomids, np.int32),
+            (tempfactors, Tempfactors, np.float32),
+            (occupancies, Occupancies, np.float32),
         ):
             attrs.append(Attr(np.array(vals, dtype=dtype)))
         # OPT: We do this check twice, maybe could refactor to avoid this
@@ -364,41 +377,47 @@ class PDBParser(TopologyReaderBase):
                 if elem.capitalize() in SYMB2Z:
                     validated_elements.append(elem.capitalize())
                 else:
-                    wmsg = (f"Unknown element {elem} found for some atoms. "
-                            f"These have been given an empty element record. "
-                            f"If needed they can be guessed using "
-                            f"universe.guess_TopologyAttrs(context='default',"
-                            " to_guess=['elements']).")
+                    wmsg = (
+                        f"Unknown element {elem} found for some atoms. "
+                        f"These have been given an empty element record. "
+                        f"If needed they can be guessed using "
+                        f"universe.guess_TopologyAttrs(context='default',"
+                        " to_guess=['elements'])."
+                    )
                     warnings.warn(wmsg)
-                    validated_elements.append('')
+                    validated_elements.append("")
             attrs.append(Elements(np.array(validated_elements, dtype=object)))
         else:
-            warnings.warn("Element information is missing, elements attribute "
-                          "will not be populated. If needed these can be"
-                          " guessed using universe.guess_TopologyAttrs("
-                          "context='default', to_guess=['elements']).")
+            warnings.warn(
+                "Element information is missing, elements attribute "
+                "will not be populated. If needed these can be"
+                " guessed using universe.guess_TopologyAttrs("
+                "context='default', to_guess=['elements'])."
+            )
 
         if any(formalcharges):
             try:
                 for i, entry in enumerate(formalcharges):
-                    if not entry == '':
-                        if entry == '0':
+                    if not entry == "":
+                        if entry == "0":
                             # Technically a lack of charge shouldn't be in the
                             # PDB but MDA has a few files that specifically
                             # have 0 entries, indicating that some folks
                             # interpret 0 as an allowed entry
                             formalcharges[i] = 0
-                        elif ('+' in entry) or ('-' in entry):
+                        elif ("+" in entry) or ("-" in entry):
                             formalcharges[i] = int(entry[::-1])
                         else:
                             raise ValueError
                     else:
                         formalcharges[i] = 0
             except ValueError:
-                wmsg = (f"Unknown entry {entry} encountered in formal charge "
-                        "field. This likely indicates that the PDB file is "
-                        "not fully standard compliant. The formalcharges "
-                        "attribute will not be populated.")
+                wmsg = (
+                    f"Unknown entry {entry} encountered in formal charge "
+                    "field. This likely indicates that the PDB file is "
+                    "not fully standard compliant. The formalcharges "
+                    "attribute will not be populated."
+                )
                 warnings.warn(wmsg)
             else:
                 attrs.append(FormalCharges(np.array(formalcharges, dtype=int)))
@@ -406,38 +425,45 @@ class PDBParser(TopologyReaderBase):
         # Residue level stuff from here
         resids = np.array(resids, dtype=np.int32)
         resnames = np.array(resnames, dtype=object)
-        if self.format == 'XPDB':  # XPDB doesn't have icodes
-            icodes = [''] * n_atoms
+        if self.format == "XPDB":  # XPDB doesn't have icodes
+            icodes = [""] * n_atoms
         icodes = np.array(icodes, dtype=object)
         resnums = resids.copy()
         segids = np.array(segids, dtype=object)
 
         residx, (resids, resnames, icodes, resnums, segids) = change_squash(
-            (resids, resnames, icodes, segids), (resids, resnames, icodes, resnums, segids))
+            (resids, resnames, icodes, segids),
+            (resids, resnames, icodes, resnums, segids),
+        )
         n_residues = len(resids)
         attrs.append(Resnums(resnums))
         attrs.append(Resids(resids))
         attrs.append(ICodes(icodes))
         attrs.append(Resnames(resnames))
 
-        if (
-            kwargs.get("force_chainids_to_segids", False) or
-            (any(segids) and not any(val is None for val in segids))
+        if kwargs.get("force_chainids_to_segids", False) or (
+            any(segids) and not any(val is None for val in segids)
         ):
             segidx, (segids,) = change_squash((segids,), (segids,))
             n_segments = len(segids)
             attrs.append(Segids(segids))
         else:
             n_segments = 1
-            attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
+            attrs.append(Segids(np.array(["SYSTEM"], dtype=object)))
             segidx = None
-            logger.info("Segment/chain ID is empty, "
-                        "setting segids to default value 'SYSTEM'.")
+            logger.info(
+                "Segment/chain ID is empty, "
+                "setting segids to default value 'SYSTEM'."
+            )
 
-        top = Topology(n_atoms, n_residues, n_segments,
-                       attrs=attrs,
-                       atom_resindex=residx,
-                       residue_segindex=segidx)
+        top = Topology(
+            n_atoms,
+            n_residues,
+            n_segments,
+            attrs=attrs,
+            atom_resindex=residx,
+            residue_segindex=segidx,
+        )
 
         return top
 
@@ -450,8 +476,9 @@ class PDBParser(TopologyReaderBase):
 
         # If the serials wrapped, this won't work
         if self._wrapped_serials:
-            warnings.warn("Invalid atom serials were present, bonds will not"
-                          " be parsed")
+            warnings.warn(
+                "Invalid atom serials were present, bonds will not" " be parsed"
+            )
             raise AttributeError  # gets caught in parse
 
         # Mapping between the atom array indicies a.index and atom ids
@@ -471,7 +498,8 @@ class PDBParser(TopologyReaderBase):
                         # Ignore these as they are not real atoms
                         warnings.warn(
                             "PDB file contained CONECT record to TER entry. "
-                            "These are not included in bonds.")
+                            "These are not included in bonds."
+                        )
                     else:
                         bonds.add(bond)
 
@@ -505,13 +533,14 @@ def _parse_conect(conect):
 
     try:
         if len(conect[11:]) % n_bond_atoms != 0:
-            raise RuntimeError("Bond atoms aren't aligned proberly for CONECT "
-                               "record: {}".format(conect))
+            raise RuntimeError(
+                "Bond atoms aren't aligned proberly for CONECT "
+                "record: {}".format(conect)
+            )
     except ZeroDivisionError:
         # Conect record with only one entry (CONECT A\n)
         warnings.warn("Found CONECT record with single entry, ignoring this")
         return atom_id, []  # return empty list to allow iteration over nothing
 
-    bond_atoms = (int(conect[11 + i * 5: 16 + i * 5]) for i in
-                  range(n_bond_atoms))
+    bond_atoms = (int(conect[11 + i * 5 : 16 + i * 5]) for i in range(n_bond_atoms))
     return atom_id, bond_atoms

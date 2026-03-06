@@ -35,7 +35,6 @@ from MDAnalysis.lib import transformations as t
 
 from unittest import TestCase
 
-
 """
 Testing transformations is weird because there are 2 versions of many of
 these functions.  This is because both python and Cython versions of
@@ -230,9 +229,7 @@ class TestProjectionFromMatrix(object):
 
     def test_projection_from_matrix_3(self, data):
         point, normal, direct, persp = data
-        P0 = t.projection_matrix(
-            point, normal, perspective=persp, pseudo=False
-        )
+        P0 = t.projection_matrix(point, normal, perspective=persp, pseudo=False)
         result = t.projection_from_matrix(P0, pseudo=False)
         P1 = t.projection_matrix(*result)
         assert_equal(t.is_same_transform(P0, P1), True)
@@ -537,9 +534,7 @@ class TestQuaternionFromMatrix(object):
     def test_quaternion_from_matrix_3(self, f):
         R = t.rotation_matrix(0.123, (1, 2, 3))
         q = f(R, True)
-        assert_allclose(
-            q, [0.9981095, 0.0164262, 0.0328524, 0.0492786], atol=_ATOL
-        )
+        assert_allclose(q, [0.9981095, 0.0164262, 0.0328524, 0.0492786], atol=_ATOL)
 
     def test_quaternion_from_matrix_4(self, f):
         R = [

@@ -29,7 +29,6 @@ import numpy as np
 from MDAnalysis.analysis.leaflet import LeafletFinder, optimize_cutoff, HAS_NX
 from MDAnalysisTests.datafiles import Martini_membrane_gro
 
-
 LIPID_HEAD_STRING = "name PO4"
 
 
@@ -61,10 +60,7 @@ class TestLeafletFinder:
         lfls = LeafletFinder(universe, lipid_heads, pbc=True)
         top_heads, bottom_heads = lfls.groups()
         # Make top be... on top.
-        if (
-            top_heads.center_of_geometry()[2]
-            < bottom_heads.center_of_geometry()[2]
-        ):
+        if top_heads.center_of_geometry()[2] < bottom_heads.center_of_geometry()[2]:
             top_heads, bottom_heads = (bottom_heads, top_heads)
         assert_equal(
             top_heads.indices,
@@ -99,9 +95,7 @@ class TestLeafletFinder:
         import networkx
 
         lfls_pbc_on = LeafletFinder(universe, lipid_heads, cutoff=7, pbc=True)
-        lfls_pbc_off = LeafletFinder(
-            universe, lipid_heads, cutoff=7, pbc=False
-        )
+        lfls_pbc_off = LeafletFinder(universe, lipid_heads, cutoff=7, pbc=False)
         pbc_on_graph = lfls_pbc_on.graph
         pbc_off_graph = lfls_pbc_off.graph
         diff_graph = networkx.difference(pbc_on_graph, pbc_off_graph)
@@ -189,13 +183,8 @@ class TestLeafletFinder:
                 ]
             )
 
-            assert (
-                self.lines2one(open("leaflet.vmd").readlines())
-                == expected_output
-            )
+            assert self.lines2one(open("leaflet.vmd").readlines()) == expected_output
 
     def test_component_index_is_not_none(self, universe, lipid_heads):
         lfls_ag = LeafletFinder(universe, lipid_heads, cutoff=15.0, pbc=True)
-        assert_almost_equal(
-            len(lfls_ag.groups(component_index=0)), 180, decimal=4
-        )
+        assert_almost_equal(len(lfls_ag.groups(component_index=0)), 180, decimal=4)

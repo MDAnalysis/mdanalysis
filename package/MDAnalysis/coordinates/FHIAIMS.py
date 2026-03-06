@@ -102,6 +102,7 @@ lines in ``.in`` files.  These are as follows:
 .. _FHI-AIMS format: https://doi.org/10.6084/m9.figshare.12413477.v1
 
 """
+
 import re
 
 import itertools
@@ -191,9 +192,7 @@ class FHIAIMSReader(base.SingleFrameReaderBase):
 
         if len(lattice_vectors) > 0:
             ts.dimensions = triclinic_box(*lattice_vectors)
-            ts.positions[relative] = np.matmul(
-                ts.positions[relative], lattice_vectors
-            )
+            ts.positions[relative] = np.matmul(ts.positions[relative], lattice_vectors)
 
         if len(velocities) > 0:
             ts.velocities = velocities
@@ -321,9 +320,7 @@ class FHIAIMSWriter(base.WriterBase):
             # all attributes could be infinite cycles!
             for atom_index, name in zip(range(ag.n_atoms), names):
                 output_fhiaims.write(
-                    self.fmt["xyz"].format(
-                        pos=positions[atom_index], name=name
-                    )
+                    self.fmt["xyz"].format(pos=positions[atom_index], name=name)
                 )
                 if has_velocities:
                     output_fhiaims.write(

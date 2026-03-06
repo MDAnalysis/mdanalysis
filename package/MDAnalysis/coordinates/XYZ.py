@@ -81,6 +81,7 @@ Classes
 -------
 
 """
+
 import itertools
 import os
 import errno
@@ -271,8 +272,7 @@ class XYZWriter(base.WriterBase):
         if ts is None:
             if not hasattr(self, "ts"):
                 raise NoDataError(
-                    "XYZWriter: no coordinate data to write to "
-                    "trajectory file"
+                    "XYZWriter: no coordinate data to write to " "trajectory file"
                 )
             else:
                 ts = self.ts
@@ -301,9 +301,7 @@ class XYZWriter(base.WriterBase):
                 self.atomnames = np.array([self.atomnames[0]] * ts.n_atoms)
 
         if self.convert_units:
-            coordinates = self.convert_pos_to_native(
-                ts.positions, inplace=False
-            )
+            coordinates = self.convert_pos_to_native(ts.positions, inplace=False)
         else:
             coordinates = ts.positions
 
@@ -312,10 +310,8 @@ class XYZWriter(base.WriterBase):
 
         # Write remark
         if self.remark is None:
-            remark = (
-                "frame {} | Written by MDAnalysis {} (release {})\n".format(
-                    ts.frame, self.__class__.__name__, __version__
-                )
+            remark = "frame {} | Written by MDAnalysis {} (release {})\n".format(
+                ts.frame, self.__class__.__name__, __version__
             )
 
             self._xyz.write(remark)
@@ -455,9 +451,7 @@ class XYZReader(base.ReaderBase):
 
     def open_trajectory(self):
         if self.xyzfile is not None:
-            raise IOError(
-                errno.EALREADY, "XYZ file already opened", self.filename
-            )
+            raise IOError(errno.EALREADY, "XYZ file already opened", self.filename)
 
         self.xyzfile = util.anyopen(self.filename)
 

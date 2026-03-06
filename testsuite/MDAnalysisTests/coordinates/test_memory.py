@@ -73,9 +73,7 @@ class MemoryReference(BaseReference):
         self.jump_to_frame.time = self.jump_to_frame.frame * self.dt
 
     def reader(self, trajectory):
-        return mda.Universe(
-            self.topology, trajectory, in_memory=True
-        ).trajectory
+        return mda.Universe(self.topology, trajectory, in_memory=True).trajectory
 
     def iter_ts(self, i):
         ts = self.universe.trajectory[i]
@@ -100,9 +98,7 @@ class TestMemoryReader(MultiframeReaderTest):
         # filename attribute of MemoryReader should be None when generated from an array
         universe = mda.Universe(PSF, DCD)
         coordinates = universe.trajectory.timeseries(universe.atoms)
-        universe2 = mda.Universe(
-            PSF, coordinates, format=MemoryReader, order="afc"
-        )
+        universe2 = mda.Universe(PSF, coordinates, format=MemoryReader, order="afc")
         assert universe2.trajectory.filename is None
 
     def test_default_memory_layout(self):
@@ -141,9 +137,7 @@ class TestMemoryReader(MultiframeReaderTest):
         assert_equal(reader.timeseries(order="caf").shape, (3, 3341, 98))
 
     def test_timeseries_skip1(self, ref, reader):
-        assert_equal(
-            reader.timeseries(ref.universe.atoms).shape, (3341, 98, 3)
-        )
+        assert_equal(reader.timeseries(ref.universe.atoms).shape, (3341, 98, 3))
 
     def test_timeseries_skip10(self, reader):
         # Check that timeseries skip works similar to numpy slicing
@@ -174,9 +168,7 @@ class TestMemoryReader(MultiframeReaderTest):
         # timeseries() is expected to provide a view of the underlying array
         # also in the special case when using "all" in selections.
         selection = ref.universe.select_atoms("all")
-        assert_equal(
-            reader.timeseries(asel=selection).base is reader.get_array(), True
-        )
+        assert_equal(reader.timeseries(asel=selection).base is reader.get_array(), True)
 
     def test_timeseries_noview(self, ref, reader):
         # timeseries() is expected NOT to provide a view of the underlying array
@@ -200,12 +192,8 @@ class TestMemoryReader(MultiframeReaderTest):
         coordinates = np.random.uniform(
             size=(100, ref.universe.atoms.n_atoms, 3)
         ).cumsum(0)
-        universe = mda.Universe(
-            ref.universe.filename, coordinates, format=MemoryReader
-        )
-        assert_equal(
-            universe.trajectory.get_array().dtype, np.dtype("float32")
-        )
+        universe = mda.Universe(ref.universe.filename, coordinates, format=MemoryReader)
+        assert_equal(universe.trajectory.get_array().dtype, np.dtype("float32"))
 
     def test_position_assignation(self, reader):
         # When coordinates are assigned to a timestep, is the change persistent?

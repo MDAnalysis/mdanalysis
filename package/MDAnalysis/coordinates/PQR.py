@@ -105,6 +105,7 @@ In all cases the `dimensions` attribute will be set to `None`.
 .. _PDB2PQR: https://pdb2pqr.readthedocs.io/en/latest/
 .. _PDB:     http://www.wwpdb.org/documentation/file-format
 """
+
 import itertools
 import numpy as np
 import warnings
@@ -219,9 +220,7 @@ class PQRWriter(base.WriterBase):
              top of the PQR file
         """
         self.filename = util.filename(filename, ext="pqr", keep=True)
-        self.convert_units = (
-            convert_units  # convert length and time to base units
-        )
+        self.convert_units = convert_units  # convert length and time to base units
         self.remarks = kwargs.pop("remarks", "PQR file written by MDAnalysis")
 
     def write(self, selection, frame=None):
@@ -256,9 +255,7 @@ class PQRWriter(base.WriterBase):
                 frame = 0  # should catch cases when we are analyzing a single frame(?)
 
         atoms = selection.atoms  # make sure to use atoms (Issue 46)
-        coordinates = (
-            atoms.positions
-        )  # can write from selection == Universe (Issue 49)
+        coordinates = atoms.positions  # can write from selection == Universe (Issue 49)
         if self.convert_units:
             self.convert_pos_to_native(
                 coordinates
@@ -322,9 +319,7 @@ class PQRWriter(base.WriterBase):
                 pqrfile.write(self.fmt_remark.format(rem, 1))
             pqrfile.write(
                 self.fmt_remark.format(
-                    "Input: frame {0} of {1}".format(
-                        frame, u.trajectory.filename
-                    ),
+                    "Input: frame {0} of {1}".format(frame, u.trajectory.filename),
                     5,
                 )
             )

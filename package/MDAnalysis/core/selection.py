@@ -38,6 +38,7 @@ This is all invisible to the user through the
 :class:`~MDAnalysis.core.groups.AtomGroup`.
 
 """
+
 import collections
 import re
 import fnmatch
@@ -75,10 +76,7 @@ def is_keyword(val):
       - The value `None` (used as EOF in selection strings)
     """
     return (
-        val in _SELECTIONDICT
-        or val in _OPERATIONS
-        or val in ["(", ")"]
-        or val is None
+        val in _SELECTIONDICT or val in _OPERATIONS or val in ["(", ")"] or val is None
     )
 
 
@@ -849,9 +847,7 @@ class ResidSelection(Selection):
         except (AttributeError, NoDataError):
             icodes = None
             # if no icodes and icodes are part of selection, cause a fuss
-            if any(v[1] for v in self.uppers) or any(
-                v[1] for v in self.lowers
-            ):
+            if any(v[1] for v in self.uppers) or any(v[1] for v in self.lowers):
                 errmsg = (
                     "Selection specified icodes, while the topology "
                     "doesn't have any."
@@ -884,9 +880,7 @@ class ResidSelection(Selection):
         # Final mask that gets applied to group
         mask = np.zeros(len(vals), dtype=bool)
 
-        for (u_resid, u_icode), (l_resid, l_icode) in zip(
-            self.uppers, self.lowers
-        ):
+        for (u_resid, u_icode), (l_resid, l_icode) in zip(self.uppers, self.lowers):
             if u_resid is not None:  # Selecting a range
                 # Special case, if l_resid == u_resid, ie 163A-163C, this simplifies to:
                 # all 163, and A <= icode <= C
@@ -1042,9 +1036,7 @@ class FloatRangeSelection(RangeSelection):
                     "for `np.isclose`."
                 )
                 warnings.warn(msg, category=SelectionWarning)
-                thismask = np.isclose(
-                    vals, lower, atol=self.atol, rtol=self.rtol
-                )
+                thismask = np.isclose(vals, lower, atol=self.atol, rtol=self.rtol)
 
             mask |= thismask
         return group[mask]
@@ -1196,9 +1188,7 @@ class ProteinSelection(Selection):
         resname_attr = group.universe._topology.resnames
         # which values in resname attr are in prot_res?
         matches = [
-            ix
-            for (nm, ix) in resname_attr.namedict.items()
-            if nm in self.prot_res
+            ix for (nm, ix) in resname_attr.namedict.items() if nm in self.prot_res
         ]
         # index of each atom's resname
         nmidx = resname_attr.nmidx[group.resindices]
@@ -1266,9 +1256,7 @@ class NucleicSelection(Selection):
         resnames = group.universe._topology.resnames
         nmidx = resnames.nmidx[group.resindices]
 
-        matches = [
-            ix for (nm, ix) in resnames.namedict.items() if nm in self.nucl_res
-        ]
+        matches = [ix for (nm, ix) in resnames.namedict.items() if nm in self.nucl_res]
         mask = np.isin(nmidx, matches)
 
         return group[mask]
@@ -1311,11 +1299,7 @@ class WaterSelection(Selection):
         resnames = group.universe._topology.resnames
         nmidx = resnames.nmidx[group.resindices]
 
-        matches = [
-            ix
-            for (nm, ix) in resnames.namedict.items()
-            if nm in self.water_res
-        ]
+        matches = [ix for (nm, ix) in resnames.namedict.items() if nm in self.water_res]
         mask = np.isin(nmidx, matches)
 
         return group[mask]
@@ -1342,9 +1326,7 @@ class BackboneSelection(ProteinSelection):
 
         # filter by atom names
         name_matches = [
-            ix
-            for (nm, ix) in atomnames.namedict.items()
-            if nm in self.bb_atoms
+            ix for (nm, ix) in atomnames.namedict.items() if nm in self.bb_atoms
         ]
         nmidx = atomnames.nmidx[group.ix]
         group = group[np.isin(nmidx, name_matches)]
@@ -1380,9 +1362,7 @@ class NucleicBackboneSelection(NucleicSelection):
 
         # filter by atom names
         name_matches = [
-            ix
-            for (nm, ix) in atomnames.namedict.items()
-            if nm in self.bb_atoms
+            ix for (nm, ix) in atomnames.namedict.items() if nm in self.bb_atoms
         ]
         nmidx = atomnames.nmidx[group.ix]
         group = group[np.isin(nmidx, name_matches)]
@@ -1437,9 +1417,7 @@ class BaseSelection(NucleicSelection):
 
         # filter by atom names
         name_matches = [
-            ix
-            for (nm, ix) in atomnames.namedict.items()
-            if nm in self.base_atoms
+            ix for (nm, ix) in atomnames.namedict.items() if nm in self.base_atoms
         ]
         nmidx = atomnames.nmidx[group.ix]
         group = group[np.isin(nmidx, name_matches)]
@@ -1472,9 +1450,7 @@ class NucleicSugarSelection(NucleicSelection):
 
         # filter by atom names
         name_matches = [
-            ix
-            for (nm, ix) in atomnames.namedict.items()
-            if nm in self.sug_atoms
+            ix for (nm, ix) in atomnames.namedict.items() if nm in self.sug_atoms
         ]
         nmidx = atomnames.nmidx[group.ix]
         group = group[np.isin(nmidx, name_matches)]
@@ -1583,10 +1559,7 @@ class PropertySelection(Selection):
         try:
             self.operator = self.ops[oper]
         except KeyError:
-            errmsg = (
-                f"Invalid operator : '{oper}' Use one of : "
-                f"'{self.ops.keys()}'"
-            )
+            errmsg = f"Invalid operator : '{oper}' Use one of : " f"'{self.ops.keys()}'"
             raise ValueError(errmsg) from None
         else:
             if oper == "==":

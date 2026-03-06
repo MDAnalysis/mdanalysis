@@ -100,6 +100,7 @@ strings for writing lines in ``.gro`` files.  These are as follows:
 .. _GRO format: http://chembytes.wikidot.com/g-grofile
 
 """
+
 import re
 
 import itertools
@@ -186,13 +187,11 @@ class GROReader(base.SingleFrameReaderBase):
             first_atomline = grofile.readline()
             cs = first_atomline[25:].find(".") + 1
             ts._pos[0] = [
-                first_atomline[20 + cs * i : 20 + cs * (i + 1)]
-                for i in range(3)
+                first_atomline[20 + cs * i : 20 + cs * (i + 1)] for i in range(3)
             ]
             try:
                 velocities[0] = [
-                    first_atomline[20 + cs * i : 20 + cs * (i + 1)]
-                    for i in range(3, 6)
+                    first_atomline[20 + cs * i : 20 + cs * (i + 1)] for i in range(3, 6)
                 ]
             except ValueError:
                 # Remember that we got this error
@@ -206,18 +205,13 @@ class GROReader(base.SingleFrameReaderBase):
                         unitcell = np.float32(line.split())
                     except ValueError:
                         # Try to parse floats with 5 digits if no spaces between values...
-                        unitcell = np.float32(
-                            re.findall(r"(\d+\.\d{5})", line)
-                        )
+                        unitcell = np.float32(re.findall(r"(\d+\.\d{5})", line))
                     break
 
-                ts._pos[pos] = [
-                    line[20 + cs * i : 20 + cs * (i + 1)] for i in range(3)
-                ]
+                ts._pos[pos] = [line[20 + cs * i : 20 + cs * (i + 1)] for i in range(3)]
                 try:
                     velocities[pos] = [
-                        line[20 + cs * i : 20 + cs * (i + 1)]
-                        for i in range(3, 6)
+                        line[20 + cs * i : 20 + cs * (i + 1)] for i in range(3, 6)
                     ]
                 except ValueError:
                     # Remember that we got this error
@@ -227,8 +221,7 @@ class GROReader(base.SingleFrameReaderBase):
             ts.velocities = velocities
             if missed_vel:
                 warnings.warn(
-                    "Not all velocities were present.  "
-                    "Unset velocities set to zero."
+                    "Not all velocities were present.  " "Unset velocities set to zero."
                 )
 
         self.ts.frame = 0  # 0-based frame number
@@ -255,9 +248,7 @@ class GROReader(base.SingleFrameReaderBase):
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)  # in-place !
             if self.ts.dimensions is not None:
-                self.convert_pos_from_native(
-                    self.ts.dimensions[:3]
-                )  # in-place!
+                self.convert_pos_from_native(self.ts.dimensions[:3])  # in-place!
             if self.ts.has_velocities:
                 # converts nm/ps to A/ps units
                 self.convert_velocities_from_native(self.ts._velocities)
@@ -328,9 +319,7 @@ class GROWriter(base.WriterBase):
         "box_orthorhombic": "{box[0]:10.5f} {box[1]:9.5f} {box[2]:9.5f}\n",
         "box_triclinic": "{box[0]:10.5f} {box[4]:9.5f} {box[8]:9.5f} {box[1]:9.5f} {box[2]:9.5f} {box[3]:9.5f} {box[5]:9.5f} {box[6]:9.5f} {box[7]:9.5f}\n",
     }
-    fmt["xyz_v"] = (
-        fmt["xyz"][:-1] + "{vel[0]:8.4f}{vel[1]:8.4f}{vel[2]:8.4f}\n"
-    )
+    fmt["xyz_v"] = fmt["xyz"][:-1] + "{vel[0]:8.4f}{vel[1]:8.4f}{vel[2]:8.4f}\n"
 
     def __init__(self, filename, convert_units=True, n_atoms=None, **kwargs):
         """Set up a GROWriter with a precision of 3 decimal places.
@@ -369,9 +358,7 @@ class GROWriter(base.WriterBase):
         self.n_atoms = n_atoms
         self.reindex = kwargs.pop("reindex", True)
 
-        self.convert_units = (
-            convert_units  # convert length and time to base units
-        )
+        self.convert_units = convert_units  # convert length and time to base units
 
     def write(self, obj):
         """Write selection at current trajectory frame to file.
@@ -464,9 +451,7 @@ class GROWriter(base.WriterBase):
             raise ValueError(
                 "GRO files must have coordinate values between "
                 "{0:.3f} and {1:.3f} nm: No file was written."
-                "".format(
-                    self.gro_coor_limits["min"], self.gro_coor_limits["max"]
-                )
+                "".format(self.gro_coor_limits["min"], self.gro_coor_limits["max"])
             )
 
         with util.openany(self.filename, "wt") as output_gro:
@@ -480,9 +465,7 @@ class GROWriter(base.WriterBase):
             for atom_index, resid, resname, name in zip(
                 range(ag.n_atoms), resids, resnames, names
             ):
-                truncated_atom_index = util.ltruncate_int(
-                    atom_indices[atom_index], 5
-                )
+                truncated_atom_index = util.ltruncate_int(atom_indices[atom_index], 5)
                 truncated_resid = util.ltruncate_int(resid, 5)
                 if has_velocities:
                     output_gro.write(
@@ -518,9 +501,7 @@ class GROWriter(base.WriterBase):
                     warnings.warn(wmsg)
                     box = np.zeros(3)
                 else:
-                    box = self.convert_pos_to_native(
-                        ag.dimensions[:3], inplace=False
-                    )
+                    box = self.convert_pos_to_native(ag.dimensions[:3], inplace=False)
                 # orthorhombic cell, only lengths along axes needed in gro
                 output_gro.write(self.fmt["box_orthorhombic"].format(box=box))
             else:
@@ -529,7 +510,5 @@ class GROWriter(base.WriterBase):
                 except AttributeError:  # for Timestep
                     tri_dims = obj.triclinic_dimensions
                 # full output
-                box = self.convert_pos_to_native(
-                    tri_dims.flatten(), inplace=False
-                )
+                box = self.convert_pos_to_native(tri_dims.flatten(), inplace=False)
                 output_gro.write(self.fmt["box_triclinic"].format(box=box))

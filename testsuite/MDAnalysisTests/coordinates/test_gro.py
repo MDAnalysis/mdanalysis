@@ -61,9 +61,7 @@ class TestGROReaderOld(RefAdK):
 
     def test_load_gro(self, universe):
         U = universe
-        assert_equal(
-            len(U.atoms), self.ref_n_atoms, "load Universe from small GRO"
-        )
+        assert_equal(len(U.atoms), self.ref_n_atoms, "load Universe from small GRO")
         assert_equal(
             U.atoms.select_atoms("resid 150 and name HA2").atoms[0],
             U.atoms[self.ref_E151HA2_index],
@@ -330,9 +328,7 @@ class TestGROReaderNoConversion(BaseReaderTest):
     @pytest.fixture(scope="class")
     def transformed(ref):
         transformed = ref.reader(ref.trajectory, convert_units=False)
-        transformed.add_transformations(
-            translate([1, 1, 1]), translate([0, 0, 0.33])
-        )
+        transformed.add_transformations(translate([1, 1, 1]), translate([0, 0, 0.33]))
         return transformed
 
 
@@ -424,9 +420,7 @@ class TestGROLargeWriter(BaseWriterTest):
             u.atoms.write(outfile)
 
             with open(outfile, "rt") as mda_output:
-                with mda.lib.util.anyopen(
-                    ref.topology, "rt"
-                ) as expected_output:
+                with mda.lib.util.anyopen(ref.topology, "rt") as expected_output:
                     produced_lines = mda_output.readlines()[1:]
                     expected_lines = expected_output.readlines()[1:]
                     assert_equal(
@@ -531,9 +525,7 @@ def test_multiframe_gro():
 
     # for now, single frame read
     assert len(u.trajectory) == 1
-    assert_equal(
-        u.dimensions, np.array([100, 100, 100, 90, 90, 90], dtype=np.float32)
-    )
+    assert_equal(u.dimensions, np.array([100, 100, 100, 90, 90, 90], dtype=np.float32))
 
 
 def test_huge_box_gro():

@@ -40,6 +40,7 @@ Classes
    :inherited-members:
 
 """
+
 import numpy as np
 import sqlite3
 import os
@@ -201,9 +202,7 @@ class DMSParser(TopologyReaderBase):
         topattrs.append(Resnames(res_resnames))
 
         if any(res_segids) and not any(val is None for val in res_segids):
-            res_segidx, (res_segids,) = change_squash(
-                (res_segids,), (res_segids,)
-            )
+            res_segidx, (res_segids,) = change_squash((res_segids,), (res_segids,))
 
             uniq_seg = np.unique(res_segids)
             idx2seg = {idx: res_segids[idx] for idx in res_segidx}

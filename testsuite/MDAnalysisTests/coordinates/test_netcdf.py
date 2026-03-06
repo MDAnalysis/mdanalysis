@@ -79,9 +79,7 @@ class _NCDFReaderTest(_TRJReaderTest):
             assert w.remarks.startswith("AMBER NetCDF format")
 
     def test_get_writer_custom_n_atoms(self, universe):
-        with universe.trajectory.Writer(
-            "out.ncdf", n_atoms=42, remarks="Hi!"
-        ) as w:
+        with universe.trajectory.Writer("out.ncdf", n_atoms=42, remarks="Hi!") as w:
             assert w.n_atoms == 42
             assert w.remarks == "Hi!"
 
@@ -341,9 +339,7 @@ class TestNCDFReader3(object):
 
     @pytest.mark.parametrize("index,expected", ((0, 1.0), (8, 9.0)))
     def test_time(self, universe, index, expected):
-        assert_almost_equal(
-            expected, universe.trajectory[index].time, self.prec
-        )
+        assert_almost_equal(expected, universe.trajectory[index].time, self.prec)
 
     def test_nframes(self, universe):
         assert_equal(10, universe.trajectory.n_frames)
@@ -427,16 +423,12 @@ class _NCDFGenerator(object):
                 time = ncdf.createVariable("time", "d", ("time",))
                 setattr(time, "units", params["time"])
                 time[:] = 1.0
-            cell_spatial = ncdf.createVariable(
-                "cell_spatial", "c", ("cell_spatial",)
-            )
+            cell_spatial = ncdf.createVariable("cell_spatial", "c", ("cell_spatial",))
             cell_spatial[:] = np.asarray(list("abc"))
             cell_angular = ncdf.createVariable(
                 "cell_angular", "c", ("cell_angular", "label")
             )
-            cell_angular[:] = np.asarray(
-                [list("alpha"), list("beta "), list("gamma")]
-            )
+            cell_angular[:] = np.asarray([list("alpha"), list("beta "), list("gamma")])
 
             # Spatial or atom dependent variables
             if (params["spatial"]) and (params["n_atoms"]):
@@ -473,9 +465,7 @@ class _NCDFGenerator(object):
                     velocs = ncdf.createVariable(
                         "velocities", "f8", ("atom", "spatial")
                     )
-                    forces = ncdf.createVariable(
-                        "forces", "f8", ("atom", "spatial")
-                    )
+                    forces = ncdf.createVariable("forces", "f8", ("atom", "spatial"))
 
                 # Set units
                 if params["coordinates"]:
@@ -509,18 +499,10 @@ class _NCDFGenerator(object):
                         coords[:] = np.asarray(
                             range(params["spatial"]), dtype=np.float32
                         )
-                    cell_lengths[:] = np.array(
-                        [20.0, 20.0, 20.0], dtype=np.float32
-                    )
-                    cell_angles[:] = np.array(
-                        [90.0, 90.0, 90.0], dtype=np.float32
-                    )
-                    velocs[:] = np.asarray(
-                        range(params["spatial"]), dtype=np.float32
-                    )
-                    forces[:] = np.asarray(
-                        range(params["spatial"]), dtype=np.float32
-                    )
+                    cell_lengths[:] = np.array([20.0, 20.0, 20.0], dtype=np.float32)
+                    cell_angles[:] = np.array([90.0, 90.0, 90.0], dtype=np.float32)
+                    velocs[:] = np.asarray(range(params["spatial"]), dtype=np.float32)
+                    forces[:] = np.asarray(range(params["spatial"]), dtype=np.float32)
 
             # self.scale_factor overrides which variable gets a scale_factor
             if params["scale_factor"]:
@@ -710,14 +692,11 @@ class TestNCDFReaderExceptionsWarnings(_NCDFGenerator):
 
             assert len(record) == 1
             wmsg = (
-                "NCDF trajectory format is 2.0 but the reader "
-                "implements format 1.0"
+                "NCDF trajectory format is 2.0 but the reader " "implements format 1.0"
             )
             assert str(record[0].message.args[0]) == wmsg
 
-    @pytest.mark.parametrize(
-        "mutation", [{"program": None}, {"programVersion": None}]
-    )
+    @pytest.mark.parametrize("mutation", [{"program": None}, {"programVersion": None}])
     def test_program_warn(self, tmpdir, mutation):
         params = self.gen_params(keypair=mutation, restart=False)
         with tmpdir.as_cwd():
@@ -791,14 +770,12 @@ class _NCDFWriterTest(object):
         assert_equal(
             coords[:].dtype.name,
             np.dtype(np.float32).name,
-            err_msg="ncdf coord output not float32 "
-            "but {}".format(coords[:].dtype),
+            err_msg="ncdf coord output not float32 " "but {}".format(coords[:].dtype),
         )
         assert_equal(
             time[:].dtype.name,
             np.dtype(np.float32).name,
-            err_msg="ncdf time output not float32 "
-            "but {}".format(time[:].dtype),
+            err_msg="ncdf time output not float32 " "but {}".format(time[:].dtype),
         )
 
     def test_write_trajectory_netCDF4(self, universe, outfile):
@@ -842,16 +819,14 @@ class _NCDFWriterTest(object):
                 self.prec,
                 err_msg="coordinate mismatch between "
                 "original and written trajectory at "
-                "frame %d (orig) vs %d (written)"
-                % (orig_ts.frame, written_ts.frame),
+                "frame %d (orig) vs %d (written)" % (orig_ts.frame, written_ts.frame),
             )
             # not a good test because in the example trajectory all times are 0
             assert_almost_equal(
                 orig_ts.time,
                 written_ts.time,
                 self.prec,
-                err_msg="Time for step {0} are not the "
-                "same.".format(orig_ts.frame),
+                err_msg="Time for step {0} are not the " "same.".format(orig_ts.frame),
             )
             assert_almost_equal(
                 written_ts.dimensions,
@@ -892,15 +867,13 @@ class _NCDFWriterTest(object):
                         v[:],
                         v_new[:],
                         self.prec,
-                        err_msg="Variable '{0}' not "
-                        "written correctly".format(k),
+                        err_msg="Variable '{0}' not " "written correctly".format(k),
                     )
                 except TypeError:
                     assert_equal(
                         v[:],
                         v_new[:],
-                        err_msg="Variable {0} not written "
-                        "correctly".format(k),
+                        err_msg="Variable {0} not written " "correctly".format(k),
                     )
 
     def test_TRR2NCDF(self, outfile):
@@ -938,8 +911,7 @@ class _NCDFWriterTest(object):
                 orig_ts.time,
                 written_ts.time,
                 self.prec,
-                err_msg="Time for step {0} are not the "
-                "same.".format(orig_ts.frame),
+                err_msg="Time for step {0} are not the " "same.".format(orig_ts.frame),
             )
             assert_almost_equal(
                 written_ts.dimensions,
@@ -967,15 +939,13 @@ class _NCDFWriterTest(object):
                 self.prec,
                 err_msg="coordinate mismatch between "
                 "original and written trajectory at "
-                "frame %d (orig) vs %d (written)"
-                % (orig_ts.frame, written_ts.frame),
+                "frame %d (orig) vs %d (written)" % (orig_ts.frame, written_ts.frame),
             )
             assert_almost_equal(
                 orig_ts.time,
                 written_ts.time,
                 self.prec,
-                err_msg="Time for step {0} are not the "
-                "same.".format(orig_ts.frame),
+                err_msg="Time for step {0} are not the " "same.".format(orig_ts.frame),
             )
             assert_almost_equal(
                 written_ts.dimensions,
@@ -1057,18 +1027,14 @@ class TestNCDFWriterVelsForces(object):
 
         u = mda.Universe(self.top, outfile)
         # check the trajectory contents match reference universes
-        for ts, ref_ts in zip(
-            u.trajectory, [u1.trajectory.ts, u2.trajectory.ts]
-        ):
+        for ts, ref_ts in zip(u.trajectory, [u1.trajectory.ts, u2.trajectory.ts]):
             if pos:
                 assert_almost_equal(ts._pos, ref_ts._pos, self.prec)
             else:
                 with pytest.raises(mda.NoDataError):
                     getattr(ts, "positions")
             if vel:
-                assert_almost_equal(
-                    ts._velocities, ref_ts._velocities, self.prec
-                )
+                assert_almost_equal(ts._velocities, ref_ts._velocities, self.prec)
             else:
                 with pytest.raises(mda.NoDataError):
                     getattr(ts, "velocities")
@@ -1229,15 +1195,11 @@ class TestNCDFWriterScaleFactors:
         for ts1, ts3 in zip(universe.trajectory, universe3.trajectory):
             assert_almost_equal(ts1.time, ts3.time)
             assert_almost_equal(ts1.dimensions, ts3.dimensions)
-            assert_almost_equal(
-                universe.atoms.positions, universe3.atoms.positions, 4
-            )
+            assert_almost_equal(universe.atoms.positions, universe3.atoms.positions, 4)
             assert_almost_equal(
                 universe.atoms.velocities, universe3.atoms.velocities, 4
             )
-            assert_almost_equal(
-                universe.atoms.forces, universe3.atoms.forces, 4
-            )
+            assert_almost_equal(universe.atoms.forces, universe3.atoms.forces, 4)
 
 
 class TestScipyScaleFactors(TestNCDFWriterScaleFactors):
@@ -1246,9 +1208,7 @@ class TestScipyScaleFactors(TestNCDFWriterScaleFactors):
 
     @pytest.fixture(autouse=True)
     def block_netcdf4(self, monkeypatch):
-        monkeypatch.setattr(
-            sys.modules["MDAnalysis.coordinates.TRJ"], "netCDF4", None
-        )
+        monkeypatch.setattr(sys.modules["MDAnalysis.coordinates.TRJ"], "netCDF4", None)
 
     def test_ncdf4_not_present(self, outfile, universe):
         # whilst we're here, let's also test this warning

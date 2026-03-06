@@ -135,6 +135,7 @@ module in published work please :footcite:p:`Theobald2005`.
 
 .. footbibliography::
 """
+
 import logging
 import warnings
 
@@ -260,9 +261,7 @@ class DistanceMatrix(AnalysisBase):
         **kwargs,
     ):
         # remember that this must be called before referencing self.n_frames
-        super(DistanceMatrix, self).__init__(
-            universe.universe.trajectory, **kwargs
-        )
+        super(DistanceMatrix, self).__init__(universe.universe.trajectory, **kwargs)
 
         if isinstance(universe, UpdatingAtomGroup):
             wmsg = (
@@ -414,9 +413,7 @@ class DiffusionMap(object):
                 "be very slow to compute. Consider picking a larger "
                 "step size in distance matrix initialization."
             )
-        self._scaled_matrix = (
-            self._dist_matrix.results.dist_matrix**2 / self._epsilon
-        )
+        self._scaled_matrix = self._dist_matrix.results.dist_matrix**2 / self._epsilon
         # take negative exponent of scaled matrix to create Isotropic kernel
         self._kernel = np.exp(-self._scaled_matrix)
         D_inv = np.diag(1 / self._kernel.sum(1))

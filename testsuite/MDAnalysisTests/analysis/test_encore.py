@@ -90,9 +90,7 @@ class TestEncore(object):
 
         triangular_matrix[0, 1] = expected_value
 
-        err_msg = (
-            "Data error in TriangularMatrix: read/write are not consistent"
-        )
+        err_msg = "Data error in TriangularMatrix: read/write are not consistent"
         assert_equal(triangular_matrix[0, 1], expected_value, err_msg)
 
         assert_equal(
@@ -169,23 +167,18 @@ inconsistent results",
             )
 
     def test_rmsd_matrix_with_superimposition(self, ens1):
-        conf_dist_matrix = (
-            encore.confdistmatrix.conformational_distance_matrix(
-                ens1,
-                encore.confdistmatrix.set_rmsd_matrix_elements,
-                select="name CA",
-                pairwise_align=True,
-                weights="mass",
-                n_jobs=1,
-            )
+        conf_dist_matrix = encore.confdistmatrix.conformational_distance_matrix(
+            ens1,
+            encore.confdistmatrix.set_rmsd_matrix_elements,
+            select="name CA",
+            pairwise_align=True,
+            weights="mass",
+            n_jobs=1,
         )
 
         reference = rms.RMSD(ens1, select="name CA")
         reference.run()
-        err_msg = (
-            "Calculated RMSD values differ from "
-            "the reference implementation"
-        )
+        err_msg = "Calculated RMSD values differ from " "the reference implementation"
         for i, rmsd in enumerate(reference.results.rmsd):
             assert_allclose(
                 conf_dist_matrix[0, i],
@@ -196,29 +189,25 @@ inconsistent results",
             )
 
     def test_rmsd_matrix_with_superimposition_custom_weights(self, ens1):
-        conf_dist_matrix = (
-            encore.confdistmatrix.conformational_distance_matrix(
-                ens1,
-                encore.confdistmatrix.set_rmsd_matrix_elements,
-                select="name CA",
-                pairwise_align=True,
-                weights="mass",
-                n_jobs=1,
-            )
+        conf_dist_matrix = encore.confdistmatrix.conformational_distance_matrix(
+            ens1,
+            encore.confdistmatrix.set_rmsd_matrix_elements,
+            select="name CA",
+            pairwise_align=True,
+            weights="mass",
+            n_jobs=1,
         )
 
-        conf_dist_matrix_custom = (
-            encore.confdistmatrix.conformational_distance_matrix(
-                ens1,
-                encore.confdistmatrix.set_rmsd_matrix_elements,
-                select="name CA",
-                pairwise_align=True,
-                weights=(
-                    ens1.select_atoms("name CA").masses,
-                    ens1.select_atoms("name CA").masses,
-                ),
-                n_jobs=1,
-            )
+        conf_dist_matrix_custom = encore.confdistmatrix.conformational_distance_matrix(
+            ens1,
+            encore.confdistmatrix.set_rmsd_matrix_elements,
+            select="name CA",
+            pairwise_align=True,
+            weights=(
+                ens1.select_atoms("name CA").masses,
+                ens1.select_atoms("name CA").masses,
+            ),
+            n_jobs=1,
         )
 
         for i in range(conf_dist_matrix_custom.size):
@@ -235,9 +224,7 @@ inconsistent results",
         reference_rmsd = []
         coordinates = ens1.trajectory.timeseries(selection, order="fac")
         for coord in coordinates:
-            reference_rmsd.append(
-                rms.rmsd(coordinates[0], coord, superposition=False)
-            )
+            reference_rmsd.append(rms.rmsd(coordinates[0], coord, superposition=False))
 
         confdist_matrix = encore.confdistmatrix.conformational_distance_matrix(
             ens1,
@@ -360,12 +347,8 @@ inconsistent results",
             estimator=encore.covariance.shrinkage_covariance_estimator,
             reference=ens1,
         )
-        err_msg = (
-            "Covariance matrix from covariance estimation not as expected"
-        )
-        assert_allclose(
-            covariance, reference_cov, rtol=0, atol=1.5e-4, err_msg=err_msg
-        )
+        err_msg = "Covariance matrix from covariance estimation not as expected"
+        assert_allclose(covariance, reference_cov, rtol=0, atol=1.5e-4, err_msg=err_msg)
 
     def test_hes_to_self(self, ens1):
         results, details = encore.hes([ens1, ens1])
@@ -377,9 +360,7 @@ inconsistent results",
             rtol=0,
             atol=1.5e-7,
             err_msg="Harmonic Ensemble Similarity to itself\
-                                 not zero:{0:f}".format(
-                result_value
-            ),
+                                 not zero:{0:f}".format(result_value),
         )
 
     def test_hes(self, ens1, ens2):
@@ -425,9 +406,7 @@ inconsistent results",
     def test_ces_to_self(self, ens1):
         results, details = encore.ces(
             [ens1, ens1],
-            clustering_method=encore.AffinityPropagationNative(
-                preference=-3.0
-            ),
+            clustering_method=encore.AffinityPropagationNative(preference=-3.0),
         )
         result_value = results[0, 1]
         expected_value = 0.0
@@ -470,9 +449,7 @@ inconsistent results",
         )
 
     def test_dres(self, ens1, ens2):
-        results, details = encore.dres(
-            [ens1, ens2], select="name CA and resnum 1-10"
-        )
+        results, details = encore.dres([ens1, ens2], select="name CA and resnum 1-10")
         result_value = results[0, 1]
         upper_bound = 0.6
         assert result_value < upper_bound, (
@@ -487,9 +464,7 @@ inconsistent results",
         distance_matrix = encore.get_distance_matrix(
             encore.merge_universes([ens1, ens2]), superimpose=False
         )
-        results, details = encore.dres(
-            [ens1, ens2], distance_matrix=distance_matrix
-        )
+        results, details = encore.dres([ens1, ens2], distance_matrix=distance_matrix)
         result_value = results[0, 1]
         expected_value = 0.68
         assert_allclose(
@@ -521,9 +496,7 @@ inconsistent results",
         expected_values = [0.3, 0.0]
         results = encore.dres_convergence(ens1, 10)
         try:
-            assert_allclose(
-                results[:, 0], expected_values, rtol=0, atol=1.5e-1
-            )
+            assert_allclose(results[:, 0], expected_values, rtol=0, atol=1.5e-1)
         except AssertionError:
             # Random test failure is very rare, but repeating the failed test
             # just once would only assert that the test passes with 50%
@@ -566,12 +539,8 @@ inconsistent results",
             "Unexpected standard deviation for bootstrapped samples in"
             " Harmonic Ensemble similarity"
         )
-        assert_allclose(
-            average, expected_average, rtol=0, atol=1.5e2, err_msg=err_msg
-        )
-        assert_allclose(
-            stdev, expected_stdev, rtol=0, atol=1.5e2, err_msg=error_msg
-        )
+        assert_allclose(average, expected_average, rtol=0, atol=1.5e2, err_msg=err_msg)
+        assert_allclose(stdev, expected_stdev, rtol=0, atol=1.5e2, err_msg=error_msg)
 
     def test_ces_error_estimation(self, ens1):
         expected_average = 0.03
@@ -580,9 +549,7 @@ inconsistent results",
             [ens1, ens1],
             estimate_error=True,
             bootstrapping_samples=10,
-            clustering_method=encore.AffinityPropagationNative(
-                preference=-2.0
-            ),
+            clustering_method=encore.AffinityPropagationNative(preference=-2.0),
             select="name CA and resnum 1-10",
         )
         average = averages[0, 1]
@@ -625,16 +592,12 @@ inconsistent results",
             "Unexpected average value for bootstrapped samples in"
             " Clustering Ensemble similarity"
         )
-        assert_allclose(
-            average, expected_average, rtol=0, atol=1.5e-1, err_msg=err_msg
-        )
+        assert_allclose(average, expected_average, rtol=0, atol=1.5e-1, err_msg=err_msg)
         error_msg = (
             "Unexpected standard deviation for bootstrapped samples in"
             " Clustering Ensemble similarity"
         )
-        assert_allclose(
-            stdev, expected_stdev, rtol=0, atol=1.5e-1, err_msg=error_msg
-        )
+        assert_allclose(stdev, expected_stdev, rtol=0, atol=1.5e-1, err_msg=error_msg)
 
     def test_dres_error_estimation(self, ens1):
         average_upper_bound = 0.3
@@ -806,9 +769,7 @@ class TestEncoreClustering(object):
     def test_sklearn_affinity_propagation(self, ens1):
         pytest.importorskip("sklearn")
         cc1 = encore.cluster([ens1])
-        cc2 = encore.cluster(
-            [ens1], method=encore.AffinityPropagation(random_state=0)
-        )
+        cc2 = encore.cluster([ens1], method=encore.AffinityPropagation(random_state=0))
         assert len(cc1) == len(cc2), (
             "Native and sklearn implementations of affinity "
             "propagation don't agree: mismatch in number of "
@@ -852,8 +813,7 @@ class TestEncoreClustering(object):
         )
         metadata = np.append(metadata, 9)
         error_message = (
-            "Size of metadata is not equal to the "
-            "number of cluster elements"
+            "Size of metadata is not equal to the " "number of cluster elements"
         )
         with pytest.raises(TypeError, match=error_message):
             cluster.add_metadata("test2", metadata)
@@ -876,9 +836,7 @@ class TestEncoreClustering(object):
             "not equal to the number of cluster elements"
         )
         with pytest.raises(TypeError, match=error_message):
-            encore.Cluster(
-                np.array([1, 1, 1]), 1, None, {"label": [1, 1, 1, 1]}
-            )
+            encore.Cluster(np.array([1, 1, 1]), 1, None, {"label": [1, 1, 1, 1]})
 
     def test_cluster_iteration(self, cluster):
         test = []
@@ -988,9 +946,7 @@ class TestEncoreClusteringSklearn(object):
 
     def test_one(self, distance_matrix):
         preference = -float(np.median(distance_matrix.as_array()) * 10.0)
-        clustering_method = encore.AffinityPropagationNative(
-            preference=preference
-        )
+        clustering_method = encore.AffinityPropagationNative(preference=preference)
         ccs = encore.cluster(
             None, distance_matrix=distance_matrix, method=clustering_method
         )
@@ -1051,16 +1007,10 @@ class TestEncoreDimensionalityReduction(object):
             ),
         )
 
-    def test_dimensionality_reduction_three_ensembles_two_identical(
-        self, ens1, ens2
-    ):
+    def test_dimensionality_reduction_three_ensembles_two_identical(self, ens1, ens2):
         coordinates, details = encore.reduce_dimensionality([ens1, ens2, ens1])
-        coordinates_ens1 = coordinates[
-            :, np.where(details["ensemble_membership"] == 1)
-        ]
-        coordinates_ens3 = coordinates[
-            :, np.where(details["ensemble_membership"] == 3)
-        ]
+        coordinates_ens1 = coordinates[:, np.where(details["ensemble_membership"] == 1)]
+        coordinates_ens3 = coordinates[:, np.where(details["ensemble_membership"] == 3)]
         assert_allclose(
             coordinates_ens1,
             coordinates_ens3,
@@ -1075,9 +1025,7 @@ class TestEncoreDimensionalityReduction(object):
         dimension = 3
         coordinates, details = encore.reduce_dimensionality(
             [ens1, ens2],
-            method=encore.StochasticProximityEmbeddingNative(
-                dimension=dimension
-            ),
+            method=encore.StochasticProximityEmbeddingNative(dimension=dimension),
         )
         assert_equal(
             coordinates.shape[0],

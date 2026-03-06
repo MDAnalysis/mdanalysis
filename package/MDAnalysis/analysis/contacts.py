@@ -208,6 +208,7 @@ Classes
 .. footbibliography::
 
 """
+
 import os
 import errno
 import warnings
@@ -451,9 +452,7 @@ class Contacts(AnalysisBase):
         elif method == "soft_cut":
             self.fraction_contacts = soft_cut_q
         elif method == "radius_cut":
-            self.fraction_contacts = functools.partial(
-                radius_cut_q, radius=radius
-            )
+            self.fraction_contacts = functools.partial(radius_cut_q, radius=radius)
         else:
             if not callable(method):
                 raise ValueError("method has to be callable")
@@ -492,9 +491,7 @@ class Contacts(AnalysisBase):
                         box=self._get_box(refA.universe),
                     )
                 )
-                self.initial_contacts.append(
-                    contact_matrix(self.r0[-1], radius)
-                )
+                self.initial_contacts.append(contact_matrix(self.r0[-1], radius))
 
         self.n_initial_contacts = self.initial_contacts[0].sum()
 

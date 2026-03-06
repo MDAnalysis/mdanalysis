@@ -50,6 +50,7 @@ Classes
 .. autofunction:: gsd_pickle_open
 
 """
+
 import numpy as np
 
 try:

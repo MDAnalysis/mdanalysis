@@ -36,15 +36,16 @@ the attributes they can guess.
    ============================================== ========== ===================== ===================================================
    Name                                           Context    Attributes            Remarks
    ============================================== ========== ===================== ===================================================
-   :ref:`DefaultGuesser <DefaultGuesser>`         default    types, elements,      general purpose guesser                                                                                       
+   :ref:`DefaultGuesser <DefaultGuesser>`         default    types, elements,      general purpose guesser
                                                              masses, bonds,
                                                              angles, dihedrals,
                                                              improper dihedrals
    ============================================== ========== ===================== ===================================================
-                        
-                                
+
+
 
 
 """
+
 from . import base
 from .default_guesser import DefaultGuesser

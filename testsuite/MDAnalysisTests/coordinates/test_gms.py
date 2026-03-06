@@ -78,9 +78,7 @@ class _GMSBase(object):
         assert_equal(u.trajectory.ts.frame, 1, "loading frame 1")
 
     def test_dt(self, u):
-        assert_almost_equal(
-            u.trajectory.dt, 1.0, 4, err_msg="wrong timestep dt"
-        )
+        assert_almost_equal(u.trajectory.dt, 1.0, 4, err_msg="wrong timestep dt")
 
     def test_step5distances(self, u):
         assert_almost_equal(

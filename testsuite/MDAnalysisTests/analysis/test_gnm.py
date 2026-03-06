@@ -56,7 +56,8 @@ def test_gnm(universe, tmpdir, client_GNMAnalysis):
             4.0498182e-15,
             4.2058769e-15,
             3.9839431e-15,
-        ], atol=1e-4
+        ],
+        atol=1e-4,
     )
 
 
@@ -68,8 +69,8 @@ def test_gnm_run_step(universe, client_GNMAnalysis):
     np.testing.assert_allclose(gnm.results.times, np.arange(0, 1200, 300), atol=1e-4)
     np.testing.assert_allclose(
         gnm.results.eigenvalues,
-        [2.0287113e-15, 4.3810359e-15, 2.5501084e-15, 3.9839431e-15], 
-        atol=1e-4
+        [2.0287113e-15, 4.3810359e-15, 2.5501084e-15, 3.9839431e-15],
+        atol=1e-4,
     )
 
 
@@ -112,7 +113,9 @@ def test_closeContactGNMAnalysis(universe, client_GNMAnalysis):
     result = gnm.results
     assert len(result.times) == 2
     np.testing.assert_allclose(gnm.results.times, (0, 100), atol=1e-4)
-    np.testing.assert_allclose(gnm.results.eigenvalues, [0.1502614, 0.1426407], atol=1e-4)
+    np.testing.assert_allclose(
+        gnm.results.eigenvalues, [0.1502614, 0.1426407], atol=1e-4
+    )
     gen = gnm.generate_kirchoff()
     # fmt: off
     np.testing.assert_allclose(
@@ -149,7 +152,9 @@ def test_closeContactGNMAnalysis_weights_None(universe, client_GNMAnalysis):
     result = gnm.results
     assert len(result.times) == 2
     np.testing.assert_allclose(gnm.results.times, (0, 100), atol=1e-4)
-    np.testing.assert_allclose(gnm.results.eigenvalues, [2.4328739, 2.2967251], atol=1e-4)
+    np.testing.assert_allclose(
+        gnm.results.eigenvalues, [2.4328739, 2.2967251], atol=1e-4
+    )
     gen = gnm.generate_kirchoff()
     # fmt: off
     np.testing.assert_allclose(
@@ -179,9 +184,7 @@ def test_closeContactGNMAnalysis_weights_None(universe, client_GNMAnalysis):
 
 def test_closeContactGNMAnalysis_select_CA(universe, client_GNMAnalysis):
     # Issue #4924 fix the bug of CA selection
-    gnm = mda.analysis.gnm.closeContactGNMAnalysis(
-        universe, "name CA", weights=None
-    )
+    gnm = mda.analysis.gnm.closeContactGNMAnalysis(universe, "name CA", weights=None)
     gnm.run(stop=2, **client_GNMAnalysis)
     result = gnm.results
     assert len(result.times) == 2
@@ -189,9 +192,7 @@ def test_closeContactGNMAnalysis_select_CA(universe, client_GNMAnalysis):
     # without Issue #4924 fix, eigenvalues are [3.20010632e-16, 4.27574601e-16]
     # but use big totolerance to make sure PASS in each platform
     np.testing.assert_allclose(
-        gnm.results.eigenvalues,
-        [3.57984776e-16, 3.53892581e-16],
-        atol=1e-4
+        gnm.results.eigenvalues, [3.57984776e-16, 3.53892581e-16], atol=1e-4
     )
     gen = gnm.generate_kirchoff()
     # without Issue #4924 fix, gnm only use 0~14 residues for this data

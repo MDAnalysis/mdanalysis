@@ -32,6 +32,7 @@ coordinate files (as used by the Desmond_ MD package).
 .. _Desmond: http://www.deshawresearch.com/resources_desmond.html
 .. _DMS: http://www.deshawresearch.com/Desmond_Users_Guide-0.7.pdf
 """
+
 import numpy as np
 import sqlite3
 
@@ -106,16 +107,12 @@ class DMSReader(base.SingleFrameReaderBase):
         )
         self.ts.frame = 0  # 0-based frame number
 
-        self.ts.dimensions = triclinic_box(
-            unitcell["x"], unitcell["y"], unitcell["z"]
-        )
+        self.ts.dimensions = triclinic_box(unitcell["x"], unitcell["y"], unitcell["z"])
 
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)  # in-place !
             if self.ts.dimensions is not None:
-                self.convert_pos_from_native(
-                    self.ts.dimensions[:3]
-                )  # in-place !
+                self.convert_pos_from_native(self.ts.dimensions[:3])  # in-place !
             if self.ts.has_velocities:
                 # converts nm/ps to A/ps units
                 self.convert_velocities_from_native(self.ts._velocities)

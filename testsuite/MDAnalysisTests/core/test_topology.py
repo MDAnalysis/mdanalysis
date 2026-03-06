@@ -722,9 +722,7 @@ class TestTopologyGuessed(object):
 
     @pytest.fixture()
     def types(self):
-        return ta.Atomtypes(
-            np.array(["X", "Y", "Z"], dtype=object), guessed=True
-        )
+        return ta.Atomtypes(np.array(["X", "Y", "Z"], dtype=object), guessed=True)
 
     @pytest.fixture()
     def resids(self):

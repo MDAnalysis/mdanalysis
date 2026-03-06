@@ -52,6 +52,7 @@ in a object composition approach.
 
 .. versionadded:: 2.0.0
 """
+
 import io
 import os
 
@@ -460,9 +461,7 @@ def pickle_open(name, mode="rt"):
     .. versionadded:: 2.0.0
     """
     if mode not in {"r", "rt", "rb"}:
-        raise ValueError(
-            "Only read mode ('r', 'rt', 'rb') " "files can be pickled."
-        )
+        raise ValueError("Only read mode ('r', 'rt', 'rb') " "files can be pickled.")
     name = os.fspath(name)
     raw = FileIOPicklable(name)
     if mode == "rb":
@@ -533,9 +532,7 @@ def bz2_pickle_open(name, mode="rb"):
     .. versionadded:: 2.0.0
     """
     if mode not in {"r", "rt", "rb"}:
-        raise ValueError(
-            "Only read mode ('r', 'rt', 'rb') " "files can be pickled."
-        )
+        raise ValueError("Only read mode ('r', 'rt', 'rb') " "files can be pickled.")
     bz_mode = mode.replace("t", "")
     binary_file = BZ2Picklable(name, bz_mode)
     if "t" in mode:
@@ -606,9 +603,7 @@ def gzip_pickle_open(name, mode="rb"):
     .. versionadded:: 2.0.0
     """
     if mode not in {"r", "rt", "rb"}:
-        raise ValueError(
-            "Only read mode ('r', 'rt', 'rb') " "files can be pickled."
-        )
+        raise ValueError("Only read mode ('r', 'rt', 'rb') " "files can be pickled.")
     gz_mode = mode.replace("t", "")
     binary_file = GzipPicklable(name, gz_mode)
     if "t" in mode:

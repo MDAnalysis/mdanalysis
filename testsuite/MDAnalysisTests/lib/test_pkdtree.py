@@ -29,7 +29,6 @@ from numpy.testing import assert_equal
 from MDAnalysis.lib.pkdtree import PeriodicKDTree
 from MDAnalysis.lib.distances import transform_StoR
 
-
 # fractional coordinates for data points
 f_dataset = np.array(
     [

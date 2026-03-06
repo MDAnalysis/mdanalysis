@@ -150,6 +150,7 @@ instance, which is derived from a :class:`gridData.core.Grid`. A
 .. _`gmx trjconv`: http://manual.gromacs.org/programs/gmx-trjconv.html
 
 """
+
 import numpy as np
 import sys
 import os
@@ -439,9 +440,7 @@ class DensityAnalysis(AnalysisBase):
         # in _prepare(), which is executed in parallel on different
         # parts of the trajectory).
         coord = self._atomgroup.positions
-        if self._gridcenter is not None or any(
-            [self._xdim, self._ydim, self._zdim]
-        ):
+        if self._gridcenter is not None or any([self._xdim, self._ydim, self._zdim]):
             # Issue 2372: padding is ignored, defaults to 2.0 therefore warn
             if self._padding > 0:
                 msg = (
@@ -804,24 +803,17 @@ class Density(Grid):
         # all this unit crap should be a class...
         try:
             for unit_type, value in u.items():
-                if (
-                    value is None
-                ):  # check here, too iffy to use dictionary[None]=None
+                if value is None:  # check here, too iffy to use dictionary[None]=None
                     self.units[unit_type] = None
                     continue
                 try:
                     units.conversion_factor[unit_type][value]
                     self.units[unit_type] = value
                 except KeyError:
-                    errmsg = (
-                        f"Unit {value} of type {unit_type} is not "
-                        f"recognized."
-                    )
+                    errmsg = f"Unit {value} of type {unit_type} is not " f"recognized."
                     raise ValueError(errmsg) from None
         except AttributeError:
-            errmsg = (
-                '"unit" must be a dictionary with keys "length" and "density.'
-            )
+            errmsg = '"unit" must be a dictionary with keys "length" and "density.'
             logger.fatal(errmsg)
             raise ValueError(errmsg) from None
         # need at least length and density (can be None)
@@ -878,9 +870,7 @@ class Density(Grid):
         """
         if unit == self.units["length"]:
             return
-        cvnfact = units.get_conversion_factor(
-            "length", self.units["length"], unit
-        )
+        cvnfact = units.get_conversion_factor("length", self.units["length"], unit)
         self.edges = [x * cvnfact for x in self.edges]
         self.units["length"] = unit
         self._update()  # needed to recalculate midpoints and origin
@@ -947,10 +937,4 @@ class Density(Grid):
             grid_type = "density"
         else:
             grid_type = "histogram"
-        return (
-            "<Density "
-            + grid_type
-            + " with "
-            + str(self.grid.shape)
-            + " bins>"
-        )
+        return "<Density " + grid_type + " with " + str(self.grid.shape) + " bins>"

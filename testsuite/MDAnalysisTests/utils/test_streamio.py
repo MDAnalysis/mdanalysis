@@ -227,9 +227,7 @@ class TestNamedStream_filename_behavior(object):
         )
 
     def test_expanduser_noexpansion_returns_NamedStream(self):
-        ns = self.create_NamedStream(
-            "de/zipferlack.txt"
-        )  # no tilde ~ in name!
+        ns = self.create_NamedStream("de/zipferlack.txt")  # no tilde ~ in name!
         reference = ns.name
         value = os.path.expanduser(ns)
         assert_equal(
@@ -306,9 +304,7 @@ class _StreamData(object):
             with open(fn) as filed:
                 self.buffers[name] = "".join(filed.readlines())
         self.filenames["XYZ_PSF"] = "bogus/path/mini.psf"
-        self.buffers[
-            "XYZ_PSF"
-        ] = """\
+        self.buffers["XYZ_PSF"] = """\
 PSF CMAP
 
       1 !NTITLE
@@ -325,9 +321,7 @@ Mini PSF for in memory XYZ
        8 A    380  THR  O    O     -0.510000       15.9990           0
 """
         self.filenames["XYZ"] = "bogus/path/mini.xyz"
-        self.buffers[
-            "XYZ"
-        ] = """\
+        self.buffers["XYZ"] = """\
 8
 frame 1
        N     0.93100   17.31800   16.42300
@@ -446,9 +440,7 @@ class TestStreamIO(RefAdKSmall):
         assert_equal(len(u.atoms), 49)
         assert_equal(u.trajectory.n_frames, 200)
         u.trajectory[199]
-        assert_array_almost_equal(
-            u.atoms.positions[0], [1.7240, 11.2730, 14.1200]
-        )
+        assert_array_almost_equal(u.atoms.positions[0], [1.7240, 11.2730, 14.1200])
 
     def test_XYZReader(self, streamData):
         u = MDAnalysis.Universe(
@@ -457,9 +449,7 @@ class TestStreamIO(RefAdKSmall):
         )
         assert_equal(len(u.atoms), 8)
         assert_equal(u.trajectory.n_frames, 3)
-        assert_equal(
-            u.trajectory.frame, 0
-        )  # weird, something odd with XYZ reader
+        assert_equal(u.trajectory.frame, 0)  # weird, something odd with XYZ reader
         u.trajectory.next()  # (should really only need one next()... )
         assert_equal(u.trajectory.frame, 1)  # !!!! ???
         u.trajectory.next()  # frame 2

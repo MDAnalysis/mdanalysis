@@ -66,6 +66,7 @@ supported (the readers will stop at the first line starting '&').
 .. autofunction:: uncomment
 
 """
+
 import numbers
 import os
 import numpy as np

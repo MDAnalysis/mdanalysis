@@ -42,6 +42,7 @@ See Also
 :mod:`MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel`
 
 """
+
 import warnings
 
 with warnings.catch_warnings():
@@ -57,19 +58,16 @@ from MDAnalysis.lib.util import deprecate
 
 from ..hydrogenbonds import hbond_autocorrel
 
-
 find_hydrogen_donors = deprecate(
     hbond_autocorrel.find_hydrogen_donors,
     release="2.0.0",
     remove="3.0.0",
-    message="The function was moved to "
-    "MDAnalysis.analysis.hbonds.hbond_autocorrel.",
+    message="The function was moved to " "MDAnalysis.analysis.hbonds.hbond_autocorrel.",
 )
 
 HydrogenBondAutoCorrel = deprecate(
     hbond_autocorrel.HydrogenBondAutoCorrel,
     release="2.0.0",
     remove="3.0.0",
-    message="The class was moved to "
-    "MDAnalysis.analysis.hbonds.hbond_autocorrel.",
+    message="The class was moved to " "MDAnalysis.analysis.hbonds.hbond_autocorrel.",
 )

@@ -31,6 +31,7 @@ See Also
 MDAnalysis.coordinates.XTC: Read and write GROMACS XTC trajectory files.
 MDAnalysis.coordinates.XDR: BaseReader/Writer for XDR based formats
 """
+
 import errno
 from . import base
 from .XDR import XDRBaseReader, XDRBaseWriter
@@ -132,9 +133,7 @@ class TRRWriter(XDRBaseWriter):
         if "lambda" in ts.data:
             lmbda = ts.data["lambda"]
 
-        self._xdr.write(
-            xyz, velo, forces, box, step, time, lmbda, self.n_atoms
-        )
+        self._xdr.write(xyz, velo, forces, box, step, time, lmbda, self.n_atoms)
 
 
 class TRRReader(XDRBaseReader):
@@ -182,9 +181,7 @@ class TRRReader(XDRBaseReader):
         ts.has_positions = True
         ts.has_velocities = True
         ts.has_forces = True
-        frame = self._xdr.read_direct_xvf(
-            ts.positions, ts.velocities, ts.forces
-        )
+        frame = self._xdr.read_direct_xvf(ts.positions, ts.velocities, ts.forces)
         self._frame += 1
         self._frame_to_ts(frame, ts)
         return ts

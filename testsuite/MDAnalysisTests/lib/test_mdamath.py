@@ -81,9 +81,7 @@ class TestGeometryFunctions:
         else:
             assert np.allclose(np.linalg.norm(n), 1)
 
-    @pytest.mark.parametrize(
-        "vec1, vec2, value", [(e1, e2, e3), (e1, null, 0.0)]
-    )
+    @pytest.mark.parametrize("vec1, vec2, value", [(e1, e2, e3), (e1, null, 0.0)])
     def test_normal(self, vec1, vec2, value):
         n = mdamath.normal(vec1, vec2)
         if isinstance(value, float):
@@ -185,9 +183,7 @@ class TestMatrixOperations(object):
         return box
 
     @pytest.mark.parametrize("lengths", comb_wr([-1, 0, 1, 2], 3))
-    @pytest.mark.parametrize(
-        "angles", comb_wr([-10, 0, 20, 70, 90, 120, 180], 3)
-    )
+    @pytest.mark.parametrize("angles", comb_wr([-10, 0, 20, 70, 90, 120, 180], 3))
     def test_triclinic_vectors(self, lengths, angles):
         box = lengths + angles
         ref = self.ref_trivecs(box)
@@ -263,9 +259,7 @@ class TestMatrixOperations(object):
             for b in range(10, 91, 10):
                 for g in range(10, 91, 10):
                     ref = np.array([1, 1, 1, a, b, g], dtype=np.float32)
-                    res = mdamath.triclinic_box(
-                        *mdamath.triclinic_vectors(ref)
-                    )
+                    res = mdamath.triclinic_box(*mdamath.triclinic_vectors(ref))
                     if not np.all(res == 0.0):
                         assert_almost_equal(res, ref, 5)
 
@@ -288,9 +282,7 @@ class TestMatrixOperations(object):
         assert_allclose(res, ref)
 
     @pytest.mark.parametrize("lengths", comb_wr([-1, 0, 1, 2], 3))
-    @pytest.mark.parametrize(
-        "angles", comb_wr([-10, 0, 20, 70, 90, 120, 180], 3)
-    )
+    @pytest.mark.parametrize("angles", comb_wr([-10, 0, 20, 70, 90, 120, 180], 3))
     def test_triclinic_box(self, lengths, angles):
         tri_vecs = self.ref_trivecs_unsafe(lengths + angles)
         ref = self.ref_tribox(tri_vecs)
@@ -299,9 +291,7 @@ class TestMatrixOperations(object):
         assert res.dtype == ref.dtype
 
     @pytest.mark.parametrize("lengths", comb_wr([-1, 0, 1, 2], 3))
-    @pytest.mark.parametrize(
-        "angles", comb_wr([-10, 0, 20, 70, 90, 120, 180], 3)
-    )
+    @pytest.mark.parametrize("angles", comb_wr([-10, 0, 20, 70, 90, 120, 180], 3))
     def test_box_volume(self, lengths, angles):
         box = np.array(lengths + angles, dtype=np.float32)
         assert_almost_equal(
@@ -580,15 +570,11 @@ class TestMakeWhole(object):
         blengths = u.atoms.bonds.values()
         # kaboom
         u.atoms[::2].translate([u.dimensions[0], -2 * u.dimensions[1], 0.0])
-        u.atoms[1::2].translate(
-            [0.0, 7 * u.dimensions[1], -5 * u.dimensions[2]]
-        )
+        u.atoms[1::2].translate([0.0, 7 * u.dimensions[1], -5 * u.dimensions[2]])
 
         mdamath.make_whole(u.atoms)
 
-        assert_array_almost_equal(
-            u.atoms.bonds.values(), blengths, decimal=self.prec
-        )
+        assert_array_almost_equal(u.atoms.bonds.values(), blengths, decimal=self.prec)
 
     def test_make_whole_multiple_molecules(self):
         u = mda.Universe(two_water_gro, guess_bonds=True)

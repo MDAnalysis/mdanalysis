@@ -120,9 +120,7 @@ class TestRDKitParserMOL2(RDKitParserBase):
         expected = [bond.GetBondTypeAsDouble() for bond in filename.GetBonds()]
         assert top.bonds.order == expected
 
-    def test_multiple_charge_priority(
-        self, top_gas_tripos, filename_gasteiger
-    ):
+    def test_multiple_charge_priority(self, top_gas_tripos, filename_gasteiger):
         expected = np.array(
             [
                 a.GetDoubleProp("_GasteigerCharge")
@@ -141,9 +139,7 @@ class TestRDKitParserMOL2(RDKitParserBase):
             top = self.parser(mol).parse()
             # Verify the warning
             assert len(w) == 1
-            assert "_GasteigerCharge and _TriposPartialCharge" in str(
-                w[-1].message
-            )
+            assert "_GasteigerCharge and _TriposPartialCharge" in str(w[-1].message)
 
     def test_gasteiger_charges(self, top_gasteiger, filename_gasteiger):
         expected = np.array(
@@ -157,18 +153,13 @@ class TestRDKitParserMOL2(RDKitParserBase):
 
     def test_tripos_charges(self, top, filename):
         expected = np.array(
-            [
-                a.GetDoubleProp("_TriposPartialCharge")
-                for a in filename.GetAtoms()
-            ],
+            [a.GetDoubleProp("_TriposPartialCharge") for a in filename.GetAtoms()],
             dtype=np.float32,
         )
         assert_equal(expected, top.charges.values)
 
     def test_aromaticity(self, top, filename):
-        expected = np.array(
-            [atom.GetIsAromatic() for atom in filename.GetAtoms()]
-        )
+        expected = np.array([atom.GetIsAromatic() for atom in filename.GetAtoms()])
         assert_equal(expected, top.aromaticities.values)
 
     def test_guessed_types(self, filename):
@@ -203,9 +194,7 @@ class TestRDKitParserPDB(RDKitParserBase):
     def test_partial_residueinfo_raise_error(self, filename):
         mol = Chem.RemoveHs(filename)
         mh = Chem.AddHs(mol)
-        with pytest.raises(
-            ValueError, match="ResidueInfo is only partially available"
-        ):
+        with pytest.raises(ValueError, match="ResidueInfo is only partially available"):
             mda.Universe(mh)
         mh = Chem.AddHs(mol, addResidueInfo=True)
         mda.Universe(mh)

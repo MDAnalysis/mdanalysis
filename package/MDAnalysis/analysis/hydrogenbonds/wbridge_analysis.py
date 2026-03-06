@@ -706,6 +706,7 @@ Classes
          Will be removed in MDAnalysis 3.0.0. Please use
          :attr:`results.timeseries` instead.
 """
+
 import logging
 import warnings
 from collections import defaultdict
@@ -789,9 +790,7 @@ class WaterBridgeAnalysis(AnalysisBase):
                 "OH",
             }
         ),
-        "GLYCAM06": tuple(
-            {"N", "NT", "O", "O2", "OH", "OS", "OW", "OY", "SM"}
-        ),
+        "GLYCAM06": tuple({"N", "NT", "O", "O2", "OH", "OS", "OW", "OY", "SM"}),
         "other": tuple(set([])),
     }
 
@@ -959,9 +958,7 @@ class WaterBridgeAnalysis(AnalysisBase):
 
 
         """
-        super(WaterBridgeAnalysis, self).__init__(
-            universe.trajectory, **kwargs
-        )
+        super(WaterBridgeAnalysis, self).__init__(universe.trajectory, **kwargs)
         self.water_selection = water_selection
         self.update_water_selection = update_water_selection
         # per-frame debugging output?
@@ -1001,9 +998,7 @@ class WaterBridgeAnalysis(AnalysisBase):
             acceptors = ()
         self.forcefield = forcefield
         self.donors = tuple(set(self.DEFAULT_DONORS[forcefield]).union(donors))
-        self.acceptors = tuple(
-            set(self.DEFAULT_ACCEPTORS[forcefield]).union(acceptors)
-        )
+        self.acceptors = tuple(set(self.DEFAULT_ACCEPTORS[forcefield]).union(acceptors))
 
         if self.selection1_type not in ("both", "donor", "acceptor"):
             raise ValueError(
@@ -1092,15 +1087,11 @@ class WaterBridgeAnalysis(AnalysisBase):
                 "Size of selection 1 before filtering:"
                 " {} atoms".format(len(self._s1))
             )
-            ns_selection_1 = AtomNeighborSearch(
-                self.u.atoms[self._s1], box=self.box
-            )
+            ns_selection_1 = AtomNeighborSearch(self.u.atoms[self._s1], box=self.box)
             self._s1 = ns_selection_1.search(
                 self.u.atoms[self._s2], self.selection_distance
             ).ix
-        self.logger_debug(
-            "Size of selection 1: {0} atoms".format(len(self._s1))
-        )
+        self.logger_debug("Size of selection 1: {0} atoms".format(len(self._s1)))
 
         if len(self._s1) == 0:
             logger.warning(
@@ -1115,15 +1106,11 @@ class WaterBridgeAnalysis(AnalysisBase):
                 "Size of selection 2 before filtering:"
                 " {} atoms".format(len(self._s2))
             )
-            ns_selection_2 = AtomNeighborSearch(
-                self.u.atoms[self._s2], box=self.box
-            )
+            ns_selection_2 = AtomNeighborSearch(self.u.atoms[self._s2], box=self.box)
             self._s2 = ns_selection_2.search(
                 self.u.atoms[self._s1], self.selection_distance
             ).ix
-        self.logger_debug(
-            "Size of selection 2: {0} atoms".format(len(self._s2))
-        )
+        self.logger_debug("Size of selection 2: {0} atoms".format(len(self._s2)))
 
         if len(self._s2) == 0:
             logger.warning(
@@ -1140,16 +1127,10 @@ class WaterBridgeAnalysis(AnalysisBase):
                 .ix
             )
             for atom_ix in self._s1_donors:
-                self._update_donor_h(
-                    atom_ix, self._s1_h_donors, self._s1_donors_h
-                )
+                self._update_donor_h(atom_ix, self._s1_h_donors, self._s1_donors_h)
+            self.logger_debug("Selection 1 donors: {0}".format(len(self._s1_donors)))
             self.logger_debug(
-                "Selection 1 donors: {0}".format(len(self._s1_donors))
-            )
-            self.logger_debug(
-                "Selection 1 donor hydrogens: {0}".format(
-                    len(self._s1_h_donors)
-                )
+                "Selection 1 donor hydrogens: {0}".format(len(self._s1_h_donors))
             )
         if self.selection1_type in ("acceptor", "both"):
             self._s1_acceptors = (
@@ -1179,16 +1160,10 @@ class WaterBridgeAnalysis(AnalysisBase):
                 .ix
             )
             for atom_ix in self._s2_donors:
-                self._update_donor_h(
-                    atom_ix, self._s2_h_donors, self._s2_donors_h
-                )
+                self._update_donor_h(atom_ix, self._s2_h_donors, self._s2_donors_h)
+            self.logger_debug("Selection 2 donors: {0:d}".format(len(self._s2_donors)))
             self.logger_debug(
-                "Selection 2 donors: {0:d}".format(len(self._s2_donors))
-            )
-            self.logger_debug(
-                "Selection 2 donor hydrogens: {0:d}".format(
-                    len(self._s2_h_donors)
-                )
+                "Selection 2 donor hydrogens: {0:d}".format(len(self._s2_h_donors))
             )
 
     def _update_water_selection(self):
@@ -1213,9 +1188,7 @@ class WaterBridgeAnalysis(AnalysisBase):
                     .ix
                 )
 
-        self.logger_debug(
-            "Size of water selection: {0} atoms".format(len(self._water))
-        )
+        self.logger_debug("Size of water selection: {0} atoms".format(len(self._water)))
 
         if len(self._water) == 0:
             logger.warning(
@@ -1233,9 +1206,7 @@ class WaterBridgeAnalysis(AnalysisBase):
                 self._update_donor_h(
                     atom_ix, self._water_h_donors, self._water_donors_h
                 )
-            self.logger_debug(
-                "Water donors: {0}".format(len(self._water_donors))
-            )
+            self.logger_debug("Water donors: {0}".format(len(self._water_donors)))
             self.logger_debug(
                 "Water donor hydrogens: {0}".format(len(self._water_h_donors))
             )
@@ -1244,9 +1215,7 @@ class WaterBridgeAnalysis(AnalysisBase):
                 .select_atoms("name {0}".format(" ".join(self.acceptors)))
                 .ix
             )
-            self.logger_debug(
-                "Water acceptors: {0}".format(len(self._water_acceptors))
-            )
+            self.logger_debug("Water acceptors: {0}".format(len(self._water_acceptors)))
 
     def _get_bonded_hydrogens(self, atom):
         """Find hydrogens bonded within cutoff to `atom`.
@@ -1305,18 +1274,14 @@ class WaterBridgeAnalysis(AnalysisBase):
         if len(self._s1) and len(self._s2):
             self._update_water_selection()
         else:
-            logger.info(
-                "WaterBridgeAnalysis: " "no atoms found in the selection."
-            )
+            logger.info("WaterBridgeAnalysis: " "no atoms found in the selection.")
 
         logger.info("WaterBridgeAnalysis: initial checks passed.")
 
         logger.info("WaterBridgeAnalysis: starting")
         logger.debug("WaterBridgeAnalysis: donors    %r", self.donors)
         logger.debug("WaterBridgeAnalysis: acceptors %r", self.acceptors)
-        logger.debug(
-            "WaterBridgeAnalysis: water bridge %r", self.water_selection
-        )
+        logger.debug("WaterBridgeAnalysis: water bridge %r", self.water_selection)
 
         if self.debug:
             logger.debug("Toggling debug to %r", self.debug)
@@ -1430,9 +1395,7 @@ class WaterBridgeAnalysis(AnalysisBase):
                     angle,
                 ) = line
                 water_pool[(a_resname, a_resid)] = None
-                selection_1.append(
-                    (h_index, d_index, a_index, None, dist, angle)
-                )
+                selection_1.append((h_index, d_index, a_index, None, dist, angle))
                 selection_2.append((a_resname, a_resid))
             if self.order > 0:
                 self.logger_debug("Selection 1 Donors <-> Water Acceptors")
@@ -1449,9 +1412,7 @@ class WaterBridgeAnalysis(AnalysisBase):
                         dist,
                         angle,
                     ) = line
-                    selection_1.append(
-                        (h_index, d_index, a_index, None, dist, angle)
-                    )
+                    selection_1.append((h_index, d_index, a_index, None, dist, angle))
 
                 self.logger_debug("Water Donors <-> Selection 2 Acceptors")
                 results = self._donor2acceptor(
@@ -1490,9 +1451,7 @@ class WaterBridgeAnalysis(AnalysisBase):
                     angle,
                 ) = line
                 water_pool[(h_resname, h_resid)] = None
-                selection_1.append(
-                    (a_index, None, h_index, d_index, dist, angle)
-                )
+                selection_1.append((a_index, None, h_index, d_index, dist, angle))
                 selection_2.append((h_resname, h_resid))
 
             if self.order > 0:
@@ -1531,9 +1490,7 @@ class WaterBridgeAnalysis(AnalysisBase):
                         dist,
                         angle,
                     ) = line
-                    selection_1.append(
-                        (a_index, None, h_index, d_index, dist, angle)
-                    )
+                    selection_1.append((a_index, None, h_index, d_index, dist, angle))
 
         if self.order > 1:
             self.logger_debug("Water donor <-> Water Acceptors")
@@ -1610,9 +1567,9 @@ class WaterBridgeAnalysis(AnalysisBase):
                     for new_node in graph[node]:
                         new_route = route[:]
                         new_route.append(new_node)
-                        new_node = self._expand_timeseries(
-                            new_node, "sele1_sele2"
-                        )[3][:2]
+                        new_node = self._expand_timeseries(new_node, "sele1_sele2")[3][
+                            :2
+                        ]
                         traverse_water_network(
                             graph, new_node, end, new_route, maxdepth, result
                         )
@@ -1736,8 +1693,7 @@ class WaterBridgeAnalysis(AnalysisBase):
                 atom1, atom2 = atom1, atom2
         else:
             raise KeyError(
-                "Only 'sele1_sele2' or 'donor_acceptor' are allowed as output "
-                "format"
+                "Only 'sele1_sele2' or 'donor_acceptor' are allowed as output " "format"
             )
 
         return (
@@ -1787,10 +1743,7 @@ class WaterBridgeAnalysis(AnalysisBase):
                 link_func=self._compact_link,
             )
             timeseries.append(
-                [
-                    self._expand_timeseries(entry, output_format)
-                    for entry in new_frame
-                ]
+                [self._expand_timeseries(entry, output_format) for entry in new_frame]
             )
         return timeseries
 
@@ -1837,12 +1790,12 @@ class WaterBridgeAnalysis(AnalysisBase):
         :return:
         """
 
-        s1_index, to_index, s1, to_residue, dist, angle = (
-            self._expand_timeseries(current[0])
+        s1_index, to_index, s1, to_residue, dist, angle = self._expand_timeseries(
+            current[0]
         )
         s1_resname, s1_resid, s1_name = s1
-        from_index, s2_index, from_residue, s2, dist, angle = (
-            self._expand_timeseries(current[-1])
+        from_index, s2_index, from_residue, s2, dist, angle = self._expand_timeseries(
+            current[-1]
         )
         s2_resname, s2_resid, s2_name = s2
         key = (
@@ -1908,20 +1861,18 @@ class WaterBridgeAnalysis(AnalysisBase):
                     for i, key in enumerate(result_dict)
                 ]
             else:
-                result = [
-                    (key, result_dict[key] / length) for key in result_dict
-                ]
+                result = [(key, result_dict[key] / length) for key in result_dict]
             return result
         else:
             return None
 
     def _count_by_time_analysis(self, current, output, *args, **kwargs):
-        s1_index, to_index, s1, to_residue, dist, angle = (
-            self._expand_timeseries(current[0])
+        s1_index, to_index, s1, to_residue, dist, angle = self._expand_timeseries(
+            current[0]
         )
         s1_resname, s1_resid, s1_name = s1
-        from_index, s2_index, from_residue, s2, dist, angle = (
-            self._expand_timeseries(current[-1])
+        from_index, s2_index, from_residue, s2, dist, angle = self._expand_timeseries(
+            current[-1]
         )
         s2_resname, s2_resid, s2_name = s2
         key = (
@@ -1963,20 +1914,18 @@ class WaterBridgeAnalysis(AnalysisBase):
                     link_func=self._full_link,
                     **kwargs,
                 )
-                result.append(
-                    (time, sum([result_dict[key] for key in result_dict]))
-                )
+                result.append((time, sum([result_dict[key] for key in result_dict])))
             return result
         else:
             return None
 
     def _timesteps_by_type_analysis(self, current, output, *args, **kwargs):
-        s1_index, to_index, s1, to_residue, dist, angle = (
-            self._expand_timeseries(current[0])
+        s1_index, to_index, s1, to_residue, dist, angle = self._expand_timeseries(
+            current[0]
         )
         s1_resname, s1_resid, s1_name = s1
-        from_index, s2_index, from_residue, s2, dist, angle = (
-            self._expand_timeseries(current[-1])
+        from_index, s2_index, from_residue, s2, dist, angle = self._expand_timeseries(
+            current[-1]
         )
         s2_resname, s2_resid, s2_name = s2
         key = (
@@ -2075,10 +2024,7 @@ class WaterBridgeAnalysis(AnalysisBase):
             logger.warning(msg)
             return None
 
-        if (
-            self.results.timeseries is not None
-            and output_format == self.output_format
-        ):
+        if self.results.timeseries is not None and output_format == self.output_format:
             timeseries = self.results.timeseries
         else:
             # Recompute timeseries with correct output format
@@ -2137,9 +2083,7 @@ class WaterBridgeAnalysis(AnalysisBase):
                     + (distance, angle)
                 )
                 cursor += 1
-        assert (
-            cursor == num_records
-        ), "Internal Error: Not all wb records stored"
+        assert cursor == num_records, "Internal Error: Not all wb records stored"
         table = out.view(np.rec.recarray)
         logger.debug(
             "WBridge: Stored results as table with %(num_records)d entries.",

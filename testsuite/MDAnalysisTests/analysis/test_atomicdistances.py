@@ -79,9 +79,7 @@ class TestAtomicDistances(object):
     @staticmethod
     @pytest.fixture()
     def expected_dist(ad_ag1, ad_ag2):
-        expected = np.zeros(
-            (len(ad_ag1.universe.trajectory), ad_ag1.atoms.n_atoms)
-        )
+        expected = np.zeros((len(ad_ag1.universe.trajectory), ad_ag1.atoms.n_atoms))
 
         # calculate distances without PBCs using dist()
         for i, ts in enumerate(ad_ag1.universe.trajectory):
@@ -91,9 +89,7 @@ class TestAtomicDistances(object):
     @staticmethod
     @pytest.fixture()
     def expected_pbc_dist(ad_ag1, ad_ag2):
-        expected = np.zeros(
-            (len(ad_ag1.universe.trajectory), ad_ag1.atoms.n_atoms)
-        )
+        expected = np.zeros((len(ad_ag1.universe.trajectory), ad_ag1.atoms.n_atoms))
 
         # calculate distances with PBCs using dist()
         for i, ts in enumerate(ad_ag1.universe.trajectory):

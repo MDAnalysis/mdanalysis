@@ -28,6 +28,7 @@ Neighbor Search wrapper for MDAnalysis --- :mod:`MDAnalysis.lib.NeighborSearch`
 This module contains classes that allow neighbor searches directly with
 `AtomGroup` objects from `MDAnalysis`.
 """
+
 import numpy as np
 from MDAnalysis.lib.distances import capped_distance
 from MDAnalysis.lib.util import unique_int_1d
@@ -136,6 +137,4 @@ class AtomNeighborSearch(object):
         elif level == "S":
             return atomgroup.segments
         else:
-            raise NotImplementedError(
-                "{0}: level not implemented".format(level)
-            )
+            raise NotImplementedError("{0}: level not implemented".format(level))
