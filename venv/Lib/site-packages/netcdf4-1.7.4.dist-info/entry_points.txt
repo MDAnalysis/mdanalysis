@@ -1,4 +1,0 @@
-[console_scripts]
-nc3tonc4 = netCDF4.utils:nc3tonc4
-nc4tonc3 = netCDF4.utils:nc4tonc3
-ncinfo = netCDF4.utils:ncinfo

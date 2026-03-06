@@ -1,2 +1,0 @@
-[pybtex.backends]
-docutils = pybtex_docutils:Backend
