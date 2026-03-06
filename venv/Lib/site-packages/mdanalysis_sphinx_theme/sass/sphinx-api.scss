@@ -1,0 +1,154 @@
+// The Numpydoc API layout
+$api-name-color: $primary;
+
+$api-property-color: darken($mdanalysis-code-orange, 10);
+$api-path-color: $grey;
+$api-bg-color: $mdanalysis-orange-light; // rgba($mdanalysis-orange, 0.1);
+$api-param-symbol-color: $mdanalysis-orange;
+$api-param-name-color: $readthedocs-dark-gray;
+$api-param-value-color: $grey-dark;
+$api-type-color: $grey-dark;
+$api-source-link-color: $mdanalysis-orange;
+$api-header-font-size: 0.9rem;
+$api-header-padding: 0.5 * $api-header-font-size;
+$api-arguments-indent: 2 * $api-header-font-size;
+
+// Break headings wherever, if necessary
+h1, h2, h3, h4, h5, h6 {
+    overflow-wrap: break-word;
+}
+
+// Docs button in source on right
+.viewcode-back {
+  float: right;
+  color: $api-source-link-color;
+}
+
+// Override ReadTheDocs
+// workaround necessary while html4 and 5 are supported
+%py-obj-dl {
+    padding-bottom: 0.5em;
+    @include z-depth(2); // shadow
+
+    .property {
+        display: inherit;
+        padding-right: 0px;
+        max-width: 100%;
+    }
+
+    > dt {
+        // background: $mdanalysis-orange-light;
+        border-top: 3px solid $mdanalysis-code-orange;
+        color: $readthedocs-dark-gray;
+
+        display: inherit;
+        line-height: 1.4;
+
+        font-family: $family-monospace;
+        font-size: $api-header-font-size;
+        // padding: $api-header-font-size;
+        background-color: $api-bg-color;
+        border-radius: 4px;
+        // Allow words to break anywhere, if necessary
+        overflow-wrap: break-word;
+        // Position relative so we can absolutely position source link
+        position: relative;
+        &:target {
+            &::before {
+                background-color: $body-background-color;
+            }
+        }
+
+        padding-left: $api-header-padding;
+        padding-right: 2.5 * ($api-header-padding + $api-arguments-indent);
+
+        > .property {
+            display: unset;
+            padding-right: 0px;
+            max-width: 100%;
+        }
+
+        // links
+        .viewcode-link {
+            position: absolute;
+            top: $api-header-padding;
+            right: $api-arguments-indent;
+            color: $mdanalysis-gray;
+
+            .pre:hover {
+                color: $api-source-link-color;
+            }
+        }
+
+        .headerlink {
+            position: absolute;
+            top: $api-header-padding;
+            right: $api-header-padding;
+            color: $api-name-color;
+            opacity: 1;
+            margin-top: -0.1rem;
+
+        }
+
+    }
+
+    >dd {
+        margin: 1em;
+        &:empty {
+            padding-bottom: 0 !important;
+        }
+
+        >.field-list {
+            // Headings
+            >dt {
+                font-weight: bold;
+            }
+
+            // Content
+            >dd {
+                >ul.simple {
+                    margin-left: 0;
+                }
+                >dl>dt, >ul.simple:first-child>li>p:first-child, >p:first-child {
+                    // Name of the parameter or return value
+                    >strong {
+                        font-family: $family-monospace;
+                        color: $api-param-name-color;
+                        font-weight: normal;
+                    }
+                    // Type of the parameter, or type of a named return value
+                    >.classifier {
+                        font-family: $family-monospace;
+                        color: $api-type-color;
+                        overflow-wrap: break-word;
+                    }
+                    >a.reference>em {
+                        font-family: $family-monospace;
+                        font-style: normal;
+                    }
+                }
+                >dl>dt>strong::after {
+                    content: ": ";
+                }
+            }
+        }
+    }
+}
+
+
+html.writer-html4 {
+    .rst-content {
+        dl:not(.docutils) {
+            @extend %py-obj-dl;
+        }
+    }
+}
+
+
+html.writer-html5 {
+    .rst-content {
+        dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.citation):not(.glossary):not(.simple) {
+            @extend %py-obj-dl;
+        }
+    }
+}

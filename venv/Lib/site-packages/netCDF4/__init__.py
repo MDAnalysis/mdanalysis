@@ -1,0 +1,41 @@
+# init for netCDF4. package
+# if HDF5_PLUGIN_PATH not set, point to package path if plugins live there
+
+
+# start delvewheel patch
+def _delvewheel_patch_1_11_2():
+    import os
+    if os.path.isdir(libs_dir := os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, 'netcdf4.libs'))):
+        os.add_dll_directory(libs_dir)
+
+
+_delvewheel_patch_1_11_2()
+del _delvewheel_patch_1_11_2
+# end delvewheel patch
+
+import os
+pluginpath = os.path.join(__path__[0],'plugins')
+if 'HDF5_PLUGIN_PATH' not in os.environ and\
+    (os.path.exists(os.path.join(pluginpath,'lib__nczhdf5filters.so')) or\
+     os.path.exists(os.path.join(pluginpath,'__nczhdf5filters.dll')) or\
+     os.path.exists(os.path.join(pluginpath,'lib__nczhdf5filters.dylib'))):
+    os.environ['HDF5_PLUGIN_PATH']=pluginpath
+# Docstring comes from extension module _netCDF4.
+from ._netCDF4 import *
+# Need explicit imports for names beginning with underscores
+from ._netCDF4 import __doc__
+from ._netCDF4 import (__version__, __netcdf4libversion__, __hdf5libversion__,
+                       __has_rename_grp__, __has_nc_inq_path__,
+                       __has_nc_inq_format_extended__, __has_nc_open_mem__,
+                       __has_nc_create_mem__, __has_cdf5_format__,
+                       __has_parallel4_support__, __has_pnetcdf_support__,
+                       __has_quantization_support__, __has_zstandard_support__,
+                       __has_bzip2_support__, __has_blosc_support__, __has_szip_support__,
+                       __has_set_alignment__, __has_parallel_support__, __has_ncfilter__, __has_nc_rc_set__)
+__all__ = [
+    'Dataset', 'Variable', 'Dimension', 'Group', 'MFDataset', 'MFTime', 'CompoundType',
+    'VLType', 'date2num', 'num2date', 'date2index', 'stringtochar', 'chartostring',
+    'stringtoarr', 'getlibversion', 'EnumType', 'get_chunk_cache', 'set_chunk_cache',
+    'set_alignment', 'get_alignment', 'rc_get', 'rc_set',
+]
+__pdoc__ = {'utils': False}

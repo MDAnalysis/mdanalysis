@@ -1,0 +1,16 @@
+mda_xdrlib-0.2.0.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
+mda_xdrlib-0.2.0.dist-info/LICENSE,sha256=9n7U0QJnb6KwpF8WdYV8_w5uV06n0E92UnBJp6Bnj50,14366
+mda_xdrlib-0.2.0.dist-info/METADATA,sha256=WfR1BrgqKLjUHaM0lW0JBYSrT1Wcc4rkJ90grZxTpGI,19038
+mda_xdrlib-0.2.0.dist-info/RECORD,,
+mda_xdrlib-0.2.0.dist-info/WHEEL,sha256=yQN5g4mg4AybRjkgi-9yy4iQEFibGQmlz78Pik5Or-A,92
+mda_xdrlib-0.2.0.dist-info/top_level.txt,sha256=Ipyv-ua_uaM-DcpZ9QVpolcHvPtYqWXyrAtzRmStFPM,11
+mda_xdrlib/__init__.py,sha256=sAPzLChkyJRZMBJvauv3BC_pB78KQq5AC85psshzkZE,168
+mda_xdrlib/__pycache__/__init__.cpython-312.pyc,,
+mda_xdrlib/__pycache__/_version.cpython-312.pyc,,
+mda_xdrlib/__pycache__/xdrlib.cpython-312.pyc,,
+mda_xdrlib/_version.py,sha256=rghlyALlcXhVwwyTVJAD2RQ41MgTR9qVDCjYQRyZ68M,497
+mda_xdrlib/tests/__init__.py,sha256=AbpHGcgLb-kRsJGnwFEktk7uzpZOCcBY74-YBdrKVGs,1
+mda_xdrlib/tests/__pycache__/__init__.cpython-312.pyc,,
+mda_xdrlib/tests/__pycache__/test_xdrlib.cpython-312.pyc,,
+mda_xdrlib/tests/test_xdrlib.py,sha256=E8d50INm32hogoE84bQA0tvK6gjkMvJYXF6S5eBcNWM,2242
+mda_xdrlib/xdrlib.py,sha256=W66IWn2knB_coRNr9a7OIz8Lj0ppSNo5aQcsJt45XoM,5913

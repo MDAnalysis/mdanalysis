@@ -1,0 +1,90 @@
+.wy-nav-content-wrap {
+    background: #fcfcfc;
+}
+
+.wy-nav-top {
+    background: mobile_navbar_background();
+}
+
+.wy-side-nav-search {
+    background-color: $sidebar-logo-background;
+
+    > a {
+        color: $readthedocs-dark-gray;
+    }
+
+    > div.version {
+        color: $mdanalysis-gray;
+    }
+
+    input[type="text"] {
+        border-color: $mdanalysis-gray;
+    }
+}
+
+.wy-menu {
+    overflow-wrap: break-word;
+    white-space: inherit;
+
+    .caption-text {
+        color: $mdanalysis-orange;
+    }
+
+    a:hover, a:hover:not(.is-active) code {
+        color: $mdanalysis-orange;
+    }
+}
+
+code {
+    white-space: inherit;
+}
+
+
+.rst-content {
+
+    .guilabel {
+        background: $mdanalysis-orange-light;
+        border: 1px solid $mdanalysis-gray;
+    }
+
+    code.literal {
+        color: $mdanalysis-code-orange;
+        background-color: $mdanalysis-white;
+
+        
+    }
+
+    dt {
+        code.literal {
+            font-weight: 700;
+        }
+    }
+}
+
+
+.wy-table-responsive {
+    table {
+        td {
+            white-space: inherit;
+        }
+    }
+}
+
+// fix for dataTables
+// https://github.com/readthedocs/sphinx_rtd_theme/issues/1287#issuecomment-1094920765
+
+.dataTables_wrapper.no-footer .wy-table-responsive {
+    overflow: unset;
+}
+
+// fix header whitespace, there's a lot of it
+div[role=navigation] > .wy-breadcrumbs {
+    margin: 0;
+
+    .breadcrumb-item {
+        margin-top: 0;
+        margin-bottom: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+}

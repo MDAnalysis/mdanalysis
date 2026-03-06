@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   id="Layer_1"
+   data-name="Layer 1"
+   viewBox="0 0 800.82 417.22"
+   version="1.1"
+   sodipodi:docname="mdanalysis-ugm.svg"
+   inkscape:export-filename="mdanalysis-logo.png"
+   inkscape:export-xdpi="300"
+   inkscape:export-ydpi="300"
+   width="800.82001"
+   height="417.22"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview38"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="false"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="1.2966867"
+     inkscape:cx="197.42626"
+     inkscape:cy="113.36586"
+     inkscape:window-width="2560"
+     inkscape:window-height="1355"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="Layer_1" />
+  <defs
+     id="defs4">
+    <style
+       id="style2">
+      .cls-1, .cls-2 {
+        font-family: ZagBold, 'Zag Bold';
+        font-size: 96px;
+      }
+
+      .cls-3 {
+        letter-spacing: -.16em;
+      }
+
+      .cls-4 {
+        letter-spacing: -.02em;
+      }
+
+      .cls-2, .cls-5 {
+        fill: #ff9200;
+      }
+
+      .cls-6 {
+        letter-spacing: 0em;
+      }
+
+      .cls-7 {
+        fill: gray;
+      }
+
+      .cls-7, .cls-5, .cls-8 {
+        fill-rule: evenodd;
+      }
+
+      .cls-9 {
+        letter-spacing: -.03em;
+      }
+    </style>
+  </defs>
+  <rect
+     style="fill:#ffffff;stroke:#ffffff;stroke-width:0.369793"
+     id="rect857"
+     width="881.16364"
+     height="463.89255"
+     x="-33.011177"
+     y="-27.222565" />
+  <g
+     id="g1037"
+     transform="translate(44.528633,89.630578)">
+    <g
+       id="logo"
+       transform="translate(120.44567,-2.3009977)">
+      <path
+         class="cls-8"
+         d="m 74.31,13.8 c 14.51,-2.28 25.97,7.37 29.16,15.32 2.36,5.88 1.82,15.94 4.45,21.74 4.08,9.02 12.89,15.36 22.24,16.31 7.69,0.78 15.83,-4.68 26.68,-1.98 11.38,2.83 24.25,16.59 17.3,34.59 -3.22,8.33 -11.82,15.36 -22.73,15.81 -7.92,0.33 -15.38,-3.38 -22.24,-2.47 -9.81,1.3 -18.47,8.96 -21.74,16.8 -2.81,6.73 -1.69,14.71 -4.45,21.25 -4.13,9.8 -18.13,19.84 -33.11,13.84 -21.18,-8.49 -21.76,-47.48 7.91,-49.42 9.52,-0.62 16.42,3.66 24.71,1.98 9.22,-1.87 16.21,-7.59 19.77,-15.81 8.28,-19.12 -5.25,-39.21 -24.71,-40.03 -10.42,-0.44 -14.99,4 -24.21,1.98 C 56.71,60.05 47.87,36.68 60,22.2 c 2.64,-3.15 8.14,-7.43 14.33,-8.4 z"
+         id="path6" />
+      <path
+         class="cls-5"
+         d="m 129.16,22.69 c 9.25,-2.07 18.3,2.16 20.75,10.38 3.44,11.53 -5.26,25.81 -20.75,22.73 -17.02,-3.38 -15.98,-29.54 0,-33.11 z"
+         id="path8" />
+      <path
+         class="cls-7"
+         d="m 91.61,65.19 c 36.26,-5.69 39.92,47.16 7.91,50.4 -8.9,0.9 -14.04,-3.1 -22.24,-2.47 -17.46,1.34 -31.25,19.33 -23.72,38.54 3.02,7.7 11.96,17.71 25.7,17.79 4.66,0.03 11.37,-3.1 17.79,-2.96 17.64,0.36 29.14,18.26 23.23,34.59 -7.66,21.17 -39.71,21.52 -47.93,0.99 -3.17,-7.91 -1.93,-16.3 -4.45,-21.74 -3.39,-7.34 -12.12,-16.05 -24.71,-16.31 -5.62,-0.11 -11.94,3.96 -22.24,2.47 -14.22,-2.05 -25.93,-19.73 -18.78,-36.07 2.34,-5.35 9.28,-13.64 20.26,-14.82 9.59,-1.04 15.66,3.1 22.73,2.47 9.58,-0.85 19.09,-6.89 23.23,-16.8 2.85,-6.82 1.52,-14.44 3.95,-20.75 2.84,-7.38 9.74,-13.82 19.27,-15.32 z"
+         id="path10" />
+      <path
+         class="cls-5"
+         d="m 40.21,81.99 c 7.26,-1.75 10.78,2.64 10.87,7.91 0.18,10.77 -17.48,12.66 -17.3,0 0.06,-4.11 1.93,-6.82 6.42,-7.91 z"
+         id="path12" />
+      <path
+         class="cls-5"
+         d="m 130.65,128.94 c 8.95,-1.84 15.9,3.68 15.81,12.35 -0.13,13.88 -20.87,17.68 -25.2,4.45 -2.46,-7.5 0.4,-14.95 9.39,-16.8 z"
+         id="path14" />
+      <path
+         class="cls-5"
+         d="m 39.23,169.95 c 16.07,-2.19 32.02,13.25 24.21,31.63 -3.8,8.95 -16.95,17.35 -30.14,11.86 -20.2,-8.4 -17.04,-40.35 5.93,-43.49 z"
+         id="path16" />
+    </g>
+    <text
+       class="cls-1"
+       id="text21"
+       x="313.38568"
+       y="79.299004"><tspan
+         x="313.38568"
+         y="79.299004"
+         id="tspan19">MD</tspan></text>
+    <text
+       class="cls-2"
+       id="text35"
+       x="314.34567"
+       y="155.339"><tspan
+         x="314.34567"
+         y="155.339"
+         id="tspan23">A</tspan><tspan
+         class="cls-4"
+         x="364.16568"
+         y="155.339"
+         id="tspan25">N</tspan><tspan
+         class="cls-6"
+         x="408.04568"
+         y="155.339"
+         id="tspan27">A</tspan><tspan
+         class="cls-3"
+         x="457.86569"
+         y="155.339"
+         id="tspan29">L</tspan><tspan
+         class="cls-9"
+         x="479.84567"
+         y="155.339"
+         id="tspan31">Y</tspan><tspan
+         x="519.20569"
+         y="155.339"
+         id="tspan33">SIS</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:57.249px;font-family:ZagBold, 'Zag Bold';-inkscape-font-specification:'ZagBold, Zag Bold, Normal';direction:rtl;fill:#000000;stroke:#000000;stroke-width:0.306282"
+       x="533.73273"
+       y="202.60991"
+       id="text375"
+       transform="scale(0.95029546,1.0523043)"><tspan
+         sodipodi:role="line"
+         id="tspan373"
+         x="533.73273"
+         y="202.60991"
+         style="font-size:57.249px;stroke-width:0.306282">UGM 2023</tspan></text>
+  </g>
+</svg>

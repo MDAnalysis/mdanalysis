@@ -1,0 +1,479 @@
+////
+/// Copyright (c) 2016-2021 Martin Donath <martin.donath@squidfunk.com>
+///
+/// Permission is hereby granted, free of charge, to any person obtaining a
+/// copy of this software and associated documentation files (the "Software"),
+/// to deal in the Software without restriction, including without limitation
+/// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+/// and/or sell copies of the Software, and to permit persons to whom the
+/// Software is furnished to do so, subject to the following conditions:
+///
+/// The above copyright notice and this permission notice shall be included in
+/// all copies or substantial portions of the Software.
+///
+/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+/// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+/// FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL
+/// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+/// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+/// DEALINGS
+////
+
+/// Thank you to Martin Donath. This file is adapted from
+/// https://github.com/squidfunk/mkdocs-material/blob/31aab182b756913000ffade0e2219c75cf54b67a/src/assets/stylesheets/main/_typeset.scss
+
+
+
+// [print]: We'll use a smaller `font-size` for printing, so code examples
+// don't break too early, and `16px` looks too big anyway.
+@media print {
+  font-size: px2rem(13.6px);
+}
+
+// Default spacing
+ul,
+ol,
+dl,
+figure,
+p,
+pre {
+  margin: 1em 0;
+}
+
+// Headline on level 1
+h1 {
+  margin: 0 0 px2em(40px, 32px);
+  color: $scheme-invert-bis;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  font-size: 175%;
+}
+
+// Headline on level 2
+h2 {
+  margin: px2em(40px, 25px) 0 px2em(16px, 25px);
+  font-weight: 600;
+  font-size: px2em(25px);
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+
+// Headline on level 3
+h3 {
+  margin: px2em(32px, 20px) 0 px2em(16px, 20px);
+  font-weight: 500;
+  font-size: px2em(20px);
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+}
+
+// Headline on level 3 following level 2
+h2 + h3 {
+  margin-top: px2em(16px, 20px);
+}
+
+// Headline on level 4
+h4 {
+  margin: px2em(16px) 0;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+// Headline on level 5-6
+h5,
+h6 {
+  margin: px2em(16px, 12.8px) 0;
+  color: $scheme-invert-bis;
+  font-weight: 700;
+  font-size: px2em(12.8px);
+  letter-spacing: -0.01em;
+}
+
+// Headline on level 5
+h5 {
+  text-transform: uppercase;
+}
+
+// Horizontal separator
+hr {
+  display: flow-root;
+  margin: 1.5em 0;
+  border-bottom: px2rem(1px) solid $scheme-invert;
+}
+
+// Text link
+a {
+  color: $link;
+  overflow-wrap: break-word;
+
+  // Also enable color transition on pseudo elements
+  &,
+  &::before {
+    transition: color 125ms;
+  }
+
+  // Text link on focus/hover
+  &:focus{
+    color: $link-focus;
+  }
+
+  &:hover {
+    color: $link-hover;
+  }
+
+  // Text link on keyboard focus
+  &.focus-visible {
+    outline-color: $link-focus;
+    outline-offset: px2rem(4px);
+  }
+}
+
+// Code block
+code,
+pre,
+kbd {
+  color: $scheme-invert;
+  direction: ltr;
+
+  // [print]: Wrap text and hide scollbars
+  @media print {
+    white-space: pre-wrap;
+  }
+}
+
+// Inline code block
+code {
+  padding: 0 px2em(4px, 13.6px);
+  font-size: px2em(13.6px);
+  overflow-wrap: break-word;
+  background-color: $code-background;
+  border-radius: px2rem(2px);
+  box-decoration-break: clone;
+
+  // Hide outline for pointer devices
+  &:not(.focus-visible) {
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+// Code block in headline
+h1 code,
+h2 code,
+h3 code,
+h4 code,
+h5 code,
+h6 code {
+  // margin: initial;
+  // padding: initial;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+// Ensure link color in code blocks
+a code {
+  color: currentColor;
+}
+
+// Unformatted content
+pre {
+  position: relative;
+  display: flow-root;
+  line-height: 1.4;
+
+  // Code block
+  > code {
+    display: block;
+    margin: 0;
+    padding: px2em(10.5px, 13.6px) px2em(16px, 13.6px);
+    overflow: auto;
+    word-break: normal;
+    box-shadow: none;
+    box-decoration-break: slice;
+    touch-action: auto;
+    scrollbar-width: thin;
+    scrollbar-color: $scheme-invert-ter transparent;
+
+    // Code block on hover
+    &:hover {
+      scrollbar-color: $accent transparent;
+    }
+
+    // Webkit scrollbar
+    &::-webkit-scrollbar {
+      width: px2rem(4px);
+      height: px2rem(4px);
+    }
+
+    // Webkit scrollbar thumb
+    &::-webkit-scrollbar-thumb {
+      background-color: $scheme-invert-ter;
+
+      // Webkit scrollbar thumb on hover
+      &:hover {
+        background-color: $accent;
+      }
+    }
+  }
+}
+
+// [mobile -]: Align with body copy
+@media screen and (max-width: $tablet - 1px) {
+
+  // Unformatted text
+  > pre {
+    // margin: 1em px2rem(-16px);
+
+    // Code block
+    code {
+      border-radius: 0;
+    }
+  }
+}
+
+// Keyboard key
+kbd {
+  display: inline-block;
+  padding: 0 px2em(8px, 12px);
+  color: $scheme-invert;
+  font-size: px2em(12px);
+  vertical-align: text-top;
+  overflow-wrap: break-word;
+  background-color: $scheme-main-ter;
+  border-radius: px2rem(2px);
+  box-shadow:
+    0 px2rem(2px)  0 px2rem(1px) $border,
+    0 px2rem(2px)  0             $border,
+    0 px2rem(-2px) px2rem(4px)   $border-light inset;
+}
+
+// Text highlighting marker
+mark {
+  color: inherit;
+  overflow-wrap: break-word;
+  background-color: $yellow;
+  box-decoration-break: clone;
+}
+
+// Abbreviation
+abbr {
+  text-decoration: none;
+  border-bottom: px2rem(1px) dotted $scheme-invert-bis;
+  cursor: help;
+
+  // Show tooltip for touch devices
+  @media (hover: none) {
+    position: relative;
+
+    // Tooltip
+    &[title]:focus::after,
+    &[title]:hover::after {
+      @include z-depth(2);
+
+      position: absolute;
+      left: 0;
+      display: inline-block;
+      width: auto;
+      min-width: max-content;
+      max-width: 80%;
+      margin-top: 2em;
+      padding: px2rem(4px) px2rem(6px);
+      color: $body-background-color;
+      font-size: px2rem(14px);
+      background-color: $scheme-invert;
+      border-radius: px2rem(2px);
+      content: attr(title);
+    }
+  }
+}
+
+// Small text
+small {
+  opacity: 0.75;
+}
+
+// Superscript and subscript
+sup,
+sub {
+  margin-left: px2em(1px, 12.8px);
+
+  // Adjust for right-to-left languages
+  [dir="rtl"] & {
+    margin-right: px2em(1px, 12.8px);
+    margin-left: initial;
+  }
+}
+
+// Blockquotes, possibly nested
+blockquote {
+  display: flow-root;
+  padding-left: px2rem(12px);
+  color: $grey-dark;
+  // border-left: px2rem(4px) solid $grey;
+
+  // Adjust for right-to-left languages
+  [dir="rtl"] & {
+    padding-right: px2rem(12px);
+    padding-left: initial;
+    border-right: px2rem(4px) solid $grey;
+    border-left: initial;
+  }
+}
+
+// No border for block quotes inside a list,
+// these are probably sub items
+li > blockquote {
+  border-left: none;
+
+  // Adjust for right-to-left languages
+  [dir="rtl"] & {
+    border-right: none;
+  }
+}
+
+// No border for blockquotes that *are* a list...
+blockquote 
+
+// Unordered list
+ul {
+  list-style-type: disc;
+}
+
+// Unordered and ordered list
+ul,
+ol {
+  display: flow-root;
+  margin-left: px2em(10px);
+  padding: 0;
+
+  // Adjust for right-to-left languages
+  [dir="rtl"] & {
+    margin-right: px2em(10px);
+    margin-left: initial;
+  }
+
+  // Nested ordered list
+  ol {
+    list-style-type: lower-alpha;
+
+    // Triply nested ordered list
+    ol {
+      list-style-type: lower-roman;
+    }
+  }
+
+  // List element
+  li {
+    margin-bottom: 0.5em;
+    margin-left: px2em(20px);
+
+    // Adjust for right-to-left languages
+    [dir="rtl"] & {
+      margin-right: px2em(20px);
+      margin-left: initial;
+    }
+
+    // Adjust spacing
+    p,
+    blockquote {
+      margin: 0.5em 0;
+    }
+
+    // Adjust spacing on last child
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    // Nested list
+    ul,
+    ol {
+      margin: 0.5em 0 0.5em px2em(10px);
+
+      // Adjust for right-to-left languages
+      [dir="rtl"] & {
+        margin-right: px2em(10px);
+        margin-left: initial;
+      }
+    }
+  }
+}
+
+// Definition list
+dd {
+  margin: 1em 0 1.5em px2em(30px);
+
+  @media screen and (max-width: $tablet) {
+    margin-left: px2em(10px);
+  }
+
+  // Adjust for right-to-left languages
+  [dir="rtl"] & {
+    margin-right: px2em(30px);
+    margin-left: initial;
+
+    @media screen and (max-width: $tablet) {
+      margin-right: px2em(10px);
+    }
+  }
+}
+dl:not([class]), dl.simple {
+  dt {
+    font-weight: 200;
+  }
+}
+
+
+// Image or icon
+img,
+svg {
+  max-width: 100%;
+  height: auto;
+
+  // Adjust spacing when left-aligned
+  &[align="left"] {
+    margin: 1em;
+    margin-left: 0;
+  }
+
+  // Adjust spacing when right-aligned
+  &[align="right"] {
+    margin: 1em;
+    margin-right: 0;
+  }
+
+  // Adjust spacing when sole children
+  &[align]:only-child {
+    margin-top: 0;
+  }
+}
+
+// Figure
+figure {
+  display: flow-root;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+  text-align: center;
+
+  // Figure images
+  img {
+    display: block;
+    margin: 0 auto;
+  }
+}
+
+// Figure caption
+figcaption {
+  margin: 1em auto 2em;
+  text-align: justify;
+  font-size: 90%;
+  hyphens: auto;
+  width: 80%;
+}
+
+// Limit width to container
+iframe {
+  max-width: 100%;
+}

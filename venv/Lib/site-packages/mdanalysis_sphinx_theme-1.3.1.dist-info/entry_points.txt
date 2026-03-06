@@ -1,0 +1,2 @@
+[sphinx.html_themes]
+mdanalysis_sphinx_theme = mdanalysis_sphinx_theme

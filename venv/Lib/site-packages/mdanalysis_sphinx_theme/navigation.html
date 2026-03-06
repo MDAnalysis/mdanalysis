@@ -1,0 +1,25 @@
+{#- Translators: This is an ARIA section label for the main navigation menu -#}
+<div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="{{ _('Navigation menu') }}">
+    {% if theme_extra_nav_links %}
+    <!-- <p class="caption" role="heading"></p> -->
+    <ul>
+        {% for text, uri in theme_extra_nav_links.items() %}
+        <li class="toctree-l1"><a class="reference internal" href="{{ uri }}">{{ text }}</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    
+    {%- block menu %}
+    {%- set toctree = toctree(maxdepth=theme_navigation_depth|int,
+                                collapse=theme_collapse_navigation|tobool,
+                                includehidden=theme_includehidden|tobool,
+                                titles_only=theme_titles_only|tobool) %}
+    {%- if toctree %}
+        {{ toctree }}
+    {%- else %}
+        <!-- Local TOC -->
+        <div class="local-toc">{{ toc }}</div>
+    {%- endif %}
+    {%- endblock %}
+</div>

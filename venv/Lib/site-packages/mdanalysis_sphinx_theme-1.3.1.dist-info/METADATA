@@ -1,0 +1,45 @@
+Metadata-Version: 2.1
+Name: mdanalysis-sphinx-theme
+Version: 1.3.1
+Summary: Modification to sphinx_rtd_theme
+Home-page: https://github.com/mdanalysis/mdanalysis-sphinx-theme/
+Author: MDAnalysis
+Author-email: mdanalysis@numfocus.org
+License: MIT
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Environment :: Console
+Classifier: Environment :: Web Environment
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Documentation
+Classifier: Topic :: Software Development :: Documentation
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+License-File: AUTHORS.md
+Requires-Dist: sphinx-rtd-theme >=1.3
+Requires-Dist: sphinx >=6.2.1
+Requires-Dist: beautifulsoup4
+Requires-Dist: python-slugify[unidecode]
+Requires-Dist: css-html-js-minify
+Requires-Dist: lxml
+Requires-Dist: libsass
+
+`mdanalysis-sphinx-theme`
+=========================
+
+This builds on [msmb_theme](https://github.com/msmbuilder/msmb_theme) to apply slight modifications to
+`sphinx_rtd_theme`. It needs the forementioned theme to be installed.
+
+[See example docs on RTD here](https://mdanalysis-sphinx-theme.readthedocs.io/en/latest/)
+
+## Code of conduct
+
+All members of the MDAnalysis community and participants are expected to abide by the MDAnalysis [Code of Conduct](https://www.mdanalysis.org/pages/conduct/).
+
+## Acknowledgements
+
+This theme builds on [msmb_theme](https://github.com/msmbuilder/msmb_theme)
+and the [openff-sphinx-theme](https://github.com/openforcefield/openff-sphinx-theme).

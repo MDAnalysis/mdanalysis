@@ -1,0 +1,2 @@
+[console_scripts]
+parmed = parmed.scripts:clapp

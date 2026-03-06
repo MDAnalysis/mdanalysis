@@ -1,0 +1,63 @@
+{% set _favicon_url = '' %}
+
+{% if theme_mda_official|tobool %}
+  {% if favicon_url == '' %}
+    {% set _favicon_url = '_static/logo/mda_favicon.ico' %}
+  {% endif %}
+{% endif %}
+
+{% if favicon_url != '' %}
+  {% set _favicon_url = favicon_url %}
+{% endif %}
+
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.9.1/css/academicons.min.css" integrity="sha512-b1ASx0WHgVFL5ZQhTgiPWX+68KjS38Jk87jg7pe+qC7q9YkEtFq0z7xCglv7qGIs/68d3mAp+StfC8WKC5SSAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="shortcut icon" href="{{ pathto(_favicon_url, 1) }}">
+</head>
+
+{% extends "sphinx_rtd_theme/layout.html" %}
+{% set script_files = script_files + ["_static/js/versions.js"] %}
+{% set show_sphinx = "False" %}
+
+{% block sidebartitle %}
+
+{% set _logo_url = "" %}
+
+{% if logo_url %}
+  {% set _logo_url = logo_url %}
+{% elif logo %}
+  {% set _logo_url = pathto("_static/" + logo, 1) %}
+{% elif theme_mda_official %}
+  {% set _logo_url = pathto('_static/logo/mda_logo.png', 1) %}
+{% else %}
+  {% set _logo_url = '' %}
+{% endif %}
+
+
+{% set _root_doc = root_doc|default(master_doc) %}
+<a href="{{ pathto(_root_doc) }}"{% if not theme_logo_only %} class="icon icon-home"{% endif %}>
+  {% if not theme_logo_only %}{{ project }}{% endif %}
+  {%- if _logo_url != "" %}
+    <img src="{{ _logo_url }}" class="logo" alt="{{ _('Logo') }}"/>
+  {%- endif %}
+</a>
+
+{% if theme_display_version %}
+  {% set nav_version = version %}
+  {% if READTHEDOCS and current_version %}
+    {% set nav_version = current_version %}
+  {% endif %}
+  {% if nav_version %}
+    <div class="version">
+      {{ nav_version }}
+    </div>
+  {% endif %}
+{% endif %}
+
+{% include "searchbox.html" %}
+{% endblock %}
+
+{% block navigation %}
+{% include "navigation.html" %}
+{% endblock %}

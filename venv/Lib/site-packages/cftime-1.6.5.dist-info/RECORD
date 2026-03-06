@@ -1,0 +1,13 @@
+cftime-1.6.5.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
+cftime-1.6.5.dist-info/METADATA,sha256=0dE3MjsMDAXrD8n7s8KyK_-M2fonLASdERqOfvrqTb8,8833
+cftime-1.6.5.dist-info/RECORD,,
+cftime-1.6.5.dist-info/WHEEL,sha256=8UP9x9puWI0P1V_d7K2oMTBqfeLNm21CTzZ_Ptr0NXU,101
+cftime-1.6.5.dist-info/licenses/LICENSE,sha256=2zHaEwQ9qx9uHm62IVog-w2yncYZaKhwJQ_0gpY1JX4,1063
+cftime-1.6.5.dist-info/top_level.txt,sha256=0_PQDtWlaAdyF2-0rK92qkVomI0z4gHS5CD3RmiNqJc,7
+cftime/__init__.py,sha256=l8cKOqpCjjs4_Htz9dsIM43P4abTcKTraFkIqiU1BYg,873
+cftime/__pycache__/__init__.cpython-312.pyc,,
+cftime/__pycache__/_strptime.cpython-312.pyc,,
+cftime/_cftime.c,sha256=Ipm5dqY6f3mkZh7So7KYFlVS5iPcoBtXYHtIFJKPyVU,2373496
+cftime/_cftime.cp312-win_amd64.pyd,sha256=aF5dIDZlpBRE02LVTOpHjIuPV2HYQrfRIDxy1mhxHh0,358912
+cftime/_cftime.pyx,sha256=7A2DXpgiMZz-8SayjbRbf-6y5dLuxRTulgVlmSRwktU,95893
+cftime/_strptime.py,sha256=uJa9-AQD7k6ELGNzXol1jd_I7bwHEKsCbR_Zasc-qLw,7004

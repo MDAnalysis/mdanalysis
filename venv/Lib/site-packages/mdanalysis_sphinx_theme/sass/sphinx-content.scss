@@ -1,0 +1,515 @@
+// Thanks to Jeremy Maitin-Shepard. File sourced from
+// https://github.com/jbms/sphinx-material/blob/b3667d67eee0a42a627c97a5a81a736c99dadb61/src/assets/stylesheets/main/_sphinx.scss
+
+// Additional styles expected by sphinx.
+
+// alignment of text and inline objects inside block objects
+.align-left {
+  text-align: left;
+}
+
+.align-right {
+  text-align: right;
+}
+
+.align-center {
+  clear: both;
+  text-align: center;
+}
+
+.align-top {
+  vertical-align: top;
+}
+
+.align-middle {
+  vertical-align: middle;
+}
+
+.align-bottom {
+  vertical-align: bottom;
+}
+
+// Figures, Images, and Tables
+.figure.align-left,
+figure.align-left,
+img.align-left,
+object.align-left,
+table.align-left {
+  margin-right: auto;
+}
+
+.figure.align-center,
+figure.align-center,
+img.align-center,
+object.align-center,
+table.align-center,
+table.align-default {
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.figure.align-right,
+figure.align-right,
+img.align-right,
+object.align-right,
+table.align-right {
+  margin-left: auto;
+}
+
+.figure.align-center,
+.figure.align-right,
+figure.align-center,
+figure.align-right,
+img.align-center,
+img.align-right,
+object.align-center,
+object.align-right {
+  display: block;
+}
+
+// reset inner alignment in figures and tables
+.figure.align-left,
+.figure.align-right,
+figure.align-left,
+figure.align-right,
+table.align-left,
+table.align-center,
+table.align-right {
+  text-align: inherit;
+}
+
+.rubric {
+  font-weight: bold;
+}
+
+// And now my own rules
+/// Code with line numbers in sphinx<4
+table.highlighttable {
+  td.linenos {
+    @include unselectable;
+    padding-left: 0;
+    padding-right: 0;
+    .linenodiv pre {
+      padding-right: 0;
+      // Hide line numbers on mobile
+      @media screen and (max-width: $tablet - 1px) {
+        display: none;
+      }
+    }
+    + td.code {
+      margin-left: 0;
+      padding-left: 0;
+      padding-right: 0;
+      .highlight pre {
+        overflow-x: auto;
+        // Hide line numbers on mobile
+        @media screen and (max-width: $tablet - 1px) {
+          width: 100vw - 2 * $mobile-content-margin-y;
+        }
+      }
+    }
+  }
+}
+
+
+// Code blocks
+.highlight {
+  background-color: $code-background;
+  border-radius: 4px;
+  @include z-depth(2);
+  // Unselectable prompts and line numbers
+  .gp, .linenos {
+    @include unselectable;
+  }
+  // Scrollbar and margins on the .highlight, not the inner pre
+  overflow-x: auto;
+  margin: 1em 0;
+  pre {
+    overflow-x: unset;
+    margin: unset;
+  }
+  /// Code with line numbers in sphinx>=4
+  span.linenos {
+    margin-right: 0.5rem;
+    margin-left: -0.5rem;
+    color: #666666;
+    // Hide line numbers on mobile
+    @media screen and (max-width: $tablet - 1px) {
+      display: none;
+    }
+  }
+}
+
+// Give ourselves some more room on top-level code blocks and big screens
+section, .section {
+  > .notranslate > .highlight {
+    @media screen and (min-width: $widescreen) and (max-width: $fullhd - 1) {
+        margin-left: calc(-0.5 * (#{$code-widescreen-width} - #{$para-width}));
+        width: $code-widescreen-width;
+    }
+    @media screen and (min-width: $fullhd) {
+        margin-left: -0.5 * ($code-fullhd-width - $para-width);
+        width: $code-fullhd-width;
+    }
+    &::before {
+      @media screen and (min-width: $widescreen) and (max-width: $fullhd - 1) {
+        right: calc($code-lang-ident-padding - 0.5 * (#{$code-widescreen-width} - #{$para-width}));
+      }
+      @media screen and (min-width: $fullhd) {
+        right: calc($code-lang-ident-padding - 0.5 * (#{$code-fullhd-width} - #{$para-width}));
+      }
+    }
+  }
+}
+
+
+.wy-table-responsive.autosummary {
+  table {
+    table-layout:fixed;
+    width: 100%;
+    colgroup {
+      col:first-child {
+        width: 30% !important;
+      }
+      col:last-child {
+        width: 70% !important;
+      }
+    }
+    td:first-child {
+      overflow-wrap: break-word;
+      a, code {
+        overflow-wrap: break-word;
+        &::after {
+          content: "​"
+        }
+      }
+    }
+  }
+  overflow-x: hidden;
+}
+
+.wy-table-responsive:not(.autosummary) {
+  // Allow large, scrollable tables to be expanded
+  &.expanded {
+    @include z-depth(2);
+    @media screen and (min-width: $widescreen) and (max-width: $fullhd - 1) {
+      margin-left: calc(-0.5 * (#{$expanded-table-widescreen-width} - #{$para-width}));
+      width: $expanded-table-widescreen-width;
+      max-width: $expanded-table-widescreen-width;
+      table {
+        min-width: $expanded-table-widescreen-width;
+      }
+    }
+    @media screen and (min-width: $fullhd) {
+      margin-left: -0.5 * ($expanded-table-fullhd-width - $para-width);
+      width: $expanded-table-fullhd-width;
+      max-width: $expanded-table-fullhd-width;
+      table {
+        min-width: $expanded-table-fullhd-width;
+      }
+    }
+  }
+  table {
+    font-size: 85%;
+    // Table row in the body
+    tbody {
+      tr {
+        transition: background-color 125ms;
+
+        // Table row on hover
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.035);
+        }
+      }
+    }
+  }
+}
+
+// Header links
+.headerlink {
+  font-size: 1em;
+  margin-left: 0.5em;
+  color: $grey-light;
+
+  @media screen and (min-width: $tablet) {
+    display: inline-block;
+    transform: translateY(.25rem);
+    transition: transform .25s 0.2s,color .25s,opacity .125s 0.2s;
+    opacity: 0;
+  }
+}
+*:hover > .headerlink {
+  transition: transform .25s,color .25s,opacity .125s;
+  -webkit-transform: translate(0);
+  transform: translate(0);
+  opacity: 1;
+}
+
+// Format captions
+.toctree-wrapper .caption {
+  @extend h2;
+}
+
+// Don't let Sphinx try to be clever about what header level the index heading is
+#index h3 {
+  @extend h2;
+}
+
+@if hyphenate() {
+  p:not(.admonition-title), ul.simple, ol.simple {
+    text-align: justify;
+    hyphens: auto;
+    > *:not(p:not(.admonition-title), ul.simple, ol.simple) {
+      hyphens: none;
+      text-align: unset;
+    }
+  }
+}
+
+// // Use Bulma's tables
+// table {
+//   @extend .table;
+// }
+
+// Citations
+dl.citation {
+  // Label for the reference/citation. Block element
+  > dt.label {
+
+  }
+  > dd {
+    margin-top: 0;
+      :first-child {
+        margin-top: 0;
+      }
+  }
+}
+
+
+// Unset Bulma .file class in .content
+.file {
+  align-items: unset;
+  display: unset;
+  justify-content: unset;
+  position: unset;
+}
+
+// Add brackets to references that ask for it
+a.brackets {
+  &::before {
+    content: "[";
+  }
+  &::after {
+    content: "]";
+  }
+}
+
+
+// Make output from python consoles unselectable
+.highlight-pycon span.go {
+  @include unselectable;
+}
+
+// Add language identifiers to code blocks
+@mixin language-identifier($langname) {
+  position: relative;
+  .highlight::before {
+    @include unselectable;
+    content: $langname;
+    color: #696969;
+    font-size: 80%;
+    font-family: $family-monospace;
+    font-variant: small-caps;
+    position: absolute;
+    z-index: 10;
+    right: $code-lang-ident-padding;
+    top: $code-lang-ident-padding;
+    line-height: 0.8;
+  }
+}
+
+.highlight-python, .highlight-py, .highlight-python3, .highlight-py3, .highlight-pycon {
+  @include language-identifier("Python");
+}
+
+.highlight-sh, .highlight-shell-session, .highlight-shell {
+  @include language-identifier("Shell");
+}
+
+.highlight-bash {
+  @include language-identifier("BASH");
+}
+
+.highlight-yaml, .highlight-yml {
+  @include language-identifier("YAML");
+}
+
+.highlight-toml {
+  @include language-identifier("TOML");
+}
+
+.highlight-json {
+  @include language-identifier("JSON");
+}
+
+.highlight-html {
+  @include language-identifier("HTML");
+}
+
+.highlight-xml {
+  @include language-identifier("XML");
+}
+
+.highlight-javascript, .highlight-js {
+  @include language-identifier("JavaScript");
+}
+
+.highlight-jinja {
+  @include language-identifier("Jinja");
+}
+
+.highlight-c {
+  @include language-identifier("C");
+}
+
+.highlight-cxx, .highlight-cpp, .highlight-c\+\+ {
+  @include language-identifier("C++");
+}
+
+.highlight-rs, .highlight-rust {
+  @include language-identifier("Rust");
+}
+
+.highlight-julia {
+  @include language-identifier("Julia");
+}
+
+.highlight-r {
+  @include language-identifier("R");
+}
+
+.highlight-restructuredtext, .highlight-rst, .highlight-rest {
+  @include language-identifier("reStructuredText");
+}
+
+.highlight-md, .highlight-markdown {
+  @include language-identifier("Markdown");
+}
+
+.highlight-tex {
+  @include language-identifier("TeX");
+}
+
+.highlight-latex {
+  @include language-identifier("LaTeX");
+}
+
+// Nbsphinx notebooks
+// !important: Override built in stylesheet
+
+.nbinput, .nboutput {
+  // Hide the prompt
+  >.prompt {
+    display: None;
+  }
+  >.output_area, >.input_area {
+    border: None !important;
+    @include z-depth(1);
+  }
+  .highlight {
+    width: 100%;
+  }
+}
+
+.nbinput {
+  // Stdin cell with attached output
+  &:not(.nblast)>.input_area {
+    border-radius: 4px 0 0 0 !important;
+  }
+  // Stdin cell without attached output
+  &.nblast>.input_area {
+    border-radius: 4px 0 0 4px !important;
+  }
+  // Stdin cell
+  >.input_area {
+    border-left: medium $mdanalysis-gray solid !important;
+    pre {
+      padding: 1.25rem 1.5rem !important;
+    }
+  }
+}
+
+.nboutput {
+  // Final output cell
+  &.nblast>.output_area {
+    border-radius: 0 0 0 4px !important;
+  }
+  // Stderr cell
+  >.stderr.output_area {
+    border-left: medium $grey-light solid !important;
+    background: #fee !important;
+  }
+  // Stdout cell
+  >:not(.stderr).output_area {
+    border-left: medium $grey-light solid !important;
+    background: $body-background-color !important;
+  }
+}
+
+// MyST-nb notebooks
+
+.cell.container {
+  @include z-depth(2);
+  border-radius: 4px 2px 2px 4px;
+  >.cell_input {
+    border: none;
+    border-left: 4px green solid;
+    &:last-child {
+      border-radius: 4px 0 0 4px;
+    }
+    &:not(:last-child) {
+      border-radius: 4px 0 0 0;
+    }
+  }
+  .highlight {
+    border: None;
+    border-radius: 0;
+    box-shadow: None;
+  }
+  >.cell_output {
+    @include z-depth(2);
+    border-left: 4px gray solid;
+    &:last-child {
+      border-radius: 0 0 0 4px;
+    }
+    margin-top: -1em; // Not sure why this is needed
+    padding-left: 0;
+    >.output, >img {
+      margin-top: 0;
+      &.stderr {
+        background: #fee;
+        .highlight, pre {
+          background: None;
+        }
+      }
+      &:not(.stderr) {
+        background: $body-background-color;
+        .highlight, pre {
+          background: None;
+        }
+      }
+      &.traceback {
+        border: None;
+      }
+      pre {
+        padding: 5px;
+        white-space: pre-wrap;
+        word-break: break-all;
+      }
+    }
+  }
+
+  .highlight {
+      border: none;
+  }
+}

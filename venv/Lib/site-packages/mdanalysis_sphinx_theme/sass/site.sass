@@ -1,0 +1,406 @@
+@charset "utf-8"
+
+
+
+@font-face
+    font-family: 'PT Sans', Helvetica, Arial, 'sans-serif'
+
+
+@import "bulma/sass/utilities/functions.sass"
+@import "utilities/_convert"
+@import "utilities/_z-depth"
+
+
+@import "css/theme.css"
+$mdanalysis-orange: #FF9200
+$mdanalysis-gray: #808080
+$mdanalysis-white: #FFFFFF
+$mdanalysis-black: #000000
+$mdanalysis-orange-light: #FFEBD0
+$mdanalysis-code-orange: #ca6500
+$readthedocs-dark-gray: #343131
+$readthedocs-light-gray: #e6e6e6
+$mdanalysis-gray-light: #e3e3e3
+$mdanalysis-yellow: #e7cb00
+$mdanalysis-blue: #007ee7
+$mdanalysis-green: #01a901
+$mdanalysis-orange-red: #F45F4B
+$mdanalysis-red-light: #FFEEED
+
+$danger: $mdanalysis-orange-red
+
+$primary: $mdanalysis-orange
+$accent: color_accent()
+$text: rgba(0,0,0,.87)
+$green: $mdanalysis-green
+$blue: $mdanalysis-blue
+$yellow: $mdanalysis-yellow
+$orange: $mdanalysis-orange
+
+$mobile-navbar-background: mobile_navbar_background()
+$sidebar-logo-background: sidebar_logo_background()
+
+$link: $primary
+$link-hover: $accent
+$link-active: $accent
+$link-focus: $accent
+$link-visited: $accent
+$code: $text
+$code-background: #f8f8f8
+$pre-background: $code-background
+$pre: $code
+$code-link-background-hover: findColorInvert($link-hover)
+$code-padding: 0.25em
+$code-size: 1.0em
+$code-lang-ident-padding: 0.18rem
+$pre-padding: 0.75em
+$pre-font-size: 0.825em
+$pre-code-font-size: $code-size
+$menu-item-active-background-color: $link-active
+$menu-item-active-color: findColorInvert($link-active)
+$menu-item-hover-color: $link-hover
+$background: #FFFFFF
+$body-background-color: $background
+$menu-item-hover-background-color: transparent
+
+$footer-background-color: $background
+
+$accent-invert: findColorInvert($accent)
+$accent-light: lighten($accent, 30)
+$accent-dark: findDarkColor($accent)
+
+$footer-color: findColorInvert($footer-background-color)
+
+$family-sans-serif: 'PT Sans', Helvetica, Arial, 'sans-serif'
+$family-monospace: Menlo, Monaco, 'Courier New', monospace
+
+$navbar-height: 4rem
+$below-navbar-spacing: 0.5rem
+$mobile-content-margin-y: 2vw
+
+$admonition-margin: 1.25rem
+
+
+// 42.5rem is about 80 characters
+$para-width: 42.5rem
+
+$code-widescreen-width: $para-width
+$code-fullhd-width: $para-width
+$api-widescreen-width: 52.5vw
+$api-fullhd-width: 46.2rem
+$expanded-table-widescreen-width: 66vw
+$expanded-table-fullhd-width: 58rem
+
+@import "bulma/sass/utilities/_all.sass"
+@import "bulma/sass/base/_all.sass"
+@import "bulma/sass/grid/columns.sass"
+@import "bulma/sass/components/breadcrumb.sass"
+@import "bulma/sass/components/level.sass"
+@import "bulma/sass/components/navbar.sass"
+@import "bulma/sass/components/menu.sass"
+@import "bulma/sass/components/tabs.sass"
+@import "bulma/sass/elements/icon.sass"
+@import "bulma/sass/elements/image.sass"
+@import "bulma/sass/form/_all.sass"
+@import "bulma/sass/helpers/_all.sass"
+@import "bulma/sass/layout/hero.sass"
+
+$breadcrumb-item-color-light: findColorInvert($breadcrumb-item-color)
+$breadcrumb-item-hover-color-light: $accent-light
+$breadcrumb-item-active-color-light: $accent-light
+$breadcrumb-item-separator-color-light: findColorInvert($breadcrumb-item-separator-color)
+
+=hide-scrollbar
+    -ms-overflow-style: none  /* IE and Edge */
+    scrollbar-width: none  /* Firefox */
+    &::-webkit-scrollbar
+        display: none
+
+// Offset scrolling by the height of the fixed header
+html
+    scroll-padding-top: $navbar-height + $below-navbar-spacing
+
+
+@import "sphinx-api.scss"
+.rst-content
+    @import "material-content.scss"
+    @import "sphinx-content.scss"
+    @import "admonitions.sass"
+    font-size: px2rem(16px)
+    line-height: 1.6
+    color-adjust: exact
+    @media screen and (max-width: $tablet - 1px)
+        width: 100vw - 2 * $mobile-content-margin-y
+        margin-left: $mobile-content-margin-y
+        margin-right: $mobile-content-margin-y
+    @media screen and (min-width: $tablet) and (max-width: $desktop - 1px)
+        margin-left: $mobile-content-margin-y
+    @media screen and (min-width: $desktop)
+        max-width: $para-width
+        margin: auto
+
+
+header, .navbar.is-primary.has-shadow
+    box-shadow: 0 2px 3px 0 $primary
+
+.navbar.is-fixed-bottom, .navbar.is-fixed-top
+    height: $navbar-height
+
+.navbar.is-fixed-bottom, .navbar.is-fixed-top
+    .navbar-item img
+        max-height: $navbar-height - 1rem
+
+
+.burger.is-light
+    color: $light
+
+
+$drawer-width: 20rem
+$drawer-transition-time: 0.5s
+
+@media screen and (max-width: $tablet - 1px)
+    .burger
+        position: fixed
+        top: 0
+        left: 90vw
+        z-index: 10
+        width: 10vw
+
+        span:nth-child(4)
+            opacity: 0%
+            transition: opacity $drawer-transition-time
+            background-color: black
+            position: fixed
+            left: 0
+            top: 0
+            width: 100vw
+            height: 100vh
+            z-index: 11
+            pointer-events: none
+
+    #drawer-toggle:checked
+        /* show navbar-menu on phones and tablets */
+        ~ #drawer
+            transform: translate($drawer-width, 0)
+        /* make navbar-burger become cross on screen less than 1024px */
+        + .burger
+            span:nth-child(1)
+                transform: translateY(5px) rotate(45deg)
+            span:nth-child(2)
+                opacity: 0
+            span:nth-child(3)
+                transform: translateY(-5px) rotate(-45deg)
+            span:nth-child(4)
+                opacity: 50%
+                pointer-events: auto
+
+    #drawer
+        left: -$drawer-width
+        transition: transform $drawer-transition-time
+        width: $drawer-width
+        max-width: 90vw
+        top: 0
+        height: 100vh
+        background-color: $background
+        position: fixed
+        display: block
+        z-index: 12
+        .ff-globaltoc
+            position: unset
+
+    header
+        overflow-wrap: break-word
+
+.has-text-light .breadcrumb
+    a
+        code
+            color: $breadcrumb-item-color-light
+            background-color: transparent
+        color: $breadcrumb-item-color-light
+        &:hover
+            color: $breadcrumb-item-hover-color-light
+    li
+        &.is-active
+            a
+                color: $breadcrumb-item-active-color-light
+        & + li::before
+            color: $breadcrumb-item-separator-color-light
+
+// Style to have this element cover any siblings
+.clip-siblings
+    background: $background
+    position: relative
+
+.ff-localtoc, .ff-globaltoc
+    position: sticky
+    padding: $below-navbar-spacing
+    overflow-y: auto
+    // Don't know why this is necessary, probably because of drawer shenanigans?
+    @media screen and (max-width: $tablet)
+        position: fixed
+        top: $navbar-height
+    // We can put visible scrollbars on the sidebars, at the
+    // cost of some unusual behaviour on wierd screen sizes
+    // where the navbar is not 10vh
+    $sidebar-scrollbars: false
+    @if $sidebar-scrollbars
+        top: $navbar-height + $below-navbar-spacing
+        max-height: 90vh
+    @else
+        top: 0
+        padding-top: $navbar-height + $below-navbar-spacing
+        margin-top: -$navbar-height
+        max-height: 100vh
+        +hide-scrollbar
+.menu
+    overflow-wrap: break-word
+    code
+        background-color: transparent
+        color: unset
+
+body
+    min-height: 100vh
+    display: flex
+    flex-direction: column
+    font-family: 'PT Sans', Helvetica, Arial, 'sans-serif'
+
+header
+    z-index: 1
+    background-color: $primary
+
+    .nav-title
+        padding-left: 0.5rem
+        align-items: center
+        display: inline-flex
+
+    .navbar.is-primary .navbar-brand > a.navbar-item:hover
+        background-color: bulmaDarken($primary, 5%)
+
+    .nav-tabs
+        a
+            color: white
+            padding-top: 0.5rem
+            padding-bottom: 0.5rem
+        a:hover
+            color: $accent
+
+    .is-hidden-tablet.nav-title
+        max-width: 90vw
+
+    .navbar > .navbar-end
+        flex: none
+        margin-left: auto
+        margin-top: auto
+        margin-bottom: auto
+
+    .nav-search
+        input
+            transition: width 0.2s, background-color 0.2s
+        $search-animation-cutoff: $widescreen
+        @media screen and (max-width: $search-animation-cutoff - 1px)
+            .control
+                position: relative
+                height: $input-height
+                input
+                    background-color: unset
+                    width: $input-height
+                    position: absolute
+                    right: 0
+                    &:hover, &:focus, &:active
+                        width: 15rem
+                        max-width: 15rem
+                    &:hover
+                        background-color: darken($primary, 10)
+                        color: $white
+                        &::placeholder
+                            color: $input-icon-color
+                    &:focus, &:active
+                        background-color: $white
+                        color: darken($primary, 10)
+                        &::placeholder
+                            color: $input-placeholder-color
+                &.has-icons-right
+                    padding-right: 0
+                &.has-icons-left
+                    padding-left: 0
+        @media screen and (min-width: $search-animation-cutoff)
+            input
+                background-color: darken($primary, 10)
+                color: $white
+                &::placeholder
+                    color: $input-icon-color
+                &:hover, &:focus, &:active
+                    background-color: $white
+                    color: darken($primary, 10)
+                    &::placeholder
+                        color: $input-placeholder-color
+
+main
+    padding-top: 1rem
+footer
+    margin-top: auto
+    overflow-wrap: break-word
+    nav
+        margin-bottom: 3rem !important
+    .fineprint
+        font-size: 0.8em
+        font-weight: 100
+        a
+            color: $footer-color
+            font-weight: 500
+        a:hover
+            color: $link-hover
+        .copyright
+            font-weight: 400
+            margin-bottom: 1rem
+    .footer-content
+        max-width: $fullhd
+        margin-left: auto
+        margin-right: auto
+    .socials
+        @media screen and (min-width: $tablet)
+            margin-top: auto
+            text-align: right
+        .icon
+            border: solid 1px
+            border-radius: 50%
+.ff-localtoc
+    a
+        color: $menu-item-color
+        display: block
+        &:hover
+            color: $link-hover
+
+    > ul
+        padding-left: 0.5rem
+        ul
+            padding-top: 0.2rem
+            padding-left: 1rem
+            font-size: 0.9em
+        li
+            padding-bottom: 0.2rem
+            &:last-child
+                padding-bottom: 0
+
+@media screen and (min-width: $fullhd - 1px)
+    main
+        max-width: $fullhd + 100px
+        width: 100%
+        margin-left: auto
+        margin-right: auto
+@media screen and (max-width: $fullhd)
+    .menu-list li ul
+        padding-left: 0
+
+a:hover:not(.is-active)
+    code, pre
+        color: $link-hover
+
+.navbar-burger-spacer
+    width: $navbar-height
+    display: inline-block
+
+main > .columns
+    max-width: 100vw
+
+@import "mdanalysis-sphinx.scss"

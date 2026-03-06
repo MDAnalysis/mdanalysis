@@ -1,0 +1,14 @@
+{% extends "sphinx_rtd_theme/footer.html" %}
+{% set show_sphinx = False %}
+
+
+{% block extrafooter %}
+{% if theme_mda_official|tobool %}
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+{% endif %}
+{% endblock %}

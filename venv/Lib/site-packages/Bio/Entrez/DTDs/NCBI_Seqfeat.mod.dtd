@@ -1,0 +1,772 @@
+<!-- ============================================
+     ::DATATOOL:: Generated from "seqfeat.asn"
+     ::DATATOOL:: by application DATATOOL version 2.4.4
+     ::DATATOOL:: on 09/28/2012 23:04:43
+     ============================================ -->
+
+<!-- ============================================ -->
+<!-- This section is mapped from module "NCBI-Seqfeat"
+================================================= -->
+
+<!--
+$Revision: 376374 $
+**********************************************************************
+
+  NCBI Sequence Feature elements
+  by James Ostell, 1990
+  Version 3.0 - June 1994
+
+**********************************************************************
+-->
+
+<!-- Elements used by other modules:
+          Seq-feat,
+          Feat-id,
+          Genetic-code,
+          ModelEvidenceSupport -->
+
+<!-- Elements referenced from other modules:
+          Gene-ref FROM NCBI-Gene,
+          Prot-ref FROM NCBI-Protein,
+          Org-ref FROM NCBI-Organism,
+          Variation-ref FROM NCBI-Variation,
+          BioSource FROM NCBI-BioSource,
+          RNA-ref FROM NCBI-RNA,
+          Seq-id,
+          Seq-loc,
+          Giimport-id FROM NCBI-Seqloc,
+          Pubdesc,
+          Numbering,
+          Heterogen FROM NCBI-Sequence,
+          Rsite-ref FROM NCBI-Rsite,
+          Txinit FROM NCBI-TxInit,
+          DOI,
+          PubMedId FROM NCBI-Biblio,
+          Pub-set FROM NCBI-Pub,
+          Object-id,
+          Dbtag,
+          User-object FROM NCBI-General -->
+<!-- ============================================ -->
+
+<!--
+*** Feature identifiers ********************************
+*
+-->
+<!ELEMENT Feat-id (
+        Feat-id_gibb | 
+        Feat-id_giim | 
+        Feat-id_local | 
+        Feat-id_general)>
+
+<!-- geninfo backbone -->
+<!ELEMENT Feat-id_gibb (%INTEGER;)>
+
+<!-- geninfo import -->
+<!ELEMENT Feat-id_giim (Giimport-id)>
+
+<!-- for local software use -->
+<!ELEMENT Feat-id_local (Object-id)>
+
+<!-- for use by various databases -->
+<!ELEMENT Feat-id_general (Dbtag)>
+
+<!--
+*** Seq-feat *******************************************
+*  sequence feature generalization
+-->
+<!ELEMENT Seq-feat (
+        Seq-feat_id?, 
+        Seq-feat_data, 
+        Seq-feat_partial?, 
+        Seq-feat_except?, 
+        Seq-feat_comment?, 
+        Seq-feat_product?, 
+        Seq-feat_location, 
+        Seq-feat_qual?, 
+        Seq-feat_title?, 
+        Seq-feat_ext?, 
+        Seq-feat_cit?, 
+        Seq-feat_exp-ev?, 
+        Seq-feat_xref?, 
+        Seq-feat_dbxref?, 
+        Seq-feat_pseudo?, 
+        Seq-feat_except-text?, 
+        Seq-feat_ids?, 
+        Seq-feat_exts?, 
+        Seq-feat_support?)>
+<!--
+*** Feature identifiers ********************************
+*
+-->
+<!ELEMENT Seq-feat_id (Feat-id)>
+
+<!-- the specific data -->
+<!ELEMENT Seq-feat_data (SeqFeatData)>
+
+<!-- incomplete in some way? -->
+<!ELEMENT Seq-feat_partial EMPTY>
+<!ATTLIST Seq-feat_partial value ( true | false ) #REQUIRED >
+
+
+<!-- something funny about this? -->
+<!ELEMENT Seq-feat_except EMPTY>
+<!ATTLIST Seq-feat_except value ( true | false ) #REQUIRED >
+
+
+<!ELEMENT Seq-feat_comment (#PCDATA)>
+
+<!-- product of process -->
+<!ELEMENT Seq-feat_product (Seq-loc)>
+
+<!-- feature made from -->
+<!ELEMENT Seq-feat_location (Seq-loc)>
+
+<!-- qualifiers -->
+<!ELEMENT Seq-feat_qual (Gb-qual*)>
+
+<!-- for user defined label -->
+<!ELEMENT Seq-feat_title (#PCDATA)>
+
+<!-- user defined structure extension -->
+<!ELEMENT Seq-feat_ext (User-object)>
+
+<!-- citations for this feature -->
+<!ELEMENT Seq-feat_cit (Pub-set)>
+<!-- evidence for existence of feature -->
+<!ELEMENT Seq-feat_exp-ev %ENUM;>
+
+<!--
+    experimental	-  any reasonable experimental check
+    not-experimental	-  similarity, pattern, etc
+-->
+<!ATTLIST Seq-feat_exp-ev value (
+        experimental |
+        not-experimental
+        ) #REQUIRED >
+
+
+<!-- cite other relevant features -->
+<!ELEMENT Seq-feat_xref (SeqFeatXref*)>
+
+<!-- support for xref to other databases -->
+<!ELEMENT Seq-feat_dbxref (Dbtag*)>
+
+<!-- annotated on pseudogene? -->
+<!ELEMENT Seq-feat_pseudo EMPTY>
+<!ATTLIST Seq-feat_pseudo value ( true | false ) #REQUIRED >
+
+
+<!-- explain if except=TRUE -->
+<!ELEMENT Seq-feat_except-text (#PCDATA)>
+
+<!-- set of Ids; will replace 'id' field -->
+<!ELEMENT Seq-feat_ids (Feat-id*)>
+
+<!-- set of extensions; will replace 'ext' field -->
+<!ELEMENT Seq-feat_exts (User-object*)>
+
+<!-- will replace /experiment, /inference, model-evidence -->
+<!ELEMENT Seq-feat_support (SeqFeatSupport)>
+
+
+<!ELEMENT SeqFeatData (
+        SeqFeatData_gene | 
+        SeqFeatData_org | 
+        SeqFeatData_cdregion | 
+        SeqFeatData_prot | 
+        SeqFeatData_rna | 
+        SeqFeatData_pub | 
+        SeqFeatData_seq | 
+        SeqFeatData_imp | 
+        SeqFeatData_region | 
+        SeqFeatData_comment | 
+        SeqFeatData_bond | 
+        SeqFeatData_site | 
+        SeqFeatData_rsite | 
+        SeqFeatData_user | 
+        SeqFeatData_txinit | 
+        SeqFeatData_num | 
+        SeqFeatData_psec-str | 
+        SeqFeatData_non-std-residue | 
+        SeqFeatData_het | 
+        SeqFeatData_biosrc | 
+        SeqFeatData_clone | 
+        SeqFeatData_variation)>
+
+<!ELEMENT SeqFeatData_gene (Gene-ref)>
+
+<!ELEMENT SeqFeatData_org (Org-ref)>
+<!--
+*** CdRegion ***********************************************
+*
+*  Instructions to translate from a nucleic acid to a peptide
+*    conflict means it's supposed to translate but doesn't
+*
+-->
+<!ELEMENT SeqFeatData_cdregion (Cdregion)>
+
+<!ELEMENT SeqFeatData_prot (Prot-ref)>
+
+<!ELEMENT SeqFeatData_rna (RNA-ref)>
+
+<!-- publication applies to this seq -->
+<!ELEMENT SeqFeatData_pub (Pubdesc)>
+
+<!-- to annotate origin from another seq -->
+<!ELEMENT SeqFeatData_seq (Seq-loc)>
+<!--
+*** Import ***********************************************
+*
+*  Features imported from other databases
+*
+-->
+<!ELEMENT SeqFeatData_imp (Imp-feat)>
+
+<!-- named region (globin locus) -->
+<!ELEMENT SeqFeatData_region (#PCDATA)>
+
+<!-- just a comment -->
+<!ELEMENT SeqFeatData_comment EMPTY>
+
+<!ELEMENT SeqFeatData_bond %ENUM;>
+<!ATTLIST SeqFeatData_bond value (
+        disulfide |
+        thiolester |
+        xlink |
+        thioether |
+        other
+        ) #REQUIRED >
+
+
+<!ELEMENT SeqFeatData_site %ENUM;>
+<!ATTLIST SeqFeatData_site value (
+        active |
+        binding |
+        cleavage |
+        inhibit |
+        modified |
+        glycosylation |
+        myristoylation |
+        mutagenized |
+        metal-binding |
+        phosphorylation |
+        acetylation |
+        amidation |
+        methylation |
+        hydroxylation |
+        sulfatation |
+        oxidative-deamination |
+        pyrrolidone-carboxylic-acid |
+        gamma-carboxyglutamic-acid |
+        blocked |
+        lipid-binding |
+        np-binding |
+        dna-binding |
+        signal-peptide |
+        transit-peptide |
+        transmembrane-region |
+        nitrosylation |
+        other
+        ) #REQUIRED >
+
+
+<!-- restriction site  (for maps really) -->
+<!ELEMENT SeqFeatData_rsite (Rsite-ref)>
+
+<!-- user defined structure -->
+<!ELEMENT SeqFeatData_user (User-object)>
+
+<!-- transcription initiation -->
+<!ELEMENT SeqFeatData_txinit (Txinit)>
+
+<!-- a numbering system -->
+<!ELEMENT SeqFeatData_num (Numbering)>
+<!-- protein secondary structure -->
+<!ELEMENT SeqFeatData_psec-str %ENUM;>
+
+<!--
+    helix	-  any helix
+    sheet	-  beta sheet
+    turn	-  beta or gamma turn
+-->
+<!ATTLIST SeqFeatData_psec-str value (
+        helix |
+        sheet |
+        turn
+        ) #REQUIRED >
+
+
+<!-- non-standard residue here in seq -->
+<!ELEMENT SeqFeatData_non-std-residue (#PCDATA)>
+
+<!-- cofactor, prosthetic grp, etc, bound to seq -->
+<!ELEMENT SeqFeatData_het (Heterogen)>
+
+<!ELEMENT SeqFeatData_biosrc (BioSource)>
+<!--
+*** Clone-ref ***********************************************
+*
+*  Specification of clone features
+*
+-->
+<!ELEMENT SeqFeatData_clone (Clone-ref)>
+
+<!ELEMENT SeqFeatData_variation (Variation-ref)>
+
+<!-- both optional because can have one or both -->
+<!ELEMENT SeqFeatXref (
+        SeqFeatXref_id?, 
+        SeqFeatXref_data?)>
+
+<!-- the feature copied -->
+<!ELEMENT SeqFeatXref_id (Feat-id)>
+
+<!-- the specific data -->
+<!ELEMENT SeqFeatXref_data (SeqFeatData)>
+
+
+<!ELEMENT SeqFeatSupport (
+        SeqFeatSupport_experiment?, 
+        SeqFeatSupport_inference?, 
+        SeqFeatSupport_model-evidence?)>
+
+<!ELEMENT SeqFeatSupport_experiment (ExperimentSupport*)>
+
+<!ELEMENT SeqFeatSupport_inference (InferenceSupport*)>
+
+<!ELEMENT SeqFeatSupport_model-evidence (ModelEvidenceSupport*)>
+
+
+<!ELEMENT EvidenceCategory (%INTEGER;)>
+<!ATTLIST EvidenceCategory value (
+        not-set |
+        coordinates |
+        description |
+        existence
+        ) #IMPLIED >
+
+
+
+<!ELEMENT ExperimentSupport (
+        ExperimentSupport_category?, 
+        ExperimentSupport_explanation, 
+        ExperimentSupport_pmids?, 
+        ExperimentSupport_dois?)>
+
+<!ELEMENT ExperimentSupport_category (EvidenceCategory)>
+
+<!ELEMENT ExperimentSupport_explanation (#PCDATA)>
+
+<!ELEMENT ExperimentSupport_pmids (PubMedId*)>
+
+<!ELEMENT ExperimentSupport_dois (DOI*)>
+
+
+<!ELEMENT Program-id (
+        Program-id_name, 
+        Program-id_version?)>
+
+<!ELEMENT Program-id_name (#PCDATA)>
+
+<!ELEMENT Program-id_version (#PCDATA)>
+
+
+<!ELEMENT EvidenceBasis (
+        EvidenceBasis_programs?, 
+        EvidenceBasis_accessions?)>
+
+<!ELEMENT EvidenceBasis_programs (Program-id*)>
+
+<!ELEMENT EvidenceBasis_accessions (Seq-id*)>
+
+
+<!ELEMENT InferenceSupport (
+        InferenceSupport_category?, 
+        InferenceSupport_type?, 
+        InferenceSupport_other-type?, 
+        InferenceSupport_same-species?, 
+        InferenceSupport_basis, 
+        InferenceSupport_pmids?, 
+        InferenceSupport_dois?)>
+
+<!ELEMENT InferenceSupport_category (EvidenceCategory)>
+
+<!ELEMENT InferenceSupport_type (%INTEGER;)>
+<!ATTLIST InferenceSupport_type value (
+        not-set |
+        similar-to-sequence |
+        similar-to-aa |
+        similar-to-dna |
+        similar-to-rna |
+        similar-to-mrna |
+        similiar-to-est |
+        similar-to-other-rna |
+        profile |
+        nucleotide-motif |
+        protein-motif |
+        ab-initio-prediction |
+        alignment |
+        other
+        ) #IMPLIED >
+
+
+<!ELEMENT InferenceSupport_other-type (#PCDATA)>
+
+<!ELEMENT InferenceSupport_same-species EMPTY>
+<!ATTLIST InferenceSupport_same-species value ( true | false ) "false" >
+
+
+<!ELEMENT InferenceSupport_basis (EvidenceBasis)>
+
+<!ELEMENT InferenceSupport_pmids (PubMedId*)>
+
+<!ELEMENT InferenceSupport_dois (DOI*)>
+
+
+<!ELEMENT ModelEvidenceItem (
+        ModelEvidenceItem_id, 
+        ModelEvidenceItem_exon-count?, 
+        ModelEvidenceItem_exon-length?, 
+        ModelEvidenceItem_full-length?, 
+        ModelEvidenceItem_supports-all-exon-combo?)>
+
+<!ELEMENT ModelEvidenceItem_id (Seq-id)>
+
+<!ELEMENT ModelEvidenceItem_exon-count (%INTEGER;)>
+
+<!ELEMENT ModelEvidenceItem_exon-length (%INTEGER;)>
+
+<!ELEMENT ModelEvidenceItem_full-length EMPTY>
+<!ATTLIST ModelEvidenceItem_full-length value ( true | false ) "false" >
+
+
+<!ELEMENT ModelEvidenceItem_supports-all-exon-combo EMPTY>
+<!ATTLIST ModelEvidenceItem_supports-all-exon-combo value ( true | false ) "false" >
+
+
+
+<!ELEMENT ModelEvidenceSupport (
+        ModelEvidenceSupport_method?, 
+        ModelEvidenceSupport_mrna?, 
+        ModelEvidenceSupport_est?, 
+        ModelEvidenceSupport_protein?, 
+        ModelEvidenceSupport_identification?, 
+        ModelEvidenceSupport_dbxref?, 
+        ModelEvidenceSupport_exon-count?, 
+        ModelEvidenceSupport_exon-length?, 
+        ModelEvidenceSupport_full-length?, 
+        ModelEvidenceSupport_supports-all-exon-combo?)>
+
+<!ELEMENT ModelEvidenceSupport_method (#PCDATA)>
+
+<!ELEMENT ModelEvidenceSupport_mrna (ModelEvidenceItem*)>
+
+<!ELEMENT ModelEvidenceSupport_est (ModelEvidenceItem*)>
+
+<!ELEMENT ModelEvidenceSupport_protein (ModelEvidenceItem*)>
+
+<!ELEMENT ModelEvidenceSupport_identification (Seq-id)>
+
+<!ELEMENT ModelEvidenceSupport_dbxref (Dbtag*)>
+
+<!ELEMENT ModelEvidenceSupport_exon-count (%INTEGER;)>
+
+<!ELEMENT ModelEvidenceSupport_exon-length (%INTEGER;)>
+
+<!ELEMENT ModelEvidenceSupport_full-length EMPTY>
+<!ATTLIST ModelEvidenceSupport_full-length value ( true | false ) "false" >
+
+
+<!ELEMENT ModelEvidenceSupport_supports-all-exon-combo EMPTY>
+<!ATTLIST ModelEvidenceSupport_supports-all-exon-combo value ( true | false ) "false" >
+
+
+<!--
+*** CdRegion ***********************************************
+*
+*  Instructions to translate from a nucleic acid to a peptide
+*    conflict means it's supposed to translate but doesn't
+*
+-->
+<!ELEMENT Cdregion (
+        Cdregion_orf?, 
+        Cdregion_frame?, 
+        Cdregion_conflict?, 
+        Cdregion_gaps?, 
+        Cdregion_mismatch?, 
+        Cdregion_code?, 
+        Cdregion_code-break?, 
+        Cdregion_stops?)>
+
+<!-- just an ORF ? -->
+<!ELEMENT Cdregion_orf EMPTY>
+<!ATTLIST Cdregion_orf value ( true | false ) #REQUIRED >
+
+
+<!ELEMENT Cdregion_frame %ENUM;>
+
+<!--
+    not-set	-  not set, code uses one
+    three	-  reading frame
+-->
+<!ATTLIST Cdregion_frame value (
+        not-set |
+        one |
+        two |
+        three
+        ) #REQUIRED >
+
+
+<!-- conflict -->
+<!ELEMENT Cdregion_conflict EMPTY>
+<!ATTLIST Cdregion_conflict value ( true | false ) #REQUIRED >
+
+
+<!-- number of gaps on conflict/except -->
+<!ELEMENT Cdregion_gaps (%INTEGER;)>
+
+<!-- number of mismatches on above -->
+<!ELEMENT Cdregion_mismatch (%INTEGER;)>
+
+<!-- genetic code used -->
+<!ELEMENT Cdregion_code (Genetic-code)>
+
+<!-- individual exceptions -->
+<!ELEMENT Cdregion_code-break (Code-break*)>
+
+<!-- number of stop codons on above -->
+<!ELEMENT Cdregion_stops (%INTEGER;)>
+
+<!--
+ each code is 64 cells long, in the order where
+ T=0,C=1,A=2,G=3, TTT=0, TTC=1, TCA=4, etc
+ NOTE: this order does NOT correspond to a Seq-data
+ encoding.  It is "natural" to codon usage instead.
+ the value in each cell is the AA coded for
+ start= AA coded only if first in peptide
+   in start array, if codon is not a legitimate start
+   codon, that cell will have the "gap" symbol for
+   that alphabet.  Otherwise it will have the AA
+   encoded when that codon is used at the start.
+-->
+<!ELEMENT Genetic-code (Genetic-code_E*)>
+
+
+
+<!ELEMENT Genetic-code_E (
+        Genetic-code_E_name | 
+        Genetic-code_E_id | 
+        Genetic-code_E_ncbieaa | 
+        Genetic-code_E_ncbi8aa | 
+        Genetic-code_E_ncbistdaa | 
+        Genetic-code_E_sncbieaa | 
+        Genetic-code_E_sncbi8aa | 
+        Genetic-code_E_sncbistdaa)>
+
+<!-- name of a code -->
+<!ELEMENT Genetic-code_E_name (#PCDATA)>
+
+<!-- id in dbase -->
+<!ELEMENT Genetic-code_E_id (%INTEGER;)>
+
+<!-- indexed to IUPAC extended -->
+<!ELEMENT Genetic-code_E_ncbieaa (#PCDATA)>
+
+<!-- indexed to NCBI8aa -->
+<!ELEMENT Genetic-code_E_ncbi8aa (%OCTETS;)>
+
+<!-- indexed to NCBIstdaa -->
+<!ELEMENT Genetic-code_E_ncbistdaa (%OCTETS;)>
+
+<!-- start, indexed to IUPAC extended -->
+<!ELEMENT Genetic-code_E_sncbieaa (#PCDATA)>
+
+<!-- start, indexed to NCBI8aa -->
+<!ELEMENT Genetic-code_E_sncbi8aa (%OCTETS;)>
+
+<!-- start, indexed to NCBIstdaa -->
+<!ELEMENT Genetic-code_E_sncbistdaa (%OCTETS;)>
+
+<!--
+ specific codon exceptions
+ NCBIstdaa code
+-->
+<!ELEMENT Code-break (
+        Code-break_loc, 
+        Code-break_aa)>
+
+<!-- location of exception -->
+<!ELEMENT Code-break_loc (Seq-loc)>
+<!-- the amino acid -->
+<!ELEMENT Code-break_aa (
+        Code-break_aa_ncbieaa | 
+        Code-break_aa_ncbi8aa | 
+        Code-break_aa_ncbistdaa)>
+
+<!-- ASCII value of NCBIeaa code -->
+<!ELEMENT Code-break_aa_ncbieaa (%INTEGER;)>
+
+<!-- NCBI8aa code -->
+<!ELEMENT Code-break_aa_ncbi8aa (%INTEGER;)>
+
+<!ELEMENT Code-break_aa_ncbistdaa (%INTEGER;)>
+
+<!-- table of genetic codes -->
+<!ELEMENT Genetic-code-table (Genetic-code*)>
+
+<!--
+*** Import ***********************************************
+*
+*  Features imported from other databases
+*
+-->
+<!ELEMENT Imp-feat (
+        Imp-feat_key, 
+        Imp-feat_loc?, 
+        Imp-feat_descr?)>
+
+<!ELEMENT Imp-feat_key (#PCDATA)>
+
+<!-- original location string -->
+<!ELEMENT Imp-feat_loc (#PCDATA)>
+
+<!-- text description -->
+<!ELEMENT Imp-feat_descr (#PCDATA)>
+
+
+<!ELEMENT Gb-qual (
+        Gb-qual_qual, 
+        Gb-qual_val)>
+
+<!ELEMENT Gb-qual_qual (#PCDATA)>
+
+<!ELEMENT Gb-qual_val (#PCDATA)>
+
+<!--
+*** Clone-ref ***********************************************
+*
+*  Specification of clone features
+*
+-->
+<!ELEMENT Clone-ref (
+        Clone-ref_name, 
+        Clone-ref_library?, 
+        Clone-ref_concordant?, 
+        Clone-ref_unique?, 
+        Clone-ref_placement-method?, 
+        Clone-ref_clone-seq?)>
+
+<!-- Official clone symbol -->
+<!ELEMENT Clone-ref_name (#PCDATA)>
+
+<!-- Library name -->
+<!ELEMENT Clone-ref_library (#PCDATA)>
+
+<!-- OPTIONAL? -->
+<!ELEMENT Clone-ref_concordant EMPTY>
+<!ATTLIST Clone-ref_concordant value ( true | false ) "false" >
+
+
+<!-- OPTIONAL? -->
+<!ELEMENT Clone-ref_unique EMPTY>
+<!ATTLIST Clone-ref_unique value ( true | false ) "false" >
+
+
+<!ELEMENT Clone-ref_placement-method (%INTEGER;)>
+
+<!--
+    end-seq	-  Clone placed by end sequence
+    insert-alignment	-  Clone placed by insert alignment
+    sts	-  Clone placed by STS
+    end-seq-insert-alignment	-  combined end-seq and insert align
+    external	-  Placement provided externally
+    curated	-  Human placed or approved
+-->
+<!ATTLIST Clone-ref_placement-method value (
+        end-seq |
+        insert-alignment |
+        sts |
+        fish |
+        fingerprint |
+        end-seq-insert-alignment |
+        external |
+        curated |
+        other
+        ) #IMPLIED >
+
+
+<!ELEMENT Clone-ref_clone-seq (Clone-seq-set)>
+
+
+<!ELEMENT Clone-seq-set (Clone-seq*)>
+
+
+<!ELEMENT Clone-seq (
+        Clone-seq_type, 
+        Clone-seq_confidence?, 
+        Clone-seq_location, 
+        Clone-seq_seq?, 
+        Clone-seq_align-id?, 
+        Clone-seq_support?)>
+
+<!ELEMENT Clone-seq_type (%INTEGER;)>
+<!ATTLIST Clone-seq_type value (
+        insert |
+        end |
+        other
+        ) #IMPLIED >
+
+
+<!ELEMENT Clone-seq_confidence (%INTEGER;)>
+
+<!--
+    multiple	-  Multiple hits
+    na	-  Unspecified
+    nohit-rep	-  No hits, end flagged repetitive
+    nohitnorep	-  No hits, end not flagged repetitive
+    other-chrm	-  Hit on different chromosome
+    virtual	-  Virtual (hasn't been sequenced)
+    multiple-rep	-  Multiple hits, end flagged repetitive
+    multiplenorep	-  Multiple hits, end not flagged repetitive
+    no-hit	-  No hits
+-->
+<!ATTLIST Clone-seq_confidence value (
+        multiple |
+        na |
+        nohit-rep |
+        nohitnorep |
+        other-chrm |
+        unique |
+        virtual |
+        multiple-rep |
+        multiplenorep |
+        no-hit |
+        other
+        ) #IMPLIED >
+
+
+<!-- location on sequence -->
+<!ELEMENT Clone-seq_location (Seq-loc)>
+
+<!-- clone sequence location -->
+<!ELEMENT Clone-seq_seq (Seq-loc)>
+
+<!-- internal alignment identifier -->
+<!ELEMENT Clone-seq_align-id (Dbtag)>
+
+<!ELEMENT Clone-seq_support (%INTEGER;)>
+
+<!--
+    prototype	-  sequence used to place clone
+    supporting	-  sequence supports placement
+    supports-other	-  supports a different placement
+    non-supporting	-  does not support any placement
+-->
+<!ATTLIST Clone-seq_support value (
+        prototype |
+        supporting |
+        supports-other |
+        non-supporting
+        ) #IMPLIED >
+
+

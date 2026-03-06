@@ -1,0 +1,134 @@
+Metadata-Version: 2.4
+Name: latexcodec
+Version: 3.0.1
+Summary: A lexer and codec to work with LaTeX code in Python.
+Home-page: https://github.com/mcmtroffaes/latexcodec
+Download-URL: http://pypi.python.org/pypi/latexcodec
+Author: Matthias C. M. Troffaes
+Author-email: matthias.troffaes@gmail.com
+License: MIT
+Platform: any
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Topic :: Text Processing :: Markup :: LaTeX
+Classifier: Topic :: Text Processing :: Filters
+Requires-Python: >=3.9
+License-File: LICENSE.rst
+License-File: AUTHORS.rst
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: download-url
+Dynamic: home-page
+Dynamic: license
+Dynamic: license-file
+Dynamic: platform
+Dynamic: requires-python
+Dynamic: summary
+
+* **Instead of using latexcodec, I encourage you to consider pylatexenc instead, which is far superior:** https://github.com/phfaist/pylatexenc
+
+* Download: http://pypi.python.org/pypi/latexcodec/#downloads
+
+* Documentation: http://latexcodec.readthedocs.org/
+
+* Development: http://github.com/mcmtroffaes/latexcodec/
+
+.. |ci| image:: https://github.com/mcmtroffaes/latexcodec/actions/workflows/python-package.yml/badge.svg
+    :target: https://github.com/mcmtroffaes/latexcodec/actions/workflows/python-package.yml
+    :alt: ci
+
+.. |codecov| image:: https://codecov.io/gh/mcmtroffaes/latexcodec/branch/develop/graph/badge.svg
+    :target: https://codecov.io/gh/mcmtroffaes/latexcodec
+    :alt: codecov
+
+The codec provides a convenient way of going between text written in
+LaTeX and unicode. Since it is not a LaTeX compiler, it is more
+appropriate for short chunks of text, such as a paragraph or the
+values of a BibTeX entry, and it is not appropriate for a full LaTeX
+document. In particular, its behavior on the LaTeX commands that do
+not simply select characters is intended to allow the unicode
+representation to be understandable by a human reader, but is not
+canonical and may require hand tuning to produce the desired effect.
+
+The encoder does a best effort to replace unicode characters outside
+of the range used as LaTeX input (ascii by default) with a LaTeX
+command that selects the character. More technically, the unicode code
+point is replaced by a LaTeX command that selects a glyph that
+reasonably represents the code point. Unicode characters with special
+uses in LaTeX are replaced by their LaTeX equivalents. For example,
+
+====================== ===================
+original text          encoded LaTeX
+====================== ===================
+``¥``                  ``\yen``
+``ü``                  ``\"u``
+``\N{NO-BREAK SPACE}`` ``~``
+``~``                  ``\textasciitilde``
+``%``                  ``\%``
+``#``                  ``\#``
+``\textbf{x}``         ``\textbf{x}``
+====================== ===================
+
+The decoder does a best effort to replace LaTeX commands that select
+characters with the unicode for the character they are selecting. For
+example,
+
+===================== ======================
+original LaTeX        decoded unicode
+===================== ======================
+``\yen``              ``¥``
+``\"u``               ``ü``
+``~``                 ``\N{NO-BREAK SPACE}``
+``\textasciitilde``   ``~``
+``\%``                ``%``
+``\#``                ``#``
+``\textbf{x}``        ``\textbf {x}``
+``#``                 ``#``
+===================== ======================
+
+In addition, comments are dropped (including the final newline that
+marks the end of a comment), paragraphs are canonicalized into double
+newlines, and other newlines are left as is. Spacing after LaTeX
+commands is also canonicalized.
+
+For example,
+
+::
+
+  hi % bye
+  there\par world
+  \textbf     {awesome}
+
+is decoded as
+
+::
+
+  hi there
+
+  world
+  \textbf {awesome}
+
+When decoding, LaTeX commands not directly selecting characters (for
+example, macros and formatting commands) are passed through
+unchanged. The same happens for LaTeX commands that select characters
+but are not yet recognized by the codec.  Either case can result in a
+hybrid unicode string in which some characters are understood as
+literally the character and others as parts of unexpanded commands.
+Consequently, at times, backslashes will be left intact for denoting
+the start of a potentially unrecognized control sequence.
+
+Given the numerous and changing packages providing such LaTeX
+commands, the codec will never be complete, and new translations of
+unrecognized unicode or unrecognized LaTeX symbols are always welcome.

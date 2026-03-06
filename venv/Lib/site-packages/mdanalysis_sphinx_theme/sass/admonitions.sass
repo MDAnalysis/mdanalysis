@@ -1,0 +1,160 @@
+
+@mixin material_admonitions($color, $font, $unicode)
+    border-left-color: $color
+    background-color: rgba($color, 0.1)
+    [dir="rtl"] &
+        border-right-color: $color
+    .admonition-title, &.deprecated .versionmodified.deprecated
+      background-color: $color //rgba($color, 0.1)
+      border-left-color: $color
+
+      // Adjust for right-to-left languages
+      [dir="rtl"] &
+        border-right-color: $color
+
+      // Text color
+      color: $white
+
+      // Admonition icon
+      &::before
+        // color: $color
+        color: $white
+        font-family: $font
+        content: $unicode
+
+      strong
+        color: $white
+      
+
+.admonition, div.deprecated, div.alert
+  margin: $admonition-margin 0
+  padding: 0 0.75rem
+  overflow: hidden
+  color: $text
+  page-break-inside: avoid
+  border-left: none //0.25rem solid $accent
+  border-radius: 0.125rem
+  @include z-depth(6)
+
+  // [print]: Omit shadow as it may lead to rendering errors
+  @media print
+    box-shadow: none
+
+  // Adjust for right-to-left languages
+  [dir="rtl"] &
+    border-right: 0.25rem solid $accent
+    border-left: none
+
+  // Adjust vertical spacing for nested admonitions
+  .admonition
+    margin-top: 1em
+    margin-bottom: 1em
+
+  // Adjust spacing for contained table wrappers
+  .md-typeset__scrollwrap
+    margin: 1em -0.75rem
+
+  // Adjust spacing for contained tables
+  .md-typeset__table
+    padding: 0 0.75rem
+
+  // Adjust spacing for single-child tabbed block container
+  > .tabbed-set:only-child
+    margin-top: 0
+
+  // Adjust spacing on last child
+  html &:not(div.deprecated) > :last-child
+    margin-bottom: 0.75rem
+
+  &:not(div.deprecated) >p:not(.admonition-title)
+    max-width: calc(80ex - 2  * #{$admonition-margin})
+
+  &.note, &.admonition-note
+      @include material_admonitions($mdanalysis-gray, "FontAwesome", "\f05a")
+  &.seealso, &.admonition-seealso
+      @include material_admonitions($mdanalysis-gray, "FontAwesome", "\f06e")
+  &.admonition-abstract, &.admonition-summary, &.admonition-tldr
+      @include material_admonitions($cyan, "FontAwesome", "\f543")
+  &.admonition-info, &.alert-info
+      @include material_admonitions($mdanalysis-code-orange, "FontAwesome", "\f129")
+  &.admonition-todo
+      @include material_admonitions($yellow, "FontAwesome", "\f249")
+  &.tip, &.hint, &.admonition-tip, &.admonition-hint
+      @include material_admonitions($turquoise, "FontAwesome", "\f06d")
+  &.important, &.admonition-important
+      @include material_admonitions($mdanalysis-orange, "FontAwesome", "\f06a")
+  &.admonition-success, &.admonition-check, &.admonition-done, &.alert-success
+      @include material_admonitions($green, "FontAwesome", "\f058")
+  &.admonition-question, &.admonition-help, &.admonition-faq
+      @include material_admonitions($cyan, "FontAwesome", "\f059")
+  &.warning, &.caution, &.attention, &.admonition-warning, &.admonition-caution, &.admonition-attention
+      @include material_admonitions($mdanalysis-orange, "FontAwesome", "\f071")
+  &.attention, &.admonition-attention, &.alert-warning
+      @include material_admonitions($mdanalysis-orange, "FontAwesome", "\f071")
+  &.error, &.admonition-failure, &.admonition-fail, &.admonition-missing, &.admonition-error
+      @include material_admonitions($mdanalysis-orange-red, "FontAwesome", "\f057")
+  &.danger, &.admonition-danger, &.alert-danger
+      @include material_admonitions($mdanalysis-orange-red, "FontAwesome", "\f071")
+  &.admonition-bug
+      @include material_admonitions($purple, "FontAwesome", "\f188")
+  &.admonition-example
+      @include material_admonitions($blue, "FontAwesome", "\f0c5")
+  &.admonition-quote, &.admonition-cite
+      @include material_admonitions($mdanalysis-gray, "FontAwesome", "\f10e")
+  &.deprecated, &.admonition-deprecated
+      @include material_admonitions($mdanalysis-gray, "FontAwesome", "\f017")
+  &.experimental, &.admonition-experimental, &.admonition-experiment, &.admonition-experiments
+      @include material_admonitions($mdanalysis-orange, "FontAwesome", "\f492")
+
+// Differences between deprecated and admonitions
+div.deprecated > p
+  margin-top: 0
+  max-width: unset
+
+.versionmodified.deprecated
+  display: block
+  margin: 0 -0.75rem 0.75rem -1rem
+
+// Admonition title
+.admonition-title
+  margin: 0 -0.75rem 0 -1rem
+.admonition-title, .versionmodified.deprecated
+  position: relative
+  padding: 0.5rem 0.75rem 0.5rem 2.5rem
+  font-weight: 700
+  background-color: $accent // rgba($accent, 0.1)
+  border-left: 0.25rem solid $accent
+
+  // Adjust for right-to-left languages
+  [dir="rtl"] &
+    margin: 0 -1rem 0 -0.75rem
+    padding: 0.5rem 2.5rem 0.5rem 0.75rem
+    border-right: 0.25rem solid $accent
+    border-left: none
+
+  // Adjust spacing for title-only admonitions
+  html &:last-child
+    &.admonition-title
+      margin-bottom: 0
+    &.versionmodified.deprecated
+      margin-bottom: -1rem
+
+  // Admonition icon
+  &::before
+    position: absolute
+    left: 0.75rem
+    width: 1.25rem
+    height: 1.25rem
+    // color: $accent
+    font-family: "FontAwesome"
+    content: "\f12a"
+
+    // Adjust for right-to-left languages
+    [dir="rtl"] &
+      right: 0.75rem
+      left: initial
+
+  // Adjust spacing on last tabbed block container child - if the tabbed
+  // block container is the sole child, it looks better to omit the margin
+  + .tabbed-set:last-child
+    margin-top: 0

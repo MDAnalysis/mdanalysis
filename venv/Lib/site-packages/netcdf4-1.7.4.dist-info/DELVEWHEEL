@@ -1,0 +1,2 @@
+Version: 1.11.2
+Arguments: ['C:\\Users\\runneradmin\\AppData\\Local\\Temp\\cibw-run-8i60fihq\\cp311-win_amd64\\build\\venv\\Scripts\\delvewheel', 'repair', '--include', 'blosc.dll;zstd.dll;lz4.dll', '-w', 'C:\\Users\\runneradmin\\AppData\\Local\\Temp\\cibw-run-8i60fihq\\cp311-win_amd64\\repaired_wheel', 'C:\\Users\\runneradmin\\AppData\\Local\\Temp\\cibw-run-8i60fihq\\cp311-win_amd64\\built_wheel\\netcdf4-1.7.4-cp311-abi3-win_amd64.whl']
