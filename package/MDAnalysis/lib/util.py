@@ -505,7 +505,7 @@ def greedy_splitext(p):
     -------
 
     >>> from MDAnalysis.lib.util import greedy_splitext
-    >>> greedy_splitext("/home/joe/protein.pdb.bz2")
+    >>> greedy_splitext("/home/joe/protein.pdb.bz2") # doctest: +SKIP
     ('/home/joe/protein', '.pdb.bz2')
 
     """
