@@ -267,11 +267,9 @@ jobs:
             python=${{ matrix.python-version }}
             packaging
             pip
-          # jaime's shim to avoid pulling down the cudatoolkit
           # bioconda for clustalw things
           condarc: |
             channels:
-              - jaimergp/label/unsupported-cudatoolkit-shim
               - conda-forge
               - bioconda
 
