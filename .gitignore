@@ -52,3 +52,6 @@ benchmarks/results
 .vscode
 *.lock
 venv/
+docs/_build/
+*.pyc
+
