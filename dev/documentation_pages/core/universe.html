@@ -22,7 +22,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>12.2.1. Core object: Universe — MDAnalysis.core.universe &mdash; MDAnalysis 2.11.0-dev0 documentation</title>
+  <title>13.2.1. Core object: Universe — MDAnalysis.core.universe &mdash; MDAnalysis 2.11.0-dev0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/site.css" />
 
@@ -39,8 +39,8 @@
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="12.2.2. Core objects: Containers — MDAnalysis.core.groups" href="groups.html" />
-    <link rel="prev" title="12.1. Core functions of MDAnalysis" href="init.html" /> 
+    <link rel="next" title="13.2.2. Core objects: Containers — MDAnalysis.core.groups" href="groups.html" />
+    <link rel="prev" title="13.1. Core functions of MDAnalysis" href="init.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -105,30 +105,31 @@
 <li class="toctree-l1"><a class="reference internal" href="../guesser_modules.html">6. Guesser modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">7. Coordinates modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../converters.html">8. Converter modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">9. Trajectory transformations (“on-the-fly” transformations)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">10. Selection exporters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">11. Auxiliary modules</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../core_modules.html">12. Core modules</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="init.html">12.1. Core functions of MDAnalysis</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../core_modules.html#important-objects-for-users">12.2. Important objects for users</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">12.2.1. Core object: Universe — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.universe</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#classes">12.2.1.1. Classes</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#functions">12.2.1.2. Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fetchers_modules.html">9. Fetchers modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">10. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">11. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">12. Auxiliary modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../core_modules.html">13. Core modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="init.html">13.1. Core functions of MDAnalysis</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../core_modules.html#important-objects-for-users">13.2. Important objects for users</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">13.2.1. Core object: Universe — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.universe</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#classes">13.2.1.1. Classes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#functions">13.2.1.2. Functions</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="groups.html">12.2.2. Core objects: Containers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.groups</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="groups.html">13.2.2. Core objects: Containers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.groups</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../core_modules.html#topology-system">12.3. Topology system</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../core_modules.html#selection-system">12.4. Selection system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core_modules.html#topology-system">13.3. Topology system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core_modules.html#selection-system">13.4. Selection system</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">13. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">14. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../version.html">15. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../units.html">16. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">17. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../references.html">18. References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">14. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">15. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">16. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">17. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">18. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">19. References</a></li>
 </ul>
 
 </div>
@@ -146,8 +147,8 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="../core_modules.html"><span class="section-number">12. </span>Core modules</a></li>
-      <li class="breadcrumb-item active"><span class="section-number">12.2.1. </span>Core object: Universe — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.universe</span></code></li>
+          <li class="breadcrumb-item"><a href="../core_modules.html"><span class="section-number">13. </span>Core modules</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">13.2.1. </span>Core object: Universe — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.universe</span></code></li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/documentation_pages/core/universe.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -158,7 +159,7 @@
            <div itemprop="articleBody">
              
   <section id="core-object-universe-mdanalysis-core-universe">
-<span id="module-MDAnalysis.core.universe"></span><h1><span class="section-number">12.2.1. </span>Core object: Universe — <a class="reference internal" href="#module-MDAnalysis.core.universe" title="MDAnalysis.core.universe"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.universe</span></code></a><a class="headerlink" href="#core-object-universe-mdanalysis-core-universe" title="Link to this heading"></a></h1>
+<span id="module-MDAnalysis.core.universe"></span><h1><span class="section-number">13.2.1. </span>Core object: Universe — <a class="reference internal" href="#module-MDAnalysis.core.universe" title="MDAnalysis.core.universe"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.universe</span></code></a><a class="headerlink" href="#core-object-universe-mdanalysis-core-universe" title="Link to this heading"></a></h1>
 <p>The <a class="reference internal" href="#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> class ties a topology
 and a trajectory together. Almost all code in MDAnalysis starts with a
 <code class="docutils literal notranslate"><span class="pre">Universe</span></code>.</p>
@@ -172,7 +173,7 @@ construct a <code class="docutils literal notranslate"><span class="pre">Univers
 <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> instances with the
 <a class="reference internal" href="#MDAnalysis.core.universe.Merge" title="MDAnalysis.core.universe.Merge"><code class="xref py py-func docutils literal notranslate"><span class="pre">Merge()</span></code></a> function.</p>
 <section id="classes">
-<h2><span class="section-number">12.2.1.1. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
+<h2><span class="section-number">13.2.1.1. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Universe">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.universe.</span></span><span class="sig-name descname"><span class="pre">Universe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topology</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">coordinates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_coordinates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topology_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transformations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guess_bonds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vdwradii</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fudge_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.55</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lower_bound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_memory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_guess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('types',</span> <span class="pre">'masses')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_guess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_memory_step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe" title="Link to this definition"></a></dt>
@@ -1125,7 +1126,7 @@ set to True. Default value is False.</p></li>
 
 </section>
 <section id="functions">
-<h2><span class="section-number">12.2.1.2. </span>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h2>
+<h2><span class="section-number">13.2.1.2. </span>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.core.universe.Merge">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.universe.</span></span><span class="sig-name descname"><span class="pre">Merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Merge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.universe.Merge" title="Link to this definition"></a></dt>
@@ -1193,8 +1194,8 @@ of them together:</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="init.html" class="btn btn-neutral float-left" title="12.1. Core functions of MDAnalysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="groups.html" class="btn btn-neutral float-right" title="12.2.2. Core objects: Containers — MDAnalysis.core.groups" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="init.html" class="btn btn-neutral float-left" title="13.1. Core functions of MDAnalysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="groups.html" class="btn btn-neutral float-right" title="13.2.2. Core objects: Containers — MDAnalysis.core.groups" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

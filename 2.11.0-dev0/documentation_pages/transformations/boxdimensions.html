@@ -22,7 +22,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>9.6.7. Set box dimensions — MDAnalysis.transformations.boxdimensions &mdash; MDAnalysis 2.11.0-dev0 documentation</title>
+  <title>10.6.7. Set box dimensions — MDAnalysis.transformations.boxdimensions &mdash; MDAnalysis 2.11.0-dev0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/site.css" />
 
@@ -39,8 +39,8 @@
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="10. Selection exporters" href="../selections_modules.html" />
-    <link rel="prev" title="9.6.6. No Jump Trajectory Unwrapping — MDAnalysis.transformations.nojump" href="nojump.html" /> 
+    <link rel="next" title="11. Selection exporters" href="../selections_modules.html" />
+    <link rel="prev" title="10.6.6. No Jump Trajectory Unwrapping — MDAnalysis.transformations.nojump" href="nojump.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -105,33 +105,34 @@
 <li class="toctree-l1"><a class="reference internal" href="../guesser_modules.html">6. Guesser modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">7. Coordinates modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../converters.html">8. Converter modules</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../trajectory_transformations.html">9. Trajectory transformations (“on-the-fly” transformations)</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../trajectory_transformations.html#workflows">9.1. Workflows</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../trajectory_transformations.html#creating-transformations">9.2. Creating transformations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../trajectory_transformations.html#transformations-in-mdanalysis">9.3. Transformations in MDAnalysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../trajectory_transformations.html#how-to-transformations">9.4. How to transformations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../trajectory_transformations.html#building-blocks-for-transformation-classes">9.5. Building blocks for Transformation Classes</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../trajectory_transformations.html#currently-implemented-transformations">9.6. Currently implemented transformations</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="translate.html">9.6.1. Trajectory translation — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.translate</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="rotate.html">9.6.2. Trajectory rotation — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.rotate</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="positionaveraging.html">9.6.3. Trajectory Coordinate Averaging — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.positionaveraging</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="fit.html">9.6.4. Fitting transformations — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.fit</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="wrap.html">9.6.5. Wrap/unwrap transformations — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.wrap</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nojump.html">9.6.6. No Jump Trajectory Unwrapping — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.nojump</span></code></a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">9.6.7. Set box dimensions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.boxdimensions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fetchers_modules.html">9. Fetchers modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../trajectory_transformations.html">10. Trajectory transformations (“on-the-fly” transformations)</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../trajectory_transformations.html#workflows">10.1. Workflows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../trajectory_transformations.html#creating-transformations">10.2. Creating transformations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../trajectory_transformations.html#transformations-in-mdanalysis">10.3. Transformations in MDAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../trajectory_transformations.html#how-to-transformations">10.4. How to transformations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../trajectory_transformations.html#building-blocks-for-transformation-classes">10.5. Building blocks for Transformation Classes</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../trajectory_transformations.html#currently-implemented-transformations">10.6. Currently implemented transformations</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="translate.html">10.6.1. Trajectory translation — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.translate</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rotate.html">10.6.2. Trajectory rotation — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.rotate</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="positionaveraging.html">10.6.3. Trajectory Coordinate Averaging — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.positionaveraging</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="fit.html">10.6.4. Fitting transformations — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.fit</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wrap.html">10.6.5. Wrap/unwrap transformations — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.wrap</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nojump.html">10.6.6. No Jump Trajectory Unwrapping — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.nojump</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">10.6.7. Set box dimensions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.boxdimensions</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">10. Selection exporters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">11. Auxiliary modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">12. Core modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">13. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">14. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../version.html">15. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../units.html">16. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">17. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../references.html">18. References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">11. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">12. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">13. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">14. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">15. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">16. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">17. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">18. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">19. References</a></li>
 </ul>
 
 </div>
@@ -149,8 +150,8 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="../trajectory_transformations.html"><span class="section-number">9. </span>Trajectory transformations (“on-the-fly” transformations)</a></li>
-      <li class="breadcrumb-item active"><span class="section-number">9.6.7. </span>Set box dimensions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.boxdimensions</span></code></li>
+          <li class="breadcrumb-item"><a href="../trajectory_transformations.html"><span class="section-number">10. </span>Trajectory transformations (“on-the-fly” transformations)</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">10.6.7. </span>Set box dimensions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.boxdimensions</span></code></li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/documentation_pages/transformations/boxdimensions.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -161,7 +162,7 @@
            <div itemprop="articleBody">
              
   <section id="set-box-dimensions-mdanalysis-transformations-boxdimensions">
-<span id="module-MDAnalysis.transformations.boxdimensions"></span><h1><span class="section-number">9.6.7. </span>Set box dimensions — <a class="reference internal" href="#module-MDAnalysis.transformations.boxdimensions" title="MDAnalysis.transformations.boxdimensions"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.boxdimensions</span></code></a><a class="headerlink" href="#set-box-dimensions-mdanalysis-transformations-boxdimensions" title="Link to this heading"></a></h1>
+<span id="module-MDAnalysis.transformations.boxdimensions"></span><h1><span class="section-number">10.6.7. </span>Set box dimensions — <a class="reference internal" href="#module-MDAnalysis.transformations.boxdimensions" title="MDAnalysis.transformations.boxdimensions"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.boxdimensions</span></code></a><a class="headerlink" href="#set-box-dimensions-mdanalysis-transformations-boxdimensions" title="Link to this heading"></a></h1>
 <p>Set dimensions of the simulation box, either to a constant vector across
 all timesteps or to a specified vector at each frame.</p>
 <dl class="py class">
@@ -224,8 +225,8 @@ Default is <code class="docutils literal notranslate"><span class="pre">True</sp
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="nojump.html" class="btn btn-neutral float-left" title="9.6.6. No Jump Trajectory Unwrapping — MDAnalysis.transformations.nojump" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../selections_modules.html" class="btn btn-neutral float-right" title="10. Selection exporters" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="nojump.html" class="btn btn-neutral float-left" title="10.6.6. No Jump Trajectory Unwrapping — MDAnalysis.transformations.nojump" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../selections_modules.html" class="btn btn-neutral float-right" title="11. Selection exporters" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
