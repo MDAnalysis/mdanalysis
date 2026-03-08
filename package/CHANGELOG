@@ -38,6 +38,7 @@ Fixes
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Enhancements
+ * Reduces duplication of code in _apply() function (Issue #5247, PR #5294)
  * Improved performance of `AtomGroup.wrap()` with compounds (PR #5220)
  * Adds support for parsing `.tpr` files produced by GROMACS 2026.0
  * Enables parallelization for analysis.diffusionmap.DistanceMatrix
