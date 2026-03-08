@@ -1,5 +1,5 @@
 trigger:
-  # start a new build for every push
+  # start a new build for every push (triggering run 2 for cache verification)
   batch: False
   branches:
     include:
