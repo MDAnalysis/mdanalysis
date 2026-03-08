@@ -19,6 +19,7 @@ jobs:
   condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/develop'))  # skip for PR merges
   variables:
     MPLBACKEND: agg
+    CACHE_VERSION: '1'
   strategy:
     matrix:
         Win-Python311-64bit-full:
@@ -80,10 +81,10 @@ jobs:
 
   - task: Cache@2
     inputs:
-      key: 'pip | "$(Agent.OS)" | "$(PYTHON_VERSION)" | "$(BUILD_TYPE)" | "$(imageName)"'
+      key: 'pip | "$(Agent.OS)" | "$(PYTHON_VERSION)" | "$(BUILD_TYPE)" | "$(imageName)" | "$(CACHE_VERSION)" | package/requirements.txt'
       restoreKeys: |
-        pip | "$(Agent.OS)" | "$(PYTHON_VERSION)" | "$(BUILD_TYPE)"
-        pip | "$(Agent.OS)" | "$(PYTHON_VERSION)"
+        pip | "$(Agent.OS)" | "$(PYTHON_VERSION)" | "$(BUILD_TYPE)" | "$(imageName)" | "$(CACHE_VERSION)"
+        pip | "$(Agent.OS)" | "$(PYTHON_VERSION)" | "$(BUILD_TYPE)" | "$(imageName)"
       path: $(PIP_CACHE_DIR)
     displayName: 'Cache pip'
   # a PEP518 compliant wheel build shoud be
