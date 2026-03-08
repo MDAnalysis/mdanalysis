@@ -74,6 +74,8 @@ inputs:
     default: 'networkx'
   openmm:
     default: 'openmm'
+  pooch:
+    default: 'pooch'
   pytng:
     default: 'pytng>=0.2.3'
   rdkit:
@@ -145,6 +147,7 @@ runs:
           ${{ inputs.netcdf4 }}
           ${{ inputs.networkx }}
           ${{ inputs.openmm }}
+          ${{ inputs.pooch }}
           ${{ inputs.pytng }}
           ${{ inputs.rdkit }}
           ${{ inputs.scikit-learn }}
