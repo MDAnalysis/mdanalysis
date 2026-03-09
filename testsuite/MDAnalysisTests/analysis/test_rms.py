@@ -502,15 +502,12 @@ class TestRMSD(object):
             "between true values and calculated values",
         )
 
-    def test_rmsd_misuse_selec_raises_TypeError(
-        self, universe
-    ):
+    def test_rmsd_misuse_selec_raises_TypeError(self, universe):
         with pytest.raises(TypeError):
             RMSD = MDAnalysis.analysis.rms.RMSD(
                 universe,
                 select=42,
             )
-
 
 
 class TestRMSF(object):
