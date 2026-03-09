@@ -287,11 +287,12 @@ def process_selection(select):
 
     Parameters
     ----------
-    select : str or tuple or dict
+    select : str or tuple or dict or None
 
         - `str` -> Any valid string selection
         - `dict` -> ``{'mobile':sel1, 'reference':sel2}``
         - `tuple` -> ``(sel1, sel2)``
+        - ``None``
 
     Returns
     -------
@@ -325,8 +326,10 @@ def process_selection(select):
                 "select dictionary must contain entries for keys "
                 "'mobile' and 'reference'."
             ) from None
+    elif select is None:
+        select = {"reference": None, "mobile": None}
     else:
-        raise TypeError("'select' must be either a string, 2-tuple, or dict")
+        raise TypeError("'select' must be either a string, 2-tuple, dict or None")
     select["mobile"] = asiterable(select["mobile"])
     select["reference"] = asiterable(select["reference"])
     return select
@@ -394,7 +397,7 @@ class RMSD(AnalysisBase):
         reference : AtomGroup or Universe (optional)
             Group of reference atoms; if ``None`` then the current frame of
             `atomgroup` is used.
-        select : str or dict or tuple (optional)
+        select : str or dict or tuple or None (optional)
             The selection to operate on; can be one of:
 
             1. any valid selection string for
@@ -409,12 +412,16 @@ class RMSD(AnalysisBase):
 
             3. a tuple ``(sel1, sel2)``
 
+            4. ``None``
+
             When using 2. or 3. with *sel1* and *sel2* then these selection strings
             are applied to `atomgroup` and `reference` respectively and should
             generate *groups of equivalent atoms*.  *sel1* and *sel2* can each also
             be a *list of selection strings* to generate a
             :class:`~MDAnalysis.core.groups.AtomGroup` with defined atom order as
-            described under :ref:`ordered-selections-label`).
+            described under :ref:`ordered-selections-label`). When using ``None``
+            no selection is performed and all atoms from `atomgroup` and `reference`
+            are used in their original order.
 
         groupselections : list (optional)
             A list of selections as described for `select`, with the difference
@@ -539,8 +546,10 @@ class RMSD(AnalysisBase):
         self.tol_mass = tol_mass
         self.ref_frame = ref_frame
         self.weights_groupselections = weights_groupselections
-        self.ref_atoms = self.reference.select_atoms(*select["reference"])
-        self.mobile_atoms = self.atomgroup.select_atoms(*select["mobile"])
+        self.ref_atoms = (self.reference if select["reference"] is None
+                          else self.reference.select_atoms(*select["reference"]))
+        self.mobile_atoms = (self.atomgroup if select["mobile"] is None
+                             else self.atomgroup.select_atoms(*select["mobile"]))
 
         if len(self.ref_atoms) != len(self.mobile_atoms):
             err = (
