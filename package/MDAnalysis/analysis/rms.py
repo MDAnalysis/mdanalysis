@@ -549,14 +549,14 @@ class RMSD(AnalysisBase):
         self.ref_frame = ref_frame
         self.weights_groupselections = weights_groupselections
         self.ref_atoms = (
-            self.reference
-            if select["reference"] is None
-            else self.reference.select_atoms(*select["reference"])
+            self.reference.select_atoms(*select["reference"])
+            if select["reference"] is not None
+            else self.reference
         )
         self.mobile_atoms = (
-            self.atomgroup
-            if select["mobile"] is None
-            else self.atomgroup.select_atoms(*select["mobile"])
+            self.atomgroup.select_atoms(*select["mobile"])
+            if select["mobile"] is not None
+            else self.atomgroup
         )
 
         if len(self.ref_atoms) != len(self.mobile_atoms):
