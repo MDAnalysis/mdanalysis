@@ -42,6 +42,7 @@ Fixes
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Enhancements
+ * Reduces duplication of code in _apply() function (Issue #5247, PR #5294)
  * Added new top-level `MDAnalysis.fetch` module (PR #4943)
  * Added new function `MDAnalysis.fetch.from_PDB` to download structure files from wwPDB
    using `pooch` as optional dependency (Issue #4907, PR #4943) 
