@@ -484,11 +484,15 @@ class TestRMSD(object):
         order[2] = 0
 
         # select=None will not sort the atomgroups
-        RMSD = MDAnalysis.analysis.rms.RMSD(ag[order], reference=ref, select=None)
+        RMSD = MDAnalysis.analysis.rms.RMSD(
+            ag[order], reference=ref, select=None
+        )
         RMSD.run(step=49, **client_RMSD)
         assert not np.allclose(RMSD.results.rmsd, correct_values)
 
-        RMSD = MDAnalysis.analysis.rms.RMSD(ag[order], reference=ref[order], select=None)
+        RMSD = MDAnalysis.analysis.rms.RMSD(
+            ag[order], reference=ref[order], select=None
+        )
         RMSD.run(step=49, **client_RMSD)
         assert_almost_equal(
             RMSD.results.rmsd,
@@ -497,6 +501,7 @@ class TestRMSD(object):
             err_msg="error: rmsd profile should match "
             "between true values and calculated values",
         )
+
 
 class TestRMSF(object):
     @pytest.fixture()
