@@ -329,7 +329,9 @@ def process_selection(select):
     elif select is None:
         return {"reference": None, "mobile": None}
     else:
-        raise TypeError("'select' must be either a string, 2-tuple, dict or None")
+        raise TypeError(
+            "'select' must be either a string, 2-tuple, dict or None"
+        )
     select["mobile"] = asiterable(select["mobile"])
     select["reference"] = asiterable(select["reference"])
     return select
@@ -546,10 +548,16 @@ class RMSD(AnalysisBase):
         self.tol_mass = tol_mass
         self.ref_frame = ref_frame
         self.weights_groupselections = weights_groupselections
-        self.ref_atoms = (self.reference if select["reference"] is None
-                          else self.reference.select_atoms(*select["reference"]))
-        self.mobile_atoms = (self.atomgroup if select["mobile"] is None
-                             else self.atomgroup.select_atoms(*select["mobile"]))
+        self.ref_atoms = (
+            self.reference
+            if select["reference"] is None
+            else self.reference.select_atoms(*select["reference"])
+        )
+        self.mobile_atoms = (
+            self.atomgroup
+            if select["mobile"] is None
+            else self.atomgroup.select_atoms(*select["mobile"])
+        )
 
         if len(self.ref_atoms) != len(self.mobile_atoms):
             err = (
