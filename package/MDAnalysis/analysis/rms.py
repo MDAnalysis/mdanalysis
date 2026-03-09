@@ -327,7 +327,7 @@ def process_selection(select):
                 "'mobile' and 'reference'."
             ) from None
     elif select is None:
-        select = {"reference": None, "mobile": None}
+        return {"reference": None, "mobile": None}
     else:
         raise TypeError("'select' must be either a string, 2-tuple, dict or None")
     select["mobile"] = asiterable(select["mobile"])

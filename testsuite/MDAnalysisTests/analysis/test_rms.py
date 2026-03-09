@@ -475,6 +475,28 @@ class TestRMSD(object):
         with pytest.warns(DeprecationWarning, match=wmsg):
             assert_equal(RMSD.rmsd, RMSD.results.rmsd)
 
+    def test_rmsd_no_selection(self, universe, correct_values, client_RMSD):
+        reference = MDAnalysis.Universe(PSF, DCD)
+        ref = reference.select_atoms("name CA")
+        ag = universe.select_atoms("name CA")
+        order = np.arange(len(ag))
+        order[0] = 2
+        order[2] = 0
+
+        # select=None will not sort the atomgroups
+        RMSD = MDAnalysis.analysis.rms.RMSD(ag[order], reference=ref, select=None)
+        RMSD.run(step=49, **client_RMSD)
+        assert not np.allclose(RMSD.results.rmsd, correct_values)
+
+        RMSD = MDAnalysis.analysis.rms.RMSD(ag[order], reference=ref[order], select=None)
+        RMSD.run(step=49, **client_RMSD)
+        assert_almost_equal(
+            RMSD.results.rmsd,
+            correct_values,
+            4,
+            err_msg="error: rmsd profile should match "
+            "between true values and calculated values",
+        )
 
 class TestRMSF(object):
     @pytest.fixture()
