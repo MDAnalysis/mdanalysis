@@ -259,7 +259,9 @@ class Selection(object, metaclass=_Selectionmeta):
         nmidx = resnames.nmidx[group.resindices]
 
         matches = [
-            ix for (nm, ix) in resnames.namedict.items() if nm in target_resnames
+            ix
+            for (nm, ix) in resnames.namedict.items()
+            if nm in target_resnames
         ]
 
         return group[np.isin(nmidx, matches)]
