@@ -2853,15 +2853,7 @@ class SugarSelection(Selection):
     }
 
     def _apply(self, group):
-        resname_attr = group.universe._topology.resnames
-        matches = [
-            ix
-            for (nm, ix) in resname_attr.namedict.items()
-            if nm in self.sugar_res
-        ]
-        nmidx = resname_attr.nmidx[group.resindices]
-
-        return group[np.isin(nmidx, matches)]
+        return self._apply_match_by_resnames(group, self.sugar_res)
 
 
 class NucleicSelection(Selection):
