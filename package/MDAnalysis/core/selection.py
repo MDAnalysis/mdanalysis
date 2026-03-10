@@ -253,6 +253,19 @@ class Selection(object, metaclass=_Selectionmeta):
     def apply(self, *args, **kwargs):
         return self._apply(*args, **kwargs).asunique(sorted=self.parser.sorted)
 
+    def _apply_match_by_resnames(self, group, target_resnames):
+        """Helper function to select atoms based on residue name matches in the topology."""
+        resnames = group.universe._topology.resnames
+        nmidx = resnames.nmidx[group.resindices]
+
+        matches = [
+            ix
+            for (nm, ix) in resnames.namedict.items()
+            if nm in target_resnames
+        ]
+
+        return group[np.isin(nmidx, matches)]
+
 
 class AllSelection(Selection):
     token = "all"
@@ -1193,17 +1206,7 @@ class ProteinSelection(Selection):
     }
 
     def _apply(self, group):
-        resname_attr = group.universe._topology.resnames
-        # which values in resname attr are in prot_res?
-        matches = [
-            ix
-            for (nm, ix) in resname_attr.namedict.items()
-            if nm in self.prot_res
-        ]
-        # index of each atom's resname
-        nmidx = resname_attr.nmidx[group.resindices]
-        # intersect atom's resname index and matches to prot_res
-        return group[np.isin(nmidx, matches)]
+        return self._apply_match_by_resnames(group, self.prot_res)
 
 
 class SugarSelection(Selection):
@@ -2918,15 +2921,7 @@ class NucleicSelection(Selection):
     }
 
     def _apply(self, group):
-        resnames = group.universe._topology.resnames
-        nmidx = resnames.nmidx[group.resindices]
-
-        matches = [
-            ix for (nm, ix) in resnames.namedict.items() if nm in self.nucl_res
-        ]
-        mask = np.isin(nmidx, matches)
-
-        return group[mask]
+        return self._apply_match_by_resnames(group, self.nucl_res)
 
 
 class WaterSelection(Selection):
@@ -2963,17 +2958,7 @@ class WaterSelection(Selection):
     }
 
     def _apply(self, group):
-        resnames = group.universe._topology.resnames
-        nmidx = resnames.nmidx[group.resindices]
-
-        matches = [
-            ix
-            for (nm, ix) in resnames.namedict.items()
-            if nm in self.water_res
-        ]
-        mask = np.isin(nmidx, matches)
-
-        return group[mask]
+        return self._apply_match_by_resnames(group, self.water_res)
 
 
 class BackboneSelection(ProteinSelection):
@@ -3005,13 +2990,7 @@ class BackboneSelection(ProteinSelection):
         group = group[np.isin(nmidx, name_matches)]
 
         # filter by resnames
-        resname_matches = [
-            ix for (nm, ix) in resnames.namedict.items() if nm in self.prot_res
-        ]
-        nmidx = resnames.nmidx[group.resindices]
-        group = group[np.isin(nmidx, resname_matches)]
-
-        return group.unique
+        return self._apply_match_by_resnames(group, self.prot_res).unique
 
 
 class NucleicBackboneSelection(NucleicSelection):
@@ -3043,13 +3022,7 @@ class NucleicBackboneSelection(NucleicSelection):
         group = group[np.isin(nmidx, name_matches)]
 
         # filter by resnames
-        resname_matches = [
-            ix for (nm, ix) in resnames.namedict.items() if nm in self.nucl_res
-        ]
-        nmidx = resnames.nmidx[group.resindices]
-        group = group[np.isin(nmidx, resname_matches)]
-
-        return group.unique
+        return self._apply_match_by_resnames(group, self.nucl_res).unique
 
 
 class BaseSelection(NucleicSelection):
@@ -3100,13 +3073,7 @@ class BaseSelection(NucleicSelection):
         group = group[np.isin(nmidx, name_matches)]
 
         # filter by resnames
-        resname_matches = [
-            ix for (nm, ix) in resnames.namedict.items() if nm in self.nucl_res
-        ]
-        nmidx = resnames.nmidx[group.resindices]
-        group = group[np.isin(nmidx, resname_matches)]
-
-        return group.unique
+        return self._apply_match_by_resnames(group, self.nucl_res).unique
 
 
 class NucleicSugarSelection(NucleicSelection):
@@ -3135,13 +3102,7 @@ class NucleicSugarSelection(NucleicSelection):
         group = group[np.isin(nmidx, name_matches)]
 
         # filter by resnames
-        resname_matches = [
-            ix for (nm, ix) in resnames.namedict.items() if nm in self.nucl_res
-        ]
-        nmidx = resnames.nmidx[group.resindices]
-        group = group[np.isin(nmidx, resname_matches)]
-
-        return group.unique
+        return self._apply_match_by_resnames(group, self.nucl_res).unique
 
 
 class PropertySelection(Selection):
