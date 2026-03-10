@@ -1785,7 +1785,7 @@ class Universe(object):
         To use a different conformer generation algorithm, like ETKDGv3:
 
         >>> u = mda.Universe.from_smiles('CCO', rdkit_kwargs=dict( # doctest: +SKIP
-        ...      params=AllChem.ETKDGv3())) 
+        ...      params=AllChem.ETKDGv3()))
         >>> u.trajectory # doctest: +SKIP
         <RDKitReader with 1 frames of 9 atoms>
 
