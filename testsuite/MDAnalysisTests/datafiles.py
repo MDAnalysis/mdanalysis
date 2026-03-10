@@ -396,6 +396,8 @@ __all__ = [
     "SURFACE_PDB",  # 111 FCC lattice topology for NSGrid bug #2345
     "SURFACE_TRR",  # full precision coordinates for NSGrid bug #2345
     "DSSP",  # DSSP test suite
+    "GLYCAM",  # PDB file with GLYCAM sugars
+    "SUGAR_PDB",  # PDB file with PDB abbreviation sugars
 ]
 
 from importlib import resources
@@ -927,6 +929,10 @@ SURFACE_TRR = (_data_ref / "surface.trr").as_posix()
 
 # DSSP testing: from https://github.com/ShintaroMinami/PyDSSP
 DSSP = (_data_ref / "dssp").as_posix()
+
+# Files for testing the identification of `sugar` token
+GLYCAM = (_data_ref / "GLYCAM_sugars.pdb").as_posix()
+SUGAR_PDB = (_data_ref / "6kya.pdb.gz").as_posix()
 
 # This should be the last line: clean up namespace
 del resources

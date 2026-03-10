@@ -46,6 +46,8 @@ from MDAnalysis.tests.datafiles import (
     XTC,
     NUCLsel,
     PDB_charges,
+    GLYCAM,
+    SUGAR_PDB,
     PDB_elements,
     PDB_full,
     PDB_helix,
@@ -1774,3 +1776,21 @@ def test_formal_charge_selection(sel, size, name):
 
     assert len(ag) == size
     assert ag.atoms[0].name == name
+
+
+def test_sugar_glycam_selection():
+    u = mda.Universe(GLYCAM)
+
+    ag_token = u.select_atoms("sugar")
+    ag_ref = u.select_atoms("resname ROH or resname 3RA or resname 0MB")
+
+    assert ag_token == ag_ref
+
+
+def test_sugar_pdb_selection():
+    u = mda.Universe(SUGAR_PDB)
+
+    ag_token = u.select_atoms("sugar")
+    ag_ref = u.select_atoms("resname NAG or resname BMA or resname MAN")
+
+    assert ag_token == ag_ref
