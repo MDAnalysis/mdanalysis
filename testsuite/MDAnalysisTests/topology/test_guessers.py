@@ -35,7 +35,6 @@ import MDAnalysis.tests.datafiles as datafiles
 
 from MDAnalysisTests.util import import_not_available
 
-
 try:
     from rdkit import Chem
     from rdkit.Chem.rdPartialCharges import ComputeGasteigerCharges
@@ -160,9 +159,7 @@ def bond_sort(arr):
 
 def test_guess_bonds_water():
     u = mda.Universe(datafiles.two_water_gro)
-    bonds = bond_sort(
-        guessers.guess_bonds(u.atoms, u.atoms.positions, u.dimensions)
-    )
+    bonds = bond_sort(guessers.guess_bonds(u.atoms, u.atoms.positions, u.dimensions))
     assert_equal(bonds, ((0, 1), (0, 2), (3, 4), (3, 5)))
 
 

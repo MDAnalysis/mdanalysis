@@ -181,6 +181,7 @@ Classes
    :inherited-members:
 
 """
+
 import logging
 import errno
 import numpy as np
@@ -331,19 +332,14 @@ class MemoryReader(base.ProtoReader):
             raise TypeError(errmsg) from None
 
         self.set_array(coordinate_array, order)
-        self.n_frames = self.coordinate_array.shape[
-            self.stored_order.find("f")
-        ]
+        self.n_frames = self.coordinate_array.shape[self.stored_order.find("f")]
         self.n_atoms = self.coordinate_array.shape[self.stored_order.find("a")]
 
         if velocities is not None:
             try:
                 velocities = np.asarray(velocities, dtype=np.float32)
             except ValueError:
-                errmsg = (
-                    f"'velocities' must be array-like got "
-                    f"{type(velocities)}"
-                )
+                errmsg = f"'velocities' must be array-like got " f"{type(velocities)}"
                 raise TypeError(errmsg) from None
             # if single frame, make into array of 1 frame
             if velocities.ndim == 2:
@@ -388,17 +384,12 @@ class MemoryReader(base.ProtoReader):
         self.ts.dt = dt
 
         if dimensions is None:
-            self.dimensions_array = np.zeros(
-                (self.n_frames, 6), dtype=np.float32
-            )
+            self.dimensions_array = np.zeros((self.n_frames, 6), dtype=np.float32)
         else:
             try:
                 dimensions = np.asarray(dimensions, dtype=np.float32)
             except ValueError:
-                errmsg = (
-                    f"'dimensions' must be array-like got "
-                    f"{type(dimensions)}"
-                )
+                errmsg = f"'dimensions' must be array-like got " f"{type(dimensions)}"
                 raise TypeError(errmsg) from None
             if dimensions.shape == (6,):
                 # single box, tile this to trajectory length
@@ -449,14 +440,8 @@ class MemoryReader(base.ProtoReader):
 
     def copy(self):
         """Return a copy of this Memory Reader"""
-        vels = (
-            self.velocity_array.copy()
-            if self.velocity_array is not None
-            else None
-        )
-        fors = (
-            self.force_array.copy() if self.force_array is not None else None
-        )
+        vels = self.velocity_array.copy() if self.velocity_array is not None else None
+        fors = self.force_array.copy() if self.force_array is not None else None
         dims = self.dimensions_array.copy()
 
         new = self.__class__(
@@ -561,9 +546,7 @@ class MemoryReader(base.ProtoReader):
                 category=DeprecationWarning,
             )
             if atomgroup:
-                raise ValueError(
-                    "Cannot provide both asel and atomgroup kwargs"
-                )
+                raise ValueError("Cannot provide both asel and atomgroup kwargs")
             atomgroup = asel
 
         if stop != -1:
@@ -609,9 +592,7 @@ class MemoryReader(base.ProtoReader):
             return array
         else:
             if len(atomgroup) == 0:
-                raise ValueError(
-                    "Timeseries requires at least one atom " "to analyze"
-                )
+                raise ValueError("Timeseries requires at least one atom " "to analyze")
             # If selection is specified, return a copy
             return array.take(asel.indices, a_index)
 
@@ -625,16 +606,12 @@ class MemoryReader(base.ProtoReader):
         ts.frame += 1
         f_index = self.stored_order.find("f")
         basic_slice = (
-            [slice(None)] * (f_index)
-            + [self.ts.frame]
-            + [slice(None)] * (2 - f_index)
+            [slice(None)] * (f_index) + [self.ts.frame] + [slice(None)] * (2 - f_index)
         )
         _replace_positions_array(ts, self.coordinate_array[tuple(basic_slice)])
         _replace_dimensions(ts, self.dimensions_array[self.ts.frame])
         if self.velocity_array is not None:
-            _replace_velocities_array(
-                ts, self.velocity_array[tuple(basic_slice)]
-            )
+            _replace_velocities_array(ts, self.velocity_array[tuple(basic_slice)])
         if self.force_array is not None:
             _replace_forces_array(ts, self.force_array[tuple(basic_slice)])
 

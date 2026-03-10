@@ -87,7 +87,9 @@ class TPRReader(base.SingleFrameReaderBase):
         try:
             th = tpr_utils.read_tpxheader(data)  # tpxheader
         except (EOFError, ValueError):
-            msg = f"{self.filename}: Invalid tpr coordinate file or cannot be recognized"
+            msg = (
+                f"{self.filename}: Invalid tpr coordinate file or cannot be recognized"
+            )
             logger.critical(msg)
             raise IOError(msg)
 
@@ -115,9 +117,7 @@ class TPRReader(base.SingleFrameReaderBase):
         if state_ngtc > 0:
             if th.fver < 69:  # redundancy due to  different versions
                 tpr_utils.ndo_real(data, state_ngtc)
-            tpr_utils.ndo_real(
-                data, state_ngtc
-            )  # relevant to Berendsen tcoupl_lambda
+            tpr_utils.ndo_real(data, state_ngtc)  # relevant to Berendsen tcoupl_lambda
 
         tpr_top = tpr_utils.do_mtop(
             data, th.fver, tpr_resid_from_one=True, precision=th.precision

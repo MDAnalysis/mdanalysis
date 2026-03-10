@@ -771,7 +771,8 @@ Methods
    raw :class:`~MDAnalysis.coordinates.Timestep` objects.
 
 """
-__all__ = ['reader', 'writer', 'timestep']
+
+__all__ = ["reader", "writer", "timestep"]
 
 from . import base
 from . import timestep

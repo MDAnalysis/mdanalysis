@@ -30,6 +30,7 @@ all timesteps or to a specified vector at each frame.
 
 .. autoclass:: set_dimensions
 """
+
 import numpy as np
 
 from .base import TransformationBase
@@ -87,9 +88,7 @@ class set_dimensions(TransformationBase):
     """
 
     def __init__(self, dimensions, max_threads=None, parallelizable=True):
-        super().__init__(
-            max_threads=max_threads, parallelizable=parallelizable
-        )
+        super().__init__(max_threads=max_threads, parallelizable=parallelizable)
         self.dimensions = dimensions
 
         try:

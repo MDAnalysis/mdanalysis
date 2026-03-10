@@ -36,6 +36,7 @@ or defined by centering an AtomGroup in the unit cell using the function
 
 
 """
+
 import numpy as np
 from functools import partial
 
@@ -72,9 +73,7 @@ class translate(TransformationBase):
     """
 
     def __init__(self, vector, max_threads=None, parallelizable=True):
-        super().__init__(
-            max_threads=max_threads, parallelizable=parallelizable
-        )
+        super().__init__(max_threads=max_threads, parallelizable=parallelizable)
 
         self.vector = vector
 
@@ -141,9 +140,7 @@ class center_in_box(TransformationBase):
         max_threads=None,
         parallelizable=True,
     ):
-        super().__init__(
-            max_threads=max_threads, parallelizable=parallelizable
-        )
+        super().__init__(max_threads=max_threads, parallelizable=parallelizable)
 
         self.ag = ag
         self.center = center
@@ -157,13 +154,9 @@ class center_in_box(TransformationBase):
                 raise ValueError("{} is not a valid point".format(self.point))
         try:
             if self.center == "geometry":
-                self.center_method = partial(
-                    self.ag.center_of_geometry, wrap=pbc_arg
-                )
+                self.center_method = partial(self.ag.center_of_geometry, wrap=pbc_arg)
             elif self.center == "mass":
-                self.center_method = partial(
-                    self.ag.center_of_mass, wrap=pbc_arg
-                )
+                self.center_method = partial(self.ag.center_of_mass, wrap=pbc_arg)
             else:
                 raise ValueError(f"{self.center} is valid for center")
         except AttributeError:
@@ -171,9 +164,7 @@ class center_in_box(TransformationBase):
                 errmsg = f"{self.ag} is not an AtomGroup object with masses"
                 raise AttributeError(errmsg) from None
             else:
-                raise ValueError(
-                    f"{self.ag} is not an AtomGroup object"
-                ) from None
+                raise ValueError(f"{self.ag} is not an AtomGroup object") from None
 
     def _transform(self, ts):
         if self.point is None:

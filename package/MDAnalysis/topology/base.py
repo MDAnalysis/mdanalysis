@@ -36,6 +36,7 @@ Classes
    :inherited-members:
 
 """
+
 from functools import reduce
 
 import itertools
@@ -90,9 +91,7 @@ class _Topologymeta(type):
                 _PARSERS[fmt_name] = cls
 
                 if "_format_hint" in classdict:
-                    _PARSER_HINTS[fmt_name] = classdict[
-                        "_format_hint"
-                    ].__func__
+                    _PARSER_HINTS[fmt_name] = classdict["_format_hint"].__func__
 
 
 class TopologyReaderBase(IOBase, metaclass=_Topologymeta):
@@ -185,16 +184,12 @@ def change_squash(criteria, to_squash):
 
     def get_borders(*arrays):
         """Generator of indices to slice arrays when they change"""
-        borders = np.nonzero(
-            reduce(np.logical_or, (a[:-1] != a[1:] for a in arrays))
-        )
+        borders = np.nonzero(reduce(np.logical_or, (a[:-1] != a[1:] for a in arrays)))
         # Add Nones so we can slice from start to end
         return [None] + list(borders[0] + 1) + [None]
 
     l0 = len(criteria[0])
-    if not all(
-        len(other) == l0 for other in itertools.chain(criteria[1:], to_squash)
-    ):
+    if not all(len(other) == l0 for other in itertools.chain(criteria[1:], to_squash)):
         raise ValueError("All arrays must be equally sized")
 
     # 1) Detect where resids change

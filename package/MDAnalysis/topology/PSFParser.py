@@ -43,6 +43,7 @@ Classes
    :inherited-members:
 
 """
+
 import logging
 import functools
 from math import ceil
@@ -132,8 +133,7 @@ class PSFParser(TopologyReaderBase):
             for _ in range(int(title[0])):
                 next(psffile)
             logger.debug(
-                "PSF file {0}: format {1}"
-                "".format(self.filename, self._format)
+                "PSF file {0}: format {1}" "".format(self.filename, self._format)
             )
 
             # Atoms first and mandatory
@@ -178,9 +178,7 @@ class PSFParser(TopologyReaderBase):
         sect_type = header[1].strip("!:")
         # Make sure the section type matches the desc
         if not sect_type == desc:
-            err = "Expected section {0} but found {1}" "".format(
-                desc, sect_type
-            )
+            err = "Expected section {0} but found {1}" "".format(desc, sect_type)
             logger.error(err)
             raise ValueError(err)
         # Now figure out how many lines to read
@@ -319,8 +317,7 @@ class PSFParser(TopologyReaderBase):
                     " continuing with fingers crossed!"
                 )
                 logger.debug(
-                    "First NAMD-type line: {0}: {1}"
-                    "".format(i, line.rstrip())
+                    "First NAMD-type line: {0}: {1}" "".format(i, line.rstrip())
                 )
 
             atomids[i] = vals[0]

@@ -28,6 +28,7 @@ A tool to compute mass and charge density profiles along the three
 cartesian axes [xyz] of the simulation cell. Works only for orthorombic,
 fixed volume cells (thus for simulations in canonical NVT ensemble).
 """
+
 import os.path as path
 
 import numpy as np
@@ -62,9 +63,7 @@ class Results(Results):
     def __getitem__(self, key):
         if key in self._deprecation_dict.keys():
             self._deprecation_warning(key)
-            return super(Results, self).__getitem__(
-                self._deprecation_dict[key]
-            )
+            return super(Results, self).__getitem__(self._deprecation_dict[key])
         return super(Results, self).__getitem__(key)
 
     def __getattr__(self, attr):
@@ -214,9 +213,7 @@ class LinearDensity(AnalysisBase):
         )
 
     def __init__(self, select, grouping="atoms", binsize=0.25, **kwargs):
-        super(LinearDensity, self).__init__(
-            select.universe.trajectory, **kwargs
-        )
+        super(LinearDensity, self).__init__(select.universe.trajectory, **kwargs)
         # allows use of run(parallel=True)
         self._ags = [select]
         self._universe = select.universe
@@ -267,23 +264,17 @@ class LinearDensity(AnalysisBase):
             self.charges = self._ags[0].total_charge(compound=self.grouping)
 
         else:
-            raise AttributeError(
-                f"{self.grouping} is not a valid value for grouping."
-            )
+            raise AttributeError(f"{self.grouping} is not a valid value for grouping.")
 
     @staticmethod
     def _custom_aggregator(results):
         # NB: the *stddev values here are not the standard deviation,
         # but the variance. The stddev is calculated in _conclude()
-        mass_density = np.sum(
-            [entry["mass_density"] for entry in results], axis=0
-        )
+        mass_density = np.sum([entry["mass_density"] for entry in results], axis=0)
         mass_density_stddev = np.sum(
             [entry["mass_density_stddev"] for entry in results], axis=0
         )
-        charge_density = np.sum(
-            [entry["charge_density"] for entry in results], axis=0
-        )
+        charge_density = np.sum([entry["charge_density"] for entry in results], axis=0)
         charge_density_stddev = np.sum(
             [entry["charge_density_stddev"] for entry in results], axis=0
         )
@@ -316,9 +307,7 @@ class LinearDensity(AnalysisBase):
             self.charges = self._ags[0].total_charge(compound=self.grouping)
 
         else:
-            raise AttributeError(
-                f"{self.grouping} is not a valid value for grouping."
-            )
+            raise AttributeError(f"{self.grouping} is not a valid value for grouping.")
 
         self.group = getattr(self._ags[0], self.grouping)
         self._ags[0].wrap(compound=self.grouping)
@@ -380,19 +369,17 @@ class LinearDensity(AnalysisBase):
             # radicand_mass and radicand_charge are therefore calculated first
             # and negative values set to 0 before the square root
             # is calculated.
-            radicand_mass = self.results[dim][
-                "mass_density_stddev"
-            ] - np.square(self.results[dim]["mass_density"])
+            radicand_mass = self.results[dim]["mass_density_stddev"] - np.square(
+                self.results[dim]["mass_density"]
+            )
             radicand_mass[radicand_mass < 0] = 0
             self.results[dim]["mass_density_stddev"] = np.sqrt(radicand_mass)
 
-            radicand_charge = self.results[dim][
-                "charge_density_stddev"
-            ] - np.square(self.results[dim]["charge_density"])
-            radicand_charge[radicand_charge < 0] = 0
-            self.results[dim]["charge_density_stddev"] = np.sqrt(
-                radicand_charge
+            radicand_charge = self.results[dim]["charge_density_stddev"] - np.square(
+                self.results[dim]["charge_density"]
             )
+            radicand_charge[radicand_charge < 0] = 0
+            self.results[dim]["charge_density_stddev"] = np.sqrt(radicand_charge)
 
         for dim in ["x", "y", "z"]:
             # norming factor, units of mol^-1 cm^3
@@ -404,8 +391,7 @@ class LinearDensity(AnalysisBase):
     @deprecate(
         release="2.2.0",
         remove="3.0.0",
-        message="It will be replaced by a :meth:`_reduce` "
-        "method in the future",
+        message="It will be replaced by a :meth:`_reduce` " "method in the future",
     )
     def _add_other_results(self, other):
         """For parallel analysis"""

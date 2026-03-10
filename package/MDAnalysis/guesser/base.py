@@ -36,6 +36,7 @@ Classes
 .. autofunction:: get_guesser
 
 """
+
 from .. import _GUESSERS, _TOPOLOGY_ATTRS
 from ..core.topologyattrs import _Connection
 import numpy as np
@@ -142,8 +143,7 @@ class GuesserBase(metaclass=_GuesserMeta):
             top_attr = _TOPOLOGY_ATTRS[attr_to_guess]
         except KeyError:
             raise KeyError(
-                f"{attr_to_guess} is not a recognized MDAnalysis "
-                "topology attribute"
+                f"{attr_to_guess} is not a recognized MDAnalysis " "topology attribute"
             )
         # make attribute to guess plural
         attr_to_guess = top_attr.attrname
@@ -164,9 +164,7 @@ class GuesserBase(metaclass=_GuesserMeta):
 
         # check if the topology already has the attribute to partially guess it
         if hasattr(self._universe.atoms, attr_to_guess) and not force_guess:
-            attr_values = np.array(
-                getattr(self._universe.atoms, attr_to_guess, None)
-            )
+            attr_values = np.array(getattr(self._universe.atoms, attr_to_guess, None))
 
             empty_values = top_attr.are_values_missing(attr_values)
 

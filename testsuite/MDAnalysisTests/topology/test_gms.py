@@ -66,9 +66,7 @@ class TestGMSSYMOPT(GMSBase):
     ref_filename = GMS_SYMOPT
 
     def test_names(self, top):
-        assert_equal(
-            top.names.values, ["CARBON", "CARBON", "HYDROGEN", "HYDROGEN"]
-        )
+        assert_equal(top.names.values, ["CARBON", "CARBON", "HYDROGEN", "HYDROGEN"])
 
     def test_types(self, top):
         assert_equal(top.atomiccharges.values, [6, 6, 1, 1])

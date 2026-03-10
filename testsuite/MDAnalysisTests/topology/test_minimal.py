@@ -39,7 +39,6 @@ from MDAnalysisTests.datafiles import (
     XTC,
 )
 
-
 working_readers = pytest.mark.parametrize(
     "filename,expected_n_atoms",
     [
@@ -104,9 +103,7 @@ def memory_possibilities():
         yield array, order
 
 
-memory_reader = pytest.mark.parametrize(
-    "array,order", list(memory_possibilities())
-)
+memory_reader = pytest.mark.parametrize("array,order", list(memory_possibilities()))
 
 
 @memory_reader

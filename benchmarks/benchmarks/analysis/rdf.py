@@ -40,6 +40,7 @@ class SimpleRdfBench(object):
         """
         self.rdf.run()
 
+
 class SimpleRdfsBench(object):
     """Benchmarks for MDAnalysis.analysis.rdf.InterRDF_s"""
 
@@ -60,7 +61,6 @@ class SimpleRdfsBench(object):
 
         ags = [[self.sel, self.sel]] * npairs
         self.rdf_s = InterRDF_s(self.u, ags, nbins=nbins, range=range_val)
-
 
     def time_interrdfs(self, nbins, range_val, natoms, npairs):
         """Benchmark a full trajectory parse

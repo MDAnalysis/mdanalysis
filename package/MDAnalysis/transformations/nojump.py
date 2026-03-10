@@ -35,6 +35,7 @@ The algorithm used is based on :footcite:p:`Kulke2022`.
 .. autoclass:: NoJump
 
 """
+
 import numpy as np
 import warnings
 
@@ -140,8 +141,7 @@ class NoJump(TransformationBase):
         if (
             self.check_c
             and self.older_frame != "A"
-            and (self.old_frame - self.older_frame)
-            != (ts.frame - self.old_frame)
+            and (self.old_frame - self.older_frame) != (ts.frame - self.old_frame)
         ):
             warnings.warn(
                 "NoJump detected that the interval between frames is unequal."
@@ -163,9 +163,7 @@ class NoJump(TransformationBase):
             )
         # Convert into reduced coordinate space
         fcurrent = ts.positions @ Linverse
-        fprev = (
-            self.prev
-        )  # Previous unwrapped coordinates in reduced box coordinates.
+        fprev = self.prev  # Previous unwrapped coordinates in reduced box coordinates.
         # Calculate the new positions in reduced coordinate space (Equation B6 from
         # 10.1021/acs.jctc.2c00327). As it turns out, the displacement term can
         # be moved inside the round function in this coordinate space, as the
@@ -174,9 +172,7 @@ class NoJump(TransformationBase):
         # Convert back into real space
         ts.positions = newpositions @ L
         # Set things we need to save for the next frame.
-        self.prev = (
-            newpositions  # Note that this is in reduced coordinate space.
-        )
+        self.prev = newpositions  # Note that this is in reduced coordinate space.
         self.older_frame = self.old_frame
         self.old_frame = ts.frame
 

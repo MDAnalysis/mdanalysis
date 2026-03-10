@@ -195,6 +195,7 @@ class AtomGroupMethodsBench(object):
         """
         self.ag.wrap(compound="residues")
 
+
 class AtomGroupAttrsBench(object):
     """Benchmarks for the various MDAnalysis
     atomgroup attributes.

@@ -55,9 +55,7 @@ def test_version_format(version=None):
         r"(?P<MAJOR>\d+)\.(?P<MINOR>\d+)\.(?P<PATCH>\d+)(-(?P<suffix>\w+))?$",
         version,
     )
-    assert (
-        m
-    ), "version {0} does not match the MAJOR.MINOR.PATCH(-suffix) format".format(
+    assert m, "version {0} does not match the MAJOR.MINOR.PATCH(-suffix) format".format(
         version
     )
 

@@ -114,6 +114,7 @@ Classes and Functions
 .. autofunction:: cumulative_overlap
 
 """
+
 import warnings
 
 import numpy as np
@@ -614,12 +615,8 @@ class PCA(AnalysisBase):
             non_pca_atoms = np.array([], dtype=int)
             for res in group.residues:
                 # n_common is the number of pca atoms in a residue
-                n_common = pca_res_counts[
-                    np.where(pca_res_indices == res.resindex)
-                ][0]
-                non_pca_atoms = np.append(
-                    non_pca_atoms, res.atoms.n_atoms - n_common
-                )
+                n_common = pca_res_counts[np.where(pca_res_indices == res.resindex)][0]
+                non_pca_atoms = np.append(non_pca_atoms, res.atoms.n_atoms - n_common)
             # index_extrapolate records the anchor number for each non-PCA atom
             index_extrapolate = np.repeat(
                 np.arange(anchors.atoms.n_atoms), non_pca_atoms
@@ -724,9 +721,7 @@ class PCA(AnalysisBase):
             b = other.results.p_components
         except AttributeError:
             if isinstance(other, type(self)):
-                raise ValueError(
-                    "Call run() on the other PCA before using rmsip"
-                )
+                raise ValueError("Call run() on the other PCA before using rmsip")
             else:
                 raise ValueError("other must be another PCA class")
 
@@ -773,9 +768,7 @@ class PCA(AnalysisBase):
         try:
             a = self.results.p_components
         except AttributeError:
-            raise ValueError(
-                "Call run() on the PCA before using cumulative_overlap"
-            )
+            raise ValueError("Call run() on the PCA before using cumulative_overlap")
 
         try:
             b = other.results.p_components

@@ -32,11 +32,12 @@ designed to store results from clustering algorithms.
 .. versionadded:: 0.16.0
 
 .. deprecated:: 2.8.0
-   This module is deprecated in favour of the 
+   This module is deprecated in favour of the
    MDAKit `mdaencore <https://mdanalysis.org/mdaencore/>`_ and will be removed
    in MDAnalysis 3.0.0.
 
 """
+
 import numpy as np
 
 
@@ -99,9 +100,7 @@ class Cluster(object):
         self.metadata = {}
         self.elements = elem_list
         if centroid not in self.elements:
-            raise LookupError(
-                "Centroid of cluster not found in the element list"
-            )
+            raise LookupError("Centroid of cluster not found in the element list")
 
         self.centroid = centroid
         self.size = self.elements.shape[0]
@@ -130,8 +129,7 @@ class Cluster(object):
     def add_metadata(self, name, data):
         if len(data) != self.size:
             raise TypeError(
-                "Size of metadata is not equal to the number of "
-                "cluster elements"
+                "Size of metadata is not equal to the number of " "cluster elements"
             )
         self.metadata[name] = np.array(data)
 
@@ -270,6 +268,4 @@ class ClusterCollection(object):
         if self.clusters is None:
             return "<ClusterCollection with no clusters>"
         else:
-            return "<ClusterCollection with {0} clusters>".format(
-                len(self.clusters)
-            )
+            return "<ClusterCollection with {0} clusters>".format(len(self.clusters))

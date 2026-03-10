@@ -61,9 +61,7 @@ def test_TXYZ_elements():
     properly given a TXYZ file with valid elements record.
     """
     u = mda.Universe(TXYZ, format="TXYZ")
-    element_list = np.array(
-        ["C", "H", "H", "O", "H", "C", "H", "H", "H"], dtype=object
-    )
+    element_list = np.array(["C", "H", "H", "O", "H", "C", "H", "H", "H"], dtype=object)
     assert_equal(u.atoms.elements, element_list)
 
 

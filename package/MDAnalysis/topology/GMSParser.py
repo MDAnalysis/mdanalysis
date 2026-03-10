@@ -45,6 +45,7 @@ Classes
    :inherited-members:
 
 """
+
 import re
 import numpy as np
 
@@ -100,9 +101,7 @@ class GMSParser(TopologyReaderBase):
                 line = inf.readline()
                 if not line:
                     raise EOFError
-                if re.match(
-                    r"^\s+ATOM\s+ATOMIC\s+COORDINATES\s*\(BOHR\).*", line
-                ):
+                if re.match(r"^\s+ATOM\s+ATOMIC\s+COORDINATES\s*\(BOHR\).*", line):
                     break
             line = inf.readline()  # skip
 

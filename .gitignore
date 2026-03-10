@@ -53,3 +53,5 @@ benchmarks/results
 .idea
 .vscode
 *.lock
+venv/
+package/doc/sphinx/_build/

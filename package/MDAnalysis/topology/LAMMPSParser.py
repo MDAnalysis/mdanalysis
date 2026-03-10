@@ -81,6 +81,7 @@ Classes
 
 
 """
+
 import numpy as np
 import logging
 import string
@@ -229,9 +230,7 @@ class DATAParser(TopologyReaderBase):
                     header[token] = line.split(token)[0]
                     continue
 
-        sects = {
-            f[l]: f[l + 1 : starts[i + 1]] for i, l in enumerate(starts[:-1])
-        }
+        sects = {f[l]: f[l + 1 : starts[i + 1]] for i, l in enumerate(starts[:-1])}
 
         return header, sects
 
@@ -317,9 +316,7 @@ class DATAParser(TopologyReaderBase):
             (Impropers, "Impropers", 4),
         ]:
             try:
-                type, sect = self._parse_bond_section(
-                    sects[L], nentries, mapping
-                )
+                type, sect = self._parse_bond_section(sects[L], nentries, mapping)
             except KeyError:
                 type, sect = [], []
 
@@ -327,9 +324,7 @@ class DATAParser(TopologyReaderBase):
 
         return top
 
-    def read_DATA_timestep(
-        self, n_atoms, TS_class, TS_kwargs, atom_style=None
-    ):
+    def read_DATA_timestep(self, n_atoms, TS_class, TS_kwargs, atom_style=None):
         """Read a DATA file and try and extract x, v, box.
 
         - positions
@@ -362,9 +357,7 @@ class DATAParser(TopologyReaderBase):
         else:
             velocities = None
 
-        ts = TS_class.from_coordinates(
-            positions, velocities=velocities, **TS_kwargs
-        )
+        ts = TS_class.from_coordinates(positions, velocities=velocities, **TS_kwargs)
         ts.dimensions = unitcell
 
         return ts
@@ -451,9 +444,7 @@ class DATAParser(TopologyReaderBase):
         for line in datalines:
             line = line.split()
             # map to 0 based int
-            section.append(
-                tuple([mapping[int(x)] for x in line[2 : 2 + nentries]])
-            )
+            section.append(tuple([mapping[int(x)] for x in line[2 : 2 + nentries]]))
             type.append(line[1])
         return tuple(type), tuple(section)
 
@@ -554,9 +545,7 @@ class DATAParser(TopologyReaderBase):
         attrs.append(Resnums(resids.copy()))
         attrs.append(Segids(np.array(["SYSTEM"], dtype=object)))
 
-        top = Topology(
-            n_atoms, n_residues, 1, attrs=attrs, atom_resindex=residx
-        )
+        top = Topology(n_atoms, n_residues, 1, attrs=attrs, atom_resindex=residx)
 
         return top
 
@@ -729,9 +718,7 @@ class LammpsDumpParser(TopologyReaderBase):
                 attrs.append(DUMP_HEADERS[key]["attr_class"](value[order]))
 
         attrs.append(Segids(np.array(["SYSTEM"], dtype=object)))
-        return Topology(
-            natoms, n_residues, 1, attrs=attrs, atom_resindex=residx
-        )
+        return Topology(natoms, n_residues, 1, attrs=attrs, atom_resindex=residx)
 
 
 @functools.total_ordering

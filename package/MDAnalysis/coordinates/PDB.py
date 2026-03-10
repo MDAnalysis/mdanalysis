@@ -140,6 +140,7 @@ Classes
     http://www.wwpdb.org/documentation/file-format-content/format33/v3.3.html
 
 """
+
 from io import StringIO, BytesIO
 import os
 import errno
@@ -156,7 +157,6 @@ from ..lib.util import store_init_arguments
 from . import base
 from .timestep import Timestep
 from ..exceptions import NoDataError
-
 
 logger = logging.getLogger("MDAnalysis.coordinates.PBD")
 
@@ -774,9 +774,7 @@ class PDBWriter(base.WriterBase):
         self.filename = filename
         # convert length and time to base units
         self.convert_units = convert_units
-        self._multiframe = (
-            self.multiframe if multiframe is None else multiframe
-        )
+        self._multiframe = self.multiframe if multiframe is None else multiframe
         self.bonds = bonds
         self._reindex = reindex
 
@@ -819,8 +817,7 @@ class PDBWriter(base.WriterBase):
             )
         else:
             self.TITLE(
-                "MDANALYSIS FRAME {0:d}: {1!s}"
-                "".format(self.start, self.remarks)
+                "MDANALYSIS FRAME {0:d}: {1!s}" "".format(self.start, self.remarks)
             )
 
     def _write_pdb_header(self):
@@ -871,12 +868,8 @@ class PDBWriter(base.WriterBase):
             # Add CRYST1 REMARK (285)
             # The SCALE record is not included
             # (We are only implementing a subset of the PDB standard)
-            self.REMARK(
-                "285 UNITARY VALUES FOR THE UNIT CELL AUTOMATICALLY SET"
-            )
-            self.REMARK(
-                "285 BY MDANALYSIS PDBWRITER BECAUSE UNIT CELL INFORMATION"
-            )
+            self.REMARK("285 UNITARY VALUES FOR THE UNIT CELL AUTOMATICALLY SET")
+            self.REMARK("285 BY MDANALYSIS PDBWRITER BECAUSE UNIT CELL INFORMATION")
             self.REMARK("285 WAS MISSING.")
             self.REMARK("285 PROTEIN DATA BANK CONVENTIONS REQUIRE THAT")
             self.REMARK("285 CRYST1 RECORD IS INCLUDED, BUT THE VALUES ON")
@@ -942,9 +935,7 @@ class PDBWriter(base.WriterBase):
         raise ValueError(
             "PDB files must have coordinate values between "
             "{0:.3f} and {1:.3f} Angstroem: file writing was "
-            "aborted.".format(
-                self.pdb_coor_limits["min"], self.pdb_coor_limits["max"]
-            )
+            "aborted.".format(self.pdb_coor_limits["min"], self.pdb_coor_limits["max"])
         )
 
     def _write_pdb_bonds(self):
@@ -963,8 +954,7 @@ class PDBWriter(base.WriterBase):
         if self._reindex:
             index_attribute = "index"
             mapping = {
-                index: i
-                for i, index in enumerate(self.obj.atoms.indices, start=1)
+                index: i for i, index in enumerate(self.obj.atoms.indices, start=1)
             }
             atoms = np.sort(self.obj.atoms.indices)
         else:
@@ -1147,10 +1137,7 @@ class PDBWriter(base.WriterBase):
             try:
                 ts = self.ts
             except AttributeError:
-                errmsg = (
-                    "PBDWriter: no coordinate data to write to "
-                    "trajectory file"
-                )
+                errmsg = "PBDWriter: no coordinate data to write to " "trajectory file"
                 raise NoDataError(errmsg) from None
         self._check_pdb_coordinates()
         self._write_timestep(ts, **kwargs)
@@ -1360,9 +1347,7 @@ class PDBWriter(base.WriterBase):
             vals["serial"] = util.ltruncate_int(
                 atom_ids[i], 5
             )  # check for overflow here?
-            vals["name"] = self._deduce_PDB_atom_name(
-                atomnames[i], resnames[i]
-            )
+            vals["name"] = self._deduce_PDB_atom_name(atomnames[i], resnames[i])
             vals["altLoc"] = altlocs[i][:1]
             vals["resName"] = resnames[i][:4]
             vals["resSeq"] = util.ltruncate_int(resids[i], 4)
@@ -1447,9 +1432,7 @@ class PDBWriter(base.WriterBase):
            Maximum model number is enforced.
 
         """
-        self.pdbfile.write(
-            self.fmt["MODEL"].format(int(str(modelnumber)[-4:]))
-        )
+        self.pdbfile.write(self.fmt["MODEL"].format(int(str(modelnumber)[-4:])))
 
     def END(self):
         """Write END_ record.

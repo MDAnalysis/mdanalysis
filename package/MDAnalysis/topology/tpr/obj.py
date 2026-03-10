@@ -31,6 +31,7 @@ Class definitions for the TPRParser
 ===================================
 
 """
+
 from collections import namedtuple
 from ...guesser.tables import Z2SYMB
 
@@ -139,9 +140,7 @@ class MoleculeKind(object):
 
 
 class AtomKind(object):
-    def __init__(
-        self, id, name, type, resid, resname, mass, charge, atomic_number
-    ):
+    def __init__(self, id, name, type, resid, resname, mass, charge, atomic_number):
         # id is only within the scope of a single molecule, not the whole system
         self.id = id
         self.name = name

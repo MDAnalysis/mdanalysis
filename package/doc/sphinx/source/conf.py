@@ -176,9 +176,7 @@ html_theme_options = {
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-html_context = {
-    "versions_json_url": "https://docs.mdanalysis.org/versions.json"
-}
+html_context = {"versions_json_url": "https://docs.mdanalysis.org/versions.json"}
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
@@ -350,4 +348,6 @@ intersphinx_mapping = {
     "mdahole2": ("https://www.mdanalysis.org/mdahole2/", None),
     "dask": ("https://docs.dask.org/en/stable/", None),
     "imdclient": ("https://imdclient.readthedocs.io/en/stable/", None),
+    "pooch": ("https://www.fatiando.org/pooch/latest/", None),
+    "requests": ("https://requests.readthedocs.io/en/latest/", None),
 }

@@ -39,6 +39,7 @@ The index groups are named *mdanalysis001*, *mdanalysis002*, etc.
 .. autoclass:: SelectionWriter
    :inherited-members:
 """
+
 from . import base
 
 

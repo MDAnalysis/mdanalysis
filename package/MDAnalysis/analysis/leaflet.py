@@ -68,6 +68,7 @@ Classes and Functions
 .. autofunction:: optimize_cutoff
 
 """
+
 import warnings
 
 import numpy as np
@@ -76,7 +77,6 @@ from .. import core
 from . import distances
 from .. import selections
 from ..due import due, Doi
-
 
 # networkx is an optional import
 try:
@@ -249,10 +249,7 @@ class LeafletFinder(object):
     def sizes(self):
         """Dict of component index with size of component."""
         return dict(
-            (
-                (idx, len(component))
-                for idx, component in enumerate(self.components)
-            )
+            ((idx, len(component)) for idx, component in enumerate(self.components))
         )
 
     def groups(self, component_index=None):

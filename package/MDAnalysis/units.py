@@ -263,14 +263,12 @@ densityUnit_factor = {
     "nm^{-3}": 1 / 1e-3,
     "nanometer^{-3}": 1 / 1e-3,
     "Molar": 1 / (1e-27 * constants["N_Avogadro"]),
-    "SPC": 1
-    / (1e-24 * constants["N_Avogadro"] * water["SPC"] / water["MolarMass"]),
+    "SPC": 1 / (1e-24 * constants["N_Avogadro"] * water["SPC"] / water["MolarMass"]),
     "TIP3P": 1
     / (1e-24 * constants["N_Avogadro"] * water["TIP3P"] / water["MolarMass"]),
     "TIP4P": 1
     / (1e-24 * constants["N_Avogadro"] * water["TIP4P"] / water["MolarMass"]),
-    "water": 1
-    / (1e-24 * constants["N_Avogadro"] * water["exp"] / water["MolarMass"]),
+    "water": 1 / (1e-24 * constants["N_Avogadro"] * water["exp"] / water["MolarMass"]),
 }
 
 
@@ -287,7 +285,7 @@ timeUnit_factor = {
     "millisecond": 1e-9,  # 1/1e9,
     "us": 1e-6,
     "microsecond": 1e-6,
-    "\u03BCs": 1e-6,  # 1/1e6,
+    "\u03bcs": 1e-6,  # 1/1e6,
     "second": 1e-12,
     "sec": 1e-12,
     "s": 1e-12,  # 1/1e12,
@@ -316,12 +314,12 @@ speedUnit_factor = {
     "Angstrom/us": 1.0 * 1e6,
     "angstrom/us": 1.0 * 1e6,
     "A/us": 1.0 * 1e6,
-    "A/\u03BCs": 1.0 * 1e6,
-    "\u212b/\u03BCs": 1.0 * 1e6,
+    "A/\u03bcs": 1.0 * 1e6,
+    "\u212b/\u03bcs": 1.0 * 1e6,
     "Angstrom/microsecond": 1.0 * 1e6,
     "angstrom/microsecond": 1.0 * 1e6,
-    "Angstrom/\u03BCs": 1.0 * 1e6,
-    "angstrom/\u03BCs": 1.0 * 1e6,
+    "Angstrom/\u03bcs": 1.0 * 1e6,
+    "angstrom/\u03bcs": 1.0 * 1e6,
     "Angstrom/ms": 1.0 * 1e9,
     "Angstrom/millisecond": 1.0 * 1e9,
     "angstrom/millisecond": 1.0 * 1e9,

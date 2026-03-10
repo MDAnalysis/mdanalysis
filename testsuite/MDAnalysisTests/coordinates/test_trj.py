@@ -69,24 +69,19 @@ class _TRJReaderTest(object):
 
     def test_sum_centres_of_geometry(self, universe):
         protein = universe.select_atoms("protein")
-        total = np.sum(
-            [protein.center_of_geometry() for ts in universe.trajectory]
-        )
+        total = np.sum([protein.center_of_geometry() for ts in universe.trajectory])
         assert_almost_equal(
             total,
             self.ref_sum_centre_of_geometry,
             self.prec,
-            err_msg="sum of centers of geometry over the "
-            "trajectory do not match",
+            err_msg="sum of centers of geometry over the " "trajectory do not match",
         )
 
     def test_initial_frame_is_0(self, universe):
         assert_equal(
             universe.trajectory.ts.frame,
             0,
-            "initial frame is not 0 but {0}".format(
-                universe.trajectory.ts.frame
-            ),
+            "initial frame is not 0 but {0}".format(universe.trajectory.ts.frame),
         )
 
     def test_starts_with_first_frame(self, universe):
@@ -100,9 +95,7 @@ class _TRJReaderTest(object):
         trj = universe.trajectory
         trj.next()
         trj.next()  # for readers that do not support indexing
-        assert_equal(
-            trj.ts.frame, 2, "failed to forward to frame 2 (frameindex 2)"
-        )
+        assert_equal(trj.ts.frame, 2, "failed to forward to frame 2 (frameindex 2)")
         trj.rewind()
         assert_equal(trj.ts.frame, 0, "failed to rewind to first frame")
         assert np.any(universe.atoms.positions > 0), (

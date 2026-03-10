@@ -142,9 +142,7 @@ class _GromacsReader(object):
 
     def test_jump_lastframe_xdrtrj(self, universe):
         universe.trajectory[-1]
-        assert_equal(
-            universe.coord.frame, 9, "indexing last frame with trajectory[-1]"
-        )
+        assert_equal(universe.coord.frame, 9, "indexing last frame with trajectory[-1]")
 
     def test_slice_xdrtrj(self, universe):
         frames = [ts.frame for ts in universe.trajectory[2:9:3]]
@@ -155,9 +153,7 @@ class _GromacsReader(object):
         assert_equal(frames, list(range(9, -1, -1)), "slicing xdrtrj [::-1]")
 
     def test_coordinates(self, universe):
-        ca_nm = np.array(
-            [[6.043369675, 7.385184479, 1.381425762]], dtype=np.float32
-        )
+        ca_nm = np.array([[6.043369675, 7.385184479, 1.381425762]], dtype=np.float32)
         # coordinates in the base unit (needed for True)
         ca_Angstrom = ca_nm * 10.0
         universe.trajectory.rewind()
@@ -272,9 +268,7 @@ class _GromacsReader(object):
         assert_equal(u.trajectory.n_frames, 2)
         # prec = 6: TRR test fails; here I am generous and take self.prec =
         # 3...
-        assert_almost_equal(
-            u.atoms.positions, universe.atoms.positions, self.prec
-        )
+        assert_almost_equal(u.atoms.positions, universe.atoms.positions, self.prec)
         if dt:
             # test total trajectory length
             assert_almost_equal(
@@ -282,8 +276,7 @@ class _GromacsReader(object):
                 dt,
                 3,
                 err_msg=(
-                    "wrong total length of trajectory upon setting dt "
-                    "explicitly"
+                    "wrong total length of trajectory upon setting dt " "explicitly"
                 ),
             )
 
@@ -364,8 +357,7 @@ class TestTRRReader(_GromacsReader):
             universe.atoms.velocities[[47675, 47676]],
             v_base,
             self.prec,
-            err_msg="velocities for indices 47675,47676 do not "
-            "match known values",
+            err_msg="velocities for indices 47675,47676 do not " "match known values",
         )
 
         for index, v_known in zip([47675, 47676], v_base):
@@ -388,15 +380,11 @@ class _XDRNoConversion(object):
 
     def test_coordinates(self, universe):
         # note: these are the native coordinates in nm
-        ca_nm = np.array(
-            [[6.043369675, 7.385184479, 1.381425762]], dtype=np.float32
-        )
+        ca_nm = np.array([[6.043369675, 7.385184479, 1.381425762]], dtype=np.float32)
         universe.trajectory.rewind()
         universe.trajectory.next()
         universe.trajectory.next()
-        assert_equal(
-            universe.trajectory.ts.frame, 2, "failed to step to frame 3"
-        )
+        assert_equal(universe.trajectory.ts.frame, 2, "failed to step to frame 3")
         ca = universe.select_atoms("name CA and resid 122")
         # low precision match because we also look at the trr: only 3 decimals
         # in nm in xtc!
@@ -441,9 +429,7 @@ class _GromacsWriter(object):
 
     def test_write_trajectory(self, universe, Writer, outfile):
         """Test writing Gromacs trajectories (Issue 38)"""
-        with Writer(
-            outfile, universe.atoms.n_atoms, dt=universe.trajectory.dt
-        ) as W:
+        with Writer(outfile, universe.atoms.n_atoms, dt=universe.trajectory.dt) as W:
             for ts in universe.trajectory:
                 W.write(universe)
 
@@ -457,8 +443,7 @@ class _GromacsWriter(object):
                 3,
                 err_msg="coordinate mismatch between "
                 "original and written trajectory at "
-                "frame %d (orig) vs %d (written)"
-                % (orig_ts.frame, written_ts.frame),
+                "frame %d (orig) vs %d (written)" % (orig_ts.frame, written_ts.frame),
             )
 
     def test_timestep_not_modified_by_writer(self, universe, Writer, outfile):
@@ -479,9 +464,7 @@ class _GromacsWriter(object):
             x,
             err_msg="Positions in Timestep were modified by writer.",
         )
-        assert_equal(
-            ts.time, time, err_msg="Time in Timestep was modified by writer."
-        )
+        assert_equal(ts.time, time, err_msg="Time in Timestep was modified by writer.")
 
 
 class TestXTCWriter(_GromacsWriter):
@@ -494,9 +477,7 @@ class TestTRRWriter(_GromacsWriter):
     infilename = TRR
 
     def test_velocities(self, universe, Writer, outfile):
-        with Writer(
-            outfile, universe.atoms.n_atoms, dt=universe.trajectory.dt
-        ) as W:
+        with Writer(outfile, universe.atoms.n_atoms, dt=universe.trajectory.dt) as W:
             for ts in universe.trajectory:
                 W.write(universe)
 
@@ -510,16 +491,13 @@ class TestTRRWriter(_GromacsWriter):
                 3,
                 err_msg="velocities mismatch between "
                 "original and written trajectory at "
-                "frame %d (orig) vs %d (written)"
-                % (orig_ts.frame, written_ts.frame),
+                "frame %d (orig) vs %d (written)" % (orig_ts.frame, written_ts.frame),
             )
 
     def test_gaps(self, universe, Writer, outfile):
         """Tests the writing and reading back of TRRs with gaps in any of
         the coordinates/velocities properties."""
-        with Writer(
-            outfile, universe.atoms.n_atoms, dt=universe.trajectory.dt
-        ) as W:
+        with Writer(outfile, universe.atoms.n_atoms, dt=universe.trajectory.dt) as W:
             for ts in universe.trajectory:
                 # Inset some gaps in the properties: coords every 4 steps, vels
                 # every 2.
@@ -591,9 +569,7 @@ class TestTRRWriter(_GromacsWriter):
 
             # check that each value is the same
             for k in orig_ts.data:
-                assert_allclose(
-                    orig_ts.data[k], written_ts.data[k], err_msg=err_msg
-                )
+                assert_allclose(orig_ts.data[k], written_ts.data[k], err_msg=err_msg)
 
 
 class _GromacsWriterIssue101(object):
@@ -804,9 +780,7 @@ class TestTRRWriter_2(BaseWriterTest):
 
             reader = ref.reader(outfile)
             for i, ts in enumerate(reader):
-                assert_almost_equal(
-                    ts.data["lambda"], i / float(reader.n_frames)
-                )
+                assert_almost_equal(ts.data["lambda"], i / float(reader.n_frames))
 
 
 class _GromacsReader_offsets(object):
@@ -882,9 +856,7 @@ class _GromacsReader_offsets(object):
             np_load_mock.side_effect = IOError
             with pytest.warns(
                 UserWarning,
-                match=re.escape(
-                    f"Failed to load offsets file {outfile_offsets}"
-                ),
+                match=re.escape(f"Failed to load offsets file {outfile_offsets}"),
             ):
                 saved_offsets = XDR.read_numpy_offsets(outfile_offsets)
         assert saved_offsets == False
@@ -897,9 +869,7 @@ class _GromacsReader_offsets(object):
             np_load_mock.side_effect = ValueError
             with pytest.warns(
                 UserWarning,
-                match=re.escape(
-                    f"Failed to load offsets file {outfile_offsets}"
-                ),
+                match=re.escape(f"Failed to load offsets file {outfile_offsets}"),
             ):
                 saved_offsets = XDR.read_numpy_offsets(outfile_offsets)
         assert saved_offsets == False

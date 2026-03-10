@@ -125,12 +125,8 @@ def nojump_universe_npt_2nd_frame_from_file(tmp_path_factory):
         mda.transformations.boxdimensions.set_dimensions(dim),
     ]
     u.trajectory.add_transformations(*workflow)
-    tmp_pdb = (
-        tmp_path_factory.getbasetemp() / "nojump_npt_2nd_frame.pdb"
-    ).as_posix()
-    tmp_xtc = (
-        tmp_path_factory.getbasetemp() / "nojump_npt_2nd_frame.xtc"
-    ).as_posix()
+    tmp_pdb = (tmp_path_factory.getbasetemp() / "nojump_npt_2nd_frame.pdb").as_posix()
+    tmp_xtc = (tmp_path_factory.getbasetemp() / "nojump_npt_2nd_frame.xtc").as_posix()
     u.atoms.write(tmp_pdb)
     with mda.Writer(tmp_xtc) as f:
         for ts in u.trajectory:
@@ -203,9 +199,7 @@ def test_nojump_constantvel(nojump_constantvel_universe):
     values when iterating forwards over the sample trajectory.
     """
     ref = nojump_constantvel_universe
-    towrap = (
-        ref.copy()
-    )  # This copy of the universe will be wrapped, then unwrapped,
+    towrap = ref.copy()  # This copy of the universe will be wrapped, then unwrapped,
     # and should be equal to ref.
     dim = np.asarray([5, 5, 5, 54, 60, 90], np.float32)
     workflow = [
@@ -303,9 +297,7 @@ def test_nojump_iterate_twice(nojump_universe_npt_2nd_frame_from_file):
     u.trajectory.add_transformations(NoJump())
     timeseries_first_iteration = u.trajectory.timeseries()
     timeseries_second_iteration = u.trajectory.timeseries()
-    np.testing.assert_allclose(
-        timeseries_first_iteration, timeseries_second_iteration
-    )
+    np.testing.assert_allclose(timeseries_first_iteration, timeseries_second_iteration)
 
 
 def test_nojump_constantvel_skip(nojump_universes_fromfile):
@@ -390,7 +382,5 @@ def test_nojump_fails_when_not_at_frame_0(frame_index):
     u = mda.Universe(data.PSF_TRICLINIC, data.DCD_TRICLINIC)
     u.trajectory[frame_index]
 
-    with pytest.raises(
-        ValueError, match="must be applied starting from frame 0"
-    ):
+    with pytest.raises(ValueError, match="must be applied starting from frame 0"):
         u.trajectory.add_transformations(NoJump())

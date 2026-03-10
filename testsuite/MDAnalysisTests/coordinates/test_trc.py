@@ -53,9 +53,7 @@ class TestTRCReaderVacuumBox:
         )
         # fith frame first particle
         TRC_U.trajectory[4]
-        assert_allclose(
-            TRC_U.atoms.positions[0], [0.37026654, 22.78805010, 3.69695262]
-        )
+        assert_allclose(TRC_U.atoms.positions[0], [0.37026654, 22.78805010, 3.69695262])
 
     def test_trc_dimensions(self, TRC_U):
         assert TRC_U.trajectory[0].dimensions is None
@@ -96,13 +94,9 @@ class TestTRCReaderVacuumBox:
         trc.next()
         trc.next()
         trc.next()
-        assert (
-            trc.ts.frame == 4
-        ), "trajectory.next() did not forward to frameindex 4"
+        assert trc.ts.frame == 4, "trajectory.next() did not forward to frameindex 4"
         trc.rewind()
-        assert (
-            trc.ts.frame == 0
-        ), "trajectory.rewind() failed to rewind to first frame"
+        assert trc.ts.frame == 0, "trajectory.rewind() failed to rewind to first frame"
 
         assert np.any(
             TRC_U.atoms.positions != 0
@@ -221,14 +215,8 @@ class TestTRCReaderTriclinicBox:
         ag1 = atom_1a + atom_1b + atom_1c + atom_1d
         ag2 = atom_2a + atom_2b + atom_2c + atom_2d
 
-        dist_A = distances.dist(ag1, ag2, box=ts.dimensions)[
-            2
-        ]  # return distance
-        dist_B = (
-            atomicdistances.AtomicDistances(ag1, ag2, pbc=True)
-            .run()
-            .results[0]
-        )
+        dist_A = distances.dist(ag1, ag2, box=ts.dimensions)[2]  # return distance
+        dist_B = atomicdistances.AtomicDistances(ag1, ag2, pbc=True).run().results[0]
 
         assert_allclose(
             dist_A, [5.9488481, 4.4777278, 20.8165518, 7.5727112], rtol=1e-06
@@ -246,9 +234,7 @@ class TestTRCReaderTruncOctBox:
 
 class TestTRCGenboxOrigin:
     def test_universe(self):
-        with pytest.raises(
-            ValueError, match="doesnt't support a shifted origin!"
-        ):
+        with pytest.raises(ValueError, match="doesnt't support a shifted origin!"):
             mda.Universe(TRC_PDB_VAC, TRC_GENBOX_ORIGIN)
 
 
@@ -265,9 +251,7 @@ class TestTRCEmptyFile:
     def test_universe(self):
         with pytest.raises(
             ValueError,
-            match=(
-                "No supported blocks were found within the GROMOS trajectory!"
-            ),
+            match=("No supported blocks were found within the GROMOS trajectory!"),
         ):
             mda.Universe(TRC_PDB_VAC, TRC_EMPTY)
 
@@ -306,16 +290,12 @@ class TestTRCReaderClusterTrajectory:
         assert TRC_U.trajectory.n_frames == 3
 
     def test_trc_frame(self, TRC_U):
-        with pytest.warns(
-            UserWarning, match="POSITION block is not supported!"
-        ):
+        with pytest.warns(UserWarning, match="POSITION block is not supported!"):
             assert TRC_U.trajectory[0].frame == 0
             assert TRC_U.trajectory[2].frame == 2
 
     def test_trc_time(self, TRC_U):
-        with pytest.warns(
-            UserWarning, match="POSITION block is not supported!"
-        ):
+        with pytest.warns(UserWarning, match="POSITION block is not supported!"):
             assert TRC_U.trajectory[0].time == 0
             assert TRC_U.trajectory[2].time == 0
 

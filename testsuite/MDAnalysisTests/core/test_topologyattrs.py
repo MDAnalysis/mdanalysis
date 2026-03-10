@@ -20,9 +20,8 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-"""Tests for MDAnalysis.core.topologyattrs objects.
+"""Tests for MDAnalysis.core.topologyattrs objects."""
 
-"""
 import numpy as np
 
 from numpy.testing import (
@@ -233,9 +232,7 @@ class AggregationMixin(TestAtomAttr):
     def test_get_residues(self, attr):
         assert_equal(
             attr.get_residues(DummyGroup([2, 1])),
-            np.array(
-                [self.values[[2, 3, 9]].sum(), self.values[[4, 5, 8]].sum()]
-            ),
+            np.array([self.values[[2, 3, 9]].sum(), self.values[[4, 5, 8]].sum()]),
         )
 
     def test_get_segments(self, attr):
@@ -281,9 +278,7 @@ class TestResidueAttr(TopologyAttrMixin):
             setattr(res, self.attrclass.singular, self.values[:2])
 
     def test_get_atoms(self, attr):
-        assert_equal(
-            attr.get_atoms(DummyGroup([7, 3, 9])), self.values[[3, 2, 2]]
-        )
+        assert_equal(attr.get_atoms(DummyGroup([7, 3, 9])), self.values[[3, 2, 2]])
 
     def test_get_atom(self, universe):
         attr = getattr(universe.atoms[0], self.attrclass.singular)
@@ -375,9 +370,7 @@ class TestSegmentAttr(TopologyAttrMixin):
             setattr(seg, "segid", [1, 2, 3])
 
     def test_get_atoms(self, attr):
-        assert_equal(
-            attr.get_atoms(DummyGroup([2, 4, 1])), self.values[[1, 1, 0]]
-        )
+        assert_equal(attr.get_atoms(DummyGroup([2, 4, 1])), self.values[[1, 1, 0]])
 
     def test_get_residues(self, attr):
         assert_equal(
@@ -390,9 +383,7 @@ class TestSegmentAttr(TopologyAttrMixin):
         atoms in segments.
 
         """
-        assert_equal(
-            attr.get_segments(DummyGroup([1, 0, 0])), self.values[[1, 0, 0]]
-        )
+        assert_equal(attr.get_segments(DummyGroup([1, 0, 0])), self.values[[1, 0, 0]])
 
     def test_set_segments_singular(self, attr):
         dg = DummyGroup([0, 1])
@@ -434,9 +425,7 @@ class TestAttr(object):
 
     def test_principal_axes_handedness(self, universe_pa):
         e_vec = universe_pa.atoms.principal_axes()
-        assert_almost_equal(
-            np.dot(np.cross(e_vec[0], e_vec[1]), e_vec[2]), 1.0
-        )
+        assert_almost_equal(np.dot(np.cross(e_vec[0], e_vec[1]), e_vec[2]), 1.0)
 
     def test_align_principal_axes_with_self(self, ag):
         pa = ag.principal_axes()

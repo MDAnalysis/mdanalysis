@@ -86,6 +86,7 @@ directly needed to perform the analysis.
    removed unused function :func:`backup_file`
 
 """
+
 import itertools
 import logging
 import warnings
@@ -169,9 +170,7 @@ def neighbour_generator(positions, cutoff):
     n_x = len(grid)
     n_y = len(grid[0])
     n_z = len(grid[0][0])
-    for cell_x, cell_y, cell_z in itertools.product(
-        range(n_x), range(n_y), range(n_z)
-    ):
+    for cell_x, cell_y, cell_z in itertools.product(range(n_x), range(n_y), range(n_z)):
         atoms = grid[cell_x][cell_y][cell_z]
         # collect all atoms in own cell and neighboring cell
         all_atoms = []
@@ -281,15 +280,11 @@ class GNMAnalysis(AnalysisBase):
         self._timesteps = None  # time for each frame
         self.ReportVector = ReportVector
         self.Bonus_groups = (
-            [self.u.select_atoms(item) for item in Bonus_groups]
-            if Bonus_groups
-            else []
+            [self.u.select_atoms(item) for item in Bonus_groups] if Bonus_groups else []
         )
         self.ca = self.u.select_atoms(self.select)
 
-    def _generate_output(
-        self, w, v, outputobject, ReportVector=None, counter=0
-    ):
+    def _generate_output(self, w, v, outputobject, ReportVector=None, counter=0):
         """Appends time, eigenvalues and eigenvectors to results.
 
         This generates the output by adding eigenvalue and
@@ -476,9 +471,7 @@ class closeContactGNMAnalysis(GNMAnalysis):
             ):
                 iresidue = residue_index_map[i_atom]
                 jresidue = residue_index_map[j_atom]
-                contact = (
-                    inv_sqrt_res_sizes[iresidue] * inv_sqrt_res_sizes[jresidue]
-                )
+                contact = inv_sqrt_res_sizes[iresidue] * inv_sqrt_res_sizes[jresidue]
                 matrix[iresidue][jresidue] -= contact
                 matrix[jresidue][iresidue] -= contact
                 matrix[iresidue][iresidue] += contact

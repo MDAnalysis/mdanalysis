@@ -86,6 +86,7 @@ Classes
    :mod:`~MDAnalysis.converters`
 
 """
+
 import logging
 import numpy as np
 
@@ -311,9 +312,7 @@ class ParmEdParser(TopologyReaderBase):
             bond_orders = list(map(squash_identical, bond_orders))
 
         attrs.append(
-            Bonds(
-                bond_values, types=bond_types, guessed=False, order=bond_orders
-            )
+            Bonds(bond_values, types=bond_types, guessed=False, order=bond_orders)
         )
 
         for pmdlist, na, values, types in (

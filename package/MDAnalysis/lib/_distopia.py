@@ -27,6 +27,7 @@
 This module is a stub to provide distopia distance functions to `distances.py`
 as a selectable backend.
 """
+
 import warnings
 from packaging.version import Version
 
@@ -121,9 +122,7 @@ def calc_dihedral(
     coords4: np.ndarray,
     results: np.ndarray,
 ) -> None:
-    distopia.dihedrals_no_box(
-        coords1, coords2, coords3, coords4, results=results
-    )
+    distopia.dihedrals_no_box(coords1, coords2, coords3, coords4, results=results)
 
 
 def calc_dihedral_ortho(

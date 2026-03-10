@@ -287,9 +287,7 @@ class TestWaterBridgeAnalysis(object):
         wb.results.network.append(
             {
                 (0, None, 3, 2, 2.0, 180.0): {
-                    (4, 2, 5, None, 2.0, 180.0): {
-                        (5, None, 11, 12, 2.0, 180.0): None
-                    }
+                    (4, 2, 5, None, 2.0, 180.0): {(5, None, 11, 12, 2.0, 180.0): None}
                 }
             }
         )
@@ -691,18 +689,10 @@ class TestWaterBridgeAnalysis(object):
         wb.run(verbose=False)
         timeseries = sorted(wb.results.timeseries[0])
 
-        assert_equal(
-            timeseries[0][:4], (0, 2, ("ALA", 1, "O"), ("SOL", 2, "HW1"))
-        )
-        assert_equal(
-            timeseries[1][:4], (3, 4, ("SOL", 2, "HW2"), ("SOL", 3, "OW"))
-        )
-        assert_equal(
-            timeseries[2][:4], (5, 7, ("SOL", 3, "HW1"), ("ALA", 4, "O"))
-        )
-        assert_equal(
-            timeseries[3][:4], (6, 8, ("SOL", 3, "HW2"), ("ALA", 5, "O"))
-        )
+        assert_equal(timeseries[0][:4], (0, 2, ("ALA", 1, "O"), ("SOL", 2, "HW1")))
+        assert_equal(timeseries[1][:4], (3, 4, ("SOL", 2, "HW2"), ("SOL", 3, "OW")))
+        assert_equal(timeseries[2][:4], (5, 7, ("SOL", 3, "HW1"), ("ALA", 4, "O")))
+        assert_equal(timeseries[3][:4], (6, 8, ("SOL", 3, "HW2"), ("ALA", 5, "O")))
 
     def test_timeseries_hba(self, universe_branch):
         """Test if the time series data is correctly generated in hydrogen bond analysis format"""
@@ -716,18 +706,10 @@ class TestWaterBridgeAnalysis(object):
         wb.run(verbose=False)
         timeseries = sorted(wb.results.timeseries[0])
 
-        assert_equal(
-            timeseries[0][:4], (2, 0, ("SOL", 2, "HW1"), ("ALA", 1, "O"))
-        )
-        assert_equal(
-            timeseries[1][:4], (3, 4, ("SOL", 2, "HW2"), ("SOL", 3, "OW"))
-        )
-        assert_equal(
-            timeseries[2][:4], (5, 7, ("SOL", 3, "HW1"), ("ALA", 4, "O"))
-        )
-        assert_equal(
-            timeseries[3][:4], (6, 8, ("SOL", 3, "HW2"), ("ALA", 5, "O"))
-        )
+        assert_equal(timeseries[0][:4], (2, 0, ("SOL", 2, "HW1"), ("ALA", 1, "O")))
+        assert_equal(timeseries[1][:4], (3, 4, ("SOL", 2, "HW2"), ("SOL", 3, "OW")))
+        assert_equal(timeseries[2][:4], (5, 7, ("SOL", 3, "HW1"), ("ALA", 4, "O")))
+        assert_equal(timeseries[3][:4], (6, 8, ("SOL", 3, "HW2"), ("ALA", 5, "O")))
 
     @pytest.mark.parametrize("distance_type", ["hydrogen", "heavy"])
     def test_acceptor_12water_accepter(self, universe_AWA_AWWA, distance_type):
@@ -768,9 +750,7 @@ class TestWaterBridgeAnalysis(object):
             universe_DWA, "protein and (resid 1)", "protein and (resid 4)"
         )
         wb.run(verbose=False)
-        assert_equal(
-            wb.count_by_type(), [(1, 4, "ALA", 1, "H", "ALA", 4, "O", 1.0)]
-        )
+        assert_equal(wb.count_by_type(), [(1, 4, "ALA", 1, "H", "ALA", 4, "O", 1.0)])
 
     def test_count_by_type_multiple_link(self, universe_AWA_AWWA):
         """
@@ -812,20 +792,18 @@ class TestWaterBridgeAnalysis(object):
         """
 
         def analysis(current, output, u):
-            sele1_index, sele1_heavy_index, atom2, heavy_atom2, dist, angle = (
-                current[0]
-            )
-            atom1, heavy_atom1, sele2_index, sele2_heavy_index, dist, angle = (
-                current[-1]
-            )
+            sele1_index, sele1_heavy_index, atom2, heavy_atom2, dist, angle = current[0]
+            atom1, heavy_atom1, sele2_index, sele2_heavy_index, dist, angle = current[
+                -1
+            ]
             sele1 = u.atoms[sele1_index]
             sele2 = u.atoms[sele2_index]
-            (s1_resname, s1_resid, s1_name) = (
+            s1_resname, s1_resid, s1_name = (
                 sele1.resname,
                 sele1.resid,
                 sele1.name,
             )
-            (s2_resname, s2_resid, s2_name) = (
+            s2_resname, s2_resid, s2_name = (
                 sele2.resname,
                 sele2.resid,
                 sele2.name,
@@ -856,20 +834,18 @@ class TestWaterBridgeAnalysis(object):
         """
 
         def analysis(current, output, u):
-            sele1_index, sele1_heavy_index, atom2, heavy_atom2, dist, angle = (
-                current[0]
-            )
-            atom1, heavy_atom1, sele2_index, sele2_heavy_index, dist, angle = (
-                current[-1]
-            )
+            sele1_index, sele1_heavy_index, atom2, heavy_atom2, dist, angle = current[0]
+            atom1, heavy_atom1, sele2_index, sele2_heavy_index, dist, angle = current[
+                -1
+            ]
             sele1 = u.atoms[sele1_index]
             sele2 = u.atoms[sele2_index]
-            (s1_resname, s1_resid, s1_name) = (
+            s1_resname, s1_resid, s1_name = (
                 sele1.resname,
                 sele1.resid,
                 sele1.name,
             )
-            (s2_resname, s2_resid, s2_name) = (
+            s2_resname, s2_resid, s2_name = (
                 sele2.resname,
                 sele2.resid,
                 sele2.name,
@@ -891,20 +867,18 @@ class TestWaterBridgeAnalysis(object):
         """
 
         def analysis(current, output, u):
-            sele1_index, sele1_heavy_index, atom2, heavy_atom2, dist, angle = (
-                current[0]
-            )
-            atom1, heavy_atom1, sele2_index, sele2_heavy_index, dist, angle = (
-                current[-1]
-            )
+            sele1_index, sele1_heavy_index, atom2, heavy_atom2, dist, angle = current[0]
+            atom1, heavy_atom1, sele2_index, sele2_heavy_index, dist, angle = current[
+                -1
+            ]
             sele1 = u.atoms[sele1_index]
             sele2 = u.atoms[sele2_index]
-            (s1_resname, s1_resid, s1_name) = (
+            s1_resname, s1_resid, s1_name = (
                 sele1.resname,
                 sele1.resid,
                 sele1.name,
             )
-            (s2_resname, s2_resid, s2_name) = (
+            s2_resname, s2_resid, s2_name = (
                 sele2.resname,
                 sele2.resid,
                 sele2.name,
@@ -932,9 +906,7 @@ class TestWaterBridgeAnalysis(object):
         This test tests if count_by_times() works.
         :return:
         """
-        assert_equal(
-            wb_multiframe.count_by_time(), [(0, 1), (1, 1), (2, 1), (3, 1)]
-        )
+        assert_equal(wb_multiframe.count_by_time(), [(0, 1), (1, 1), (2, 1), (3, 1)])
 
     def test_count_by_time_weight(self, universe_AWA_AWWA):
         """
@@ -951,20 +923,18 @@ class TestWaterBridgeAnalysis(object):
         wb.run(verbose=False)
 
         def analysis(current, output, u):
-            sele1_index, sele1_heavy_index, atom2, heavy_atom2, dist, angle = (
-                current[0]
-            )
-            atom1, heavy_atom1, sele2_index, sele2_heavy_index, dist, angle = (
-                current[-1]
-            )
+            sele1_index, sele1_heavy_index, atom2, heavy_atom2, dist, angle = current[0]
+            atom1, heavy_atom1, sele2_index, sele2_heavy_index, dist, angle = current[
+                -1
+            ]
             sele1 = u.atoms[sele1_index]
             sele2 = u.atoms[sele2_index]
-            (s1_resname, s1_resid, s1_name) = (
+            s1_resname, s1_resid, s1_name = (
                 sele1.resname,
                 sele1.resid,
                 sele1.name,
             )
-            (s2_resname, s2_resid, s2_name) = (
+            s2_resname, s2_resid, s2_name = (
                 sele2.resname,
                 sele2.resid,
                 sele2.name,
@@ -1022,9 +992,7 @@ class TestWaterBridgeAnalysis(object):
         """Test the timesteps_by_type function"""
 
         timesteps = sorted(wb_multiframe.timesteps_by_type())
-        assert_array_equal(
-            timesteps[3], [1, 12, "ALA", 1, "H", "ALA", 6, "O", 0, 2]
-        )
+        assert_array_equal(timesteps[3], [1, 12, "ALA", 1, "H", "ALA", 6, "O", 0, 2])
 
     def test_duplicate_water(self):
         """A case #3119 where

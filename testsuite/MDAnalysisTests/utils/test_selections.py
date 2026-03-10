@@ -42,9 +42,7 @@ from MDAnalysis.lib.util import NamedStream
 class _SelectionWriter(object):
 
     filename = None
-    max_number = (
-        357  # to keep fixtures smallish, only select CAs up to number 357
-    )
+    max_number = 357  # to keep fixtures smallish, only select CAs up to number 357
 
     @staticmethod
     @pytest.fixture()
@@ -139,9 +137,7 @@ class TestSelectionWriter_Charmm(_SelectionWriter):
     writer = MDAnalysis.selections.charmm.SelectionWriter
     filename = "CA.str"
     ref_name = "CA_selection"
-    ref_selectionstring = lines2one(
-        [
-            """! MDAnalysis CHARMM selection
+    ref_selectionstring = lines2one(["""! MDAnalysis CHARMM selection
            DEFINE CA_selection SELECT -
            BYNUM 5 .or. BYNUM 22 .or. BYNUM 46 .or. BYNUM 65 .or. -
            BYNUM 84 .or. BYNUM 103 .or. BYNUM 122 .or. BYNUM 129 .or. -
@@ -149,9 +145,7 @@ class TestSelectionWriter_Charmm(_SelectionWriter):
            BYNUM 177 .or. BYNUM 199 .or. BYNUM 206 .or. BYNUM 220 .or. -
            BYNUM 237 .or. BYNUM 247 .or. BYNUM 264 .or. BYNUM 284 .or. -
            BYNUM 303 .or. BYNUM 320 .or. BYNUM 335 .or. BYNUM 357 END
-        """
-        ]
-    )
+        """])
 
     def _assert_selectionstring(self, namedfile):
         selectionstring = lines2one(namedfile.readlines())
@@ -168,14 +162,12 @@ class TestSelectionWriter_PyMOL(_SelectionWriter):
     filename = "CA.pml"
     ref_name = "CA_selection"
     ref_selectionstring = lines2one(
-        [
-            """# MDAnalysis PyMol selection\n select CA_selection, \\
+        ["""# MDAnalysis PyMol selection\n select CA_selection, \\
            index 5 | index 22 | index 46 | index 65 | index 84 | index 103 | \\
            index 122 | index 129 | index 141 | index 153 | index 160 | index 170 | \\
            index 177 | index 199 | index 206 | index 220 | index 237 | index 247 | \\
            index 264 | index 284 | index 303 | index 320 | index 335 | index 357
-        """
-        ]
+        """]
     )
 
     def _assert_selectionstring(self, namedfile):
@@ -229,9 +221,7 @@ class TestSelectionWriter_Jmol(_SelectionWriter):
 
     def _assert_selectionstring(self, namedfile):
         header, indices = spt2array(namedfile.readline())
-        assert_equal(
-            header, self.ref_name, err_msg="SPT file has wrong selection name"
-        )
+        assert_equal(header, self.ref_name, err_msg="SPT file has wrong selection name")
         assert_array_equal(
             indices,
             self.ref_indices,

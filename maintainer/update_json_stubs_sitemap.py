@@ -59,15 +59,13 @@ def write_redirect(file, version="", outfile=None):
     if outfile is None:
         outfile = file
     url = os.path.join(URL, version, file)
-    REDIRECT = textwrap.dedent(
-        f"""
+    REDIRECT = textwrap.dedent(f"""
     <!DOCTYPE html>
     <meta charset="utf-8">
     <title>Redirecting to {url}</title>
     <meta http-equiv="refresh" content="0; URL={url}">
     <link rel="canonical" href="{url}">
-    """
-    )
+    """)
     with open(outfile, "w") as f:
         f.write(REDIRECT)
     print(f"Wrote redirect from {url} to {outfile}")
