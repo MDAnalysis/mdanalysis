@@ -688,10 +688,10 @@ class PCA(AnalysisBase):
 
         .. testsetup::
 
-            >>> import MDAnalysis as mda
-            >>> import MDAnalysis.analysis.pca as pca
-            >>> from MDAnalysis.tests.datafiles import PSF, DCD
-            >>> u = mda.Universe(PSF, DCD)
+             import MDAnalysis as mda
+             import MDAnalysis.analysis.pca as pca
+             from MDAnalysis.tests.datafiles import PSF, DCD
+             u = mda.Universe(PSF, DCD)
 
 
         You can compare the RMSIP between different intervals of the same trajectory.
@@ -703,9 +703,9 @@ class PCA(AnalysisBase):
             >>> second_interval = pca.PCA(u, select="backbone").run(start=25, stop=50)
             >>> last_interval = pca.PCA(u, select="backbone").run(start=75)
             >>> round(first_interval.rmsip(second_interval, n_components=3), 6)
-            0.381476
+            np.float64(0.381476)
             >>> round(first_interval.rmsip(last_interval, n_components=3), 6)
-            0.174782
+            np.float64(0.174782)
 
 
         See also
@@ -870,10 +870,10 @@ def rmsip(a, b, n_components=None):
 
     .. testsetup::
 
-        >>> import MDAnalysis as mda
-        >>> import MDAnalysis.analysis.pca as pca
-        >>> from MDAnalysis.tests.datafiles import PSF, DCD
-        >>> u = mda.Universe(PSF, DCD)
+         import MDAnalysis as mda
+         import MDAnalysis.analysis.pca as pca
+         from MDAnalysis.tests.datafiles import PSF, DCD
+         u = mda.Universe(PSF, DCD)
 
 
     You can compare the RMSIP between different intervals of the same trajectory.
@@ -887,11 +887,11 @@ def rmsip(a, b, n_components=None):
         >>> round(pca.rmsip(first_interval.results.p_components.T,
         ...           second_interval.results.p_components.T,
         ...           n_components=3), 6)
-        0.381476
+        np.float64(0.381476)
         >>> round(pca.rmsip(first_interval.results.p_components.T,
         ...           last_interval.results.p_components.T,
         ...           n_components=3), 6)
-        0.174782
+        np.float64(0.174782)
 
 
     .. versionadded:: 1.0.0
