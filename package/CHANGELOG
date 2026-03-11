@@ -21,11 +21,8 @@ The rules for this file:
  * 2.11.0
 
 Fixes
- * Fixes TypeError with np.int64 indexing in GSD Reader (Issue #5224)
  * Fix doctest output in transformations.py for newer NumPy
     (Issue #3925, PR #5283)
- * Fix doctest in util.py for platform-dependent path output
-    (Issue #3925, PR #5285)
  * Fixed bug in add_transformations allowing non-callable transformations
    (Issue #2558, PR #2558)
  * Drop/Replace lock file test in test_xdr (Issue #5236, PR #5237)
