@@ -298,7 +298,8 @@ def process_selection(select):
     -------
     dict
         selections for 'reference' and 'mobile'. Values are guarenteed to be
-        iterable (so that one can provide selections to retain order)
+        iterable (so that one can provide selections to retain order) or
+        ``None`` if no selection is to be performed.
 
     Notes
     -----
@@ -327,13 +328,15 @@ def process_selection(select):
                 "'mobile' and 'reference'."
             ) from None
     elif select is None:
-        return {"reference": None, "mobile": None}
+        select = {"reference": None, "mobile": None}
     else:
         raise TypeError(
             "'select' must be either a string, 2-tuple, dict or None"
         )
-    select["mobile"] = asiterable(select["mobile"])
-    select["reference"] = asiterable(select["reference"])
+    if select["mobile"] is not None:
+        select["mobile"] = asiterable(select["mobile"])
+    if select["reference"] is not None:
+        select["reference"] = asiterable(select["reference"])
     return select
 
 
@@ -410,7 +413,8 @@ class RMSD(AnalysisBase):
                and *sel2* are valid selection strings that are applied to
                `atomgroup` and `reference` respectively (the
                :func:`MDAnalysis.analysis.align.fasta2select` function returns such
-               a dictionary based on a ClustalW_ or STAMP_ sequence alignment); or
+               a dictionary based on a ClustalW_ or STAMP_ sequence alignment) or
+               ``None`` if no selection is to be performed; or
 
             3. a tuple ``(sel1, sel2)``
 
@@ -422,7 +426,7 @@ class RMSD(AnalysisBase):
             be a *list of selection strings* to generate a
             :class:`~MDAnalysis.core.groups.AtomGroup` with defined atom order as
             described under :ref:`ordered-selections-label`). When using ``None``
-            no selection is performed and all atoms from `atomgroup` and `reference`
+            no selection is performed and all atoms from `atomgroup` or `reference`
             are used in their original order.
 
         groupselections : list (optional)
