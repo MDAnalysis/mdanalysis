@@ -42,6 +42,7 @@ Fixes
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Enhancements
+ * Added ASV benchmark for `MDAnalysis.analysis.contacts` (PR #5291)
  * Reduces duplication of code in _apply() function (Issue #5247, PR #5294)
  * Added new top-level `MDAnalysis.fetch` module (PR #4943)
  * Added new function `MDAnalysis.fetch.from_PDB` to download structure files from wwPDB
@@ -51,7 +52,6 @@ Enhancements
  * Adds support for parsing `.tpr` files produced by GROMACS 2026.0
  * Enables parallelization for analysis.diffusionmap.DistanceMatrix
    (Issue #4679, PR #4745)
- * Added ASV benchmark for `MDAnalysis.analysis.contacts` (PR #5291)
 
 Changes
  * The msd.py inside analysis is changed, and ProgressBar is implemented inside
