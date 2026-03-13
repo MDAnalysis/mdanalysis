@@ -50,7 +50,7 @@ Enhancements
  * Adds support for parsing `.tpr` files produced by GROMACS 2026.0
  * Enables parallelization for analysis.diffusionmap.DistanceMatrix
    (Issue #4679, PR #4745)
- * Added ASV benchmark for `MDAnalysis.analysis.contacts.Contacts` (PR #5291)
+ * Added ASV benchmark for `MDAnalysis.analysis.contacts` (PR #5291)
 
 Changes
  * The msd.py inside analysis is changed, and ProgressBar is implemented inside
