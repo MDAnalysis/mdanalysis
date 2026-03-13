@@ -308,8 +308,11 @@ See page 7 for list of SYBYL atomtypes
 <li><p>The MDAnalysis <a class="reference internal" href="#MDAnalysis.coordinates.MOL2.MOL2Reader" title="MDAnalysis.coordinates.MOL2.MOL2Reader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MOL2Reader</span></code></a> and <a class="reference internal" href="#MDAnalysis.coordinates.MOL2.MOL2Writer" title="MDAnalysis.coordinates.MOL2.MOL2Writer"><code class="xref py py-class docutils literal notranslate"><span class="pre">MOL2Writer</span></code></a> only handle the
 MOLECULE, SUBSTRUCTURE, ATOM, and BOND record types. Other records are not
 currently read or preserved on writing.</p></li>
-<li><p>As the CRYSIN record type is not parsed / written, MOL2 systems always have
-dimensions set to <code class="docutils literal notranslate"><span class="pre">None</span></code> and dimensionless MOL2 files are written.</p></li>
+<li><p>The MDAnalysis <a class="reference internal" href="#MDAnalysis.coordinates.MOL2.MOL2Reader" title="MDAnalysis.coordinates.MOL2.MOL2Reader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MOL2Reader</span></code></a> reads unit cell dimensions from the
+&#64;&lt;TRIPOS&gt;CRYSIN record. The space group and setting information (the 7th
+and 8th fields) are currently ignored. The unit cell is interpreted in the
+common crystallographic convention with box vector <strong>a</strong> parallel to the x-axis,
+<strong>b</strong> in the xy-plane, and <strong>c</strong> having a positive z-component.</p></li>
 </ul>
 </section>
 <section id="mol2-format-notes">
