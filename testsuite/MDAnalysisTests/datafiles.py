@@ -245,6 +245,7 @@ __all__ = [
     "mol2_comments_header",
     "mol2_ligand",
     "mol2_sodium_ion",
+    "mol2_crysin",
     "capping_input",
     "capping_output",
     "capping_ace",
@@ -745,6 +746,7 @@ mol2_comments_header = (
 mol2_zinc = (_data_ref / "mol2/zinc_856218.mol2").as_posix()
 # MOL2 file without bonds
 mol2_sodium_ion = (_data_ref / "mol2/sodium_ion.mol2").as_posix()
+mol2_crysin = (_data_ref / "mol2/test_crysin.mol2").as_posix()
 
 capping_input = (_data_ref / "capping/aaqaa.gro").as_posix()
 capping_output = (_data_ref / "capping/maestro_aaqaa_capped.pdb").as_posix()
