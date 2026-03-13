@@ -21,9 +21,6 @@ The rules for this file:
  * 2.11.0
 
 Fixes
- * Improved performance of inverse index mapping in AtomGroup using an optimized 
-   Cython implementation in lib._cutils.inverse_int_index()
-   (Issue #3387, PR #5252)
  * Fixes TypeError with np.int64 indexing in GSD Reader (Issue #5224)
  * Fixed bug in add_transformations allowing non-callable transformations
    (Issue #2558, PR #2558)
@@ -45,6 +42,9 @@ Fixes
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Enhancements
+ * Improved performance of inverse index mapping in AtomGroup using an optimized 
+   Cython implementation in lib._cutils.inverse_int_index()
+   (Issue #3387, PR #5252)
  * Reduces duplication of code in _apply() function (Issue #5247, PR #5294)
  * Added new top-level `MDAnalysis.fetch` module (PR #4943)
  * Added new function `MDAnalysis.fetch.from_PDB` to download structure files from wwPDB
