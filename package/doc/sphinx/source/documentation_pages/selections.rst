@@ -302,12 +302,10 @@ prop [abs] *property*  *operator*  *value*
 
 
 .. note::
-   By default periodicity **is** taken into account with geometric
-   selections, i.e. selections will find atoms that are in different
-   periodic images.
-   To control this behaviour, use the boolean ``"periodic"`` keyword
-   argument of :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms`.
-
+   Geometric selections internally use capped distance searches together
+   with periodic KD-trees to correctly handle periodic boundary conditions
+   (PBC). This ensures that atom selections follow the minimum image
+   convention when computing distances across periodic boundaries.
 
 Similarity and connectivity
 ---------------------------
