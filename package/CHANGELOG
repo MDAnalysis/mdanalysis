@@ -16,7 +16,7 @@ The rules for this file:
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, orbeckst, marinegor, tylerjereddy, ljwoods2, marinegor,
          spyke7, talagayev, tanii1125, BradyAJohnston, hejamu, jeremyleung521,
-         harshitgajjela-droid, kunjsinha, aygarwal, jauy123
+         harshitgajjela-droid, kunjsinha, aygarwal, jauy123, Dreamstick9
 
  * 2.11.0
 
@@ -43,6 +43,7 @@ Fixes
 
 Enhancements
  * Added ASV benchmark for `MDAnalysis.analysis.contacts` (PR #5291)
+ * MOL2Parser now reads unit cell dimensions from @<TRIPOS>CRYSIN records (Issue #3341)
  * Reduces duplication of code in _apply() function (Issue #5247, PR #5294)
  * Added new top-level `MDAnalysis.fetch` module (PR #4943)
  * Added new function `MDAnalysis.fetch.from_PDB` to download structure files from wwPDB
