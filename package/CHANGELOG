@@ -57,6 +57,10 @@ Changes
  * The msd.py inside analysis is changed, and ProgressBar is implemented inside
    _conclude_simple and _conclude_fft functions instead of tqdm (Issue #5144, PR #5153)
 
+Tests
+ * Added tests for DMSReader covering the convert_pos_from_native code path
+   when a DMS file contains a non-zero unit cell (Issue #3304, PR #5307)
+
 Deprecations
 
 
