@@ -170,7 +170,7 @@ class XTCReader(XDRBaseReader):
             raise IOError(errno.EIO, "trying to go over trajectory limit")
         if ts is None:
             ts = self.ts
-        if ts.has_positions:
+        if ts.has_positions and self._sub is None:
             frame = self._xdr.read_direct_x(ts.positions)
         else:
             frame = self._xdr.read()

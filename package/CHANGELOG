@@ -21,6 +21,11 @@ The rules for this file:
  * 2.11.0
 
 Fixes
+ * Fix XTCReader and TRRReader frame navigation (indexing/iteration beyond
+   frame 0) when the `sub` keyword is used: read_direct_x/read_direct_xvf
+   wrote into a mis-sized positions buffer when _sub was set, causing a
+   TypeError. The fast direct-read path is now skipped when sub is active
+   (Issue #4116, PR #XXXX)
  * Fixes TypeError with np.int64 indexing in GSD Reader (Issue #5224)
  * Fixed bug in add_transformations allowing non-callable transformations
    (Issue #2558, PR #2558)

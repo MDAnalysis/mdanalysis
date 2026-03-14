@@ -97,6 +97,29 @@ class _XDRReader_Sub(object):
         ts = udry.atoms.ts
         assert_timestep_almost_equal(ts, atoms.ts)
 
+    def test_sub_frame_navigation(self, atoms):
+        """Frame navigation (indexing and iteration) with sub must work.
+
+        Regression test for issue #4116: _read_next_timestep used
+        read_direct_x/read_direct_xvf with a sub-sized positions buffer,
+        causing a TypeError when navigating past frame 0.
+        """
+        udry = mda.Universe(PDB_sub_dry)
+        udry.load_new(self.XDR_SUB_SOL, sub=atoms.indices)
+
+        usol = mda.Universe(PDB_sub_sol, self.XDR_SUB_SOL)
+        usol_atoms = usol.select_atoms("not resname SOL")
+
+        # check that direct frame access beyond frame 0 works
+        for frame_idx in range(len(udry.trajectory)):
+            udry.trajectory[frame_idx]
+            usol.trajectory[frame_idx]
+            assert_allclose(
+                udry.atoms.positions,
+                usol_atoms.positions,
+                atol=1e-3,
+            )
+
 
 class TestTRRReader_Sub(_XDRReader_Sub):
     XDR_SUB_SOL = TRR_sub_sol
