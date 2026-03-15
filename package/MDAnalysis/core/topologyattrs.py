@@ -2074,11 +2074,11 @@ class Masses(AtomAttr):
             3 x 3 array with ``v[0]`` as first, ``v[1]`` as second, and
             ``v[2]`` as third eigenvector.
         Notes
-	-----
-	The returned array contains the principal axes as row vectors.
-	Each row corresponds to one principal axis (e1, e2, e3). This may
-	appear transposed compared to conventions where eigenvectors are
-	stored as column vectors.
+        -----
+        The returned array contains the principal axes as row vectors.
+        Each row corresponds to one principal axis (e1, e2, e3). This may
+        appear transposed compared to conventions where eigenvectors are
+        stored as column vectors.
 
         .. versionchanged:: 0.8
            Added `pbc` keyword
