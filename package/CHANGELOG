@@ -22,6 +22,8 @@ The rules for this file:
  * 2.11.0
 
 Fixes
+ * Fix doctests in pca.py for newer NumPy output format and testsetup blocks
+    (Issue #3925, PR #5301)
  * Fixes TypeError with np.int64 indexing in GSD Reader (Issue #5224)
  * Fixed bug in add_transformations allowing non-callable transformations
    (Issue #2558, PR #2558)
