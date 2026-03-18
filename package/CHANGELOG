@@ -15,11 +15,24 @@ The rules for this file:
 
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, orbeckst, marinegor, tylerjereddy, ljwoods2, marinegor,
-         spyke7, talagayev, bradyajohnston
+         spyke7, talagayev, tanii1125, BradyAJohnston, hejamu, jeremyleung521,
+         harshitgajjela-droid, kunjsinha, aygarwal, jauy123, Dreamstick9,
+         ollyfutur
 
  * 2.11.0
 
 Fixes
+ * Fixes TypeError with np.int64 indexing in GSD Reader (Issue #5224)
+ * Fixed bug in add_transformations allowing non-callable transformations
+   (Issue #2558, PR #2558)
+ * Drop/Replace lock file test in test_xdr (Issue #5236, PR #5237)
+ * HydrogenBondAnalysis: Fixed `count_by_time()` when using `run(FrameIterator)` that
+   results in `self.start` and `self.end` being None (Issue #5200, PR #5202)
+ * NoJump shows a more informative message and fails  when applied
+   outside of the first frame (Issue #4915, PR #5201)
+ * DSSP now explicitly checks for a minimum of 6 residues and raises a clear
+   error message, unlike the previous behavior where it would fail with an
+   incomprehensible broadcasting error at execution time (Issue #5046, PR #5163)
  * Fixes the verbose=False in EinsteinMSD, and only shows progress bar when
    verbose=True (Issue #5144, PR #5153)
  * Fix incorrect assignment of topology_format to format (and vice versa)
@@ -32,6 +45,16 @@ Fixes
 Enhancements
  * Change `get_hbond_map` to use `distance_capped` to speedup finding H bonding pairs
    and also take into account the periodic boundaries (PR #5182)
+ * Added `select=None` in `analysis.rms.RMSD` to perform no selection on
+   the input `atomgroup` and `reference` (Issue #5300, PR #5296)
+ * MOL2Parser now reads unit cell dimensions from @<TRIPOS>CRYSIN records (Issue #3341)
+ * Reduces duplication of code in _apply() function (Issue #5247, PR #5294)
+ * Added new top-level `MDAnalysis.fetch` module (PR #4943)
+ * Added new function `MDAnalysis.fetch.from_PDB` to download structure files from wwPDB
+   using `pooch` as optional dependency (Issue #4907, PR #4943) 
+ * Added benchmarks for package.MDAnalysis.analysis.msd.EinsteinMSD (PR #5277)
+ * Improved performance of `AtomGroup.wrap()` with compounds (PR #5220)
+ * Adds support for parsing `.tpr` files produced by GROMACS 2026.0
  * Enables parallelization for analysis.diffusionmap.DistanceMatrix
    (Issue #4679, PR #4745)
 

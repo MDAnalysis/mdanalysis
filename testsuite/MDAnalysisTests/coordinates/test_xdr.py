@@ -25,10 +25,9 @@ from unittest.mock import patch
 
 import re
 import os
-import sys
 import shutil
-import subprocess
-import time
+import sys
+from filelock import FileLock
 from pathlib import Path
 
 import numpy as np
@@ -59,10 +58,8 @@ from MDAnalysisTests.coordinates.base import (
 )
 
 import MDAnalysis as mda
-from MDAnalysis.coordinates.base import Timestep
 from MDAnalysis.coordinates import XDR
 from MDAnalysisTests.util import get_userid
-from filelock import FileLock
 
 
 @pytest.mark.parametrize(
@@ -320,7 +317,7 @@ class TestXTCReaderClass(object):
             with XTCReader(XTC) as trj:
                 N = trj.n_frames
                 frames = [ts.frame for ts in trj]
-        except:
+        except Exception:
             raise AssertionError("with_statement not working for XTCReader")
         assert_equal(
             N,
@@ -1047,16 +1044,25 @@ class _GromacsReader_offsets(object):
         assert_equal(os.path.exists(XDR.offsets_filename(filename)), False)
         # check the lock file is not created as well.
         assert_equal(
-            os.path.exists(XDR.offsets_filename(filename, ending=".lock")),
+            os.path.exists(XDR.offsets_filename(filename, ending="lock")),
             False,
         )
 
-    @pytest.mark.skipif(
-        sys.platform.startswith("win"),
-        reason="The lock file only exists when it's locked in windows",
-    )
-    def test_offset_lock_created(self, traj):
-        assert os.path.exists(XDR.offsets_filename(traj, ending="lock"))
+    def test_offset_lock_created(self):
+        lock_file_path = XDR.offsets_filename(self.filename, ending="lock")
+
+        with FileLock(lock_file_path) as lock:
+            # Lock acquired in context manager, so lock file should exist
+            assert lock.is_locked
+            assert os.path.exists(lock_file_path)
+
+            # Explicitly release lock, file should be deleted on UNIX
+            lock.release()
+            assert not lock.is_locked
+            if not sys.platform.startswith("win"):
+                # As of filelock>=3.21.0, filelock explicitly deletes lockfile
+                # upon release on UNIX. filelock does not do that on windows.
+                assert not os.path.exists(lock_file_path)
 
 
 class TestXTCReader_offsets(_GromacsReader_offsets):
