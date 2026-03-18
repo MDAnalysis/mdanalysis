@@ -1123,7 +1123,7 @@ class Universe(object):
         >>> u = mda.Universe(PSF, DCD)
         >>> u.add_TopologyAttr('tempfactors')
         >>> u.atoms.tempfactors
-        array([0., 0., 0., ..., 0., 0., 0.])
+        array([0., 0., 0., ..., 0., 0., 0.], shape=(3341,))
 
         .. versionchanged:: 0.17.0
            Can now also add TopologyAttrs with a string of the name of the
@@ -1775,18 +1775,18 @@ class Universe(object):
         --------
         To create a Universe with 10 conformers of ethanol:
 
-        >>> from rdkit.Chem import AllChem
-        >>> u = mda.Universe.from_smiles('CCO', numConfs=10)
-        >>> u
+        >>> from rdkit.Chem import AllChem # doctest: +SKIP
+        >>> u = mda.Universe.from_smiles('CCO', numConfs=10) # doctest: +SKIP
+        >>> u # doctest: +SKIP
         <Universe with 9 atoms>
-        >>> u.trajectory
+        >>> u.trajectory # doctest: +SKIP
         <RDKitReader with 10 frames of 9 atoms>
 
         To use a different conformer generation algorithm, like ETKDGv3:
 
-        >>> u = mda.Universe.from_smiles('CCO', rdkit_kwargs=dict(
+        >>> u = mda.Universe.from_smiles('CCO', rdkit_kwargs=dict( # doctest: +SKIP
         ...      params=AllChem.ETKDGv3()))
-        >>> u.trajectory
+        >>> u.trajectory # doctest: +SKIP
         <RDKitReader with 1 frames of 9 atoms>
 
 
