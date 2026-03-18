@@ -16,7 +16,8 @@ The rules for this file:
 -------------------------------------------------------------------------------
 ??/??/?? IAlibay, orbeckst, marinegor, tylerjereddy, ljwoods2, marinegor,
          spyke7, talagayev, tanii1125, BradyAJohnston, hejamu, jeremyleung521,
-         harshitgajjela-droid, kunjsinha, aygarwal, jauy123, Dreamstick9
+         harshitgajjela-droid, kunjsinha, aygarwal, jauy123, Dreamstick9,
+         ollyfutur
 
  * 2.11.0
 
@@ -42,6 +43,8 @@ Fixes
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Enhancements
+ * Added `select=None` in `analysis.rms.RMSD` to perform no selection on
+   the input `atomgroup` and `reference` (Issue #5300, PR #5296)
  * MOL2Parser now reads unit cell dimensions from @<TRIPOS>CRYSIN records (Issue #3341)
  * Reduces duplication of code in _apply() function (Issue #5247, PR #5294)
  * Added new top-level `MDAnalysis.fetch` module (PR #4943)
