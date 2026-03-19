@@ -21,6 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import pytest
+import numpy as np
 
 import os
 from numpy.testing import (
@@ -29,6 +30,7 @@ from numpy.testing import (
     assert_array_almost_equal,
     TestCase,
     assert_almost_equal,
+    assert_allclose,
 )
 
 from MDAnalysisTests.datafiles import (
@@ -39,6 +41,7 @@ from MDAnalysisTests.datafiles import (
     mol2_comments_header,
     mol2_ligand,
     mol2_sodium_ion,
+    mol2_crysin,
 )
 from MDAnalysis import Universe
 import MDAnalysis as mda
@@ -232,3 +235,11 @@ def test_mol2_universe_write(tmpdir):
         assert_almost_equal(u.atoms.positions, u2.atoms.positions)
         # MDA does not current implement @<TRIPOS>CRYSIN reading
         assert u2.dimensions is None
+
+
+def test_mol2_crysin_dimensions():
+    # test that crysin records are read as dimensions
+    u = mda.Universe(mol2_crysin)
+
+    expected = np.array([40.0, 50.0, 60.0, 90.0, 90.0, 90.0], dtype=np.float32)
+    assert_allclose(u.dimensions, expected, atol=1e-3)
