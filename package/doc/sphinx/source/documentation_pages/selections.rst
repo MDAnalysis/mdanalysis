@@ -109,6 +109,10 @@ in the dot point above, keywords will be automatically generated for any
 suitable :class:`~MDAnalysis.core.topologyattrs.TopologyAttr`. A list of
 `Defined topology attributes`_ is available in the User Guide.
 
+all
+    selects all atoms in the group, returned sorted and without duplicates.
+    If the group is ``Universe.atoms``, it is returned directly. For example::
+
 protein, backbone, nucleic, nucleicbackbone
     selects all atoms that belong to a standard set of residues; a protein
     is identfied by a hard-coded set of residue names so it  may not
