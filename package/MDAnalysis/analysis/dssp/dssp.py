@@ -243,6 +243,8 @@ class DSSP(AnalysisBase):
 
         .. versionadded:: 2.11.0
 
+    .. _distopia: https://www.mdanalysis.org/distopia/
+
 
     Raises
     ------
