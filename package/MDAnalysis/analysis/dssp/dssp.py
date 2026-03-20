@@ -238,7 +238,7 @@ class DSSP(AnalysisBase):
            for your specific case.
 
     backend : str, optional
-        Backend for distance calculations, by default ``"serial"``.
+        :ref:`Backend for distance calculations<selection-of-acceleration-backend>`, by default ``"serial"``.
         Can be set to ``"distopia"`` if `distopia`_ is installed.
 
         .. versionadded:: 2.11.0
