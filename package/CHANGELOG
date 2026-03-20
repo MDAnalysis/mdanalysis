@@ -41,17 +41,21 @@ Fixes
    to version 5.1.0 (Issue #5145, PR #5146)
  * Fixes incorrect assignment of secondary structure to proline residues in
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
+ * DSSP now correctly handles periodic boundary conditions in hydrogen bond
+   detection; previously, hydrogen bonds across periodic boundaries were
+   missed (PR #5182)
 
 Enhancements
- * Change `get_hbond_map` to use `distance_capped` to speedup finding H bonding pairs
-   and also take into account the periodic boundaries (PR #5182)
+ * DSSP uses ``capped_distance`` and ``calc_bonds`` for faster distance
+   calculations and supports ``backend`` selection (e.g. ``"distopia"``)
+   (PR #5182)
  * Added `select=None` in `analysis.rms.RMSD` to perform no selection on
    the input `atomgroup` and `reference` (Issue #5300, PR #5296)
  * MOL2Parser now reads unit cell dimensions from @<TRIPOS>CRYSIN records (Issue #3341)
  * Reduces duplication of code in _apply() function (Issue #5247, PR #5294)
  * Added new top-level `MDAnalysis.fetch` module (PR #4943)
  * Added new function `MDAnalysis.fetch.from_PDB` to download structure files from wwPDB
-   using `pooch` as optional dependency (Issue #4907, PR #4943) 
+   using `pooch` as optional dependency (Issue #4907, PR #4943)
  * Added benchmarks for package.MDAnalysis.analysis.msd.EinsteinMSD (PR #5277)
  * Improved performance of `AtomGroup.wrap()` with compounds (PR #5220)
  * Adds support for parsing `.tpr` files produced by GROMACS 2026.0

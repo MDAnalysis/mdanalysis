@@ -237,6 +237,12 @@ class DSSP(AnalysisBase):
            (e.g., a :exc:`ValueError` is raised) you must customize `hydrogen_name`
            for your specific case.
 
+    backend : str, optional
+        Backend for distance calculations, by default ``"serial"``.
+        Can be set to ``"distopia"`` if `distopia`_ is installed.
+
+        .. versionadded:: 2.11.0
+
 
     Raises
     ------
@@ -309,8 +315,10 @@ class DSSP(AnalysisBase):
         *,
         heavyatom_names: tuple[str] = ("N", "CA", "C", "O O1 OT1"),
         hydrogen_name: str = "H HN HT1 HT2 HT3",
+        backend: str = "serial",
     ):
         self._guess_hydrogens = guess_hydrogens
+        self._backend = backend
 
         ag: AtomGroup = atoms.select_atoms("protein")
         super().__init__(ag.universe.trajectory)
@@ -327,10 +335,13 @@ class DSSP(AnalysisBase):
         }
         self._donor_mask: Optional[np.ndarray] = ag.residues.resnames != "PRO"
         self._box = self._trajectory.ts.dimensions
-        if np.array_equal(self._box, (1, 1, 1, 90, 90, 90)):
+        if self._box is not None and np.allclose(
+            self._box, [1, 1, 1, 90, 90, 90]
+        ):
             self._box = None
             warnings.warn(
-                "Box dimensions are (1, 1, 1, 90, 90, 90), not using periodic boundary conditions in DSSP calculations"
+                "Box dimensions are (1, 1, 1, 90, 90, 90), not using "
+                "periodic boundary conditions in DSSP calculations"
             )
         self._hydrogens: list["AtomGroup"] = [
             res.atoms.select_atoms(f"name {hydrogen_name}")
@@ -418,6 +429,7 @@ class DSSP(AnalysisBase):
             coords,
             donor_mask=self._donor_mask,
             box=self._box,
+            backend=self._backend,
         )
         self.results.dssp_ndarray.append(dssp)
 
