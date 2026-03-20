@@ -160,7 +160,7 @@ def get_hbond_map(
 
     backend : str, optional
         Backend for distance calculations, by default ``"serial"``.
-        Can be set to ``"distopia"`` if `distopia`_ is installed.
+        Can be set to ``"distopia"`` if :mod:`distopia` is installed.
 
         .. versionadded:: 2.11.0
 
