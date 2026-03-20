@@ -58,11 +58,11 @@ def test_donor_mask_proline_indices():
     u = mda.Universe(TPR, XTC).select_atoms("protein").universe
     dssp = DSSP(u)
     resnames = u.select_atoms("protein").residues.resnames
-    pro_indices = np.where(resnames == "PRO")[0]
+    is_pro = resnames == "PRO"
 
     # donor_mask should be False at proline positions and True at non-proline positions
-    assert np.all(dssp._donor_mask[pro_indices])
-    assert np.all(dssp._donor_mask[~pro_indices])
+    assert np.all(~dssp._donor_mask[is_pro])
+    assert np.all(dssp._donor_mask[~is_pro])
 
 
 def test_donor_mask_none():
