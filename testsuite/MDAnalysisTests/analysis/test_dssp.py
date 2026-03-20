@@ -1,4 +1,6 @@
 import glob
+import warnings
+from pathlib import Path
 
 import MDAnalysis as mda
 import numpy as np
@@ -77,6 +79,22 @@ def test_donor_mask_none():
     result = assign(coords, donor_mask=None)
     assert result.shape == (n_residues, 3)
     assert np.all(result.sum(axis=-1) == 1)
+
+
+def test_placeholder_box_warnings():
+    """Test that placeholder (1,1,1,90,90,90) box dimensions trigger a warning
+    and disable PBC."""
+    u = mda.Universe(f"{DSSP_FOLDER}/2va0A.pdb.gz")
+    u.trajectory.ts.dimensions = np.array([1.0, 1.0, 1.0, 90.0, 90.0, 90.0])
+
+    with warnings.catch_warnings(record=True) as w:
+        warnings.simplefilter("always")
+        dssp = DSSP(u)
+        box_warnings = [
+            x for x in w if "not using periodic boundary" in str(x.message)
+        ]
+        assert len(box_warnings) == 1
+    assert dssp._box is None
 
 
 def test_atomgroup(client_DSSP):
