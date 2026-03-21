@@ -3155,6 +3155,11 @@ class AtomGroup(GroupBase):
         topology (this is to ensure that there are no duplicates, which can
         happen with complicated selections).
 
+        "all" selects all atoms in the group, returning them sorted and without duplicates.
+
+        Example
+        >>> ag.select_atoms("all")
+
         Parameters
         ----------
         sel : str
