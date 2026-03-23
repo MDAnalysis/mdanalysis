@@ -253,7 +253,20 @@ selection ranges.</p>
 in the dot point above, keywords will be automatically generated for any
 suitable <a class="reference internal" href="core/topologyattrs.html#MDAnalysis.core.topologyattrs.TopologyAttr" title="MDAnalysis.core.topologyattrs.TopologyAttr"><code class="xref py py-class docutils literal notranslate"><span class="pre">TopologyAttr</span></code></a>. A list of
 <a class="reference external" href="https://userguide.mdanalysis.org/stable/topology_system.html#format-specific-attributes">Defined topology attributes</a> is available in the User Guide.</p>
-<dl class="simple">
+<dl>
+<dt>all</dt><dd><p>selects all atoms in the current group; the resulting
+<code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> is unique and sorted by index. If the group
+already corresponds to <code class="docutils literal notranslate"><span class="pre">Universe.atoms</span></code>, it is returned unchanged.</p>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ag_all</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span><span class="o">.</span><span class="n">ix</span>
+<span class="go">[5, 10, 5, 9, 8, 11]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ag_all</span><span class="o">.</span><span class="n">ix</span>
+<span class="go">[5, 8, 9, 10, 11]</span>
+</pre></div>
+</div>
+</dd>
 <dt>protein, backbone, nucleic, nucleicbackbone</dt><dd><p>selects all atoms that belong to a standard set of residues; a protein
 is identfied by a hard-coded set of residue names so it  may not
 work for esoteric residues.</p>
