@@ -23,7 +23,7 @@ The rules for this file:
 
 Fixes
  * Fixes First Time Contributor Greeting workflow by updating inputs and 
-   adding missing issue_message 
+   adding missing issue_message (PR #5332)
  * Fixes msd for non-linear frames, when non_linear is not explicitly
    provided (Issue #5100, PR #5254)
  * Fixes TypeError with np.int64 indexing in GSD Reader (Issue #5224)
