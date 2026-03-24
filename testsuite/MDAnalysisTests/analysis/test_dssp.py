@@ -41,7 +41,7 @@ def test_trajectory(client_DSSP):
 # ensure that we get different assigned results when using and not using the
 # donor mask which filters out prolines from being potential HBond donors as they
 # are missing hydrogens
-def test_donor_mask(client_DSSP):
+def test_donor_mask():
     u = mda.Universe(TPR, XTC).select_atoms("protein").universe
     dssp = DSSP(u)
     coords = dssp._get_coords()
