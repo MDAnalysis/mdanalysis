@@ -25,6 +25,8 @@ Fixes
  * DSSP now correctly handles periodic boundary conditions in hydrogen bond
    detection; previously, hydrogen bonds across periodic boundaries were
    missed (PR #5182)
+ * Fixes msd for non-linear frames, when non_linear is not explicitly
+   provided (Issue #5100, PR #5254)
  * Fixes TypeError with np.int64 indexing in GSD Reader (Issue #5224)
  * Fixed bug in add_transformations allowing non-callable transformations
    (Issue #2558, PR #2558)
