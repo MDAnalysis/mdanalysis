@@ -150,7 +150,7 @@ the OPLS/AA force field.
 
 """
 
-__all__ = ["Universe", "Writer", "AtomGroup", "ResidueGroup", "SegmentGroup"]
+__all__ = ["Universe", "Writer", "AtomGroup", "ResidueGroup", "SegmentGroup", "fetch"]
 
 import logging
 import warnings
@@ -210,6 +210,7 @@ warnings.filterwarnings(
 
 
 from . import units
+from . import fetch
 
 # Bring some often used objects into the current namespace
 from .core.universe import Universe, Merge
