@@ -95,22 +95,45 @@ def unique_int_1d(cnp.intp_t[:] values):
 @cython.wraparound(False)
 def inverse_int_index(cnp.intp_t[:] values,
                       cnp.intp_t[:] unique_vals):
-    """
-    Construct inverse index map such that:
+    r"""Construct an inverse index array (mask) mapping values to unique_vals.
 
-        unique_vals[mask] == values
+    The returned mask contains the indices such that:
+    
+    .. math::
+        \text{unique\_vals}[\text{mask}] == \text{values}
 
     Parameters
     ----------
     values : numpy.ndarray
-        1D array of integers.
+        1D array of integers (can contain duplicates).
     unique_vals : numpy.ndarray
-        1D array of unique integers (unsorted).
+        1D array of unique integers corresponding to the elements in `values`.
 
     Returns
     -------
     numpy.ndarray
-        Integer mask mapping values -> index in unique_vals.
+        An integer array `mask` of the same length as `values`, where 
+        ``mask[i]`` is the index of ``values[i]`` in `unique_vals`.
+
+
+    Notes
+    -----
+
+
+    .. versionadded:: 2.11.0
+
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from MDAnalysis.lib._cutil import inverse_int_index
+    >>> vals = np.array([1, 5, 3, 3, 6], dtype=np.intp)
+    >>> uniq = np.array([1, 5, 3, 6], dtype=np.intp)
+    >>> mask = inverse_int_index(vals, uniq)
+    >>> mask
+    array([0, 1, 2, 2, 3])
+    >>> np.all(uniq[mask] == vals)
+    True
     """
 
     cdef Py_ssize_t n = values.shape[0]
