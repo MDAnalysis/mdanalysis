@@ -74,10 +74,10 @@ To select these atoms: ::
    >>> ag2 = u.atoms[4000:4005]
 
 We can run the calculations using any variable of choice such as
-``my_dists`` and access our results using ``my_dists.results``: ::
+``my_dists`` and access our results using ``my_dists.results.distances``: ::
 
    >>> my_dists = ad.AtomicDistances(ag1, ag2).run()
-   >>> my_dists.results
+   >>> my_dists.results.distances
    array([[37.80813681, 33.2594864 , 34.93676414, 34.51183299, 34.96340209],
           [27.11746625, 31.19878079, 31.69439435, 32.63446126, 33.10451345],
           [23.27210749, 30.38714688, 32.48269361, 31.91444505, 31.84583838],
@@ -94,7 +94,7 @@ the keyword argument ``pbc=False`` after ``ag2``. The result is different
 in this case: ::
 
    >>> my_dists_nopbc = ad.AtomicDistances(ag1, ag2, pbc=False).run()
-   >>> my_dists_nopbc.results
+   >>> my_dists_nopbc.results.distances
    array([[37.80813681, 33.2594864 , 34.93676414, 34.51183299, 34.96340209],
           [27.11746625, 31.19878079, 31.69439435, 32.63446126, 33.10451345],
           [23.27210749, 30.38714688, 32.482695  , 31.91444505, 31.84583838],
@@ -108,6 +108,7 @@ in this case: ::
 
 """
 
+from mdanalysis.package.MDAnalysis.analysis.results import Results, ResultsGroup
 import numpy as np
 
 from MDAnalysis.lib.distances import calc_bonds
@@ -134,7 +135,7 @@ class AtomicDistances(AnalysisBase):
 
     Attributes
     ----------
-    results : :class:`numpy.ndarray`
+    results.distances : :class:`numpy.ndarray`
         The distances :math:`|ag1[i] - ag2[i]|` for all :math:`i`
         from :math:`0` to `n_atoms` :math:`- 1` for each frame over
         the trajectory.
@@ -142,9 +143,7 @@ class AtomicDistances(AnalysisBase):
         Number of frames included in the analysis.
     n_atoms : int
         Number of atoms in each atom group.
-
-
-    .. versionadded:: 2.5.0
+    .. versionchanged:: 2.11.0
     """
 
     def __init__(self, ag1, ag2, pbc=True, **kwargs):
@@ -167,7 +166,8 @@ class AtomicDistances(AnalysisBase):
 
     def _prepare(self):
         # initialize NumPy array of frames x distances for results
-        self.results = np.zeros((self.n_frames, self._ag1.atoms.n_atoms))
+        distances = np.zeros((self.n_frames, self._ag1.atoms.n_atoms))
+        self.results = Results(distances=distances)
 
     def _single_frame(self):
         # if PBCs considered, get box size
