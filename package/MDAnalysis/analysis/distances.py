@@ -112,9 +112,9 @@ def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None):
 if coord is None:
     raise ValueError("coord cannot be None")
 
-coord = np.asarray(coord, dtype=np.float64)
+coord = np.asarray(coord)
 
-if coord.ndim != 2 or coord.shape[-1] != 3:
+if coord.ndim != 2 or coord.shape[1] != 3:
     raise ValueError("coord must be an array of shape (N, 3)")
 
 if coord.size == 0:
