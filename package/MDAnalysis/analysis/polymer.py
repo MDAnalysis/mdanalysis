@@ -69,9 +69,7 @@ def sort_backbone(backbone):
     """
     degrees = [len(atom.bonded_atoms & backbone) for atom in backbone]
     deg1_atoms = [atom for atom, d in zip(backbone, degrees) if d == 1]
-    wrong_atoms = [
-        atom for atom, d in zip(backbone, degrees) if d not in (1, 2)
-    ]
+    wrong_atoms = [atom for atom, d in zip(backbone, degrees) if d not in (1, 2)]
 
     if len(wrong_atoms) > 0:
         raise ValueError(
@@ -318,9 +316,7 @@ class PersistenceLength(AnalysisBase):
     def _conclude(self):
         norm = np.linspace(self.chainlength - 1, 1, self.chainlength - 1)
         norm *= len(self._atomgroups) * self._trajectory.n_frames
-        self.results.bond_autocorrelation = (
-            self.results.raw_bond_autocorr / norm
-        )
+        self.results.bond_autocorrelation = self.results.raw_bond_autocorr / norm
         self._calc_bond_length()
         self._perform_fit()
 

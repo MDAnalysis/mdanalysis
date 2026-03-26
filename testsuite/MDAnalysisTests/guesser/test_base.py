@@ -58,16 +58,13 @@ class TestBaseGuesser:
     def test_guess_invalid_attribute(self):
         with pytest.raises(
             ValueError,
-            match="default guesser can not guess "
-            "the following attribute: foo",
+            match="default guesser can not guess " "the following attribute: foo",
         ):
             mda.Universe(datafiles.PDB_xsmall, to_guess=["foo"])
 
     def test_guess_attribute_with_missing_parent_attr(self):
         names = Atomnames(np.array(["C", "HB", "HA", "O"], dtype=object))
-        masses = Masses(
-            np.array([np.nan, np.nan, np.nan, np.nan], dtype=np.float64)
-        )
+        masses = Masses(np.array([np.nan, np.nan, np.nan, np.nan], dtype=np.float64))
         top = Topology(4, 1, 1, attrs=[names, masses])
         u = mda.Universe(top, to_guess=["masses"])
         assert_allclose(
@@ -88,9 +85,7 @@ class TestBaseGuesser:
         masses = Masses(np.array([0, np.nan, np.nan, 0], dtype=np.float64))
         top = Topology(4, 1, 1, attrs=[types, masses])
         u = mda.Universe(top, to_guess=["masses"])
-        assert_allclose(
-            u.atoms.masses, np.array([0, 1.00800, 1.00800, 0]), atol=0
-        )
+        assert_allclose(u.atoms.masses, np.array([0, 1.00800, 1.00800, 0]), atol=0)
 
     def test_force_guess_priority(self):
         "check that passing the attribute to force_guess have higher power"
@@ -185,9 +180,7 @@ class TestBaseGuesser:
         with pytest.raises(NoDataError):
             u.atoms.angles
 
-        u.guess_TopologyAttrs(
-            "default", to_guess=["dihedrals", "angles", "bonds"]
-        )
+        u.guess_TopologyAttrs("default", to_guess=["dihedrals", "angles", "bonds"])
         assert len(u.atoms.angles) == 290
         assert len(u.atoms.dihedrals) == 411
 
@@ -249,9 +242,7 @@ class TestBaseGuesser:
 
 
 def test_Universe_guess_bonds_deprecated():
-    with pytest.warns(
-        DeprecationWarning, match="`guess_bonds` keyword is deprecated"
-    ):
+    with pytest.warns(DeprecationWarning, match="`guess_bonds` keyword is deprecated"):
         u = mda.Universe(datafiles.PDB_xsmall, guess_bonds=True)
 
 

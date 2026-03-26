@@ -92,9 +92,7 @@ with suppress(ImportError):
     )  # available since 2022.09.1
 
 
-def reorder_atoms(
-    mol: "Chem.Mol", field: str = "_MDAnalysis_index"
-) -> "Chem.Mol":
+def reorder_atoms(mol: "Chem.Mol", field: str = "_MDAnalysis_index") -> "Chem.Mol":
     """Reorder atoms based on the given field. Defaults to sorting in the same
     order as the input AtomGroup.
 
@@ -394,9 +392,7 @@ class MDAnalysisInferrer:
         self._rebuild_conjugated_bonds(mol, max_iter)
 
         # list of sanitized reactions
-        reactions = [
-            ReactionFromSmarts(rxn) for rxn in self.STANDARDIZATION_REACTIONS
-        ]
+        reactions = [ReactionFromSmarts(rxn) for rxn in self.STANDARDIZATION_REACTIONS]
 
         # fragment mol (reactions must have single reactant and product)
         fragments = list(
@@ -485,17 +481,13 @@ class MDAnalysisInferrer:
         # there's usually an even number of matches for this
         pattern = Chem.MolFromSmarts("[*-{1-2}]-,=[*+0]=,#[*+0]")
         # pattern used to finish fixing a series of conjugated bonds
-        base_end_pattern = Chem.MolFromSmarts(
-            "[*-{1-2}]-,=[*+0]=,#[*+0]-,=[*-{1-2}]"
-        )
+        base_end_pattern = Chem.MolFromSmarts("[*-{1-2}]-,=[*+0]=,#[*+0]-,=[*-{1-2}]")
         # used when there's an odd number of matches for `pattern`
         odd_end_pattern = Chem.MolFromSmarts(
             "[*-]-[*+0]=[*+0]-[*-,$([#7;X3;v3]),$([#6+0,#7+1]=O),$([S;D4;v4]-[O-])]"
         )
         # number of unique matches with the pattern
-        n_matches = len(
-            {match[0] for match in mol.GetSubstructMatches(pattern)}
-        )
+        n_matches = len({match[0] for match in mol.GetSubstructMatches(pattern)})
         # nothing to standardize
         if n_matches == 0:
             return
@@ -523,16 +515,12 @@ class MDAnalysisInferrer:
                 # [*-]-*=*-[C,N+]=O --> *=*-*=[C,N+]-[O-]
                 # transform the =O to -[O-]
                 if (
-                    term_atom.GetAtomicNum() == 6
-                    and term_atom.GetFormalCharge() == 0
+                    term_atom.GetAtomicNum() == 6 and term_atom.GetFormalCharge() == 0
                 ) or (
-                    term_atom.GetAtomicNum() == 7
-                    and term_atom.GetFormalCharge() == 1
+                    term_atom.GetAtomicNum() == 7 and term_atom.GetFormalCharge() == 1
                 ):
                     for neighbor in term_atom.GetNeighbors():
-                        bond = mol.GetBondBetweenAtoms(
-                            anion2, neighbor.GetIdx()
-                        )
+                        bond = mol.GetBondBetweenAtoms(anion2, neighbor.GetIdx())
                         if (
                             neighbor.GetAtomicNum() == 8
                             and bond.GetBondTypeAsDouble() == 2
@@ -544,13 +532,10 @@ class MDAnalysisInferrer:
                 # [*-]-*=*-[Sv4]-[O-] --> *=*-*=[Sv6]=O
                 # transform -[O-] to =O
                 elif (
-                    term_atom.GetAtomicNum() == 16
-                    and term_atom.GetFormalCharge() == 0
+                    term_atom.GetAtomicNum() == 16 and term_atom.GetFormalCharge() == 0
                 ):
                     for neighbor in term_atom.GetNeighbors():
-                        bond = mol.GetBondBetweenAtoms(
-                            anion2, neighbor.GetIdx()
-                        )
+                        bond = mol.GetBondBetweenAtoms(anion2, neighbor.GetIdx())
                         if (
                             neighbor.GetAtomicNum() == 8
                             and neighbor.GetFormalCharge() == -1

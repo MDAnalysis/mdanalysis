@@ -166,9 +166,7 @@ def split_grid(grid, num_cores):
     list_square_vertex_arrays_per_core = np.array_split(
         list_all_squares_in_grid, num_cores
     )
-    list_parent_index_values = np.array_split(
-        list_parent_index_values, num_cores
-    )
+    list_parent_index_values = np.array_split(list_parent_index_values, num_cores)
     return [
         list_square_vertex_arrays_per_core,
         list_parent_index_values,
@@ -214,14 +212,16 @@ def _produce_list_centroids_this_frame(
         ):  # if there are no particles of interest in this particular square
             list_centroids_this_frame.append(None)
         else:
-            current_coordinate_array_in_square = (
-                relevant_particle_coordinate_array_xy[indices]
-            )
+            current_coordinate_array_in_square = relevant_particle_coordinate_array_xy[
+                indices
+            ]
             current_square_indices_centroid = np.average(
                 current_coordinate_array_in_square, axis=0
             )
             list_centroids_this_frame.append(current_square_indices_centroid)
-    return list_centroids_this_frame  # a list of numpy xy centroid arrays for this frame
+    return (
+        list_centroids_this_frame  # a list of numpy xy centroid arrays for this frame
+    )
 
 
 def per_core_work(
@@ -239,9 +239,7 @@ def per_core_work(
     The code to perform on a given core given the list of square vertices assigned to it.
     """
     # obtain the relevant coordinates for particles of interest
-    universe_object = MDAnalysis.Universe(
-        topology_file_path, trajectory_file_path
-    )
+    universe_object = MDAnalysis.Universe(topology_file_path, trajectory_file_path)
     list_previous_frame_centroids = []
     list_previous_frame_indices = []
     for ts in universe_object.trajectory:
@@ -259,11 +257,9 @@ def per_core_work(
             )
         )
         # likewise, I will need a list of centroids of particles in each square (same order as above list):
-        list_centroids_in_squares_this_frame = (
-            _produce_list_centroids_this_frame(
-                list_indices_in_squares_this_frame,
-                relevant_particle_coordinate_array_xy,
-            )
+        list_centroids_in_squares_this_frame = _produce_list_centroids_this_frame(
+            list_indices_in_squares_this_frame,
+            relevant_particle_coordinate_array_xy,
         )
         if (
             list_previous_frame_indices
@@ -285,9 +281,7 @@ def per_core_work(
                     xy_deltas_to_write.append([0, 0])
                 else:
                     xy_deltas_to_write.append(
-                        np.subtract(
-                            square_1_centroid, square_2_centroid
-                        ).tolist()
+                        np.subtract(square_1_centroid, square_2_centroid).tolist()
                     )
 
             # xy_deltas_to_write = np.subtract(np.array(
@@ -303,15 +297,11 @@ def per_core_work(
 
             # with the xy and dx,dy values calculated I need to set the values from this frame to previous frame
             # values in anticipation of the next frame:
-            list_previous_frame_centroids = (
-                list_centroids_in_squares_this_frame[:]
-            )
+            list_previous_frame_centroids = list_centroids_in_squares_this_frame[:]
             list_previous_frame_indices = list_indices_in_squares_this_frame[:]
         else:  # either no points in squares or after the first frame I'll just reset the 'previous' values so they
             # can be used when consecutive frames have proper values
-            list_previous_frame_centroids = (
-                list_centroids_in_squares_this_frame[:]
-            )
+            list_previous_frame_centroids = list_centroids_in_squares_this_frame[:]
             list_previous_frame_indices = list_indices_in_squares_this_frame[:]
         if ts.frame > end_frame:
             break  # stop here
@@ -427,9 +417,7 @@ def generate_streamlines(
         parent_list_deltas.extend(delta_array)
 
     tuple_of_limits = (xmin, xmax, ymin, ymax)
-    grid = produce_grid(
-        tuple_of_limits=tuple_of_limits, grid_spacing=grid_spacing
-    )
+    grid = produce_grid(tuple_of_limits=tuple_of_limits, grid_spacing=grid_spacing)
     (
         list_square_vertex_arrays_per_core,
         list_parent_index_values,

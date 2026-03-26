@@ -85,9 +85,7 @@ class DimensionalityReductionMethod(object):
 
         """
         raise NotImplementedError(
-            "Class {0} doesn't implement __call__()".format(
-                self.__class__.__name__
-            )
+            "Class {0} doesn't implement __call__()".format(self.__class__.__name__)
         )
 
 
@@ -150,17 +148,15 @@ class StochasticProximityEmbeddingNative(DimensionalityReductionMethod):
             coordinates in reduced space
 
         """
-        final_stress, coordinates = (
-            stochasticproxembed.StochasticProximityEmbedding(
-                s=distance_matrix,
-                rco=self.distance_cutoff,
-                dim=self.dimension,
-                minlam=self.min_lam,
-                maxlam=self.max_lam,
-                ncycle=self.ncycle,
-                nstep=self.nstep,
-                stressfreq=self.stressfreq,
-            )
+        final_stress, coordinates = stochasticproxembed.StochasticProximityEmbedding(
+            s=distance_matrix,
+            rco=self.distance_cutoff,
+            dim=self.dimension,
+            minlam=self.min_lam,
+            maxlam=self.max_lam,
+            ncycle=self.ncycle,
+            nstep=self.nstep,
+            stressfreq=self.stressfreq,
         )
         return coordinates, {"final_stress": final_stress}
 
@@ -185,9 +181,7 @@ if sklearn:
                 Number of dimensions to which the conformational space will be
                 reduced to (default is 3).
             """
-            self.pca = sklearn.decomposition.PCA(
-                n_components=dimension, **kwargs
-            )
+            self.pca = sklearn.decomposition.PCA(n_components=dimension, **kwargs)
 
         def __call__(self, coordinates):
             """

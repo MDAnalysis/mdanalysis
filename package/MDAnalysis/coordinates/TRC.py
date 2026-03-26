@@ -229,9 +229,7 @@ class TRCReader(base.ReaderBase):
                 # Timestep-block
                 #
                 if "TIMESTEP" == stripped_line:
-                    l_timestep_timevalues.append(
-                        float(f.readline().split()[1])
-                    )
+                    l_timestep_timevalues.append(float(f.readline().split()[1]))
                     while stripped_line != "END":
                         stripped_line = f.readline().strip()
                 #
@@ -268,9 +266,7 @@ class TRCReader(base.ReaderBase):
                         # instead of looping over the file, looking for an END
                         # we can seek to where the end of the block should be.
                         current_pos = f.tell() - len(line)
-                        f.seek(
-                            f.tell() - len(line) + block_size["POSITIONRED"]
-                        )
+                        f.seek(f.tell() - len(line) + block_size["POSITIONRED"])
 
                         # Check if we are at the correct position
                         # If not, set inconsistent_size to true and seek back
@@ -283,9 +279,7 @@ class TRCReader(base.ReaderBase):
                             f.seek(current_pos)
 
         if frame_counter == 0:
-            errormsg = (
-                "No supported blocks were found within the GROMOS trajectory!"
-            )
+            errormsg = "No supported blocks were found within the GROMOS trajectory!"
             logger.error(errormsg)
             raise ValueError(errormsg)
 
@@ -294,9 +288,7 @@ class TRCReader(base.ReaderBase):
         traj_properties["l_blockstart_offset"] = l_blockstart_offset
 
         if len(l_timestep_timevalues) >= 2:
-            traj_properties["dt"] = (
-                l_timestep_timevalues[1] - l_timestep_timevalues[0]
-            )
+            traj_properties["dt"] = l_timestep_timevalues[1] - l_timestep_timevalues[0]
         else:
             traj_properties["dt"] = 0
             warnmsg = "The trajectory does not contain TIMESTEP blocks!"
@@ -359,9 +351,7 @@ class TRCReader(base.ReaderBase):
 
                 elif ntb_setting in [1, 2]:
                     tmp_a, tmp_b, tmp_c = map(float, f.readline().split())
-                    tmp_alpha, tmp_beta, tmp_gamma = map(
-                        float, f.readline().split()
-                    )
+                    tmp_alpha, tmp_beta, tmp_gamma = map(float, f.readline().split())
                     frameDat["dimensions"] = [
                         tmp_a,
                         tmp_b,
@@ -373,21 +363,13 @@ class TRCReader(base.ReaderBase):
                     self.periodic = True
 
                     # gb_line3
-                    if (
-                        sum(abs(float(v)) for v in f.readline().split())
-                        > 1e-10
-                    ):
-                        errormsg = (
-                            "This reader doesnt't support a shifted origin!"
-                        )
+                    if sum(abs(float(v)) for v in f.readline().split()) > 1e-10:
+                        errormsg = "This reader doesnt't support a shifted origin!"
                         logger.error(errormsg)
                         raise ValueError(errormsg)
 
                     # gb_line4
-                    if (
-                        sum(abs(float(v)) for v in f.readline().split())
-                        > 1e-10
-                    ):
+                    if sum(abs(float(v)) for v in f.readline().split()) > 1e-10:
                         errormsg = "This reader doesnt't support yawed, pitched or rolled boxes!"
                         logger.error(errormsg)
                         raise ValueError(errormsg)
@@ -399,8 +381,7 @@ class TRCReader(base.ReaderBase):
                 break
 
             elif any(
-                non_supp_bn in line
-                for non_supp_bn in TRCReader.NOT_SUPPORTED_BLOCKS
+                non_supp_bn in line for non_supp_bn in TRCReader.NOT_SUPPORTED_BLOCKS
             ):
                 for non_supp_bn in TRCReader.NOT_SUPPORTED_BLOCKS:
                     if non_supp_bn == stripped_line:
@@ -415,9 +396,7 @@ class TRCReader(base.ReaderBase):
         self._frame = i - 1
 
         # Move position in file just (-2 byte) before the start of the block
-        self.trcfile.seek(
-            self.traj_properties["l_blockstart_offset"][i] - 2, 0
-        )
+        self.trcfile.seek(self.traj_properties["l_blockstart_offset"][i] - 2, 0)
 
         return self._read_next_timestep()
 

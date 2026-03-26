@@ -68,9 +68,7 @@ class TestDocstringExamples:
 
     @pytest.mark.parametrize("pdb_id", ["1AKE", "4BWZ"])
     def test_one_file_download(self, tmp_path, pdb_id):
-        path = mda.fetch.from_PDB(
-            pdb_id, cache_path=tmp_path, file_format="cif"
-        )
+        path = mda.fetch.from_PDB(pdb_id, cache_path=tmp_path, file_format="cif")
         assert isinstance(path, Path)
         assert Path(path).name == f"{pdb_id}.cif"
 
@@ -88,9 +86,7 @@ class TestDocstringExamples:
             ]
         )
 
-    @pytest.mark.parametrize(
-        "pdb_id, n_atoms", [("1AKE", 3816), ("4BWZ", 2824)]
-    )
+    @pytest.mark.parametrize("pdb_id, n_atoms", [("1AKE", 3816), ("4BWZ", 2824)])
     def test_files_to_universe(self, tmp_path, pdb_id, n_atoms):
         u = mda.Universe(
             mda.fetch.from_PDB(
@@ -122,9 +118,7 @@ class TestExpectedBehaviors:
 
     def test_str_input_gives_path_output(self, tmp_path):
         assert isinstance(
-            mda.fetch.from_PDB(
-                pdb_ids="1AKE", cache_path=tmp_path, file_format="cif"
-            ),
+            mda.fetch.from_PDB(pdb_ids="1AKE", cache_path=tmp_path, file_format="cif"),
             Path,
         )
 

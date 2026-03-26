@@ -263,14 +263,12 @@ densityUnit_factor = {
     "nm^{-3}": 1 / 1e-3,
     "nanometer^{-3}": 1 / 1e-3,
     "Molar": 1 / (1e-27 * constants["N_Avogadro"]),
-    "SPC": 1
-    / (1e-24 * constants["N_Avogadro"] * water["SPC"] / water["MolarMass"]),
+    "SPC": 1 / (1e-24 * constants["N_Avogadro"] * water["SPC"] / water["MolarMass"]),
     "TIP3P": 1
     / (1e-24 * constants["N_Avogadro"] * water["TIP3P"] / water["MolarMass"]),
     "TIP4P": 1
     / (1e-24 * constants["N_Avogadro"] * water["TIP4P"] / water["MolarMass"]),
-    "water": 1
-    / (1e-24 * constants["N_Avogadro"] * water["exp"] / water["MolarMass"]),
+    "water": 1 / (1e-24 * constants["N_Avogadro"] * water["exp"] / water["MolarMass"]),
 }
 
 

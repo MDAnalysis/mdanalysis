@@ -363,9 +363,7 @@ class EinsteinMSD(AnalysisBase):
         **kwargs,
     ):
         if isinstance(u, groups.UpdatingAtomGroup):
-            raise TypeError(
-                "UpdatingAtomGroups are not valid for MSD computation"
-            )
+            raise TypeError("UpdatingAtomGroups are not valid for MSD computation")
 
         super(EinsteinMSD, self).__init__(u.universe.trajectory, **kwargs)
 
@@ -389,12 +387,8 @@ class EinsteinMSD(AnalysisBase):
     def _prepare(self):
         # self.n_frames only available here
         # these need to be zeroed prior to each run() call
-        self.results.msds_by_particle = np.zeros(
-            (self.n_frames, self.n_particles)
-        )
-        self._position_array = np.zeros(
-            (self.n_frames, self.n_particles, self.dim_fac)
-        )
+        self.results.msds_by_particle = np.zeros((self.n_frames, self.n_particles))
+        self._position_array = np.zeros((self.n_frames, self.n_particles, self.dim_fac))
         # self.results.timeseries not set here
 
     def _parse_msd_type(self):
@@ -422,16 +416,13 @@ class EinsteinMSD(AnalysisBase):
         r"""Constructs array of positions for MSD calculation."""
         # shape of position array set here, use span in last dimension
         # from this point on
-        self._position_array[self._frame_index] = self.ag.positions[
-            :, self._dim
-        ]
+        self._position_array[self._frame_index] = self.ag.positions[:, self._dim]
 
     def _conclude(self):
         delta_time = np.diff(self.times)
 
         if self.non_linear or (
-            len(delta_time) > 1
-            and not (np.allclose(delta_time, delta_time[0]))
+            len(delta_time) > 1 and not (np.allclose(delta_time, delta_time[0]))
         ):
             self._conclude_non_linear()
         else:
@@ -480,9 +471,7 @@ class EinsteinMSD(AnalysisBase):
             verbose=self._verbose,
             desc="Calculating MSD with FFT per particle",
         ):
-            self.results.msds_by_particle[:, n] = tidynamics.msd(
-                positions[:, n, :]
-            )
+            self.results.msds_by_particle[:, n] = tidynamics.msd(positions[:, n, :])
         self.results.timeseries = self.results.msds_by_particle.mean(axis=1)
         self.results.delta_t_values = np.arange(self.n_frames) * (
             self.times[1] - self.times[0]

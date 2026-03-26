@@ -69,9 +69,7 @@ class RefFHIAIMS(object):
     filename, trajectory, topology = [FHIAIMS] * 3
     reader, writer = FHIAIMSReader, FHIAIMSWriter
     pos_atom1 = np.asarray([6.861735, 2.103823, 37.753513], dtype=np.float32)
-    dimensions = np.asarray(
-        [18.6, 18.6, 55.8, 90.0, 90.0, 90.0], dtype=np.float32
-    )
+    dimensions = np.asarray([18.6, 18.6, 55.8, 90.0, 90.0, 90.0], dtype=np.float32)
     n_atoms = 6
     n_frames = 1
     time = 0.0
@@ -87,7 +85,9 @@ class TestFHIAIMSReader(object):
 
     @pytest.fixture(scope="class")
     def bad_input_missing_periodicity(self):
-        buffer = "lattice_vector 1.0 0.0 0.0\nlattice_vector 0.0 1.0 0.0\natom 0.1 0.1 0.1 H"
+        buffer = (
+            "lattice_vector 1.0 0.0 0.0\nlattice_vector 0.0 1.0 0.0\natom 0.1 0.1 0.1 H"
+        )
         return StringIO(buffer)
 
     @pytest.fixture(scope="class")
@@ -162,13 +162,9 @@ class TestFHIAIMSReader(object):
         )
 
     def test_time(self, ref, universe):
-        assert_equal(
-            ref.time, universe.trajectory.time, "wrong time of the frame"
-        )
+        assert_equal(ref.time, universe.trajectory.time, "wrong time of the frame")
 
-    def test_bad_input_missing_periodicity(
-        self, bad_input_missing_periodicity
-    ):
+    def test_bad_input_missing_periodicity(self, bad_input_missing_periodicity):
         with pytest.raises(ValueError, match="Found partial periodicity"):
             u = mda.Universe(bad_input_missing_periodicity, format="FHIAIMS")
 
@@ -179,25 +175,17 @@ class TestFHIAIMSReader(object):
             ValueError,
             match="Found relative coordinates in FHI-AIMS file without lattice info",
         ):
-            u = mda.Universe(
-                bad_input_relative_positions_no_box, format="FHIAIMS"
-            )
+            u = mda.Universe(bad_input_relative_positions_no_box, format="FHIAIMS")
 
     def test_bad_input_missing_velocity(self, bad_input_missing_velocity):
-        with pytest.raises(
-            ValueError, match="Found incorrect number of velocity tags"
-        ):
+        with pytest.raises(ValueError, match="Found incorrect number of velocity tags"):
             u = mda.Universe(bad_input_missing_velocity, format="FHIAIMS")
 
-    def test_bad_input_velocity_wrong_position(
-        self, bad_input_velocity_wrong_position
-    ):
+    def test_bad_input_velocity_wrong_position(self, bad_input_velocity_wrong_position):
         with pytest.raises(
             ValueError, match="Non-conforming line .velocity must follow"
         ):
-            u = mda.Universe(
-                bad_input_velocity_wrong_position, format="FHIAIMS"
-            )
+            u = mda.Universe(bad_input_velocity_wrong_position, format="FHIAIMS")
 
     def test_bad_input_wrong_input_line(self, bad_input_wrong_input_line):
         with pytest.raises(ValueError, match="Non-conforming line"):
@@ -212,9 +200,7 @@ class TestFHIAIMSReader(object):
             "FHIAIMSReader failed to read velocities properly",
         )
 
-    def test_mixed_units(
-        self, good_input_natural_units, good_input_mixed_units
-    ):
+    def test_mixed_units(self, good_input_natural_units, good_input_mixed_units):
         u_natural = mda.Universe(good_input_natural_units, format="FHIAIMS")
         u_mixed = mda.Universe(good_input_mixed_units, format="FHIAIMS")
         print(u_natural.atoms.positions)
@@ -234,9 +220,7 @@ class TestFHIAIMSWriter(BaseWriterTest):
     @pytest.fixture
     def outfile(self, tmpdir):
         return str(
-            tmpdir.mkdir("FHIAIMSWriter").join(
-                "primitive-fhiaims-writer" + self.ext
-            )
+            tmpdir.mkdir("FHIAIMSWriter").join("primitive-fhiaims-writer" + self.ext)
         )
 
     def test_writer(self, universe, outfile):
@@ -279,9 +263,7 @@ class TestFHIAIMSWriter(BaseWriterTest):
                 assert line.startswith(
                     "atom"
                 ), "Line written incorrectly with FHIAIMSWriter"
-                assert line.endswith(
-                    "H"
-                ), "Line written incorrectly with FHIAIMSWriter"
+                assert line.endswith("H"), "Line written incorrectly with FHIAIMSWriter"
                 line = np.asarray(line.split()[1:-1], dtype=np.float32)
                 assert_almost_equal(
                     line,

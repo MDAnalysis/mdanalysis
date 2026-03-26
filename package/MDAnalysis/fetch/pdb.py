@@ -163,9 +163,7 @@ def from_PDB(
     """
 
     if not HAS_POOCH:
-        raise ModuleNotFoundError(
-            "pooch is needed as a dependency for from_PDB()"
-        )
+        raise ModuleNotFoundError("pooch is needed as a dependency for from_PDB()")
     elif file_format not in SUPPORTED_FILE_FORMATS_DOWNLOADER:
         raise ValueError(
             "Invalid file format. Supported file formats "
@@ -182,9 +180,7 @@ def from_PDB(
 
     # Have to do this dictionary approach instead of using pooch.retrieve in order
     # to prevent the hardcoded known_hash warning from showing up.
-    registry_dictionary = {
-        f"{pdb_id}.{file_format}": None for pdb_id in _pdb_ids
-    }
+    registry_dictionary = {f"{pdb_id}.{file_format}": None for pdb_id in _pdb_ids}
 
     downloader = pooch.create(
         path=cache_path,

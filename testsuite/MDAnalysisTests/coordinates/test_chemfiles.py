@@ -54,9 +54,7 @@ def test_version_check(version, monkeypatch):
         ChemfilesWriter("")
 
 
-@pytest.mark.skipif(
-    not check_chemfiles_version(), reason="Wrong version of chemfiles"
-)
+@pytest.mark.skipif(not check_chemfiles_version(), reason="Wrong version of chemfiles")
 class TestChemfileXYZ(MultiframeReaderTest):
     @staticmethod
     @pytest.fixture
@@ -99,9 +97,7 @@ class ChemfilesXYZReference(BaseReference):
         self.dimensions = None
 
 
-@pytest.mark.skipif(
-    not check_chemfiles_version(), reason="Wrong version of chemfiles"
-)
+@pytest.mark.skipif(not check_chemfiles_version(), reason="Wrong version of chemfiles")
 class TestChemfilesReader(MultiframeReaderTest):
     @staticmethod
     @pytest.fixture()
@@ -146,9 +142,7 @@ class TestChemfilesReader(MultiframeReaderTest):
         assert_allclose(original.ts.positions, copy.ts.positions)
 
 
-@pytest.mark.skipif(
-    not check_chemfiles_version(), reason="Wrong version of chemfiles"
-)
+@pytest.mark.skipif(not check_chemfiles_version(), reason="Wrong version of chemfiles")
 class TestChemfilesWriter(BaseWriterTest):
     @staticmethod
     @pytest.fixture()
@@ -165,9 +159,7 @@ class TestChemfilesWriter(BaseWriterTest):
             ref.writer("foo")
 
 
-@pytest.mark.skipif(
-    not check_chemfiles_version(), reason="Wrong version of chemfiles"
-)
+@pytest.mark.skipif(not check_chemfiles_version(), reason="Wrong version of chemfiles")
 class TestChemfiles(object):
     def test_read_chemfiles_format(self):
         u = mda.Universe(
@@ -191,9 +183,7 @@ class TestChemfiles(object):
             with open(outfile, "w") as fd:
                 fd.write(VARYING_XYZ)
 
-            u = mda.Universe(
-                outfile, format="chemfiles", topology_format="XYZ"
-            )
+            u = mda.Universe(outfile, format="chemfiles", topology_format="XYZ")
 
             with pytest.raises(IOError):
                 u.trajectory._read_next_timestep()
@@ -204,9 +194,7 @@ class TestChemfiles(object):
 
     def check_topology(self, reference, file):
         u = mda.Universe(reference)
-        atoms = set(
-            [(atom.name, atom.type, atom.record_type) for atom in u.atoms]
-        )
+        atoms = set([(atom.name, atom.type, atom.record_type) for atom in u.atoms])
         bonds = set([(bond.atoms[0].ix, bond.atoms[1].ix) for bond in u.bonds])
 
         check = mda.Universe(file)

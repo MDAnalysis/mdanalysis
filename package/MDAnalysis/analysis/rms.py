@@ -314,8 +314,7 @@ def process_selection(select):
             select = {"mobile": select[0], "reference": select[1]}
         except IndexError:
             raise IndexError(
-                "select must contain two selection strings "
-                "(reference, mobile)"
+                "select must contain two selection strings " "(reference, mobile)"
             ) from None
     elif type(select) is dict:
         # compatability hack to use new nomenclature
@@ -330,9 +329,7 @@ def process_selection(select):
     elif select is None:
         select = {"reference": None, "mobile": None}
     else:
-        raise TypeError(
-            "'select' must be either a string, 2-tuple, dict or None"
-        )
+        raise TypeError("'select' must be either a string, 2-tuple, dict or None")
     if select["mobile"] is not None:
         select["mobile"] = asiterable(select["mobile"])
     if select["reference"] is not None:
@@ -573,9 +570,7 @@ class RMSD(AnalysisBase):
             )
             logger.exception(err)
             raise SelectionError(err)
-        logger.info(
-            "RMS calculation " "for {0:d} atoms.".format(len(self.ref_atoms))
-        )
+        logger.info("RMS calculation " "for {0:d} atoms.".format(len(self.ref_atoms)))
         mass_mismatches = (
             np.absolute((self.ref_atoms.masses - self.mobile_atoms.masses))
             > self.tol_mass
@@ -617,9 +612,7 @@ class RMSD(AnalysisBase):
         #   *groupselections* groups each a dict with reference/mobile
         self._groupselections_atoms = [
             {
-                "reference": self.reference.universe.select_atoms(
-                    *s["reference"]
-                ),
+                "reference": self.reference.universe.select_atoms(*s["reference"]),
                 "mobile": self.atomgroup.universe.select_atoms(*s["mobile"]),
             }
             for s in self.groupselections
@@ -682,23 +675,18 @@ class RMSD(AnalysisBase):
                         get_weights(atoms["mobile"], weights)
                 except Exception as e:
                     raise type(e)(
-                        str(e)
-                        + " happens in selection %s" % selection["mobile"]
+                        str(e) + " happens in selection %s" % selection["mobile"]
                     )
 
     def _prepare(self):
         self._n_atoms = self.mobile_atoms.n_atoms
         if not self.weights_groupselections:
-            if not iterable(
-                self.weights
-            ):  # apply 'mass' or 'None' to groupselections
+            if not iterable(self.weights):  # apply 'mass' or 'None' to groupselections
                 self.weights_groupselections = [self.weights] * len(
                     self.groupselections
                 )
             else:
-                self.weights_groupselections = [None] * len(
-                    self.groupselections
-                )
+                self.weights_groupselections = [None] * len(self.groupselections)
 
         for igroup, (weights, atoms) in enumerate(
             zip(self.weights_groupselections, self._groupselections_atoms)
@@ -716,9 +704,9 @@ class RMSD(AnalysisBase):
             self.weights_select = np.asarray(
                 self.weights_select, dtype=np.float64
             ) / np.mean(self.weights_select)
-            self.weights_ref = np.asarray(
-                self.weights_ref, dtype=np.float64
-            ) / np.mean(self.weights_ref)
+            self.weights_ref = np.asarray(self.weights_ref, dtype=np.float64) / np.mean(
+                self.weights_ref
+            )
 
         current_frame = self.reference.universe.trajectory.ts.frame
 
@@ -733,9 +721,9 @@ class RMSD(AnalysisBase):
             if self._groupselections_atoms:
                 self._groupselections_ref_coords64 = [
                     (
-                        self.reference.select_atoms(
-                            *s["reference"]
-                        ).positions.astype(np.float64)
+                        self.reference.select_atoms(*s["reference"]).positions.astype(
+                            np.float64
+                        )
                     )
                     for s in self.groupselections
                 ]
@@ -768,9 +756,7 @@ class RMSD(AnalysisBase):
         return ResultsGroup(lookup={"rmsd": ResultsGroup.ndarray_vstack})
 
     def _single_frame(self):
-        mobile_com = self.mobile_atoms.center(self.weights_select).astype(
-            np.float64
-        )
+        mobile_com = self.mobile_atoms.center(self.weights_select).astype(np.float64)
         self._mobile_coordinates64[:] = self.mobile_atoms.positions
         self._mobile_coordinates64 -= mobile_com
 
@@ -786,14 +772,12 @@ class RMSD(AnalysisBase):
             # left** so that we can easily use broadcasting and save one
             # expensive numpy transposition.
 
-            self.results.rmsd[self._frame_index, 2] = (
-                qcp.CalcRMSDRotationalMatrix(
-                    self._ref_coordinates64,
-                    self._mobile_coordinates64,
-                    self._n_atoms,
-                    self._rot,
-                    self.weights_select,
-                )
+            self.results.rmsd[self._frame_index, 2] = qcp.CalcRMSDRotationalMatrix(
+                self._ref_coordinates64,
+                self._mobile_coordinates64,
+                self._n_atoms,
+                self._rot,
+                self.weights_select,
             )
 
             self._R[:, :] = self._rot.reshape(3, 3)
@@ -825,14 +809,12 @@ class RMSD(AnalysisBase):
         else:
             # only calculate RMSD by setting the Rmatrix to None (no need
             # to carry out the rotation as we already get the optimum RMSD)
-            self.results.rmsd[self._frame_index, 2] = (
-                qcp.CalcRMSDRotationalMatrix(
-                    self._ref_coordinates64,
-                    self._mobile_coordinates64,
-                    self._n_atoms,
-                    None,
-                    self.weights_select,
-                )
+            self.results.rmsd[self._frame_index, 2] = qcp.CalcRMSDRotationalMatrix(
+                self._ref_coordinates64,
+                self._mobile_coordinates64,
+                self._n_atoms,
+                None,
+                self.weights_select,
             )
 
     @property
@@ -996,9 +978,7 @@ class RMSF(AnalysisBase):
 
     def _single_frame(self):
         k = self._frame_index
-        self.sumsquares += (k / (k + 1.0)) * (
-            self.atomgroup.positions - self.mean
-        ) ** 2
+        self.sumsquares += (k / (k + 1.0)) * (self.atomgroup.positions - self.mean) ** 2
         self.mean = (k * self.mean + self.atomgroup.positions) / (k + 1)
 
     def _conclude(self):
@@ -1007,8 +987,7 @@ class RMSF(AnalysisBase):
 
         if not (self.results.rmsf >= 0).all():
             raise ValueError(
-                "Some RMSF values negative; overflow "
-                + "or underflow occurred"
+                "Some RMSF values negative; overflow " + "or underflow occurred"
             )
 
     @property

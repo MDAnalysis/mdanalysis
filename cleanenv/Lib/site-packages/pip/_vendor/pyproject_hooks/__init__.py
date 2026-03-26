@@ -11,13 +11,13 @@ from ._impl import (
     quiet_subprocess_runner,
 )
 
-__version__ = '1.0.0'
+__version__ = "1.0.0"
 __all__ = [
-    'BackendUnavailable',
-    'BackendInvalid',
-    'HookMissing',
-    'UnsupportedOperation',
-    'default_subprocess_runner',
-    'quiet_subprocess_runner',
-    'BuildBackendHookCaller',
+    "BackendUnavailable",
+    "BackendInvalid",
+    "HookMissing",
+    "UnsupportedOperation",
+    "default_subprocess_runner",
+    "quiet_subprocess_runner",
+    "BuildBackendHookCaller",
 ]

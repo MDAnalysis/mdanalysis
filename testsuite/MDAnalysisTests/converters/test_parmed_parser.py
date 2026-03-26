@@ -90,9 +90,7 @@ class BaseTestParmedParser(ParserBase):
         assert len(top.bonds.values) == len(unique)
 
     def test_angles_total_counts(self, top, filename):
-        unique = set(
-            [(a.atom1.idx, a.atom2.idx, a.atom3.idx) for a in filename.angles]
-        )
+        unique = set([(a.atom1.idx, a.atom2.idx, a.atom3.idx) for a in filename.angles])
         assert len(top.angles.values) == len(unique)
 
     def test_dihedrals_total_counts(self, top, filename):
@@ -129,9 +127,7 @@ class BaseTestParmedParser(ParserBase):
         assert len(top.cmaps.values) == len(unique)
 
     def test_ureybradleys_total_counts(self, top, filename):
-        unique = set(
-            [(a.atom1.idx, a.atom2.idx) for a in filename.urey_bradleys]
-        )
+        unique = set([(a.atom1.idx, a.atom2.idx) for a in filename.urey_bradleys])
         assert len(top.ureybradleys.values) == len(unique)
 
     def test_elements(self, top):
@@ -217,9 +213,7 @@ class TestParmedParserPSF(BaseTestParmedParser):
         vals = top.dihedrals.values
         assert value in vals or value[::-1] in vals
 
-    @pytest.mark.parametrize(
-        "value", ((17, 19, 21, 41, 43), (60, 62, 64, 79, 81))
-    )
+    @pytest.mark.parametrize("value", ((17, 19, 21, 41, 43), (60, 62, 64, 79, 81)))
     def test_cmaps_identity(self, top, value):
         vals = top.cmaps.values
         assert value in vals or value[::-1] in vals

@@ -302,9 +302,7 @@ class IMDReader(StreamReaderBase):
             self.ts.data["dt"] = imdf.dt
             self.ts.data["step"] = imdf.step
         if imdf.energies is not None:
-            self.ts.data.update(
-                {k: v for k, v in imdf.energies.items() if k != "step"}
-            )
+            self.ts.data.update({k: v for k, v in imdf.energies.items() if k != "step"})
         if imdf.box is not None:
             self.ts.dimensions = core.triclinic_box(*imdf.box)
         if imdf.positions is not None:

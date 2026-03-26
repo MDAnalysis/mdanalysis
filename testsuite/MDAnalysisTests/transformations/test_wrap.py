@@ -93,15 +93,11 @@ def test_wrap_no_options(wrap_universes):
     )
 
 
-@pytest.mark.parametrize(
-    "compound", ("group", "residues", "segments", "fragments")
-)
+@pytest.mark.parametrize("compound", ("group", "residues", "segments", "fragments"))
 def test_wrap_with_compounds(compound_wrap_universes, compound):
     trans, ref = compound_wrap_universes
     ref.select_atoms("not resname SOL").wrap(compound=compound)
-    wrap(trans.select_atoms("not resname SOL"), compound=compound)(
-        trans.trajectory.ts
-    )
+    wrap(trans.select_atoms("not resname SOL"), compound=compound)(trans.trajectory.ts)
     assert_array_almost_equal(
         trans.trajectory.ts.positions, ref.trajectory.ts.positions, decimal=6
     )

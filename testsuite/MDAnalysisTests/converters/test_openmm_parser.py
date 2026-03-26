@@ -131,17 +131,13 @@ class OpenMMTopologyBase(ParserBase):
         assert len(top.masses.values) == self.expected_n_atoms
         if self.expected_n_atoms:
             assert isinstance(top.masses.values, np.ndarray)
-            assert all(
-                isinstance(mass, np.float64) for mass in top.masses.values
-            )
+            assert all(isinstance(mass, np.float64) for mass in top.masses.values)
         else:
             assert top.masses.values == []
 
     def test_guessed_attributes(self, filename):
         u = mda.Universe(filename, topology_format="OPENMMTOPOLOGY")
-        u_guessed_attrs = [
-            attr.attrname for attr in u._topology.guessed_attributes
-        ]
+        u_guessed_attrs = [attr.attrname for attr in u._topology.guessed_attributes]
         for attr in self.guessed_attrs:
             assert hasattr(u.atoms, attr)
             assert attr in u_guessed_attrs

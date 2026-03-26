@@ -142,9 +142,7 @@ class GMSReader(base.ReaderBase):
     def _read_out_natoms(self):
         with util.openany(self.filename) as out:
             for line in out:
-                m = re.match(
-                    r"\s*TOTAL NUMBER OF ATOMS\s*=\s*([0-9]+)\s*", line
-                )
+                m = re.match(r"\s*TOTAL NUMBER OF ATOMS\s*=\s*([0-9]+)\s*", line)
                 if m is not None:
                     res = int(m.group(1))
                     break
@@ -199,14 +197,11 @@ class GMSReader(base.ReaderBase):
 
         for line in self.outfile:
             if self.runtyp == "optimize":
-                if (flag == 0) and (
-                    re.match(r"^.NSERCH=.*", line) is not None
-                ):
+                if (flag == 0) and (re.match(r"^.NSERCH=.*", line) is not None):
                     flag = 1
                     continue
                 if (flag == 1) and (
-                    re.match(r"^ COORDINATES OF ALL ATOMS ARE ", line)
-                    is not None
+                    re.match(r"^ COORDINATES OF ALL ATOMS ARE ", line) is not None
                 ):
                     flag = 2
                     continue
@@ -222,15 +217,12 @@ class GMSReader(base.ReaderBase):
 
             elif self.runtyp == "surface":
                 if (flag == 0) and (
-                    re.match(r"^.COORD 1=\s*([-]?[0-9]+\.[0-9]+).*", line)
-                    is not None
+                    re.match(r"^.COORD 1=\s*([-]?[0-9]+\.[0-9]+).*", line) is not None
                 ):
                     flag = 1
                     continue
                 if (flag == 1) and (
-                    re.match(
-                        r"^\s*HAS ENERGY VALUE\s*([-]?[0-9]+\.[0-9]+)\s*", line
-                    )
+                    re.match(r"^\s*HAS ENERGY VALUE\s*([-]?[0-9]+\.[0-9]+)\s*", line)
                     is not None
                 ):
                     flag = 3
@@ -261,9 +253,7 @@ class GMSReader(base.ReaderBase):
 
     def open_trajectory(self):
         if self.outfile is not None:
-            raise IOError(
-                errno.EALREADY, "GMS file already opened", self.filename
-            )
+            raise IOError(errno.EALREADY, "GMS file already opened", self.filename)
         if not os.path.exists(self.filename):
             # must check; otherwise might segmentation fault
             raise IOError(errno.ENOENT, "GMS file not found", self.filename)

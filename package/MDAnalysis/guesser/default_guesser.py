@@ -438,9 +438,7 @@ class DefaultGuesser(GuesserBase):
             raise ValueError(
                 (
                     "vdw radii for types: "
-                    + ", ".join(
-                        [t for t in set(atomtypes) if t not in vdwradii]
-                    )
+                    + ", ".join([t for t in set(atomtypes) if t not in vdwradii])
                     + ". These can be defined manually using the"
                     + f" keyword 'vdwradii'"
                 )
@@ -464,9 +462,7 @@ class DefaultGuesser(GuesserBase):
             coords, max_cutoff=2.0 * max_vdw, min_cutoff=lower_bound, box=box
         )
         for idx, (i, j) in enumerate(pairs):
-            d = (
-                vdwradii[atomtypes[i]] + vdwradii[atomtypes[j]]
-            ) * fudge_factor
+            d = (vdwradii[atomtypes[i]] + vdwradii[atomtypes[j]]) * fudge_factor
             if dist[idx] < d:
                 bonds.append((atoms[i].index, atoms[j].index))
         return tuple(bonds)
@@ -516,9 +512,7 @@ class DefaultGuesser(GuesserBase):
                 for other_b in atom.bonds:
                     if other_b != b:  # if not the same bond I start as
                         third_a = other_b.partner(atom)
-                        desc = tuple(
-                            [other_a.index, atom.index, third_a.index]
-                        )
+                        desc = tuple([other_a.index, atom.index, third_a.index])
                         # first index always less than last
                         if desc[0] > desc[-1]:
                             desc = desc[::-1]
@@ -569,9 +563,7 @@ class DefaultGuesser(GuesserBase):
             a_tup = tuple([a.index for a in b])  # angle as tuple of numbers
             # if searching with b[0], want tuple of (b[2], b[1], b[0], +new)
             # search the first and last atom of each angle
-            for atom, prefix in zip(
-                [b.atoms[0], b.atoms[-1]], [a_tup[::-1], a_tup]
-            ):
+            for atom, prefix in zip([b.atoms[0], b.atoms[-1]], [a_tup[::-1], a_tup]):
                 for other_b in atom.bonds:
                     if not other_b.partner(atom) in b:
                         third_a = other_b.partner(atom)
@@ -679,9 +671,6 @@ class DefaultGuesser(GuesserBase):
 
         ComputeGasteigerCharges(mol, throwOnParamFailure=True)
         return np.array(
-            [
-                atom.GetDoubleProp("_GasteigerCharge")
-                for atom in mol.GetAtoms()
-            ],
+            [atom.GetDoubleProp("_GasteigerCharge") for atom in mol.GetAtoms()],
             dtype=np.float32,
         )

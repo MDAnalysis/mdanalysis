@@ -75,9 +75,7 @@ class TestXVGStep:
         assert st is None
 
     def test_select_time_invalid_index(self, step):
-        with pytest.raises(
-            ValueError, match="Time selector must be single index"
-        ):
+        with pytest.raises(ValueError, match="Time selector must be single index"):
             step._select_time([0])
 
     def test_select_data_none(self, step):
@@ -170,9 +168,7 @@ class TestXVGFileReader(TestXVGReader):
     def test_get_auxreader_for(self, ref, reader):
         # Default reader of .xvg files is intead XVGReader, not XVGFileReader
         # so test specifying format
-        reader = mda.auxiliary.core.get_auxreader_for(
-            ref.testdata, format=ref.format
-        )
+        reader = mda.auxiliary.core.get_auxreader_for(ref.testdata, format=ref.format)
         assert reader == ref.reader
 
     def test_reopen(self, reader):

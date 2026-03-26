@@ -83,9 +83,7 @@ def make_Universe(
         n_residues=n_residues,
         n_segments=n_segments,
         atom_resindex=np.repeat(np.arange(n_residues), n_atoms // n_residues),
-        residue_segindex=np.repeat(
-            np.arange(n_segments), n_residues // n_segments
-        ),
+        residue_segindex=np.repeat(np.arange(n_segments), n_residues // n_segments),
         # trajectory things
         trajectory=trajectory,
         velocities=velocities,
@@ -154,9 +152,7 @@ def make_types(size):
     """Atoms are given types TypeA -> TypeE on a loop"""
     na, nr, ns = size
     types = itertools.cycle(string.ascii_uppercase[:5])
-    return np.array(
-        ["Type{}".format(next(types)) for _ in range(na)], dtype=object
-    )
+    return np.array(["Type{}".format(next(types)) for _ in range(na)], dtype=object)
 
 
 def make_names(size):

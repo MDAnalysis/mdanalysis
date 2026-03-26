@@ -93,37 +93,30 @@ class TestContactMatrix(object):
         contacts = MDAnalysis.analysis.distances.contact_matrix(
             coord, cutoff=1, returntype="numpy"
         )
-        assert contacts.shape == shape, "wrong shape (should be {0})".format(
-            shape
-        )
+        assert contacts.shape == shape, "wrong shape (should be {0})".format(shape)
         assert_array_equal(contacts, res_no_pbc)
 
     def test_sparse(self, coord, shape, res_no_pbc):
         contacts = MDAnalysis.analysis.distances.contact_matrix(
             coord, cutoff=1.5, returntype="sparse"
         )
-        assert contacts.shape == shape, "wrong shape (should be {0})".format(
-            shape
-        )
+        assert contacts.shape == shape, "wrong shape (should be {0})".format(shape)
         assert_array_equal(contacts.toarray(), res_no_pbc)
 
     def test_box_numpy(self, coord, box, shape, res_pbc):
         contacts = MDAnalysis.analysis.distances.contact_matrix(
             coord, box=box, cutoff=1
         )
-        assert contacts.shape == shape, "wrong shape (should be {0})".format(
-            shape
-        )
+        assert contacts.shape == shape, "wrong shape (should be {0})".format(shape)
         assert_array_equal(contacts, res_pbc)
 
     def test_box_sparse(self, coord, box, shape, res_pbc):
         contacts = MDAnalysis.analysis.distances.contact_matrix(
             coord, box=box, cutoff=1, returntype="sparse"
         )
-        assert contacts.shape == shape, "wrong shape (should be {0})".format(
-            shape
-        )
+        assert contacts.shape == shape, "wrong shape (should be {0})".format(shape)
         assert_array_equal(contacts.toarray(), res_pbc)
+
     def test_contact_matrix_none_input(self):
         with pytest.raises(ValueError):
             MDAnalysis.analysis.distances.contact_matrix(None)
@@ -169,9 +162,7 @@ class TestDist(object):
     @pytest.fixture()
     def expected(ag, ag2):
 
-        return np.diag(
-            scipy.spatial.distance.cdist(ag.positions, ag2.positions)
-        )
+        return np.diag(scipy.spatial.distance.cdist(ag.positions, ag2.positions))
 
     @staticmethod
     @pytest.fixture()
@@ -239,9 +230,7 @@ class TestBetween(object):
 
     @pytest.fixture()
     def expected(self, group, ag, ag2):
-        distance_matrix_1 = scipy.spatial.distance.cdist(
-            group.positions, ag.positions
-        )
+        distance_matrix_1 = scipy.spatial.distance.cdist(group.positions, ag.positions)
         mask_1 = np.unique(np.where(distance_matrix_1 <= self.distance)[0])
         group_filtered = group[mask_1]
         distance_matrix_2 = scipy.spatial.distance.cdist(

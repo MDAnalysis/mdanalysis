@@ -58,19 +58,13 @@ class TestWrap(object):
         # get the expected result:
         ref_wrapped_pos = u.wrapped_coords(compound, center)
         # first, do the wrapping out-of-place:
-        wrapped_pos = group.wrap(
-            compound=compound, center=center, inplace=False
-        )
+        wrapped_pos = group.wrap(compound=compound, center=center, inplace=False)
         # check for correct result:
-        assert_almost_equal(
-            wrapped_pos, ref_wrapped_pos, decimal=self.precision
-        )
+        assert_almost_equal(wrapped_pos, ref_wrapped_pos, decimal=self.precision)
         # make sure atom positions are unchanged:
         assert_array_equal(group.atoms.positions, orig_pos)
         # now, do the wrapping inplace:
-        wrapped_pos2 = group.wrap(
-            compound=compound, center=center, inplace=True
-        )
+        wrapped_pos2 = group.wrap(compound=compound, center=center, inplace=True)
         # check that result is the same as for out-of-place computation:
         assert_array_equal(wrapped_pos, wrapped_pos2)
         # check that wrapped positions are applied:
@@ -83,9 +77,7 @@ class TestWrap(object):
             compos = group.atoms.center_of_mass(wrap=False, compound=compound)
             assert_in_box(compos, group.dimensions)
         else:
-            cogpos = group.atoms.center_of_geometry(
-                wrap=False, compound=compound
-            )
+            cogpos = group.atoms.center_of_geometry(wrap=False, compound=compound)
             assert_in_box(cogpos, group.dimensions)
 
     @pytest.mark.parametrize("level", ("atoms", "residues", "segments"))
@@ -126,9 +118,7 @@ class TestWrap(object):
     )
     @pytest.mark.parametrize("center", ("com", "cog"))
     @pytest.mark.parametrize("is_triclinic", (False, True))
-    def test_wrap_partial_compound(
-        self, level, compound, center, is_triclinic
-    ):
+    def test_wrap_partial_compound(self, level, compound, center, is_triclinic):
         # get a pristine test universe:
         u = UnWrapUniverse(is_triclinic=is_triclinic)
         group = u.atoms
@@ -183,9 +173,7 @@ class TestWrap(object):
             group = group.segments
         group.wrap(compound=compound, center=center, inplace=True)
         # check for correct (empty) result:
-        assert_array_equal(
-            group.atoms.positions, np.empty((0, 3), dtype=np.float32)
-        )
+        assert_array_equal(group.atoms.positions, np.empty((0, 3), dtype=np.float32))
 
     @pytest.mark.parametrize("level", ("atoms", "residues", "segments"))
     @pytest.mark.parametrize(
@@ -244,19 +232,13 @@ class TestWrap(object):
         # the first unit cell in negative x-direction.
         group.masses = [100.0, 1.0, 1.0]
         # wrap with center='cog':
-        wrapped_pos_cog = group.wrap(
-            compound=compound, center="cog", inplace=False
-        )
+        wrapped_pos_cog = group.wrap(compound=compound, center="cog", inplace=False)
         # get expected result:
         ref_wrapped_pos = u.wrapped_coords(compound, "cog")[6:9]
         # check for correctness:
-        assert_almost_equal(
-            wrapped_pos_cog, ref_wrapped_pos, decimal=self.precision
-        )
+        assert_almost_equal(wrapped_pos_cog, ref_wrapped_pos, decimal=self.precision)
         # wrap with center='com':
-        wrapped_pos_com = group.wrap(
-            compound=compound, center="com", inplace=False
-        )
+        wrapped_pos_com = group.wrap(compound=compound, center="com", inplace=False)
         # assert that the com result is shifted with respect to the cog result
         # by one box length in the x-direction:
         shift = np.array([10.0, 0.0, 0.0], dtype=np.float32)
@@ -460,13 +442,9 @@ class TestWrap(object):
         # get expected wrapped coordinates in shuffled order
         ref_wrapped_pos = u.wrapped_coords(compound, center)[shuffle]
         # wrap the shuffled group:
-        wrapped_pos = group.wrap(
-            compound=compound, center=center, inplace=False
-        )
+        wrapped_pos = group.wrap(compound=compound, center=center, inplace=False)
         # check for correct result:
-        assert_almost_equal(
-            wrapped_pos, ref_wrapped_pos, decimal=self.precision
-        )
+        assert_almost_equal(wrapped_pos, ref_wrapped_pos, decimal=self.precision)
 
 
 class TestWrapTRZ(object):

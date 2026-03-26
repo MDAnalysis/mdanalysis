@@ -146,9 +146,7 @@ class TestDCDWriter(BaseWriterTest):
 def test_write_random_unitcell(tmpdir):
     testname = str(tmpdir.join("test.dcd"))
     rstate = np.random.RandomState(1178083)
-    random_unitcells = rstate.uniform(low=5, high=120, size=(98, 6)).astype(
-        np.float64
-    )
+    random_unitcells = rstate.uniform(low=5, high=120, size=(98, 6)).astype(np.float64)
 
     u = mda.Universe(PSF, DCD)
     with mda.Writer(testname, n_atoms=u.atoms.n_atoms) as w:
@@ -215,9 +213,7 @@ def test_array_like(universe_dcd, array_like):
     assert_array_equal(frames, ar)
 
 
-@pytest.mark.parametrize(
-    "indices", ([0, 4, 2, 3, 0, 1], [0, 0, 1, 1, 2, 1, 1])
-)
+@pytest.mark.parametrize("indices", ([0, 4, 2, 3, 0, 1], [0, 0, 1, 1, 2, 1, 1]))
 def test_list_indices(universe_dcd, indices):
     frames = [ts.frame for ts in universe_dcd.trajectory[indices]]
     assert_array_equal(frames, indices)
@@ -273,9 +269,7 @@ def test_timeseries_order(order, shape, universe_dcd):
     assert x.shape == shape
 
 
-@pytest.mark.parametrize(
-    "indices", [[1, 2, 3, 4], [5, 10, 15, 19], [9, 4, 2, 0, 50]]
-)
+@pytest.mark.parametrize("indices", [[1, 2, 3, 4], [5, 10, 15, 19], [9, 4, 2, 0, 50]])
 def test_timeseries_atomindices(indices, universe_dcd):
     allframes = universe_dcd.trajectory.timeseries(order="afc")
     asel = universe_dcd.atoms[indices]
@@ -361,9 +355,7 @@ def test_other_writer(universe_dcd, tmpdir, ext, decimal):
             decimal,
             err_msg="coordinate mismatch between "
             "original and written trajectory at "
-            "frame {} (orig) vs {} (written)".format(
-                orig_ts.frame, written_ts.frame
-            ),
+            "frame {} (orig) vs {} (written)".format(orig_ts.frame, written_ts.frame),
         )
 
 
@@ -510,8 +502,7 @@ def test_ts_time(universe):
     u = universe
     header = u.trajectory._file.header
     ref_times = [
-        (ts.frame + header["istart"] / header["nsavc"]) * ts.dt
-        for ts in u.trajectory
+        (ts.frame + header["istart"] / header["nsavc"]) * ts.dt for ts in u.trajectory
     ]
     times = [ts.time for ts in u.trajectory]
     assert_almost_equal(times, ref_times, decimal=5)
