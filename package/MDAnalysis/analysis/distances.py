@@ -108,8 +108,9 @@ def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None):
     .. versionchanged:: 0.11.0
        Keyword *suppress_progmet* and *progress_meter_freq* were removed.
     """
-   # fmt: off
-# Validate inputs to ensure correct shape and prevent runtime errors
+
+
+# Validate inputs
 if coord is None:
     raise ValueError("coord cannot be None")
 
@@ -125,35 +126,43 @@ if cutoff <= 0:
     raise ValueError("cutoff must be a positive number")
 
 if returntype not in ("numpy", "sparse"):
-    raise ValueError(
-        "returntype must be either 'numpy' or 'sparse'"
+    raise ValueError("returntype must be either 'numpy' or 'sparse'")
+
+
+# --- numpy case ---
+if returntype == "numpy":
+    n = coord.shape[0]
+    adj = np.zeros((n, n), dtype=bool)
+
+    pairs = capped_distance(
+        coord,
+        coord,
+        max_cutoff=cutoff,
+        box=box,
+        return_distances=False,
     )
-# fmt: on
 
-    if returntype == "numpy":
-       n = coord.shape[0]
-        adj = np.zeros((n, n), dtype=bool)
-        pairs = capped_distance(
-            coord, coord, max_cutoff=cutoff, box=box, return_distances=False
-        )
+    idx, idy = np.transpose(pairs)
+    adj[idx, idy] = True
 
-        idx, idy = np.transpose(pairs)
-        adj[idx, idy] = True
+    return adj
 
-        return adj
-    elif returntype == "sparse":
-        # Initialize square List of Lists matrix of dimensions equal to number
-        # of coordinates passed
-        sparse_contacts = scipy.sparse.lil_matrix(
-            (len(coord), len(coord)), dtype="bool"
-        )
-        if box is not None:
-            # with PBC
-            contact_matrix_pbc(coord, sparse_contacts, box, cutoff)
-        else:
-            # without PBC
-            contact_matrix_no_pbc(coord, sparse_contacts, cutoff)
-        return sparse_contacts
+# --- sparse case ---
+if returntype == "sparse":
+    sparse_contacts = scipy.sparse.lil_matrix((len(coord), len(coord)), dtype=bool)
+
+    pairs = capped_distance(
+        coord,
+        coord,
+        max_cutoff=cutoff,
+        box=box,
+        return_distances=False,
+    )
+
+    idx, idy = np.transpose(pairs)
+    sparse_contacts[idx, idy] = True
+
+    return sparse_contacts
 
 
 def dist(A, B, offset=0, box=None):
@@ -190,9 +199,7 @@ def dist(A, B, offset=0, box=None):
     """
 
     if A.atoms.n_atoms != B.atoms.n_atoms:
-        raise ValueError(
-            "AtomGroups A and B do not have the same number of atoms"
-        )
+        raise ValueError("AtomGroups A and B do not have the same number of atoms")
     try:
         off_A, off_B = offset
     except (TypeError, ValueError):
