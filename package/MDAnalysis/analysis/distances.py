@@ -95,11 +95,7 @@ def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None):
         adj = np.zeros((n, n), dtype=bool)
 
         pairs = capped_distance(
-            coord,
-            coord,
-            max_cutoff=cutoff,
-            box=box,
-            return_distances=False,
+    coord, coord, max_cutoff=cutoff, box=box, return_distances=False
         )
 
         idx, idy = np.transpose(pairs)
@@ -114,11 +110,7 @@ def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None):
         )
 
         pairs = capped_distance(
-            coord,
-            coord,
-            max_cutoff=cutoff,
-            box=box,
-            return_distances=False,
+    coord, coord, max_cutoff=cutoff, box=box, return_distances=False
         )
 
         idx, idy = np.transpose(pairs)
