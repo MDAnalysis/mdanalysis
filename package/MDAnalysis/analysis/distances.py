@@ -69,95 +69,62 @@ logger = logging.getLogger("MDAnalysis.analysis.distances")
 
 
 def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None):
-    """Calculates a matrix of contacts.
+    """Calculates a matrix of contacts."""
 
-    There is a fast, high-memory-usage version for small systems
-    (*returntype* = 'numpy'), and a slower, low-memory-usage version for
-    larger systems (*returntype* = 'sparse').
+    # Validate inputs
+    if coord is None:
+        raise ValueError("coord cannot be None")
 
-    If *box* dimensions are passed then periodic boundary conditions
-    are applied.
+    coord = np.asarray(coord)
 
-    Parameters
-    ---------
-    coord : array
-       Array of coordinates of shape ``(N, 3)`` and dtype float32.
-    cutoff : float, optional, default 15
-       Particles within `cutoff` are considered to form a contact.
-    returntype : string, optional, default "numpy"
-       Select how the contact matrix is returned.
-       * ``"numpy"``: return as an ``(N. N)`` :class:`numpy.ndarray`
-       * ``"sparse"``: return as a :class:`scipy.sparse.lil_matrix`
-    box : array-like or ``None``, optional, default ``None``
-       Simulation cell dimensions in the form of
-       :attr:`MDAnalysis.trajectory.timestep.Timestep.dimensions` when
-       periodic boundary conditions should be taken into account for
-       the calculation of contacts.
+    if coord.ndim != 2 or coord.shape[1] != 3:
+        raise ValueError("coord must be an array of shape (N, 3)")
 
-    Returns
-    -------
-    array or sparse matrix
-       The contact matrix is returned in a format determined by the `returntype`
-       keyword.
+    if coord.size == 0:
+        raise ValueError("coord cannot be empty")
 
-    See Also
-    --------
-    :mod:`MDAnalysis.analysis.contacts` for native contact analysis
+    if cutoff <= 0:
+        raise ValueError("cutoff must be a positive number")
 
+    if returntype not in ("numpy", "sparse"):
+        raise ValueError("returntype must be either 'numpy' or 'sparse'")
 
-    .. versionchanged:: 0.11.0
-       Keyword *suppress_progmet* and *progress_meter_freq* were removed.
-    """
+    # --- numpy case ---
+    if returntype == "numpy":
+        n = coord.shape[0]
+        adj = np.zeros((n, n), dtype=bool)
 
+        pairs = capped_distance(
+            coord,
+            coord,
+            max_cutoff=cutoff,
+            box=box,
+            return_distances=False,
+        )
 
-# Validate inputs
-if coord is None:
-    raise ValueError("coord cannot be None")
+        idx, idy = np.transpose(pairs)
+        adj[idx, idy] = True
 
-coord = np.asarray(coord)
+        return adj
 
-if coord.ndim != 2 or coord.shape[1] != 3:
-    raise ValueError("coord must be an array of shape (N, 3)")
+    # --- sparse case ---
+    if returntype == "sparse":
+        sparse_contacts = scipy.sparse.lil_matrix(
+            (len(coord), len(coord)), dtype=bool
+        )
 
-if coord.size == 0:
-    raise ValueError("coord cannot be empty")
+        pairs = capped_distance(
+            coord,
+            coord,
+            max_cutoff=cutoff,
+            box=box,
+            return_distances=False,
+        )
 
-if cutoff <= 0:
-    raise ValueError("cutoff must be a positive number")
+        idx, idy = np.transpose(pairs)
+        sparse_contacts[idx, idy] = True
 
-if returntype not in ("numpy", "sparse"):
-    raise ValueError("returntype must be either 'numpy' or 'sparse'")
-
-
-# --- numpy case ---
-if returntype == "numpy":
-    n = coord.shape[0]
-    adj = np.zeros((n, n), dtype=bool)
-
-    pairs = capped_distance(
-        coord,
-        coord,
-        max_cutoff=cutoff,
-        box=box,
-        return_distances=False,
-    )
-
-    idx, idy = np.transpose(pairs)
-    adj[idx, idy] = True
-
-    return adj
-
-# --- sparse case ---
-if returntype == "sparse":
-    sparse_contacts = scipy.sparse.lil_matrix((len(coord), len(coord)), dtype=bool)
-
-   pairs = capped_distance(coord, coord, max_cutoff=cutoff, box=box, return_distances=False)
-    
-
-    idx, idy = np.transpose(pairs)
-    sparse_contacts[idx, idy] = True
-
-    return sparse_contacts
+        return sparse_contacts
 
 
 def dist(A, B, offset=0, box=None):
