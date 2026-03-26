@@ -108,8 +108,8 @@ def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None):
     .. versionchanged:: 0.11.0
        Keyword *suppress_progmet* and *progress_meter_freq* were removed.
     """
-    # Validate inputs to ensure correct shape and prevent runtime errors
-    
+   # fmt: off
+# Validate inputs to ensure correct shape and prevent runtime errors
 if coord is None:
     raise ValueError("coord cannot be None")
 
@@ -128,6 +128,7 @@ if returntype not in ("numpy", "sparse"):
     raise ValueError(
         "returntype must be either 'numpy' or 'sparse'"
     )
+# fmt: on
 
     if returntype == "numpy":
        n = coord.shape[0]
