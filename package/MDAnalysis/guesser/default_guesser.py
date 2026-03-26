@@ -429,7 +429,7 @@ class DefaultGuesser(GuesserBase):
 
         # Try using types, then elements
         if hasattr(atoms, "types"):
-            atomtypes = atoms.types
+            atomtypes = np.char.upper(atoms.types.astype(str))
         else:
             atomtypes = self.guess_types(atom_types=atoms.names)
 
