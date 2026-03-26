@@ -124,6 +124,25 @@ class TestContactMatrix(object):
             shape
         )
         assert_array_equal(contacts.toarray(), res_pbc)
+    def test_contact_matrix_none_input(self):
+        with pytest.raises(ValueError):
+        MDAnalysis.analysis.distances.contact_matrix(None)
+
+    def test_contact_matrix_empty_input(self):
+        with pytest.raises(ValueError):
+        MDAnalysis.analysis.distances.contact_matrix([])
+
+    def test_contact_matrix_invalid_shape(self):
+        with pytest.raises(ValueError):
+        MDAnalysis.analysis.distances.contact_matrix(np.array([1, 2, 3]))
+
+    def test_contact_matrix_invalid_cutoff(self, coord):
+        with pytest.raises(ValueError):
+        MDAnalysis.analysis.distances.contact_matrix(coord, cutoff=-1)
+
+    def test_contact_matrix_invalid_returntype(self, coord):
+        with pytest.raises(ValueError):
+        MDAnalysis.analysis.distances.contact_matrix(coord, returntype="invalid")
 
 
 class TestDist(object):

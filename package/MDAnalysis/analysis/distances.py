@@ -108,9 +108,27 @@ def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None):
     .. versionchanged:: 0.11.0
        Keyword *suppress_progmet* and *progress_meter_freq* were removed.
     """
+    # Validate inputs to ensure correct shape and prevent runtime errors
+if coord is None:
+    raise ValueError("coord cannot be None")
+
+coord = np.asarray(coord, dtype=np.float64)
+
+if coord.ndim != 2 or coord.shape[-1] != 3:
+    raise ValueError("coord must be an array of shape (N, 3)")
+
+if coord.size == 0:
+    raise ValueError("coord cannot be empty")
+
+if cutoff <= 0:
+    raise ValueError("cutoff must be a positive number")
+
+if returntype not in ("numpy", "sparse"):
+    raise ValueError("returntype must be either 'numpy' or 'sparse'")
 
     if returntype == "numpy":
-        adj = np.full((len(coord), len(coord)), False, dtype=bool)
+       n = coord.shape[0]
+        adj = np.zeros((n, n), dtype=bool)
         pairs = capped_distance(
             coord, coord, max_cutoff=cutoff, box=box, return_distances=False
         )
