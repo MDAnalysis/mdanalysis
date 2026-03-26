@@ -151,13 +151,8 @@ if returntype == "numpy":
 if returntype == "sparse":
     sparse_contacts = scipy.sparse.lil_matrix((len(coord), len(coord)), dtype=bool)
 
-    pairs = capped_distance(
-        coord,
-        coord,
-        max_cutoff=cutoff,
-        box=box,
-        return_distances=False,
-    )
+   pairs = capped_distance(coord, coord, max_cutoff=cutoff, box=box, return_distances=False)
+    
 
     idx, idy = np.transpose(pairs)
     sparse_contacts[idx, idy] = True
