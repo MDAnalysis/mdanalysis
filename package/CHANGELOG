@@ -17,13 +17,13 @@ The rules for this file:
 ??/??/?? IAlibay, orbeckst, marinegor, tylerjereddy, ljwoods2, marinegor,
          spyke7, talagayev, tanii1125, BradyAJohnston, hejamu, jeremyleung521,
          harshitgajjela-droid, kunjsinha, aygarwal, jauy123, Dreamstick9,
-         ollyfutur
+         ollyfutur, ParthUppal523
 
  * 2.11.0
 
 Fixes
  * Fixes First Time Contributor Greeting workflow by updating inputs and 
-   adding missing issue_message (PR #5332)
+   adding missing issue_message (Issue #5304, PR #5332)
  * Fixes msd for non-linear frames, when non_linear is not explicitly
    provided (Issue #5100, PR #5254)
  * Fixes TypeError with np.int64 indexing in GSD Reader (Issue #5224)
