@@ -108,7 +108,10 @@ in this case: ::
 
 """
 
-from mdanalysis.package.MDAnalysis.analysis.results import Results, ResultsGroup
+from mdanalysis.package.MDAnalysis.analysis.results import (
+    Results,
+    ResultsGroup,
+)
 import numpy as np
 
 from MDAnalysis.lib.distances import calc_bonds
@@ -175,3 +178,6 @@ class AtomicDistances(AnalysisBase):
         self.results[self._frame_index] = calc_bonds(
             self._ag1.positions, self._ag2.positions, box
         )
+
+    def _get_aggregator(self):
+        return ResultsGroup(lookup={"distances": ResultsGroup.ndarray_vstack}) 
