@@ -595,6 +595,9 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">atomtypes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_types</span><span class="p">(</span><span class="n">atom_types</span><span class="o">=</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
 
+        <span class="c1"># vdwradii keys are uppercase, so normalize atomtypes to match</span>
+        <span class="n">atomtypes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">char</span><span class="o">.</span><span class="n">upper</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">atomtypes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">str</span><span class="p">))</span>
+
         <span class="c1"># check that all types have a defined vdw</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">val</span> <span class="ow">in</span> <span class="n">vdwradii</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">atomtypes</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
