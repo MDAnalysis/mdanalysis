@@ -22,6 +22,7 @@ The rules for this file:
  * 2.11.0
 
 Fixes
+ * Fix mixed-case atom types in guess_bonds (Issue #5342, PR #5343)
  * Fixes msd for non-linear frames, when non_linear is not explicitly
    provided (Issue #5100, PR #5254)
  * Fixes TypeError with np.int64 indexing in GSD Reader (Issue #5224)
