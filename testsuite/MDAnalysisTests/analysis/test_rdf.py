@@ -28,8 +28,10 @@ from MDAnalysisTests.util import distopia_conditional_backend
 
 from MDAnalysisTests.datafiles import two_water_gro
 
+import numpy as np
 from numpy.testing import assert_allclose
 
+NFRAMES=5
 
 @pytest.fixture()
 def u():
@@ -44,6 +46,10 @@ def sels(u):
     # (NOTE: requires in-memory coordinates to make them permanent)
     for at, (x, y) in zip(u.atoms, zip([1] * 3 + [2] * 3, [2, 1, 3] * 2)):
         at.position = x, y, 0.0
+    #Create a fake trajectory with the same frame for testing parallel backends
+    trajectory_data = np.tile(u.atoms.positions, (NFRAMES, 1, 1))
+    dimensions_data = np.tile(u.dimensions, (NFRAMES, 1))
+    u.load_new(trajectory_data, format="Memory", dimensions=dimensions_data)
     s1 = u.select_atoms("name OW")
     s2 = u.select_atoms("name HW1 HW2")
     return s1, s2
@@ -72,29 +78,31 @@ def test_count_sum(sels, client_InterRDF):
     # should see 8 comparisons in count
     s1, s2 = sels
     rdf = InterRDF(s1, s2).run(**client_InterRDF)
-    assert rdf.results.count.sum() == 8
+    assert rdf.results.count.sum() == 8 * NFRAMES
 
 
 def test_count(sels, client_InterRDF):
     # should see two distances with 4 counts each
     s1, s2 = sels
     rdf = InterRDF(s1, s2).run(**client_InterRDF)
-    assert len(rdf.results.count[rdf.results.count == 4]) == 2
+    assert len(rdf.results.count[rdf.results.count == 4 * NFRAMES]) == 2
 
 
-def test_double_run(sels, client_InterRDF):
+def test_double_run(sels):
     # running rdf twice should give the same result
+    # Note: this only make sense for serial backend as results aggregator can not handle 
+    # rdf flag if rdf.results object is not restarted when parallel backend is used
     s1, s2 = sels
-    rdf = InterRDF(s1, s2).run(**client_InterRDF)
-    rdf.run(**client_InterRDF)
-    assert len(rdf.results.count[rdf.results.count == 4]) == 2
+    rdf = InterRDF(s1, s2).run()
+    rdf.run()
+    assert len(rdf.results.count[rdf.results.count == 4 * NFRAMES]) == 2
 
 
 def test_exclusion(sels, client_InterRDF):
     # should see two distances with 4 counts each
     s1, s2 = sels
     rdf = InterRDF(s1, s2, exclusion_block=(1, 2)).run(**client_InterRDF)
-    assert rdf.results.count.sum() == 4
+    assert rdf.results.count.sum() == 4 * NFRAMES
 
 
 @pytest.mark.parametrize(
@@ -105,7 +113,7 @@ def test_ignore_same_residues(sels, attr, count, client_InterRDF):
     s1, s2 = sels
     rdf = InterRDF(s2, s2, exclude_same=attr).run(**client_InterRDF)
     assert rdf.rdf[0] == 0
-    assert rdf.results.count.sum() == count
+    assert rdf.results.count.sum() == count * NFRAMES
 
 
 def test_ignore_same_residues_fails(sels, client_InterRDF):
@@ -158,7 +166,7 @@ def test_unknown_norm(sels):
 
 
 @pytest.mark.parametrize("backend", distopia_conditional_backend())
-def test_norm(sels, backend):
+def test_backend(sels, backend):
     s1, s2 = sels
     rdf = InterRDF(s1, s2, norm="none", backend=backend).run()
     assert_allclose(max(rdf.results.rdf), 4)
