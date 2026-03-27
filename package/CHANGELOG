@@ -61,6 +61,7 @@ Enhancements
 Changes
  * The msd.py inside analysis is changed, and ProgressBar is implemented inside
    _conclude_simple and _conclude_fft functions instead of tqdm (Issue #5144, PR #5153)
+ * `MDAnalysis.analysis.atomicdistances.AtomicDistances` results are now consistent with expected`analysis` documentation data type = Results (Issue #4819)
 
 Deprecations
 
