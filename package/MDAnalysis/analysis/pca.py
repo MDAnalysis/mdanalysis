@@ -290,6 +290,7 @@ class PCA(AnalysisBase):
             )
         n_dim = self._n_atoms * 3
         self.cov = np.zeros((n_dim, n_dim))
+        self._frame_data = np.empty((self.n_frames, n_dim))
         self._ref_atom_positions = self._reference.positions
         self._ref_cog = self._reference.center_of_geometry()
         self._ref_atom_positions -= self._ref_cog
@@ -329,14 +330,18 @@ class PCA(AnalysisBase):
         else:
             x = self._atoms.positions.ravel()
         x -= self._xmean
-        self.cov += np.dot(x[:, np.newaxis], x[:, np.newaxis].T)
+        self._frame_data[self._frame_index] = x
 
     def _conclude(self):
+        self.cov = self._frame_data.T @ self._frame_data
         self.cov /= self.n_frames - 1
-        e_vals, e_vects = np.linalg.eig(self.cov)
-        sort_idx = np.argsort(e_vals)[::-1]
-        self._variance = e_vals[sort_idx]
-        self._p_components = e_vects[:, sort_idx]
+        del self._frame_data
+        # covariance matrix is symmetric and real-valued by
+        # construction, so we can use faster eigh
+        eigenvals, eigenvects = np.linalg.eigh(self.cov)
+        # eigh returns ascending order; reverse for descending
+        self._variance = eigenvals[::-1]
+        self._p_components = eigenvects[:, ::-1]
         self._calculated = True
         self.n_components = self._n_components
 
