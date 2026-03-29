@@ -238,6 +238,11 @@ class PCA(AnalysisBase):
        manually iterate through ``self._trajectory``, which would
        incorrectly handle cases where the ``frame`` argument
        was passed.
+    .. versionchanged:: 2.11.0
+       Covariance matrix is now computed via BLAS matrix multiply instead of
+       per-frame outer product accumulation, and uses symmetric
+       eigendecomposition (``eigh``) instead of general ``eig``, resulting
+       in significant performance improvements for large systems.
     """
 
     _analysis_algorithm_is_parallelizable = False

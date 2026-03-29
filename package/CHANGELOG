@@ -17,7 +17,7 @@ The rules for this file:
 ??/??/?? IAlibay, orbeckst, marinegor, tylerjereddy, ljwoods2, marinegor,
          spyke7, talagayev, tanii1125, BradyAJohnston, hejamu, jeremyleung521,
          harshitgajjela-droid, kunjsinha, aygarwal, jauy123, Dreamstick9,
-         ollyfutur
+         ollyfutur, jberg
 
  * 2.11.0
 
@@ -53,6 +53,9 @@ Enhancements
  * Added new function `MDAnalysis.fetch.from_PDB` to download structure files from wwPDB
    using `pooch` as optional dependency (Issue #4907, PR #4943) 
  * Added benchmarks for package.MDAnalysis.analysis.msd.EinsteinMSD (PR #5277)
+ * Improved PCA performance by computing covariance matrix via BLAS matrix
+   multiply instead of per-frame outer product accumulation, and using
+   symmetric eigendecomposition (eigh) instead of general eig (PR #5352)
  * Improved performance of `AtomGroup.wrap()` with compounds (PR #5220)
  * Adds support for parsing `.tpr` files produced by GROMACS 2026.0
  * Enables parallelization for analysis.diffusionmap.DistanceMatrix
