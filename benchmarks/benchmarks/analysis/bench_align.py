@@ -1,25 +1,13 @@
-# bench_align.py
-# Benchmarks for MDAnalysis.analysis.align
-# No benchmarks existed for this module before this file
-
 import MDAnalysis as mda
 from MDAnalysis.analysis import align
 from MDAnalysis.tests.datafiles import PSF, DCD, PDB_small
 
 
 class AlignBenchmark:
-    """
-    Benchmarks for MDAnalysis.analysis.align module.
-    Tests alignto() and AlignTraj() which are the two
-    most commonly used functions in this module.
-    """
 
     def setup(self):
         # setup() runs ONCE before any timing starts
         # load data here — never in time_ methods
-        # PSF = protein structure file (topology)
-        # DCD = trajectory file (coordinates over time)
-        # PDB_small = single reference structure
         self.mobile = mda.Universe(PSF, DCD)
         self.reference = mda.Universe(PSF, PDB_small)
 
