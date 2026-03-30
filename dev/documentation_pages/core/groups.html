@@ -2301,6 +2301,10 @@ and duplicates are <em>not</em> removed.</p>
 <p><strong>Simple selections</strong></p>
 <blockquote>
 <div><dl>
+<dt>all</dt><dd><p>selects all atoms in the current group; the resulting
+:class:AtomGroup is unique and sorted by index. If the group
+already corresponds to Universe.atoms, it is returned unchanged.</p>
+</dd>
 <dt>protein, backbone, nucleic, nucleicbackbone</dt><dd><p>selects all atoms that belong to a standard set of residues;
 a protein is identfied by a hard-coded set of residue names so
 it  may not work for esoteric residues.</p>
