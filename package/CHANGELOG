@@ -46,6 +46,8 @@ Fixes
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Enhancements
+ * Added documentation for all keyword in select_atoms() and 
+   selections.rst (Issue #5317, PR #5325)
  * Added HydrogenBondAnalysis benchmark for performance tracking (PR #5309)
  * Added `select=None` in `analysis.rms.RMSD` to perform no selection on
    the input `atomgroup` and `reference` (Issue #5300, PR #5296)
