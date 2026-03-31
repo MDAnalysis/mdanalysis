@@ -295,9 +295,8 @@ class PCA(AnalysisBase):
             )
         n_dim = self._n_atoms * 3
         self.cov = np.zeros((n_dim, n_dim))
-        # Batch frames into BLAS matmul for covariance updates.
-        # Peak memory: 2 * n_dim^2 * 8 (cov + matmul temporary)
-        # + batch_size * n_dim * 8 (frame buffer).
+        # Batch frames into BLAS matmul for covariance updates
+        # while keeping memory usage reasonable.
         self._batch_size = min(self.n_frames, 500)
         self._frame_data = np.empty((self._batch_size, n_dim))
         self._batch_idx = 0  # tracks when to update self.cov
@@ -350,8 +349,8 @@ class PCA(AnalysisBase):
         if self._batch_idx > 0:
             # Accumulate remaining frames from the final batch
             self.cov += (
-                self._frame_data[:self._batch_idx].T
-                @ self._frame_data[:self._batch_idx]
+                self._frame_data[: self._batch_idx].T
+                @ self._frame_data[: self._batch_idx]
             )
         self.cov /= self.n_frames - 1
         del self._frame_data
