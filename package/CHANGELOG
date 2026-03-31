@@ -25,6 +25,7 @@ Fixes
  * DSSP now correctly handles periodic boundary conditions in hydrogen bond
    detection; previously, hydrogen bonds across periodic boundaries were
    missed (PR #5182)
+ * Fix mixed-case atom types in guess_bonds (Issue #5342, PR #5343)
  * Fixes msd for non-linear frames, when non_linear is not explicitly
    provided (Issue #5100, PR #5254)
  * Fixes TypeError with np.int64 indexing in GSD Reader (Issue #5224)
@@ -51,6 +52,9 @@ Enhancements
  * DSSP uses ``capped_distance`` and ``calc_bonds`` for faster distance
    calculations and supports ``backend`` selection (e.g. ``"distopia"``)
    (PR #5182)
+ * Added documentation for all keyword in select_atoms() and 
+   selections.rst (Issue #5317, PR #5325)
+ * Added HydrogenBondAnalysis benchmark for performance tracking (PR #5309)
  * Added `select=None` in `analysis.rms.RMSD` to perform no selection on
    the input `atomgroup` and `reference` (Issue #5300, PR #5296)
  * MOL2Parser now reads unit cell dimensions from @<TRIPOS>CRYSIN records (Issue #3341)
