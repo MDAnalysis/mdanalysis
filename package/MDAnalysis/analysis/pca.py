@@ -239,8 +239,8 @@ class PCA(AnalysisBase):
        incorrectly handle cases where the ``frame`` argument
        was passed.
     .. versionchanged:: 2.11.0
-       Covariance matrix is now computed via BLAS matrix multiply instead of
-       per-frame outer product accumulation, and uses symmetric
+       Covariance matrix is now computed via batched BLAS matrix multiply instead
+       of per-frame outer product accumulation, and uses symmetric
        eigendecomposition (``eigh``) instead of general ``eig``, resulting
        in significant performance improvements for large systems.
     """
@@ -295,7 +295,12 @@ class PCA(AnalysisBase):
             )
         n_dim = self._n_atoms * 3
         self.cov = np.zeros((n_dim, n_dim))
-        self._frame_data = np.empty((self.n_frames, n_dim))
+        # Batch frames into BLAS matmul for covariance updates.
+        # Peak memory: 2 * n_dim^2 * 8 (cov + matmul temporary)
+        # + batch_size * n_dim * 8 (frame buffer).
+        self._batch_size = min(self.n_frames, 500)
+        self._frame_data = np.empty((self._batch_size, n_dim))
+        self._batch_idx = 0  # tracks when to update self.cov
         self._ref_atom_positions = self._reference.positions
         self._ref_cog = self._reference.center_of_geometry()
         self._ref_atom_positions -= self._ref_cog
@@ -335,10 +340,19 @@ class PCA(AnalysisBase):
         else:
             x = self._atoms.positions.ravel()
         x -= self._xmean
-        self._frame_data[self._frame_index] = x
+        self._frame_data[self._batch_idx] = x
+        self._batch_idx += 1
+        if self._batch_idx == self._batch_size:
+            self.cov += self._frame_data.T @ self._frame_data
+            self._batch_idx = 0
 
     def _conclude(self):
-        self.cov = self._frame_data.T @ self._frame_data
+        if self._batch_idx > 0:
+            # Accumulate remaining frames from the final batch
+            self.cov += (
+                self._frame_data[:self._batch_idx].T
+                @ self._frame_data[:self._batch_idx]
+            )
         self.cov /= self.n_frames - 1
         del self._frame_data
         # covariance matrix is symmetric and real-valued by

@@ -53,7 +53,7 @@ Enhancements
  * Added new function `MDAnalysis.fetch.from_PDB` to download structure files from wwPDB
    using `pooch` as optional dependency (Issue #4907, PR #4943) 
  * Added benchmarks for package.MDAnalysis.analysis.msd.EinsteinMSD (PR #5277)
- * Improved PCA performance by computing covariance matrix via BLAS matrix
+ * Improved PCA performance by computing covariance matrix via batched BLAS matrix
    multiply instead of per-frame outer product accumulation, and using
    symmetric eigendecomposition (eigh) instead of general eig (PR #5352)
  * Improved performance of `AtomGroup.wrap()` with compounds (PR #5220)
