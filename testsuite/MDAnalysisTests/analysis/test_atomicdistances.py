@@ -20,7 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from mdanalysis.package.MDAnalysis.analysis.results import Results
 import pytest
 
 import MDAnalysis as mda
@@ -28,6 +27,7 @@ import MDAnalysis as mda
 import MDAnalysis.analysis.atomicdistances as ad
 from MDAnalysis.lib.distances import calc_bonds
 import MDAnalysis.transformations.boxdimensions as bd
+from MDAnalysis.analysis.results import Results
 
 from numpy.testing import assert_allclose
 import numpy as np
