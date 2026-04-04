@@ -108,13 +108,13 @@ in this case: ::
 
 """
 
-from mdanalysis.package.MDAnalysis.analysis.results import (
-    Results,
-    ResultsGroup,
-)
+
 import numpy as np
 
 from MDAnalysis.lib.distances import calc_bonds
+from MDAnalysis.analysis.results import (
+    Results,
+)
 
 import logging
 from .base import AnalysisBase
