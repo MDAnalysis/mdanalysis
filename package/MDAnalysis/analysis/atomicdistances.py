@@ -146,6 +146,9 @@ class AtomicDistances(AnalysisBase):
         Number of frames included in the analysis.
     n_atoms : int
         Number of atoms in each atom group.
+
+
+    .. versionadded:: 2.5.0
     .. versionchanged:: 2.11.0
     """
 

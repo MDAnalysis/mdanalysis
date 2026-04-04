@@ -22,6 +22,7 @@ The rules for this file:
  * 2.11.0
 
 Fixes
+ * `MDAnalysis.analysis.atomicdistances.AtomicDistances` results are now consistent with expected `analysis` documentation data type = Results (Issue #4819, PR #5347) Note: This fix is backwards-incompatible.
  * Fixes msd for non-linear frames, when non_linear is not explicitly
    provided (Issue #5100, PR #5254)
  * Fixes TypeError with np.int64 indexing in GSD Reader (Issue #5224)
@@ -37,7 +38,7 @@ Fixes
    incomprehensible broadcasting error at execution time (Issue #5046, PR #5163)
  * Fixes the verbose=False in EinsteinMSD, and only shows progress bar when
    verbose=True (Issue #5144, PR #5153)
- * Fix incorrect assignment of topology_format to format (and vice versa)
+ * Fix incorrect assignment of topology_format to format (and vexice versa)
    when a parsing class is provided to either (Issue #5147, PR #5148)
  * Fix incorrect TPR file parsing for GROMACS topologies produced prior
    to version 5.1.0 (Issue #5145, PR #5146)
@@ -61,7 +62,6 @@ Enhancements
 Changes
  * The msd.py inside analysis is changed, and ProgressBar is implemented inside
    _conclude_simple and _conclude_fft functions instead of tqdm (Issue #5144, PR #5153)
- * `MDAnalysis.analysis.atomicdistances.AtomicDistances` results are now consistent with expected`analysis` documentation data type = Results (Issue #4819)
 
 Deprecations
 
