@@ -151,12 +151,12 @@ class AtomicDistances(AnalysisBase):
     .. versionadded:: 2.5.0
     .. versionchanged:: 2.11.0
        Distance data are now made available in :attr:`results.distances` instead
-       of :attr:`results` and :attr:`results` is now a 
-       :class:`~MDAnalysis.analysis.results.Results` instance; this fixes an API issue 
+       of :attr:`results` and :attr:`results` is now a
+       :class:`~MDAnalysis.analysis.results.Results` instance; this fixes an API issue
        (see `Issue #4819`_) in a *backwards-incompatible* manner.
-       
+
     .. _Issue #4819`: https://github.com/MDAnalysis/mdanalysis/issues/4819
-       
+
     """
 
     def __init__(self, ag1, ag2, pbc=True, **kwargs):
