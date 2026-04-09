@@ -3287,6 +3287,10 @@ class AtomGroup(GroupBase):
 
         **Simple selections**
 
+            all
+                selects all atoms in the current group; the resulting
+                :class:AtomGroup is unique and sorted by index. If the group
+                already corresponds to Universe.atoms, it is returned unchanged.
             protein, backbone, nucleic, nucleicbackbone
                 selects all atoms that belong to a standard set of residues;
                 a protein is identfied by a hard-coded set of residue names so
