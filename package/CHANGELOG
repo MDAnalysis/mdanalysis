@@ -46,6 +46,9 @@ Fixes
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Enhancements
+ * Improved performance of inverse index mapping in AtomGroup using an optimized 
+   Cython implementation in lib._cutils.inverse_int_index()
+   (Issue #3387, PR #5252)
  * Added documentation for all keyword in select_atoms() and 
    selections.rst (Issue #5317, PR #5325)
  * Added HydrogenBondAnalysis benchmark for performance tracking (PR #5309)
