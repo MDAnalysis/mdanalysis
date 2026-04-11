@@ -23,6 +23,7 @@ The rules for this file:
 
 Fixes
  * `MDAnalysis.analysis.atomicdistances.AtomicDistances` results are now consistent with expected `analysis` documentation data type = Results (Issue #4819, PR #5347) Note: This fix is backwards-incompatible.
+ * Fix mixed-case atom types in guess_bonds (Issue #5342, PR #5343)
  * Fixes msd for non-linear frames, when non_linear is not explicitly
    provided (Issue #5100, PR #5254)
  * Fixes TypeError with np.int64 indexing in GSD Reader (Issue #5224)
@@ -46,6 +47,9 @@ Fixes
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Enhancements
+ * Added documentation for all keyword in select_atoms() and 
+   selections.rst (Issue #5317, PR #5325)
+ * Added HydrogenBondAnalysis benchmark for performance tracking (PR #5309)
  * Added `select=None` in `analysis.rms.RMSD` to perform no selection on
    the input `atomgroup` and `reference` (Issue #5300, PR #5296)
  * MOL2Parser now reads unit cell dimensions from @<TRIPOS>CRYSIN records (Issue #3341)
