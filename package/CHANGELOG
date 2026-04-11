@@ -38,7 +38,7 @@ Fixes
    incomprehensible broadcasting error at execution time (Issue #5046, PR #5163)
  * Fixes the verbose=False in EinsteinMSD, and only shows progress bar when
    verbose=True (Issue #5144, PR #5153)
- * Fix incorrect assignment of topology_format to format (and vexice versa)
+ * Fix incorrect assignment of topology_format to format (and vice versa)
    when a parsing class is provided to either (Issue #5147, PR #5148)
  * Fix incorrect TPR file parsing for GROMACS topologies produced prior
    to version 5.1.0 (Issue #5145, PR #5146)
