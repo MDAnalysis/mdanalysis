@@ -108,7 +108,6 @@ in this case: ::
 
 """
 
-
 import numpy as np
 
 from MDAnalysis.lib.distances import calc_bonds

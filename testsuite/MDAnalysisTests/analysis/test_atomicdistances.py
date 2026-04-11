@@ -123,7 +123,6 @@ class TestAtomicDistances(object):
         pairwise_no_pbc = ad.AtomicDistances(ad_ag1, ad_ag2, pbc=False).run()
         actual = pairwise_no_pbc.results
         assert isinstance(actual, Results)
-        
         distances = actual.distances
         # compare with expected values from dist()
         assert_allclose(distances, expected_dist)
@@ -134,7 +133,6 @@ class TestAtomicDistances(object):
         pairwise_pbc = ad.AtomicDistances(ad_ag1, ad_ag2).run()
         actual = pairwise_pbc.results
         assert isinstance(actual, Results)
-
         distances = actual.distances
         # compare with expected values from dist()
         assert_allclose(distances, expected_pbc_dist)
