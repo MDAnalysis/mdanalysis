@@ -18,4 +18,4 @@ jobs:
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         pr_message: 'Hello there first time contributor! Welcome to the MDAnalysis community! We ask that all contributors abide by our [Code of Conduct](https://www.mdanalysis.org/pages/conduct/) and that first time contributors introduce themselves on [GitHub Discussions](https://github.com/MDAnalysis/mdanalysis/discussions) so we can get to know you. You can learn more about [participating here](https://www.mdanalysis.org/#participating). Please also add yourself to `package/AUTHORS` as part of this PR.'
-        issue_message: 'Hello there first time contributor! Thank you for raising your first issue! Welcome to the MDAnalysis community! We ask that all contributors abide by our [Code of Conduct](https://www.mdanalysis.org/pages/conduct/) and that first time contributors introduce themselves on [GitHub Discussions](https://github.com/MDAnalysis/mdanalysis/discussions) so we can get to know you. You can learn more about [participating here](https://www.mdanalysis.org/#participating).'
+        issue_message: ''
