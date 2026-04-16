@@ -52,6 +52,9 @@ Enhancements
  * DSSP uses ``capped_distance`` and ``calc_bonds`` for faster distance
    calculations and supports ``backend`` selection (e.g. ``"distopia"``)
    (PR #5182)
+ * Improved performance of inverse index mapping in AtomGroup using an optimized 
+   Cython implementation in lib._cutils.inverse_int_index()
+   (Issue #3387, PR #5252)
  * Added documentation for all keyword in select_atoms() and 
    selections.rst (Issue #5317, PR #5325)
  * Added HydrogenBondAnalysis benchmark for performance tracking (PR #5309)
