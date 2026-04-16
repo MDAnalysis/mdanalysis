@@ -152,7 +152,7 @@ class AtomicDistances(AnalysisBase):
        :class:`~MDAnalysis.analysis.results.Results` instance; this fixes an API issue
        (see `Issue #4819`_) in a *backwards-incompatible* manner.
 
-    .. _Issue #4819`: https://github.com/MDAnalysis/mdanalysis/issues/4819
+    .. _`Issue #4819`: https://github.com/MDAnalysis/mdanalysis/issues/4819
 
     """
 

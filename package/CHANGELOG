@@ -22,7 +22,10 @@ The rules for this file:
  * 2.11.0
 
 Fixes
- * `MDAnalysis.analysis.atomicdistances.AtomicDistances` results are now consistent with expected `analysis` documentation data type = Results (Issue #4819, PR #5347) Note: This fix is backwards-incompatible.
+ * `MDAnalysis.analysis.atomicdistances.AtomicDistances` results are now
+   consistent with expected `analysis` documentation data type = Results
+   (Issue #4819, PR #5347)
+   Note: This fix is backwards-incompatible.
  * Fix mixed-case atom types in guess_bonds (Issue #5342, PR #5343)
  * Fixes msd for non-linear frames, when non_linear is not explicitly
    provided (Issue #5100, PR #5254)
