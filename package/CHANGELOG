@@ -17,7 +17,7 @@ The rules for this file:
 ??/??/?? IAlibay, orbeckst, marinegor, tylerjereddy, ljwoods2, marinegor,
          spyke7, talagayev, tanii1125, BradyAJohnston, hejamu, jeremyleung521,
          harshitgajjela-droid, kunjsinha, aygarwal, jauy123, Dreamstick9,
-         ollyfutur
+         ollyfutur, Amarendra22
 
  * 2.11.0
 
@@ -46,6 +46,7 @@ Fixes
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Enhancements
+ * Added ASV benchmark for `MDAnalysis.analysis.contacts` (PR #5291)
  * Improved performance of inverse index mapping in AtomGroup using an optimized 
    Cython implementation in lib._cutils.inverse_int_index()
    (Issue #3387, PR #5252)
