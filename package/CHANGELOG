@@ -22,6 +22,9 @@ The rules for this file:
  * 2.11.0
 
 Fixes
+ * DSSP now correctly handles periodic boundary conditions in hydrogen bond
+   detection; previously, hydrogen bonds across periodic boundaries were
+   missed (PR #5182)
  * Fix mixed-case atom types in guess_bonds (Issue #5342, PR #5343)
  * Fixes msd for non-linear frames, when non_linear is not explicitly
    provided (Issue #5100, PR #5254)
@@ -46,6 +49,9 @@ Fixes
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Enhancements
+ * DSSP uses ``capped_distance`` and ``calc_bonds`` for faster distance
+   calculations and supports ``backend`` selection (e.g. ``"distopia"``)
+   (PR #5182)
  * Added ASV benchmark for `MDAnalysis.analysis.contacts` (PR #5291)
  * Improved performance of inverse index mapping in AtomGroup using an optimized 
    Cython implementation in lib._cutils.inverse_int_index()
@@ -59,7 +65,7 @@ Enhancements
  * Reduces duplication of code in _apply() function (Issue #5247, PR #5294)
  * Added new top-level `MDAnalysis.fetch` module (PR #4943)
  * Added new function `MDAnalysis.fetch.from_PDB` to download structure files from wwPDB
-   using `pooch` as optional dependency (Issue #4907, PR #4943) 
+   using `pooch` as optional dependency (Issue #4907, PR #4943)
  * Added benchmarks for package.MDAnalysis.analysis.msd.EinsteinMSD (PR #5277)
  * Improved performance of `AtomGroup.wrap()` with compounds (PR #5220)
  * Adds support for parsing `.tpr` files produced by GROMACS 2026.0
