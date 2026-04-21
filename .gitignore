@@ -23,7 +23,6 @@ examples/output.txt
 # ignore coverage files
 .coverage*
 !.coveragerc
-.noseids
 htmlcov
 # ignore trajectory offset caches
 .adk_oplsaa.trr_offsets.pkl
@@ -40,7 +39,9 @@ authors.py
 *.DS_Store
 # ignore files from tests
 .hypothesis/
-# ignore results from asv
+# ignore folders from asv
+benchmarks/env
+benchmarks/html
 benchmarks/results
 
 # duecredit

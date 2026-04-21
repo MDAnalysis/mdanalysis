@@ -25,24 +25,24 @@ jobs:
           PYTHON_VERSION: '3.11'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'normal'
-          imageName: 'windows-2019'
+          imageName: 'windows-latest'
         Win-Python313-64bit-full:
           PYTHON_VERSION: '3.13'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'normal'
-          imageName: 'windows-2019'
+          imageName: 'windows-latest'
         Win-Python313-64bit-full-wheel:
           PYTHON_VERSION: '3.13'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
           NUMPY_MIN: '2.1.0'
-          imageName: 'windows-2019'
+          imageName: 'windows-latest'
         Win-Python311-64bit-full-wheel:
           PYTHON_VERSION: '3.11'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
           NUMPY_MIN: '1.26.0'
-          imageName: 'windows-2019'
+          imageName: 'windows-latest'
         Linux-Python313-64bit-full-wheel:
           PYTHON_VERSION: '3.13'
           PYTHON_ARCH: 'x64'
@@ -131,7 +131,7 @@ jobs:
     displayName: 'Check installed packages'
   - powershell: |
       cd testsuite
-      pytest MDAnalysisTests --disable-pytest-warnings -n logical --timeout=200 -rsx --cov=MDAnalysis
+      pytest MDAnalysisTests --disable-pytest-warnings -n logical --timeout=200 -rsx --cov=MDAnalysis --durations=50
     displayName: 'Run MDAnalysis Test Suite'
   - script: |
       curl -s https://codecov.io/bash | bash
