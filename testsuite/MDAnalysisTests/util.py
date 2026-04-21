@@ -38,7 +38,7 @@ from unittest import mock
 import os
 import warnings
 import pytest
-
+from MDAnalysis.lib.distances import HAS_DISTOPIA
 from numpy.testing import assert_warns
 
 
@@ -284,3 +284,12 @@ def get_userid():
         return 1000
     else:
         return os.geteuid()
+
+
+def distopia_conditional_backend():
+    # functions that allow distopia acceleration need to be tested with
+    # distopia backend argument but distopia is an optional dep.
+    if HAS_DISTOPIA:
+        return ["serial", "openmp", "distopia"]
+    else:
+        return ["serial", "openmp"]

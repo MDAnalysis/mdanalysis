@@ -1,5 +1,6 @@
 name: "linters"
 on:
+  workflow_dispatch:
   pull_request:
     branches:
       - develop
@@ -25,13 +26,13 @@ jobs:
         shell: bash
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         fetch-depth: 0
 
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v6
       with:
-        python-version: "3.10"
+        python-version: "3.11"
 
     - uses: psf/black@stable
       with:
@@ -51,11 +52,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v6
       with:
-        python-version: "3.10"
+        python-version: "3.11"
 
     - name: install
       run: |
@@ -73,19 +74,17 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: setup_micromamba
         uses: mamba-org/setup-micromamba@v2
         with:
           environment-name: mda
           create-args: >-
-            python=3.10
+            python=3.11
             pip
-          # using jaime's shim to avoid pulling down the cudatoolkit
           condarc: |
             channels:
-              - jaimergp/label/unsupported-cudatoolkit-shim
               - conda-forge
               - bioconda
 
@@ -94,8 +93,7 @@ jobs:
         with:
           micromamba: true
           full-deps: true
-          numpy: numpy=1.23.2
-          rdkit: rdkit=2023.09.3
+          numpy: numpy=1.26.0
 
       - name: install
         run: |

@@ -163,8 +163,8 @@ toc_object_entries = False
 html_theme = "mdanalysis_sphinx_theme"
 
 extra_nav_links = {}
-extra_nav_links["MDAnalysis"] = "http://mdanalysis.org"
-extra_nav_links["User guide"] = "http://userguide.mdanalysis.org"
+extra_nav_links["MDAnalysis"] = "https://mdanalysis.org"
+extra_nav_links["User guide"] = "https://userguide.mdanalysis.org"
 extra_nav_links["MDAKits"] = "https://mdakits.mdanalysis.org/"
 
 
@@ -349,4 +349,7 @@ intersphinx_mapping = {
     "pathsimanalysis": ("https://www.mdanalysis.org/PathSimAnalysis/", None),
     "mdahole2": ("https://www.mdanalysis.org/mdahole2/", None),
     "dask": ("https://docs.dask.org/en/stable/", None),
+    "imdclient": ("https://imdclient.readthedocs.io/en/stable/", None),
+    "pooch": ("https://www.fatiando.org/pooch/latest/", None),
+    "requests": ("https://requests.readthedocs.io/en/latest/", None),
 }

@@ -88,6 +88,7 @@ class TestConversion(object):
         (
             (nm, "nm", "A", A),
             (A, "Angstrom", "nm", nm),
+            (A, "\u212b", "nm", nm),
         ),
     )
     def test_length(self, quantity, unit1, unit2, ref):
@@ -102,6 +103,8 @@ class TestConversion(object):
             (1, "ms", "ps", 1e9),
             (1, "ps", "us", 1e-6),
             (1, "us", "ps", 1e6),
+            (1, "\u03BCs", "ps", 1e6),
+            (1, "fs", "ns", 1e-6),
         ),
     )
     def test_time(self, quantity, unit1, unit2, ref):
@@ -134,9 +137,17 @@ class TestConversion(object):
             (1, "A/ps", "m/s", 1e-10 / 1e-12),
             (1, "A/ps", "nm/ps", 0.1),
             (1, "A/ps", "pm/ps", 1e2),
-            (1, "A/ms", "A/ps", 1e9),
-            (1, "A/us", "A/ps", 1e6),
-            (1, "A/fs", "A/ps", 1e-3),
+            (1, "A/ms", "A/ps", 1e-9),
+            (1, "A/us", "A/ps", 1e-6),
+            (1, "A/\u03BCs", "A/ps", 1e-6),
+            (1, "\u212b/\u03BCs", "A/ps", 1e-6),
+            (1, "A/fs", "A/ps", 1e3),
+            (1, "A/ps", "A/fs", 1e-3),
+            (1, "A/ns", "A/ms", 1e6),
+            (1, "\u212b/ns", "A/ms", 1e6),
+            (1, "A/ps", "A/ps", 1.0),
+            (1, "nm/ns", "pm/ps", 1.0),
+            (1, "m/s", "A/fs", 1e-5),
             (1, "A/AKMA", "A/ps", 1 / 4.888821e-2),
         ),
     )

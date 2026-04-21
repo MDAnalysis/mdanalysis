@@ -11,10 +11,13 @@ designed to be used in per-frame manner in protein trajectories.
 
 import numpy as np
 
+from MDAnalysis.lib.distances import calc_bonds, capped_distance
+
 CONST_Q1Q2 = 0.084
 CONST_F = 332
 DEFAULT_CUTOFF = -0.5
 DEFAULT_MARGIN = 1.0
+HBOND_SEARCH_CUTOFF = 5.0
 
 
 def _upsample(a: np.ndarray, window: int) -> np.ndarray:
@@ -74,20 +77,20 @@ def _unfold(a: np.ndarray, window: int, axis: int):
 
 
 def _get_hydrogen_atom_position(coord: np.ndarray) -> np.ndarray:
-    """Fills in hydrogen atoms positions if they are abscent, under the
+    """Fills in hydrogen atoms positions if they are absent, under the
     assumption that C-N-H and H-N-CA angles are perfect 120 degrees,
     and N-H bond length is 1.01 A.
 
     Parameters
     ----------
     coord : np.ndarray
-        input coordinates in Angstrom, shape (n_atoms, 4, 3),
+        input coordinates in Angstrom, shape (n_residues, 4, 3),
         where second axes corresponds to (N, CA, C, O) atom coordinates
 
     Returns
     -------
     np.ndarray
-        coordinates of additional hydrogens, shape (n_atoms-1, 3)
+        coordinates of additional hydrogens, shape (n_residues-1, 3)
 
     .. versionadded:: 2.8.0
     """
@@ -118,9 +121,12 @@ def _get_hydrogen_atom_position(coord: np.ndarray) -> np.ndarray:
 
 def get_hbond_map(
     coord: np.ndarray,
+    donor_mask: np.ndarray | None = None,
     cutoff: float = DEFAULT_CUTOFF,
     margin: float = DEFAULT_MARGIN,
     return_e: bool = False,
+    box: np.ndarray | None = None,
+    backend: str = "serial",
 ) -> np.ndarray:
     """Returns hydrogen bond map
 
@@ -128,14 +134,35 @@ def get_hbond_map(
     ----------
     coord : np.ndarray
         input coordinates in either (n, 4, 3) or (n, 5, 3) shape
-        (without or with hydrogens). If hydrogens are not present, then
-        ideal positions (see :func:_get_hydrogen_atom_positions) are used.
+        (without or with hydrogens respectively), where ``n`` is number of residues.
+        If hydrogens are not present, then ideal positions (see :func:_get_hydrogen_atom_positions)
+        are used.
+    donor_mask : np.array
+         Mask out any hydrogens that should not be considered (in particular HN
+         in PRO). If ``None`` then all H will be used (behavior up to 2.10.0).
+
+         .. versionadded:: 2.10.0
+
     cutoff : float, optional
         cutoff, by default DEFAULT_CUTOFF
     margin : float, optional
         margin, by default DEFAULT_MARGIN
     return_e : bool, optional
         if to return energy instead of hbond map, by default False
+
+    box : array_like, optional
+        The unitcell dimensions of the system, which can be orthogonal or
+        triclinic and must be provided in the same format as returned by
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
+        ``[lx, ly, lz, alpha, beta, gamma]``.
+
+        .. versionadded:: 2.11.0
+
+    backend : str, optional
+        Backend for distance calculations, by default ``"serial"``.
+        Can be set to ``"distopia"`` if :mod:`distopia` is installed.
+
+        .. versionadded:: 2.11.0
 
     Returns
     -------
@@ -144,8 +171,15 @@ def get_hbond_map(
 
 
     .. versionadded:: 2.8.0
+
+    .. versionchanged:: 2.10.0
+       Support masking of hydrogen donors via `donor_mask` (especially needed
+       for ignoring HN on proline residues). Backport of PRO fix from pydssp 0.9.1.
+    .. versionchanged:: 2.11.0
+       Speedup with ``capped_distance`` and support periodic boundary checking
+       via `box` param.
     """
-    n_atoms, n_atom_types, _ = coord.shape
+    n_residues, n_atom_types, _xyz = coord.shape
     assert n_atom_types in (
         4,
         5,
@@ -161,48 +195,73 @@ def get_hbond_map(
             "Number of atoms should be 4 (N,CA,C,O) or 5 (N,CA,C,O,H)"
         )
     # after this:
-    # h.shape == (n_atoms, 3)
-    # coord.shape == (n_atoms, 4, 3)
+    # h.shape == (n_residues, 3)
+    # coord.shape == (n_residues, 4, 3)
 
-    # distance matrix
-    n_1, c_0, o_0 = coord[1:, 0], coord[0:-1, 2], coord[0:-1, 3]
+    n_atoms, c_atoms, o_atoms = coord[1:, 0], coord[:-1, 2], coord[:-1, 3]
 
-    n = n_atoms - 1
-    cmap = np.tile(c_0, (n, 1, 1))
-    omap = np.tile(o_0, (n, 1, 1))
-    nmap = np.tile(n_1, (1, 1, n)).reshape(n, n, 3)
-    hmap = np.tile(h_1, (1, 1, n)).reshape(n, n, 3)
+    # We can reduce the need for a complete pairwise distance matrix by first searching for
+    # candidate pairs within a certain distance cutoff and only computing the energy
+    # for these relevant pairs rather than "potential" HBonds between far apart residues
+    pairs, d_on = capped_distance(
+        n_atoms,
+        o_atoms,
+        max_cutoff=HBOND_SEARCH_CUTOFF,
+        box=box,
+        backend=backend,
+    )
 
-    d_on = np.linalg.norm(omap - nmap, axis=-1)
-    d_ch = np.linalg.norm(cmap - hmap, axis=-1)
-    d_oh = np.linalg.norm(omap - hmap, axis=-1)
-    d_cn = np.linalg.norm(cmap - nmap, axis=-1)
+    # Exclude local pairs (i, i), (i, i+1), (i, i+2) that are too close for SS HBonds
+    local_mask = abs(pairs[:, 0] - pairs[:, 1]) >= 2
+    pairs = pairs[local_mask]
+    d_on = d_on[local_mask]
+
+    # Exclude donor H absence (Proline)
+    if donor_mask is not None:
+        donor_indices = np.where(np.array(donor_mask) == 0)[0]
+        mask = ~np.isin(pairs[:, 0], donor_indices - 1)
+        pairs = pairs[mask]
+        d_on = d_on[mask]
+
+    # compute distances and energy as previously but only for the potential pairs
+    # still returning the same energy matrix that would have otherwise been made
+    o_indices = pairs[:, 1]
+    n_indices = pairs[:, 0]
+
+    d_ch = calc_bonds(
+        c_atoms[o_indices], h_1[n_indices], box=box, backend=backend
+    )
+    d_oh = calc_bonds(
+        o_atoms[o_indices], h_1[n_indices], box=box, backend=backend
+    )
+    d_cn = calc_bonds(
+        c_atoms[o_indices], n_atoms[n_indices], box=box, backend=backend
+    )
 
     # electrostatic interaction energy
     # e[i, j] = e(CO_i) - e(NH_j)
-    e = np.pad(
+    e = np.zeros((n_residues, n_residues))
+    e[n_indices + 1, o_indices] = (
         CONST_Q1Q2
         * (1.0 / d_on + 1.0 / d_ch - 1.0 / d_oh - 1.0 / d_cn)
-        * CONST_F,
-        [[1, 0], [0, 1]],
+        * CONST_F
     )
 
     if return_e:  # pragma: no cover
         return e
 
-    # mask for local pairs (i,i), (i,i+1), (i,i+2)
-    local_mask = ~np.eye(n_atoms, dtype=bool)
-    local_mask *= ~np.diag(np.ones(n_atoms - 1, dtype=bool), k=-1)
-    local_mask *= ~np.diag(np.ones(n_atoms - 2, dtype=bool), k=-2)
-    # hydrogen bond map (continuous value extension of original definition)
     hbond_map = np.clip(cutoff - margin - e, a_min=-margin, a_max=margin)
     hbond_map = (np.sin(hbond_map / margin * np.pi / 2) + 1.0) / 2
-    hbond_map = hbond_map * local_mask
 
     return hbond_map
 
 
-def assign(coord: np.ndarray) -> np.ndarray:
+def assign(
+    coord: np.ndarray,
+    donor_mask: np.ndarray | None = None,
+    box: np.ndarray | None = None,
+    backend: str = "serial",
+) -> np.ndarray:
     """Assigns secondary structure for a given coordinate array,
     either with or without assigned hydrogens
 
@@ -214,6 +273,26 @@ def assign(coord: np.ndarray) -> np.ndarray:
         (N, CA, C, O) atoms coordinates (if k=4), or (N, CA, C, O, H) coordinates
         (when k=5).
 
+    donor_mask : np.array | None, optional
+         Mask out any hydrogens that should not be considered (in particular HN
+         in PRO). If ``None`` then all H will be used (behavior up to 2.9.0).
+
+         .. versionadded:: 2.10.0
+
+    box : array_like, optional
+        The unitcell dimensions of the system, which can be orthogonal or
+        triclinic and must be provided in the same format as returned by
+        :attr:`MDAnalysis.coordinates.timestep.Timestep.dimensions`:
+        ``[lx, ly, lz, alpha, beta, gamma]``.
+
+        .. versionadded:: 2.11.0
+
+    backend : str, optional
+        Backend for distance calculations, by default ``"serial"``.
+        Can be set to ``"distopia"`` if `distopia`_ is installed.
+
+        .. versionadded:: 2.11.0
+
     Returns
     -------
     np.ndarray
@@ -222,9 +301,18 @@ def assign(coord: np.ndarray) -> np.ndarray:
 
 
     .. versionadded:: 2.8.0
+
+    .. versionchanged:: 2.10.0
+       Support masking of donors.
+    .. versionchanged:: 2.11.0
+       Speedup with ``capped_distance`` and support periodic boundary checking
+       via `box` param.
+
     """
     # get hydrogen bond map
-    hbmap = get_hbond_map(coord)
+    hbmap = get_hbond_map(
+        coord, donor_mask=donor_mask, box=box, backend=backend
+    )
     hbmap = np.swapaxes(hbmap, -1, -2)  # convert into "i:C=O, j:N-H" form
 
     # identify turn 3, 4, 5
