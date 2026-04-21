@@ -49,13 +49,10 @@ Fixes
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Enhancements
-<<<<<<< dssp-kdtree
  * DSSP uses ``capped_distance`` and ``calc_bonds`` for faster distance
    calculations and supports ``backend`` selection (e.g. ``"distopia"``)
    (PR #5182)
-=======
  * Added ASV benchmark for `MDAnalysis.analysis.contacts` (PR #5291)
->>>>>>> develop
  * Improved performance of inverse index mapping in AtomGroup using an optimized 
    Cython implementation in lib._cutils.inverse_int_index()
    (Issue #3387, PR #5252)
