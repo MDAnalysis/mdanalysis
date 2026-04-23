@@ -115,7 +115,7 @@ def stop_logging():
     clear_handlers(logger)  # this _should_ do the job...
 
 
-def create(logger_name="MDAnalysis", stream="MDAnalysis.log", level="DEBUG"):
+def create(logger_name="MDAnalysis", stream="MDAnalysis.log", level="DEBUG", fmt=None):
     """Create a top level logger.
 
     - The file logger logs everything (including DEBUG).
@@ -148,8 +148,9 @@ def create(logger_name="MDAnalysis", stream="MDAnalysis.log", level="DEBUG"):
     elif isinstance(stream, (str, os.PathLike)):
         handler = logging.FileHandler(stream)
     else:
-        raise TypeError("Input Stream is neither a file or a steam")
-        
+        raise TypeError("Input Stream is neither a file or a stream")
+    
+    handler.setFormatter(logging.Formatter(fmt))
     logger.addHandler(handler)
 
     return logger
