@@ -102,7 +102,18 @@ def start_logging(stream="MDAnalysis.log", version=version.__version__):
     The default logfile is named `MDAnalysis.log` and messages are
     logged with the tag *MDAnalysis*.
     """
-    create("MDAnalysis", stream=stream)
+    create(
+        "MDAnalysis",
+        stream=stream,
+        level="DEBUG",
+        fmt="%(asctime)s %(name)-12s %(levelname)-8s %(message)s",
+    )
+    create(
+        "MDAnalysis",
+        stream=sys.stdout,
+        level="INFO",
+        fmt="%(name)-12s: %(levelname)-8s %(message)s",
+    )
     logging.getLogger("MDAnalysis").info(
         "MDAnalysis %s STARTED logging to %r", version, stream
     )
@@ -115,7 +126,9 @@ def stop_logging():
     clear_handlers(logger)  # this _should_ do the job...
 
 
-def create(logger_name="MDAnalysis", stream="MDAnalysis.log", level="DEBUG", fmt=None):
+def create(
+    logger_name="MDAnalysis", stream="MDAnalysis.log", level="DEBUG", fmt=None
+):
     """Create a top level logger.
 
     - The file logger logs everything (including DEBUG).
@@ -149,7 +162,7 @@ def create(logger_name="MDAnalysis", stream="MDAnalysis.log", level="DEBUG", fmt
         handler = logging.FileHandler(stream)
     else:
         raise TypeError("Input Stream is neither a file or a stream")
-    
+
     handler.setFormatter(logging.Formatter(fmt))
     logger.addHandler(handler)
 
