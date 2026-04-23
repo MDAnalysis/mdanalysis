@@ -40,8 +40,10 @@ def test_start_stop_logging():
     finally:
         MDAnalysis.log.stop_logging()
 
-# Write Tests here for later 
+
+# Write Tests here for later
 # Idk why there are two seperate tests files: lib/test_log.py and utils/test_log.py
+
 
 class RedirectedStderr(object):
     """Temporarily replaces sys.stderr with *stream*.
