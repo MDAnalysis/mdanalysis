@@ -405,6 +405,12 @@
 
 
 <span class="sd">        .. versionadded:: 2.7.0</span>
+
+<span class="sd">        .. versionchanged:: 2.11.0</span>
+<span class="sd">           Residue names are now matched exactly against the full resname</span>
+<span class="sd">           rather than only its first character. Users with multi-character</span>
+<span class="sd">           residue names (e.g. CHARMM ``&quot;GUA&quot;``, ``&quot;DG&quot;``) must pass the</span>
+<span class="sd">           appropriate names via the keyword arguments.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">pyrimidines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_name</span><span class="p">,</span> <span class="n">t_name</span><span class="p">,</span> <span class="n">u_name</span><span class="p">]</span>
         <span class="n">purines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">a_name</span><span class="p">,</span> <span class="n">g_name</span><span class="p">]</span>
@@ -413,9 +419,9 @@
         <span class="n">sel2</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">strand1</span><span class="o">.</span><span class="n">residues</span><span class="p">,</span> <span class="n">strand2</span><span class="o">.</span><span class="n">residues</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">resname</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">pyrimidines</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">resname</span> <span class="ow">in</span> <span class="n">pyrimidines</span><span class="p">:</span>
                 <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span> <span class="o">=</span> <span class="n">a2_name</span><span class="p">,</span> <span class="n">a1_name</span>
-            <span class="k">elif</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">resname</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">purines</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">resname</span> <span class="ow">in</span> <span class="n">purines</span><span class="p">:</span>
                 <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span> <span class="o">=</span> <span class="n">a1_name</span><span class="p">,</span> <span class="n">a2_name</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -585,6 +591,12 @@
 <span class="sd">        :class:`~MDAnalysis.core.groups.ResidueGroup` as input.</span>
 <span class="sd">        The previous input type, ``List[Residue]`` is still supported,</span>
 <span class="sd">        but it is **deprecated** and will be removed in release 3.0.0.</span>
+
+<span class="sd">    .. versionchanged:: 2.11.0</span>
+<span class="sd">       Residue names are now matched exactly against the full resname</span>
+<span class="sd">       rather than only its first character. Users with multi-character</span>
+<span class="sd">       residue names (e.g. CHARMM ``&quot;GUA&quot;``, ``&quot;DG&quot;``) must pass the</span>
+<span class="sd">       appropriate names via the keyword arguments.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -708,6 +720,12 @@
 
 
 <span class="sd">    .. versionadded:: 2.7.0</span>
+
+<span class="sd">    .. versionchanged:: 2.11.0</span>
+<span class="sd">       Residue names are now matched exactly against the full resname</span>
+<span class="sd">       rather than only its first character. Users with multi-character</span>
+<span class="sd">       residue names (e.g. CHARMM ``&quot;GUA&quot;``, ``&quot;DG&quot;``) must pass the</span>
+<span class="sd">       appropriate names via the keyword arguments.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -809,6 +827,12 @@
 
 
 <span class="sd">    .. versionadded:: 2.7.0</span>
+
+<span class="sd">    .. versionchanged:: 2.11.0</span>
+<span class="sd">       Residue names are now matched exactly against the full resname</span>
+<span class="sd">       rather than only its first character. Users with multi-character</span>
+<span class="sd">       residue names (e.g. CHARMM ``&quot;GUA&quot;``, ``&quot;DG&quot;``) must pass the</span>
+<span class="sd">       appropriate names via the keyword arguments.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>

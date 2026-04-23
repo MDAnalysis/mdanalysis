@@ -468,6 +468,12 @@ corresponding to the provided selections from each strand.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 2.7.0.</span></p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.11.0: </span>Residue names are now matched exactly against the full resname
+rather than only its first character. Users with multi-character
+residue names (e.g. CHARMM <code class="docutils literal notranslate"><span class="pre">&quot;GUA&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;DG&quot;</span></code>) must pass the
+appropriate names via the keyword arguments.</p>
+</div>
 </dd></dl>
 
 </dd></dl>
@@ -602,6 +608,12 @@ MDAnalysis 2.5.0. Please use the class attribute
 <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResidueGroup</span></code></a> as input.
 The previous input type, <code class="docutils literal notranslate"><span class="pre">List[Residue]</span></code> is still supported,
 but it is <strong>deprecated</strong> and will be removed in release 3.0.0.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.11.0: </span>Residue names are now matched exactly against the full resname
+rather than only its first character. Users with multi-character
+residue names (e.g. CHARMM <code class="docutils literal notranslate"><span class="pre">&quot;GUA&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;DG&quot;</span></code>) must pass the
+appropriate names via the keyword arguments.</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.nucleicacids.WatsonCrickDist.get_supported_backends">
@@ -804,6 +816,12 @@ the Residue pair, and the second index selecting the frame number</p>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 2.7.0.</span></p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.11.0: </span>Residue names are now matched exactly against the full resname
+rather than only its first character. Users with multi-character
+residue names (e.g. CHARMM <code class="docutils literal notranslate"><span class="pre">&quot;GUA&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;DG&quot;</span></code>) must pass the
+appropriate names via the keyword arguments.</p>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.nucleicacids.MinorPairDist.get_supported_backends">
 <em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_supported_backends</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.nucleicacids.MinorPairDist.get_supported_backends" title="Link to this definition"></a></dt>
@@ -1005,6 +1023,12 @@ Residue pair.</p>
 </dl>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 2.7.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.11.0: </span>Residue names are now matched exactly against the full resname
+rather than only its first character. Users with multi-character
+residue names (e.g. CHARMM <code class="docutils literal notranslate"><span class="pre">&quot;GUA&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;DG&quot;</span></code>) must pass the
+appropriate names via the keyword arguments.</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.nucleicacids.MajorPairDist.get_supported_backends">
