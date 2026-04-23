@@ -87,7 +87,7 @@ Other functions and classes for logging purposes
 import sys
 import logging
 import re
-import io
+import io, os
 from collections.abc import Iterable
 
 from tqdm.auto import tqdm
@@ -149,8 +149,7 @@ def create(logger_name="MDAnalysis", stream="MDAnalysis.log", level='DEBUG'):
     #
     
     # am borowwing this pattern from fetch module
-    # Want to allow ndarrays, tuple, and list but exclude strings
-    if isinstance(stream, str) or isinstance(stream, io.IOBase):
+    if isinstance(stream, (str, os.PathLike)) or isinstance(stream, io.IOBase):
         streams = (stream,)
     elif isinstance(stream, Iterable):
         streams = stream
@@ -163,36 +162,16 @@ def create(logger_name="MDAnalysis", stream="MDAnalysis.log", level='DEBUG'):
         #sends logging output to streams such as sys.stdout, sys.stderr or
         # any file-like object (or, more precisely, any object which supports write() and flush() methods).
         
-        # note this is looks gross and probably need to be written - invert the if and else case?
-        # Doesn't work since FileHandler inherits from Steam handler
-        if (hasattr(stream, 'flush') and callable(getattr(stream, 'flush'))) and \
-            (hasattr(stream, 'write') and callable(getattr(stream, 'write'))):
+        # This only check the existance and not the functionality. Should be ok?
+        if hasattr(stream, "write") and hasattr(stream, "flush"):
             handler = logging.StreamHandler(stream)
-        else:
+        elif isinstance(stream, (str, os.PathLike)):
             handler = logging.FileHandler(stream)
-
+        else:
+            raise Exception('foobar')
+        
         logger.addHandler(handler)
         
-    return logger
-
-    ## Old code
-
-    # handler that writes to logfile
-    logfile_handler = logging.FileHandler(logfile)
-    logfile_formatter = logging.Formatter(
-        "%(asctime)s %(name)-12s %(levelname)-8s %(message)s"
-    )
-    logfile_handler.setFormatter(logfile_formatter)
-    logger.addHandler(logfile_handler)
-
-    # define a Handler which writes INFO messages or higher to the sys.stderr
-    console_handler = logging.StreamHandler()
-    console_handler.setLevel(logging.INFO)
-    # set a format which is simpler for console use
-    formatter = logging.Formatter("%(name)-12s: %(levelname)-8s %(message)s")
-    console_handler.setFormatter(formatter)
-    logger.addHandler(console_handler)
-
     return logger
 
 
