@@ -86,10 +86,7 @@ Other functions and classes for logging purposes
 """
 import sys
 import logging
-import re
-import io
 import os
-from collections.abc import Iterable
 
 from tqdm.auto import tqdm
 
@@ -151,9 +148,11 @@ def create(
     logger.setLevel(level.upper())
 
     # https://docs.python.org/3/library/logging.handlers.html#streamhandler
+    #
     # The StreamHandler class, located in the core logging package,
     # sends logging output to streams such as sys.stdout, sys.stderr or
-    # any file-like object (or, more precisely, any object which supports write() and flush() methods).
+    # any file-like object (or, more precisely, any object which supports
+    # write() and flush() methods).
 
     # This only check the existance and not the functionality. Should be ok?
     if hasattr(stream, "write") and hasattr(stream, "flush"):
