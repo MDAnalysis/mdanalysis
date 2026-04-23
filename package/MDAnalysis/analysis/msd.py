@@ -274,7 +274,7 @@ Classes
 import numpy as np
 import logging
 from ..due import due, Doi
-from .base import AnalysisBase, ProgressBar
+from .base import AnalysisBase, ProgressBar, ResultsGroup
 from ..core import groups
 import collections
 
@@ -293,6 +293,12 @@ due.cite(
     cite_module=True,
 )
 del Doi
+
+
+# aggregator wants 'timeseries' and 'msds_by_particle' to be passed
+# so using this as a workaround
+def _noop(arrs) -> None:
+    pass
 
 
 class EinsteinMSD(AnalysisBase):
@@ -348,10 +354,26 @@ class EinsteinMSD(AnalysisBase):
 
 
     .. versionadded:: 2.0.0
+    
     .. versionchanged:: 2.10.0
        Added ability to calculate MSD from samples that are not linearly spaced with the
        new `non_linear` keyword argument.
+    
+    .. versionchanged:: 2.11.0
+       Enabled **parallel execution** with the ``multiprocessing`` and ``dask``
+       backends; use the new method :meth:`get_supported_backends` to see all
+       supported backends.
     """
+
+    @classmethod
+    def get_supported_backends(cls):
+        return (
+            "serial",
+            "multiprocessing",
+            "dask",
+        )
+
+    _analysis_algorithm_is_parallelizable = True
 
     def __init__(
         self,
@@ -362,6 +384,7 @@ class EinsteinMSD(AnalysisBase):
         non_linear=False,
         **kwargs,
     ):
+
         if isinstance(u, groups.UpdatingAtomGroup):
             raise TypeError(
                 "UpdatingAtomGroups are not valid for MSD computation"
@@ -379,6 +402,7 @@ class EinsteinMSD(AnalysisBase):
         # local
         self.ag = u.select_atoms(self.select)
         self.n_particles = len(self.ag)
+        self.results._position_array = None
         self._position_array = None
 
         # result
@@ -391,6 +415,9 @@ class EinsteinMSD(AnalysisBase):
         # these need to be zeroed prior to each run() call
         self.results.msds_by_particle = np.zeros(
             (self.n_frames, self.n_particles)
+        )
+        self.results._position_array = np.zeros(
+            (self.n_frames, self.n_particles, self.dim_fac)
         )
         self._position_array = np.zeros(
             (self.n_frames, self.n_particles, self.dim_fac)
@@ -425,10 +452,24 @@ class EinsteinMSD(AnalysisBase):
         self._position_array[self._frame_index] = self.ag.positions[
             :, self._dim
         ]
+        self.results._position_array[self._frame_index] = self.ag.positions[
+            :, self._dim
+        ]
+
+    def _get_aggregator(self):
+        return ResultsGroup(
+            lookup={
+                "_position_array": ResultsGroup.ndarray_vstack,
+                "msds_by_particle": _noop,
+                "timeseries": _noop,
+            }
+        )
 
     def _conclude(self):
+        self.results.msds_by_particle = np.zeros(
+            (self.n_frames, self.n_particles)
+        )
         delta_time = np.diff(self.times)
-
         if self.non_linear or (
             len(delta_time) > 1
             and not (np.allclose(delta_time, delta_time[0]))
@@ -443,6 +484,7 @@ class EinsteinMSD(AnalysisBase):
     def _conclude_simple(self):
         r"""Calculates the MSD via the simple "windowed" algorithm."""
         lagtimes = np.arange(1, self.n_frames)
+        self._position_array = self.results._position_array
         positions = self._position_array.astype(np.float64)
         for lag in ProgressBar(
             lagtimes,
@@ -473,7 +515,7 @@ class EinsteinMSD(AnalysisBase):
 
                 or set fft=False"""
             )
-
+        self._position_array = self.results._position_array
         positions = self._position_array.astype(np.float64)
         for n in ProgressBar(
             range(self.n_particles),

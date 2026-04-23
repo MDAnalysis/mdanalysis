@@ -69,10 +69,10 @@ def random_walk_u():
 
 
 @pytest.fixture(scope="module")
-def msd(u, SELECTION):
+def msd(u, SELECTION, client_EinsteinMSD):
     # non fft msd
     m = MSD(u, SELECTION, msd_type="xyz", fft=False)
-    m.run()
+    m.run(**client_EinsteinMSD)
     return m
 
 
@@ -87,11 +87,11 @@ def step_traj(NSTEP):  # constant velocity
 
 
 @block_import("tidynamics")
-def test_notidynamics(u, SELECTION):
+def test_notidynamics(u, SELECTION, client_EinsteinMSD):
     with pytest.raises(ImportError, match="tidynamics was not found"):
         u = mda.Universe(PSF, DCD)
         msd = MSD(u, SELECTION)
-        msd.run()
+        msd.run(**client_EinsteinMSD)
 
 
 def characteristic_poly(n, d):
@@ -99,6 +99,25 @@ def characteristic_poly(n, d):
     x = np.arange(0, n)
     y = d * x * x
     return y
+
+
+def test_parallize_equivalence(u, SELECTION):
+    msd_serial = MSD(u, SELECTION, fft=False)
+    msd_parallel = MSD(u, SELECTION, fft=False)
+    results_serial = msd_serial.run(backend="serial")
+    results_parallel = msd_parallel.run(backend="multiprocessing", n_workers=2)
+
+    assert np.array_equal(
+        results_serial.results.msds_by_particle,
+        results_parallel.results.msds_by_particle,
+    )
+    assert np.array_equal(
+        results_serial.results.timeseries, results_parallel.results.timeseries
+    )
+    assert np.array_equal(
+        results_serial.results._position_array,
+        results_parallel.results._position_array,
+    )
 
 
 class TestMSDSimple(object):
@@ -138,12 +157,12 @@ class TestMSDSimple(object):
         ],
     )
     def test_simple_step_traj_all_dims(
-        self, step_traj, NSTEP, dim, dim_factor
+        self, step_traj, NSTEP, dim, dim_factor, client_EinsteinMSD
     ):
         # testing the "simple" algorithm on constant velocity trajectory
         # should fit the polynomial y=dim_factor*x**2
         m_simple = MSD(step_traj, "all", msd_type=dim, fft=False)
-        m_simple.run()
+        m_simple.run(**client_EinsteinMSD)
         poly = characteristic_poly(NSTEP, dim_factor)
         assert_almost_equal(m_simple.results.timeseries, poly, decimal=4)
 
@@ -172,10 +191,10 @@ class TestMSDSimple(object):
             m_simple.results.timeseries, poly[0:990:10], decimal=4
         )
 
-    def test_random_walk_u_simple(self, random_walk_u):
+    def test_random_walk_u_simple(self, random_walk_u, client_EinsteinMSD):
         # regress against random_walk test data
         msd_rw = MSD(random_walk_u, "all", msd_type="xyz", fft=False)
-        msd_rw.run()
+        msd_rw.run(**client_EinsteinMSD)
         norm = np.linalg.norm(msd_rw.results.timeseries)
         val = 3932.39927487146
         assert_almost_equal(norm, val, decimal=5)
@@ -188,10 +207,10 @@ class TestMSDSimple(object):
 class TestMSDFFT(object):
 
     @pytest.fixture(scope="class")
-    def msd_fft(self, u, SELECTION):
+    def msd_fft(self, u, SELECTION, client_EinsteinMSD):
         # fft msd
         m = MSD(u, SELECTION, msd_type="xyz", fft=True)
-        m.run()
+        m.run(**client_EinsteinMSD)
         return m
 
     def test_fft_vs_simple_default(self, msd, msd_fft):
@@ -207,25 +226,29 @@ class TestMSDFFT(object):
         assert_almost_equal(per_particle_simple, per_particle_fft, decimal=4)
 
     @pytest.mark.parametrize("dim", ["xyz", "xy", "xz", "yz", "x", "y", "z"])
-    def test_fft_vs_simple_all_dims(self, u, SELECTION, dim):
+    def test_fft_vs_simple_all_dims(
+        self, u, SELECTION, dim, client_EinsteinMSD
+    ):
         # check fft and simple give same result for each dimensionality
         m_simple = MSD(u, SELECTION, msd_type=dim, fft=False)
-        m_simple.run()
+        m_simple.run(**client_EinsteinMSD)
         timeseries_simple = m_simple.results.timeseries
         m_fft = MSD(u, SELECTION, msd_type=dim, fft=True)
-        m_fft.run()
+        m_fft.run(**client_EinsteinMSD)
         timeseries_fft = m_fft.results.timeseries
         assert_almost_equal(timeseries_simple, timeseries_fft, decimal=4)
 
     @pytest.mark.parametrize("dim", ["xyz", "xy", "xz", "yz", "x", "y", "z"])
-    def test_fft_vs_simple_all_dims_per_particle(self, u, SELECTION, dim):
+    def test_fft_vs_simple_all_dims_per_particle(
+        self, u, SELECTION, dim, client_EinsteinMSD
+    ):
         # check fft and simple give same result for each particle in each
         # dimension
         m_simple = MSD(u, SELECTION, msd_type=dim, fft=False)
-        m_simple.run()
+        m_simple.run(**client_EinsteinMSD)
         per_particle_simple = m_simple.results.msds_by_particle
         m_fft = MSD(u, SELECTION, msd_type=dim, fft=True)
-        m_fft.run()
+        m_fft.run(**client_EinsteinMSD)
         per_particle_fft = m_fft.results.msds_by_particle
         assert_almost_equal(per_particle_simple, per_particle_fft, decimal=4)
 
@@ -241,14 +264,16 @@ class TestMSDFFT(object):
             ("z", 1),
         ],
     )
-    def test_fft_step_traj_all_dims(self, step_traj, NSTEP, dim, dim_factor):
+    def test_fft_step_traj_all_dims(
+        self, step_traj, NSTEP, dim, dim_factor, client_EinsteinMSD
+    ):
         # testing the fft algorithm on constant velocity trajectory
         # this should fit the polynomial y=dim_factor*x**2
         # fft based tests require a slight decrease in expected prescision
         # primarily due to roundoff in fft(ifft()) calls.
         # relative accuracy expected to be around ~1e-12
         m_simple = MSD(step_traj, "all", msd_type=dim, fft=True)
-        m_simple.run()
+        m_simple.run(**client_EinsteinMSD)
         poly = characteristic_poly(NSTEP, dim_factor)
         # this was relaxed from decimal=4 for numpy=1.13 test
         assert_almost_equal(m_simple.results.timeseries, poly, decimal=3)
@@ -278,15 +303,38 @@ class TestMSDFFT(object):
             m_simple.results.timeseries, poly[0:990:10], decimal=3
         )
 
-    def test_random_walk_u_fft(self, random_walk_u):
+    def test_random_walk_u_fft(self, random_walk_u, client_EinsteinMSD):
         # regress against random_walk test data
         msd_rw = MSD(random_walk_u, "all", msd_type="xyz", fft=True)
-        msd_rw.run()
+        msd_rw.run(**client_EinsteinMSD)
         norm = np.linalg.norm(msd_rw.results.timeseries)
         val = 3932.39927487146
         assert_almost_equal(norm, val, decimal=5)
 
 
+@pytest.mark.parametrize(
+    "classname,is_parallelizable",
+    [
+        (mda.analysis.msd, True),
+    ],
+)
+def test_class_is_parallelizable(classname, is_parallelizable):
+    assert (
+        classname.EinsteinMSD._analysis_algorithm_is_parallelizable
+        == is_parallelizable
+    )
+
+
+@pytest.mark.parametrize(
+    "classname,backends",
+    [
+        (mda.analysis.msd, ("serial", "multiprocessing", "dask")),
+    ],
+)
+def test_supported_backends(classname, backends):
+    assert classname.EinsteinMSD.get_supported_backends() == backends
+
+    
 class TestMSDNonLinear:
 
     @pytest.mark.parametrize(

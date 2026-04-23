@@ -18,6 +18,7 @@ from MDAnalysis.analysis.hydrogenbonds.hbond_analysis import (
 from MDAnalysis.analysis.nucleicacids import NucPairDist
 from MDAnalysis.analysis.contacts import Contacts
 from MDAnalysis.analysis.density import DensityAnalysis
+from MDAnalysis.analysis.msd import EinsteinMSD
 from MDAnalysis.analysis.lineardensity import LinearDensity
 from MDAnalysis.analysis.polymer import PersistenceLength
 from MDAnalysis.analysis.rdf import InterRDF, InterRDF_s
@@ -179,6 +180,14 @@ def client_Contacts(request):
 
 @pytest.fixture(scope="module", params=params_for_cls(DensityAnalysis))
 def client_DensityAnalysis(request):
+    return request.param
+
+
+# MDAnalysis.analysis.msd
+
+
+@pytest.fixture(scope="module", params=params_for_cls(EinsteinMSD))
+def client_EinsteinMSD(request):
     return request.param
 
 

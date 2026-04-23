@@ -60,6 +60,7 @@ Fixes
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Enhancements
+ * Parallelize `analysis.rdf.EinsteinMSD` (Issue #4676, PR #4896)
  * DSSP uses ``capped_distance`` and ``calc_bonds`` for faster distance
    calculations and supports ``backend`` selection (e.g. ``"distopia"``)
    (PR #5182)
