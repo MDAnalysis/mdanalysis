@@ -87,6 +87,7 @@ Other functions and classes for logging purposes
 import sys
 import logging
 import re
+from collections.abc import Iterable
 
 from tqdm.auto import tqdm
 
@@ -112,7 +113,7 @@ def stop_logging():
     clear_handlers(logger)  # this _should_ do the job...
 
 
-def create(logger_name="MDAnalysis", logfile="MDAnalysis.log"):
+def create(logger_name="MDAnalysis", stream="MDAnalysis.log", level='DEBUG'):
     """Create a top level logger.
 
     - The file logger logs everything (including DEBUG).
@@ -132,7 +133,8 @@ def create(logger_name="MDAnalysis", logfile="MDAnalysis.log"):
 
     logger = logging.getLogger(logger_name)
 
-    logger.setLevel(logging.DEBUG)
+    #level parameter is from https://docs.python.org/3/library/logging.html#logging-levels
+    logger.setLevel(level.upper())
 
     ## TODO need logic for multiple handlers
     # Pseudocode for create arguments and behavior 
@@ -141,6 +143,37 @@ def create(logger_name="MDAnalysis", logfile="MDAnalysis.log"):
     # 3. Iterable (like [file, sys.stdout]) -> create file and print to console
     ##
 
+    # create a master logger, and attach handles to it?
+    # See https://docs.python.org/3/library/logging.handlers.html#
+    #
+    
+    # am borowwing this pattern from fetch module
+    if isinstance(stream, str):
+        streams = tuple(stream,)
+    # Want to allow ndarrays, tuple, and list but exclude strings
+    elif isinstance(stream, Iterable):
+        streams = stream
+    else:
+        raise Exception('foobar')
+    
+    for stream in streams:
+        # https://docs.python.org/3/library/logging.handlers.html#streamhandler
+        # The StreamHandler class, located in the core logging package,
+        #sends logging output to streams such as sys.stdout, sys.stderr or
+        # any file-like object (or, more precisely, any object which supports write() and flush() methods).
+        
+        # note this is looks gross and probably need to be written - invert the if and else case?
+        if (hasattr(streams, 'flush') and callable(getattr(streams, 'flush'))) and \
+            (hasattr(streams, 'write') and callable(getattr(streams, 'write'))):
+            handler = logging.StreamHandler(stream)
+        else:
+            handler = logging.FileHandler(stream)
+
+        logger.addHandler(handler)
+        
+    return logger
+
+    ## Old code
 
     # handler that writes to logfile
     logfile_handler = logging.FileHandler(logfile)
