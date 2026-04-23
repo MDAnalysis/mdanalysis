@@ -87,7 +87,8 @@ Other functions and classes for logging purposes
 import sys
 import logging
 import re
-import io, os
+import io
+import os
 from collections.abc import Iterable
 
 from tqdm.auto import tqdm
@@ -134,43 +135,22 @@ def create(logger_name="MDAnalysis", stream="MDAnalysis.log", level="DEBUG"):
 
     logger = logging.getLogger(logger_name)
 
-    # level parameter is from https://docs.python.org/3/library/logging.html#logging-levels
     logger.setLevel(level.upper())
 
-    ## TODO need logic for multiple handlers
-    # Pseudocode for create arguments and behavior
-    # 1. input : file.log -> create file.log
-    # 2. File objects (like f = file.open() and sys.stdout/sys.stderr) -> log to stream
-    # 3. Iterable (like [file.log, sys.stdout]) -> create file.log and print to console
-    ##
+    # https://docs.python.org/3/library/logging.handlers.html#streamhandler
+    # The StreamHandler class, located in the core logging package,
+    # sends logging output to streams such as sys.stdout, sys.stderr or
+    # any file-like object (or, more precisely, any object which supports write() and flush() methods).
 
-    # create/call a master logger, and attach handles to it?
-    # See https://docs.python.org/3/library/logging.handlers.html#
-    #
-
-    # am borowwing this pattern from fetch module
-    if isinstance(stream, (str, os.PathLike)) or isinstance(stream, io.IOBase):
-        streams = (stream,)
-    elif isinstance(stream, Iterable):
-        streams = stream
+    # This only check the existance and not the functionality. Should be ok?
+    if hasattr(stream, "write") and hasattr(stream, "flush"):
+        handler = logging.StreamHandler(stream)
+    elif isinstance(stream, (str, os.PathLike)):
+        handler = logging.FileHandler(stream)
     else:
-        raise Exception("foobar")
-
-    for stream in streams:
-        # https://docs.python.org/3/library/logging.handlers.html#streamhandler
-        # The StreamHandler class, located in the core logging package,
-        # sends logging output to streams such as sys.stdout, sys.stderr or
-        # any file-like object (or, more precisely, any object which supports write() and flush() methods).
-
-        # This only check the existance and not the functionality. Should be ok?
-        if hasattr(stream, "write") and hasattr(stream, "flush"):
-            handler = logging.StreamHandler(stream)
-        elif isinstance(stream, (str, os.PathLike)):
-            handler = logging.FileHandler(stream)
-        else:
-            raise Exception("foobar")
-
-        logger.addHandler(handler)
+        raise TypeError("Input Stream is neither a file or a steam")
+        
+    logger.addHandler(handler)
 
     return logger
 
