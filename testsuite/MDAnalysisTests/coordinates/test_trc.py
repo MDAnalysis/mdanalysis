@@ -227,7 +227,7 @@ class TestTRCReaderTriclinicBox:
         dist_B = (
             atomicdistances.AtomicDistances(ag1, ag2, pbc=True)
             .run()
-            .results[0]
+            .results.distances[0]
         )
 
         assert_allclose(
