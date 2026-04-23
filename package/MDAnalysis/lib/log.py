@@ -93,15 +93,15 @@ from tqdm.auto import tqdm
 from .. import version
 
 
-def start_logging(logfile="MDAnalysis.log", version=version.__version__):
+def start_logging(stream="MDAnalysis.log", version=version.__version__):
     """Start logging of messages to file and console.
 
     The default logfile is named `MDAnalysis.log` and messages are
     logged with the tag *MDAnalysis*.
     """
-    create("MDAnalysis", logfile=logfile)
+    create("MDAnalysis", stream=stream)
     logging.getLogger("MDAnalysis").info(
-        "MDAnalysis %s STARTED logging to %r", version, logfile
+        "MDAnalysis %s STARTED logging to %r", version, stream
     )
 
 
@@ -133,6 +133,14 @@ def create(logger_name="MDAnalysis", logfile="MDAnalysis.log"):
     logger = logging.getLogger(logger_name)
 
     logger.setLevel(logging.DEBUG)
+
+    ## TODO need logic for multiple handlers
+    # Pseudocode for create arguments and behavior 
+    # 1. input : str -> create new log_file
+    # 2. File objects (like file.open() and sys.stdout/sys.stderr) -> new file
+    # 3. Iterable (like [file, sys.stdout]) -> create file and print to console
+    ##
+
 
     # handler that writes to logfile
     logfile_handler = logging.FileHandler(logfile)
