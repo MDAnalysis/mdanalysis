@@ -111,9 +111,6 @@ def start_logging(stream="MDAnalysis.log", version=version.__version__):
         level="INFO",
         fmt="%(name)-12s: %(levelname)-8s %(message)s",
     )
-    logging.getLogger("MDAnalysis").info(
-        "MDAnalysis %s STARTED logging to %r", version, stream
-    )
 
 
 def stop_logging():
@@ -164,6 +161,8 @@ def create(
 
     handler.setFormatter(logging.Formatter(fmt))
     logger.addHandler(handler)
+
+    logger.info(f"MDAnalysis {version} STARTED logging to {stream!r}")
 
     return logger
 
