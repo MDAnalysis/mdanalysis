@@ -114,7 +114,7 @@ def stop_logging():
     clear_handlers(logger)  # this _should_ do the job...
 
 
-def create(logger_name="MDAnalysis", stream="MDAnalysis.log", level='DEBUG'):
+def create(logger_name="MDAnalysis", stream="MDAnalysis.log", level="DEBUG"):
     """Create a top level logger.
 
     - The file logger logs everything (including DEBUG).
@@ -134,11 +134,11 @@ def create(logger_name="MDAnalysis", stream="MDAnalysis.log", level='DEBUG'):
 
     logger = logging.getLogger(logger_name)
 
-    #level parameter is from https://docs.python.org/3/library/logging.html#logging-levels
+    # level parameter is from https://docs.python.org/3/library/logging.html#logging-levels
     logger.setLevel(level.upper())
 
     ## TODO need logic for multiple handlers
-    # Pseudocode for create arguments and behavior 
+    # Pseudocode for create arguments and behavior
     # 1. input : file.log -> create file.log
     # 2. File objects (like f = file.open() and sys.stdout/sys.stderr) -> log to stream
     # 3. Iterable (like [file.log, sys.stdout]) -> create file.log and print to console
@@ -147,31 +147,31 @@ def create(logger_name="MDAnalysis", stream="MDAnalysis.log", level='DEBUG'):
     # create/call a master logger, and attach handles to it?
     # See https://docs.python.org/3/library/logging.handlers.html#
     #
-    
+
     # am borowwing this pattern from fetch module
     if isinstance(stream, (str, os.PathLike)) or isinstance(stream, io.IOBase):
         streams = (stream,)
     elif isinstance(stream, Iterable):
         streams = stream
     else:
-        raise Exception('foobar')
-    
+        raise Exception("foobar")
+
     for stream in streams:
         # https://docs.python.org/3/library/logging.handlers.html#streamhandler
         # The StreamHandler class, located in the core logging package,
-        #sends logging output to streams such as sys.stdout, sys.stderr or
+        # sends logging output to streams such as sys.stdout, sys.stderr or
         # any file-like object (or, more precisely, any object which supports write() and flush() methods).
-        
+
         # This only check the existance and not the functionality. Should be ok?
         if hasattr(stream, "write") and hasattr(stream, "flush"):
             handler = logging.StreamHandler(stream)
         elif isinstance(stream, (str, os.PathLike)):
             handler = logging.FileHandler(stream)
         else:
-            raise Exception('foobar')
-        
+            raise Exception("foobar")
+
         logger.addHandler(handler)
-        
+
     return logger
 
 
