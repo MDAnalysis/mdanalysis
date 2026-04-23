@@ -255,6 +255,12 @@ class NucPairDist(AnalysisBase):
 
 
         .. versionadded:: 2.7.0
+
+        .. versionchanged:: 2.11.0
+           Residue names are now matched exactly against the full resname
+           rather than only its first character. Users with multi-character
+           residue names (e.g. CHARMM ``"GUA"``, ``"DG"``) must pass the
+           appropriate names via the keyword arguments.
         """
         pyrimidines: List[str] = [c_name, t_name, u_name]
         purines: List[str] = [a_name, g_name]
@@ -263,9 +269,9 @@ class NucPairDist(AnalysisBase):
         sel2: List[mda.AtomGroup] = []
 
         for pair in zip(strand1.residues, strand2.residues):
-            if pair[0].resname[0] in pyrimidines:
+            if pair[0].resname in pyrimidines:
                 a1, a2 = a2_name, a1_name
-            elif pair[0].resname[0] in purines:
+            elif pair[0].resname in purines:
                 a1, a2 = a1_name, a2_name
             else:
                 raise ValueError(
@@ -431,6 +437,12 @@ class WatsonCrickDist(NucPairDist):
         :class:`~MDAnalysis.core.groups.ResidueGroup` as input.
         The previous input type, ``List[Residue]`` is still supported,
         but it is **deprecated** and will be removed in release 3.0.0.
+
+    .. versionchanged:: 2.11.0
+       Residue names are now matched exactly against the full resname
+       rather than only its first character. Users with multi-character
+       residue names (e.g. CHARMM ``"GUA"``, ``"DG"``) must pass the
+       appropriate names via the keyword arguments.
     """
 
     def __init__(
@@ -551,6 +563,12 @@ class MinorPairDist(NucPairDist):
 
 
     .. versionadded:: 2.7.0
+
+    .. versionchanged:: 2.11.0
+       Residue names are now matched exactly against the full resname
+       rather than only its first character. Users with multi-character
+       residue names (e.g. CHARMM ``"GUA"``, ``"DG"``) must pass the
+       appropriate names via the keyword arguments.
     """
 
     def __init__(
@@ -649,6 +667,12 @@ class MajorPairDist(NucPairDist):
 
 
     .. versionadded:: 2.7.0
+
+    .. versionchanged:: 2.11.0
+       Residue names are now matched exactly against the full resname
+       rather than only its first character. Users with multi-character
+       residue names (e.g. CHARMM ``"GUA"``, ``"DG"``) must pass the
+       appropriate names via the keyword arguments.
     """
 
     def __init__(

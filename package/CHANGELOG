@@ -22,6 +22,13 @@ The rules for this file:
  * 2.11.0
 
 Fixes
+ * `MDAnalysis.analysis.nucleicacids.WatsonCrickDist`, `MinorPairDist`,
+   and `MajorPairDist` now match residue names against the full resname
+   instead of only the first character, fixing incorrect behaviour with
+   multi-character names such as CHARMM ``DG``/``DA`` or ``GUA``/``ADE``
+   (Issue #5360). Note: users relying on the previous truncation
+   behaviour must now pass explicit residue names via the ``g_name``,
+   ``a_name``, etc. keyword arguments.
  * `MDAnalysis.analysis.atomicdistances.AtomicDistances` results are now
    consistent with expected `analysis` documentation data type = Results
    (Issue #4819, PR #5347)
@@ -57,10 +64,10 @@ Enhancements
    calculations and supports ``backend`` selection (e.g. ``"distopia"``)
    (PR #5182)
  * Added ASV benchmark for `MDAnalysis.analysis.contacts` (PR #5291)
- * Improved performance of inverse index mapping in AtomGroup using an optimized 
+ * Improved performance of inverse index mapping in AtomGroup using an optimized
    Cython implementation in lib._cutils.inverse_int_index()
    (Issue #3387, PR #5252)
- * Added documentation for all keyword in select_atoms() and 
+ * Added documentation for all keyword in select_atoms() and
    selections.rst (Issue #5317, PR #5325)
  * Added HydrogenBondAnalysis benchmark for performance tracking (PR #5309)
  * Added `select=None` in `analysis.rms.RMSD` to perform no selection on
