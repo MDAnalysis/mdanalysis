@@ -87,6 +87,7 @@ Other functions and classes for logging purposes
 import sys
 import logging
 import re
+import io
 from collections.abc import Iterable
 
 from tqdm.auto import tqdm
@@ -138,19 +139,19 @@ def create(logger_name="MDAnalysis", stream="MDAnalysis.log", level='DEBUG'):
 
     ## TODO need logic for multiple handlers
     # Pseudocode for create arguments and behavior 
-    # 1. input : str -> create new log_file
-    # 2. File objects (like file.open() and sys.stdout/sys.stderr) -> new file
-    # 3. Iterable (like [file, sys.stdout]) -> create file and print to console
+    # 1. input : file.log -> create file.log
+    # 2. File objects (like f = file.open() and sys.stdout/sys.stderr) -> log to stream
+    # 3. Iterable (like [file.log, sys.stdout]) -> create file.log and print to console
     ##
 
-    # create a master logger, and attach handles to it?
+    # create/call a master logger, and attach handles to it?
     # See https://docs.python.org/3/library/logging.handlers.html#
     #
     
     # am borowwing this pattern from fetch module
-    if isinstance(stream, str):
-        streams = tuple(stream,)
     # Want to allow ndarrays, tuple, and list but exclude strings
+    if isinstance(stream, str) or isinstance(stream, io.IOBase):
+        streams = (stream,)
     elif isinstance(stream, Iterable):
         streams = stream
     else:
@@ -163,8 +164,9 @@ def create(logger_name="MDAnalysis", stream="MDAnalysis.log", level='DEBUG'):
         # any file-like object (or, more precisely, any object which supports write() and flush() methods).
         
         # note this is looks gross and probably need to be written - invert the if and else case?
-        if (hasattr(streams, 'flush') and callable(getattr(streams, 'flush'))) and \
-            (hasattr(streams, 'write') and callable(getattr(streams, 'write'))):
+        # Doesn't work since FileHandler inherits from Steam handler
+        if (hasattr(stream, 'flush') and callable(getattr(stream, 'flush'))) and \
+            (hasattr(stream, 'write') and callable(getattr(stream, 'write'))):
             handler = logging.StreamHandler(stream)
         else:
             handler = logging.FileHandler(stream)
