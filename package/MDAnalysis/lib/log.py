@@ -179,23 +179,6 @@ def clear_handlers(logger):
         logger.removeHandler(h)
 
 
-class NullHandler(logging.Handler):
-    """Silent Handler.
-
-    Useful as a default::
-
-      h = NullHandler()
-      logging.getLogger("MDAnalysis").addHandler(h)
-      del h
-
-    see the advice on logging and libraries in
-    http://docs.python.org/library/logging.html?#configuring-logging-for-a-library
-    """
-
-    def emit(self, record):
-        pass
-
-
 class ProgressBar(tqdm):
     r"""Display a visual progress bar and time estimate.
 
