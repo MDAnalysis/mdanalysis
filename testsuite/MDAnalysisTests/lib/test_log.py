@@ -34,7 +34,7 @@ class TestConvenienceFunctions:
         mda.start_logging(tmp_path / "MDAnalysis.log")
         logger = logging.getLogger("MDAnalysis")
 
-        # Test Handlers' presence and behavior
+        # Test expected handlers' presence and behavior
         assert any(isinstance(h, logging.NullHandler) for h in logger.handlers)
         any(
             isinstance(h, logging.FileHandler)
