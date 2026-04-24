@@ -200,7 +200,7 @@ from .exceptions import (
 from .lib import log
 from .lib.log import start_logging, stop_logging
 
-logging.getLogger("MDAnalysis").addHandler(logging.NullHandler())
+logging.getLogger(__name__).addHandler(logging.NullHandler())
 del logging
 
 # only MDAnalysis DeprecationWarnings are loud by default

@@ -94,6 +94,11 @@ from tqdm.auto import tqdm
 
 from .. import version
 
+# Things to deprecated:
+# logfile -> stream (bc it could be any stream like object)
+#
+# version? Why would any user want to modify version in the first place?
+# Just have the message logged it directly
 
 def start_logging(stream="MDAnalysis.log", version=version.__version__):
     """Start logging of messages to file and console.
@@ -124,7 +129,22 @@ def stop_logging():
     logger.info("MDAnalysis STOPPED logging")
     clear_handlers(logger)  # this _should_ do the job...
 
+# Things to deprecated overall:
+# log.NullHandler -> replace with logging.NullHandler() warning
+# create() -> add_handler() (confusing bc standard library has the same method)
+#             or create_handler()? 
+#
+# For create():
+# logger_name -> None (very dangerous to have user choose since all loggers share the same namespace)
+# logfile -> stream (bc it could be any stream like object, not just logfiles)
 
+
+# logger_name should be deprecated.
+# Standard library recommends constructing through
+# logging.getLogger(__name__) because ll loggers share the same namespace
+# __name__ is MDAnalysis
+#
+# 2nd paragraph: https://docs.python.org/3/library/logging.html#logger-objects
 def create(
     logger_name="MDAnalysis",
     stream="MDAnalysis.log",
