@@ -21,10 +21,11 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-import logging 
+import logging
 
 import MDAnalysis
 from MDAnalysis.lib.log import ProgressBar
+
 
 def test_start_stop_logging():
     try:
@@ -35,6 +36,7 @@ def test_start_stop_logging():
         raise AssertionError("Problem with logger: {0}".format(err))
     finally:
         MDAnalysis.log.stop_logging()
+
 
 class TestProgressBar(object):
 
