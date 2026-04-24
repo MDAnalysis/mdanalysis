@@ -126,7 +126,7 @@ def start_logging(stream="MDAnalysis.log", version=version.__version__):
 
 def stop_logging():
     """Stop logging to logfile and console."""
-    logger = logging.getLogger(__name__)
+    logger = logging.getLogger("MDAnalysis")
     logger.info("MDAnalysis STOPPED logging")
     clear_handlers(logger)  # this _should_ do the job...
 

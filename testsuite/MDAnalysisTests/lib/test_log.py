@@ -32,7 +32,7 @@ from MDAnalysis.lib.log import ProgressBar
 class TestConvenienceFunctions:
     def test_start_logging(self, tmp_path):
         mda.start_logging(tmp_path / "MDAnalysis.log")
-        logger = logging.getLogger(__name__)
+        logger = logging.getLogger("MDAnalysis")
 
         # Test expected handlers' presence and behavior
         assert any(isinstance(h, logging.NullHandler) for h in logger.handlers)
@@ -51,7 +51,7 @@ class TestConvenienceFunctions:
 
     def test_stop_logging(self, tmp_path):
         mda.lib.log.start_logging(tmp_path / "MDAnalysis.log")
-        logger = logging.getLogger(__name__)
+        logger = logging.getLogger("MDAnalysis")
         mda.lib.log.stop_logging()
 
         assert len(logger.handlers) == 0
