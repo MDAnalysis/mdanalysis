@@ -20,11 +20,21 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-import warnings
-import pytest
 
+import logging 
+
+import MDAnalysis
 from MDAnalysis.lib.log import ProgressBar
 
+def test_start_stop_logging():
+    try:
+        MDAnalysis.log.start_logging()
+        logger = logging.getLogger("MDAnalysis")
+        logger.info("Using the MDAnalysis logger works")
+    except Exception as err:
+        raise AssertionError("Problem with logger: {0}".format(err))
+    finally:
+        MDAnalysis.log.stop_logging()
 
 class TestProgressBar(object):
 
