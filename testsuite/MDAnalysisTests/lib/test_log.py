@@ -57,6 +57,11 @@ class TestConvenienceFunctions:
 
         assert len(logger.handlers) == 0
 
+def test_message_console(tmp_path):
+    pass
+
+def test_message_file(tmp_path):
+    pass
 
 # TODO need to make a fixture that can clear all handlers per test
 class TestCreateBehaviors:
@@ -88,6 +93,14 @@ class TestCreateBehaviors:
         ):
             mda.lib.log.create(stream=2)
 
+def test_level_parameter():
+    pass
+
+def test_fmt_parameter():
+    pass
+
+def test_mode_parameter():
+    pass
 
 class TestProgressBar(object):
 
