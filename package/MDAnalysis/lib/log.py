@@ -118,14 +118,14 @@ def start_logging(stream="MDAnalysis.log", version=version.__version__):
         level="INFO",
         fmt="%(name)-12s: %(levelname)-8s %(message)s",
     )
-    logging.getLogger("MDAnalysis").info(
+    logging.getLogger(__name__).info(
         f"MDAnalysis {version} STARTED logging to {stream!r}"
     )
 
 
 def stop_logging():
     """Stop logging to logfile and console."""
-    logger = logging.getLogger("MDAnalysis")
+    logger = logging.getLogger(__name__)
     logger.info("MDAnalysis STOPPED logging")
     clear_handlers(logger)  # this _should_ do the job...
 
