@@ -126,7 +126,11 @@ def stop_logging():
 
 
 def create(
-    logger_name="MDAnalysis", stream="MDAnalysis.log", level="DEBUG", fmt=None
+    logger_name="MDAnalysis",
+    stream="MDAnalysis.log",
+    level="DEBUG",
+    fmt=None,
+    mode="a",
 ):
     """Create a top level logger.
 
@@ -146,23 +150,18 @@ def create(
     """
 
     logger = logging.getLogger(logger_name)
-
     logger.setLevel(level.upper())
 
+    # This checks for file-like object per duck typing
     # https://docs.python.org/3/library/logging.handlers.html#streamhandler
-    #
-    # The StreamHandler class, located in the core logging package,
-    # sends logging output to streams such as sys.stdout, sys.stderr or
-    # any file-like object (or, more precisely, any object which supports
-    # write() and flush() methods).
-
-    # This only check the existance and not the functionality. Should be ok?
     if hasattr(stream, "write") and hasattr(stream, "flush"):
         handler = logging.StreamHandler(stream)
     elif isinstance(stream, (str, os.PathLike)):
-        handler = logging.FileHandler(stream)
+        handler = logging.FileHandler(stream, mode=mode)
     else:
-        raise TypeError("Input Stream is neither a file or a stream")
+        raise TypeError(
+            "Input Stream is neither a string, PathLike object or a stream"
+        )
 
     handler.setFormatter(logging.Formatter(fmt))
     logger.addHandler(handler)
