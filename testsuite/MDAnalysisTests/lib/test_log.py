@@ -57,19 +57,6 @@ class TestConvenienceFunctions:
         assert len(logger.handlers) == 0
 
 
-# This doesn't test functionality at all
-# Need rewrite
-# def test_start_stop_logging():
-#     try:
-#         MDAnalysis.log.start_logging()
-#         logger = logging.getLogger("MDAnalysis")
-#         logger.info("Using the MDAnalysis logger works")
-#     except Exception as err:
-#         raise AssertionError("Problem with logger: {0}".format(err))
-#     finally:
-#         MDAnalysis.log.stop_logging()
-
-
 class TestProgressBar(object):
 
     def test_output(self, capsys):
