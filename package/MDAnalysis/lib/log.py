@@ -150,7 +150,6 @@ def create(
     """
 
     logger = logging.getLogger(logger_name)
-    logger.setLevel(level.upper())
 
     # This checks for file-like object per duck typing
     # https://docs.python.org/3/library/logging.handlers.html#streamhandler
@@ -163,6 +162,7 @@ def create(
             "Input Stream is neither a string, PathLike object or a stream"
         )
 
+    handler.setLevel(level.upper())
     handler.setFormatter(logging.Formatter(fmt))
     logger.addHandler(handler)
 
@@ -175,7 +175,7 @@ def clear_handlers(logger):
     (only important for reload/debug cycles...)
 
     """
-    for h in logger.handlers:
+    for h in list(logger.handlers):
         logger.removeHandler(h)
 
 
