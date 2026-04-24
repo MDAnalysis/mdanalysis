@@ -197,6 +197,7 @@ from .exceptions import (
     StreamWarning,
 )
 
+from .lib import log
 from .lib.log import start_logging, stop_logging
 
 logging.getLogger("MDAnalysis").addHandler(logging.NullHandler())
