@@ -21,6 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
+import pytest
 import sys
 import logging
 import MDAnalysis as mda
@@ -55,6 +56,37 @@ class TestConvenienceFunctions:
         mda.lib.log.stop_logging()
 
         assert len(logger.handlers) == 0
+
+
+# TODO need to make a fixture that can clear all handlers per test
+class TestCreateBehaviors:
+
+    def test_input_path(self, tmp_path):
+        mda.lib.log.create(stream=tmp_path / "foo.log")
+
+        assert (tmp_path / "foo.log").exists()
+
+    def test_input_string(self, tmp_path):
+        mda.lib.log.create(stream=str(tmp_path / "foo.log"))
+
+        assert (tmp_path / "foo.log").exists()
+
+    # NOTE Assert state could be cleaned up after clear_handlers() fixture is implemented
+    def test_input_stream(self):
+        mda.lib.log.create(stream=sys.stdout)
+
+        logger = logging.getLogger("MDAnalysis")
+        assert any(
+            isinstance(h, logging.StreamHandler) and h.stream is sys.stdout
+            for h in logger.handlers
+        )
+
+    def test_exception(tmp_path):
+        with pytest.raises(
+            TypeError,
+            match="Input Stream is neither a string, PathLike object or a stream",
+        ):
+            mda.lib.log.create(stream=2)
 
 
 class TestProgressBar(object):
