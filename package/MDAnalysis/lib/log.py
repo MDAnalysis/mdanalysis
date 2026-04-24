@@ -90,6 +90,8 @@ import os
 
 from tqdm.auto import tqdm
 
+# from MDAnalysis.lib.util import deprecate
+
 from .. import version
 
 
@@ -110,6 +112,9 @@ def start_logging(stream="MDAnalysis.log", version=version.__version__):
         stream=sys.stdout,
         level="INFO",
         fmt="%(name)-12s: %(levelname)-8s %(message)s",
+    )
+    logging.getLogger("MDAnalysis").info(
+        f"MDAnalysis {version} STARTED logging to {stream!r}"
     )
 
 
@@ -161,8 +166,6 @@ def create(
 
     handler.setFormatter(logging.Formatter(fmt))
     logger.addHandler(handler)
-
-    logger.info(f"MDAnalysis {version} STARTED logging to {stream!r}")
 
     return logger
 
