@@ -35,9 +35,11 @@ from MDAnalysis.transformations.wrap import wrap, unwrap
 from MDAnalysisTests.datafiles import PSF_TRICLINIC, DCD_TRICLINIC
 
 
-@pytest.fixture(params=[
-    (PSF_TRICLINIC, DCD_TRICLINIC),
-])
+@pytest.fixture(
+    params=[
+        (PSF_TRICLINIC, DCD_TRICLINIC),
+    ]
+)
 def u(request):
     top, traj = request.param
     return mda.Universe(top, traj)
@@ -96,8 +98,7 @@ def test_add_fit_translation_pickle(fit_translation_transformation, u):
         assert_almost_equal(u_ts.positions, u_p_ts.positions)
 
 
-def test_add_fit_rot_trans_pickle(fit_rot_trans_transformation,
-                                  u):
+def test_add_fit_rot_trans_pickle(fit_rot_trans_transformation, u):
     u.trajectory.add_transformations(fit_rot_trans_transformation)
     u_p = pickle.loads(pickle.dumps(u))
     u.trajectory[0]

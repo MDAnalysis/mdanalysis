@@ -31,7 +31,14 @@ class TestHoomdXMLParser(ParserBase):
     parser = mda.topology.HoomdXMLParser.HoomdXMLParser
     ref_filename = HoomdXMLdata
     expected_attrs = [
-        'types', 'masses', 'charges', 'radii', 'bonds', 'angles', 'dihedrals', 'impropers'
+        "types",
+        "masses",
+        "charges",
+        "radii",
+        "bonds",
+        "angles",
+        "dihedrals",
+        "impropers",
     ]
 
     expected_n_atoms = 769
@@ -62,19 +69,19 @@ class TestHoomdXMLParser(ParserBase):
         vals = top.bonds.values
         for b in ((0, 1), (1, 2), (2, 3), (3, 4)):
             assert (b in vals) or (b[::-1] in vals)
-        assert ((0, 450) not in vals)
+        assert (0, 450) not in vals
 
     def test_angles_identity(self, top):
         vals = top.angles.values
         for b in ((0, 1, 2), (1, 2, 3), (2, 3, 4), (3, 4, 5)):
             assert (b in vals) or (b[::-1] in vals)
-        assert ((0, 350, 450) not in vals)
+        assert (0, 350, 450) not in vals
 
     def test_dihedrals_identity(self, top):
         vals = top.dihedrals.values
         for b in ((0, 1, 2, 3), (1, 2, 3, 4), (2, 3, 4, 5), (3, 4, 5, 6)):
             assert (b in vals) or (b[::-1] in vals)
-        assert ((0, 250, 350, 450) not in vals)
+        assert (0, 250, 350, 450) not in vals
 
     def test_read_masses(self, top):
         assert_almost_equal(top.masses.values, 1.0)

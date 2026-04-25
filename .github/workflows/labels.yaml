@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-    - uses: actions/labeler@v5
+    - uses: actions/labeler@v6
       with:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
         configuration-path: ".github/pr_path_labeler.yml"
-        sync-labels: true  # remove labels if file not modified anymore
+        sync-labels: false  # remove labels if file not modified anymore

@@ -271,12 +271,16 @@ class Dihedral(AnalysisBase):
        introduced :meth:`get_supported_backends` allowing for parallel
        execution on ``multiprocessing`` and ``dask`` backends.
     """
+
     _analysis_algorithm_is_parallelizable = True
 
     @classmethod
     def get_supported_backends(cls):
-        return ('serial', 'multiprocessing', 'dask',)
-
+        return (
+            "serial",
+            "multiprocessing",
+            "dask",
+        )
 
     def __init__(self, atomgroups, **kwargs):
         """Parameters
@@ -292,7 +296,8 @@ class Dihedral(AnalysisBase):
 
         """
         super(Dihedral, self).__init__(
-            atomgroups[0].universe.trajectory, **kwargs)
+            atomgroups[0].universe.trajectory, **kwargs
+        )
         self.atomgroups = atomgroups
 
         if any([len(ag) != 4 for ag in atomgroups]):
@@ -307,12 +312,16 @@ class Dihedral(AnalysisBase):
         self.results.angles = []
 
     def _get_aggregator(self):
-        return ResultsGroup(lookup={'angles': ResultsGroup.ndarray_vstack})
+        return ResultsGroup(lookup={"angles": ResultsGroup.ndarray_vstack})
 
     def _single_frame(self):
-        angle = calc_dihedrals(self.ag1.positions, self.ag2.positions,
-                               self.ag3.positions, self.ag4.positions,
-                               box=self.ag1.dimensions)
+        angle = calc_dihedrals(
+            self.ag1.positions,
+            self.ag2.positions,
+            self.ag3.positions,
+            self.ag4.positions,
+            box=self.ag1.dimensions,
+        )
         self.results.angles.append(angle)
 
     def _conclude(self):
@@ -320,9 +329,11 @@ class Dihedral(AnalysisBase):
 
     @property
     def angles(self):
-        wmsg = ("The `angle` attribute was deprecated in MDAnalysis 2.0.0 "
-                "and will be removed in MDAnalysis 3.0.0. Please use "
-                "`results.angles` instead")
+        wmsg = (
+            "The `angle` attribute was deprecated in MDAnalysis 2.0.0 "
+            "and will be removed in MDAnalysis 3.0.0. Please use "
+            "`results.angles` instead"
+        )
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.angles
 
@@ -394,16 +405,29 @@ class Ramachandran(AnalysisBase):
        introduced :meth:`get_supported_backends` allowing for parallel
        execution on ``multiprocessing`` and ``dask`` backends.
     """
+
     _analysis_algorithm_is_parallelizable = True
 
     @classmethod
     def get_supported_backends(cls):
-        return ('serial', 'multiprocessing', 'dask',)
+        return (
+            "serial",
+            "multiprocessing",
+            "dask",
+        )
 
-    def __init__(self, atomgroup, c_name='C', n_name='N', ca_name='CA',
-                 check_protein=True, **kwargs):
+    def __init__(
+        self,
+        atomgroup,
+        c_name="C",
+        n_name="N",
+        ca_name="CA",
+        check_protein=True,
+        **kwargs,
+    ):
         super(Ramachandran, self).__init__(
-            atomgroup.universe.trajectory, **kwargs)
+            atomgroup.universe.trajectory, **kwargs
+        )
         self.atomgroup = atomgroup
         residues = self.atomgroup.residues
 
@@ -411,12 +435,16 @@ class Ramachandran(AnalysisBase):
             protein = self.atomgroup.universe.select_atoms("protein").residues
 
             if not residues.issubset(protein):
-                raise ValueError("Found atoms outside of protein. Only atoms "
-                                "inside of a 'protein' selection can be used to "
-                                "calculate dihedrals.")
+                raise ValueError(
+                    "Found atoms outside of protein. Only atoms "
+                    "inside of a 'protein' selection can be used to "
+                    "calculate dihedrals."
+                )
             elif not residues.isdisjoint(protein[[0, -1]]):
-                warnings.warn("Cannot determine phi and psi angles for the first "
-                            "or last residues")
+                warnings.warn(
+                    "Cannot determine phi and psi angles for the first "
+                    "or last residues"
+                )
                 residues = residues.difference(protein[[0, -1]])
 
         prev = residues._get_prev_residues_by_resid()
@@ -425,17 +453,20 @@ class Ramachandran(AnalysisBase):
         keep = keep & np.array([r is not None for r in nxt])
 
         if not np.all(keep):
-            warnings.warn("Some residues in selection do not have "
-                          "phi or psi selections")
+            warnings.warn(
+                "Some residues in selection do not have "
+                "phi or psi selections"
+            )
         prev = sum(prev[keep])
         nxt = sum(nxt[keep])
         residues = residues[keep]
 
         # find n, c, ca
-        keep_prev = [sum(r.atoms.names==c_name)==1 for r in prev]
+        keep_prev = [sum(r.atoms.names == c_name) == 1 for r in prev]
         rnames = [n_name, c_name, ca_name]
-        keep_res = [all(sum(r.atoms.names == n) == 1 for n in rnames)
-                    for r in residues]
+        keep_res = [
+            all(sum(r.atoms.names == n) == 1 for n in rnames) for r in residues
+        ]
         keep_next = [sum(r.atoms.names == n_name) == 1 for r in nxt]
 
         # alright we'll keep these
@@ -451,20 +482,27 @@ class Ramachandran(AnalysisBase):
         self.ag4 = res.atoms[rnames == c_name]
         self.ag5 = nxt.atoms[nxt.atoms.names == n_name]
 
-
     def _prepare(self):
         self.results.angles = []
 
     def _get_aggregator(self):
-        return ResultsGroup(lookup={'angles': ResultsGroup.ndarray_vstack})
+        return ResultsGroup(lookup={"angles": ResultsGroup.ndarray_vstack})
 
     def _single_frame(self):
-        phi_angles = calc_dihedrals(self.ag1.positions, self.ag2.positions,
-                                    self.ag3.positions, self.ag4.positions,
-                                    box=self.ag1.dimensions)
-        psi_angles = calc_dihedrals(self.ag2.positions, self.ag3.positions,
-                                    self.ag4.positions, self.ag5.positions,
-                                    box=self.ag1.dimensions)
+        phi_angles = calc_dihedrals(
+            self.ag1.positions,
+            self.ag2.positions,
+            self.ag3.positions,
+            self.ag4.positions,
+            box=self.ag1.dimensions,
+        )
+        psi_angles = calc_dihedrals(
+            self.ag2.positions,
+            self.ag3.positions,
+            self.ag4.positions,
+            self.ag5.positions,
+            box=self.ag1.dimensions,
+        )
         phi_psi = [(phi, psi) for phi, psi in zip(phi_angles, psi_angles)]
         self.results.angles.append(phi_psi)
 
@@ -499,31 +537,40 @@ class Ramachandran(AnalysisBase):
         if ax is None:
             ax = plt.gca()
         ax.axis([-180, 180, -180, 180])
-        ax.axhline(0, color='k', lw=1)
-        ax.axvline(0, color='k', lw=1)
-        ax.set(xticks=range(-180, 181, 60), yticks=range(-180, 181, 60),
-               xlabel=r"$\phi$", ylabel=r"$\psi$")
+        ax.axhline(0, color="k", lw=1)
+        ax.axvline(0, color="k", lw=1)
+        ax.set(
+            xticks=range(-180, 181, 60),
+            yticks=range(-180, 181, 60),
+            xlabel=r"$\phi$",
+            ylabel=r"$\psi$",
+        )
         degree_formatter = plt.matplotlib.ticker.StrMethodFormatter(
-            r"{x:g}$\degree$")
+            r"{x:g}$\degree$"
+        )
         ax.xaxis.set_major_formatter(degree_formatter)
         ax.yaxis.set_major_formatter(degree_formatter)
 
         if ref:
-            X, Y = np.meshgrid(np.arange(-180, 180, 4),
-                               np.arange(-180, 180, 4))
+            X, Y = np.meshgrid(
+                np.arange(-180, 180, 4), np.arange(-180, 180, 4)
+            )
             levels = [1, 17, 15000]
-            colors = ['#A1D4FF', '#35A1FF']
+            colors = ["#A1D4FF", "#35A1FF"]
             ax.contourf(X, Y, np.load(Rama_ref), levels=levels, colors=colors)
         a = self.results.angles.reshape(
-                np.prod(self.results.angles.shape[:2]), 2)
+            np.prod(self.results.angles.shape[:2]), 2
+        )
         ax.scatter(a[:, 0], a[:, 1], **kwargs)
         return ax
 
     @property
     def angles(self):
-        wmsg = ("The `angle` attribute was deprecated in MDAnalysis 2.0.0 "
-                "and will be removed in MDAnalysis 3.0.0. Please use "
-                "`results.angles` instead")
+        wmsg = (
+            "The `angle` attribute was deprecated in MDAnalysis 2.0.0 "
+            "and will be removed in MDAnalysis 3.0.0. Please use "
+            "`results.angles` instead"
+        )
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.angles
 
@@ -549,10 +596,13 @@ class Janin(Ramachandran):
 
     """
 
-    def __init__(self, atomgroup,
-                 select_remove="resname ALA CYS* GLY PRO SER THR VAL",
-                 select_protein="protein",
-                 **kwargs):
+    def __init__(
+        self,
+        atomgroup,
+        select_remove="resname ALA CYS* GLY PRO SER THR VAL",
+        select_protein="protein",
+        **kwargs,
+    ):
         r"""Parameters
         ----------
         atomgroup : AtomGroup or ResidueGroup
@@ -588,20 +638,25 @@ class Janin(Ramachandran):
            :class:`MDAnalysis.analysis.base.Results` instance.
         """
         super(Ramachandran, self).__init__(
-            atomgroup.universe.trajectory, **kwargs)
+            atomgroup.universe.trajectory, **kwargs
+        )
         self.atomgroup = atomgroup
         residues = atomgroup.residues
         protein = atomgroup.select_atoms(select_protein).residues
         remove = residues.atoms.select_atoms(select_remove).residues
 
         if not residues.issubset(protein):
-            raise ValueError("Found atoms outside of protein. Only atoms "
-                             "inside of a protein "
-                             f"(select_protein='{select_protein}') can be "
-                             "used to calculate dihedrals.")
+            raise ValueError(
+                "Found atoms outside of protein. Only atoms "
+                "inside of a protein "
+                f"(select_protein='{select_protein}') can be "
+                "used to calculate dihedrals."
+            )
         elif len(remove) != 0:
-            warnings.warn(f"All residues selected with '{select_remove}' "
-                          "have been removed from the selection.")
+            warnings.warn(
+                f"All residues selected with '{select_remove}' "
+                "have been removed from the selection."
+            )
             residues = residues.difference(remove)
 
         self.ag1 = residues.atoms.select_atoms("name N")
@@ -613,14 +668,19 @@ class Janin(Ramachandran):
         # if there is an altloc attribute, too many atoms will be selected which
         # must be removed before using the class, or the file is missing atoms
         # for some residues which must also be removed
-        if any(len(self.ag1) != len(ag) for ag in [self.ag2, self.ag3,
-                                                   self.ag4, self.ag5]):
-            raise ValueError("Too many or too few atoms selected. Check for "
-                             "missing or duplicate atoms in topology.")
+        if any(
+            len(self.ag1) != len(ag)
+            for ag in [self.ag2, self.ag3, self.ag4, self.ag5]
+        ):
+            raise ValueError(
+                "Too many or too few atoms selected. Check for "
+                "missing or duplicate atoms in topology."
+            )
 
     def _conclude(self):
-        self.results.angles = (np.rad2deg(np.array(
-            self.results.angles)) + 360) % 360
+        self.results.angles = (
+            np.rad2deg(np.array(self.results.angles)) + 360
+        ) % 360
 
     def plot(self, ax=None, ref=False, **kwargs):
         """Plots data into standard Janin plot.
@@ -650,21 +710,27 @@ class Janin(Ramachandran):
         if ax is None:
             ax = plt.gca()
         ax.axis([0, 360, 0, 360])
-        ax.axhline(180, color='k', lw=1)
-        ax.axvline(180, color='k', lw=1)
-        ax.set(xticks=range(0, 361, 60), yticks=range(0, 361, 60),
-               xlabel=r"$\chi_1$", ylabel=r"$\chi_2$")
+        ax.axhline(180, color="k", lw=1)
+        ax.axvline(180, color="k", lw=1)
+        ax.set(
+            xticks=range(0, 361, 60),
+            yticks=range(0, 361, 60),
+            xlabel=r"$\chi_1$",
+            ylabel=r"$\chi_2$",
+        )
         degree_formatter = plt.matplotlib.ticker.StrMethodFormatter(
-            r"{x:g}$\degree$")
+            r"{x:g}$\degree$"
+        )
         ax.xaxis.set_major_formatter(degree_formatter)
         ax.yaxis.set_major_formatter(degree_formatter)
 
         if ref:
             X, Y = np.meshgrid(np.arange(0, 360, 6), np.arange(0, 360, 6))
             levels = [1, 6, 600]
-            colors = ['#A1D4FF', '#35A1FF']
+            colors = ["#A1D4FF", "#35A1FF"]
             ax.contourf(X, Y, np.load(Janin_ref), levels=levels, colors=colors)
-        a = self.results.angles.reshape(np.prod(
-            self.results.angles.shape[:2]), 2)
+        a = self.results.angles.reshape(
+            np.prod(self.results.angles.shape[:2]), 2
+        )
         ax.scatter(a[:, 0], a[:, 1], **kwargs)
         return ax

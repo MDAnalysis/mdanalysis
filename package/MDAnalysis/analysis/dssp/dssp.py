@@ -112,27 +112,27 @@ Analysis classes
    :inherited-members:
 
    .. attribute:: results.dssp
-   
-      Contains the time series of the DSSP assignment as a 
+
+      Contains the time series of the DSSP assignment as a
       :class:`numpy.ndarray` array of shape ``(n_frames, n_residues)`` where each row
-      contains the assigned secondary structure character for each residue (whose 
+      contains the assigned secondary structure character for each residue (whose
       corresponding resid is stored in :attr:`results.resids`). The three characters
       are ['H', 'E', '-'] and representi alpha-helix, sheet and loop, respectively.
 
    .. attribute:: results.dssp_ndarray
-   
+
       Contains the one-hot encoding of the time series of the DSSP assignment
-      as a :class:`numpy.ndarray` Boolean array of shape ``(n_frames, n_residues, 3)`` 
+      as a :class:`numpy.ndarray` Boolean array of shape ``(n_frames, n_residues, 3)``
       where for each residue the encoding is stored as ``(3,)`` shape
-      :class:`numpy.ndarray` of Booleans so that ``True`` at index 0 represents loop 
-      ('-'), ``True`` at index 1 represents helix ('H'), and ``True`` at index 2 
+      :class:`numpy.ndarray` of Booleans so that ``True`` at index 0 represents loop
+      ('-'), ``True`` at index 1 represents helix ('H'), and ``True`` at index 2
       represents sheet 'E'.
 
       .. SeeAlso:: :func:`translate`
-      
+
 
    .. attribute:: results.resids
-   
+
       A :class:`numpy.ndarray` of length ``n_residues`` that contains the residue IDs
       (resids) for the protein residues that were assigned a secondary structure.
 
@@ -144,12 +144,15 @@ Functions
 .. autofunction:: translate
 """
 
-from typing import Union
-import numpy as np
-from MDAnalysis import Universe, AtomGroup
+import warnings
+from typing import Optional, Union
 
+import numpy as np
+
+from MDAnalysis import AtomGroup, Universe
+
+from ...due import Doi, due
 from ..base import AnalysisBase, ResultsGroup
-from ...due import due, Doi
 
 due.cite(
     Doi("10.1002/bip.360221211"),
@@ -163,8 +166,8 @@ del Doi
 
 try:  # pragma: no cover
     from pydssp.pydssp_numpy import (
-        assign,
         _get_hydrogen_atom_position,
+        assign,
     )
 
     HAS_PYDSSP = True
@@ -172,8 +175,8 @@ try:  # pragma: no cover
 except ModuleNotFoundError:
     HAS_PYDSSP = False
     from .pydssp_numpy import (
-        assign,
         _get_hydrogen_atom_position,
+        assign,
     )
 
 
@@ -208,7 +211,7 @@ class DSSP(AnalysisBase):
     Parameters
     ----------
     atoms : Union[Universe, AtomGroup]
-        input Universe or AtomGroup. In both cases, only protein residues will
+        input Universe or AtomGroup with at least 6 protein residues. In both cases, only protein residues will
         be chosen prior to the analysis via `select_atoms('protein')`.
         Heavy atoms of the protein are then selected by name
         `heavyatom_names`, and hydrogens are selected by name
@@ -234,9 +237,19 @@ class DSSP(AnalysisBase):
            (e.g., a :exc:`ValueError` is raised) you must customize `hydrogen_name`
            for your specific case.
 
+    backend : str, optional
+        :ref:`Backend for distance calculations<selection-of-acceleration-backend>`, by default ``"serial"``.
+        Can be set to ``"distopia"`` if `distopia`_ is installed.
+
+        .. versionadded:: 2.11.0
+
+    .. _distopia: https://www.mdanalysis.org/distopia/
+
 
     Raises
     ------
+    ValueError
+        If fewer than 6 residues are provided in the selection.
     ValueError
         if ``guess_hydrogens`` is True but some non-PRO hydrogens are missing.
 
@@ -280,6 +293,11 @@ class DSSP(AnalysisBase):
        Enabled **parallel execution** with the ``multiprocessing`` and ``dask``
        backends; use the new method :meth:`get_supported_backends` to see all
        supported backends.
+
+    .. versionchanged:: 2.10.0
+       Change treatment of proline and follow pydssp 0.9.1 (prolines are now explicitly
+       forbidden to participate in the hydrogen bond network). Previous version could yield
+       wrong assignment of prolines.
     """
 
     _analysis_algorithm_is_parallelizable = True
@@ -292,7 +310,6 @@ class DSSP(AnalysisBase):
             "dask",
         )
 
-
     def __init__(
         self,
         atoms: Union[Universe, AtomGroup],
@@ -300,8 +317,10 @@ class DSSP(AnalysisBase):
         *,
         heavyatom_names: tuple[str] = ("N", "CA", "C", "O O1 OT1"),
         hydrogen_name: str = "H HN HT1 HT2 HT3",
+        backend: str = "serial",
     ):
         self._guess_hydrogens = guess_hydrogens
+        self._backend = backend
 
         ag: AtomGroup = atoms.select_atoms("protein")
         super().__init__(ag.universe.trajectory)
@@ -316,15 +335,26 @@ class DSSP(AnalysisBase):
             ]
             for t in heavyatom_names
         }
+        self._donor_mask: Optional[np.ndarray] = ag.residues.resnames != "PRO"
+        self._box = self._trajectory.ts.dimensions
+        if self._box is not None and np.allclose(
+            self._box, [1, 1, 1, 90, 90, 90]
+        ):
+            self._box = None
+            warnings.warn(
+                "Box dimensions are (1, 1, 1, 90, 90, 90), not using "
+                "periodic boundary conditions in DSSP calculations"
+            )
         self._hydrogens: list["AtomGroup"] = [
-            res.atoms.select_atoms(f"name {hydrogen_name}") for res in ag.residues
+            res.atoms.select_atoms(f"name {hydrogen_name}")
+            for res in ag.residues
         ]
         # can't do it the other way because I need missing values to exist
         # so that I could fill them in later
         if not self._guess_hydrogens:
             # zip() assumes that _heavy_atoms and _hydrogens is ordered in the
             # same way. This is true as long as the original AtomGroup ag is
-            # sorted. With the hard-coded protein selection for ag this is always 
+            # sorted. With the hard-coded protein selection for ag this is always
             # true but if the code on L277 ever changes, make sure to sort first!
             for calpha, hydrogen in zip(
                 self._heavy_atoms["CA"][1:], self._hydrogens[1:]
@@ -347,6 +377,12 @@ class DSSP(AnalysisBase):
                     "Universe contains unequal numbers of (N,CA,C,O) atoms ('name' field)."
                     " Please select appropriate AtomGroup manually."
                 )
+            )
+
+        if len(ag.residues) < 6:
+            raise ValueError(
+                "DSSP requires at least 6 residues for secondary structure analysis, "
+                f"but only {len(ag.residues)} residue(s) were provided in the selection."
             )
 
     def _prepare(self):
@@ -373,7 +409,9 @@ class DSSP(AnalysisBase):
         coords = np.array(positions)
 
         if not self._guess_hydrogens:
-            guessed_h_coords = _get_hydrogen_atom_position(coords.swapaxes(0, 1))
+            guessed_h_coords = _get_hydrogen_atom_position(
+                coords.swapaxes(0, 1)
+            )
 
             h_coords = np.array(
                 [
@@ -389,7 +427,12 @@ class DSSP(AnalysisBase):
 
     def _single_frame(self):
         coords = self._get_coords()
-        dssp = assign(coords)
+        dssp = assign(
+            coords,
+            donor_mask=self._donor_mask,
+            box=self._box,
+            backend=self._backend,
+        )
         self.results.dssp_ndarray.append(dssp)
 
     def _conclude(self):
@@ -401,6 +444,7 @@ class DSSP(AnalysisBase):
         return ResultsGroup(
             lookup={"dssp_ndarray": ResultsGroup.flatten_sequence},
         )
+
 
 def translate(onehot: np.ndarray) -> np.ndarray:
     """Translate a one-hot encoding summary into char-based secondary structure

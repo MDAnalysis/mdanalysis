@@ -117,7 +117,7 @@ def make_downshift_arrays(upshift, nparents):
 
     # reset nparents to the larger one between input and heuristic from data
     # This is useful for creating empty Universe where default value is 1.
-    nparents = np.max([nparents, u_values.max()+1])
+    nparents = np.max([nparents, u_values.max() + 1])
     residue_indices = np.zeros(nparents, dtype=int)
     missing_resids = np.sort(np.setdiff1d(np.arange(nparents), u_values))
     indices = np.append(indices, upshift_sorted.shape[0])
@@ -128,7 +128,7 @@ def make_downshift_arrays(upshift, nparents):
         if missing_resid == 0:
             residue_indices[missing_resid] = 0
         else:
-            residue_indices[missing_resid] = residue_indices[missing_resid-1]
+            residue_indices[missing_resid] = residue_indices[missing_resid - 1]
 
     downshift = np.split(order, residue_indices[:-1])
     # Add None to end of array to force it to be of type Object
@@ -181,10 +181,15 @@ class TransTable(object):
     .. versionchanged:: 2.3.0
         Lazy building RA and SR.
     """
-    def __init__(self,
-                 n_atoms, n_residues, n_segments,  # Size of tables
-                 atom_resindex=None, residue_segindex=None,  # Contents of tables
-                 ):
+
+    def __init__(
+        self,
+        n_atoms,
+        n_residues,
+        n_segments,  # Size of tables
+        atom_resindex=None,
+        residue_segindex=None,  # Contents of tables
+    ):
         self.n_atoms = n_atoms
         self.n_residues = n_residues
         self.n_segments = n_segments
@@ -209,21 +214,24 @@ class TransTable(object):
 
     def copy(self):
         """Return a deepcopy of this Transtable"""
-        return self.__class__(self.n_atoms, self.n_residues, self.n_segments,
-                              atom_resindex=self._AR, residue_segindex=self._RS)
+        return self.__class__(
+            self.n_atoms,
+            self.n_residues,
+            self.n_segments,
+            atom_resindex=self._AR,
+            residue_segindex=self._RS,
+        )
 
     @property
     def RA(self):
         if self._RA is None:
-            self._RA = make_downshift_arrays(self._AR,
-                                             self.n_residues)
+            self._RA = make_downshift_arrays(self._AR, self.n_residues)
         return self._RA
 
     @property
     def SR(self):
         if self._SR is None:
-            self._SR = make_downshift_arrays(self._RS,
-                                             self.n_segments)
+            self._SR = make_downshift_arrays(self._RS, self.n_segments)
         return self._SR
 
     @property
@@ -425,7 +433,6 @@ class TransTable(object):
         self._RS = np.concatenate([self._RS, np.array([segidx])])
         self._SR = None
 
-
         return self.n_residues - 1
 
     def add_Segment(self):
@@ -436,8 +443,8 @@ class TransTable(object):
     def __getstate__(self):
         # don't serialize _RA and _SR for performance.
         attrs = self.__dict__
-        attrs['_RA'] = None
-        attrs['_SR'] = None
+        attrs["_RA"] = None
+        attrs["_SR"] = None
         return attrs
 
 
@@ -452,10 +459,15 @@ class Topology(object):
 
     """
 
-    def __init__(self, n_atoms=1, n_res=1, n_seg=1,
-                 attrs=None,
-                 atom_resindex=None,
-                 residue_segindex=None):
+    def __init__(
+        self,
+        n_atoms=1,
+        n_res=1,
+        n_seg=1,
+        attrs=None,
+        atom_resindex=None,
+        residue_segindex=None,
+    ):
         """
         Parameters
         ----------
@@ -473,9 +485,13 @@ class Topology(object):
             1-D array giving the segindex of each residue in the system
 
         """
-        self.tt = TransTable(n_atoms, n_res, n_seg,
-                             atom_resindex=atom_resindex,
-                             residue_segindex=residue_segindex)
+        self.tt = TransTable(
+            n_atoms,
+            n_res,
+            n_seg,
+            atom_resindex=atom_resindex,
+            residue_segindex=residue_segindex,
+        )
 
         if attrs is None:
             attrs = []
@@ -541,16 +557,26 @@ class Topology(object):
     @property
     def guessed_attributes(self):
         """A list of the guessed attributes in this topology"""
-        return filter(lambda x: x.is_guessed
-                      if(not isinstance(x.is_guessed, typing.Container))
-                      else True in x.is_guessed, self.attrs)
+        return filter(
+            lambda x: (
+                x.is_guessed
+                if (not isinstance(x.is_guessed, typing.Container))
+                else True in x.is_guessed
+            ),
+            self.attrs,
+        )
 
     @property
     def read_attributes(self):
         """A list of the attributes read from the topology"""
-        return filter(lambda x: not x.is_guessed
-                      if(not isinstance(x.is_guessed, typing.Container))
-                      else False in x.is_guessed, self.attrs)
+        return filter(
+            lambda x: (
+                not x.is_guessed
+                if (not isinstance(x.is_guessed, typing.Container))
+                else False in x.is_guessed
+            ),
+            self.attrs,
+        )
 
     def add_Residue(self, segment, **new_attrs):
         """
@@ -569,21 +595,28 @@ class Topology(object):
         """
         # Check that all data is here before making any changes
         for attr in self.attrs:
-            if not attr.per_object == 'residue':
+            if not attr.per_object == "residue":
                 continue
             if attr.singular not in new_attrs:
-                missing = (attr.singular for attr in self.attrs
-                           if (attr.per_object == 'residue' and
-                               attr.singular not in new_attrs))
-                raise NoDataError("Missing the following attributes for the new"
-                                  " Residue: {}".format(', '.join(missing)))
+                missing = (
+                    attr.singular
+                    for attr in self.attrs
+                    if (
+                        attr.per_object == "residue"
+                        and attr.singular not in new_attrs
+                    )
+                )
+                raise NoDataError(
+                    "Missing the following attributes for the new"
+                    " Residue: {}".format(", ".join(missing))
+                )
 
         # Resize topology table
         residx = self.tt.add_Residue(segment.segindex)
 
         # Add new value to each attribute
         for attr in self.attrs:
-            if not attr.per_object == 'residue':
+            if not attr.per_object == "residue":
                 continue
             newval = new_attrs[attr.singular]
             attr._add_new(newval)
@@ -613,22 +646,28 @@ class Topology(object):
            Added use of _add_new to resize topology attrs
         """
         for attr in self.attrs:
-            if attr.per_object == 'segment':
+            if attr.per_object == "segment":
                 if attr.singular not in new_attrs:
-                    missing = (attr.singular for attr in self.attrs
-                               if (attr.per_object == 'segment' and
-                                   attr.singular not in new_attrs))
-                    raise NoDataError("Missing the following attributes for the"
-                                      " new Segment: {}"
-                                      "".format(', '.join(missing)))
+                    missing = (
+                        attr.singular
+                        for attr in self.attrs
+                        if (
+                            attr.per_object == "segment"
+                            and attr.singular not in new_attrs
+                        )
+                    )
+                    raise NoDataError(
+                        "Missing the following attributes for the"
+                        " new Segment: {}"
+                        "".format(", ".join(missing))
+                    )
 
         segidx = self.tt.add_Segment()
 
         for attr in self.attrs:
-            if not attr.per_object == 'segment':
+            if not attr.per_object == "segment":
                 continue
             newval = new_attrs[attr.singular]
             attr._add_new(newval)
 
         return segidx
-

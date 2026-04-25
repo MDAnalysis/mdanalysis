@@ -38,28 +38,38 @@ See Also
 :mod:`MDAnalysis.lib.distances`
 """
 
-__all__ = ['distance_array', 'self_distance_array',
-           'contact_matrix', 'dist', 'between']
+__all__ = [
+    "distance_array",
+    "self_distance_array",
+    "contact_matrix",
+    "dist",
+    "between",
+]
 
 import numpy as np
 import scipy.sparse
 
 from MDAnalysis.lib.distances import (
-           capped_distance,
-           self_distance_array, distance_array,  # legacy reasons
+    capped_distance,
+    self_distance_array,
+    distance_array,  # legacy reasons
 )
-from MDAnalysis.lib.c_distances import contact_matrix_no_pbc, contact_matrix_pbc
+from MDAnalysis.lib.c_distances import (
+    contact_matrix_no_pbc,
+    contact_matrix_pbc,
+)
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
 from MDAnalysis.lib.distances import calc_bonds
 
 
 import warnings
 import logging
+
 logger = logging.getLogger("MDAnalysis.analysis.distances")
 
 
 def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None):
-    '''Calculates a matrix of contacts.
+    """Calculates a matrix of contacts.
 
     There is a fast, high-memory-usage version for small systems
     (*returntype* = 'numpy'), and a slower, low-memory-usage version for
@@ -97,20 +107,24 @@ def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None):
 
     .. versionchanged:: 0.11.0
        Keyword *suppress_progmet* and *progress_meter_freq* were removed.
-    '''
+    """
 
     if returntype == "numpy":
         adj = np.full((len(coord), len(coord)), False, dtype=bool)
-        pairs = capped_distance(coord, coord, max_cutoff=cutoff, box=box, return_distances=False)
-        
+        pairs = capped_distance(
+            coord, coord, max_cutoff=cutoff, box=box, return_distances=False
+        )
+
         idx, idy = np.transpose(pairs)
-        adj[idx, idy]=True
-        
+        adj[idx, idy] = True
+
         return adj
     elif returntype == "sparse":
         # Initialize square List of Lists matrix of dimensions equal to number
         # of coordinates passed
-        sparse_contacts = scipy.sparse.lil_matrix((len(coord), len(coord)), dtype='bool')
+        sparse_contacts = scipy.sparse.lil_matrix(
+            (len(coord), len(coord)), dtype="bool"
+        )
         if box is not None:
             # with PBC
             contact_matrix_pbc(coord, sparse_contacts, box, cutoff)
@@ -154,14 +168,16 @@ def dist(A, B, offset=0, box=None):
     """
 
     if A.atoms.n_atoms != B.atoms.n_atoms:
-        raise ValueError("AtomGroups A and B do not have the same number of atoms")
+        raise ValueError(
+            "AtomGroups A and B do not have the same number of atoms"
+        )
     try:
         off_A, off_B = offset
     except (TypeError, ValueError):
         off_A = off_B = int(offset)
     residues_A = np.array(A.resids) + off_A
     residues_B = np.array(B.resids) + off_B
-    
+
     d = calc_bonds(A.positions, B.positions, box)
     return np.array([residues_A, residues_B, d])
 

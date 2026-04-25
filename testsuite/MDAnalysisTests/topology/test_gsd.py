@@ -31,12 +31,23 @@ from MDAnalysisTests.datafiles import GSD_bonds
 import os
 
 
-@pytest.mark.skipif(not HAS_GSD, reason='gsd not installed')
+@pytest.mark.skipif(not HAS_GSD, reason="gsd not installed")
 class GSDBase(ParserBase):
     parser = mda.topology.GSDParser.GSDParser
-    expected_attrs = ['ids', 'names', 'resids', 'resnames', 'masses',
-                      'charges', 'radii', 'types',
-                      'bonds', 'angles', 'dihedrals', 'impropers']
+    expected_attrs = [
+        "ids",
+        "names",
+        "resids",
+        "resnames",
+        "masses",
+        "charges",
+        "radii",
+        "types",
+        "bonds",
+        "angles",
+        "dihedrals",
+        "impropers",
+    ]
     expected_n_bonds = 0
     expected_n_angles = 0
     expected_n_dihedrals = 0
@@ -80,7 +91,7 @@ class GSDBase(ParserBase):
             assert top.impropers.values == []
 
 
-@pytest.mark.skipif(not HAS_GSD, reason='gsd not installed')
+@pytest.mark.skipif(not HAS_GSD, reason="gsd not installed")
 class TestGSDParser(GSDBase):
     ref_filename = GSD
     expected_n_atoms = 5832
@@ -88,7 +99,7 @@ class TestGSDParser(GSDBase):
     expected_n_segments = 1
 
 
-@pytest.mark.skipif(not HAS_GSD, reason='gsd not installed')
+@pytest.mark.skipif(not HAS_GSD, reason="gsd not installed")
 class TestGSDParserBonds(GSDBase):
     ref_filename = GSD_bonds
     expected_n_atoms = 490
@@ -102,16 +113,16 @@ class TestGSDParserBonds(GSDBase):
         vals = top.bonds.values
         for b in ((0, 1), (1, 2), (2, 3), (3, 4)):
             assert (b in vals) or (b[::-1] in vals)
-        assert ((0, 450) not in vals)
+        assert (0, 450) not in vals
 
     def test_angles_identity(self, top):
         vals = top.angles.values
         for b in ((0, 1, 2), (1, 2, 3), (2, 3, 4), (3, 4, 5)):
             assert (b in vals) or (b[::-1] in vals)
-        assert ((0, 350, 450) not in vals)
+        assert (0, 350, 450) not in vals
 
     def test_dihedrals_identity(self, top):
         vals = top.dihedrals.values
         for b in ((0, 1, 2, 3), (1, 2, 3, 4), (2, 3, 4, 5), (3, 4, 5, 6)):
             assert (b in vals) or (b[::-1] in vals)
-        assert ((0, 250, 350, 450) not in vals)
+        assert (0, 250, 350, 450) not in vals

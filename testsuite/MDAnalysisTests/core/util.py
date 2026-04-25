@@ -137,15 +137,21 @@ class UnWrapUniverse(object):
         y directions.
     """
 
-    def __new__(cls, have_bonds=True, have_masses=True, have_molnums=True,
-                have_charges=True, is_triclinic=False):
+    def __new__(
+        cls,
+        have_bonds=True,
+        have_masses=True,
+        have_molnums=True,
+        have_charges=True,
+        is_triclinic=False,
+    ):
         # box:
-        a = 10.0 # edge length
+        a = 10.0  # edge length
         tfac = 0.1  # factor for box vector shift of triclinic boxes (~84°)
         if is_triclinic:
-            box = triclinic_box([a, 0.0, 0.0],
-                                [a * tfac, a, 0.0],
-                                [a * tfac, a * tfac, a])
+            box = triclinic_box(
+                [a, 0.0, 0.0], [a * tfac, a, 0.0], [a * tfac, a * tfac, a]
+            )
         else:
             box = np.array([a, a, a, 90.0, 90.0, 90.0], dtype=np.float32)
 
@@ -163,11 +169,11 @@ class UnWrapUniverse(object):
             rix += 1
         # type B
         for i in range(3, 15, 3):
-            residx[i:i+3] = rix
+            residx[i : i + 3] = rix
             rix += 1
         # type C & D
         for i in range(15, 47, 4):
-            residx[i:i+4] = rix
+            residx[i : i + 4] = rix
             rix += 1
 
         # segindices:
@@ -194,17 +200,17 @@ class UnWrapUniverse(object):
         )
 
         # resnames: we always want those for selection purposes
-        resnames = ['A'] * 3
-        resnames += ['B'] * 4
-        resnames += ['C'] * 2
-        resnames += ['D1', 'D2'] * 3
+        resnames = ["A"] * 3
+        resnames += ["B"] * 4
+        resnames += ["C"] * 2
+        resnames += ["D1", "D2"] * 3
         u.add_TopologyAttr(topologyattrs.Resnames(resnames))
 
         # moltypes: we always want those for selection purposes
-        moltypes = ['A'] * 3
-        moltypes += ['B'] * 4
-        moltypes += ['C'] * 2
-        moltypes += ['D'] * 6
+        moltypes = ["A"] * 3
+        moltypes += ["B"] * 4
+        moltypes += ["C"] * 2
+        moltypes += ["D"] * 6
         u.add_TopologyAttr(topologyattrs.Moltypes(moltypes))
 
         # trajectory:
@@ -215,56 +221,72 @@ class UnWrapUniverse(object):
         # positions:
         relpos = np.empty((n_atoms, 3), dtype=np.float32)
         # type A
-        relpos[0:3, :] = np.array([[0.5, 0.5, 0.5],
-                                   [1.4, 0.5, 0.5],
-                                   [2.1, 0.5, 0.5]], dtype=np.float32)
+        relpos[0:3, :] = np.array(
+            [[0.5, 0.5, 0.5], [1.4, 0.5, 0.5], [2.1, 0.5, 0.5]],
+            dtype=np.float32,
+        )
         # type B
-        relpos[3:15, :] = np.array([[0.1, 0.1, 0.2],
-                                    [0.1, 0.1, 0.1],
-                                    [0.2, 0.1, 0.1],
-                                    [-0.05, 0.2, 0.05],
-                                    [0.05, 0.2, 0.05],
-                                    [0.05, 0.2, 0.95],
-                                    [-0.2, -0.9, 1.05],
-                                    [-0.2, 0.1, -0.05],
-                                    [-0.1, 0.1, -0.05],
-                                    [0.95, 0.2, 0.25],
-                                    [0.95, 0.2, 0.15],
-                                    [1.05, 0.2, 0.15]], dtype=np.float32)
+        relpos[3:15, :] = np.array(
+            [
+                [0.1, 0.1, 0.2],
+                [0.1, 0.1, 0.1],
+                [0.2, 0.1, 0.1],
+                [-0.05, 0.2, 0.05],
+                [0.05, 0.2, 0.05],
+                [0.05, 0.2, 0.95],
+                [-0.2, -0.9, 1.05],
+                [-0.2, 0.1, -0.05],
+                [-0.1, 0.1, -0.05],
+                [0.95, 0.2, 0.25],
+                [0.95, 0.2, 0.15],
+                [1.05, 0.2, 0.15],
+            ],
+            dtype=np.float32,
+        )
         # type C
-        relpos[15:23, :] = np.array([[0.4, 0.95, 1.05],
-                                     [0.4, 0.95, 0.95],
-                                     [0.4, 0.05, 0.95],
-                                     [0.4, 0.05, 1.05],
-                                     [0.6, 0.05, 0.25],
-                                     [0.6, 0.05, 0.15],
-                                     [0.6, 0.15, 0.15],
-                                     [0.6, 0.15, 0.25]], dtype=np.float32)
+        relpos[15:23, :] = np.array(
+            [
+                [0.4, 0.95, 1.05],
+                [0.4, 0.95, 0.95],
+                [0.4, 0.05, 0.95],
+                [0.4, 0.05, 1.05],
+                [0.6, 0.05, 0.25],
+                [0.6, 0.05, 0.15],
+                [0.6, 0.15, 0.15],
+                [0.6, 0.15, 0.25],
+            ],
+            dtype=np.float32,
+        )
         # type D
-        relpos[23:47, :] = np.array([[0.2, 0.7, 0.8],
-                                     [0.3, 0.7, 0.8],
-                                     [0.4, 0.7, 0.8],
-                                     [0.5, 0.7, 0.8],
-                                     [0.6, 0.7, 0.8],
-                                     [0.7, 0.7, 0.8],
-                                     [0.8, 0.7, 0.8],
-                                     [0.9, 0.7, 0.8],
-                                     [0.66, 0.75, 0.7],
-                                     [0.76, 0.75, 0.7],
-                                     [0.86, 0.75, 0.7],
-                                     [0.96, 0.75, 0.7],
-                                     [0.06, 0.75, 0.7],
-                                     [0.16, 0.75, 0.7],
-                                     [0.26, 0.75, 0.7],
-                                     [0.36, 0.75, 0.7],
-                                     [1.14, 0.65, -0.4],
-                                     [1.04, 0.65, -0.4],
-                                     [0.94, 0.65, -0.4],
-                                     [0.84, 0.65, -0.4],
-                                     [0.74, 0.65, -0.4],
-                                     [0.64, 0.65, -0.4],
-                                     [0.54, 0.65, -0.4],
-                                     [0.44, 0.65, -0.4]], dtype=np.float32)
+        relpos[23:47, :] = np.array(
+            [
+                [0.2, 0.7, 0.8],
+                [0.3, 0.7, 0.8],
+                [0.4, 0.7, 0.8],
+                [0.5, 0.7, 0.8],
+                [0.6, 0.7, 0.8],
+                [0.7, 0.7, 0.8],
+                [0.8, 0.7, 0.8],
+                [0.9, 0.7, 0.8],
+                [0.66, 0.75, 0.7],
+                [0.76, 0.75, 0.7],
+                [0.86, 0.75, 0.7],
+                [0.96, 0.75, 0.7],
+                [0.06, 0.75, 0.7],
+                [0.16, 0.75, 0.7],
+                [0.26, 0.75, 0.7],
+                [0.36, 0.75, 0.7],
+                [1.14, 0.65, -0.4],
+                [1.04, 0.65, -0.4],
+                [0.94, 0.65, -0.4],
+                [0.84, 0.65, -0.4],
+                [0.74, 0.65, -0.4],
+                [0.64, 0.65, -0.4],
+                [0.54, 0.65, -0.4],
+                [0.44, 0.65, -0.4],
+            ],
+            dtype=np.float32,
+        )
         # make a copy, we need the original later
         _relpos = relpos.copy()
         # apply y- and z-dependent shift of x and y coords for triclinic boxes:
@@ -280,7 +302,7 @@ class UnWrapUniverse(object):
         if have_bonds:
             bonds = []
             # type A has no bonds
-            #type B
+            # type B
             for base in range(3, 15, 3):
                 for i in range(2):
                     bonds.append((base + i, base + i + 1))
@@ -353,12 +375,18 @@ class UnWrapUniverse(object):
         """
         if reference is not None:
             ref = reference.lower()
-            if ref not in ['com', 'cog']:
-                raise ValueError("Unknown unwrap reference: {}"
-                                 "".format(reference))
+            if ref not in ["com", "cog"]:
+                raise ValueError(
+                    "Unknown unwrap reference: {}" "".format(reference)
+                )
         comp = compound.lower()
-        if comp not in ['group', 'segments', 'residues', 'molecules',
-                        'fragments']:
+        if comp not in [
+            "group",
+            "segments",
+            "residues",
+            "molecules",
+            "fragments",
+        ]:
             raise ValueError("Unknown unwrap compound: {}".format(compound))
 
         # get relative positions:
@@ -374,67 +402,91 @@ class UnWrapUniverse(object):
         relpos[18, :] = [0.4, 1.05, 1.05]
         # type D
         # molecule 11, residue 1
-        relpos[35:39, :] = np.array([[1.06, 0.75, 0.7],
-                                     [1.16, 0.75, 0.7],
-                                     [1.26, 0.75, 0.7],
-                                     [1.36, 0.75, 0.7]], dtype=np.float32)
+        relpos[35:39, :] = np.array(
+            [
+                [1.06, 0.75, 0.7],
+                [1.16, 0.75, 0.7],
+                [1.26, 0.75, 0.7],
+                [1.36, 0.75, 0.7],
+            ],
+            dtype=np.float32,
+        )
 
         # apply image shifts if necessary:
         if reference is None:
-            if comp == 'residues':
-                #second residue of molecule 11
-                relpos[35:39, :] = np.array([[0.06, 0.75, 0.7],
-                                             [0.16, 0.75, 0.7],
-                                             [0.26, 0.75, 0.7],
-                                             [0.36, 0.75, 0.7]],
-                                            dtype=np.float32)
+            if comp == "residues":
+                # second residue of molecule 11
+                relpos[35:39, :] = np.array(
+                    [
+                        [0.06, 0.75, 0.7],
+                        [0.16, 0.75, 0.7],
+                        [0.26, 0.75, 0.7],
+                        [0.36, 0.75, 0.7],
+                    ],
+                    dtype=np.float32,
+                )
         else:
             # molecule 2 & 3
-            relpos[1:3, :] = np.array([[0.4, 0.5, 0.5],
-                                       [0.1, 0.5, 0.5]], dtype=np.float32)
+            relpos[1:3, :] = np.array(
+                [[0.4, 0.5, 0.5], [0.1, 0.5, 0.5]], dtype=np.float32
+            )
             # molecule 6
-            relpos[9:12, :] = np.array([[0.8, 0.1, 1.05],
-                                        [0.8, 0.1, 0.95],
-                                        [0.9, 0.1, 0.95]], dtype=np.float32)
-            #molecule 8
-            relpos[15:19, :] = np.array([[0.4, -0.05, 0.05],
-                                         [0.4, -0.05, -0.05],
-                                         [0.4, 0.05, -0.05],
-                                         [0.4, 0.05, 0.05]], dtype=np.float32)
-            if comp == 'residues':
-                #molecule 11, residue 1 & molecule 12
-                relpos[35:47, :] = np.array([[0.06, 0.75, 0.7],
-                                             [0.16, 0.75, 0.7],
-                                             [0.26, 0.75, 0.7],
-                                             [0.36, 0.75, 0.7],
-                                             [1.14, 0.65, 0.6],
-                                             [1.04, 0.65, 0.6],
-                                             [0.94, 0.65, 0.6],
-                                             [0.84, 0.65, 0.6],
-                                             [0.74, 0.65,  0.6],
-                                             [0.64, 0.65,  0.6],
-                                             [0.54, 0.65,  0.6],
-                                             [0.44, 0.65,  0.6]],
-                                            dtype=np.float32)
+            relpos[9:12, :] = np.array(
+                [[0.8, 0.1, 1.05], [0.8, 0.1, 0.95], [0.9, 0.1, 0.95]],
+                dtype=np.float32,
+            )
+            # molecule 8
+            relpos[15:19, :] = np.array(
+                [
+                    [0.4, -0.05, 0.05],
+                    [0.4, -0.05, -0.05],
+                    [0.4, 0.05, -0.05],
+                    [0.4, 0.05, 0.05],
+                ],
+                dtype=np.float32,
+            )
+            if comp == "residues":
+                # molecule 11, residue 1 & molecule 12
+                relpos[35:47, :] = np.array(
+                    [
+                        [0.06, 0.75, 0.7],
+                        [0.16, 0.75, 0.7],
+                        [0.26, 0.75, 0.7],
+                        [0.36, 0.75, 0.7],
+                        [1.14, 0.65, 0.6],
+                        [1.04, 0.65, 0.6],
+                        [0.94, 0.65, 0.6],
+                        [0.84, 0.65, 0.6],
+                        [0.74, 0.65, 0.6],
+                        [0.64, 0.65, 0.6],
+                        [0.54, 0.65, 0.6],
+                        [0.44, 0.65, 0.6],
+                    ],
+                    dtype=np.float32,
+                )
             else:
-                #molecule 11 & 12
-                relpos[31:47, :] = np.array([[-0.34, 0.75, 0.7],
-                                             [-0.24, 0.75, 0.7],
-                                             [-0.14, 0.75, 0.7],
-                                             [-0.04, 0.75, 0.7],
-                                             [0.06, 0.75, 0.7],
-                                             [0.16, 0.75, 0.7],
-                                             [0.26, 0.75, 0.7],
-                                             [0.36, 0.75, 0.7],
-                                             [1.14, 0.65, 0.6],
-                                             [1.04, 0.65, 0.6],
-                                             [0.94, 0.65, 0.6],
-                                             [0.84, 0.65, 0.6],
-                                             [0.74, 0.65, 0.6],
-                                             [0.64, 0.65, 0.6],
-                                             [0.54, 0.65, 0.6],
-                                             [0.44, 0.65, 0.6]],
-                                            dtype=np.float32)
+                # molecule 11 & 12
+                relpos[31:47, :] = np.array(
+                    [
+                        [-0.34, 0.75, 0.7],
+                        [-0.24, 0.75, 0.7],
+                        [-0.14, 0.75, 0.7],
+                        [-0.04, 0.75, 0.7],
+                        [0.06, 0.75, 0.7],
+                        [0.16, 0.75, 0.7],
+                        [0.26, 0.75, 0.7],
+                        [0.36, 0.75, 0.7],
+                        [1.14, 0.65, 0.6],
+                        [1.04, 0.65, 0.6],
+                        [0.94, 0.65, 0.6],
+                        [0.84, 0.65, 0.6],
+                        [0.74, 0.65, 0.6],
+                        [0.64, 0.65, 0.6],
+                        [0.54, 0.65, 0.6],
+                        [0.44, 0.65, 0.6],
+                    ],
+                    dtype=np.float32,
+                )
 
         # apply y- and z-dependent shift of x and y coords for triclinic boxes:
         if self._is_triclinic:
@@ -469,18 +521,24 @@ class UnWrapUniverse(object):
         identical.
         """
         ctr = center.lower()
-        if ctr not in ['com', 'cog']:
+        if ctr not in ["com", "cog"]:
             raise ValueError("Unknown unwrap reference: {}".format(center))
         comp = compound.lower()
-        if comp not in ['atoms', 'group', 'segments', 'residues',
-                            'molecules', 'fragments']:
+        if comp not in [
+            "atoms",
+            "group",
+            "segments",
+            "residues",
+            "molecules",
+            "fragments",
+        ]:
             raise ValueError("Unknown unwrap compound: {}".format(compound))
 
         # wrapped relative positions:
         relpos = self._relpos.copy()
 
         # apply required box shifts:
-        if comp == 'atoms':
+        if comp == "atoms":
             # type A
             # type A
             # molecule 2: negative x-shift
@@ -505,10 +563,10 @@ class UnWrapUniverse(object):
             relpos[39:41, 0] -= 1.0
             # molecule 12: positive z-shift
             relpos[39:47, 2] += 1.0
-        elif comp == 'group':
+        elif comp == "group":
             # com or cog of entire system is within box, so no shift
             pass
-        elif comp == 'segments':
+        elif comp == "segments":
             # type A
             # molecules 1-3: negative x-shift
             relpos[0:3, 0] -= 1.0
@@ -521,13 +579,13 @@ class UnWrapUniverse(object):
             relpos[1, 0] -= 1.0
             # molecule 2: negative double x-shift
             relpos[2, 0] -= 2.0
-            #type B
+            # type B
             # molecule 6: positive x- and y-shift
             relpos[9:12, :2] += 1.0
-            #type C
+            # type C
             # molecule 8: negative z-shift
             relpos[15:19, 2] -= 1.0
-            #type D
+            # type D
             # molecule 12: positive z-shift
             relpos[39:47, 2] += 1.0
 
@@ -564,41 +622,46 @@ class UnWrapUniverse(object):
         relpos = self.unwrapped_coords(compound, reference=None)
 
         comp = compound.lower()
-        if comp not in ['group', 'segments', 'residues', 'molecules',
-                        'fragments']:
+        if comp not in [
+            "group",
+            "segments",
+            "residues",
+            "molecules",
+            "fragments",
+        ]:
             raise ValueError("Unknown unwrap compound: {}".format(compound))
 
         pos = 0
 
-        if compound=="residues":
+        if compound == "residues":
             center_pos = np.zeros((15, 3), dtype=np.float32)
         else:
             center_pos = np.zeros((12, 3), dtype=np.float32)
 
         for base in range(3):
             loc_center = relpos[base, :]
-            center_pos[pos,:] = loc_center
-            pos+=1
+            center_pos[pos, :] = loc_center
+            pos += 1
 
         for base in range(3, 15, 3):
-            loc_center = np.mean(relpos[base:base + 3, :], axis=0)
-            center_pos[pos,:] = loc_center
-            pos+=1
+            loc_center = np.mean(relpos[base : base + 3, :], axis=0)
+            center_pos[pos, :] = loc_center
+            pos += 1
 
-        if compound=="residues":
+        if compound == "residues":
             for base in range(15, 47, 4):
-                loc_center = np.mean(relpos[base:base + 4, :], axis=0)
-                center_pos[pos,:] = loc_center
-                pos+=1
+                loc_center = np.mean(relpos[base : base + 4, :], axis=0)
+                center_pos[pos, :] = loc_center
+                pos += 1
         else:
             for base in range(15, 23, 4):
-                loc_center = np.mean(relpos[base:base + 4, :], axis=0)
-                center_pos[pos,:] = loc_center
-                pos+=1
+                loc_center = np.mean(relpos[base : base + 4, :], axis=0)
+                center_pos[pos, :] = loc_center
+                pos += 1
             for base in range(23, 47, 8):
-                loc_center = np.mean(relpos[base:base + 8, :], axis=0)
-                center_pos[pos,:] = loc_center
-                pos+=1
+                loc_center = np.mean(relpos[base : base + 8, :], axis=0)
+                center_pos[pos, :] = loc_center
+                pos += 1
 
         if compound == "group":
             center_pos = center_pos[11]
@@ -606,4 +669,3 @@ class UnWrapUniverse(object):
             center_pos = center_pos[9:]
 
         return center_pos
-

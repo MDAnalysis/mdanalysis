@@ -26,10 +26,19 @@ import matplotlib
 import pytest
 
 import MDAnalysis as mda
-from MDAnalysisTests.datafiles import (GRO, XTC, TPR, DihedralArray,
-                                       DihedralsArray, RamaArray, GLYRamaArray,
-                                       JaninArray, LYSJaninArray, PDB_rama,
-                                       PDB_janin)
+from MDAnalysisTests.datafiles import (
+    GRO,
+    XTC,
+    TPR,
+    DihedralArray,
+    DihedralsArray,
+    RamaArray,
+    GLYRamaArray,
+    JaninArray,
+    LYSJaninArray,
+    PDB_rama,
+    PDB_janin,
+)
 import MDAnalysis.analysis.dihedrals
 from MDAnalysis.analysis.dihedrals import Dihedral, Ramachandran, Janin
 
@@ -39,9 +48,10 @@ class TestDihedral(object):
     @pytest.fixture()
     def atomgroup(self):
         u = mda.Universe(GRO, XTC)
-        ag = u.select_atoms("(resid 4 and name N CA C) or (resid 5 and name N)")
+        ag = u.select_atoms(
+            "(resid 4 and name N CA C) or (resid 5 and name N)"
+        )
         return ag
-
 
     def test_dihedral(self, atomgroup, client_Dihedral):
         # client_Dihedral is defined in testsuite/analysis/conftest.py
@@ -53,25 +63,39 @@ class TestDihedral(object):
         dihedral = Dihedral([atomgroup]).run(**client_Dihedral)
         test_dihedral = np.load(DihedralArray)
 
-        assert_allclose(dihedral.results.angles, test_dihedral, rtol=0, atol=1.5e-5,
-                            err_msg="error: dihedral angles should "
-                            "match test values")
+        assert_allclose(
+            dihedral.results.angles,
+            test_dihedral,
+            rtol=0,
+            atol=1.5e-5,
+            err_msg="error: dihedral angles should " "match test values",
+        )
 
     def test_dihedral_single_frame(self, atomgroup, client_Dihedral):
-        dihedral = Dihedral([atomgroup]).run(start=5, stop=6, **client_Dihedral)
+        dihedral = Dihedral([atomgroup]).run(
+            start=5, stop=6, **client_Dihedral
+        )
         test_dihedral = [np.load(DihedralArray)[5]]
 
-        assert_allclose(dihedral.results.angles, test_dihedral, rtol=0, atol=1.5e-5,
-                            err_msg="error: dihedral angles should "
-                            "match test vales")
+        assert_allclose(
+            dihedral.results.angles,
+            test_dihedral,
+            rtol=0,
+            atol=1.5e-5,
+            err_msg="error: dihedral angles should " "match test vales",
+        )
 
     def test_atomgroup_list(self, atomgroup, client_Dihedral):
         dihedral = Dihedral([atomgroup, atomgroup]).run(**client_Dihedral)
         test_dihedral = np.load(DihedralsArray)
 
-        assert_allclose(dihedral.results.angles, test_dihedral, rtol=0, atol=1.5e-5,
-                            err_msg="error: dihedral angles should "
-                            "match test values")
+        assert_allclose(
+            dihedral.results.angles,
+            test_dihedral,
+            rtol=0,
+            atol=1.5e-5,
+            err_msg="error: dihedral angles should " "match test values",
+        )
 
     def test_enough_atoms(self, atomgroup, client_Dihedral):
         with pytest.raises(ValueError):
@@ -97,42 +121,64 @@ class TestRamachandran(object):
 
     def test_ramachandran(self, universe, rama_ref_array, client_Ramachandran):
         rama = Ramachandran(universe.select_atoms("protein")).run(
-            **client_Ramachandran)
+            **client_Ramachandran
+        )
 
-        assert_allclose(rama.results.angles, rama_ref_array, rtol=0, atol=1.5e-5,
-                            err_msg="error: dihedral angles should "
-                            "match test values")
+        assert_allclose(
+            rama.results.angles,
+            rama_ref_array,
+            rtol=0,
+            atol=1.5e-5,
+            err_msg="error: dihedral angles should " "match test values",
+        )
 
-    def test_ramachandran_single_frame(self, universe, rama_ref_array, client_Ramachandran):
+    def test_ramachandran_single_frame(
+        self, universe, rama_ref_array, client_Ramachandran
+    ):
         rama = Ramachandran(universe.select_atoms("protein")).run(
-            start=5, stop=6, **client_Ramachandran)
+            start=5, stop=6, **client_Ramachandran
+        )
 
-        assert_allclose(rama.results.angles[0], rama_ref_array[5], rtol=0, atol=1.5e-5,
-                            err_msg="error: dihedral angles should "
-                            "match test values")
+        assert_allclose(
+            rama.results.angles[0],
+            rama_ref_array[5],
+            rtol=0,
+            atol=1.5e-5,
+            err_msg="error: dihedral angles should " "match test values",
+        )
 
-    def test_ramachandran_residue_selections(self, universe, client_Ramachandran):
+    def test_ramachandran_residue_selections(
+        self, universe, client_Ramachandran
+    ):
         rama = Ramachandran(universe.select_atoms("resname GLY")).run(
-            **client_Ramachandran)
+            **client_Ramachandran
+        )
         test_rama = np.load(GLYRamaArray)
 
-        assert_allclose(rama.results.angles, test_rama, rtol=0, atol=1.5e-5,
-                            err_msg="error: dihedral angles should "
-                            "match test values")
+        assert_allclose(
+            rama.results.angles,
+            test_rama,
+            rtol=0,
+            atol=1.5e-5,
+            err_msg="error: dihedral angles should " "match test values",
+        )
 
     def test_outside_protein_length(self, universe, client_Ramachandran):
         with pytest.raises(ValueError):
-            rama = Ramachandran(universe.select_atoms("resid 220"),
-                                check_protein=True).run(**client_Ramachandran)
+            rama = Ramachandran(
+                universe.select_atoms("resid 220"), check_protein=True
+            ).run(**client_Ramachandran)
 
     def test_outside_protein_unchecked(self, universe, client_Ramachandran):
-        rama = Ramachandran(universe.select_atoms("resid 220"),
-                            check_protein=False).run(**client_Ramachandran)
+        rama = Ramachandran(
+            universe.select_atoms("resid 220"), check_protein=False
+        ).run(**client_Ramachandran)
 
     def test_protein_ends(self, universe):
         with pytest.warns(UserWarning) as record:
-            rama = Ramachandran(universe.select_atoms("protein"),
-                                check_protein=True).run()
+            rama = Ramachandran(
+                universe.select_atoms("protein"), check_protein=True
+            ).run()
         assert len(record) == 1
 
     def test_None_removal(self):
@@ -141,9 +187,14 @@ class TestRamachandran(object):
             rama = Ramachandran(u.select_atoms("protein").residues[1:-1])
 
     def test_plot(self, universe):
-        ax = Ramachandran(universe.select_atoms("resid 5-10")).run().plot(ref=True)
-        assert isinstance(ax, matplotlib.axes.Axes), \
-            "Ramachandran.plot() did not return and Axes instance"
+        ax = (
+            Ramachandran(universe.select_atoms("resid 5-10"))
+            .run()
+            .plot(ref=True)
+        )
+        assert isinstance(
+            ax, matplotlib.axes.Axes
+        ), "Ramachandran.plot() did not return and Axes instance"
 
     def test_ramachandran_attr_warning(self, universe):
         rama = Ramachandran(universe.select_atoms("protein")).run(stop=2)
@@ -178,24 +229,36 @@ class TestJanin(object):
         janin = Janin(u.select_atoms("protein")).run(**client_Janin)
 
         # Test precision lowered to account for platform differences with osx
-        assert_allclose(janin.results.angles, ref_array, rtol=0, atol=1.5e-3,
-                            err_msg="error: dihedral angles should "
-                            "match test values")
+        assert_allclose(
+            janin.results.angles,
+            ref_array,
+            rtol=0,
+            atol=1.5e-3,
+            err_msg="error: dihedral angles should " "match test values",
+        )
 
     def test_janin_single_frame(self, universe, janin_ref_array):
         janin = Janin(universe.select_atoms("protein")).run(start=5, stop=6)
 
-        assert_allclose(janin.results.angles[0], janin_ref_array[5], rtol=0, atol=1.5e-3,
-                            err_msg="error: dihedral angles should "
-                            "match test values")
+        assert_allclose(
+            janin.results.angles[0],
+            janin_ref_array[5],
+            rtol=0,
+            atol=1.5e-3,
+            err_msg="error: dihedral angles should " "match test values",
+        )
 
     def test_janin_residue_selections(self, universe, client_Janin):
         janin = Janin(universe.select_atoms("resname LYS")).run(**client_Janin)
         test_janin = np.load(LYSJaninArray)
 
-        assert_allclose(janin.results.angles, test_janin, rtol=0, atol=1.5e-3,
-                            err_msg="error: dihedral angles should "
-                            "match test values")
+        assert_allclose(
+            janin.results.angles,
+            test_janin,
+            rtol=0,
+            atol=1.5e-3,
+            err_msg="error: dihedral angles should " "match test values",
+        )
 
     def test_outside_protein_length(self, universe):
         with pytest.raises(ValueError):
@@ -208,13 +271,17 @@ class TestJanin(object):
     def test_atom_selection(self):
         with pytest.raises(ValueError):
             u = mda.Universe(PDB_janin)
-            janin = Janin(u.select_atoms("protein and not resname ALA CYS GLY "
-                                         "PRO SER THR VAL"))
+            janin = Janin(
+                u.select_atoms(
+                    "protein and not resname ALA CYS GLY " "PRO SER THR VAL"
+                )
+            )
 
     def test_plot(self, universe):
         ax = Janin(universe.select_atoms("resid 5-10")).run().plot(ref=True)
-        assert isinstance(ax, matplotlib.axes.Axes), \
-            "Ramachandran.plot() did not return and Axes instance"
+        assert isinstance(
+            ax, matplotlib.axes.Axes
+        ), "Ramachandran.plot() did not return and Axes instance"
 
     def test_janin_attr_warning(self, universe):
         janin = Janin(universe.select_atoms("protein")).run(stop=2)
@@ -226,13 +293,14 @@ class TestJanin(object):
 
 # tests for parallelization
 
+
 @pytest.mark.parametrize(
     "classname,is_parallelizable",
     [
         (MDAnalysis.analysis.dihedrals.Dihedral, True),
         (MDAnalysis.analysis.dihedrals.Ramachandran, True),
         (MDAnalysis.analysis.dihedrals.Janin, True),
-    ]
+    ],
 )
 def test_class_is_parallelizable(classname, is_parallelizable):
     assert classname._analysis_algorithm_is_parallelizable == is_parallelizable
@@ -241,13 +309,31 @@ def test_class_is_parallelizable(classname, is_parallelizable):
 @pytest.mark.parametrize(
     "classname,backends",
     [
-        (MDAnalysis.analysis.dihedrals.Dihedral,
-         ('serial', 'multiprocessing', 'dask',)),
-        (MDAnalysis.analysis.dihedrals.Ramachandran,
-         ('serial', 'multiprocessing', 'dask',)),
-        (MDAnalysis.analysis.dihedrals.Janin,
-         ('serial', 'multiprocessing', 'dask',)),
-    ]
+        (
+            MDAnalysis.analysis.dihedrals.Dihedral,
+            (
+                "serial",
+                "multiprocessing",
+                "dask",
+            ),
+        ),
+        (
+            MDAnalysis.analysis.dihedrals.Ramachandran,
+            (
+                "serial",
+                "multiprocessing",
+                "dask",
+            ),
+        ),
+        (
+            MDAnalysis.analysis.dihedrals.Janin,
+            (
+                "serial",
+                "multiprocessing",
+                "dask",
+            ),
+        ),
+    ],
 )
 def test_supported_backends(classname, backends):
     assert classname.get_supported_backends() == backends

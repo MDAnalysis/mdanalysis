@@ -37,7 +37,8 @@ from MDAnalysis.analysis.rms import RMSD
 
 from MDAnalysisTests.datafiles import (
     CRD,
-    PSF, DCD,
+    PSF,
+    DCD,
     DMS,
     DLP_CONFIG,
     DLP_HISTORY,
@@ -53,40 +54,48 @@ from MDAnalysisTests.datafiles import (
     mol2_molecules,
     MMTF,
     NCDF,
-    PDB, PDB_small, PDB_multiframe,
+    PDB,
+    PDB_small,
+    PDB_multiframe,
     PDBQT_input,
     PQR,
-    TRC_PDB_VAC, TRC_TRAJ1_VAC, TRC_TRAJ2_VAC,
+    TRC_PDB_VAC,
+    TRC_TRAJ1_VAC,
+    TRC_TRAJ2_VAC,
     TRR,
     TRJ,
     TRZ,
     TXYZ,
     XTC,
     XPDB_small,
-    XYZ_mini, XYZ, XYZ_bz2,
+    XYZ_mini,
+    XYZ,
+    XYZ_bz2,
 )
 
 
-@pytest.fixture(params=[
-    (PSF, DCD),
-    (GRO, XTC),
-    (PDB_multiframe,),
-    (XYZ,),
-    (XYZ_bz2,),  # .bz2
-    (GMS_SYMOPT,),  # .gms
-    (GMS_ASYMOPT,),  # .gz
-    pytest.param(
-        (GSD_long,),
-        marks=pytest.mark.skipif(not HAS_GSD, reason='gsd not installed')
-    ),
-    (NCDF,),
-    (np.arange(150).reshape(5, 10, 3).astype(np.float64),),
-    (GRO, [GRO, GRO, GRO, GRO, GRO]),
-    (PDB, [PDB, PDB, PDB, PDB, PDB]),
-    (GRO, [XTC, XTC]),
-    (TRC_PDB_VAC, TRC_TRAJ1_VAC),
-    (TRC_PDB_VAC, [TRC_TRAJ1_VAC, TRC_TRAJ2_VAC]),
-])
+@pytest.fixture(
+    params=[
+        (PSF, DCD),
+        (GRO, XTC),
+        (PDB_multiframe,),
+        (XYZ,),
+        (XYZ_bz2,),  # .bz2
+        (GMS_SYMOPT,),  # .gms
+        (GMS_ASYMOPT,),  # .gz
+        pytest.param(
+            (GSD_long,),
+            marks=pytest.mark.skipif(not HAS_GSD, reason="gsd not installed"),
+        ),
+        (NCDF,),
+        (np.arange(150).reshape(5, 10, 3).astype(np.float64),),
+        (GRO, [GRO, GRO, GRO, GRO, GRO]),
+        (PDB, [PDB, PDB, PDB, PDB, PDB]),
+        (GRO, [XTC, XTC]),
+        (TRC_PDB_VAC, TRC_TRAJ1_VAC),
+        (TRC_PDB_VAC, [TRC_TRAJ1_VAC, TRC_TRAJ2_VAC]),
+    ]
+)
 def u(request):
     if len(request.param) == 1:
         f = request.param[0]
@@ -94,6 +103,7 @@ def u(request):
     else:
         top, trj = request.param
         return mda.Universe(top, trj)
+
 
 @pytest.fixture(scope="function")
 def temp_xtc(tmp_path):
@@ -119,14 +129,19 @@ def cog(u, ag, frame_id):
 
 def test_multiprocess_COG(u):
     ag = u.atoms[2:5]
+    ref = np.array([cog(u, ag, i) for i in range(3)])
 
-    ref = np.array([cog(u, ag, i)
-                    for i in range(3)])
+    # Explicitly use `spawn` for multiprocessing tests
+    # As `fork` can lead to deadlock in pytest because each xdist worker creates a multiprocessing.Pool.
+    # related issue: #5191; PR #5213
+    ctx = multiprocessing.get_context("spawn")
+    # The commented code can lead to timeout that is not marked as a failure due.
+    # p = multiprocessing.Pool(2)
+    # res = np.array([p.apply(cog, args=(u, ag, i)) for i in range(3)])
+    # p.close()
+    with ctx.Pool(2) as p:
+        res = np.array(p.starmap(cog, [(u, ag, i) for i in range(3)]))
 
-    p = multiprocessing.Pool(2)
-    res = np.array([p.apply(cog, args=(u, ag, i))
-                    for i in range(3)])
-    p.close()
     assert_equal(ref, res)
 
 
@@ -137,14 +152,13 @@ def getnames(u, ix):
 
 def test_universe_unpickle_in_new_process():
     u = mda.Universe(GRO, XTC)
-    ref = [getnames(u, i)
-           for i in range(3)]
+    ref = [getnames(u, i) for i in range(3)]
 
-    p = multiprocessing.Pool(2)
-    res = [p.apply(getnames, args=(u, i))
-           for i in range(3)]
-    p.close()
-
+    # related issue: #5191; PR #5213
+    ctx = multiprocessing.get_context("spawn")
+    with ctx.Pool(2) as p:
+        res = [p.apply_async(getnames, args=(u, i)) for i in range(3)]
+        res = [r.get() for r in res]
     assert_equal(ref, res)
 
 
@@ -156,52 +170,58 @@ def test_creating_multiple_universe_without_offset(temp_xtc, ncopies=3):
     #  a problem (see PR #3375 and issues #3230, #1988)
 
     args = (GRO, str(temp_xtc))
-    with multiprocessing.Pool(2) as p:
+
+    # related issue: #5191; PR #5213
+    ctx = multiprocessing.get_context("spawn")
+    with ctx.Pool(2) as p:
         universes = [p.apply_async(mda.Universe, args) for i in range(ncopies)]
         universes = [universe.get() for universe in universes]
 
+    assert_equal(
+        universes[0].trajectory._xdr.offsets,
+        universes[1].trajectory._xdr.offsets,
+    )
 
-    assert_equal(universes[0].trajectory._xdr.offsets,
-                 universes[1].trajectory._xdr.offsets)
 
-
-@pytest.fixture(params=[
-    # formatname, filename
-    ('CRD', CRD, dict()),
-    ('DATA', LAMMPSdata_mini, dict(n_atoms=1)),
-    ('DCD', DCD, dict()),
-    ('DMS', DMS, dict()),
-    ('CONFIG', DLP_CONFIG, dict()),
-    ('FHIAIMS', FHIAIMS, dict()),
-    ('HISTORY', DLP_HISTORY, dict()),
-    ('INPCRD', INPCRD, dict()),
-    ('LAMMPSDUMP', LAMMPSDUMP, dict()),
-    ('GMS', GMS_ASYMOPT, dict()),
-    ('GRO', GRO, dict()),
-    pytest.param(
-        ('GSD', GSD, dict()),
-        marks=pytest.mark.skipif(not HAS_GSD, reason='gsd not installed')
-    ),
-    ('MMTF', MMTF, dict()),
-    ('MOL2', mol2_molecules, dict()),
-    ('PDB', PDB_small, dict()),
-    ('PQR', PQR, dict()),
-    ('PDBQT', PDBQT_input, dict()),
-    ('TRR', TRR, dict()),
-    ('TRZ', TRZ, dict(n_atoms=8184)),
-    ('TRJ', TRJ, dict(n_atoms=252)),
-    ('XTC', XTC, dict()),
-    ('XPDB', XPDB_small, dict()),
-    ('XYZ', XYZ_mini, dict()),
-    ('NCDF', NCDF, dict()),
-    ('TXYZ', TXYZ, dict()),
-    ('memory', np.arange(60).reshape(2, 10, 3).astype(np.float64), dict()),
-    ('TRC', TRC_TRAJ1_VAC, dict()),
-    ('CHAIN', [TRC_TRAJ1_VAC, TRC_TRAJ2_VAC], dict()),
-    ('CHAIN', [GRO, GRO, GRO], dict()),
-    ('CHAIN', [PDB, PDB, PDB], dict()),
-    ('CHAIN', [XTC, XTC, XTC], dict()),
-])
+@pytest.fixture(
+    params=[
+        # formatname, filename
+        ("CRD", CRD, dict()),
+        ("DATA", LAMMPSdata_mini, dict(n_atoms=1)),
+        ("DCD", DCD, dict()),
+        ("DMS", DMS, dict()),
+        ("CONFIG", DLP_CONFIG, dict()),
+        ("FHIAIMS", FHIAIMS, dict()),
+        ("HISTORY", DLP_HISTORY, dict()),
+        ("INPCRD", INPCRD, dict()),
+        ("LAMMPSDUMP", LAMMPSDUMP, dict()),
+        ("GMS", GMS_ASYMOPT, dict()),
+        ("GRO", GRO, dict()),
+        pytest.param(
+            ("GSD", GSD, dict()),
+            marks=pytest.mark.skipif(not HAS_GSD, reason="gsd not installed"),
+        ),
+        ("MMTF", MMTF, dict()),
+        ("MOL2", mol2_molecules, dict()),
+        ("PDB", PDB_small, dict()),
+        ("PQR", PQR, dict()),
+        ("PDBQT", PDBQT_input, dict()),
+        ("TRR", TRR, dict()),
+        ("TRZ", TRZ, dict(n_atoms=8184)),
+        ("TRJ", TRJ, dict(n_atoms=252)),
+        ("XTC", XTC, dict()),
+        ("XPDB", XPDB_small, dict()),
+        ("XYZ", XYZ_mini, dict()),
+        ("NCDF", NCDF, dict()),
+        ("TXYZ", TXYZ, dict()),
+        ("memory", np.arange(60).reshape(2, 10, 3).astype(np.float64), dict()),
+        ("TRC", TRC_TRAJ1_VAC, dict()),
+        ("CHAIN", [TRC_TRAJ1_VAC, TRC_TRAJ2_VAC], dict()),
+        ("CHAIN", [GRO, GRO, GRO], dict()),
+        ("CHAIN", [PDB, PDB, PDB], dict()),
+        ("CHAIN", [XTC, XTC, XTC], dict()),
+    ]
+)
 def ref_reader(request):
     fmt_name, filename, extras = request.param
     r = get_reader_for(filename, format=fmt_name)(filename, **extras)

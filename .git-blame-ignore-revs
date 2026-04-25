@@ -1,2 +1,43 @@
-# black
-83e5f99051d86ca354b537be8854c40f9b6ce172
+##### git-blame shows what revision and author last modified each line of a file
+##### The ".git-blame-ignore-revs" file is used to ignore certain revisions from being
+##### shown in the output of git blame (also on GitHub blame view).
+#
+# ~~~ Commits that only change the formatting of the code should be ignored. ~~~
+#
+# --- Automated Formatting with `black` ---
+# MDAnalysis was automatically formatted with `black` (end of 2024, beginning of 2025).
+# Formatting PRs (should) contain "[fmt]" in the title (and so do the related commits).
+# See https://github.com/MDAnalysis/mdanalysis/issues/2450 for more details.
+# The following commits are squash commits that contain only^ formatting changes.
+#    ^ This is not strictly true. See PRs for the nitty gritty details.
+#.     PR numbers are listed just above the commit being ignored.
+#4725 
+571431a169e5881f7d09930c4d7e633df0f2cd40
+#4726
+46be788d84a6cb149d90e4493a726c3a30b3cca0
+#4802
+441e2c67abdb8a0a5ffac4a0bc5e88bc7c329aa8
+#4804
+25e755fd78e0a6fb71a91c9d3d989328f021f34b
+#4809
+557f27d658ff0d4011bbe0efa03495f18aa2c1ce
+#4848
+b710e57a64654bed5250eb771f0f27a2dddfeebf
+#4850
+9110a6efe2765802856d028e650ebb0117d336bf
+#4851
+a10e23e681023f383baac7582c39dce4180e2263
+#4856
+c08cb797fd1a2cb45bc0b9e4522cabb15d1f36bd
+#4857
+29deccc9b43a09d2ec3b456bb9c70aae4c34c2cd
+#4859
+9312fa67f163ec055a66f5756a182206fbea3130
+#4861
+55cce24003d4c0975b1bba387b9e6ac20638780e
+#4874
+5eef34165b03281515e08a69159f6504e3a2ff8b
+#4875
+b8fe34b73c9df9330c1608229b2f8cddc6e275b4
+#4885
+263bbe65047e535fbad981852ad9c7327826f93d
