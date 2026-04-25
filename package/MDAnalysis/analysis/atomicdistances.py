@@ -114,8 +114,7 @@ from MDAnalysis.lib.distances import calc_bonds
 from MDAnalysis.analysis.results import Results
 
 import logging
-from .base import AnalysisBase
-from .results import Results
+from .base import AnalysisBase, ResultsGroup
 
 logger = logging.getLogger("MDAnalysis.analysis.atomicdistances")
 
@@ -157,6 +156,16 @@ class AtomicDistances(AnalysisBase):
 
     """
 
+    _analysis_algorithm_is_parallelizable = True
+
+    @classmethod
+    def get_supported_backends(cls):
+        return (
+            "serial",
+            "multiprocessing",
+            "dask",
+        )
+
     def __init__(self, ag1, ag2, pbc=True, **kwargs):
         # check ag1 and ag2 have the same number of atoms
         if ag1.atoms.n_atoms != ag2.atoms.n_atoms:
@@ -174,7 +183,6 @@ class AtomicDistances(AnalysisBase):
         self._ag1 = ag1
         self._ag2 = ag2
         self._pbc = pbc
-        self.results = Results()
 
     def _prepare(self):
         # initialize NumPy array of frames x distances for results
@@ -188,6 +196,9 @@ class AtomicDistances(AnalysisBase):
             self._ag1.positions, self._ag2.positions, box
         )
 
-    def _conclude(self):
-        # adjust self.results to self.results.distances
-        self.results = self.results.distances
+    def _get_aggregator(self):
+        return ResultsGroup(
+            lookup={
+                "distances": ResultsGroup.ndarray_vstack,  # Get distances
+            }
+        )
