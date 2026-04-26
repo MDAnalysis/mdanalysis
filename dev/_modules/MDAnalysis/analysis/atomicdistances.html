@@ -257,7 +257,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.results</span><span class="w"> </span><span class="kn">import</span> <span class="n">Results</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnalysisBase</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnalysisBase</span><span class="p">,</span> <span class="n">ResultsGroup</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.analysis.atomicdistances&quot;</span><span class="p">)</span>
 
@@ -292,14 +292,29 @@
 
 <span class="sd">    .. versionadded:: 2.5.0</span>
 <span class="sd">    .. versionchanged:: 2.11.0</span>
-<span class="sd">       Distance data are now made available in :attr:`results.distances` instead</span>
-<span class="sd">       of :attr:`results` and :attr:`results` is now a</span>
-<span class="sd">       :class:`~MDAnalysis.analysis.results.Results` instance; this fixes an API issue</span>
-<span class="sd">       (see `Issue #4819`_) in a *backwards-incompatible* manner.</span>
 
+<span class="sd">       *  Distance data are now made available in :attr:`results.distances` instead</span>
+<span class="sd">          of :attr:`results` and :attr:`results` is now a</span>
+<span class="sd">          :class:`~MDAnalysis.analysis.results.Results` instance; this fixes an API issue</span>
+<span class="sd">          (see `Issue #4819`_) in a *backwards-incompatible* manner.</span>
+<span class="sd">       *  Enabled **parallel execution** with the ``multiprocessing`` and ``dask``</span>
+<span class="sd">          backends; use the new method :meth:`get_supported_backends` to see all</span>
+<span class="sd">          supported backends.</span>
 <span class="sd">    .. _`Issue #4819`: https://github.com/MDAnalysis/mdanalysis/issues/4819</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_analysis_algorithm_is_parallelizable</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="AtomicDistances.get_supported_backends">
+<a class="viewcode-back" href="../../../documentation_pages/analysis/atomicdistances.html#MDAnalysis.analysis.atomicdistances.AtomicDistances.get_supported_backends">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_supported_backends</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="s2">&quot;serial&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;multiprocessing&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;dask&quot;</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag1</span><span class="p">,</span> <span class="n">ag2</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># check ag1 and ag2 have the same number of atoms</span>
@@ -329,6 +344,13 @@
         <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ag1</span><span class="o">.</span><span class="n">dimensions</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pbc</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">distances</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">calc_bonds</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_ag1</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ag2</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">box</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_aggregator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span>
+            <span class="n">lookup</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;distances&quot;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_vstack</span><span class="p">,</span>  <span class="c1"># Get distances</span>
+            <span class="p">}</span>
         <span class="p">)</span></div>
 
 </pre></div>
