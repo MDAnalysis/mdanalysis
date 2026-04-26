@@ -147,14 +147,14 @@ class AtomicDistances(AnalysisBase):
 
     .. versionadded:: 2.5.0
     .. versionchanged:: 2.11.0
-        * Distance data are now made available in :attr:`results.distances` instead
+
+       *  Distance data are now made available in :attr:`results.distances` instead
           of :attr:`results` and :attr:`results` is now a
           :class:`~MDAnalysis.analysis.results.Results` instance; this fixes an API issue
           (see `Issue #4819`_) in a *backwards-incompatible* manner.
-        * Enabled **parallel execution** with the ``multiprocessing`` and ``dask``
+       *  Enabled **parallel execution** with the ``multiprocessing`` and ``dask``
           backends; use the new method :meth:`get_supported_backends` to see all
           supported backends.
-
     .. _`Issue #4819`: https://github.com/MDAnalysis/mdanalysis/issues/4819
     """
 
