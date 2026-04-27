@@ -24,7 +24,7 @@ The rules for this file:
 Fixes
 
 Enhancements
- * Add reading single-frame fles from mmCIF, also known as PDBx format, using
+ * Add reading single-frame files from mmCIF, also known as PDBx format, using
    crystallographic library `gemmi` as a backend (Issue #2367 and extension of
    #4303, also solves #5089, PR #4712).
  * `MDAnalysis.analysis.nucleicacids.WatsonCrickDist`, `MinorPairDist`,

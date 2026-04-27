@@ -61,7 +61,7 @@ inputs:
   distopia:
     default: 'distopia>=0.4.0'
   gemmi:
-      default: 'gemmi'
+    default: 'gemmi'
   h5py:
     default: 'h5py>=2.10'
   hole2:

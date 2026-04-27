@@ -43,15 +43,15 @@ features:
 Basic usage
 --------
 
-Basic structure loading::
+Basic structure loading:
 
-    .. code-block:: python
+.. code-block:: python
 
-        # Load structure from MMCIF
-        u = mda.Universe("structure.cif")
+    import MDAnalysis as mda
+    u = mda.Universe("structure.cif")
 
-        # or from cif.gz file
-        u = mda.Universe("structure.cif.gz")
+    # or from cif.gz file
+    u = mda.Universe("structure.cif.gz")
 
 Classes
 -------
@@ -62,8 +62,8 @@ Classes
 
 See Also
 --------
-- wwPDB MMCIF Resources: <http://mmcif.wwpdb.org>_
-- Gemmi library documentation: <https://gemmi.readthedocs.io>_
+* `wwPDB MMCIF Resources <http://mmcif.wwpdb.org>`_
+* `Gemmi library documentation <https://gemmi.readthedocs.io>`_
 
 .. versionadded:: 2.11.0
 """
@@ -129,7 +129,8 @@ class MMCIFReader(base.SingleFrameReaderBase):
         )
         if len(structure) > 1:
             warnings.warn(
-                f"File {self.filename} has {len(structure)=} models, but only the first one will be read"
+                f"File {self.filename} has {len(structure)} models, "
+                "but only the first one will be read"
             )
 
         model = structure[0]
