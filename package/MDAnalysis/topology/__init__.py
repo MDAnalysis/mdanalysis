@@ -311,32 +311,56 @@ to the second atom.
 
 """
 
-__all__ = ['core', 'PSFParser', 'PDBParser', 'PQRParser', 'GROParser',
-           'CRDParser', 'TOPParser', 'PDBQTParser', 'TPRParser',
-           'LAMMPSParser', 'XYZParser', 'GMSParser', 'DLPolyParser',
-           'HoomdXMLParser','GSDParser', 'ITPParser']
+__all__ = [
+    "CRDParser",
+    "DLPolyParser",
+    "DMSParser",
+    "ExtendedPDBParser",
+    "FHIAIMSParser",
+    "GMSParser",
+    "GROParser",
+    "GSDParser",
+    "HoomdXMLParser",
+    "ITPParser",
+    "LAMMPSParser",
+    "MinimalParser",
+    "MMCIFParser",
+    "MMTFParser",
+    "MOL2Parser",
+    "PDBParser",
+    "PDBQTParser",
+    "PQRParser",
+    "PSFParser",
+    "TOPParser",
+    "TPRParser",
+    "TXYZParser",
+    "XYZParser",
+    "core",
+]
 
-from . import core
-from . import PSFParser
-from . import TOPParser
-from . import PDBParser
-from . import ExtendedPDBParser
-from . import PQRParser
-from . import GROParser
-from . import CRDParser
-from . import PDBQTParser
-from . import DMSParser
-from . import TPRParser
-from . import MOL2Parser
-from . import LAMMPSParser
-from . import XYZParser
-from . import TXYZParser
-from . import GMSParser
-from . import DLPolyParser
-from . import HoomdXMLParser
-from . import MMTFParser
-from . import GSDParser
-from . import MinimalParser
-from . import ITPParser
-from . import FHIAIMSParser
-from . import MMCIFParser
+from . import (
+    CRDParser,
+    DLPolyParser,
+    DMSParser,
+    ExtendedPDBParser,
+    FHIAIMSParser,
+    GMSParser,
+    GROParser,
+    GSDParser,
+    HoomdXMLParser,
+    ITPParser,
+    LAMMPSParser,
+    MinimalParser,
+    MMCIFParser,
+    MMTFParser,
+    MOL2Parser,
+    PDBParser,
+    PDBQTParser,
+    PQRParser,
+    PSFParser,
+    TOPParser,
+    TPRParser,
+    TXYZParser,
+    XYZParser,
+    core,
+)
