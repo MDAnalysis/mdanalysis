@@ -36,7 +36,7 @@ Classes
    :members:
    :inherited-members:
 
-.. versionadded:: 2.9.0
+.. versionadded:: 2.11.0
 """
 
 try:
@@ -97,7 +97,7 @@ class MMCIFParser(TopologyReaderBase):
         - :class:`..core.topologyattrs.SegmentAttr` subclasses:
             - :class:`..core.topologyattrs.Segids`
 
-    .. versionadded:: 2.9.0
+    .. versionadded:: 2.11.0
     """
 
     format = ["cif", "cif.gz", "mmcif", "mmcif.gz"]
