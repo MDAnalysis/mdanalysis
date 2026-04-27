@@ -31,7 +31,7 @@ and set dimensions to None in that case.
 Capabilities
 ------------
 
-The MMCIF reader implementation uses the gemmi library to parse files and extract coordinates
+The MMCIF reader implementation uses the :mod:`gemmi` library to parse files and extract coordinates
 and unit cell information. Currently only reading capability is supported, with the following
 features:
 
@@ -40,7 +40,7 @@ features:
 - Support for compressed .cif.gz files
 - Automatic handling of placeholder unit cells for cryoEM structures
 
-Examples
+Basic usage
 --------
 
 Basic structure loading::
