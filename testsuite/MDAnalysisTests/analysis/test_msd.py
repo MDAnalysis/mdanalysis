@@ -117,9 +117,11 @@ class TestMSDSimple(object):
         with pytest.raises(TypeError, match=errmsg):
             m = MSD(updating_ag, msd_type="xyz", fft=False)
 
-    @pytest.mark.parametrize("msdtype", ["foo", "bar", "yx", "zyx"])
+    @pytest.mark.parametrize(
+        "msdtype", ["foo", "bar", "yx", "zyx", 123, "", " xy "]
+    )
     def test_msdtype_error(self, u, SELECTION, msdtype):
-        errmsg = f"invalid msd_type: {msdtype}"
+        errmsg = f"Invalid msd_type {msdtype}, must be a string and one of: xyz, xy, xz, yz, x, y, z"
         with pytest.raises(ValueError, match=errmsg):
             m = MSD(u, SELECTION, msd_type=msdtype)
 
@@ -1845,4 +1847,19 @@ class TestMSDNonLinear:
         assert_allclose(result_delta_t, expected_delta_t, rtol=1e-5)
         assert_allclose(
             result_msd_per_particle, expected_msd_per_particle, rtol=1e-5
+        )
+
+    def test_detect_non_linear_from_frames(self, step_traj):
+        msd_auto = MSD(step_traj, select="all", msd_type="xyz", fft=False)
+        res1 = msd_auto.run(frames=[0, 1, 3, 6])
+
+        msd_explicit = MSD(
+            step_traj, select="all", msd_type="xyz", non_linear=True
+        )
+        res2 = msd_explicit.run(frames=[0, 1, 3, 6])
+
+        assert_allclose(
+            res1.results.msds_by_particle,
+            res2.results.msds_by_particle,
+            rtol=1e-5,
         )

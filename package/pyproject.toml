@@ -78,6 +78,7 @@ extra_formats = [
     "h5py>=2.10",
     "chemfiles>=0.10",
     "parmed",
+    "pooch",
     "pyedr>=0.7.0",
     "pytng>=0.2.3",
     "gsd>3.0.0",

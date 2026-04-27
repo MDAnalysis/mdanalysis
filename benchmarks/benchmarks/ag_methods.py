@@ -189,6 +189,22 @@ class AtomGroupMethodsBench(object):
         """
         self.ag.wrap()
 
+    def time_wrap_compound(self, num_atoms):
+        """Benchmark wrap() operation on
+        atomgroup with default params.
+        """
+        self.ag.wrap(compound="residues")
+
+    def time_asunique_no_sorted(self, num_atoms):
+        """Benchmark asunique() operation on
+        atomgroup without sorting"""
+        self.ag.asunique(sorted=False)
+
+    def time_asunique_sorted(self, num_atoms):
+        """Benchmark asunique() operation on
+        atomgroup with sorting"""
+        self.ag.asunique(sorted=True)
+
 
 class AtomGroupAttrsBench(object):
     """Benchmarks for the various MDAnalysis
@@ -347,7 +363,7 @@ class CompoundSplitting(object):
             ).T.ravel()
         else:
             compound_indices = np.sort(
-                np.floor(rg.random(n_atoms) * n_compounds).astype(np.int)
+                np.floor(rg.random(n_atoms) * n_compounds).astype(np.int64)
             )
 
         unique_indices = np.unique(compound_indices)
