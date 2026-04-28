@@ -67,18 +67,19 @@ See Also
 
 .. versionadded:: 2.11.0
 """
-from typing import TYPE_CHECKING
-from pathlib import Path
+
 import logging
 import warnings
+from pathlib import Path
+from typing import TYPE_CHECKING
 
 import numpy as np
 
-from . import base
 from ..lib import util
+from . import base
 
 if TYPE_CHECKING:
-    from gemmi import Structure
+    from gemmi import Model, Structure
 
 try:
     import gemmi
@@ -90,7 +91,7 @@ except ImportError:
 logger = logging.getLogger("MDAnalysis.coordinates.MMCIF")
 
 
-def _read_gemmi_structure(filename: str | Path) -> Structure:
+def _read_gemmi_structure(filename: str | Path) -> "Structure":
     # This function exists because of some lacking methods in the gemmi Python API.
     # Within gemmi in C++, one can call `read_structure` and in-memory, string, and filepath
     # arguments will all be accepted:
@@ -123,7 +124,7 @@ def _read_gemmi_structure(filename: str | Path) -> Structure:
             raise e
 
 
-def get_coordinates(model: "gemmi.Model") -> np.ndarray:
+def get_coordinates(model: "Model") -> np.ndarray:
     """Get coordinates of all atoms in the `gemmi.Model` object.
 
     Parameters
