@@ -43,7 +43,10 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from gemmi import Structure
 
+import logging
 import warnings
+
+logger = logging.getLogger("MDAnalysis.topology.MMCIFParser")
 
 import numpy as np
 
@@ -110,10 +113,12 @@ class MMCIFParser(TopologyReaderBase):
         structure = self._get_structure()
 
         if len(structure) > 1:
-            warnings.warn(
+            wmsg = (
                 f"MMCIF model {self.filename} contains {len(structure)} different models, "
                 "but only the first one will be used to assign the topology"
             )
+            warnings.warn(wmsg)
+            logger.warning(wmsg)
         model = structure[0]
 
         # TODO: gemmi.FlatStructure provides vectorised column access to all atom
@@ -136,15 +141,15 @@ class MMCIFParser(TopologyReaderBase):
 
         for chain in model:
             for residue in chain:
-                rec = residue.het_flag
-                if rec == "A":
-                    rec = "ATOM"
-                elif rec == "H":
-                    rec = "HETATM"
-                else:
-                    raise ValueError(
-                        "Found an atom that is neither ATOM nor HETATM"
-                    )
+                match residue.het_flag:
+                    case "A":
+                        rec = "ATOM"
+                    case "H":
+                        rec = "HETATM"
+                    case _:
+                        raise ValueError(
+                            "Found an atom that is neither ATOM nor HETATM"
+                        )
                 for atom in residue:
                     altlocs.append(atom.altloc or "A")
                     serials.append(atom.serial)

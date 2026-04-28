@@ -162,21 +162,25 @@ class MMCIFReader(base.SingleFrameReaderBase):
             ]
         )
         if len(structure) > 1:
-            warnings.warn(
+            wmsg = (
                 f"File {self.filename} has {len(structure)} models, "
                 "but only the first one will be read"
             )
+            warnings.warn(wmsg)
+            logger.warning(wmsg)
 
         model = structure[0]
         coords = get_coordinates(model)
         self.n_atoms = len(coords)
         self.ts = self._Timestep.from_coordinates(coords, **self._ts_kwargs)
         if np.allclose(cell_dims, np.array([1.0, 1.0, 1.0, 90.0, 90.0, 90.0])):
-            warnings.warn(
+            wmsg = (
                 "1 A^3 CRYST1 record,"
                 " this is usually a placeholder."
                 " Unit cell dimensions will be set to None."
             )
+            warnings.warn(wmsg)
+            logger.warning(wmsg)
             self.ts.dimensions = None
         else:
             self.ts.dimensions = cell_dims
