@@ -352,4 +352,5 @@ intersphinx_mapping = {
     "imdclient": ("https://imdclient.readthedocs.io/en/stable/", None),
     "pooch": ("https://www.fatiando.org/pooch/latest/", None),
     "requests": ("https://requests.readthedocs.io/en/latest/", None),
+    "gemmi": ("https://gemmi.readthedocs.io/en/latest/", None),
 }
