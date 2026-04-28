@@ -67,7 +67,7 @@ See Also
 
 .. versionadded:: 2.11.0
 """
-
+from pathlib import Path
 import logging
 import warnings
 
@@ -78,6 +78,7 @@ from ..lib import util
 
 try:
     import gemmi
+    from gemmi import Structure
 
     HAS_GEMMI = True
 except ImportError:
@@ -86,7 +87,7 @@ except ImportError:
 logger = logging.getLogger("MDAnalysis.coordinates.MMCIF")
 
 
-def _read_gemmi_structure(filename):
+def _read_gemmi_structure(filename: str | Path) -> Structure:
     # This function exists because of some lacking methods in the gemmi Python API.
     # Within gemmi in C++, one can call `read_structure` and in-memory, string, and filepath
     # arguments will all be accepted:

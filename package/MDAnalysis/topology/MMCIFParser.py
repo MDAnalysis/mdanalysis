@@ -38,6 +38,10 @@ Classes
 
 .. versionadded:: 2.11.0
 """
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from gemmi import Structure
 
 import warnings
 
@@ -67,7 +71,8 @@ from ..coordinates.MMCIF import _read_gemmi_structure
 
 
 class MMCIFParser(TopologyReaderBase):
-    """Parser that obtains a list of atoms from a standard MMCIF/PDBx file using the `gemmi library <https://github.com/project-gemmi/gemmi>`_.
+    """Parser that obtains a list of atoms from a standard MMCIF/PDBx file using
+    the `gemmi library <https://github.com/project-gemmi/gemmi>`_.
 
     Creates the following Attributes (if present):
         - :class:`MDAnalysis.core.topologyattrs.AtomAttr` subclasses:
@@ -111,77 +116,56 @@ class MMCIFParser(TopologyReaderBase):
             )
         model = structure[0]
 
-        (
-            altlocs,  # at.altloc
-            serials,  # at.serial
-            names,  # at.name
-            atomtypes,  # at.name
-            # ------------------
-            chainids,  # chain.name
-            elements,  # at.element.name
-            formalcharges,  # at.charge
-            weights,  # at.element.weight
-            # ------------------
-            occupancies,  # at.occ
-            record_types,  # res.het_flag
-            tempfactors,  # at.b_iso
-            # ------------------
-            icodes,  # residue.seqid.icode
-            resids,  # residue.seqid.num
-            resnames,  # residue.name
-        ) = map(  # this construct takes np.ndarray of all lists of attributes, extracted from the `gemmi.Model`
-            np.array,
-            list(
-                zip(
-                    *[
-                        (
-                            # tuple of attributes
-                            # extracted from residue, atom or chain in the structure
-                            # ------------------
-                            atom.altloc,  # altlocs
-                            atom.serial,  # serials
-                            atom.name,  # names
-                            atom.name,  # atomtypes
-                            # ------------------
-                            chain.name,  # chainids
-                            atom.element.name,  # elements
-                            atom.charge,  # formalcharges
-                            atom.element.weight,  # weights
-                            # ------------------
-                            atom.occ,  # occupancies
-                            residue.het_flag,  # record_types
-                            atom.b_iso,  # tempfactors
-                            # ------------------
-                            residue.seqid.icode,  # icodes
-                            residue.seqid.num,  # resids
-                            residue.name,  # resnames
-                        )
-                        # the main loop over the `gemmi.Model` object
-                        for chain in model
-                        for residue in chain
-                        for atom in residue
-                    ]
-                )
-            ),
-        )
+        # TODO: gemmi.FlatStructure provides vectorised column access to all atom
+        # fields and could replace the per-atom Python loop below for a speed-up
+        # on large structures. gemmi API is still not 100% there yes so worth revisiting
+        # later once it matures more
+        altlocs = []
+        serials = []
+        names = []
+        chainids = []
+        elements = []
+        formalcharges = []
+        weights = []
+        occupancies = []
+        record_types = []
+        tempfactors = []
+        icodes = []
+        resids = []
+        resnames = []
 
-        # fill in altlocs, since gemmi has '' as default
-        altlocs = ["A" if not elem else elem for elem in altlocs]
+        for chain in model:
+            for residue in chain:
+                rec = residue.het_flag
+                if rec == "A":
+                    rec = "ATOM"
+                elif rec == "H":
+                    rec = "HETATM"
+                else:
+                    raise ValueError(
+                        "Found an atom that is neither ATOM nor HETATM"
+                    )
+                for atom in residue:
+                    altlocs.append(atom.altloc or "A")
+                    serials.append(atom.serial)
+                    names.append(atom.name)
+                    chainids.append(chain.name)
+                    elements.append(atom.element.name)
+                    formalcharges.append(atom.charge)
+                    weights.append(atom.element.weight)
+                    occupancies.append(atom.occ)
+                    record_types.append(rec)
+                    tempfactors.append(atom.b_iso)
+                    icodes.append(residue.seqid.icode.strip())
+                    resids.append(residue.seqid.num)
+                    resnames.append(residue.name)
 
-        # convert default gemmi record types to default MDAnalysis record types
-        record_types = [
-            "ATOM" if record == "A" else "HETATM" if record == "H" else None
-            for record in record_types
-        ]
-        if any((elem is None for elem in record_types)):
-            raise ValueError("Found an atom that is neither ATOM or HETATM")
-
-        # Atom Attr's
+        # Atom Attributes
         attrs = [
             AltLocs(altlocs),
             Atomids(serials),
             Atomnames(names),
-            Atomtypes(atomtypes),
+            Atomtypes(names),
             # ----------------------------
             ChainIDs(chainids),
             Elements(elements),
@@ -194,7 +178,11 @@ class MMCIFParser(TopologyReaderBase):
         ]
         n_atoms = len(altlocs)
 
-        # Residue Attr's
+        # Residue Attributes
+        resids = np.array(resids)
+        resnames = np.array(resnames)
+        icodes = np.array(icodes)
+        chainids = np.array(chainids)
         residx, (resids, resnames, icodes, chainids) = change_squash(
             (resids, resnames, icodes, chainids),
             (resids, resnames, icodes, chainids),
@@ -202,10 +190,10 @@ class MMCIFParser(TopologyReaderBase):
         attrs.append(Resids(resids))
         attrs.append(Resnames(resnames))
         attrs.append(Resnums(resids.copy()))
-        attrs.append(ICodes([icode.strip() for icode in icodes]))
+        attrs.append(ICodes(icodes))
         n_residues = len(resids)
 
-        # Segment Attr's
+        # Segment Attributes
         segidx, (segids,) = change_squash((chainids,), (chainids,))
         attrs.append(Segids(segids))
         n_segments = len(segids)
@@ -219,5 +207,5 @@ class MMCIFParser(TopologyReaderBase):
             residue_segindex=segidx,
         )
 
-    def _get_structure(self):
+    def _get_structure(self) -> "Structure":
         return _read_gemmi_structure(self.filename)
