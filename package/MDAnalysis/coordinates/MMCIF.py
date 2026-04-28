@@ -67,6 +67,7 @@ See Also
 
 .. versionadded:: 2.11.0
 """
+from typing import TYPE_CHECKING
 from pathlib import Path
 import logging
 import warnings
@@ -76,9 +77,11 @@ import numpy as np
 from . import base
 from ..lib import util
 
+if TYPE_CHECKING:
+    from gemmi import Structure
+
 try:
     import gemmi
-    from gemmi import Structure
 
     HAS_GEMMI = True
 except ImportError:

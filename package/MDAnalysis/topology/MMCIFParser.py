@@ -38,6 +38,7 @@ Classes
 
 .. versionadded:: 2.11.0
 """
+
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -46,10 +47,9 @@ if TYPE_CHECKING:
 import logging
 import warnings
 
-logger = logging.getLogger("MDAnalysis.topology.MMCIFParser")
-
 import numpy as np
 
+from ..coordinates.MMCIF import _read_gemmi_structure
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     AltLocs,
@@ -70,7 +70,8 @@ from ..core.topologyattrs import (
     Tempfactors,
 )
 from .base import TopologyReaderBase, change_squash
-from ..coordinates.MMCIF import _read_gemmi_structure
+
+logger = logging.getLogger("MDAnalysis.topology.MMCIFParser")
 
 
 class MMCIFParser(TopologyReaderBase):
