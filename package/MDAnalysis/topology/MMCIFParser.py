@@ -3,12 +3,19 @@
 #
 """
 MMCIF Topology Parser
-====================
+=====================
 
-Read topology information from mmCIF/PDBx coordinate files using the `Gemmi library <https://github.com/project-gemmi/gemmi>`_
+.. versionadded:: 2.11.0
 
-mmCIF files contain topology information about the molecules in the structure. For each atom the following attributes are read
-and stored in the relevant topology attributes:
+Read topology information from mmCIF/PDBx coordinate files using the
+`Gemmi library <https://gemmi.readthedocs.io>`_.
+
+
+
+mmCIF files contain topology information about the molecules in the
+structure. For each atom the following attributes are read and stored
+in the relevant topology attributes:
+
     - :class:`MDAnalysis.core.topologyattrs.AtomAttr` subclasses:
         - :class:`MDAnalysis.core.topologyattrs.AltLocs`
         - :class:`MDAnalysis.core.topologyattrs.Atomids`
@@ -29,14 +36,13 @@ and stored in the relevant topology attributes:
     - :class:`MDAnalysis.core.topologyattrs.SegmentAttr` subclasses:
         - :class:`MDAnalysis.core.topologyattrs.Segids`
 
-Classes
--------
+Classes and Functions
+---------------------
 
 .. autoclass:: MMCIFParser
    :members:
    :inherited-members:
 
-.. versionadded:: 2.11.0
 """
 
 from typing import TYPE_CHECKING
@@ -76,7 +82,10 @@ logger = logging.getLogger("MDAnalysis.topology.MMCIFParser")
 
 class MMCIFParser(TopologyReaderBase):
     """Parser that obtains a list of atoms from a standard MMCIF/PDBx file using
-    the `gemmi library <https://github.com/project-gemmi/gemmi>`_.
+    the `gemmi library <https://gemmi.readthedocs.io>`_.
+
+    The *filename* argument accepts a file path, a compressed ``.cif.gz`` file,
+    or a stream/file-like object.
 
     Creates the following Attributes (if present):
         - :class:`MDAnalysis.core.topologyattrs.AtomAttr` subclasses:
@@ -98,8 +107,6 @@ class MMCIFParser(TopologyReaderBase):
             - :class:`MDAnalysis.core.topologyattrs.Resnames`
         - :class:`MDAnalysis.core.topologyattrs.SegmentAttr` subclasses:
             - :class:`MDAnalysis.core.topologyattrs.Segids`
-
-    .. versionadded:: 2.11.0
     """
 
     format = ["cif", "cif.gz", "mmcif", "mmcif.gz"]

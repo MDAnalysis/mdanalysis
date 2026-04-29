@@ -3,69 +3,50 @@
 #
 """
 MMCIF structure files in MDAnalysis --- :mod:`MDAnalysis.coordinates.MMCIF`
-==========================================================================
+===========================================================================
 
-MDAnalysis reads coordinates from MMCIF (macromolecular Crystallographic Information File) files, also known as PDBx/mmCIF format,
-using the :mod:`gemmi` library as a backend. MMCIF is a more modern and flexible
-alternative to the PDB format, capable of storing detailed structural and experimental data about biological macromolecules.
+.. versionadded:: 2.11.0
 
-MMCIF files use a structured, tabular format with key-value pairs to store both coordinate and atom information.
-The format supports multiple models/frames, though this implementation currently only reads the first model
-and provides warning messages for multi-model files.
+MDAnalysis reads coordinates from MMCIF (macromolecular Crystallographic
+Information File) files, also known as PDBx/mmCIF format, using the
+`gemmi <https://gemmi.readthedocs.io>`_ library as a backend. MMCIF is a
+more modern and flexible alternative to the PDB format, capable of storing
+detailed structural and experimental data about biological macromolecules.
+
+MMCIF files use a structured, tabular format with key-value pairs to store
+both coordinate and atom information. The format supports multiple
+models/frames, though this implementation currently only reads the first
+model and provides warning messages for multi-model files.
+
+The reader automatically detects if the structure contains placeholder unit
+cell information (usually the case for cryoEM structures, where cell
+parameters are (1, 1, 1, 90, 90, 90)) and sets dimensions to ``None``
+in that case.
 
 Basic usage
 -----------
 
-Reading an MMCIF file is straightforward:
-
-    .. code-block:: python
-
-        import MDAnalysis as mda
-        u = mda.Universe("structure.cif")
-
-
-The reader will automatically detect if the structure contains placeholder unit cell information
-(usually it's the case for cryoEM structures, and cell parameters are (1, 1, 1, 90, 90, 90))
-and set dimensions to None in that case.
-
-Capabilities
-------------
-
-The MMCIF reader implementation uses the :mod:`gemmi` library to parse files and extract coordinates
-and unit cell information. Currently only reading capability is supported, with the following
-features:
-
-- Single frame/model reading
-- Unit cell dimensions detection
-- Support for compressed .cif.gz files
-- Automatic handling of placeholder unit cells for cryoEM structures
-
-Basic usage
---------
-
-Basic structure loading:
-
 .. code-block:: python
 
     import MDAnalysis as mda
+
     u = mda.Universe("structure.cif")
 
-    # or from cif.gz file
+    # or from a compressed file
     u = mda.Universe("structure.cif.gz")
-
-Classes
--------
-
-.. autoclass:: MMCIFReader
-   :members:
-   :inherited-members:
 
 See Also
 --------
 * `wwPDB MMCIF Resources <http://mmcif.wwpdb.org>`_
 * `Gemmi library documentation <https://gemmi.readthedocs.io>`_
 
-.. versionadded:: 2.11.0
+Classes and Functions
+---------------------
+
+.. autoclass:: MMCIFReader
+   :members:
+   :inherited-members:
+
 """
 
 import logging
@@ -114,9 +95,7 @@ def _read_gemmi_structure(filename: str | Path) -> "Structure":
         # String -> Doc -> Block -> Structure
         # making Structure from first Block in Document as is done internally in gemmi:
         # https://github.com/project-gemmi/gemmi/blob/4416e298f204b7b57bf5b3051d7efd4fe02957cf/include/gemmi/mmcif.hpp#L32
-        return gemmi.make_structure_from_block(
-            gemmi.cif.read_string(content_as_str)[0]
-        )
+        return gemmi.make_structure_from_block(gemmi.cif.read_string(content_as_str)[0])
     except ValueError as e:
         try:
             return gemmi.read_pdb_string(content_as_str)
@@ -124,7 +103,7 @@ def _read_gemmi_structure(filename: str | Path) -> "Structure":
             raise e
 
 
-def get_coordinates(model: "Model") -> np.ndarray:
+def _get_coordinates(model: "Model") -> np.ndarray:
     """Get coordinates of all atoms in the `gemmi.Model` object.
 
     Parameters
@@ -174,7 +153,7 @@ class MMCIFReader(base.SingleFrameReaderBase):
             logger.warning(wmsg)
 
         model = structure[0]
-        coords = get_coordinates(model)
+        coords = _get_coordinates(model)
         self.n_atoms = len(coords)
         self.ts = self._Timestep.from_coordinates(coords, **self._ts_kwargs)
         if np.allclose(cell_dims, np.array([1.0, 1.0, 1.0, 90.0, 90.0, 90.0])):
