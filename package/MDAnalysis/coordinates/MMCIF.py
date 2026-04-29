@@ -95,7 +95,9 @@ def _read_gemmi_structure(filename: str | Path) -> "Structure":
         # String -> Doc -> Block -> Structure
         # making Structure from first Block in Document as is done internally in gemmi:
         # https://github.com/project-gemmi/gemmi/blob/4416e298f204b7b57bf5b3051d7efd4fe02957cf/include/gemmi/mmcif.hpp#L32
-        return gemmi.make_structure_from_block(gemmi.cif.read_string(content_as_str)[0])
+        return gemmi.make_structure_from_block(
+            gemmi.cif.read_string(content_as_str)[0]
+        )
     except ValueError as e:
         try:
             return gemmi.read_pdb_string(content_as_str)
