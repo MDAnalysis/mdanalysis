@@ -40,8 +40,8 @@ See Also
 * `wwPDB MMCIF Resources <http://mmcif.wwpdb.org>`_
 * `Gemmi library documentation <https://gemmi.readthedocs.io>`_
 
-Classes and Functions
----------------------
+Classes
+-------
 
 .. autoclass:: MMCIFReader
    :members:

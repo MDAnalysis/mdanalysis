@@ -36,8 +36,8 @@ in the relevant topology attributes:
     - :class:`MDAnalysis.core.topologyattrs.SegmentAttr` subclasses:
         - :class:`MDAnalysis.core.topologyattrs.Segids`
 
-Classes and Functions
----------------------
+Classes
+-------
 
 .. autoclass:: MMCIFParser
    :members:
