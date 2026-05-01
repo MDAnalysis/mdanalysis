@@ -119,8 +119,8 @@ def start_logging(stream="MDAnalysis.log", version=version.__version__):
         level="INFO",
         fmt="%(name)-12s: %(levelname)-8s %(message)s",
     )
-    logging.getLogger(__name__).info(
-        f"MDAnalysis {version} STARTED logging to {stream!r}"
+    logging.getLogger("MDAnalysis").info(
+        f"MDAnalysis {version} STARTED logging to {stream}"
     )
 
 
@@ -174,6 +174,7 @@ def create(
 
     # replaced with logging.getLogger(__name__)
     logger = logging.getLogger(logger_name)
+    logger.setLevel(logging.DEBUG)
 
     # This checks for file-like object per duck typing
     # https://docs.python.org/3/library/logging.handlers.html#streamhandler

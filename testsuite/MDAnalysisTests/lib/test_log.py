@@ -24,10 +24,20 @@
 import pytest
 import sys
 import logging
+import time
 import MDAnalysis as mda
 
 from os.path import basename
 from MDAnalysis.lib.log import ProgressBar
+
+
+@pytest.fixture
+def fixed_log_time(monkeypatch):
+    """Pytest fixture which temporarily set the logging's t0 to the UNIX epoc"""
+    epoch = 0
+
+    monkeypatch.setattr(logging.time, "time", lambda: epoch)
+    monkeypatch.setattr(logging.Formatter, "converter", time.gmtime)
 
 
 class TestConvenienceFunctions:
@@ -57,11 +67,26 @@ class TestConvenienceFunctions:
 
         assert len(logger.handlers) == 0
 
-def test_message_console(tmp_path):
-    pass
+    def test_message_file(self, tmp_path, fixed_log_time):
 
-def test_message_file(tmp_path):
-    pass
+        mda.start_logging(tmp_path / "MDAnalysis.log")
+
+        with open(tmp_path / "MDAnalysis.log") as f:
+
+            assert (
+                "1970-01-01 00:00:00,000 MDAnalysis   INFO     "
+                + f"MDAnalysis {mda.version.__version__} STARTED logging to {str(tmp_path)}"
+            )
+
+    def test_message_console(self, tmp_path, capsys):
+        mda.start_logging(tmp_path / "MDAnalysis.log")
+
+        assert (
+            "MDAnalysis  : INFO     "
+            + f"MDAnalysis {mda.version.__version__} STARTED logging to {str(tmp_path)}"
+            in capsys.readouterr().out
+        )
+
 
 # TODO need to make a fixture that can clear all handlers per test
 class TestCreateBehaviors:
@@ -93,14 +118,18 @@ class TestCreateBehaviors:
         ):
             mda.lib.log.create(stream=2)
 
+
 def test_level_parameter():
     pass
+
 
 def test_fmt_parameter():
     pass
 
+
 def test_mode_parameter():
     pass
+
 
 class TestProgressBar(object):
 
