@@ -68,6 +68,7 @@ from MDAnalysisTests.datafiles import (
     TPR2020B2,
     INPCRD,
     TPR_gh_5145,
+    TPR_linear_angle,
 )
 import MDAnalysis as mda
 
@@ -80,6 +81,15 @@ from numpy.testing import assert_allclose, assert_equal
 @pytest.mark.parametrize(
     "tpr_file, exp_first_atom, exp_last_atom, exp_shape, exp_vel_first_atom, exp_vel_last_atom",
     [
+        # see gh-5361 for CO2/linear angle:
+        (
+            TPR_linear_angle,
+            [1.250, 1.250, 1.250],
+            [1.250, 1.260, 1.136],
+            (3, 3),
+            [0, 0, 0],
+            [0, 0, 0],
+        ),
         # this case is an alanine dipeptide
         # with neural network potential active
         # and nonzero velocities
