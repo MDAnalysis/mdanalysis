@@ -80,6 +80,9 @@ from numpy.testing import assert_allclose, assert_equal
 @pytest.mark.parametrize(
     "tpr_file, exp_first_atom, exp_last_atom, exp_shape, exp_vel_first_atom, exp_vel_last_atom",
     [
+        # NOTE: expected values are expressed in nm
+        # units and converted to Angstrom in the body
+        # of the test below, before assertions
         # this case is an alanine dipeptide
         # with neural network potential active
         # and nonzero velocities
@@ -460,11 +463,15 @@ def test_basic_read_tpr(
         u = mda.Universe(tpr_file, tpr_file)
     else:
         u = mda.Universe(tpr_file)
-    assert_allclose(u.atoms.positions[0, ...], exp_first_atom)
-    assert_allclose(u.atoms.positions[-1, ...], exp_last_atom)
+    assert_allclose(u.atoms.positions[0, ...], np.asarray(exp_first_atom) * 10)
+    assert_allclose(u.atoms.positions[-1, ...], np.asarray(exp_last_atom) * 10)
     assert_equal(u.atoms.positions.shape, exp_shape)
-    assert_allclose(u.atoms.velocities[0, ...], exp_vel_first_atom)
-    assert_allclose(u.atoms.velocities[-1, ...], exp_vel_last_atom)
+    assert_allclose(
+        u.atoms.velocities[0, ...], np.asarray(exp_vel_first_atom) * 10
+    )
+    assert_allclose(
+        u.atoms.velocities[-1, ...], np.asarray(exp_vel_last_atom) * 10
+    )
     assert_equal(u.atoms.velocities.shape, exp_shape)
 
 
@@ -483,8 +490,8 @@ def test_different_versions():
     # reading topology and positions/velocities
     # for the same system with different TPR
     # file versions
-    exp_first_atom = [3.25000e-01, 1.00400e00, 1.03800e00]
-    exp_last_atom = [-2.56000e-01, 1.37300e00, 3.59800e00]
+    exp_first_atom = [3.25000, 10.0400, 10.3800]
+    exp_last_atom = [-2.56000, 13.7300, 35.9800]
     exp_shape = (2263, 3)
     exp_vel = np.zeros(3)
     u = mda.Universe(TPR2020, TPR2024_4)
