@@ -68,7 +68,7 @@ from ..core.topologyattrs import (
 )
 from ..core.topology import Topology
 
-logger = logging.getLogger("MDAnalysis.topology.PSF")
+logger = logging.getLogger(__name__)
 
 
 class PSFParser(TopologyReaderBase):

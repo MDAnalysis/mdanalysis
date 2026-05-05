@@ -77,7 +77,7 @@ from ..lib.util import cached, store_init_arguments
 
 import logging
 
-logger = logging.getLogger("MDAnalysis.coordinates.GROMOS11")
+logger = logging.getLogger(__name__)
 
 
 class TRCReader(base.ReaderBase):

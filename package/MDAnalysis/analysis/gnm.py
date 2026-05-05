@@ -97,7 +97,7 @@ from .base import AnalysisBase, ResultsGroup
 
 from MDAnalysis.analysis.base import Results
 
-logger = logging.getLogger("MDAnalysis.analysis.GNM")
+logger = logging.getLogger(__name__)
 
 
 def _dsq(a, b):

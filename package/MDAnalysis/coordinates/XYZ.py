@@ -88,7 +88,7 @@ import numpy as np
 import warnings
 import logging
 
-logger = logging.getLogger("MDAnalysis.coordinates.XYZ")
+logger = logging.getLogger(__name__)
 
 from . import base
 from .timestep import Timestep

@@ -116,7 +116,7 @@ from MDAnalysis.analysis.results import Results
 import logging
 from .base import AnalysisBase, ResultsGroup
 
-logger = logging.getLogger("MDAnalysis.analysis.atomicdistances")
+logger = logging.getLogger(__name__)
 
 
 class AtomicDistances(AnalysisBase):

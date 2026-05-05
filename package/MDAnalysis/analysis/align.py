@@ -218,7 +218,7 @@ from ..due import due, Doi
 
 from .base import AnalysisBase
 
-logger = logging.getLogger("MDAnalysis.analysis.align")
+logger = logging.getLogger(__name__)
 
 
 def rotation_matrix(a, b, weights=None):

@@ -225,7 +225,7 @@ from MDAnalysis.analysis.distances import distance_array
 from MDAnalysis.core.groups import AtomGroup, UpdatingAtomGroup
 from .base import AnalysisBase, ResultsGroup
 
-logger = logging.getLogger("MDAnalysis.analysis.contacts")
+logger = logging.getLogger(__name__)
 
 
 def soft_cut_q(r, r0, beta=5.0, lambda_constant=1.8):

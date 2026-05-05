@@ -177,7 +177,7 @@ from ..core.topologyattrs import Resnums
 
 import logging
 
-logger = logging.getLogger("MDAnalysis.topology.TPRparser")
+logger = logging.getLogger(__name__)
 
 
 class TPRParser(TopologyReaderBase):

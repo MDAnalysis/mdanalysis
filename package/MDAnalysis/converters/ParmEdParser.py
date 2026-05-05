@@ -122,7 +122,7 @@ from ..core.topologyattrs import (
 )
 from ..core.topology import Topology
 
-logger = logging.getLogger("MDAnalysis.converters.ParmEdParser")
+logger = logging.getLogger(__name__)
 
 
 def squash_identical(values):

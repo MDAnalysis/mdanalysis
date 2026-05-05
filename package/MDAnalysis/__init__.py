@@ -157,7 +157,7 @@ import warnings
 from typing import Dict
 
 
-logger = logging.getLogger("MDAnalysis.__init__")
+logger = logging.getLogger(__name__)
 
 from .version import __version__
 

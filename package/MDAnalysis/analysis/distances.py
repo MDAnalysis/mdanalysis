@@ -65,7 +65,7 @@ from MDAnalysis.lib.distances import calc_bonds
 import warnings
 import logging
 
-logger = logging.getLogger("MDAnalysis.analysis.distances")
+logger = logging.getLogger(__name__)
 
 
 def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None):
