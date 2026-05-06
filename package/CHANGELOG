@@ -18,10 +18,13 @@ The rules for this file:
          spyke7, talagayev, tanii1125, BradyAJohnston, hejamu, jeremyleung521,
          harshitgajjela-droid, kunjsinha, aygarwal, jauy123, Dreamstick9,
          ollyfutur, Amarendra22, charity-g, ParthUppal523
-
+ 
  * 2.11.0
 
 Fixes
+ * TPRReader now exposes box dimensions when loading TPR files
+   as coordinates-only Universes, fixing missing `Universe.dimensions`
+   values. (Issue #5375, PR #27)
  * `MDAnalysis.analysis.nucleicacids.WatsonCrickDist`, `MinorPairDist`,
    and `MajorPairDist` now match residue names against the full resname
    instead of only the first character, fixing incorrect behaviour with

@@ -51,6 +51,7 @@ Classes
 
 """
 
+from ..lib.mdamath import triclinic_box
 from . import base
 from ..lib import util
 from .timestep import Timestep
@@ -110,7 +111,15 @@ class TPRReader(base.SingleFrameReaderBase):
 
         state_ngtc = th.ngtc  # done init_state() in src/gmxlib/tpxio.c
         if th.bBox:
-            tpr_utils.extract_box_info(data, th.fver)
+            box_info = tpr_utils.extract_box_info(data, th.fver)
+            # box vectors are stored in nm
+            box_angstrom = np.array(box_info.size) * 10.0
+
+            ts.dimensions = triclinic_box(
+                box_angstrom[0],
+                box_angstrom[1],
+                box_angstrom[2],
+            )
 
         if state_ngtc > 0:
             if th.fver < 69:  # redundancy due to  different versions

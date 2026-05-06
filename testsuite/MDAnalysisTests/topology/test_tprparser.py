@@ -438,3 +438,22 @@ def test_resids(resid_from_one, resid_addition):
         resids,
         err_msg="tpr_resid_from_one kwarg not switching resids",
     )
+
+class TestTPRBoxVectors:
+    """Tests for TPRParser box vector support."""
+
+    def test_tpr_only_dimensions_not_none(self):
+        import MDAnalysis as mda
+        from MDAnalysisTests.datafiles import TPR
+
+        u = mda.Universe(TPR)
+
+        assert u.dimensions is not None
+
+    def test_tpr_only_dimensions_shape(self):
+        import MDAnalysis as mda
+        from MDAnalysisTests.datafiles import TPR
+
+        u = mda.Universe(TPR)
+
+        assert u.dimensions.shape == (6,)
