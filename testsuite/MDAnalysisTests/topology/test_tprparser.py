@@ -439,6 +439,7 @@ def test_resids(resid_from_one, resid_addition):
         err_msg="tpr_resid_from_one kwarg not switching resids",
     )
 
+
 class TestTPRBoxVectors:
     """Tests for TPRParser box vector support."""
 
