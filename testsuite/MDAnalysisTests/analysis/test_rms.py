@@ -194,6 +194,10 @@ class TestRMSD(object):
     def correct_values_backbone_group(self):
         return [[0, 1, 0, 0, 0], [49, 50, 4.6997, 1.9154, 2.7139]]
 
+    @pytest.fixture()
+    def correct_values_alphacarbons_group(self):
+        return [[0, 1, 0, 0], [49, 50, 1.6521, 1.6371]]
+
     def test_rmsd(self, universe, correct_values, client_RMSD):
         # client_RMSD is defined in testsuite/analysis/conftest.py
         # among with other testing fixtures. During testing, it will
