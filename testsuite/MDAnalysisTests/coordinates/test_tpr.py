@@ -75,6 +75,7 @@ import MDAnalysis as mda
 import pytest
 import numpy as np
 from numpy.testing import assert_allclose, assert_equal
+from MDAnalysisTests.datafiles import TPR
 
 
 @pytest.mark.parametrize(
@@ -494,3 +495,16 @@ def test_different_versions():
     assert_allclose(u.atoms.velocities[-1, ...], exp_vel)
     assert_equal(u.atoms.positions.shape, exp_shape)
     assert_equal(u.atoms.velocities.shape, exp_shape)
+
+
+class TestTPRDimensions:
+    """Tests for TPR coordinate box dimensions."""
+
+    def test_tpr_dimensions_values(self):
+        u = mda.Universe(TPR)
+
+        assert_allclose(
+            u.dimensions,
+            [80.017006, 80.017006, 80.017006, 60.0, 60.0, 90.0],
+            rtol=1e-5,
+        )
