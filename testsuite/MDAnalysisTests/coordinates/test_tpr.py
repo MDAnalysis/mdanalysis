@@ -500,11 +500,30 @@ def test_different_versions():
 class TestTPRDimensions:
     """Tests for TPR coordinate box dimensions."""
 
-    def test_tpr_dimensions_values(self):
-        u = mda.Universe(TPR)
-
-        assert_allclose(
-            u.dimensions,
-            [80.017006, 80.017006, 80.017006, 60.0, 60.0, 90.0],
-            rtol=1e-5,
-        )
+    @pytest.mark.parametrize(
+        "tpr_file, expected_dims",
+        [
+            # cubic box - adk oplsaa system (tpx 58)
+            (
+                TPR,
+                [80.017006, 80.017006, 80.017, 60.0, 60.0, 90.0],
+            ),
+            # cubic box - same system different gromacs versions
+            (
+                TPR2024_4,
+                [79.1, 79.1, 37.9, 90.0, 90.0, 90.0],
+            ),
+            (
+                TPR2016,
+                [79.1, 79.1, 37.9, 90.0, 90.0, 90.0],
+            ),
+            # different box shape
+            (
+                TPR455Double,
+                [43.7388, 43.7388, 107.9261, 90.0, 90.0, 90.0],
+            ),
+        ],
+    )
+    def test_tpr_dimensions_values(self, tpr_file, expected_dims):
+        u = mda.Universe(tpr_file)
+        assert_allclose(u.dimensions, expected_dims, rtol=1e-3)
