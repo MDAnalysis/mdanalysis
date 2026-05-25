@@ -900,6 +900,41 @@ is constructed from a density. It is suggested to start from a
 histogram and a length unit and use <a class="reference internal" href="#MDAnalysis.analysis.density.Density.make_density" title="MDAnalysis.analysis.density.Density.make_density"><code class="xref py py-meth docutils literal notranslate"><span class="pre">make_density()</span></code></a>.</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.density.Density.convert_to">
+<span class="sig-name descname"><span class="pre">convert_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format_specifier</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.Density.convert_to" title="Link to this definition"></a></dt>
+<dd><p>Returns an instance of the native object for a given format.</p>
+<p>Implemented formats:</p>
+<dl class="simple">
+<dt>DX</dt><dd><p><a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/formats/OpenDX.html#gridData.OpenDX.field" title="(in GridDataFormats v1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridData.OpenDX.field</span></code></a> (<strong>OpenDX</strong> format)</p>
+</dd>
+<dt>MRC</dt><dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">mrcfile.mrcinterpreter.MrcInterpreter</span></code> via
+<a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/formats/mrc.html#gridData.mrc.MRC" title="(in GridDataFormats v1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridData.mrc.MRC</span></code></a> (<strong>MRC/CCP4</strong> format)</p>
+</dd>
+<dt>VDB</dt><dd><p><strong>OpenVDB</strong> format, e.g., <code class="xref py py-class docutils literal notranslate"><span class="pre">openvdb.FloatGrid</span></code> or, if available,
+<code class="xref py py-class docutils literal notranslate"><span class="pre">openvdb.DoubleGrid</span></code> via
+<a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/formats/OpenVDB.html#gridData.OpenVDB.OpenVDBField" title="(in GridDataFormats v1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridData.OpenVDB.OpenVDBField</span></code></a></p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>format_specifier</strong> (<em>{&quot;DX&quot;</em><em>, </em><em>&quot;MRC&quot;</em><em>, </em><em>&quot;VDB&quot;}</em>)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>native object</p>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.2.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.density.Density.converter">
+<span class="sig-name descname"><span class="pre">converter</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'DX':</span> <span class="pre">&lt;bound</span> <span class="pre">method</span> <span class="pre">field.from_grid</span> <span class="pre">of</span> <span class="pre">&lt;class</span> <span class="pre">'gridData.OpenDX.field'&gt;&gt;,</span> <span class="pre">'MRC':</span> <span class="pre">&lt;bound</span> <span class="pre">method</span> <span class="pre">MRC.from_grid</span> <span class="pre">of</span> <span class="pre">&lt;class</span> <span class="pre">'gridData.mrc.MRC'&gt;&gt;,</span> <span class="pre">'VDB':</span> <span class="pre">&lt;bound</span> <span class="pre">method</span> <span class="pre">OpenVDBField.from_grid</span> <span class="pre">of</span> <span class="pre">&lt;class</span> <span class="pre">'gridData.OpenVDB.OpenVDBField'&gt;&gt;}</span></em><a class="headerlink" href="#MDAnalysis.analysis.density.Density.converter" title="Link to this definition"></a></dt>
+<dd><p>Available converters for <a class="reference internal" href="#MDAnalysis.analysis.density.Density.convert_to" title="MDAnalysis.analysis.density.Density.convert_to"><code class="xref py py-meth docutils literal notranslate"><span class="pre">convert_to()</span></code></a>.</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.density.Density.default_format">
 <span class="sig-name descname"><span class="pre">default_format</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'DX'</span></em><a class="headerlink" href="#MDAnalysis.analysis.density.Density.default_format" title="Link to this definition"></a></dt>
@@ -908,7 +943,7 @@ histogram and a length unit and use <a class="reference internal" href="#MDAnaly
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.density.Density.export">
-<span class="sig-name descname"><span class="pre">export</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typequote</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'&quot;'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.Density.export" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">export</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typequote</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'&quot;'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.Density.export" title="Link to this definition"></a></dt>
 <dd><p>export density to file using the given format.</p>
 <p>The format can also be deduced from the suffix of the filename
 although the <cite>file_format</cite> keyword takes precedence.</p>
@@ -916,19 +951,21 @@ although the <cite>file_format</cite> keyword takes precedence.</p>
 visualization.</p>
 <p>Implemented formats:</p>
 <dl class="simple">
-<dt>dx</dt><dd><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">OpenDX</span></code></p>
+<dt>dx</dt><dd><p><a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/formats/OpenDX.html#module-gridData.OpenDX" title="(in GridDataFormats v1.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">gridData.OpenDX</span></code></a></p>
 </dd>
-<dt>mrc</dt><dd><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">mrc</span></code> MRC/CCP4 format</p>
+<dt>mrc</dt><dd><p><a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/formats/mrc.html#module-gridData.mrc" title="(in GridDataFormats v1.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">gridData.mrc</span></code></a> MRC/CCP4 format</p>
 </dd>
 <dt>pickle</dt><dd><p>pickle (use <code class="xref py py-meth docutils literal notranslate"><span class="pre">Grid.load()</span></code> to restore); <code class="xref py py-meth docutils literal notranslate"><span class="pre">Grid.save()</span></code>
 is simpler than <code class="docutils literal notranslate"><span class="pre">export(format='python')</span></code>.</p>
+</dd>
+<dt>vdb</dt><dd><p><a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/formats/OpenVDB.html#module-gridData.OpenVDB" title="(in GridDataFormats v1.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">gridData.OpenVDB</span></code></a></p>
 </dd>
 </dl>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – name of the output file</p></li>
-<li><p><strong>file_format</strong> (<em>{'dx'</em><em>, </em><em>'pickle'</em><em>, </em><em>'mrc'</em><em>, </em><em>None}</em><em> (</em><em>optional</em><em>)</em>) – output file format, the default is “dx”</p></li>
+<li><p><strong>file_format</strong> (<em>{'dx'</em><em>, </em><em>'pickle'</em><em>, </em><em>'mrc'</em><em>, </em><em>'vdb'</em><em>, </em><em>None}</em><em> (</em><em>optional</em><em>)</em>) – output file format, the default is “dx”</p></li>
 <li><p><strong>type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – <p>for DX, set the output DX array type, e.g., “double” or “float”.
 By default (<code class="docutils literal notranslate"><span class="pre">None</span></code>), the DX type is determined from the numpy
 dtype of the array of the grid (and this will typically result in
@@ -943,6 +980,12 @@ Custom parsers like the one from NAMD-GridForces (backend for MDFF)
 expect no quotes, and typequote=’’ may be used to appease them.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 0.5.0.</span></p>
+</div>
+</p></li>
+<li><p><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – <p>For VDB, values below this tolerance are treated as background (sparse),
+default <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.2.0.</span></p>
 </div>
 </p></li>
 </ul>
@@ -1012,6 +1055,24 @@ extruded volumes when interpolating beyond the grid.</p>
 <dd><p>Load saved grid and edges from <cite>filename</cite></p>
 <p>The <a class="reference internal" href="#MDAnalysis.analysis.density.Density.load" title="MDAnalysis.analysis.density.Density.load"><code class="xref py py-meth docutils literal notranslate"><span class="pre">load()</span></code></a> method calls the class’s constructor method and
 completely resets all values, based on the loaded data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Name of the file.</p></li>
+<li><p><strong>file_format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> or </em><em>None</em><em>, </em><em>optional</em>) – Set the file format (e.g., “DX” or “MRC”). If <code class="docutils literal notranslate"><span class="pre">None</span></code> then
+try to guess the format.</p></li>
+<li><p><strong>assume_volumetric</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – Optional keyword argument that is only taken into account by
+the <a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/formats/mrc.html#gridData.mrc.MRC" title="(in GridDataFormats v1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridData.mrc.MRC</span></code></a> file parser.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – The underlying file parser raises an <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> if it fails
+    to parse the file.</p>
+</dd>
+</dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.2.0: </span>Ensure that underlying parsers consistently raise ValueError.</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
