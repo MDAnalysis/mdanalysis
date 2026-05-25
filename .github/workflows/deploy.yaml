@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - "package-*"
+      - "develop"
   push:
     branches:
       - "package-*"
@@ -39,8 +40,10 @@ jobs:
       matrix:
         buildplat:
           - [ubuntu-22.04, manylinux_x86_64, x86_64]
-          - [windows-2022, win_amd64, AMD64]
-          - [macos-14, macosx_*, arm64]
+          - [ubuntu-24.04-arm, manylinux, aarch64]
+          - [windows-2025, win_amd64, amd64]
+          - [macos-14, macosx, arm64]
+          - [macos-15-intel, macosx, x86_64]
         python: ["cp311", "cp312", "cp313", "cp314"]
     defaults:
       run:
@@ -51,7 +54,7 @@ jobs:
           fetch-depth: 0
 
       - name: Build wheels
-        uses: pypa/cibuildwheel@v3.4.0
+        uses: pypa/cibuildwheel@v3.4.1
         with:
           package-dir: package
         env:
@@ -145,7 +148,7 @@ jobs:
           mv dist/mdanalysistests-* testsuite/dist
 
       - name: upload_source_and_wheels
-        uses: pypa/gh-action-pypi-publish@v1.13.0
+        uses: pypa/gh-action-pypi-publish@v1.14.0
         with:
           skip_existing: true
           repository_url: https://test.pypi.org/legacy/
@@ -174,7 +177,7 @@ jobs:
           mv dist/mdanalysistests-* testsuite/dist
 
       - name: upload_tests
-        uses: pypa/gh-action-pypi-publish@v1.13.0
+        uses: pypa/gh-action-pypi-publish@v1.14.0
         with:
           packages_dir: testsuite/dist
           skip_existing: true
@@ -204,7 +207,7 @@ jobs:
           mv dist/mdanalysistests-* testsuite/dist
 
       - name: upload_source_and_wheels
-        uses: pypa/gh-action-pypi-publish@v1.13.0
+        uses: pypa/gh-action-pypi-publish@v1.14.0
 
   upload_pypi_mdanalysistests:
     if: |
@@ -230,7 +233,7 @@ jobs:
           mv dist/mdanalysistests-* testsuite/dist
 
       - name: upload_tests
-        uses: pypa/gh-action-pypi-publish@v1.13.0
+        uses: pypa/gh-action-pypi-publish@v1.14.0
         with:
           packages_dir: testsuite/dist
 
@@ -250,7 +253,10 @@ jobs:
         type: ["FULL", "MIN"]
         exclude:
           # Multiple deps don't like windows
+          # macos doesn't like HOLE2
           - os: windows-latest
+            type: "FULL"
+          - os: "macos-latest"
             type: "FULL"
           - python-version: "3.14"
             type: "FULL"
@@ -261,7 +267,7 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: setup_micromamba
-        uses: mamba-org/setup-micromamba@v2
+        uses: mamba-org/setup-micromamba@v3
         with:
           environment-name: mda
           create-args: >-
