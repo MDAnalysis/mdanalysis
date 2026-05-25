@@ -253,7 +253,7 @@ jobs:
         type: ["FULL", "MIN"]
         exclude:
           # Multiple deps don't like windows
-          # macos doesn't like HOLE2
+          # no osx-arm64 packages for HOLE2
           - os: windows-latest
             type: "FULL"
           - os: "macos-latest"
