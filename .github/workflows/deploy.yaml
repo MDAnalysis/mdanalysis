@@ -39,9 +39,9 @@ jobs:
       fail-fast: false
       matrix:
         buildplat:
-          - [ubuntu-22.04, manylinux_x86_64, x86_64]
+          - [ubuntu-22.04, manylinux, x86_64]
           - [ubuntu-24.04-arm, manylinux, aarch64]
-          - [windows-2025, win_amd64, amd64]
+          - [windows-2025, win, amd64]
           - [macos-14, macosx, arm64]
           - [macos-15-intel, macosx, x86_64]
         python: ["cp311", "cp312", "cp313", "cp314"]
@@ -58,7 +58,7 @@ jobs:
         with:
           package-dir: package
         env:
-          CIBW_BUILD: ${{ matrix.python }}-${{ matrix.buildplat[1] }}
+          CIBW_BUILD: ${{ matrix.python }}-${{ matrix.buildplat[1] }}_${{ matrix.buildplat[2] }}
           CIBW_ARCHS: ${{ matrix.buildplat[2] }}
           CIBW_BUILD_VERBOSITY: 1
 
