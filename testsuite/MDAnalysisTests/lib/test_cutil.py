@@ -28,6 +28,7 @@ from MDAnalysis.lib._cutil import (
     unique_int_1d,
     find_fragments,
     _in2d,
+    inverse_int_index,
 )
 
 
@@ -103,3 +104,52 @@ def test_in2d_VE(arr1, arr2):
         ValueError, match=r"Both arrays must be \(n, 2\) arrays"
     ):
         _in2d(arr1, arr2)
+
+
+def _python_reference_mask(ix, indices):
+    mask = np.zeros_like(ix)
+    for i, x in enumerate(indices):
+        values = np.where(ix == x)[0]
+        mask[values] = i
+    return mask
+
+
+@pytest.mark.parametrize(
+    "ix,indices",
+    [
+        # unsorted and not unique
+        (
+            np.array([1, 5, 3, 3, 6], dtype=np.intp),
+            np.array([1, 5, 3, 6], dtype=np.intp),
+        ),
+        # sorted and not unique
+        (
+            np.array([1, 3, 3, 5, 6], dtype=np.intp),
+            np.array([1, 3, 5, 6], dtype=np.intp),
+        ),
+        # unsorted and unique
+        (
+            np.array([1, 5, 3, 6], dtype=np.intp),
+            np.array([1, 5, 3, 6], dtype=np.intp),
+        ),
+        # sorted and unique
+        (
+            np.array([1, 3, 5, 6], dtype=np.intp),
+            np.array([1, 3, 5, 6], dtype=np.intp),
+        ),
+        # all elements identical
+        (
+            np.array([5, 5, 5], dtype=np.intp),
+            np.array([5], dtype=np.intp),
+        ),
+        # single element
+        (
+            np.array([7], dtype=np.intp),
+            np.array([7], dtype=np.intp),
+        ),
+    ],
+)
+def test_inverse_int_index(ix, indices):
+    pyref = _python_reference_mask(ix, indices)
+    cy = inverse_int_index(ix, indices)
+    assert_equal(pyref, cy)
