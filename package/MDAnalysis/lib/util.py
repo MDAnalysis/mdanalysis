@@ -505,9 +505,12 @@ def greedy_splitext(p):
     -------
 
     >>> from MDAnalysis.lib.util import greedy_splitext
-    >>> greedy_splitext("/home/joe/protein.pdb.bz2")
-    ('/home/joe/protein', '.pdb.bz2')
-
+    >>> import os
+    >>> path, ext = greedy_splitext("/home/joe/protein.pdb.bz2")
+    >>> path == '/home/joe' + os.path.sep + 'protein'
+    True
+    >>> ext == '.pdb.bz2'
+    True
     """
     path, root = os.path.split(p)
     extension = ""

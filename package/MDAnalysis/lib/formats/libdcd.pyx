@@ -140,8 +140,7 @@ cdef class DCDFile:
     --------
     >>> from MDAnalysis.lib.formats.libdcd import DCDFile
     >>> with DCDFile('foo.dcd') as f:
-    >>>     for frame in f:
-    >>>         print(frame.x)
+    ...     pass
 
 
     Notes
