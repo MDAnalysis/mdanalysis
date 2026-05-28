@@ -140,7 +140,9 @@ def from_PDB(
     --------
     Download a single PDB file:
 
-    >>> mda.fetch.from_PDB("1AKE", file_format="cif")
+    >>> import MDAnalysis as mda
+    >>> from MDAnalysis.fetch import from_PDB
+    >>> from_PDB("1AKE", file_format="cif")
     './MDAnalysis_pdbs/1AKE.cif'
 
     Download multiple PDB files with a progress bar:

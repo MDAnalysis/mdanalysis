@@ -1,0 +1,710 @@
+Results of doctest builder run on 2026-05-28 20:54:48
+=====================================================
+
+Document: documentation_pages/analysis/dssp
+-------------------------------------------
+1 items passed all tests:
+  12 tests in default
+12 tests in 1 items.
+12 passed and 0 failed.
+Test passed.
+
+Document: documentation_pages/analysis/encore/similarity
+--------------------------------------------------------
+**********************************************************************
+File "documentation_pages\analysis\encore\similarity.rst", line ?, in default
+Failed example:
+    print(HES)
+Expected:
+    [[       0.         38279540.04524205]
+     [38279540.04524205        0.        ]]
+Got:
+    [[       0.         38278784.55126423]
+     [38278784.55126423        0.        ]]
+**********************************************************************
+File "documentation_pages\analysis\encore\similarity.rst", line ?, in default
+Failed example:
+    print(HES)
+Expected:
+    [[       0.         38279540.04524205]
+     [38279540.04524205        0.        ]]
+Got:
+    [[       0.         38278784.55126423]
+     [38278784.55126423        0.        ]]
+**********************************************************************
+File "documentation_pages\analysis\encore\similarity.rst", line ?, in default
+Failed example:
+    print(encore.hes([ens1, ens2], align=True)[0])
+Expected:
+    [[   0.         6889.89729056]
+     [6889.89729056    0.        ]]
+Got:
+    [[   0.         6889.89716339]
+     [6889.89716339    0.        ]]
+**********************************************************************
+File "documentation_pages\analysis\encore\similarity.rst", line ?, in default
+Failed example:
+    print(encore.hes([ens1, ens2])[0])
+Expected:
+    [[   0.         6889.89729056]
+     [6889.89729056    0.        ]]
+Got:
+    [[   0.         6889.89716339]
+     [6889.89716339    0.        ]]
+**********************************************************************
+File "documentation_pages\analysis\encore\similarity.rst", line ?, in default
+Failed example:
+    CES, details = encore.ces([ens1,ens2],
+                              clustering_method = [encore.DBSCAN(eps=0.45),
+                                                   encore.DBSCAN(eps=0.50)])
+Exception raised:
+    Traceback (most recent call last):
+      File "C:\Users\13076\.conda\envs\mdanalysis-311\Lib\doctest.py", line 1355, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest default[7]>", line 2, in <module>
+        clustering_method = [encore.DBSCAN(eps=0.45),
+                             ^^^^^^^^^^^^^
+    AttributeError: module 'MDAnalysis.analysis.encore' has no attribute 'DBSCAN'
+**********************************************************************
+File "documentation_pages\analysis\encore\similarity.rst", line ?, in default
+Failed example:
+    print("eps=0.45: ", CES[0])
+Expected:
+    eps=0.45:  [[0.         0.20447236]
+     [0.20447236 0.        ]]
+Got:
+    eps=0.45:  [0.         0.68070702]
+**********************************************************************
+File "documentation_pages\analysis\encore\similarity.rst", line ?, in default
+Failed example:
+    print("eps=0.5: ", CES[1])
+Expected:
+    eps=0.5:  [[0.         0.25331629]
+     [0.25331629 0.        ]]
+Got:
+    eps=0.5:  [0.68070702 0.        ]
+**********************************************************************
+File "documentation_pages\analysis\encore\similarity.rst", line ?, in default
+Failed example:
+    PCA_method = encore.PrincipalComponentAnalysis(dimension=2)
+Exception raised:
+    Traceback (most recent call last):
+      File "C:\Users\13076\.conda\envs\mdanalysis-311\Lib\doctest.py", line 1355, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest default[6]>", line 1, in <module>
+        PCA_method = encore.PrincipalComponentAnalysis(dimension=2)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    AttributeError: module 'MDAnalysis.analysis.encore' has no attribute 'PrincipalComponentAnalysis'
+**********************************************************************
+File "documentation_pages\analysis\encore\similarity.rst", line ?, in default
+Failed example:
+    DRES, details = encore.dres([ens1,ens2],
+                                dimensionality_reduction_method=PCA_method)
+Exception raised:
+    Traceback (most recent call last):
+      File "C:\Users\13076\.conda\envs\mdanalysis-311\Lib\doctest.py", line 1355, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest default[7]>", line 2, in <module>
+        dimensionality_reduction_method=PCA_method)
+                                        ^^^^^^^^^^
+    NameError: name 'PCA_method' is not defined
+**********************************************************************
+File "documentation_pages\analysis\encore\similarity.rst", line ?, in default
+Failed example:
+    CES, details = encore.ces([ens1,ens2],
+                              clustering_method = [encore.DBSCAN(eps=0.45),
+                                                   encore.DBSCAN(eps=0.50)])
+Exception raised:
+    Traceback (most recent call last):
+      File "C:\Users\13076\.conda\envs\mdanalysis-311\Lib\doctest.py", line 1355, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest default[7]>", line 2, in <module>
+        clustering_method = [encore.DBSCAN(eps=0.45),
+                             ^^^^^^^^^^^^^
+    AttributeError: module 'MDAnalysis.analysis.encore' has no attribute 'DBSCAN'
+**********************************************************************
+File "documentation_pages\analysis\encore\similarity.rst", line ?, in default
+Failed example:
+    print("eps=0.45: ", CES[0])
+Expected:
+    eps=0.45:  [[0.         0.20447236]
+     [0.20447236 0.        ]]
+Got:
+    eps=0.45:  [0.         0.68070702]
+**********************************************************************
+File "documentation_pages\analysis\encore\similarity.rst", line ?, in default
+Failed example:
+    print("eps=0.5: ", CES[1])
+Expected:
+    eps=0.5:  [[0.         0.25331629]
+     [0.25331629 0.        ]]
+Got:
+    eps=0.5:  [0.68070702 0.        ]
+**********************************************************************
+File "documentation_pages\analysis\encore\similarity.rst", line ?, in default
+Failed example:
+    PCA_method = encore.PrincipalComponentAnalysis(dimension=2)
+Exception raised:
+    Traceback (most recent call last):
+      File "C:\Users\13076\.conda\envs\mdanalysis-311\Lib\doctest.py", line 1355, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest default[6]>", line 1, in <module>
+        PCA_method = encore.PrincipalComponentAnalysis(dimension=2)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    AttributeError: module 'MDAnalysis.analysis.encore' has no attribute 'PrincipalComponentAnalysis'
+**********************************************************************
+File "documentation_pages\analysis\encore\similarity.rst", line ?, in default
+Failed example:
+    DRES, details = encore.dres([ens1,ens2],
+                                dimensionality_reduction_method=PCA_method)
+Exception raised:
+    Traceback (most recent call last):
+      File "C:\Users\13076\.conda\envs\mdanalysis-311\Lib\doctest.py", line 1355, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest default[7]>", line 2, in <module>
+        dimensionality_reduction_method=PCA_method)
+                                        ^^^^^^^^^^
+    NameError: name 'PCA_method' is not defined
+**********************************************************************
+File "documentation_pages\analysis\encore\similarity.rst", line ?, in default
+Failed example:
+    print(HES)
+Expected:
+    [[       0.         38279540.04524205]
+     [38279540.04524205        0.        ]]
+Got:
+    [[       0.         38278784.55126423]
+     [38278784.55126423        0.        ]]
+**********************************************************************
+File "documentation_pages\analysis\encore\similarity.rst", line ?, in default
+Failed example:
+    print(encore.hes([ens1, ens2], align=True)[0])
+Expected:
+    [[   0.         6889.89729056]
+     [6889.89729056    0.        ]]
+Got:
+    [[   0.         6889.89716339]
+     [6889.89716339    0.        ]]
+**********************************************************************
+File "documentation_pages\analysis\encore\similarity.rst", line ?, in default
+Failed example:
+    print(encore.hes([ens1, ens2])[0])
+Expected:
+    [[   0.         6889.89729056]
+     [6889.89729056    0.        ]]
+Got:
+    [[   0.         6889.89716339]
+     [6889.89716339    0.        ]]
+**********************************************************************
+1 items had failures:
+  17 of 102 in default
+102 tests in 1 items.
+85 passed and 17 failed.
+***Test Failed*** 17 failures.
+
+Document: documentation_pages/analysis/pca
+------------------------------------------
+**********************************************************************
+File "..\..\..\MDAnalysis\analysis\pca.py", line ?, in default (setup code)
+Failed example:
+    >>> import MDAnalysis as mda
+    >>> import MDAnalysis.analysis.pca as pca
+    >>> from MDAnalysis.tests.datafiles import PSF, DCD
+    >>> u = mda.Universe(PSF, DCD)
+Exception raised:
+    Traceback (most recent call last):
+      File "C:\Users\13076\.conda\envs\mdanalysis-311\Lib\doctest.py", line 1355, in __run
+        exec(compile(example.source, filename, "single",
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "C:\Users\13076\.conda\envs\mdanalysis-311\Lib\site-packages\sphinx\ext\doctest.py", line 524, in compile
+        return compile(code, name, self.type, flags, dont_inherit)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default (setup code)[0]>", line 1
+        >>> import MDAnalysis as mda
+        ^^
+    SyntaxError: invalid syntax
+**********************************************************************
+File "..\..\..\MDAnalysis\analysis\pca.py", line ?, in default (setup code)
+Failed example:
+    >>> import MDAnalysis as mda
+    >>> import MDAnalysis.analysis.pca as pca
+    >>> from MDAnalysis.tests.datafiles import PSF, DCD
+    >>> u = mda.Universe(PSF, DCD)
+Exception raised:
+    Traceback (most recent call last):
+      File "C:\Users\13076\.conda\envs\mdanalysis-311\Lib\doctest.py", line 1355, in __run
+        exec(compile(example.source, filename, "single",
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "C:\Users\13076\.conda\envs\mdanalysis-311\Lib\site-packages\sphinx\ext\doctest.py", line 524, in compile
+        return compile(code, name, self.type, flags, dont_inherit)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "<doctest default (setup code)[1]>", line 1
+        >>> import MDAnalysis as mda
+        ^^
+    SyntaxError: invalid syntax
+**********************************************************************
+1 items had failures:
+   2 of   2 in default (setup code)
+***Test Failed*** 2 failures.
+
+Document: documentation_pages/analysis/results
+----------------------------------------------
+1 items passed all tests:
+   8 tests in default
+8 tests in 1 items.
+8 passed and 0 failed.
+Test passed.
+
+Document: documentation_pages/analysis/rms
+------------------------------------------
+1 items passed all tests:
+   9 tests in default
+9 tests in 1 items.
+9 passed and 0 failed.
+Test passed.
+
+Document: documentation_pages/converters/OpenMM
+-----------------------------------------------
+**********************************************************************
+File "documentation_pages\converters\OpenMM.rst", line ?, in default
+Failed example:
+    import openmm.app as app
+Exception raised:
+    Traceback (most recent call last):
+      File "C:\Users\13076\.conda\envs\mdanalysis-311\Lib\doctest.py", line 1355, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest default[0]>", line 1, in <module>
+        import openmm.app as app
+    ModuleNotFoundError: No module named 'openmm'
+**********************************************************************
+File "documentation_pages\converters\OpenMM.rst", line ?, in default
+Failed example:
+    pdbxfile = app.PDBxFile(PDBX)
+Exception raised:
+    Traceback (most recent call last):
+      File "C:\Users\13076\.conda\envs\mdanalysis-311\Lib\doctest.py", line 1355, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest default[3]>", line 1, in <module>
+        pdbxfile = app.PDBxFile(PDBX)
+                   ^^^
+    NameError: name 'app' is not defined
+**********************************************************************
+File "documentation_pages\converters\OpenMM.rst", line ?, in default
+Failed example:
+    mda.Universe(pdbxfile)
+Exception raised:
+    Traceback (most recent call last):
+      File "C:\Users\13076\.conda\envs\mdanalysis-311\Lib\doctest.py", line 1355, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest default[4]>", line 1, in <module>
+        mda.Universe(pdbxfile)
+                     ^^^^^^^^
+    NameError: name 'pdbxfile' is not defined
+**********************************************************************
+1 items had failures:
+   3 of   5 in default
+5 tests in 1 items.
+2 passed and 3 failed.
+***Test Failed*** 3 failures.
+
+Document: documentation_pages/coordinates/LAMMPS
+------------------------------------------------
+1 items passed all tests:
+   8 tests in default
+8 tests in 1 items.
+8 passed and 0 failed.
+Test passed.
+
+Document: documentation_pages/coordinates/timestep
+--------------------------------------------------
+**********************************************************************
+File "documentation_pages\coordinates\timestep.rst", line ?, in default
+Failed example:
+    ts.dimensions
+Exception raised:
+    Traceback (most recent call last):
+      File "C:\Users\13076\.conda\envs\mdanalysis-311\Lib\doctest.py", line 1355, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest default[0]>", line 1, in <module>
+        ts.dimensions
+        ^^
+    NameError: name 'ts' is not defined
+**********************************************************************
+File "documentation_pages\coordinates\timestep.rst", line ?, in default
+Failed example:
+    ts.triclinic_dimensions
+Exception raised:
+    Traceback (most recent call last):
+      File "C:\Users\13076\.conda\envs\mdanalysis-311\Lib\doctest.py", line 1355, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest default[1]>", line 1, in <module>
+        ts.triclinic_dimensions
+        ^^
+    NameError: name 'ts' is not defined
+**********************************************************************
+1 items had failures:
+   2 of   2 in default
+2 tests in 1 items.
+0 passed and 2 failed.
+***Test Failed*** 2 failures.
+
+Document: documentation_pages/core/groups
+-----------------------------------------
+**********************************************************************
+File "..\..\..\MDAnalysis\core\groups.py", line ?, in GroupBase.center
+Failed example:
+    sel.accumulate('charges')
+Expected:
+    -251.68500316143036
+Got:
+    np.float64(-251.68500316143036)
+**********************************************************************
+File "..\..\..\MDAnalysis\core\groups.py", line ?, in GroupBase.center
+Failed example:
+    sel.accumulate('charges')
+Expected:
+    -251.68500316143036
+Got:
+    np.float64(-251.68500316143036)
+**********************************************************************
+File "..\..\..\MDAnalysis\core\groups.py", line ?, in GroupBase.center
+Failed example:
+    sel.accumulate('charges')
+Expected:
+    -251.68500316143036
+Got:
+    np.float64(-251.68500316143036)
+**********************************************************************
+File "..\..\..\MDAnalysis\core\groups.py", line ?, in GroupBase.groupby
+Failed example:
+    ag.groupby('masses')
+Expected:
+    {32.06: <AtomGroup with 7 atoms>,
+     1.008: <AtomGroup with 1685 atoms>,
+     12.011: <AtomGroup with 1040 atoms>,
+     14.007: <AtomGroup with 289 atoms>,
+     15.999: <AtomGroup with 320 atoms>}
+Got:
+    {np.float64(32.06): <AtomGroup with 7 atoms>, np.float64(1.008): <AtomGroup with 1685 atoms>, np.float64(12.011): <AtomGroup with 1040 atoms>, np.float64(14.007): <AtomGroup with 289 atoms>, np.float64(15.999): <AtomGroup with 320 atoms>}
+**********************************************************************
+File "..\..\..\MDAnalysis\core\groups.py", line ?, in GroupBase.groupby
+Failed example:
+    dict(sorted(group_dict.items()))
+Expected:
+    {('ALA', 1.008): <AtomGroup with 95 atoms>,
+     ('ALA', 12.011): <AtomGroup with 57 atoms>,
+     ('ALA', 14.007): <AtomGroup with 19 atoms>,
+     ('ALA', 15.999): <AtomGroup with 19 atoms>,
+     ('ARG', 1.008): <AtomGroup with 169 atoms>,
+     ...
+Got:
+    {('ALA', np.float64(1.008)): <AtomGroup with 95 atoms>, ('ALA', np.float64(12.011)): <AtomGroup with 57 atoms>, ('ALA', np.float64(14.007)): <AtomGroup with 19 atoms>, ('ALA', np.float64(15.999)): <AtomGroup with 19 atoms>, ('ARG', np.float64(1.008)): <AtomGroup with 169 atoms>, ('ARG', np.float64(12.011)): <AtomGroup with 78 atoms>, ('ARG', np.float64(14.007)): <AtomGroup with 52 atoms>, ('ARG', np.float64(15.999)): <AtomGroup with 13 atoms>, ('ASN', np.float64(1.008)): <AtomGroup with 24 atoms>, ('ASN', np.float64(12.011)): <AtomGroup with 16 atoms>, ('ASN', np.float64(14.007)): <AtomGroup with 8 atoms>, ('ASN', np.float64(15.999)): <AtomGroup with 8 atoms>, ('ASP', np.float64(1.008)): <AtomGroup with 68 atoms>, ('ASP', np.float64(12.011)): <AtomGroup with 68 atoms>, ('ASP', np.float64(14.007)): <AtomGroup with 17 atoms>, ('ASP', np.float64(15.999)): <AtomGroup with 51 atoms>, ('CYS', np.float64(1.008)): <AtomGroup with 5 atoms>, ('CYS', np.float64(12.011)): <AtomGroup with 3 atoms>, ('CYS', np.float64(14.007)): <AtomGroup with 1 atom>, ('CYS', np.float64(15.999)): <AtomGroup with 1 atom>, ('CYS', np.float64(32.06)): <AtomGroup with 1 atom>, ('GLN', np.float64(1.008)): <AtomGroup with 64 atoms>, ('GLN', np.float64(12.011)): <AtomGroup with 40 atoms>, ('GLN', np.float64(14.007)): <AtomGroup with 16 atoms>, ('GLN', np.float64(15.999)): <AtomGroup with 16 atoms>, ('GLU', np.float64(1.008)): <AtomGroup with 108 atoms>, ('GLU', np.float64(12.011)): <AtomGroup with 90 atoms>, ('GLU', np.float64(14.007)): <AtomGroup with 18 atoms>, ('GLU', np.float64(15.999)): <AtomGroup with 54 atoms>, ('GLY', np.float64(1.008)): <AtomGroup with 60 atoms>, ('GLY', np.float64(12.011)): <AtomGroup with 40 atoms>, ('GLY', np.float64(14.007)): <AtomGroup with 20 atoms>, ('GLY', np.float64(15.999)): <AtomGroup with 21 atoms>, ('HSD', np.float64(1.008)): <AtomGroup with 21 atoms>, ('HSD', np.float64(12.011)): <AtomGroup with 18 atoms>, ('HSD', np.float64(14.007)): <AtomGroup with 9 atoms>, ('HSD', np.float64(15.999)): <AtomGroup with 3 atoms>, ('ILE', np.float64(1.008)): <AtomGroup with 154 atoms>, ('ILE', np.float64(12.011)): <AtomGroup with 84 atoms>, ('ILE', np.float64(14.007)): <AtomGroup with 14 atoms>, ('ILE', np.float64(15.999)): <AtomGroup with 14 atoms>, ('LEU', np.float64(1.008)): <AtomGroup with 176 atoms>, ('LEU', np.float64(12.011)): <AtomGroup with 96 atoms>, ('LEU', np.float64(14.007)): <AtomGroup with 16 atoms>, ('LEU', np.float64(15.999)): <AtomGroup with 16 atoms>, ('LYS', np.float64(1.008)): <AtomGroup with 234 atoms>, ('LYS', np.float64(12.011)): <AtomGroup with 108 atoms>, ('LYS', np.float64(14.007)): <AtomGroup with 36 atoms>, ('LYS', np.float64(15.999)): <AtomGroup with 18 atoms>, ('MET', np.float64(1.008)): <AtomGroup with 56 atoms>, ('MET', np.float64(12.011)): <AtomGroup with 30 atoms>, ('MET', np.float64(14.007)): <AtomGroup with 6 atoms>, ('MET', np.float64(15.999)): <AtomGroup with 6 atoms>, ('MET', np.float64(32.06)): <AtomGroup with 6 atoms>, ('PHE', np.float64(1.008)): <AtomGroup with 45 atoms>, ('PHE', np.float64(12.011)): <AtomGroup with 45 atoms>, ('PHE', np.float64(14.007)): <AtomGroup with 5 atoms>, ('PHE', np.float64(15.999)): <AtomGroup with 5 atoms>, ('PRO', np.float64(1.008)): <AtomGroup with 70 atoms>, ('PRO', np.float64(12.011)): <AtomGroup with 50 atoms>, ('PRO', np.float64(14.007)): <AtomGroup with 10 atoms>, ('PRO', np.float64(15.999)): <AtomGroup with 10 atoms>, ('SER', np.float64(1.008)): <AtomGroup with 25 atoms>, ('SER', np.float64(12.011)): <AtomGroup with 15 atoms>, ('SER', np.float64(14.007)): <AtomGroup with 5 atoms>, ('SER', np.float64(15.999)): <AtomGroup with 10 atoms>, ('THR', np.float64(1.008)): <AtomGroup with 77 atoms>, ('THR', np.float64(12.011)): <AtomGroup with 44 atoms>, ('THR', np.float64(14.007)): <AtomGroup with 11 atoms>, ('THR', np.float64(15.999)): <AtomGroup with 22 atoms>, ('TYR', np.float64(1.008)): <AtomGroup with 63 atoms>, ('TYR', np.float64(12.011)): <AtomGroup with 63 atoms>, ('TYR', np.float64(14.007)): <AtomGroup with 7 atoms>, ('TYR', np.float64(15.999)): <AtomGroup with 14 atoms>, ('VAL', np.float64(1.008)): <AtomGroup with 171 atoms>, ('VAL', np.float64(12.011)): <AtomGroup with 95 atoms>, ('VAL', np.float64(14.007)): <AtomGroup with 19 atoms>, ('VAL', np.float64(15.999)): <AtomGroup with 19 atoms>}
+**********************************************************************
+File "..\..\..\MDAnalysis\core\groups.py", line ?, in GroupBase.groupby
+Failed example:
+    ag.groupby('masses')
+Expected:
+    {32.06: <AtomGroup with 7 atoms>,
+     1.008: <AtomGroup with 1685 atoms>,
+     12.011: <AtomGroup with 1040 atoms>,
+     14.007: <AtomGroup with 289 atoms>,
+     15.999: <AtomGroup with 320 atoms>}
+Got:
+    {np.float64(32.06): <AtomGroup with 7 atoms>, np.float64(1.008): <AtomGroup with 1685 atoms>, np.float64(12.011): <AtomGroup with 1040 atoms>, np.float64(14.007): <AtomGroup with 289 atoms>, np.float64(15.999): <AtomGroup with 320 atoms>}
+**********************************************************************
+File "..\..\..\MDAnalysis\core\groups.py", line ?, in GroupBase.groupby
+Failed example:
+    dict(sorted(group_dict.items()))
+Expected:
+    {('ALA', 1.008): <AtomGroup with 95 atoms>,
+     ('ALA', 12.011): <AtomGroup with 57 atoms>,
+     ('ALA', 14.007): <AtomGroup with 19 atoms>,
+     ('ALA', 15.999): <AtomGroup with 19 atoms>,
+     ('ARG', 1.008): <AtomGroup with 169 atoms>,
+     ...
+Got:
+    {('ALA', np.float64(1.008)): <AtomGroup with 95 atoms>, ('ALA', np.float64(12.011)): <AtomGroup with 57 atoms>, ('ALA', np.float64(14.007)): <AtomGroup with 19 atoms>, ('ALA', np.float64(15.999)): <AtomGroup with 19 atoms>, ('ARG', np.float64(1.008)): <AtomGroup with 169 atoms>, ('ARG', np.float64(12.011)): <AtomGroup with 78 atoms>, ('ARG', np.float64(14.007)): <AtomGroup with 52 atoms>, ('ARG', np.float64(15.999)): <AtomGroup with 13 atoms>, ('ASN', np.float64(1.008)): <AtomGroup with 24 atoms>, ('ASN', np.float64(12.011)): <AtomGroup with 16 atoms>, ('ASN', np.float64(14.007)): <AtomGroup with 8 atoms>, ('ASN', np.float64(15.999)): <AtomGroup with 8 atoms>, ('ASP', np.float64(1.008)): <AtomGroup with 68 atoms>, ('ASP', np.float64(12.011)): <AtomGroup with 68 atoms>, ('ASP', np.float64(14.007)): <AtomGroup with 17 atoms>, ('ASP', np.float64(15.999)): <AtomGroup with 51 atoms>, ('CYS', np.float64(1.008)): <AtomGroup with 5 atoms>, ('CYS', np.float64(12.011)): <AtomGroup with 3 atoms>, ('CYS', np.float64(14.007)): <AtomGroup with 1 atom>, ('CYS', np.float64(15.999)): <AtomGroup with 1 atom>, ('CYS', np.float64(32.06)): <AtomGroup with 1 atom>, ('GLN', np.float64(1.008)): <AtomGroup with 64 atoms>, ('GLN', np.float64(12.011)): <AtomGroup with 40 atoms>, ('GLN', np.float64(14.007)): <AtomGroup with 16 atoms>, ('GLN', np.float64(15.999)): <AtomGroup with 16 atoms>, ('GLU', np.float64(1.008)): <AtomGroup with 108 atoms>, ('GLU', np.float64(12.011)): <AtomGroup with 90 atoms>, ('GLU', np.float64(14.007)): <AtomGroup with 18 atoms>, ('GLU', np.float64(15.999)): <AtomGroup with 54 atoms>, ('GLY', np.float64(1.008)): <AtomGroup with 60 atoms>, ('GLY', np.float64(12.011)): <AtomGroup with 40 atoms>, ('GLY', np.float64(14.007)): <AtomGroup with 20 atoms>, ('GLY', np.float64(15.999)): <AtomGroup with 21 atoms>, ('HSD', np.float64(1.008)): <AtomGroup with 21 atoms>, ('HSD', np.float64(12.011)): <AtomGroup with 18 atoms>, ('HSD', np.float64(14.007)): <AtomGroup with 9 atoms>, ('HSD', np.float64(15.999)): <AtomGroup with 3 atoms>, ('ILE', np.float64(1.008)): <AtomGroup with 154 atoms>, ('ILE', np.float64(12.011)): <AtomGroup with 84 atoms>, ('ILE', np.float64(14.007)): <AtomGroup with 14 atoms>, ('ILE', np.float64(15.999)): <AtomGroup with 14 atoms>, ('LEU', np.float64(1.008)): <AtomGroup with 176 atoms>, ('LEU', np.float64(12.011)): <AtomGroup with 96 atoms>, ('LEU', np.float64(14.007)): <AtomGroup with 16 atoms>, ('LEU', np.float64(15.999)): <AtomGroup with 16 atoms>, ('LYS', np.float64(1.008)): <AtomGroup with 234 atoms>, ('LYS', np.float64(12.011)): <AtomGroup with 108 atoms>, ('LYS', np.float64(14.007)): <AtomGroup with 36 atoms>, ('LYS', np.float64(15.999)): <AtomGroup with 18 atoms>, ('MET', np.float64(1.008)): <AtomGroup with 56 atoms>, ('MET', np.float64(12.011)): <AtomGroup with 30 atoms>, ('MET', np.float64(14.007)): <AtomGroup with 6 atoms>, ('MET', np.float64(15.999)): <AtomGroup with 6 atoms>, ('MET', np.float64(32.06)): <AtomGroup with 6 atoms>, ('PHE', np.float64(1.008)): <AtomGroup with 45 atoms>, ('PHE', np.float64(12.011)): <AtomGroup with 45 atoms>, ('PHE', np.float64(14.007)): <AtomGroup with 5 atoms>, ('PHE', np.float64(15.999)): <AtomGroup with 5 atoms>, ('PRO', np.float64(1.008)): <AtomGroup with 70 atoms>, ('PRO', np.float64(12.011)): <AtomGroup with 50 atoms>, ('PRO', np.float64(14.007)): <AtomGroup with 10 atoms>, ('PRO', np.float64(15.999)): <AtomGroup with 10 atoms>, ('SER', np.float64(1.008)): <AtomGroup with 25 atoms>, ('SER', np.float64(12.011)): <AtomGroup with 15 atoms>, ('SER', np.float64(14.007)): <AtomGroup with 5 atoms>, ('SER', np.float64(15.999)): <AtomGroup with 10 atoms>, ('THR', np.float64(1.008)): <AtomGroup with 77 atoms>, ('THR', np.float64(12.011)): <AtomGroup with 44 atoms>, ('THR', np.float64(14.007)): <AtomGroup with 11 atoms>, ('THR', np.float64(15.999)): <AtomGroup with 22 atoms>, ('TYR', np.float64(1.008)): <AtomGroup with 63 atoms>, ('TYR', np.float64(12.011)): <AtomGroup with 63 atoms>, ('TYR', np.float64(14.007)): <AtomGroup with 7 atoms>, ('TYR', np.float64(15.999)): <AtomGroup with 14 atoms>, ('VAL', np.float64(1.008)): <AtomGroup with 171 atoms>, ('VAL', np.float64(12.011)): <AtomGroup with 95 atoms>, ('VAL', np.float64(14.007)): <AtomGroup with 19 atoms>, ('VAL', np.float64(15.999)): <AtomGroup with 19 atoms>}
+**********************************************************************
+File "..\..\..\MDAnalysis\core\groups.py", line ?, in GroupBase.groupby
+Failed example:
+    ag.groupby('masses')
+Expected:
+    {32.06: <AtomGroup with 7 atoms>,
+     1.008: <AtomGroup with 1685 atoms>,
+     12.011: <AtomGroup with 1040 atoms>,
+     14.007: <AtomGroup with 289 atoms>,
+     15.999: <AtomGroup with 320 atoms>}
+Got:
+    {np.float64(32.06): <AtomGroup with 7 atoms>, np.float64(1.008): <AtomGroup with 1685 atoms>, np.float64(12.011): <AtomGroup with 1040 atoms>, np.float64(14.007): <AtomGroup with 289 atoms>, np.float64(15.999): <AtomGroup with 320 atoms>}
+**********************************************************************
+File "..\..\..\MDAnalysis\core\groups.py", line ?, in GroupBase.groupby
+Failed example:
+    dict(sorted(group_dict.items()))
+Expected:
+    {('ALA', 1.008): <AtomGroup with 95 atoms>,
+     ('ALA', 12.011): <AtomGroup with 57 atoms>,
+     ('ALA', 14.007): <AtomGroup with 19 atoms>,
+     ('ALA', 15.999): <AtomGroup with 19 atoms>,
+     ('ARG', 1.008): <AtomGroup with 169 atoms>,
+     ...
+Got:
+    {('ALA', np.float64(1.008)): <AtomGroup with 95 atoms>, ('ALA', np.float64(12.011)): <AtomGroup with 57 atoms>, ('ALA', np.float64(14.007)): <AtomGroup with 19 atoms>, ('ALA', np.float64(15.999)): <AtomGroup with 19 atoms>, ('ARG', np.float64(1.008)): <AtomGroup with 169 atoms>, ('ARG', np.float64(12.011)): <AtomGroup with 78 atoms>, ('ARG', np.float64(14.007)): <AtomGroup with 52 atoms>, ('ARG', np.float64(15.999)): <AtomGroup with 13 atoms>, ('ASN', np.float64(1.008)): <AtomGroup with 24 atoms>, ('ASN', np.float64(12.011)): <AtomGroup with 16 atoms>, ('ASN', np.float64(14.007)): <AtomGroup with 8 atoms>, ('ASN', np.float64(15.999)): <AtomGroup with 8 atoms>, ('ASP', np.float64(1.008)): <AtomGroup with 68 atoms>, ('ASP', np.float64(12.011)): <AtomGroup with 68 atoms>, ('ASP', np.float64(14.007)): <AtomGroup with 17 atoms>, ('ASP', np.float64(15.999)): <AtomGroup with 51 atoms>, ('CYS', np.float64(1.008)): <AtomGroup with 5 atoms>, ('CYS', np.float64(12.011)): <AtomGroup with 3 atoms>, ('CYS', np.float64(14.007)): <AtomGroup with 1 atom>, ('CYS', np.float64(15.999)): <AtomGroup with 1 atom>, ('CYS', np.float64(32.06)): <AtomGroup with 1 atom>, ('GLN', np.float64(1.008)): <AtomGroup with 64 atoms>, ('GLN', np.float64(12.011)): <AtomGroup with 40 atoms>, ('GLN', np.float64(14.007)): <AtomGroup with 16 atoms>, ('GLN', np.float64(15.999)): <AtomGroup with 16 atoms>, ('GLU', np.float64(1.008)): <AtomGroup with 108 atoms>, ('GLU', np.float64(12.011)): <AtomGroup with 90 atoms>, ('GLU', np.float64(14.007)): <AtomGroup with 18 atoms>, ('GLU', np.float64(15.999)): <AtomGroup with 54 atoms>, ('GLY', np.float64(1.008)): <AtomGroup with 60 atoms>, ('GLY', np.float64(12.011)): <AtomGroup with 40 atoms>, ('GLY', np.float64(14.007)): <AtomGroup with 20 atoms>, ('GLY', np.float64(15.999)): <AtomGroup with 21 atoms>, ('HSD', np.float64(1.008)): <AtomGroup with 21 atoms>, ('HSD', np.float64(12.011)): <AtomGroup with 18 atoms>, ('HSD', np.float64(14.007)): <AtomGroup with 9 atoms>, ('HSD', np.float64(15.999)): <AtomGroup with 3 atoms>, ('ILE', np.float64(1.008)): <AtomGroup with 154 atoms>, ('ILE', np.float64(12.011)): <AtomGroup with 84 atoms>, ('ILE', np.float64(14.007)): <AtomGroup with 14 atoms>, ('ILE', np.float64(15.999)): <AtomGroup with 14 atoms>, ('LEU', np.float64(1.008)): <AtomGroup with 176 atoms>, ('LEU', np.float64(12.011)): <AtomGroup with 96 atoms>, ('LEU', np.float64(14.007)): <AtomGroup with 16 atoms>, ('LEU', np.float64(15.999)): <AtomGroup with 16 atoms>, ('LYS', np.float64(1.008)): <AtomGroup with 234 atoms>, ('LYS', np.float64(12.011)): <AtomGroup with 108 atoms>, ('LYS', np.float64(14.007)): <AtomGroup with 36 atoms>, ('LYS', np.float64(15.999)): <AtomGroup with 18 atoms>, ('MET', np.float64(1.008)): <AtomGroup with 56 atoms>, ('MET', np.float64(12.011)): <AtomGroup with 30 atoms>, ('MET', np.float64(14.007)): <AtomGroup with 6 atoms>, ('MET', np.float64(15.999)): <AtomGroup with 6 atoms>, ('MET', np.float64(32.06)): <AtomGroup with 6 atoms>, ('PHE', np.float64(1.008)): <AtomGroup with 45 atoms>, ('PHE', np.float64(12.011)): <AtomGroup with 45 atoms>, ('PHE', np.float64(14.007)): <AtomGroup with 5 atoms>, ('PHE', np.float64(15.999)): <AtomGroup with 5 atoms>, ('PRO', np.float64(1.008)): <AtomGroup with 70 atoms>, ('PRO', np.float64(12.011)): <AtomGroup with 50 atoms>, ('PRO', np.float64(14.007)): <AtomGroup with 10 atoms>, ('PRO', np.float64(15.999)): <AtomGroup with 10 atoms>, ('SER', np.float64(1.008)): <AtomGroup with 25 atoms>, ('SER', np.float64(12.011)): <AtomGroup with 15 atoms>, ('SER', np.float64(14.007)): <AtomGroup with 5 atoms>, ('SER', np.float64(15.999)): <AtomGroup with 10 atoms>, ('THR', np.float64(1.008)): <AtomGroup with 77 atoms>, ('THR', np.float64(12.011)): <AtomGroup with 44 atoms>, ('THR', np.float64(14.007)): <AtomGroup with 11 atoms>, ('THR', np.float64(15.999)): <AtomGroup with 22 atoms>, ('TYR', np.float64(1.008)): <AtomGroup with 63 atoms>, ('TYR', np.float64(12.011)): <AtomGroup with 63 atoms>, ('TYR', np.float64(14.007)): <AtomGroup with 7 atoms>, ('TYR', np.float64(15.999)): <AtomGroup with 14 atoms>, ('VAL', np.float64(1.008)): <AtomGroup with 171 atoms>, ('VAL', np.float64(12.011)): <AtomGroup with 95 atoms>, ('VAL', np.float64(14.007)): <AtomGroup with 19 atoms>, ('VAL', np.float64(15.999)): <AtomGroup with 19 atoms>}
+**********************************************************************
+File "..\..\..\MDAnalysis\core\groups.py", line ?, in AtomGroup.select_atoms.smarts
+Failed example:
+    universe.select_atoms("smarts C", smarts_kwargs={"maxMatches": 100})
+Exception raised:
+    Traceback (most recent call last):
+      File "E:\github_project\mdanalysis\package\MDAnalysis\core\selection.py", line 776, in _apply
+        from rdkit import Chem
+    ModuleNotFoundError: No module named 'rdkit'
+
+    During handling of the above exception, another exception occurred:
+
+    Traceback (most recent call last):
+      File "C:\Users\13076\.conda\envs\mdanalysis-311\Lib\doctest.py", line 1355, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest AtomGroup.select_atoms.smarts[0]>", line 1, in <module>
+        universe.select_atoms("smarts C", smarts_kwargs={"maxMatches": 100})
+      File "E:\github_project\mdanalysis\package\MDAnalysis\core\universe.py", line 981, in select_atoms
+        return self.atoms.select_atoms(*args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "E:\github_project\mdanalysis\package\MDAnalysis\core\groups.py", line 3580, in select_atoms
+        selections[0].apply(self),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "E:\github_project\mdanalysis\package\MDAnalysis\core\selection.py", line 254, in apply
+        return self._apply(*args, **kwargs).asunique(sorted=self.parser.sorted)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "E:\github_project\mdanalysis\package\MDAnalysis\core\selection.py", line 778, in _apply
+        raise ImportError(
+    ImportError: RDKit is required for SMARTS-based atom selection but it's not installed. Try installing it with 
+    conda install -c conda-forge rdkit
+16 items passed all tests:
+  16 tests in AtomGroup
+  11 tests in AtomGroup.asunique
+   7 tests in AtomGroup.select_atoms
+   1 tests in AtomGroup.select_atoms.namedarguments
+   1 tests in AtomGroup.select_atoms.updating
+  10 tests in AtomGroup.sort
+  10 tests in AtomGroup.unique
+  15 tests in GroupBase.concatenate
+  18 tests in GroupBase.isunique
+  12 tests in GroupBase.subtract
+  12 tests in GroupBase.symmetric_difference
+  12 tests in GroupBase.union
+   7 tests in ResidueGroup.asunique
+   7 tests in ResidueGroup.unique
+   7 tests in SegmentGroup.asunique
+   7 tests in SegmentGroup.unique
+**********************************************************************
+3 items had failures:
+   1 of   1 in AtomGroup.select_atoms.smarts
+   3 of  30 in GroupBase.center
+   6 of  12 in GroupBase.groupby
+196 tests in 19 items.
+186 passed and 10 failed.
+***Test Failed*** 10 failures.
+
+Document: documentation_pages/core/topology
+-------------------------------------------
+1 items passed all tests:
+   5 tests in default
+5 tests in 1 items.
+5 passed and 0 failed.
+Test passed.
+
+Document: documentation_pages/core/universe
+-------------------------------------------
+**********************************************************************
+File "..\..\..\MDAnalysis\core\universe.py", line ?, in default
+Failed example:
+    u.atoms.tempfactors
+Expected:
+    array([0., 0., 0., ..., 0., 0., 0.])
+Got:
+    array([0., 0., 0., ..., 0., 0., 0.], shape=(3341,))
+**********************************************************************
+File "..\..\..\MDAnalysis\core\universe.py", line ?, in default
+Failed example:
+    from rdkit.Chem import AllChem
+Exception raised:
+    Traceback (most recent call last):
+      File "C:\Users\13076\.conda\envs\mdanalysis-311\Lib\doctest.py", line 1355, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest default[0]>", line 1, in <module>
+        from rdkit.Chem import AllChem
+    ModuleNotFoundError: No module named 'rdkit'
+**********************************************************************
+File "..\..\..\MDAnalysis\core\universe.py", line ?, in default
+Failed example:
+    u = mda.Universe.from_smiles('CCO', numConfs=10)
+Exception raised:
+    Traceback (most recent call last):
+      File "E:\github_project\mdanalysis\package\MDAnalysis\core\universe.py", line 1799, in from_smiles
+        from rdkit import Chem
+    ModuleNotFoundError: No module named 'rdkit'
+
+    The above exception was the direct cause of the following exception:
+
+    Traceback (most recent call last):
+      File "C:\Users\13076\.conda\envs\mdanalysis-311\Lib\doctest.py", line 1355, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest default[1]>", line 1, in <module>
+        u = mda.Universe.from_smiles('CCO', numConfs=10)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "E:\github_project\mdanalysis\package\MDAnalysis\core\universe.py", line 1802, in from_smiles
+        raise ImportError(
+    ImportError: Creating a Universe from a SMILES string requires RDKit but it does not appear to be installed
+**********************************************************************
+File "..\..\..\MDAnalysis\core\universe.py", line ?, in default
+Failed example:
+    u
+Expected:
+    <Universe with 9 atoms>
+Got:
+    <Universe with 3341 atoms>
+**********************************************************************
+File "..\..\..\MDAnalysis\core\universe.py", line ?, in default
+Failed example:
+    u.trajectory
+Expected:
+    <RDKitReader with 10 frames of 9 atoms>
+Got:
+    <DCDReader E:/github_project/mdanalysis/testsuite/MDAnalysisTests/data/adk_dims.dcd with 98 frames of 3341 atoms>
+**********************************************************************
+File "..\..\..\MDAnalysis\core\universe.py", line ?, in default
+Failed example:
+    u = mda.Universe.from_smiles('CCO', rdkit_kwargs=dict(
+         params=AllChem.ETKDGv3()))
+Exception raised:
+    Traceback (most recent call last):
+      File "C:\Users\13076\.conda\envs\mdanalysis-311\Lib\doctest.py", line 1355, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest default[0]>", line 2, in <module>
+        params=AllChem.ETKDGv3()))
+               ^^^^^^^
+    NameError: name 'AllChem' is not defined
+**********************************************************************
+File "..\..\..\MDAnalysis\core\universe.py", line ?, in default
+Failed example:
+    u.trajectory
+Expected:
+    <RDKitReader with 1 frames of 9 atoms>
+Got:
+    <DCDReader E:/github_project/mdanalysis/testsuite/MDAnalysisTests/data/adk_dims.dcd with 98 frames of 3341 atoms>
+**********************************************************************
+1 items had failures:
+   7 of  24 in default
+24 tests in 1 items.
+17 passed and 7 failed.
+***Test Failed*** 7 failures.
+
+Document: documentation_pages/fetchers/PDB
+------------------------------------------
+**********************************************************************
+File "..\..\..\MDAnalysis\fetch\pdb.py", line ?, in default
+Failed example:
+    from_PDB("1AKE", file_format="cif")
+Exception raised:
+    Traceback (most recent call last):
+      File "C:\Users\13076\.conda\envs\mdanalysis-311\Lib\doctest.py", line 1355, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest default[2]>", line 1, in <module>
+        from_PDB("1AKE", file_format="cif")
+      File "E:\github_project\mdanalysis\package\MDAnalysis\fetch\pdb.py", line 168, in from_PDB
+        raise ModuleNotFoundError(
+    ModuleNotFoundError: pooch is needed as a dependency for from_PDB()
+**********************************************************************
+File "..\..\..\MDAnalysis\fetch\pdb.py", line ?, in default
+Failed example:
+    mda.fetch.from_PDB(["1AKE", "4BWZ"], progressbar=True)
+Exception raised:
+    Traceback (most recent call last):
+      File "C:\Users\13076\.conda\envs\mdanalysis-311\Lib\doctest.py", line 1355, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest default[0]>", line 1, in <module>
+        mda.fetch.from_PDB(["1AKE", "4BWZ"], progressbar=True)
+      File "E:\github_project\mdanalysis\package\MDAnalysis\fetch\pdb.py", line 168, in from_PDB
+        raise ModuleNotFoundError(
+    ModuleNotFoundError: pooch is needed as a dependency for from_PDB()
+**********************************************************************
+File "..\..\..\MDAnalysis\fetch\pdb.py", line ?, in default
+Failed example:
+    mda.Universe(mda.fetch.from_PDB("1AKE"), file_format="pdb.gz")
+Exception raised:
+    Traceback (most recent call last):
+      File "C:\Users\13076\.conda\envs\mdanalysis-311\Lib\doctest.py", line 1355, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest default[0]>", line 1, in <module>
+        mda.Universe(mda.fetch.from_PDB("1AKE"), file_format="pdb.gz")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "E:\github_project\mdanalysis\package\MDAnalysis\fetch\pdb.py", line 168, in from_PDB
+        raise ModuleNotFoundError(
+    ModuleNotFoundError: pooch is needed as a dependency for from_PDB()
+**********************************************************************
+File "..\..\..\MDAnalysis\fetch\pdb.py", line ?, in default
+Failed example:
+    [mda.Universe(pdb) for pdb in mda.fetch.from_PDB(["1AKE", "4BWZ"], progressbar=True)]
+Exception raised:
+    Traceback (most recent call last):
+      File "C:\Users\13076\.conda\envs\mdanalysis-311\Lib\doctest.py", line 1355, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest default[0]>", line 1, in <module>
+        [mda.Universe(pdb) for pdb in mda.fetch.from_PDB(["1AKE", "4BWZ"], progressbar=True)]
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "E:\github_project\mdanalysis\package\MDAnalysis\fetch\pdb.py", line 168, in from_PDB
+        raise ModuleNotFoundError(
+    ModuleNotFoundError: pooch is needed as a dependency for from_PDB()
+**********************************************************************
+1 items had failures:
+   4 of   6 in default
+6 tests in 1 items.
+2 passed and 4 failed.
+***Test Failed*** 4 failures.
+
+Document: documentation_pages/lib/formats/libdcd
+------------------------------------------------
+**********************************************************************
+File "..\docstring of MDAnalysis.lib.formats.libdcd.DCDFile", line 23, in default
+Failed example:
+    with DCDFile('foo.dcd') as f:
+        pass
+Exception raised:
+    Traceback (most recent call last):
+      File "C:\Users\13076\.conda\envs\mdanalysis-311\Lib\doctest.py", line 1355, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest default[1]>", line 1, in <module>
+        with DCDFile('foo.dcd') as f:
+             ^^^^^^^^^^^^^^^^^^
+      File "MDAnalysis/lib/formats/libdcd.pyx", line 167, in MDAnalysis.lib.formats.libdcd.DCDFile.__cinit__
+      File "MDAnalysis/lib/formats/libdcd.pyx", line 256, in MDAnalysis.lib.formats.libdcd.DCDFile.open
+    OSError: DCD file does not exist
+**********************************************************************
+1 items had failures:
+   1 of   2 in default
+2 tests in 1 items.
+1 passed and 1 failed.
+***Test Failed*** 1 failures.
+
+Document: documentation_pages/lib/transformations
+-------------------------------------------------
+1 items passed all tests:
+ 161 tests in default
+161 tests in 1 items.
+161 passed and 0 failed.
+Test passed.
+
+Document: documentation_pages/lib/util
+--------------------------------------
+1 items passed all tests:
+  36 tests in default
+36 tests in 1 items.
+36 passed and 0 failed.
+Test passed.
+
+Doctest summary
+===============
+  576 tests
+   44 failures in tests
+    2 failures in setup code
+    0 failures in cleanup code
