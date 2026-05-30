@@ -280,6 +280,19 @@ def test_guess_bonds_peptide():
     assert_equal(np.sort(u.bonds.indices, axis=0), np.sort(bonds, axis=0))
 
 
+def test_guess_bonds_mixed_case_types():
+    """Test that the guesser can handle mixed-case types"""
+    n_atoms = 2
+    # Actual positions don't matter for this test
+    positions = np.array([[0.0, 0.0, 0.0], [2.5, 0.0, 0.0]])
+    # Use mixed-case types
+    topology = Topology(n_atoms, attrs=[Atomtypes(["Au", "h"])])
+    u = mda.Universe(topology)
+    guesser = DefaultGuesser(None)
+    # This should not raise an error due to the mixed-case types
+    bonds = guesser.guess_bonds(u.atoms, positions)
+
+
 @pytest.mark.parametrize(
     "smi",
     [

@@ -144,6 +144,7 @@ Functions
 .. autofunction:: translate
 """
 
+import warnings
 from typing import Optional, Union
 
 import numpy as np
@@ -236,6 +237,14 @@ class DSSP(AnalysisBase):
            (e.g., a :exc:`ValueError` is raised) you must customize `hydrogen_name`
            for your specific case.
 
+    backend : str, optional
+        :ref:`Backend for distance calculations<selection-of-acceleration-backend>`, by default ``"serial"``.
+        Can be set to ``"distopia"`` if `distopia`_ is installed.
+
+        .. versionadded:: 2.11.0
+
+    .. _distopia: https://www.mdanalysis.org/distopia/
+
 
     Raises
     ------
@@ -308,8 +317,10 @@ class DSSP(AnalysisBase):
         *,
         heavyatom_names: tuple[str] = ("N", "CA", "C", "O O1 OT1"),
         hydrogen_name: str = "H HN HT1 HT2 HT3",
+        backend: str = "serial",
     ):
         self._guess_hydrogens = guess_hydrogens
+        self._backend = backend
 
         ag: AtomGroup = atoms.select_atoms("protein")
         super().__init__(ag.universe.trajectory)
@@ -325,6 +336,15 @@ class DSSP(AnalysisBase):
             for t in heavyatom_names
         }
         self._donor_mask: Optional[np.ndarray] = ag.residues.resnames != "PRO"
+        self._box = self._trajectory.ts.dimensions
+        if self._box is not None and np.allclose(
+            self._box, [1, 1, 1, 90, 90, 90]
+        ):
+            self._box = None
+            warnings.warn(
+                "Box dimensions are (1, 1, 1, 90, 90, 90), not using "
+                "periodic boundary conditions in DSSP calculations"
+            )
         self._hydrogens: list["AtomGroup"] = [
             res.atoms.select_atoms(f"name {hydrogen_name}")
             for res in ag.residues
@@ -407,7 +427,12 @@ class DSSP(AnalysisBase):
 
     def _single_frame(self):
         coords = self._get_coords()
-        dssp = assign(coords, donor_mask=self._donor_mask)
+        dssp = assign(
+            coords,
+            donor_mask=self._donor_mask,
+            box=self._box,
+            backend=self._backend,
+        )
         self.results.dssp_ndarray.append(dssp)
 
     def _conclude(self):
