@@ -27,6 +27,7 @@ import MDAnalysis as mda
 import MDAnalysis.analysis.atomicdistances as ad
 from MDAnalysis.lib.distances import calc_bonds
 import MDAnalysis.transformations.boxdimensions as bd
+from MDAnalysis.analysis.results import Results
 
 from numpy.testing import assert_allclose
 import numpy as np
@@ -116,20 +117,30 @@ class TestAtomicDistances(object):
 
     # only need to test that this class correctly applies distance calcs
     # calc_bonds() is tested elsewhere
-    def test_ad_pairwise_dist(self, ad_ag1, ad_ag2, expected_dist):
+    def test_ad_pairwise_dist(
+        self, ad_ag1, ad_ag2, expected_dist, client_AtomicDistances
+    ):
         """Ensure that pairwise distances between atoms are
         correctly calculated without PBCs."""
-        pairwise_no_pbc = ad.AtomicDistances(ad_ag1, ad_ag2, pbc=False).run()
+        pairwise_no_pbc = ad.AtomicDistances(ad_ag1, ad_ag2, pbc=False).run(
+            **client_AtomicDistances
+        )
         actual = pairwise_no_pbc.results
-
+        assert isinstance(actual, Results)
+        distances = actual.distances
         # compare with expected values from dist()
-        assert_allclose(actual, expected_dist)
+        assert_allclose(distances, expected_dist)
 
-    def test_ad_pairwise_dist_pbc(self, ad_ag1, ad_ag2, expected_pbc_dist):
+    def test_ad_pairwise_dist_pbc(
+        self, ad_ag1, ad_ag2, expected_pbc_dist, client_AtomicDistances
+    ):
         """Ensure that pairwise distances between atoms are
         correctly calculated with PBCs."""
-        pairwise_pbc = ad.AtomicDistances(ad_ag1, ad_ag2).run()
+        pairwise_pbc = ad.AtomicDistances(ad_ag1, ad_ag2).run(
+            **client_AtomicDistances
+        )
         actual = pairwise_pbc.results
-
+        assert isinstance(actual, Results)
+        distances = actual.distances
         # compare with expected values from dist()
-        assert_allclose(actual, expected_pbc_dist)
+        assert_allclose(distances, expected_pbc_dist)

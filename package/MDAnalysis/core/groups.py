@@ -122,6 +122,7 @@ from . import selection
 from ..exceptions import NoDataError
 from . import topologyobjects
 from ._get_readers import get_writer_for, get_converter_for
+from ..lib._cutil import inverse_int_index
 
 
 def _unpickle(u, ix):
@@ -912,10 +913,7 @@ class GroupBase(_MutableBase):
 
         indices = unique_int_1d_unsorted(self.ix)
         if set_mask:
-            mask = np.zeros_like(self.ix)
-            for i, x in enumerate(indices):
-                values = np.where(self.ix == x)[0]
-                mask[values] = i
+            mask = inverse_int_index(self.ix, indices)
             self._unique_restore_mask = mask
 
         issorted = int_array_is_sorted(indices)
@@ -3289,6 +3287,10 @@ class AtomGroup(GroupBase):
 
         **Simple selections**
 
+            all
+                selects all atoms in the current group; the resulting
+                :class:AtomGroup is unique and sorted by index. If the group
+                already corresponds to Universe.atoms, it is returned unchanged.
             protein, backbone, nucleic, nucleicbackbone
                 selects all atoms that belong to a standard set of residues;
                 a protein is identfied by a hard-coded set of residue names so
