@@ -22,6 +22,7 @@ The rules for this file:
  * 2.11.0
 
 Fixes
+ * Added ASV benchmark for PDB trajectory reading (PR #1234)
  * `MDAnalysis.analysis.nucleicacids.WatsonCrickDist`, `MinorPairDist`,
    and `MajorPairDist` now match residue names against the full resname
    instead of only the first character, fixing incorrect behaviour with
