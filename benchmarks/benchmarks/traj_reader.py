@@ -28,6 +28,12 @@ try:
 except ImportError:
     pass
 
+try:
+    import MDAnalysis as mda
+    from MDAnalysisTests.datafiles import PDB
+except ImportError:
+    pass
+
 traj_dict = {
     "XTC": [XTC, XTCReader],
     "TRR": [TRR, TRRReader],
@@ -71,3 +77,23 @@ class TrajReaderIteration(object):
         """
         for ts in self.reader_object:
             pass
+
+
+class PDBReaderBench(object):
+    """Benchmarks for PDB file format reading and parsing"""
+
+    units = 'ms'
+    timeout = 60.0
+    params = [10, 100, 500]
+    param_names = ['n_frames']
+
+    def setup(self, n_frames):
+        self.u = mda.Universe(PDB)
+
+    def time_iterate(self, n_frames):
+        for _ in range(n_frames):
+            for ts in self.u.trajectory:
+                _ = ts.positions
+
+
+    
