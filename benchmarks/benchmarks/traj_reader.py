@@ -30,7 +30,7 @@ except ImportError:
 
 try:
     import MDAnalysis as mda
-    from MDAnalysisTests.datafiles import PDB
+    from MDAnalysisTests.datafiles import PDB_multiframe
 except ImportError:
     pass
 
@@ -82,18 +82,12 @@ class TrajReaderIteration(object):
 class PDBReaderBench(object):
     """Benchmarks for PDB file format reading and parsing"""
 
-    units = 'ms'
+    units = "ms"
     timeout = 60.0
-    params = [10, 100, 500]
-    param_names = ['n_frames']
 
-    def setup(self, n_frames):
-        self.u = mda.Universe(PDB)
+    def setup(self):
+        self.u = mda.Universe(PDB_multiframe)
 
-    def time_iterate(self, n_frames):
-        for _ in range(n_frames):
-            for ts in self.u.trajectory:
-                _ = ts.positions
-
-
-    
+    def time_iterate(self):
+        for ts in self.u.trajectory:
+            pass
