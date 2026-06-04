@@ -88,6 +88,9 @@ class PDBReaderBench(object):
     def setup(self):
         self.u = mda.Universe(PDB_multiframe)
 
+    def time_read(self):
+        mda.Universe(PDB_multiframe)
+
     def time_iterate(self):
         for ts in self.u.trajectory:
             pass
