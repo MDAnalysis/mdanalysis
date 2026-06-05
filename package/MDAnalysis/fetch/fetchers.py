@@ -53,11 +53,11 @@ class StaticFetcher(BaseFetcher):
         # Starts file retrieval workflow
         pass
 
-    def _write_db(self):
+    def _write_cache(self):
         # Create/query hash file (either a csv or database file)
         pass
 
-    def _read_db(self):
+    def _read_cache(self):
         # Check and loads hash (either a csv or database file)
         pass
 
