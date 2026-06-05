@@ -40,20 +40,19 @@ class BaseFetcher(ABC):
 
     def __init__(
         self,
-        base_url,
-        progressbar,
-        keep_session,
+        keep_session=True,
     ):
 
-        self.base_url = base_url
-        self.progressbar = progressbar  # Progressbar
-        self.keep_session  # Connection Spooling
+        self.keep_session = keep_session  # Connection Spooling
 
     @abstractmethod
-    def fetch(self, timeout, retries):
+    def fetch(self, base_url, timeout, retries):
         # Starts file retrieval workflow
         #
         # All fetchers should call _check_pooch
+
+        self.base_url = base_url
+        self.progressbar = progressbar  # Progressbar
 
         self.timeout = timeout  # timeout
         self.retries = retries  # number of retries
@@ -72,12 +71,32 @@ class BaseFetcher(ABC):
 class StaticFetcher(BaseFetcher):
     """Fetcher automatically downloads file in entirety and cache it to disk"""
 
-    def __init__(self, cache_path):
-        super().__init__(base_url, progressbar)
-        self.cache_path = _set_cache_path(cache_path)
+    def __init__(self, cache_path=None, hash="sha256", **kwargs):
+        super().__init__(kwargs["keep_session"])
+        self.cache_path = self._set_cache_path(cache_path)
 
-    def fetch(self):
+        # timeout, retries
+        self.hash = hash
+
+    def fetch(
+        self,
+        base_url,
+        progressbar,
+        timeout,
+        retries,
+        filename,
+        override=False,
+        ignore_hash=False,
+    ):
         # Starts file retrieval workflow
+
+        self.filename = filename  # If not none, then user can change otherwise use default
+        self.timeout = timeout  # timeout (int)
+        self.retries = retries  # number of retries (int)
+        self.override = override  # Boolean to override files (download despite being present)
+        self._ignore_hash = (
+            ignore_hash  # If true, ignore hash and keep downloading
+        )
         pass
 
     def _set_cache_path(self, cache_path):
@@ -89,6 +108,9 @@ class StaticFetcher(BaseFetcher):
 
     def _write_cache(self):
         # Create/query hash file (either a csv or database file)
+        #
+        # Not using Pooch.make_registry as that implements MD5 checksum which is not secure!
+
         pass
 
     def _read_cache(self):
