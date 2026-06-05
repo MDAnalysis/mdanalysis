@@ -23,6 +23,7 @@
 
 import csv
 import sqlite3
+import hashlib
 from abc import ABC, abstractmethod
 
 try:
@@ -43,20 +44,20 @@ class BaseFetcher(ABC):
         keep_session=True,
     ):
 
-        self.keep_session = keep_session  # Connection Spooling
+        self.reuse= reuse # Connection Pooling
 
+    @staticmethod
     @abstractmethod
-    def fetch(self, base_url, timeout, retries):
+    def fetch(self, base_url, progressbar, timeout, retries):
         # Starts file retrieval workflow
         #
         # All fetchers should call _check_pooch
+        self._check_pooch()
 
         self.base_url = base_url
         self.progressbar = progressbar  # Progressbar
-
         self.timeout = timeout  # timeout
         self.retries = retries  # number of retries
-        self._check_pooch()
 
     def _check_pooch(
         self,
@@ -72,32 +73,41 @@ class StaticFetcher(BaseFetcher):
     """Fetcher automatically downloads file in entirety and cache it to disk"""
 
     def __init__(self, cache_path=None, hash="sha256", **kwargs):
-        super().__init__(kwargs["keep_session"])
+        super().__init__(kwargs["reuse"])
+
         self.cache_path = self._set_cache_path(cache_path)
+        self.hash = self._check_hash_input(hash)
 
-        # timeout, retries
-        self.hash = hash
-
+    @staticmethod
     def fetch(
-        self,
-        base_url,
-        progressbar,
-        timeout,
-        retries,
-        filename,
+        filename=None,
         override=False,
         ignore_hash=False,
+        **kwargs,
     ):
         # Starts file retrieval workflow
 
-        self.filename = filename  # If not none, then user can change otherwise use default
-        self.timeout = timeout  # timeout (int)
-        self.retries = retries  # number of retries (int)
+        self._check_pooch()
+
+        ## All variable to used for method
+
+        # ABC Fetcher variables (guarenteed to exists)
+        self.base_url = kwargs["base_url"]
+        self.progressbar = kwargs["progressbar"]  # Progressbar
+        self.timeout = kwargs["timeout"]  # timeout
+        self.retries = kwargs["retries"]  # number of retries
+
+        # Static Fetcher Specific variables
+        self.filename = (
+            filename  # If not none, then user can change otherwise use default
+        )
+
         self.override = override  # Boolean to override files (download despite being present)
         self._ignore_hash = (
             ignore_hash  # If true, ignore hash and keep downloading
         )
-        pass
+
+        ##
 
     def _set_cache_path(self, cache_path):
 
@@ -105,6 +115,14 @@ class StaticFetcher(BaseFetcher):
             return pooch.os_cache(DEFAULT_CACHE_NAME_DOWNLOADER)
         else:
             return cache_path
+
+    def _check_hash_input(self, hash):
+        if hash in hashlib.algorithms_available:
+            return hash
+        else:
+            raise ValueError(
+                f"Invalid hash \"{hash}\". Valid hashes algorithms are {hashlib.algorithms_available}. See 'hashlib.algorithms_available'"
+            )
 
     def _write_cache(self):
         # Create/query hash file (either a csv or database file)

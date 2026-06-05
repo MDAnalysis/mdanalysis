@@ -16,6 +16,6 @@ print(" ")
 print(hashlib.algorithms_guaranteed)
 
 
-s = StaticFetcher(keep_session=False)
+s = StaticFetcher(keep_session=False, hash='booger')
 
 print(s.cache_path)
