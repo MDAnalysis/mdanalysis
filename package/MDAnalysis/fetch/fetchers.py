@@ -24,6 +24,8 @@
 import csv
 import sqlite3
 import hashlib
+
+from pathlib import Path
 from abc import ABC, abstractmethod
 
 try:
@@ -34,28 +36,29 @@ else:
     HAS_POOCH = True
 
 DEFAULT_CACHE_NAME_DOWNLOADER = "MDAnalysis_pdbs"
-
+ALLOWED_EXTENSIONS_DATABASE = {".csv", ".db"}
 
 class BaseFetcher(ABC):
     """Blueprint Class for all Fetchers"""
 
     def __init__(
         self,
-        keep_session=True,
+        reuse_connection=True,
     ):
 
-        self.reuse= reuse # Connection Pooling
+        self.pooled = reuse_connection # Connection Pooling
 
-    @staticmethod
+  
     @abstractmethod
     def fetch(self, base_url, progressbar, timeout, retries):
         # Starts file retrieval workflow
         #
-        # All fetchers should call _check_pooch
+        # All fetchers should call _check_pooch()
         self._check_pooch()
 
+        # Global Variable attributes  
         self.base_url = base_url
-        self.progressbar = progressbar  # Progressbar
+        self.verbose = progressbar  # Progressbar
         self.timeout = timeout  # timeout
         self.retries = retries  # number of retries
 
@@ -73,41 +76,78 @@ class StaticFetcher(BaseFetcher):
     """Fetcher automatically downloads file in entirety and cache it to disk"""
 
     def __init__(self, cache_path=None, hash="sha256", **kwargs):
-        super().__init__(kwargs["reuse"])
+
+        ## TODO put guard parameter from ABC Fetcher
+        #super().__init__(kwargs["reuse_connection"])
+        super().__init__()
 
         self.cache_path = self._set_cache_path(cache_path)
         self.hash = self._check_hash_input(hash)
 
-    @staticmethod
+
     def fetch(
+        self,
         filename=None,
-        override=False,
+        force=False,
         ignore_hash=False,
+        db_name="hashes.db",
         **kwargs,
     ):
-        # Starts file retrieval workflow
 
-        self._check_pooch()
 
-        ## All variable to used for method
+        ###
+        # ## All variable to used for methods
+        # # ABC Fetcher variables (guaranteed to exist)
+        # self.base_url = kwargs["base_url"]
+        # self.verbose = kwargs["progressbar"]  # Progressbar
+        # self.timeout = kwargs["timeout"]  # timeout
+        # self.retries = kwargs["retries"]  # number of retries
 
-        # ABC Fetcher variables (guaranteed to exist)
-        self.base_url = kwargs["base_url"]
-        self.progressbar = kwargs["progressbar"]  # Progressbar
-        self.timeout = kwargs["timeout"]  # timeout
-        self.retries = kwargs["retries"]  # number of retries
+        # # Static Fetcher Specific variables
+        # self.filename = (
+        #     filename  # If not none, then user can change otherwise use default
+        # )
 
-        # Static Fetcher Specific variables
-        self.filename = (
-            filename  # If not none, then user can change otherwise use default
-        )
+        # self.override = force  # Boolean to override files (download despite being present)
+        # self._ignore_hash = (
+        #     ignore_hash  # If true, ignore hash and keep downloading
+        # )
+        # ##
+        # ###
 
-        self.override = override  # Boolean to override files (download despite being present)
-        self._ignore_hash = (
-            ignore_hash  # If true, ignore hash and keep downloading
-        )
 
-        ##
+        ## Pseudocode
+        self._check_pooch() # Check dependencies
+
+        
+        if db_name is not None:
+
+            db_name = Path(db_name)
+            
+            if db_name.suffix.lower() not in ALLOWED_EXTENSIONS_DATABASE:
+                raise ValueError(
+                    f"Database name should have one of these extensions: {ALLOWED_EXTENSIONS_DATABASE}"
+            )
+
+        
+
+        ## TODO  Workflow
+        ## Prequel: Start Connection Pooling with Server 
+        #
+        #
+        # 1. Check filename or get file name (content-deposition) via HTTP GET
+        # 2. Check against database:
+        # 2a. Write database if doesn't exist (cancel with db_name=None)
+        # 2b. Check against database -> (_read_cache):
+            # Check header for file_name and hash (ONLY SUPPORT ONE TYPE OF HASH for maintainability sake)
+            # If mismatch with hash, toss excepetion
+            # If empty, contuine with download and write hash to database (_write_cache()
+        # 
+
+
+
+            
+
 
     def _set_cache_path(self, cache_path):
 
@@ -124,16 +164,28 @@ class StaticFetcher(BaseFetcher):
                 f"Invalid hash \"{hash}\". Valid hashes algorithms are {hashlib.algorithms_available}. See 'hashlib.algorithms_available'"
             )
 
-    def _write_cache(self):
+    def _write_cache(self, db_path):
         # Create/query hash file (either a csv or database file)
         #
         # Not using Pooch.make_registry as that implements MD5 checksum which is not secure!
 
         pass
 
-    def _read_cache(self):
+    def _read_cache(self, db_path):
         # Check and loads hash (either a csv or database file)
-        pass
+
+        breakpoint()
+        db_extension = db_path.suffix.lower()
+
+        if db_extension == ".csv":
+            with open(db_extension, newline='') as csvfile:
+                file = csv.reader(csvfile, dialect='unix')
+
+
+
+        elif db_extension == ".db":
+            pass
+
 
 
 class DynamicFetcher(BaseFetcher):
