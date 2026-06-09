@@ -83,6 +83,7 @@ class StaticFetcher(BaseFetcher):
 
         self.cache_path = self._set_cache_path(cache_path)
         self.hash = self._check_hash_input(hash)
+        self.hash = self._check_hash_input(hash)
 
 
     def fetch(
