@@ -140,9 +140,11 @@ class StaticFetcher(BaseFetcher):
         # 2. Check against database:
         # 2a. Write database if doesn't exist (cancel with db_name=None)
         # 2b. Check against database -> (_read_cache):
-            # Check header for file_name and hash (ONLY SUPPORT ONE TYPE OF HASH for maintainability sake)
-            # If mismatch with hash, toss excepetion
-            # If empty, contuine with download and write hash to database (_write_cache()
+            # Check header for file_name and hash (ONLY SUPPORT ONE TYPE OF HASH per DB FILE for maintainability sake)
+            # If mismatch with hash, toss exception (override with ignore_hash -- PUT BIG WARNING IN THIS)
+            # If matchs, skip download and just return pathlib.Path() (override with force)
+            # If empty, contuine with download and write hash to database (_write_cache())
+
         # 
 
 
