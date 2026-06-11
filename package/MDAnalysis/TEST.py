@@ -28,3 +28,9 @@ path = downloader.fetch(base_url='https://files.wwpdb.org/download/', file_name=
 print('No Database (just download)\n')
 shutil.rmtree(DEFAULT_CACHE_FOLDER, ignore_errors=True)
 path = downloader.fetch(base_url='https://files.wwpdb.org/download/', file_name='1AKE.pdb', db_name=None)
+
+## Multiple downloads (create database) (not working)
+print('Multiple downloads (create database)\n')
+shutil.rmtree(DEFAULT_CACHE_FOLDER, ignore_errors=True)
+path = downloader.fetch(base_url='https://files.wwpdb.org/download/', file_name=('1AKE.pdb', '4AKE.pdb'), db_name='test.txt')
+
