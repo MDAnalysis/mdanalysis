@@ -513,9 +513,11 @@ class TestRMSD(object):
                 select=42,
             )
 
-    def test_group_selections_outside_atomgroup(self, universe, correct_values_alphacarbons_group, client_RMSD):
-        ca = universe.select_atoms('name CA')
-        CORE = 'backbone and (resid 1-29 or resid 60-121 or resid 160-214)'
+    def test_group_selections_outside_atomgroup(
+        self, universe, correct_values_alphacarbons_group, client_RMSD
+    ):
+        ca = universe.select_atoms("name CA")
+        CORE = "backbone and (resid 1-29 or resid 60-121 or resid 160-214)"
         RMSD = MDAnalysis.analysis.rms.RMSD(
             ca,
             ca,
@@ -529,7 +531,7 @@ class TestRMSD(object):
             correct_values_alphacarbons_group,
             4,
             err_msg="error: rmsd profile should match"
-            "between true values and calculated values"
+            "between true values and calculated values",
         )
 
 
