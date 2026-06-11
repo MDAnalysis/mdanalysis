@@ -21,8 +21,6 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-import csv
-import sqlite3
 import hashlib
 
 from pathlib import Path
@@ -30,7 +28,6 @@ from abc import ABC, abstractmethod
 
 try:
     import pooch
-    import requests
 except ImportError:
     HAS_POOCH = False
 else:
@@ -83,11 +80,12 @@ class StaticFetcher(BaseFetcher):
 
         self.cache_path = self._check_cache_path_input(cache_path)
         self.hash = self._check_hash_input(hash)
+        self.db_path = None
 
     def fetch(
         self,
         base_url,
-        filename=None,
+        file_name=None,
         force=False,
         ignore_hash=False,
         db_name="hashes.txt",
@@ -104,8 +102,8 @@ class StaticFetcher(BaseFetcher):
         # self.retries = kwargs["retries"]  # number of retries
 
         # # Static Fetcher Specific variables
-        # self.filename = (
-        #     filename  # If not none, then user can change otherwise use default
+        # self.file_name = (
+        #     file_name  # If not none, then user can change otherwise use default
         # )
 
         # self.override = force  # Boolean to override files (download despite being present)
@@ -115,94 +113,64 @@ class StaticFetcher(BaseFetcher):
         # ##
         # ###
 
+        self._check_pooch() 
 
-        ## Pseudocode
-        self._check_pooch() # Check dependencies
-
-        if db_name is not None:
-            HAS_DATABASE = True
+        CREATE_DATABASE = False
+        if db_name is not None: # HAS DATABASE
             self.db_path = self.cache_path / Path(db_name)
-        else:
-            HAS_DATABASE = False
-            self.db_path = None
-
-        if HAS_DATABASE:
-            #self.db_path.parent.mkdir(parents=True, exist_ok=True)
-            #self._file_extension = self.db_path.suffix
-
             if not self.db_path.exists():
                 CREATE_DATABASE = True
-            else:
-                CREATE_DATABASE = False
 
+        if CREATE_DATABASE: # Load a None registry dictionary (bc of no cache)
+            print('creating')
+            registry_dictionary = {
+                file_name : None
+            }
 
-            CREATE_DATABASE = True
-            if CREATE_DATABASE: # Load a None registry dictionary
-                registry_dictionary = {
-                    '1AKE.pdb': None
-                }
+            registry=registry_dictionary
 
-            else: # Loads from file
-                #registry_dictionary = pooch.Pooch.load_registry(fname = (self.cache_path / 'test.txt'))
-                pass
+            downloader = pooch.create(
+                path=self.cache_path,
+                base_url=base_url,
+                registry=registry_dictionary
+            )
 
+        else: # Loads from file
+            print('loading')
+            registry=open(self.db_path, mode='r')
+
+            registry_dictionary = {}
+
+            with open(self.db_path, mode='r') as f:
+                for line in f:
+                    key, value = line.strip().split()
+                    registry_dictionary[key] = value
+
+            downloader = pooch.create(
+                path=self.cache_path,
+                base_url=base_url,
+                registry=registry_dictionary
+            )
+            
             import ipdb; ipdb.set_trace()
 
 
         
-            ## Should stilll be ok
-            downloader = pooch.create(
-                path=self.cache_path,
-                base_url=base_url,
-                registry=registry_dictionary,
-            )
-
-            downloader.load_registry(fname = (self.cache_path / 'test.txt'))
-            paths = [
-                Path(downloader.fetch(fname=file_name, progressbar=True))
-                for file_name in registry_dictionary.keys()
-            ]
-            
-            print(self.cache_path)
-
-            ## Add guard block here ro make it work
-            pooch.make_registry(directory=self.cache_path, output=(self.cache_path / 'test.txt'))
-            if len(paths) == 1:
-                return paths[0]
-            else:
-                return paths
-
-            ## SAVE to registry
-
-            
-
         
+        paths = [
+            Path(downloader.fetch(fname=file_name, progressbar=True))
+            for file_name in registry_dictionary.keys()
+        ]
+        
+        if CREATE_DATABASE:
+            pooch.make_registry(directory=self.cache_path, output=self.db_path)
 
-
-
-
-
-            
-        ## TODO  Workflow
-        ## Prequel: Start Connection Pooling with Server 
-        #
-        #
-        # 1. Check filename or get file name (content-deposition) via HTTP GET
-        # 2. Check against database:
-        # 2a. Write database if doesn't exist (override with db_name=None)
-        # 2b. Check against database -> (_read_cache):
-            # Check header for file_name and hash (ONLY SUPPORT ONE TYPE OF HASH per DB FILE for maintainability sake)
-            # If mismatch with hash, toss exception (override with ignore_hash -- PUT BIG WARNING IN THIS)
-            # If matchs, skip download and just return pathlib.Path() (override with force)
-            # If empty, contuine with download and write hash to database (_write_cache())
-
-            # Note replace with pooch instead
-
-        # 
-
+        if len(paths) == 1:
+            return paths[0]
+        else:
+            return paths
 
     def _check_cache_path_input(self, cache_path):
-
         if cache_path is None:
             return pooch.os_cache(DEFAULT_CACHE_NAME_DOWNLOADER)
         else:
@@ -213,35 +181,9 @@ class StaticFetcher(BaseFetcher):
             return hash
         else:
             raise ValueError(
-                f"Invalid hash \"{hash}\". Valid hashes algorithms are {hashlib.algorithms_available}. See 'hashlib.algorithms_available'"
+                f"Invalid hash \"{hash}\". Valid hashes algorithms are {hashlib.algorithms_available}."
             )
-
-
-    def _create_database(self):
-   
-        self.db_path.parent.mkdir(parents=True,exist_ok=True)
-        ## CSV
-        with self.db_path.open(mode='x') as f:
-            writer = csv.writer(f)
-            writer.writerow(['File', f'Hash:{self.hash}'])        
-
-
-    def _read_database(self, db_path):
-        # Check and loads hash (either a csv or database file)
-        pass
-
-
-    def _write_database(self, db_path):
-        # Create/query hash file (either a csv or database file)
-        #
-        # Not using Pooch.make_registry as that implements MD5 checksum which is not secure!
-
-        pass
-
     
-
-
-
 class DynamicFetcher(BaseFetcher):
     """Fetcher yields a Python Generator for dynamic downloading and analysis"""
 
