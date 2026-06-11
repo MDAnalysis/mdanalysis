@@ -115,48 +115,39 @@ class StaticFetcher(BaseFetcher):
 
         self._check_pooch() 
 
+
+        registry_dictionary = {}
+        LOAD_FROM_CACHE = False
         CREATE_DATABASE = False
-        if db_name is not None: # HAS DATABASE
+    
+        if db_name is not None: 
             self.db_path = self.cache_path / Path(db_name)
-            if not self.db_path.exists():
+
+            if self.db_path.exists():
+                LOAD_FROM_CACHE = True
+            else:
                 CREATE_DATABASE = True
 
-        if CREATE_DATABASE: # Load a None registry dictionary (bc of no cache)
-            print('creating')
-            registry_dictionary = {
-                file_name : None
-            }
-
-            registry=registry_dictionary
-
-            downloader = pooch.create(
-                path=self.cache_path,
-                base_url=base_url,
-                registry=registry_dictionary
-            )
-
-        else: # Loads from file
-            print('loading')
-            registry=open(self.db_path, mode='r')
-
-            registry_dictionary = {}
-
+        if LOAD_FROM_CACHE:
+            # Reads pooch registry file format
+            # https://www.fatiando.org/pooch/latest/registry-files.html#registry-file-format
             with open(self.db_path, mode='r') as f:
                 for line in f:
                     key, value = line.strip().split()
                     registry_dictionary[key] = value
-
-            downloader = pooch.create(
-                path=self.cache_path,
-                base_url=base_url,
-                registry=registry_dictionary
-            )
             
-            import ipdb; ipdb.set_trace()
+        else: # No Database (just download)
 
+            registry_dictionary = {
+                file_name : None
+            }
 
-        
-        
+        downloader = pooch.create(
+            path=self.cache_path,
+            base_url=base_url,
+            registry=registry_dictionary
+        )
+         
         paths = [
             Path(downloader.fetch(fname=file_name, progressbar=True))
             for file_name in registry_dictionary.keys()
