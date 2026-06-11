@@ -138,8 +138,13 @@ class StaticFetcher(BaseFetcher):
             
         else: # No Database (just download)
 
+            if isinstance(file_name, str):
+                _file_name = (file_name,)
+            else:
+                _file_name = file_name
+
             registry_dictionary = {
-                file_name : None
+                name: None for name in _file_name
             }
 
         downloader = pooch.create(
