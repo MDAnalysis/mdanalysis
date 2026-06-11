@@ -37,7 +37,7 @@ downloader = StaticFetcher()
 path = downloader.fetch(base_url='https://files.wwpdb.org/download/', file_name=('1AKE.pdb', '4AKE.pdb'), db_name='test.txt')
 
 
-## Multiple downloads (has database) (not working)
+## Multiple downloads (has database) 
 print('Multiple downloads (has database)\n')
 downloader = StaticFetcher()
 import ipdb; ipdb.set_trace()
