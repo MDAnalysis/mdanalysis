@@ -47,7 +47,7 @@ class BaseFetcher(ABC):
         pass
 
     @abstractmethod
-    def fetch(self, base_url, progressbar, timeout, retries):
+    def fetch(self, base_url, verbose, timeout, retries):
         # Starts file retrieval workflow
         #
         # All fetchers should call _check_pooch()
@@ -55,7 +55,6 @@ class BaseFetcher(ABC):
 
         # Global Variable attributes
         self.base_url = base_url
-        self.verbose = progressbar  # Progressbar
         self.timeout = timeout  # timeout
         self.retries = retries  # number of retries
 
@@ -95,6 +94,7 @@ class StaticFetcher(BaseFetcher):
     def fetch(
         self,
         file_name=None,
+        verbose=False,
         db_name="hashes.txt",
         downloader="HTTP",
         **kwargs,
@@ -164,7 +164,7 @@ class StaticFetcher(BaseFetcher):
             Path(
                 main_downloader.fetch(
                     fname=file_name,
-                    progressbar=True,
+                    progressbar=verbose,
                     downloader=fetch_downloader,
                 )
             )
