@@ -98,7 +98,7 @@ class StaticFetcher(BaseFetcher):
         force=False,
         ignore_hash=False,
         db_name="hashes.txt",
-        downloader='HTTP',
+        downloader="HTTP",
         **kwargs,
     ):
         kwargs = self._validate_fetch_args(kwargs)
@@ -124,14 +124,13 @@ class StaticFetcher(BaseFetcher):
                     registry_dictionary[key] = value
 
         else:  # No Database (just download)
-            # This block of code allows file_name to be a tuple instead of a string 
+            # This block of code allows file_name to be a tuple instead of a string
             if isinstance(file_name, str):
                 _file_name = (file_name,)
             else:
                 _file_name = file_name
 
             registry_dictionary = {name: None for name in _file_name}
-        
 
         main_downloader = pooch.create(
             path=self.cache_path,
@@ -140,20 +139,32 @@ class StaticFetcher(BaseFetcher):
             retry_if_failed=kwargs["retries"],
         )
 
+        download_kwargs = kwargs.copy()
+        download_kwargs.pop("base_url")
+        download_kwargs.pop("retries")
+
         match downloader:
-            case 'HTTP':
+            case "HTTP":
                 fetch_downloader = pooch.HTTPDownloader(**download_kwargs)
-            case 'FTP':
+            case "FTP":
                 fetch_downloader = pooch.FTPDownloader(**download_kwargs)
-            case 'SFTP':
+            case "SFTP":
                 fetch_downloader = pooch.SFTPDownloader(**download_kwargs)
-            case 'DOI':
+            case "DOI":
                 fetch_downloader = pooch.DOIDownloader(**download_kwargs)
             case _:
-                raise ValueError(f"Invalid downloader '{downloader}'. Valid options are 'HTTP', 'FTP', 'SFTP', 'DOI'.")
+                raise ValueError(
+                    f"Invalid downloader '{downloader}'. Valid options are 'HTTP', 'FTP', 'SFTP', 'DOI'."
+                )
 
         paths = [
-            Path(main_downloader.fetch(fname=file_name, progressbar=True, downloader=fetch_downloader))
+            Path(
+                main_downloader.fetch(
+                    fname=file_name,
+                    progressbar=True,
+                    downloader=fetch_downloader,
+                )
+            )
             for file_name in registry_dictionary.keys()
         ]
 
