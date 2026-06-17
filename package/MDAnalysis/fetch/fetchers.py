@@ -34,18 +34,18 @@ else:
     HAS_POOCH = True
 
 DEFAULT_CACHE_NAME_DOWNLOADER = "MDAnalysis_pdbs"
+DEFAULT_TIMEOUT = 10
+DEFAULT_RETRIES = 2
+
 
 class BaseFetcher(ABC):
     """Blueprint Class for all Fetchers"""
 
     def __init__(
         self,
-        reuse_connection=True,
     ):
+        pass
 
-        self.pooled = reuse_connection # Connection Pooling
-
-  
     @abstractmethod
     def fetch(self, base_url, progressbar, timeout, retries):
         # Starts file retrieval workflow
@@ -53,7 +53,7 @@ class BaseFetcher(ABC):
         # All fetchers should call _check_pooch()
         self._check_pooch()
 
-        # Global Variable attributes  
+        # Global Variable attributes
         self.base_url = base_url
         self.verbose = progressbar  # Progressbar
         self.timeout = timeout  # timeout
@@ -68,15 +68,25 @@ class BaseFetcher(ABC):
                 "pooch is needed as a dependency for Fetchers"
             )
 
+    def _validate_fetch_args(self, args):
+        """Checks to see if @abstractmethod fetch parameters are initalized correctly"""
+
+        if "base_url" not in args:
+            raise ValueError("base_url is not defined in fetch()")
+
+        args.setdefault("progressbar", False)
+        args.setdefault("timeout", DEFAULT_TIMEOUT)
+        args.setdefault("retries", DEFAULT_RETRIES)
+
+        return args
+
 
 class StaticFetcher(BaseFetcher):
     """Fetcher automatically downloads file in entirety and cache it to disk"""
 
-    def __init__(self, cache_path=None, hash="sha256", **kwargs):
+    def __init__(self, cache_path=None, hash="sha256"):
 
-        ## TODO put guard parameter from ABC Fetcher
-        #super().__init__(kwargs["reuse_connection"])
-        super().__init__()
+        self._check_pooch()
 
         self.cache_path = self._check_cache_path_input(cache_path)
         self.hash = self._check_hash_input(hash)
@@ -84,43 +94,20 @@ class StaticFetcher(BaseFetcher):
 
     def fetch(
         self,
-        base_url,
         file_name=None,
         force=False,
         ignore_hash=False,
         db_name="hashes.txt",
+        downloader='HTTP',
         **kwargs,
     ):
-
-
-        ###
-        # ## All variable to used for methods
-        # # ABC Fetcher variables (guaranteed to exist)
-        # self.base_url = kwargs["base_url"]
-        # self.verbose = kwargs["progressbar"]  # Progressbar
-        # self.timeout = kwargs["timeout"]  # timeout
-        # self.retries = kwargs["retries"]  # number of retries
-
-        # # Static Fetcher Specific variables
-        # self.file_name = (
-        #     file_name  # If not none, then user can change otherwise use default
-        # )
-
-        # self.override = force  # Boolean to override files (download despite being present)
-        # self._ignore_hash = (
-        #     ignore_hash  # If true, ignore hash and keep downloading
-        # )
-        # ##
-        # ###
-
-        self._check_pooch() 
-
+        kwargs = self._validate_fetch_args(kwargs)
 
         registry_dictionary = {}
         LOAD_FROM_CACHE = False
         CREATE_DATABASE = False
-    
-        if db_name is not None: 
+
+        if db_name is not None:
             self.db_path = self.cache_path / Path(db_name)
 
             if self.db_path.exists():
@@ -131,33 +118,45 @@ class StaticFetcher(BaseFetcher):
         if LOAD_FROM_CACHE:
             # Reads pooch registry file format
             # https://www.fatiando.org/pooch/latest/registry-files.html#registry-file-format
-            with open(self.db_path, mode='r') as f:
+            with open(self.db_path, mode="r") as f:
                 for line in f:
                     key, value = line.strip().split()
                     registry_dictionary[key] = value
-            
-        else: # No Database (just download)
 
+        else:  # No Database (just download)
+            # This block of code allows file_name to be a tuple instead of a string 
             if isinstance(file_name, str):
                 _file_name = (file_name,)
             else:
                 _file_name = file_name
 
-            registry_dictionary = {
-                name: None for name in _file_name
-            }
+            registry_dictionary = {name: None for name in _file_name}
+        
 
-        downloader = pooch.create(
+        main_downloader = pooch.create(
             path=self.cache_path,
-            base_url=base_url,
-            registry=registry_dictionary
+            base_url=kwargs["base_url"],
+            registry=registry_dictionary,
+            retry_if_failed=kwargs["retries"],
         )
-         
+
+        match downloader:
+            case 'HTTP':
+                fetch_downloader = pooch.HTTPDownloader(**download_kwargs)
+            case 'FTP':
+                fetch_downloader = pooch.FTPDownloader(**download_kwargs)
+            case 'SFTP':
+                fetch_downloader = pooch.SFTPDownloader(**download_kwargs)
+            case 'DOI':
+                fetch_downloader = pooch.DOIDownloader(**download_kwargs)
+            case _:
+                raise ValueError(f"Invalid downloader '{downloader}'. Valid options are 'HTTP', 'FTP', 'SFTP', 'DOI'.")
+
         paths = [
-            Path(downloader.fetch(fname=file_name, progressbar=True))
+            Path(main_downloader.fetch(fname=file_name, progressbar=True, downloader=fetch_downloader))
             for file_name in registry_dictionary.keys()
         ]
-        
+
         if CREATE_DATABASE:
             pooch.make_registry(directory=self.cache_path, output=self.db_path)
 
@@ -168,18 +167,19 @@ class StaticFetcher(BaseFetcher):
 
     def _check_cache_path_input(self, cache_path):
         if cache_path is None:
-            return pooch.os_cache(DEFAULT_CACHE_NAME_DOWNLOADER)
+            return Path(pooch.os_cache(DEFAULT_CACHE_NAME_DOWNLOADER))
         else:
-            return cache_path
+            return Path(cache_path)
 
     def _check_hash_input(self, hash):
         if hash in hashlib.algorithms_available:
             return hash
         else:
             raise ValueError(
-                f"Invalid hash \"{hash}\". Valid hashes algorithms are {hashlib.algorithms_available}."
+                f'Invalid hash "{hash}". Valid hashes algorithms are {hashlib.algorithms_available}.'
             )
-    
+
+
 class DynamicFetcher(BaseFetcher):
     """Fetcher yields a Python Generator for dynamic downloading and analysis"""
 
