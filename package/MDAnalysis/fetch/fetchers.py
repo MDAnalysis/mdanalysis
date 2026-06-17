@@ -95,8 +95,6 @@ class StaticFetcher(BaseFetcher):
     def fetch(
         self,
         file_name=None,
-        force=False,
-        ignore_hash=False,
         db_name="hashes.txt",
         downloader="HTTP",
         **kwargs,
@@ -122,6 +120,11 @@ class StaticFetcher(BaseFetcher):
                 for line in f:
                     key, value = line.strip().split()
                     registry_dictionary[key] = value
+
+            # Adds files not in cache
+            for file in file_name:
+                if file not in registry_dictionary:
+                    registry_dictionary[file] = None
 
         else:  # No Database (just download)
             # This block of code allows file_name to be a tuple instead of a string

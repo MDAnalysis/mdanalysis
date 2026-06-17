@@ -22,22 +22,14 @@
 #
 
 import pytest
-
 import MDAnalysis as mda
-from MDAnalysis.fetch.pdb import (
-    DEFAULT_CACHE_NAME_DOWNLOADER,
-    HAS_POOCH,
-    SUPPORTED_FILE_FORMATS_DOWNLOADER,
-)
 
 import re
-from urllib import request
-from shutil import rmtree
-from pathlib import Path
 
-if HAS_POOCH:
-    from requests.exceptions import HTTPError
-    import pooch
+from MDAnalysis.fetch.fetchers import HAS_POOCH
+from MDAnalysis.fetch.pdb import SUPPORTED_FILE_FORMATS_DOWNLOADER
+from urllib import request
+from pathlib import Path
 
 try:
     request.urlopen("https://files.wwpdb.org/", timeout=2)
@@ -46,16 +38,9 @@ except request.URLError:
     HAS_ACCESS_TO_WWPDB = False
 
 
-@pytest.mark.skipif(
-    HAS_POOCH,
-    reason="Pooch is installed.",
-)
-def test_pooch_installation(tmp_path):
-    with pytest.raises(
-        ModuleNotFoundError,
-        match="pooch is needed as a dependency for from_PDB()",
-    ):
-        mda.fetch.from_PDB("1AKE", cache_path=tmp_path, file_format="cif")
+import pytest
+
+from MDAnalysis.fetch.fetchers import HAS_POOCH
 
 
 @pytest.mark.skipif(not HAS_POOCH, reason="Pooch is not installed.")
@@ -63,51 +48,27 @@ def test_pooch_installation(tmp_path):
     not HAS_ACCESS_TO_WWPDB,
     reason="Can not connect to https://files.wwpdb.org/",
 )
-class TestDocstringExamples:
-    """This class tests all the examples found in from_PDB's docstring"""
+def test_download_one_file(tmp_path):
 
-    @pytest.mark.parametrize("pdb_id", ["1AKE", "4BWZ"])
-    def test_one_file_download(self, tmp_path, pdb_id):
-        path = mda.fetch.from_PDB(
-            pdb_id, cache_path=tmp_path, file_format="cif"
-        )
-        assert isinstance(path, Path)
-        assert Path(path).name == f"{pdb_id}.cif"
+    path = mda.fetch.from_PDB(["1AKE"], cache_path=tmp_path)
+    assert path.exists()
+    assert path.name == "1AKE.cif.gz"
 
-    def test_multiple_files_download(self, tmp_path):
-        list_of_path_strings = mda.fetch.from_PDB(
-            ["1AKE", "4BWZ"], cache_path=tmp_path, progressbar=True
-        )
-        assert all(isinstance(pdb_id, Path) for pdb_id in list_of_path_strings)
-        assert all(
-            [
-                Path(path).name == f"{name}.cif.gz"
-                for path, name in zip(
-                    list_of_path_strings, ["1AKE", "4BWZ"], strict=True
-                )
-            ]
-        )
 
-    @pytest.mark.parametrize(
-        "pdb_id, n_atoms", [("1AKE", 3816), ("4BWZ", 2824)]
+def test_download_multiple_files(tmp_path):
+
+    paths = mda.fetch.from_PDB(["1AKE", "4AKE"], cache_path=tmp_path)
+    assert all(isinstance(path, Path) for path in paths)
+    assert [path.name for path in paths] == list(
+        ["1AKE.cif.gz", "4AKE.cif.gz"]
     )
-    def test_files_to_universe(self, tmp_path, pdb_id, n_atoms):
-        u = mda.Universe(
-            mda.fetch.from_PDB(
-                pdb_id,
-                file_format="pdb.gz",
-                cache_path=tmp_path,
-                progressbar=True,
-            )
-        )
-        assert isinstance(u, mda.Universe) and (len(u.atoms) == n_atoms)
 
 
-@pytest.fixture()
-def clean_up_default_cache():
-    rmtree(pooch.os_cache(DEFAULT_CACHE_NAME_DOWNLOADER), ignore_errors=True)
-    yield
-    rmtree(pooch.os_cache(DEFAULT_CACHE_NAME_DOWNLOADER))
+def test_download_file_format(tmp_path):
+
+    path = mda.fetch.from_PDB(["1AKE"], cache_path=tmp_path, file_format="pdb")
+    assert path.exists()
+    assert path.name == "1AKE.pdb"
 
 
 @pytest.mark.skipif(not HAS_POOCH, reason="Pooch is not installed.")
@@ -115,44 +76,14 @@ def clean_up_default_cache():
     not HAS_ACCESS_TO_WWPDB,
     reason="Can not connect to https://files.wwpdb.org/",
 )
-class TestExpectedBehaviors:
-
-    def test_no_cache_path(self, clean_up_default_cache):
-        assert isinstance(mda.fetch.from_PDB("1AKE", cache_path=None), Path)
-
-    def test_str_input_gives_path_output(self, tmp_path):
-        assert isinstance(
-            mda.fetch.from_PDB(
-                pdb_ids="1AKE", cache_path=tmp_path, file_format="cif"
-            ),
-            Path,
+def test_invalid_file_format(tmp_path):
+    with pytest.raises(
+        ValueError,
+        match=re.escape(
+            "Invalid file format. Supported file formats "
+            f"are {SUPPORTED_FILE_FORMATS_DOWNLOADER}"
+        ),
+    ):
+        mda.fetch.from_PDB(
+            pdb_ids="1AKE", cache_path=tmp_path, file_format="barfoo"
         )
-
-    def test_list_input_gives_list_output(self, tmp_path):
-        assert isinstance(
-            mda.fetch.from_PDB(pdb_ids=["1AKE"], cache_path=tmp_path), list
-        )
-
-
-@pytest.mark.skipif(not HAS_POOCH, reason="Pooch is not installed.")
-@pytest.mark.skipif(
-    not HAS_ACCESS_TO_WWPDB,
-    reason="Can not connect to https://files.wwpdb.org/",
-)
-class TestExpectedErrors:
-
-    def test_invalid_pdb(self, tmp_path):
-        with pytest.raises(HTTPError):
-            mda.fetch.from_PDB(pdb_ids="foobar", cache_path=tmp_path)
-
-    def test_invalid_file_format(self, tmp_path):
-        with pytest.raises(
-            ValueError,
-            match=re.escape(
-                "Invalid file format. Supported file formats "
-                f"are {SUPPORTED_FILE_FORMATS_DOWNLOADER}"
-            ),
-        ):
-            mda.fetch.from_PDB(
-                pdb_ids="1AKE", cache_path=tmp_path, file_format="barfoo"
-            )

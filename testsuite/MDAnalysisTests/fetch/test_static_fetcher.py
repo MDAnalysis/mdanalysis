@@ -147,6 +147,7 @@ class TestExpectedBehaviors:
 
         assert isinstance(path, Path)
         assert path.name == SINGLE_PDB
+        assert downloader.db_path is None
         assert path.exists()
         assert not (tmp_path / REGISTRY_NAME).exists()
 
@@ -166,6 +167,8 @@ class TestExpectedBehaviors:
         downloader.fetch(
             base_url=BASE_URL, file_name=MULTIPLE_PDBS, db_name=REGISTRY_NAME
         )
+
+        assert (tmp_path / REGISTRY_NAME).exists()
 
         downloader = StaticFetcher(cache_path=tmp_path)
         paths = downloader.fetch(

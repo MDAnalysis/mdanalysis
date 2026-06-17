@@ -43,6 +43,7 @@ Functions
 
 """
 from pathlib import Path
+from .fetchers import StaticFetcher
 
 try:
     import pooch
@@ -52,9 +53,11 @@ else:
     HAS_POOCH = True
 
 #: Name of the :mod:`pooch` cache directory ``pooch.os_cache(DEFAULT_CACHE_NAME_DOWNLOADER)``;
-#: see :func:`pooch.os_cache` for further details.
+#: see :func:`pooch.os_cache` for further details.'
 #:
 #: .. versionadded:: 2.11.0
+#: Moved to fetchers
+# This should be removed?
 DEFAULT_CACHE_NAME_DOWNLOADER = "MDAnalysis_pdbs"
 
 # These file formats are here https://www.rcsb.org/docs/programmatic-access/file-download-services#pdb-entry-files"
@@ -162,39 +165,19 @@ def from_PDB(
     .. versionadded:: 2.11.0
     """
 
-    if not HAS_POOCH:
-        raise ModuleNotFoundError(
-            "pooch is needed as a dependency for from_PDB()"
-        )
-    elif file_format not in SUPPORTED_FILE_FORMATS_DOWNLOADER:
+    if file_format not in SUPPORTED_FILE_FORMATS_DOWNLOADER:
         raise ValueError(
             "Invalid file format. Supported file formats "
             f"are {SUPPORTED_FILE_FORMATS_DOWNLOADER}"
         )
+    
 
-    if isinstance(pdb_ids, str):
-        _pdb_ids = (pdb_ids,)
-    else:
-        _pdb_ids = pdb_ids
 
-    if cache_path is None:
-        cache_path = pooch.os_cache(DEFAULT_CACHE_NAME_DOWNLOADER)
+    pdb_ids = [pdb + "." + file_format for pdb in pdb_ids]
 
-    # Have to do this dictionary approach instead of using pooch.retrieve in order
-    # to prevent the hardcoded known_hash warning from showing up.
-    registry_dictionary = {
-        f"{pdb_id}.{file_format}": None for pdb_id in _pdb_ids
-    }
-
-    downloader = pooch.create(
-        path=cache_path,
+    fetcher = StaticFetcher(cache_path=cache_path)
+    return fetcher.fetch(
+        file_name=pdb_ids,
         base_url="https://files.wwpdb.org/download/",
-        registry=registry_dictionary,
+        progressbar=progressbar,
     )
-
-    paths = [
-        Path(downloader.fetch(fname=file_name, progressbar=progressbar))
-        for file_name in registry_dictionary.keys()
-    ]
-
-    return paths if not isinstance(pdb_ids, str) else paths[0]
