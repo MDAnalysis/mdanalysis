@@ -28,9 +28,7 @@ import copy
 from numpy.testing import (
     assert_allclose,
     assert_equal,
-    assert_array_almost_equal,
     assert_array_equal,
-    assert_almost_equal,
 )
 
 import MDAnalysis
@@ -108,7 +106,7 @@ class TestHydrogenBondAnalysisTIP3P(object):
         ref_counts = np.array([3, 2, 4, 4, 4, 4, 3, 2, 3, 3])
 
         counts = h.count_by_time()
-        assert_array_almost_equal(h.times, ref_times)
+        assert_allclose(h.times, ref_times)
         assert_array_equal(counts, ref_counts)
 
     def test_count_by_type(self, h):
@@ -241,7 +239,7 @@ class TestHydrogenBondAnalysisIdeal(object):
         u.add_TopologyAttr("mass", [15.999, 1.008, 1.008] * n_residues)
         u.add_TopologyAttr("charge", [-1.04, 0.52, 0.52] * n_residues)
         with pytest.raises(NoDataError, match="no bond information"):
-            h = HydrogenBondAnalysis(u, **kwargs)
+            HydrogenBondAnalysis(u, **kwargs)
 
     def test_no_bond_donor_sel(self, universe):
 
@@ -258,7 +256,7 @@ class TestHydrogenBondAnalysisIdeal(object):
         u.add_TopologyAttr("mass", [15.999, 1.008, 1.008] * n_residues)
         u.add_TopologyAttr("charge", [-1.04, 0.52, 0.52] * n_residues)
         h = HydrogenBondAnalysis(u, **kwargs)
-        donors = u.select_atoms(h.guess_donors())
+        u.select_atoms(h.guess_donors())
 
     def test_first_hbond(self, hydrogen_bonds):
         assert len(hydrogen_bonds.results.hbonds) == 2
@@ -273,15 +271,16 @@ class TestHydrogenBondAnalysisIdeal(object):
         assert_equal(donor_index, 0)
         assert_equal(hydrogen_index, 2)
         assert_equal(acceptor_index, 3)
-        assert_almost_equal(da_dst, 2.5)
-        assert_almost_equal(angle, 180)
+        assert da_dst == pytest.approx(2.5)
+        assert angle == pytest.approx(180)
+
 
     def test_count_by_time(self, hydrogen_bonds):
         ref_times = np.array([0, 1, 2])  # u.trajectory.dt is 1
         ref_counts = np.array([1, 0, 1])
 
         counts = hydrogen_bonds.count_by_time()
-        assert_array_almost_equal(hydrogen_bonds.times, ref_times)
+        assert_allclose(hydrogen_bonds.times, ref_times)
         assert_array_equal(counts, ref_counts)
 
     def test_hydrogen_bond_lifetime(self, hydrogen_bonds):
@@ -716,7 +715,7 @@ class TestHydrogenBondAnalysisTIP3PStartStep(object):
         ref_counts = np.array([2, 4, 4, 2, 3])
 
         counts = h.count_by_time()
-        assert_array_almost_equal(h.times, ref_times)
+        assert_allclose(h.times, ref_times)
         assert_array_equal(counts, ref_counts)
 
     def test_count_by_type(self, h):
