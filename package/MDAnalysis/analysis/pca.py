@@ -238,6 +238,11 @@ class PCA(AnalysisBase):
        manually iterate through ``self._trajectory``, which would
        incorrectly handle cases where the ``frame`` argument
        was passed.
+    .. versionchanged:: 2.11.0
+       Covariance matrix is now computed via batched BLAS matrix multiply instead
+       of per-frame outer product accumulation, and uses symmetric
+       eigendecomposition (``eigh``) instead of general ``eig``, resulting
+       in significant performance improvements for large systems.
     """
 
     _analysis_algorithm_is_parallelizable = False
@@ -290,6 +295,11 @@ class PCA(AnalysisBase):
             )
         n_dim = self._n_atoms * 3
         self.cov = np.zeros((n_dim, n_dim))
+        # Batch frames into BLAS matmul for covariance updates
+        # while keeping memory usage reasonable.
+        self._batch_size = min(self.n_frames, 500)
+        self._frame_data = np.empty((self._batch_size, n_dim))
+        self._batch_idx = 0  # tracks when to update self.cov
         self._ref_atom_positions = self._reference.positions
         self._ref_cog = self._reference.center_of_geometry()
         self._ref_atom_positions -= self._ref_cog
@@ -329,14 +339,27 @@ class PCA(AnalysisBase):
         else:
             x = self._atoms.positions.ravel()
         x -= self._xmean
-        self.cov += np.dot(x[:, np.newaxis], x[:, np.newaxis].T)
+        self._frame_data[self._batch_idx] = x
+        self._batch_idx += 1
+        if self._batch_idx == self._batch_size:
+            self.cov += self._frame_data.T @ self._frame_data
+            self._batch_idx = 0
 
     def _conclude(self):
+        if self._batch_idx > 0:
+            # Accumulate remaining frames from the final batch
+            self.cov += (
+                self._frame_data[: self._batch_idx].T
+                @ self._frame_data[: self._batch_idx]
+            )
         self.cov /= self.n_frames - 1
-        e_vals, e_vects = np.linalg.eig(self.cov)
-        sort_idx = np.argsort(e_vals)[::-1]
-        self._variance = e_vals[sort_idx]
-        self._p_components = e_vects[:, sort_idx]
+        del self._frame_data
+        # covariance matrix is symmetric and real-valued by
+        # construction, so we can use faster eigh
+        eigenvals, eigenvects = np.linalg.eigh(self.cov)
+        # eigh returns ascending order; reverse for descending
+        self._variance = eigenvals[::-1]
+        self._p_components = eigenvects[:, ::-1]
         self._calculated = True
         self.n_components = self._n_components
 
