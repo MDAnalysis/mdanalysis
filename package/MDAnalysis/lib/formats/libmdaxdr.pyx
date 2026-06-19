@@ -401,13 +401,12 @@ cdef class TRRFile(_XDRFile):
 
     Examples
     --------
-    >>> from MDAnalysis.lib.formats.libmdaxdr import TRRFile
-    >>> try:
-    ...     with TRRFile('foo.trr') as f:
-    ...         for frame in f:
-    ...             print(frame.x)
-    ... except OSError:
-    ...     pass
+    .. code-block:: python
+
+       with TRRFile("trajectory.trr") as f:
+           for frame in f:
+               print(frame.x)
+
     Notes
     -----
     This class can be pickled. The pickle will store filename, mode, current
@@ -707,13 +706,11 @@ cdef class XTCFile(_XDRFile):
 
     Examples
     --------
-    >>> from MDAnalysis.lib.formats.libmdaxdr import XTCFile
-    >>> try:
-...     with XTCFile('foo.trr') as f:
-...         for frame in f:
-...             print(frame.x)
-... except OSError:
-...     pass
+    .. code-block:: python
+
+       with XTCFile("trajectory.xtc") as f:
+           for frame in f:
+               print(frame.x)
 
     Notes
     -----

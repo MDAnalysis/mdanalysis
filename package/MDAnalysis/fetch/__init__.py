@@ -34,6 +34,6 @@ To use these functions, the optional dependency :mod:`pooch` is required.
 
 """
 
-__all__ = ["from_PDB"]
+__all__ = ["from_pdb"]
 
-from .pdb import from_PDB
+from .pdb import from_pdb

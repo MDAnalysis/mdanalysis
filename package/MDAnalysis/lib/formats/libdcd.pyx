@@ -138,13 +138,12 @@ cdef class DCDFile:
 
     Examples
     --------
-    >>> from MDAnalysis.lib.formats.libdcd import DCDFile
->>> try:
-...     with DCDFile('foo.dcd') as f:
-...         for frame in f:
-...             print(frame.x)
-... except OSError:
-...     pass
+    .. code-block:: python
+
+       with DCDFile("trajectory.dcd") as dcd:
+           header = dcd.header
+           for frame in dcd:
+               print(frame.x)
 
 
     Notes

@@ -1,0 +1,5 @@
+# Sphinx doctree cache
+.doctrees/
+
+# Doctest output
+output.txt

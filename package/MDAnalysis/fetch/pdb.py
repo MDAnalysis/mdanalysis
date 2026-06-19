@@ -39,7 +39,7 @@ Variables
 Functions
 ---------
 
-.. autofunction:: from_PDB
+.. autofunction:: from_pdb
 
 """
 from pathlib import Path
@@ -72,7 +72,7 @@ SUPPORTED_FILE_FORMATS_DOWNLOADER = (
 )
 
 
-def from_PDB(
+def from_pdb(
     pdb_ids,
     cache_path=None,
     progressbar=False,
@@ -84,7 +84,7 @@ def from_PDB(
 
     Given one or multiple PDB IDs, downloads the corresponding structure files
     format and stores them in a local cache directory. If files are cached on
-    disk, *from_PDB* will skip the download and use the cached version instead.
+    disk, *from_pdb* will skip the download and use the cached version instead.
 
     Returns the path(s) as a :class:`~pathlib.Path` to the downloaded file(s).
 
@@ -141,23 +141,23 @@ def from_PDB(
     Download a single PDB file:
 
     >>> import MDAnalysis as mda
-    >>> from MDAnalysis.fetch import from_PDB
-    >>> from_PDB("1AKE", file_format="cif")
+    >>> from MDAnalysis.fetch import from_pdb
+    >>> from_pdb("1AKE", file_format="cif")
     './MDAnalysis_pdbs/1AKE.cif'
 
     Download multiple PDB files with a progress bar:
 
-    >>> mda.fetch.from_PDB(["1AKE", "4BWZ"], progressbar=True)
+    >>> mda.fetch.from_pdb(["1AKE", "4BWZ"], progressbar=True)
     ['./MDAnalysis_pdbs/1AKE.pdb.gz', './MDAnalysis_pdbs/4BWZ.pdb.gz']
 
     Download a single PDB file and convert it to a universe:
 
-    >>> mda.Universe(mda.fetch.from_PDB("1AKE"), file_format="pdb.gz")
+    >>> mda.Universe(mda.fetch.from_pdb("1AKE"), file_format="pdb.gz")
     <Universe with 3816 atoms>
 
     Download multiple PDB files and convert each of them into a universe:
 
-    >>> [mda.Universe(pdb) for pdb in mda.fetch.from_PDB(["1AKE", "4BWZ"], progressbar=True)]
+    >>> [mda.Universe(pdb) for pdb in mda.fetch.from_pdb(["1AKE", "4BWZ"], progressbar=True)]
     [<Universe with 3816 atoms>, <Universe with 2824 atoms>]
 
 
@@ -166,7 +166,7 @@ def from_PDB(
 
     if not HAS_POOCH:
         raise ModuleNotFoundError(
-            "pooch is needed as a dependency for from_PDB()"
+            "pooch is needed as a dependency for from_pdb()"
         )
     elif file_format not in SUPPORTED_FILE_FORMATS_DOWNLOADER:
         raise ValueError(
