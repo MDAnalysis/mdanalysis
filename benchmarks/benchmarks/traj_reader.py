@@ -29,7 +29,7 @@ except ImportError:
     pass
 
 try:
-    import MDAnalysis as mda
+    from MDAnalysis.coordinates.PDB import PDBReader
     from MDAnalysisTests.datafiles import PDB_multiframe
 except ImportError:
     pass
@@ -40,13 +40,14 @@ traj_dict = {
     "DCD": [DCD, DCDReader],
     "NCDF": [NCDF, NCDFReader],
     "TRC": [TRC_TRAJ_SOLV, TRCReader],
+    "PDB": [PDB_multiframe, PDBReader],
 }
 
 
 class TrajReaderCreation(object):
     """Benchmarks for trajectory file format reading."""
 
-    params = ["XTC", "TRR", "DCD", "NCDF", "TRC"]
+    params = ["XTC", "TRR", "DCD", "NCDF", "TRC", "PDB"]
     param_names = ["traj_format"]
 
     def setup(self, traj_format):
@@ -63,7 +64,7 @@ class TrajReaderCreation(object):
 class TrajReaderIteration(object):
     """Benchmarks for trajectory file format striding."""
 
-    params = ["XTC", "TRR", "DCD", "NCDF", "TRC"]
+    params = ["XTC", "TRR", "DCD", "NCDF", "TRC", "PDB"]
     param_names = ["traj_format"]
 
     def setup(self, traj_format):
@@ -76,21 +77,4 @@ class TrajReaderIteration(object):
         test files for each format.
         """
         for ts in self.reader_object:
-            pass
-
-
-class PDBReaderBench(object):
-    """Benchmarks for PDB file format reading and parsing"""
-
-    units = "ms"
-    timeout = 60.0
-
-    def setup(self):
-        self.u = mda.Universe(PDB_multiframe)
-
-    def time_read(self):
-        mda.Universe(PDB_multiframe)
-
-    def time_iterate(self):
-        for ts in self.u.trajectory:
             pass
