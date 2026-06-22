@@ -417,18 +417,19 @@ class TestAttr(object):
         return universe.atoms  # prototypical AtomGroup
 
     def test_principal_axes(self, ag):
-        assert_almost_equal(
-            np.absolute(ag.principal_axes()),
-            np.absolute(
-                np.array(
-                    [
-                        [-1.53389276e-03, -4.41386224e-02, -9.99024239e-01],
-                        [-1.20986911e-02, -9.98951474e-01, 4.41539838e-02],
-                        [-9.99925632e-01, 1.21546132e-02, 9.98264877e-04],
-                    ]
-                )
-            ),
+        ref = np.array(
+            [
+                [-1.53389276e-03, -4.41386224e-02, -9.99024239e-01],
+                [-1.20986911e-02, -9.98951474e-01, 4.41539838e-02],
+                [-9.99925632e-01, 1.21546132e-02, 9.98264877e-04],
+            ]
         )
+        result = ag.principal_axes()
+        # See PR #5404
+        # Get the signs to flip any anti-parallel vectors by before
+        # comparing the two results arrays
+        signs = np.sign(np.einsum("ij,ij->i", result, ref))
+        assert_almost_equal(result * signs[:, np.newaxis], ref)
 
     @pytest.fixture()
     def universe_pa(self):

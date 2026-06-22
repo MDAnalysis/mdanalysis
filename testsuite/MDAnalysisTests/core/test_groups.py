@@ -243,18 +243,16 @@ class TestEmptyAtomGroup(object):
         assert_almost_equal(ag.radius_of_gyration(), 2.400527938286)
         assert_almost_equal(ag.shape_parameter(), 0.61460819)
         assert_almost_equal(ag.asphericity(), 0.4892751412)
-        assert_almost_equal(
-            np.absolute(ag.principal_axes()),
-            np.absolute(
-                np.array(
-                    [
-                        [-0.7574113, 0.113481, -0.643001],
-                        [-0.5896252, -0.5419056, 0.5988993],
-                        [-0.2804821, 0.8327427, 0.4773566],
-                    ]
-                )
-            ),
+        ref_pa = np.array(
+            [
+                [-0.7574113, 0.113481, -0.643001],
+                [-0.5896252, -0.5419056, 0.5988993],
+                [-0.2804821, 0.8327427, 0.4773566],
+            ]
         )
+        result_pa = ag.principal_axes()
+        signs_pa = np.sign(np.einsum("ij,ij->i", result_pa, ref_pa))
+        assert_almost_equal(result_pa * signs_pa[:, np.newaxis], ref_pa)
         assert_almost_equal(
             ag.center_of_charge(),
             np.array([11.0800112, 8.8885659, -8.9886632]),
