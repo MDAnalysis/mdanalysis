@@ -85,7 +85,6 @@ from numpy.testing import assert_allclose, assert_equal
         # NOTE: expected values are expressed in nm
         # units and converted to Angstrom in the body
         # of the test below, before assertions
-      
         # see gh-5361 for CO2/linear angle:
         (
             TPR_linear_angle,
@@ -94,7 +93,7 @@ from numpy.testing import assert_allclose, assert_equal
             (3, 3),
             [0, 0, 0],
             [0, 0, 0],
-        ),      
+        ),
         # this case is an alanine dipeptide
         # with neural network potential active
         # and nonzero velocities
