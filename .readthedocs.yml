@@ -15,7 +15,7 @@ sphinx:
 
 # Set the version of Python and other tools you might need
 build:
-  os: ubuntu-20.04
+  os: ubuntu-lts-latest
   tools:
     # python: "miniconda3-4.7"
     python: "mambaforge-4.10"
