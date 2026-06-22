@@ -426,7 +426,9 @@ class TestAttr(object):
         )
         result = ag.principal_axes()
         # See PR #5404
-        # Get the signs to flip any anti-parallel vectors by before
+        # The direction (sign) of the principal axes is dependent on the
+        # specific algorithm used, but the direction itself is not physically
+        # relevant, so we get the signs to flip any anti-parallel vectors before
         # comparing the two results arrays
         signs = np.sign(np.einsum("ij,ij->i", result, ref))
         assert_almost_equal(result * signs[:, np.newaxis], ref)

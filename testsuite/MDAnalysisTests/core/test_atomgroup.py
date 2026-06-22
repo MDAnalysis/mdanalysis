@@ -1357,7 +1357,9 @@ class TestPBCFlag(object):
             assert_almost_equal(result[1], ref[method_name][1], self.prec)
         elif method_name == "principal_axes":
             # See PR #5404
-            # Get the signs to flip any anti-parallel vectors by before
+            # The direction (sign) of the principal axes is dependent on the
+            # specific algorithm used, but the direction itself is not physically
+            # relevant, so we get the signs to flip any anti-parallel vectors before
             # comparing the two results arrays
             signs = np.sign(np.einsum("ij,ij->i", result, ref[method_name]))
             assert_almost_equal(result * signs[:, np.newaxis], ref[method_name], self.prec)
@@ -1635,7 +1637,9 @@ class TestAtomGroup(object):
         )
         result = ag.principal_axes()
         # See PR #5404
-        # Get the signs to flip any anti-parallel vectors by before
+        # The direction (sign) of the principal axes is dependent on the
+        # specific algorithm used, but the direction itself is not physically
+        # relevant, so we get the signs to flip any anti-parallel vectors before
         # comparing the two results arrays
         signs = np.sign(np.einsum("ij,ij->i", result, ref))
         assert_almost_equal(result * signs[:, np.newaxis], ref)
