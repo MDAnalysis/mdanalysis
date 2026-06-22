@@ -22,6 +22,7 @@ The rules for this file:
  * 2.11.0
 
 Fixes
+<<<<<<< HEAD
  * `MDAnalysis.analysis.nucleicacids.WatsonCrickDist`, `MinorPairDist`,
    and `MajorPairDist` now match residue names against the full resname
    instead of only the first character, fixing incorrect behaviour with
@@ -39,6 +40,10 @@ Fixes
  * Fix mixed-case atom types in guess_bonds (Issue #5342, PR #5343)
  * Fixes msd for non-linear frames, when non_linear is not explicitly
    provided (Issue #5100, PR #5254)
+=======
+ * Fix doctest in util.py for platform-dependent path output
+   (Issue #3925, PR #5285)
+>>>>>>> 530afe184 (DOC: update CHANGELOG for PR #5285)
  * Fixes TypeError with np.int64 indexing in GSD Reader (Issue #5224)
  * Fixed bug in add_transformations allowing non-callable transformations
    (Issue #2558, PR #2558)
