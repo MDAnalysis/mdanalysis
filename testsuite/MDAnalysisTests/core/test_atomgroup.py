@@ -88,7 +88,7 @@ class TestAtomGroupToTopology(object):
         assert isinstance(imp, ImproperDihedral)
 
     @pytest.mark.parametrize(
-        "btype,", ["bond", "angle", "dihedral", "improper"]
+        "btype", ["bond", "angle", "dihedral", "improper"]
     )
     def test_VE(self, btype, u):
         ag = u.atoms[:10]
