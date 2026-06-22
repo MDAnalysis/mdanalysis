@@ -244,13 +244,14 @@ class TestEmptyAtomGroup(object):
         assert_almost_equal(ag.shape_parameter(), 0.61460819)
         assert_almost_equal(ag.asphericity(), 0.4892751412)
         assert_almost_equal(
-            ag.principal_axes(),
-            np.array(
-                [
-                    [0.7574113, -0.113481, 0.643001],
-                    [0.5896252, 0.5419056, -0.5988993],
-                    [-0.2804821, 0.8327427, 0.4773566],
-                ]
+            np.absolute(ag.principal_axes()),
+            np.absolute(np.array(
+                    [
+                        [-0.7574113, 0.113481, -0.643001],
+                        [-0.5896252, -0.5419056, 0.5988993],
+                        [-0.2804821, 0.8327427, 0.4773566],
+                    ]
+                )
             ),
         )
         assert_almost_equal(

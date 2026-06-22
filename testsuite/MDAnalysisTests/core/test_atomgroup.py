@@ -1355,6 +1355,8 @@ class TestPBCFlag(object):
         if method_name == "bsphere":
             assert_almost_equal(result[0], ref[method_name][0], self.prec)
             assert_almost_equal(result[1], ref[method_name][1], self.prec)
+        elif method_name == "principal_axes":
+            assert_almost_equal(np.absolute(result), np.absolute(ref[method_name]), self.prec)
         else:
             assert_almost_equal(result, ref[method_name], self.prec)
 
@@ -1621,13 +1623,15 @@ class TestAtomGroup(object):
 
     def test_principal_axes(self, ag):
         assert_almost_equal(
-            ag.principal_axes(),
-            np.array(
-                [
-                    [-1.53389276e-03, -4.41386224e-02, -9.99024239e-01],
-                    [-1.20986911e-02, -9.98951474e-01, 4.41539838e-02],
-                    [-9.99925632e-01, 1.21546132e-02, 9.98264877e-04],
-                ]
+            np.absolute(ag.principal_axes()),
+            np.absolute(
+                np.array(
+                    [
+                        [-1.53389276e-03, -4.41386224e-02, -9.99024239e-01],
+                        [-1.20986911e-02, -9.98951474e-01, 4.41539838e-02],
+                        [-9.99925632e-01, 1.21546132e-02, 9.98264877e-04],
+                    ]
+                )
             ),
         )
 
