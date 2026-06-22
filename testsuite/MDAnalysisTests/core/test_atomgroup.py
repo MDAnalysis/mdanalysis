@@ -1356,7 +1356,9 @@ class TestPBCFlag(object):
             assert_almost_equal(result[0], ref[method_name][0], self.prec)
             assert_almost_equal(result[1], ref[method_name][1], self.prec)
         elif method_name == "principal_axes":
-            assert_almost_equal(np.absolute(result), np.absolute(ref[method_name]), self.prec)
+            assert_almost_equal(
+                np.absolute(result), np.absolute(ref[method_name]), self.prec
+            )
         else:
             assert_almost_equal(result, ref[method_name], self.prec)
 
