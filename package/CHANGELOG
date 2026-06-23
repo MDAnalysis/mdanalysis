@@ -67,8 +67,6 @@ Enhancements
  * Added ASV benchmark for PDB trajectory reading (PR #5394)
  * Read Linear Angle bonded interaction entries from GROMACS TPR files and 
    add the angles to the topology (Issue #5361, PR #5372)
- * Read Linear Angle bonded interaction entries from GROMACS TPR files and 
-   add the angles to the topology (Issue #5361, PR #5372)
  * Enables parallelization for analysis.atomicdistances.AtomicDistances
    (Issue #4662, PR #4822)
  * DSSP uses ``capped_distance`` and ``calc_bonds`` for faster distance
