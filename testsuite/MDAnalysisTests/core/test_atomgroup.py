@@ -88,7 +88,7 @@ class TestAtomGroupToTopology(object):
         assert isinstance(imp, ImproperDihedral)
 
     @pytest.mark.parametrize(
-        "btype,", ["bond", "angle", "dihedral", "improper"]
+        "btype", ["bond", "angle", "dihedral", "improper"]
     )
     def test_VE(self, btype, u):
         ag = u.atoms[:10]
@@ -1280,8 +1280,8 @@ class TestPBCFlag(object):
         ),
         "principal_axes": np.array(
             [
-                [0.78787867, 0.26771575, -0.55459488],
-                [-0.40611024, -0.45112859, -0.7947059],
+                [-0.78787867, -0.26771575, 0.55459488],
+                [0.40611024, 0.45112859, 0.7947059],
                 [-0.46294889, 0.85135849, -0.24671249],
             ]
         ),
@@ -1315,8 +1315,8 @@ class TestPBCFlag(object):
         ),
         "principal_axes": np.array(
             [
-                [0.85911708, -0.19258726, -0.4741603],
-                [0.07520116, 0.96394227, -0.25526473],
+                [-0.85911708, 0.19258726, 0.4741603],
+                [-0.07520116, -0.96394227, 0.25526473],
                 [0.50622389, 0.18364489, 0.84262206],
             ]
         ),
@@ -1355,6 +1355,14 @@ class TestPBCFlag(object):
         if method_name == "bsphere":
             assert_almost_equal(result[0], ref[method_name][0], self.prec)
             assert_almost_equal(result[1], ref[method_name][1], self.prec)
+        elif method_name == "principal_axes":
+            # See PR #5404
+            # The direction (sign) of the principal axes is dependent on the
+            # specific algorithm used, but the direction itself is not physically
+            # relevant, so we get the signs to flip any anti-parallel vectors before
+            # comparing the two results arrays
+            signs = np.sign(np.einsum("ij,ij->i", result, ref[method_name]))
+            assert_almost_equal(result * signs[:, np.newaxis], ref[method_name], self.prec)
         else:
             assert_almost_equal(result, ref[method_name], self.prec)
 
@@ -1620,16 +1628,21 @@ class TestAtomGroup(object):
         )
 
     def test_principal_axes(self, ag):
-        assert_almost_equal(
-            ag.principal_axes(),
-            np.array(
-                [
-                    [1.53389276e-03, 4.41386224e-02, 9.99024239e-01],
-                    [1.20986911e-02, 9.98951474e-01, -4.41539838e-02],
-                    [-9.99925632e-01, 1.21546132e-02, 9.98264877e-04],
-                ]
-            ),
+        ref = np.array(
+            [
+                [-1.53389276e-03, -4.41386224e-02, -9.99024239e-01],
+                [-1.20986911e-02, -9.98951474e-01, 4.41539838e-02],
+                [-9.99925632e-01, 1.21546132e-02, 9.98264877e-04],
+            ]
         )
+        result = ag.principal_axes()
+        # See PR #5404
+        # The direction (sign) of the principal axes is dependent on the
+        # specific algorithm used, but the direction itself is not physically
+        # relevant, so we get the signs to flip any anti-parallel vectors before
+        # comparing the two results arrays
+        signs = np.sign(np.einsum("ij,ij->i", result, ref))
+        assert_almost_equal(result * signs[:, np.newaxis], ref)
 
     def test_principal_axes_duplicates(self, ag):
         ag2 = ag + ag[0]

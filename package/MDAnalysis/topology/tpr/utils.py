@@ -826,7 +826,7 @@ def do_moltype(data, symtab, fver):
                 bonds += list(ik_obj.process(ias))
             elif ik_obj.name in ['ANGLES', 'G96ANGLES', 'CROSS_BOND_BOND',
                                  'CROSS_BOND_ANGLE', 'UREY_BRADLEY', 'QANGLES',
-                                 'RESTRANGLES', 'TABANGLES']:
+                                 'RESTRANGLES', 'TABANGLES', 'LINEAR_ANGLES']:
                 angles += list(ik_obj.process(ias))
             elif ik_obj.name in ['PDIHS', 'RBDIHS', 'RESTRDIHS', 'CBTDIHS',
                                  'FOURDIHS', 'TABDIHS']:
