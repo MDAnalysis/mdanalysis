@@ -106,7 +106,7 @@ class TestHydrogenBondAnalysisTIP3P(object):
         ref_counts = np.array([3, 2, 4, 4, 4, 4, 3, 2, 3, 3])
 
         counts = h.count_by_time()
-        assert_allclose(h.times, ref_times,atol=1e-6,rtol=0)
+        assert_allclose(h.times, ref_times, atol=1e-6, rtol=0)
         assert_array_equal(counts, ref_counts)
 
     def test_count_by_type(self, h):
@@ -273,7 +273,6 @@ class TestHydrogenBondAnalysisIdeal(object):
         assert_equal(acceptor_index, 3)
         assert da_dst == pytest.approx(2.5)
         assert angle == pytest.approx(180)
-
 
     def test_count_by_time(self, hydrogen_bonds):
         ref_times = np.array([0, 1, 2])  # u.trajectory.dt is 1
