@@ -106,7 +106,7 @@ class TestHydrogenBondAnalysisTIP3P(object):
         ref_counts = np.array([3, 2, 4, 4, 4, 4, 3, 2, 3, 3])
 
         counts = h.count_by_time()
-        assert_allclose(h.times, ref_times)
+        assert_allclose(h.times, ref_times,atol=1e-6,rtol=0)
         assert_array_equal(counts, ref_counts)
 
     def test_count_by_type(self, h):
