@@ -2420,7 +2420,7 @@
 <span class="sd">           is deprecated and will be removed in version 3.0.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">atomgroup</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">atoms</span>
-        <span class="n">e_val</span><span class="p">,</span> <span class="n">e_vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">moment_of_inertia</span><span class="p">(</span><span class="n">wrap</span><span class="o">=</span><span class="n">wrap</span><span class="p">))</span>
+        <span class="n">e_val</span><span class="p">,</span> <span class="n">e_vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">moment_of_inertia</span><span class="p">(</span><span class="n">wrap</span><span class="o">=</span><span class="n">wrap</span><span class="p">))</span>
 
         <span class="c1"># Sort</span>
         <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">e_val</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
