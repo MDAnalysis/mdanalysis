@@ -38,11 +38,6 @@ except request.URLError:
     HAS_ACCESS_TO_WWPDB = False
 
 
-import pytest
-
-from MDAnalysis.fetch.fetchers import HAS_POOCH
-
-
 @pytest.mark.skipif(not HAS_POOCH, reason="Pooch is not installed.")
 @pytest.mark.skipif(
     not HAS_ACCESS_TO_WWPDB,
