@@ -3,9 +3,11 @@ on:
   push:
     branches:
       - develop
+      - fetcher_gsoc
   pull_request:
     branches:
       - develop
+      - fetcher_gsoc
   workflow_dispatch:
 
 concurrency:
