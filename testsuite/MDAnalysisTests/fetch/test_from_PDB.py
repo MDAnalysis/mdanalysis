@@ -49,7 +49,11 @@ def test_download_one_file(tmp_path):
     assert path.exists()
     assert path.name == "1AKE.cif.gz"
 
-
+@pytest.mark.skipif(not HAS_POOCH, reason="Pooch is not installed.")
+@pytest.mark.skipif(
+    not HAS_ACCESS_TO_WWPDB,
+    reason="Can not connect to https://files.wwpdb.org/",
+)
 def test_download_multiple_files(tmp_path):
 
     paths = mda.fetch.from_PDB(["1AKE", "4AKE"], cache_path=tmp_path)
@@ -58,7 +62,11 @@ def test_download_multiple_files(tmp_path):
         ["1AKE.cif.gz", "4AKE.cif.gz"]
     )
 
-
+@pytest.mark.skipif(not HAS_POOCH, reason="Pooch is not installed.")
+@pytest.mark.skipif(
+    not HAS_ACCESS_TO_WWPDB,
+    reason="Can not connect to https://files.wwpdb.org/",
+)
 def test_download_file_format(tmp_path):
 
     path = mda.fetch.from_PDB(["1AKE"], cache_path=tmp_path, file_format="pdb")
