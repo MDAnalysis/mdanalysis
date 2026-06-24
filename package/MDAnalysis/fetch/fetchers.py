@@ -21,6 +21,29 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
+"""
+Fetchers --- :mod:`MDAnalysis.fetch.fetchers`
+============================================
+
+This module contains the Fetchers classes that can be used to retrieve or fetch files
+from remote servers. These classes used the third party library:mod:`pooch` as
+a dependency.
+
+Classes
+-------
+
+.. autofunction:: StaticFetcher
+.. autofunction:: DynamicFetcher
+
+Variables
+---------
+
+.. autodata:: DEFAULT_CACHE_NAME_DOWNLOADER
+.. autodata:: DEFAULT_TIMEOUT
+.. autodata:: DEFAULT_RETRIES
+
+"""
+
 import hashlib
 
 from pathlib import Path
@@ -33,13 +56,33 @@ except ImportError:
 else:
     HAS_POOCH = True
 
+
+#: Name of the :mod:`pooch` cache directory
+#: ``pooch.os_cache(DEFAULT_CACHE_NAME_DOWNLOADER)``;
+#:
+#: see :func:`pooch.os_cache` for further details.'
+#:
+#: .. versionadded:: 2.11.0
 DEFAULT_CACHE_NAME_DOWNLOADER = "MDAnalysis_pdbs"
+
+#: Time in seconds to wait for a response from the server before timing out.
+#:
+#: .. versionadded:: 2.11.0
 DEFAULT_TIMEOUT = 10
+
+#: Number of times to retry a download if it fails.
+#:
+#: .. versionadded:: 2.11.0
 DEFAULT_RETRIES = 2
 
 
-class BaseFetcher(ABC):
-    """Blueprint Class for all Fetchers"""
+class _BaseFetcher(ABC):
+    """Blueprint Class for all Fetchers
+
+    This shouldn't be initalized directly but should be inherited by other
+    Fetchers classes.
+
+    """
 
     def __init__(
         self,
@@ -61,7 +104,8 @@ class BaseFetcher(ABC):
     def _check_pooch(
         self,
     ):
-        # Note that requests is a major dependency of pooch and is guaranteed to be installed
+        # Note that requests is a major dependency of pooch and is guaranteed to be
+        # installed
         if not HAS_POOCH:
             raise ModuleNotFoundError(
                 "pooch is needed as a dependency for Fetchers"
@@ -80,8 +124,46 @@ class BaseFetcher(ABC):
         return args
 
 
-class StaticFetcher(BaseFetcher):
-    """Fetcher automatically downloads file in entirety and cache it to disk"""
+class StaticFetcher(_BaseFetcher):
+    """
+    Downloads files from a static URL to disk and caches them to a local directory.
+
+
+    Parameters
+    ----------
+    cache_path : str or pathlib.Path, optional
+        Path to the cache directory. If set to None, the default cache directory
+        will be used as specified by :data:`DEFAULT_CACHE_NAME_DOWNLOADER`.
+
+        If the directory does not exist, it will be created.
+
+    hash : str, optional
+        Hash algorithm to use for verifying the integrity of downloaded files.
+        The default is "sha256". Valid options are any hash algorithm available in
+        the :mod:`hashlib` module.
+
+        If set to None, no hash verification will be performed.
+
+    Methods
+    -------
+    fetch(file_name, verbose=False, db_name="hashes.txt", downloader="HTTP", **kwargs)
+        Downloads the specified file(s) from the given base URL and caches them
+        to the local cache directory. If the file(s) already exist in the cache,
+        they will be used instead of downloading them again.
+
+    
+    Attributes
+    ----------
+    cache_path : pathlib.Path
+        Path to the cache directory.
+
+    db_path : pathlib.Path
+        Path to the database file used for caching. Created after calling fetch()
+    
+    hash : str
+        Hash algorithm used for verifying the integrity of downloaded files.
+
+    """
 
     def __init__(self, cache_path=None, hash="sha256"):
 
@@ -194,7 +276,7 @@ class StaticFetcher(BaseFetcher):
             )
 
 
-class DynamicFetcher(BaseFetcher):
+class DynamicFetcher(_BaseFetcher):
     """Fetcher yields a Python Generator for dynamic downloading and analysis"""
 
-    pass
+    raise NotImplementedError
