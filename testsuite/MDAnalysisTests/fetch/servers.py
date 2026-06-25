@@ -28,7 +28,7 @@ from functools import partial
 import tempfile
 import threading
 
-from decorator import contextmanager
+from contextlib import contextmanager
 
 
 @contextmanager

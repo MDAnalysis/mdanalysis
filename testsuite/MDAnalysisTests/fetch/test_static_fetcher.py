@@ -139,7 +139,7 @@ class TestExpectedBehaviors:
             assert (downloader.db_path).exists()
             assert (
                 downloader.db_path
-            ).read_text() == "TEST_FILE1.txt c4bdb6ba200a917b8384ffeffa4999bf05bd4e479f6580d795aca509c9122dc4" + "\n"
+            ).read_text() == "TEST_FILE1.txt c4bdb6ba200a917b8384ffeffa4999bf05bd4e479f6580d795aca509c9122dc4\n"
 
     def test_existing_database(self, tmp_path):
         with temporary_http_server() as (host, port, temp_folder):
