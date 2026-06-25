@@ -202,7 +202,12 @@ class StaticFetcher(_BaseFetcher):
                     registry_dictionary[key] = value
 
             # Adds files not in cache
-            for file in file_name:
+            if isinstance(file_name, str):
+                _file_name = (file_name,)
+            else:
+                _file_name = file_name
+
+            for file in _file_name:
                 if file not in registry_dictionary:
                     registry_dictionary[file] = None
 

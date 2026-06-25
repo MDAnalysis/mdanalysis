@@ -24,9 +24,11 @@
 from pathlib import Path
 import re
 from shutil import rmtree
-from urllib import request
+
+from servers import temporary_http_server
 
 import pytest
+
 
 from MDAnalysis.fetch.fetchers import (
     DEFAULT_CACHE_NAME_DOWNLOADER,
@@ -37,18 +39,11 @@ from MDAnalysis.fetch.fetchers import (
 if HAS_POOCH:
     import pooch
 
-try:
-    request.urlopen("https://files.wwpdb.org/", timeout=2)
-    HAS_ACCESS_TO_WWPDB = True
-except request.URLError:
-    HAS_ACCESS_TO_WWPDB = False
-
-
-BASE_URL = "https://files.wwpdb.org/download/"
-SINGLE_PDB = "1AKE.pdb"
-MULTIPLE_PDBS = ("1AKE.pdb", "4AKE.pdb")
-REGISTRY_NAME = "test_db.txt"
-
+   
+# BASE_URL = "https://files.wwpdb.org/download/"
+# SINGLE_PDB = "1AKE.pdb"
+# MULTIPLE_PDBS = ("1AKE.pdb", "4AKE.pdb")
+REGISTRY_NAME = "hashes.txt"
 
 @pytest.fixture()
 def clean_up_default_cache():
@@ -70,27 +65,30 @@ def test_pooch_installation():
 class TestExpectedErrors:
 
     def test_missing_base_url(self, tmp_path):
-        downloader = StaticFetcher(cache_path=tmp_path)
+        with temporary_http_server() as (host, port, temp_folder):
+            downloader = StaticFetcher(cache_path=tmp_path)
 
-        with pytest.raises(
-            ValueError, match=re.escape("base_url is not defined in fetch()")
-        ):
-            downloader.fetch(file_name=SINGLE_PDB)
+            with pytest.raises(
+                ValueError, match=re.escape("base_url is not defined in fetch()")
+            ):
+                downloader.fetch(file_name="TEST_FILE1.txt")
 
     def test_invalid_downloader(self, tmp_path):
-        downloader = StaticFetcher(cache_path=tmp_path)
+        with temporary_http_server() as (host, port, temp_folder):
+            base_url = f"http://{host}:{port}/"
+            downloader = StaticFetcher(cache_path=tmp_path)
 
-        with pytest.raises(
-            ValueError,
-            match=re.escape(
-                "Invalid downloader 'barfoo'. Valid options are "
-                "'HTTP', 'FTP', 'SFTP', 'DOI'."
-            ),
-        ):
-            downloader.fetch(
-                base_url=BASE_URL,
-                file_name=SINGLE_PDB,
-                downloader="barfoo",
+            with pytest.raises(
+                ValueError,
+                match=re.escape(
+                    "Invalid downloader 'barfoo'. Valid options are "
+                    "'HTTP', 'FTP', 'SFTP', 'DOI'."
+                ),
+            ):
+                downloader.fetch(
+                    base_url=base_url,
+                    file_name="TEST_FILE1.txt",
+                    downloader="barfoo",
             )
 
     def test_invalid_hash(self, tmp_path):
@@ -99,82 +97,101 @@ class TestExpectedErrors:
 
 
 @pytest.mark.skipif(not HAS_POOCH, reason="Pooch is not installed.")
-@pytest.mark.skipif(
-    not HAS_ACCESS_TO_WWPDB,
-    reason="Can not connect to https://files.wwpdb.org/",
-)
 class TestExpectedBehaviors:
 
     def test_default_cache_path(self, clean_up_default_cache):
-        downloader = StaticFetcher()
-        path = downloader.fetch(base_url=BASE_URL, file_name=SINGLE_PDB)
 
-        assert isinstance(path, Path)
-        assert path.name == SINGLE_PDB
-        assert path.exists()
+        with temporary_http_server() as (host, port, temp_folder):
+            base_url = f"http://{host}:{port}/"
+            downloader = StaticFetcher()
+            path = downloader.fetch(
+                base_url=base_url, file_name="TEST_FILE1.txt"
+            )
+
+            assert isinstance(path, Path)
+            assert path.name == "TEST_FILE1.txt"
+            assert path.read_text() == "The USA is going to win the 2026 World Cup!\nU-S-A! U-S-A! U-S-A!"
+            assert path.exists()
 
     def test_create_database(self, tmp_path):
-        downloader = StaticFetcher(cache_path=tmp_path)
-        path = downloader.fetch(
-            base_url=BASE_URL, file_name=SINGLE_PDB, db_name=REGISTRY_NAME
-        )
+        with temporary_http_server() as (host, port, temp_folder):
+            base_url = f"http://{host}:{port}/"
+            downloader = StaticFetcher(cache_path=tmp_path)
+            path = downloader.fetch(
+                base_url=base_url, file_name="TEST_FILE1.txt", db_name=REGISTRY_NAME
+            )
 
-        assert isinstance(path, Path)
-        assert path.name == SINGLE_PDB
-        assert path.exists()
-        assert (tmp_path / REGISTRY_NAME).exists()
+            assert isinstance(path, Path)
+            assert path.name == "TEST_FILE1.txt"
+            assert path.read_text() == "The USA is going to win the 2026 World Cup!\nU-S-A! U-S-A! U-S-A!"
+            assert path.exists()
+
+            # Should I check the registry file content? It not managed by us but by pooch.
+            assert (downloader.db_path).exists()
+            assert (downloader.db_path).read_text() == "TEST_FILE1.txt c4bdb6ba200a917b8384ffeffa4999bf05bd4e479f6580d795aca509c9122dc4" + "\n"
 
     def test_existing_database(self, tmp_path):
-        downloader = StaticFetcher(cache_path=tmp_path)
-        downloader.fetch(
-            base_url=BASE_URL, file_name=SINGLE_PDB, db_name=REGISTRY_NAME
-        )
+        with temporary_http_server() as (host, port, temp_folder):
+            base_url = f"http://{host}:{port}/" 
+            downloader = StaticFetcher(cache_path=tmp_path)
 
-        downloader = StaticFetcher(cache_path=tmp_path)
-        path = downloader.fetch(
-            base_url=BASE_URL, file_name=SINGLE_PDB, db_name=REGISTRY_NAME
-        )
+            p1 = downloader.fetch(
+                base_url=base_url, file_name="TEST_FILE1.txt", db_name=REGISTRY_NAME
+            )
+            
+            downloader = StaticFetcher(cache_path=tmp_path)
+            p2 = downloader.fetch(
+                base_url=base_url, file_name="TEST_FILE1.txt", db_name=REGISTRY_NAME
+            )
 
-        assert isinstance(path, Path)
-        assert path.name == SINGLE_PDB
-        assert path.exists()
+            assert p1.stat().st_mtime == p2.stat().st_mtime
 
     def test_no_database(self, tmp_path):
-        downloader = StaticFetcher(cache_path=tmp_path)
-        path = downloader.fetch(
-            base_url=BASE_URL, file_name=SINGLE_PDB, db_name=None
-        )
+        with temporary_http_server() as (host, port, temp_folder):
+            base_url = f"http://{host}:{port}/"
+            downloader = StaticFetcher(cache_path=tmp_path)
+            path = downloader.fetch(
+                base_url=base_url, file_name="TEST_FILE1.txt", db_name=None
+            )
 
-        assert isinstance(path, Path)
-        assert path.name == SINGLE_PDB
-        assert downloader.db_path is None
-        assert path.exists()
-        assert not (tmp_path / REGISTRY_NAME).exists()
+            assert isinstance(path, Path)
+            assert path.exists()
+            assert path.name == "TEST_FILE1.txt"
 
-    def test_multiple_downloads_create_database(self, tmp_path):
-        downloader = StaticFetcher(cache_path=tmp_path)
-        paths = downloader.fetch(
-            base_url=BASE_URL, file_name=MULTIPLE_PDBS, db_name=REGISTRY_NAME
-        )
+            assert downloader.db_path is None
+            assert not (tmp_path / REGISTRY_NAME).exists()
 
-        assert all(isinstance(path, Path) for path in paths)
-        assert [path.name for path in paths] == list(MULTIPLE_PDBS)
-        assert all(path.exists() for path in paths)
-        assert (tmp_path / REGISTRY_NAME).exists()
 
+    def test_multiple_downloads_no_database(self, tmp_path):
+        
+        with temporary_http_server() as (host, port, temp_folder):
+            base_url = f"http://{host}:{port}/"
+            downloader = StaticFetcher(cache_path=tmp_path)
+            paths = downloader.fetch(
+                base_url=base_url, file_name=("TEST_FILE1.txt", "TEST_FILE2.txt"), db_name=None
+            )
+
+            assert all(isinstance(path, Path) for path in paths)
+            assert all(path.exists() for path in paths)
+            assert [path.name for path in paths] == list(("TEST_FILE1.txt", "TEST_FILE2.txt"))
+
+            assert downloader.db_path is None
+            assert not (tmp_path / REGISTRY_NAME).exists()
+
+ 
     def test_multiple_downloads_existing_database(self, tmp_path):
-        downloader = StaticFetcher(cache_path=tmp_path)
-        downloader.fetch(
-            base_url=BASE_URL, file_name=MULTIPLE_PDBS, db_name=REGISTRY_NAME
-        )
+        with temporary_http_server() as (host, port, temp_folder):
+            base_url = f"http://{host}:{port}/"
+            downloader = StaticFetcher(cache_path=tmp_path)
+            paths1 = downloader.fetch(
+                base_url=base_url, file_name=("TEST_FILE1.txt", "TEST_FILE2.txt"), db_name=REGISTRY_NAME
+            )
+            mtime1 = [path.stat().st_mtime for path in paths1]
 
-        assert (tmp_path / REGISTRY_NAME).exists()
+            downloader = StaticFetcher(cache_path=tmp_path)
+            paths2 = downloader.fetch(
+                base_url=base_url, file_name=("TEST_FILE1.txt", "TEST_FILE2.txt"), db_name=REGISTRY_NAME
+            )
+            mtime2 = [path.stat().st_mtime for path in paths2]
 
-        downloader = StaticFetcher(cache_path=tmp_path)
-        paths = downloader.fetch(
-            base_url=BASE_URL, file_name=MULTIPLE_PDBS, db_name=REGISTRY_NAME
-        )
-
-        assert all(isinstance(path, Path) for path in paths)
-        assert [path.name for path in paths] == list(MULTIPLE_PDBS)
-        assert all(path.exists() for path in paths)
+            assert mtime1 == mtime2
