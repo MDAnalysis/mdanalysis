@@ -26,7 +26,7 @@ Fetchers --- :mod:`MDAnalysis.fetch.fetchers`
 =============================================
 
 This module contains the Fetchers classes that can be used to retrieve or fetch files
-from remote servers. These classes used the third party library:mod:`pooch` as
+from remote servers. These classes uses the third party library :mod:`pooch` as
 a dependency.
 
 Classes
@@ -36,6 +36,10 @@ Classes
 
 Variables
 ---------
+
+These are global submodule level variables that affect the runtime behavior across
+all Fetcher Classes.
+
 
 .. autodata:: DEFAULT_CACHE_NAME_DOWNLOADER
 .. autodata:: DEFAULT_TIMEOUT
@@ -69,7 +73,7 @@ DEFAULT_CACHE_NAME_DOWNLOADER = "MDAnalysis_pdbs"
 #: .. versionadded:: 2.11.0
 DEFAULT_TIMEOUT = 10
 
-#: Number of times to retry a download if it fails.
+#: Number of attempt to retry a download if it fails.
 #:
 #: .. versionadded:: 2.11.0
 DEFAULT_RETRIES = 2
@@ -91,27 +95,22 @@ class _BaseFetcher(ABC):
     @abstractmethod
     def fetch(self, base_url, verbose, timeout, retries):
         # Starts file retrieval workflow
-        #
         # All fetchers should call _check_pooch()
+        #
+        # These arguments should be implemented by all child Fetchers.
         self._check_pooch()
-
-        # Global Variable attributes
-        self.base_url = base_url
-        self.timeout = timeout  # timeout
-        self.retries = retries  # number of retries
 
     def _check_pooch(
         self,
     ):
-        # Note that requests is a major dependency of pooch and is guaranteed to be
-        # installed
         if not HAS_POOCH:
             raise ModuleNotFoundError(
                 "pooch is needed as a dependency for Fetchers"
             )
 
     def _validate_fetch_args(self, args):
-        """Checks to see if @abstractmethod fetch parameters are initalized correctly"""
+        """Set default values for @abstractmethod fetch() method if
+        not provided by user"""
 
         if "base_url" not in args:
             raise ValueError("base_url is not defined in fetch()")
