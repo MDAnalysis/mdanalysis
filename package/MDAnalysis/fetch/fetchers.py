@@ -23,7 +23,7 @@
 
 """
 Fetchers --- :mod:`MDAnalysis.fetch.fetchers`
-============================================
+=============================================
 
 This module contains the Fetchers classes that can be used to retrieve or fetch files
 from remote servers. These classes used the third party library:mod:`pooch` as
@@ -33,7 +33,6 @@ Classes
 -------
 
 .. autofunction:: StaticFetcher
-.. autofunction:: DynamicFetcher
 
 Variables
 ---------
@@ -276,7 +275,7 @@ class StaticFetcher(_BaseFetcher):
             )
 
 
-class DynamicFetcher(_BaseFetcher):
-    """Fetcher yields a Python Generator for dynamic downloading and analysis"""
+# class DynamicFetcher(_BaseFetcher):
+#     """Fetcher yields a Python Generator for dynamic downloading and analysis"""
 
-    raise NotImplementedError
+#     raise NotImplementedError
