@@ -17,16 +17,15 @@ The rules for this file:
 ??/??/?? IAlibay, orbeckst, marinegor, tylerjereddy, ljwoods2, marinegor,
          spyke7, talagayev, tanii1125, BradyAJohnston, hejamu, jeremyleung521,
          harshitgajjela-droid, kunjsinha, aygarwal, jauy123, Dreamstick9,
-         ollyfutur, Amarendra22, charity-g, ParthUppal523,Jatin-Khiyani
+         ollyfutur, Amarendra22, charity-g, ParthUppal523, Jatin-Khiyani
 
  * 2.11.0
 
 Fixes
-  * Standardized logging.getLogger() calls to use \_\_name__ instead of
-   hardcoded strings across analysis, coordinates, topology,
-   converters, core, and guesser modules. Some modules had
-   mismatched or misspelled logger names (e.g. coordinates/PDB.py
-   used "PBD") which are now also corrected (Issue #5369)
+ * The `principal_axes` method in :class:`Masses` now uses
+   `np.linalg.eigh` instead of `np.linalg.eig`, improving numerical
+   stability. This may lead to slightly different results from previous
+   version of MDAnalysis (#5403, PR #5404).
  * `MDAnalysis.analysis.nucleicacids.WatsonCrickDist`, `MinorPairDist`,
    and `MajorPairDist` now match residue names against the full resname
    instead of only the first character, fixing incorrect behaviour with
@@ -65,6 +64,10 @@ Fixes
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Enhancements
+ * Standardized logging.getLogger() calls (Issue #5369, PR #5376)
+ * Added ASV benchmark for PDB trajectory reading (PR #5394)
+ * Read Linear Angle bonded interaction entries from GROMACS TPR files and 
+   add the angles to the topology (Issue #5361, PR #5372)
  * Enables parallelization for analysis.atomicdistances.AtomicDistances
    (Issue #4662, PR #4822)
  * DSSP uses ``capped_distance`` and ``calc_bonds`` for faster distance
