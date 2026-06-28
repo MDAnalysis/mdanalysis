@@ -55,6 +55,12 @@ jobs:
               full-deps: false
               codecov: true
               cython: "cython<3.1"
+            - name: ubuntu_arm
+              os: ubuntu-24.04-arm
+              python-version: "3.13"
+              full-deps: false
+              codecov: false
+              cython: "cython>3.1"
             - name: numpy_min
               os: ubuntu-latest
               python-version: "3.11"

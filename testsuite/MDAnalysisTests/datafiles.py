@@ -137,6 +137,7 @@ __all__ = [
     "TPR2024_4",
     "TPR2025_0",
     "TPR2026_0",
+    "TPR_linear_angle",
     "TPR510_bonded",
     "TPR2016_bonded",
     "TPR2018_bonded",
@@ -574,6 +575,7 @@ TPR2024 = (_data_ref / "tprs/2lyz_gmx_2024.tpr").as_posix()
 TPR2024_4 = (_data_ref / "tprs/2lyz_gmx_2024_4.tpr").as_posix()
 TPR2025_0 = (_data_ref / "tprs/2lyz_gmx_2025_0.tpr").as_posix()
 TPR2026_0 = (_data_ref / "tprs/2lyz_gmx_2026_0.tpr").as_posix()
+TPR_linear_angle = (_data_ref / "tprs/Linear_Angle.tpr").as_posix()
 # double precision
 TPR455Double = (_data_ref / "tprs/drew_gmx_4.5.5.double.tpr").as_posix()
 TPR460 = (_data_ref / "tprs/ab42_gmx_4.6.tpr").as_posix()
