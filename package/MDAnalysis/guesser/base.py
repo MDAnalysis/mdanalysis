@@ -110,7 +110,7 @@ class GuesserBase(metaclass=_GuesserMeta):
 
         Parameters
         ----------
-        guess: str
+        attr_to_guess: str
             Attribute to be guessed then added to the Universe
 
         Returns

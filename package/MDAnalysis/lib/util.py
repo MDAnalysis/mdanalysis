@@ -577,7 +577,7 @@ def which(program):
 
     Parameters
     ----------
-    programe : str
+    program : str
        name of the executable
 
     Returns
