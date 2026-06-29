@@ -257,12 +257,12 @@ class StaticFetcher(_BaseFetcher):
         ]
 
         if CREATE_DATABASE:
-            hashes = [
+            hashes = (
                 (fname.name, pooch.file_hash(fname, alg=self.hash))
                 for fname in self.cache_path.iterdir()
                 if fname.is_file()
-            ]
-            
+            )
+
             with open(self.db_path, mode="w") as f:
                 for fname, hash in hashes:
                     f.write(f"{fname} {self.hash}:{hash}\n")
