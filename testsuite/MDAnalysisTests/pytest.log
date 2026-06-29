@@ -1,0 +1,240 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.14, pytest-9.1.0, pluggy-1.6.0
+rootdir: /nfs/homes3/jauy1/Projects/Dev/mdanalysis/testsuite
+configfile: pyproject.toml
+plugins: hypothesis-6.155.3, xdist-3.8.0, timeout-2.4.0, cov-7.1.0
+collected 23956 items / 1 error
+
+==================================== ERRORS ====================================
+___________ ERROR collecting MDAnalysisTests/core/test_atomgroup.py ____________
+MDAnalysisTests/core/test_atomgroup.py::TestAtomGroupToTopology::test_VE: in "parametrize" the number of names (1):
+  ['btype']
+must be equal to the number of values (4):
+  bond
+=============================== warnings summary ===============================
+../../package/MDAnalysis/coordinates/DCD.py:171
+../../package/MDAnalysis/coordinates/DCD.py:171
+  /nfs/homes3/jauy1/Projects/Dev/mdanalysis/package/MDAnalysis/coordinates/DCD.py:171: DeprecationWarning: DCDReader currently makes independent timesteps by copying self.ts while other readers update self.ts inplace. This behavior will be changed in 3.0 to be the same as other readers. Read more at https://github.com/MDAnalysis/mdanalysis/issues/3889 to learn if this change in behavior might affect you.
+    warnings.warn("DCDReader currently makes independent timesteps"
+
+../../package/MDAnalysis/analysis/encore/__init__.py:45
+  /nfs/homes3/jauy1/Projects/Dev/mdanalysis/package/MDAnalysis/analysis/encore/__init__.py:45: DeprecationWarning: Deprecation in version 2.8.0
+  MDAnalysis.analysis.encore is deprecated in favour of the MDAKit mdaencore (https://www.mdanalysis.org/mdaencore/) and will be removed in MDAnalysis version 3.0.0.
+    warnings.warn(wmsg, category=DeprecationWarning)
+
+../../package/MDAnalysis/analysis/hole2/__init__.py:58
+  /nfs/homes3/jauy1/Projects/Dev/mdanalysis/package/MDAnalysis/analysis/hole2/__init__.py:58: DeprecationWarning: Deprecated in version 2.8.0
+  MDAnalysis.analysis.hole2 is deprecated in favour of the MDAKit madahole2 (https://www.mdanalysis.org/mdahole2/) and will be removed in MDAnalysis version 3.0.0
+    warnings.warn(wmsg, category=DeprecationWarning)
+
+../../package/MDAnalysis/analysis/hbonds/hbond_autocorrel.py:54
+  /nfs/homes3/jauy1/Projects/Dev/mdanalysis/package/MDAnalysis/analysis/hbonds/hbond_autocorrel.py:54: DeprecationWarning: This module was moved to MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel; hbonds.hbond_autocorrel will be removed in 3.0.0.
+    warnings.warn(wmsg, category=DeprecationWarning)
+
+analysis/test_nucleicacids.py:212
+  /nfs/homes3/jauy1/Projects/Dev/mdanalysis/testsuite/MDAnalysisTests/analysis/test_nucleicacids.py:212: SyntaxWarning: invalid escape sequence '\.'
+    """WatsonCrickDist must match the full resname, not just resname[0]\.
+
+../../package/MDAnalysis/analysis/psa.py:80
+  /nfs/homes3/jauy1/Projects/Dev/mdanalysis/package/MDAnalysis/analysis/psa.py:80: DeprecationWarning: Deprecation in version 2.8.0:
+  MDAnalysis.analysis.psa is deprecated in favour of the MDAKit PathSimAnalysis (https://github.com/MDAnalysis/PathSimAnalysis) and will be removed in MDAnalysis version 3.0.0
+    warnings.warn(wmsg, category=DeprecationWarning)
+
+../../package/MDAnalysis/analysis/waterdynamics.py:65
+  /nfs/homes3/jauy1/Projects/Dev/mdanalysis/package/MDAnalysis/analysis/waterdynamics.py:65: DeprecationWarning: Deprecation in version 2.8.0
+  MDAnalysis.analysis.waterdynamics is deprecated in favour of the MDAKit waterdynamics (https://www.mdanalysis.org/waterdynamics/) and will be removed in MDAnalysis version 3.0.0
+    warnings.warn(wmsg, category=DeprecationWarning)
+
+../../../../../opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124
+  /nfs/homes3/jauy1/opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124: PytestRemovedIn10Warning: Passing a non-Collection iterable to parametrize is deprecated.
+  Test: MDAnalysisTests/coordinates/test_timestep_api.py::TestTimestep::test_from_coordinates, argvalues type: filter
+  Please convert to a list or tuple.
+  See https://docs.pytest.org/en/stable/deprecations.html#parametrize-iterators
+    metafunc.parametrize(*marker.args, **marker.kwargs, _param_mark=marker)
+
+../../../../../opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124
+  /nfs/homes3/jauy1/opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124: PytestRemovedIn10Warning: Passing a non-Collection iterable to parametrize is deprecated.
+  Test: MDAnalysisTests/coordinates/test_timestep_api.py::TestTimestep::test_check_equal, argvalues type: filter
+  Please convert to a list or tuple.
+  See https://docs.pytest.org/en/stable/deprecations.html#parametrize-iterators
+    metafunc.parametrize(*marker.args, **marker.kwargs, _param_mark=marker)
+
+../../../../../opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124
+  /nfs/homes3/jauy1/opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124: PytestRemovedIn10Warning: Passing a non-Collection iterable to parametrize is deprecated.
+  Test: MDAnalysisTests/core/test_atomgroup.py::TestCrossUniverse::test_add_mixed_universes, argvalues type: product
+  Please convert to a list or tuple.
+  See https://docs.pytest.org/en/stable/deprecations.html#parametrize-iterators
+    metafunc.parametrize(*marker.args, **marker.kwargs, _param_mark=marker)
+
+../../../../../opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124
+  /nfs/homes3/jauy1/opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124: PytestRemovedIn10Warning: Passing a non-Collection iterable to parametrize is deprecated.
+  Test: MDAnalysisTests/core/test_groups.py::TestGroupSlicing::test_slice, argvalues type: product
+  Please convert to a list or tuple.
+  See https://docs.pytest.org/en/stable/deprecations.html#parametrize-iterators
+    metafunc.parametrize(*marker.args, **marker.kwargs, _param_mark=marker)
+
+../../../../../opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124
+  /nfs/homes3/jauy1/opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124: PytestRemovedIn10Warning: Passing a non-Collection iterable to parametrize is deprecated.
+  Test: MDAnalysisTests/core/test_groups.py::TestGroupAddition::test_addition, argvalues type: generator
+  Please convert to a list or tuple.
+  See https://docs.pytest.org/en/stable/deprecations.html#parametrize-iterators
+    metafunc.parametrize(*marker.args, **marker.kwargs, _param_mark=marker)
+
+../../../../../opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124
+  /nfs/homes3/jauy1/opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124: PytestRemovedIn10Warning: Passing a non-Collection iterable to parametrize is deprecated.
+  Test: MDAnalysisTests/core/test_groups.py::TestGroupAddition::test_sum, argvalues type: generator
+  Please convert to a list or tuple.
+  See https://docs.pytest.org/en/stable/deprecations.html#parametrize-iterators
+    metafunc.parametrize(*marker.args, **marker.kwargs, _param_mark=marker)
+
+../../../../../opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124
+  /nfs/homes3/jauy1/opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124: PytestRemovedIn10Warning: Passing a non-Collection iterable to parametrize is deprecated.
+  Test: MDAnalysisTests/core/test_groups.py::TestGroupAddition::test_bad_sum, argvalues type: generator
+  Please convert to a list or tuple.
+  See https://docs.pytest.org/en/stable/deprecations.html#parametrize-iterators
+    metafunc.parametrize(*marker.args, **marker.kwargs, _param_mark=marker)
+
+../../../../../opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124
+  /nfs/homes3/jauy1/opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124: PytestRemovedIn10Warning: Passing a non-Collection iterable to parametrize is deprecated.
+  Test: MDAnalysisTests/core/test_groups.py::TestComponentComparisons::test_crosslevel_cmp, argvalues type: permutations
+  Please convert to a list or tuple.
+  See https://docs.pytest.org/en/stable/deprecations.html#parametrize-iterators
+    metafunc.parametrize(*marker.args, **marker.kwargs, _param_mark=marker)
+
+../../../../../opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124
+  /nfs/homes3/jauy1/opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124: PytestRemovedIn10Warning: Passing a non-Collection iterable to parametrize is deprecated.
+  Test: MDAnalysisTests/core/test_groups.py::TestComponentComparisons::test_crosslevel_eq, argvalues type: permutations
+  Please convert to a list or tuple.
+  See https://docs.pytest.org/en/stable/deprecations.html#parametrize-iterators
+    metafunc.parametrize(*marker.args, **marker.kwargs, _param_mark=marker)
+
+../../../../../opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124
+  /nfs/homes3/jauy1/opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124: PytestRemovedIn10Warning: Passing a non-Collection iterable to parametrize is deprecated.
+  Test: MDAnalysisTests/core/test_groups.py::TestGroupBaseOperators::test_failing_pairs, argvalues type: chain
+  Please convert to a list or tuple.
+  See https://docs.pytest.org/en/stable/deprecations.html#parametrize-iterators
+    metafunc.parametrize(*marker.args, **marker.kwargs, _param_mark=marker)
+
+../../../../../opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124
+  /nfs/homes3/jauy1/opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124: PytestRemovedIn10Warning: Passing a non-Collection iterable to parametrize is deprecated.
+  Test: MDAnalysisTests/core/test_groups.py::TestGroupBaseOperators::test_succeeding_pairs, argvalues type: chain
+  Please convert to a list or tuple.
+  See https://docs.pytest.org/en/stable/deprecations.html#parametrize-iterators
+    metafunc.parametrize(*marker.args, **marker.kwargs, _param_mark=marker)
+
+../../../../../opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124
+  /nfs/homes3/jauy1/opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124: PytestRemovedIn10Warning: Passing a non-Collection iterable to parametrize is deprecated.
+  Test: MDAnalysisTests/core/test_groups.py::TestGroupHash::test_hash_difference_cross, argvalues type: permutations
+  Please convert to a list or tuple.
+  See https://docs.pytest.org/en/stable/deprecations.html#parametrize-iterators
+    metafunc.parametrize(*marker.args, **marker.kwargs, _param_mark=marker)
+
+../../../../../opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124
+  /nfs/homes3/jauy1/opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124: PytestRemovedIn10Warning: Passing a non-Collection iterable to parametrize is deprecated.
+  Test: MDAnalysisTests/lib/test_distances.py::test_minimize_vectors, argvalues type: product
+  Please convert to a list or tuple.
+  See https://docs.pytest.org/en/stable/deprecations.html#parametrize-iterators
+    metafunc.parametrize(*marker.args, **marker.kwargs, _param_mark=marker)
+
+../../../../../opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124
+../../../../../opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124
+  /nfs/homes3/jauy1/opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124: PytestRemovedIn10Warning: Passing a non-Collection iterable to parametrize is deprecated.
+  Test: MDAnalysisTests/lib/test_mdamath.py::TestMatrixOperations::test_triclinic_vectors, argvalues type: combinations_with_replacement
+  Please convert to a list or tuple.
+  See https://docs.pytest.org/en/stable/deprecations.html#parametrize-iterators
+    metafunc.parametrize(*marker.args, **marker.kwargs, _param_mark=marker)
+
+../../../../../opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124
+../../../../../opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124
+  /nfs/homes3/jauy1/opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124: PytestRemovedIn10Warning: Passing a non-Collection iterable to parametrize is deprecated.
+  Test: MDAnalysisTests/lib/test_mdamath.py::TestMatrixOperations::test_triclinic_box, argvalues type: combinations_with_replacement
+  Please convert to a list or tuple.
+  See https://docs.pytest.org/en/stable/deprecations.html#parametrize-iterators
+    metafunc.parametrize(*marker.args, **marker.kwargs, _param_mark=marker)
+
+../../../../../opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124
+../../../../../opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124
+  /nfs/homes3/jauy1/opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124: PytestRemovedIn10Warning: Passing a non-Collection iterable to parametrize is deprecated.
+  Test: MDAnalysisTests/lib/test_mdamath.py::TestMatrixOperations::test_box_volume, argvalues type: combinations_with_replacement
+  Please convert to a list or tuple.
+  See https://docs.pytest.org/en/stable/deprecations.html#parametrize-iterators
+    metafunc.parametrize(*marker.args, **marker.kwargs, _param_mark=marker)
+
+../../../../../opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124
+  /nfs/homes3/jauy1/opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124: PytestRemovedIn10Warning: Passing a non-Collection iterable to parametrize is deprecated.
+  Test: MDAnalysisTests/lib/test_util.py::TestStringFunctions::test_convert_aa_3to1, argvalues type: generator
+  Please convert to a list or tuple.
+  See https://docs.pytest.org/en/stable/deprecations.html#parametrize-iterators
+    metafunc.parametrize(*marker.args, **marker.kwargs, _param_mark=marker)
+
+../../../../../opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124
+  /nfs/homes3/jauy1/opt/miniforge3/envs/mdanalysis-dev/lib/python3.13/site-packages/_pytest/python.py:124: PytestRemovedIn10Warning: Passing a non-Collection iterable to parametrize is deprecated.
+  Test: MDAnalysisTests/test_api.py::test_all_import, argvalues type: generator
+  Please convert to a list or tuple.
+  See https://docs.pytest.org/en/stable/deprecations.html#parametrize-iterators
+    metafunc.parametrize(*marker.args, **marker.kwargs, _param_mark=marker)
+
+../../package/MDAnalysis/topology/tables.py:52
+  /nfs/homes3/jauy1/Projects/Dev/mdanalysis/package/MDAnalysis/topology/tables.py:52: DeprecationWarning: Deprecated in version 2.8.0
+  MDAnalysis.topology.tables has been moved to MDAnalysis.guesser.tables. This import point will be removed in MDAnalysis version 3.0.0
+    warnings.warn(wmsg, category=DeprecationWarning)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+ERROR core/test_atomgroup.py::TestAtomGroupToTopology - Failed: MDAnalysisTes...
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+================== 30 warnings, 1 error in 105.46s (0:01:45) ===================
+
+DueCredit Report:
+- Molecular simulation analysis library / MDAnalysis (v 2.11.0.dev0) [1, 2]
+  - Iterative Calculation of Opimal Reference / MDAnalysis.analysis.align.iterative_average (v 2.11.0.dev0) [3]
+  - Bond-Angle-Torsions Coordinate Transformation / MDAnalysis.analysis.bat.BAT (v 2.11.0.dev0) [4]
+  - Dielectric analysis / MDAnalysis.analysis.dielectric (v 2.11.0.dev0) [5]
+  - DSSP algorithm description / MDAnalysis.analysis.dssp (v 2.11.0.dev0) [6]
+  - ENCORE Ensemble Comparison / MDAnalysis.analysis.encore (v 2.11.0.dev0) [7]
+  - Hydrogen bond analysis implementation / MDAnalysis.analysis.hydrogenbonds.hbond_analysis (v 2.11.0.dev0) [8]
+  - Hydrogen bonding autocorrelation time / MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel (v 2.11.0.dev0) [9]
+  - LeafletFinder algorithm / MDAnalysis.analysis.leaflet (v 2.11.0.dev0) [2]
+  - Mean Squared Displacements with tidynamics, FCA fast correlation algorithm / MDAnalysis.analysis.msd (v 2.11.0.dev0) [10, 11]
+  - Cumulative overlap / MDAnalysis.analysis.pca (v 2.11.0.dev0) [12]
+  - MDAnalysis trajectory reader/writer of the H5MDformat, Specifications of the H5MD standard / MDAnalysis.coordinates.H5MD (v 1.1, 2.11.0.dev0) [13, 14]
+  - MMTF Reader / MDAnalysis.coordinates.MMTF (v 2.11.0.dev0) [15]
+  - The TNG paper / MDAnalysis.coordinates.TNG (v 2.11.0.dev0) [16]
+  - QCProt implementation / MDAnalysis.lib.qcprot (v 2.11.0.dev0) [17, 18]
+  - MMTF Parser / MDAnalysis.topology.MMTFParser (v 2.11.0.dev0) [15]
+  - Works through the orthogonal case for unwrapping, and proposes the non-orthogonal approach. / MDAnalysis.transformations.nojump (v 2.11.0.dev0) [19]
+  - HOLE program, HOLE trajectory analysis with orderparameters / mdahole2.analysis.hole (v 0.0.0) [20, 21, 22]
+- Scientific tools library / numpy (v 1.26.4) [23]
+  - Path Similarity Analysis algorithm and implementation / pathsimanalysis.psa (v 0.0.0) [24]
+
+2 packages cited
+18 modules cited
+0 functions cited
+
+References
+----------
+
+[1] Gowers, R. et al., 2016. MDAnalysis: A Python Package for the Rapid Analysis of Molecular Dynamics Simulations. In Proceedings of the 15th Python in Science Conference. SciPy.  SciPy, pp. 98–105.
+[2] Michaud‐Agrawal, N. et al., 2011. MDAnalysis: A toolkit for the analysis of molecular dynamics simulations. Journal of Computational Chemistry, 32(10), pp.2319–2327.
+[3] Linke, M., Köfinger, J. & Hummer, G., 2018. Fully Anisotropic Rotational Diffusion Tensor from Molecular Dynamics Simulations. The Journal of Physical Chemistry B, 122(21), pp.5630–5639.
+[4] Minh, D.D.L., 2019. Alchemical Grid Dock (AlGDock): Binding Free Energy Calculations between Flexible Ligands and Rigid Receptors. Journal of Computational Chemistry, 41(7), pp.715–730.
+[5] Neumann, M., 1983. Dipole moment fluctuation formulas in computer simulations of polar systems. Molecular Physics, 50(4), pp.841–858.
+[6] Kabsch, W. & Sander, C., 1983. Dictionary of protein secondary structure: Pattern recognition of hydrogen‐bonded and geometrical features. Biopolymers, 22(12), pp.2577–2637.
+[7] Tiberti, M. et al., 2015. ENCORE: Software for Quantitative Ensemble Comparison B. L. de Groot, ed.. PLOS Computational Biology, 11(10), p.1004415.
+[8] Smith, P. et al., 2019. On the interaction of hyaluronic acid with synovial fluid lipid membranes. Physical Chemistry Chemical Physics, 21(19), pp.9845–9857.
+[9] ERRORED: 'june'
+[10] de Buyl, P., 2018. tidynamics: A tiny package to compute the dynamics of stochastic and molecular simulations. Journal of Open Source Software, 3(28), p.877.
+[11] Calandrini, V. et al., 2011. nMoldyn - Interfacing spectroscopic experiments, molecular dynamics simulations and models for time correlation functions. École thématique de la Société Française de la Neutronique, 12, pp.201–232.
+[12] Yang, L. et al., 2008. Close Correspondence between the Motions from Principal Component Analysis of Multiple HIV-1 Protease Structures and Elastic Network Modes. Structure, 16(2), pp.321–330.
+[13] Jakupovic, E. & Beckstein, O., 2021. MPI-parallel Molecular Dynamics Trajectory Analysis with the H5MD Format in the MDAnalysis Python Package. In Proceedings of the 20th Python in Science Conference. SciPy.  SciPy, pp. 40–48.
+[14] ERRORED: 'june'
+[15] ERRORED: 'june'
+[16] Lundborg, M. et al., 2013. An efficient and extensible format, library, and API for binary trajectory data from molecular simulations. Journal of Computational Chemistry, 35(3), pp.260–269.
+[17] ERRORED: 'june'
+[18] Liu, P., Agrafiotis, D.K. & Theobald, D.L., Fast determination of the optimal rotational matrix for macromolecular superpositions. Journal of Computational Chemistry, 31(7), pp.1561–1563.
+[19] ERRORED: 'sept'
+[20] Smart, O.S., Goodfellow, J.M. & Wallace, B.A., 1993. The pore dimensions of gramicidin A. Biophysical Journal, 65(6), pp.2455–2460.
+[21] Smart, O.S. et al., 1996. HOLE: A program for the analysis of the pore dimensions of ion channel structural models. Journal of Molecular Graphics, 14(6), pp.354–360.
+[22] Stelzl, L.S. et al., 2014. Flexible Gates Generate Occluded Intermediates in the Transport Cycle of LacY. Journal of Molecular Biology, 426(3), pp.735–751.
+[23] Van Der Walt, S., Colbert, S.C. & Varoquaux, G., 2011. The NumPy array: a structure for efficient numerical computation. Computing in Science & Engineering, 13(2), pp.22–30.
+[24] Seyler, S.L. et al., 2015. Path Similarity Analysis: A Method for Quantifying Macromolecular Pathways E. Tajkhorshid, ed.. PLOS Computational Biology, 11(10), p.1004568.

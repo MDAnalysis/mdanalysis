@@ -263,7 +263,7 @@ class StaticFetcher(_BaseFetcher):
                 if fname.is_file()
             )
 
-            with open(self.db_path, mode="w") as f:
+            with open(self.db_path, mode="x") as f:
                 for fname, hash in hashes:
                     f.write(f"{fname} {self.hash}:{hash}\n")
 

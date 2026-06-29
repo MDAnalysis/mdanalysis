@@ -1,0 +1,1063 @@
+removed '../html/documentation_pages/analysis/align.html'
+removed '../html/documentation_pages/analysis/atomicdistances.html'
+removed '../html/documentation_pages/analysis/backends.html'
+removed '../html/documentation_pages/analysis/base.html'
+removed '../html/documentation_pages/analysis/bat.html'
+removed '../html/documentation_pages/analysis/contacts.html'
+removed '../html/documentation_pages/analysis/data.html'
+removed '../html/documentation_pages/analysis/density.html'
+removed '../html/documentation_pages/analysis/dielectric.html'
+removed '../html/documentation_pages/analysis/diffusionmap.html'
+removed '../html/documentation_pages/analysis/dihedrals.html'
+removed '../html/documentation_pages/analysis/distances.html'
+removed '../html/documentation_pages/analysis/dssp.html'
+removed '../html/documentation_pages/analysis/encore.html'
+removed '../html/documentation_pages/analysis/encore/bootstrap.html'
+removed '../html/documentation_pages/analysis/encore/clustering.html'
+removed '../html/documentation_pages/analysis/encore/confdistmatrix.html'
+removed '../html/documentation_pages/analysis/encore/covariance.html'
+removed '../html/documentation_pages/analysis/encore/dimensionality_reduction.html'
+removed '../html/documentation_pages/analysis/encore/similarity.html'
+removed '../html/documentation_pages/analysis/encore/utils.html'
+removed directory '../html/documentation_pages/analysis/encore'
+removed '../html/documentation_pages/analysis/gnm.html'
+removed '../html/documentation_pages/analysis/hbond_autocorrel.html'
+removed '../html/documentation_pages/analysis/hbond_autocorrel_deprecated.html'
+removed '../html/documentation_pages/analysis/helix_analysis.html'
+removed '../html/documentation_pages/analysis/hole2.html'
+removed '../html/documentation_pages/analysis/hydrogenbonds.html'
+removed '../html/documentation_pages/analysis/leaflet.html'
+removed '../html/documentation_pages/analysis/legacy/x3dna.html'
+removed directory '../html/documentation_pages/analysis/legacy'
+removed '../html/documentation_pages/analysis/legacy_modules.html'
+removed '../html/documentation_pages/analysis/lineardensity.html'
+removed '../html/documentation_pages/analysis/msd.html'
+removed '../html/documentation_pages/analysis/nucleicacids.html'
+removed '../html/documentation_pages/analysis/nuclinfo.html'
+removed '../html/documentation_pages/analysis/parallelization.html'
+removed '../html/documentation_pages/analysis/pca.html'
+removed '../html/documentation_pages/analysis/polymer.html'
+removed '../html/documentation_pages/analysis/psa.html'
+removed '../html/documentation_pages/analysis/rdf.html'
+removed '../html/documentation_pages/analysis/results.html'
+removed '../html/documentation_pages/analysis/rms.html'
+removed '../html/documentation_pages/analysis/waterdynamics.html'
+removed '../html/documentation_pages/analysis/wbridge_analysis.html'
+removed directory '../html/documentation_pages/analysis'
+removed '../html/documentation_pages/analysis_modules.html'
+removed '../html/documentation_pages/auxiliary/EDR.html'
+removed '../html/documentation_pages/auxiliary/XVG.html'
+removed '../html/documentation_pages/auxiliary/base.html'
+removed '../html/documentation_pages/auxiliary/core.html'
+removed '../html/documentation_pages/auxiliary/init.html'
+removed directory '../html/documentation_pages/auxiliary'
+removed '../html/documentation_pages/auxiliary_modules.html'
+removed '../html/documentation_pages/converters.html'
+removed '../html/documentation_pages/converters/OpenMM.html'
+removed '../html/documentation_pages/converters/ParmEd.html'
+removed '../html/documentation_pages/converters/RDKit.html'
+removed '../html/documentation_pages/converters/base.html'
+removed directory '../html/documentation_pages/converters'
+removed '../html/documentation_pages/coordinates/CRD.html'
+removed '../html/documentation_pages/coordinates/DCD.html'
+removed '../html/documentation_pages/coordinates/DLPoly.html'
+removed '../html/documentation_pages/coordinates/DMS.html'
+removed '../html/documentation_pages/coordinates/FHIAIMS.html'
+removed '../html/documentation_pages/coordinates/GMS.html'
+removed '../html/documentation_pages/coordinates/GRO.html'
+removed '../html/documentation_pages/coordinates/GSD.html'
+removed '../html/documentation_pages/coordinates/H5MD.html'
+removed '../html/documentation_pages/coordinates/IMD.html'
+removed '../html/documentation_pages/coordinates/INPCRD.html'
+removed '../html/documentation_pages/coordinates/LAMMPS.html'
+removed '../html/documentation_pages/coordinates/MMTF.html'
+removed '../html/documentation_pages/coordinates/MOL2.html'
+removed '../html/documentation_pages/coordinates/NAMDBIN.html'
+removed '../html/documentation_pages/coordinates/PDB.html'
+removed '../html/documentation_pages/coordinates/PDBQT.html'
+removed '../html/documentation_pages/coordinates/PQR.html'
+removed '../html/documentation_pages/coordinates/TNG.html'
+removed '../html/documentation_pages/coordinates/TPR.html'
+removed '../html/documentation_pages/coordinates/TRC.html'
+removed '../html/documentation_pages/coordinates/TRJ.html'
+removed '../html/documentation_pages/coordinates/TRR.html'
+removed '../html/documentation_pages/coordinates/TRZ.html'
+removed '../html/documentation_pages/coordinates/TXYZ.html'
+removed '../html/documentation_pages/coordinates/XDR.html'
+removed '../html/documentation_pages/coordinates/XTC.html'
+removed '../html/documentation_pages/coordinates/XYZ.html'
+removed '../html/documentation_pages/coordinates/base.html'
+removed '../html/documentation_pages/coordinates/chain.html'
+removed '../html/documentation_pages/coordinates/chemfiles.html'
+removed '../html/documentation_pages/coordinates/core.html'
+removed '../html/documentation_pages/coordinates/init.html'
+removed '../html/documentation_pages/coordinates/memory.html'
+removed '../html/documentation_pages/coordinates/null.html'
+removed '../html/documentation_pages/coordinates/pickle_readers.html'
+removed '../html/documentation_pages/coordinates/timestep.html'
+removed directory '../html/documentation_pages/coordinates'
+removed '../html/documentation_pages/coordinates_modules.html'
+removed '../html/documentation_pages/core/accessors.html'
+removed '../html/documentation_pages/core/groups.html'
+removed '../html/documentation_pages/core/init.html'
+removed '../html/documentation_pages/core/selection.html'
+removed '../html/documentation_pages/core/topology.html'
+removed '../html/documentation_pages/core/topologyattrs.html'
+removed '../html/documentation_pages/core/topologyobjects.html'
+removed '../html/documentation_pages/core/universe.html'
+removed directory '../html/documentation_pages/core'
+removed '../html/documentation_pages/core_modules.html'
+removed '../html/documentation_pages/exceptions.html'
+removed '../html/documentation_pages/fetchers/PDB.html'
+removed '../html/documentation_pages/fetchers/fetchers.html'
+removed '../html/documentation_pages/fetchers/init.html'
+removed directory '../html/documentation_pages/fetchers'
+removed '../html/documentation_pages/fetchers_modules.html'
+removed '../html/documentation_pages/guesser_modules.html'
+removed '../html/documentation_pages/guesser_modules/base.html'
+removed '../html/documentation_pages/guesser_modules/default_guesser.html'
+removed '../html/documentation_pages/guesser_modules/init.html'
+removed '../html/documentation_pages/guesser_modules/tables.html'
+removed directory '../html/documentation_pages/guesser_modules'
+removed '../html/documentation_pages/lib/NeighborSearch.html'
+removed '../html/documentation_pages/lib/c_distances.html'
+removed '../html/documentation_pages/lib/c_distances_openmp.html'
+removed '../html/documentation_pages/lib/correlations.html'
+removed '../html/documentation_pages/lib/distances.html'
+removed '../html/documentation_pages/lib/formats/libdcd.html'
+removed '../html/documentation_pages/lib/formats/libmdaxdr.html'
+removed directory '../html/documentation_pages/lib/formats'
+removed '../html/documentation_pages/lib/log.html'
+removed '../html/documentation_pages/lib/mdamath.html'
+removed '../html/documentation_pages/lib/nsgrid.html'
+removed '../html/documentation_pages/lib/picklable_file_io.html'
+removed '../html/documentation_pages/lib/pkdtree.html'
+removed '../html/documentation_pages/lib/qcprot.html'
+removed '../html/documentation_pages/lib/transformations.html'
+removed '../html/documentation_pages/lib/util.html'
+removed directory '../html/documentation_pages/lib'
+removed '../html/documentation_pages/lib_modules.html'
+removed '../html/documentation_pages/overview.html'
+removed '../html/documentation_pages/references.html'
+removed '../html/documentation_pages/selections.html'
+removed '../html/documentation_pages/selections/base.html'
+removed '../html/documentation_pages/selections/charmm.html'
+removed '../html/documentation_pages/selections/gromacs.html'
+removed '../html/documentation_pages/selections/jmol.html'
+removed '../html/documentation_pages/selections/pymol.html'
+removed '../html/documentation_pages/selections/vmd.html'
+removed directory '../html/documentation_pages/selections'
+removed '../html/documentation_pages/selections_modules.html'
+removed '../html/documentation_pages/topology.html'
+removed '../html/documentation_pages/topology/CRDParser.html'
+removed '../html/documentation_pages/topology/DLPolyParser.html'
+removed '../html/documentation_pages/topology/DMSParser.html'
+removed '../html/documentation_pages/topology/ExtendedPDBParser.html'
+removed '../html/documentation_pages/topology/FHIAIMSParser.html'
+removed '../html/documentation_pages/topology/GMSParser.html'
+removed '../html/documentation_pages/topology/GROParser.html'
+removed '../html/documentation_pages/topology/GSDParser.html'
+removed '../html/documentation_pages/topology/HoomdXMLParser.html'
+removed '../html/documentation_pages/topology/ITPParser.html'
+removed '../html/documentation_pages/topology/LAMMPSParser.html'
+removed '../html/documentation_pages/topology/MMTFParser.html'
+removed '../html/documentation_pages/topology/MOL2Parser.html'
+removed '../html/documentation_pages/topology/MinimalParser.html'
+removed '../html/documentation_pages/topology/PDBParser.html'
+removed '../html/documentation_pages/topology/PDBQTParser.html'
+removed '../html/documentation_pages/topology/PQRParser.html'
+removed '../html/documentation_pages/topology/PSFParser.html'
+removed '../html/documentation_pages/topology/TOPParser.html'
+removed '../html/documentation_pages/topology/TPRParser.html'
+removed '../html/documentation_pages/topology/TXYZParser.html'
+removed '../html/documentation_pages/topology/XYZParser.html'
+removed '../html/documentation_pages/topology/base.html'
+removed '../html/documentation_pages/topology/core.html'
+removed '../html/documentation_pages/topology/guessers.html'
+removed '../html/documentation_pages/topology/init.html'
+removed '../html/documentation_pages/topology/tables.html'
+removed '../html/documentation_pages/topology/tpr_util.html'
+removed directory '../html/documentation_pages/topology'
+removed '../html/documentation_pages/topology_modules.html'
+removed '../html/documentation_pages/trajectory_transformations.html'
+removed '../html/documentation_pages/transformations/base.html'
+removed '../html/documentation_pages/transformations/boxdimensions.html'
+removed '../html/documentation_pages/transformations/fit.html'
+removed '../html/documentation_pages/transformations/nojump.html'
+removed '../html/documentation_pages/transformations/positionaveraging.html'
+removed '../html/documentation_pages/transformations/rotate.html'
+removed '../html/documentation_pages/transformations/translate.html'
+removed '../html/documentation_pages/transformations/wrap.html'
+removed directory '../html/documentation_pages/transformations'
+removed '../html/documentation_pages/units.html'
+removed '../html/documentation_pages/version.html'
+removed '../html/documentation_pages/visualization/streamlines.html'
+removed '../html/documentation_pages/visualization/streamlines_3D.html'
+removed directory '../html/documentation_pages/visualization'
+removed '../html/documentation_pages/visualization_modules.html'
+removed directory '../html/documentation_pages'
+removed '../html/genindex.html'
+removed '../html/_images/rama_ref_plot.png'
+removed '../html/_images/janin_ref_plot.png'
+removed '../html/_images/rama_demo_plot.png'
+removed '../html/_images/janin_demo_plot.png'
+removed '../html/_images/msd_demo_plot.png'
+removed '../html/_images/AnalysisBase_parallel.png'
+removed '../html/_images/parallelization_time.png'
+removed '../html/_images/RSMD_plot.png'
+removed '../html/_images/testing_streamline.png'
+removed '../html/_images/test_streamplot_3D.png'
+removed directory '../html/_images'
+removed '../html/index.html'
+removed '../html/_modules/MDAnalysis/analysis/align.html'
+removed '../html/_modules/MDAnalysis/analysis/atomicdistances.html'
+removed '../html/_modules/MDAnalysis/analysis/backends.html'
+removed '../html/_modules/MDAnalysis/analysis/base.html'
+removed '../html/_modules/MDAnalysis/analysis/bat.html'
+removed '../html/_modules/MDAnalysis/analysis/contacts.html'
+removed '../html/_modules/MDAnalysis/analysis/density.html'
+removed '../html/_modules/MDAnalysis/analysis/dielectric.html'
+removed '../html/_modules/MDAnalysis/analysis/diffusionmap.html'
+removed '../html/_modules/MDAnalysis/analysis/dihedrals.html'
+removed '../html/_modules/MDAnalysis/analysis/distances.html'
+removed '../html/_modules/MDAnalysis/analysis/dssp/dssp.html'
+removed '../html/_modules/MDAnalysis/analysis/dssp/pydssp_numpy.html'
+removed directory '../html/_modules/MDAnalysis/analysis/dssp'
+removed '../html/_modules/MDAnalysis/analysis/encore/bootstrap.html'
+removed '../html/_modules/MDAnalysis/analysis/encore/clustering/ClusterCollection.html'
+removed '../html/_modules/MDAnalysis/analysis/encore/clustering/ClusteringMethod.html'
+removed '../html/_modules/MDAnalysis/analysis/encore/clustering/cluster.html'
+removed directory '../html/_modules/MDAnalysis/analysis/encore/clustering'
+removed '../html/_modules/MDAnalysis/analysis/encore/confdistmatrix.html'
+removed '../html/_modules/MDAnalysis/analysis/encore/covariance.html'
+removed '../html/_modules/MDAnalysis/analysis/encore/dimensionality_reduction/DimensionalityReductionMethod.html'
+removed '../html/_modules/MDAnalysis/analysis/encore/dimensionality_reduction/reduce_dimensionality.html'
+removed directory '../html/_modules/MDAnalysis/analysis/encore/dimensionality_reduction'
+removed '../html/_modules/MDAnalysis/analysis/encore/similarity.html'
+removed '../html/_modules/MDAnalysis/analysis/encore/utils.html'
+removed directory '../html/_modules/MDAnalysis/analysis/encore'
+removed '../html/_modules/MDAnalysis/analysis/gnm.html'
+removed '../html/_modules/MDAnalysis/analysis/helix_analysis.html'
+removed '../html/_modules/MDAnalysis/analysis/hydrogenbonds/hbond_analysis.html'
+removed '../html/_modules/MDAnalysis/analysis/hydrogenbonds/hbond_autocorrel.html'
+removed '../html/_modules/MDAnalysis/analysis/hydrogenbonds/wbridge_analysis.html'
+removed directory '../html/_modules/MDAnalysis/analysis/hydrogenbonds'
+removed '../html/_modules/MDAnalysis/analysis/leaflet.html'
+removed '../html/_modules/MDAnalysis/analysis/legacy/x3dna.html'
+removed directory '../html/_modules/MDAnalysis/analysis/legacy'
+removed '../html/_modules/MDAnalysis/analysis/lineardensity.html'
+removed '../html/_modules/MDAnalysis/analysis/msd.html'
+removed '../html/_modules/MDAnalysis/analysis/nucleicacids.html'
+removed '../html/_modules/MDAnalysis/analysis/nuclinfo.html'
+removed '../html/_modules/MDAnalysis/analysis/pca.html'
+removed '../html/_modules/MDAnalysis/analysis/polymer.html'
+removed '../html/_modules/MDAnalysis/analysis/rdf.html'
+removed '../html/_modules/MDAnalysis/analysis/results.html'
+removed '../html/_modules/MDAnalysis/analysis/rms.html'
+removed directory '../html/_modules/MDAnalysis/analysis'
+removed '../html/_modules/MDAnalysis/auxiliary/EDR.html'
+removed '../html/_modules/MDAnalysis/auxiliary/XVG.html'
+removed '../html/_modules/MDAnalysis/auxiliary/base.html'
+removed '../html/_modules/MDAnalysis/auxiliary/core.html'
+removed directory '../html/_modules/MDAnalysis/auxiliary'
+removed '../html/_modules/MDAnalysis/converters/OpenMM.html'
+removed '../html/_modules/MDAnalysis/converters/OpenMMParser.html'
+removed '../html/_modules/MDAnalysis/converters/ParmEd.html'
+removed '../html/_modules/MDAnalysis/converters/ParmEdParser.html'
+removed '../html/_modules/MDAnalysis/converters/RDKit.html'
+removed '../html/_modules/MDAnalysis/converters/RDKitInferring.html'
+removed '../html/_modules/MDAnalysis/converters/RDKitParser.html'
+removed '../html/_modules/MDAnalysis/converters/base.html'
+removed directory '../html/_modules/MDAnalysis/converters'
+removed '../html/_modules/MDAnalysis/coordinates/CRD.html'
+removed '../html/_modules/MDAnalysis/coordinates/DCD.html'
+removed '../html/_modules/MDAnalysis/coordinates/DLPoly.html'
+removed '../html/_modules/MDAnalysis/coordinates/DMS.html'
+removed '../html/_modules/MDAnalysis/coordinates/FHIAIMS.html'
+removed '../html/_modules/MDAnalysis/coordinates/GMS.html'
+removed '../html/_modules/MDAnalysis/coordinates/GRO.html'
+removed '../html/_modules/MDAnalysis/coordinates/GSD.html'
+removed '../html/_modules/MDAnalysis/coordinates/H5MD.html'
+removed '../html/_modules/MDAnalysis/coordinates/IMD.html'
+removed '../html/_modules/MDAnalysis/coordinates/INPCRD.html'
+removed '../html/_modules/MDAnalysis/coordinates/LAMMPS.html'
+removed '../html/_modules/MDAnalysis/coordinates/MMTF.html'
+removed '../html/_modules/MDAnalysis/coordinates/MOL2.html'
+removed '../html/_modules/MDAnalysis/coordinates/NAMDBIN.html'
+removed '../html/_modules/MDAnalysis/coordinates/PDB.html'
+removed '../html/_modules/MDAnalysis/coordinates/PDBQT.html'
+removed '../html/_modules/MDAnalysis/coordinates/PQR.html'
+removed '../html/_modules/MDAnalysis/coordinates/TNG.html'
+removed '../html/_modules/MDAnalysis/coordinates/TPR.html'
+removed '../html/_modules/MDAnalysis/coordinates/TRC.html'
+removed '../html/_modules/MDAnalysis/coordinates/TRJ.html'
+removed '../html/_modules/MDAnalysis/coordinates/TRR.html'
+removed '../html/_modules/MDAnalysis/coordinates/TRZ.html'
+removed '../html/_modules/MDAnalysis/coordinates/TXYZ.html'
+removed '../html/_modules/MDAnalysis/coordinates/XDR.html'
+removed '../html/_modules/MDAnalysis/coordinates/XTC.html'
+removed '../html/_modules/MDAnalysis/coordinates/XYZ.html'
+removed '../html/_modules/MDAnalysis/coordinates/base.html'
+removed '../html/_modules/MDAnalysis/coordinates/chain.html'
+removed '../html/_modules/MDAnalysis/coordinates/chemfiles.html'
+removed '../html/_modules/MDAnalysis/coordinates/core.html'
+removed '../html/_modules/MDAnalysis/coordinates/memory.html'
+removed '../html/_modules/MDAnalysis/coordinates/null.html'
+removed directory '../html/_modules/MDAnalysis/coordinates'
+removed '../html/_modules/MDAnalysis/core/_get_readers.html'
+removed '../html/_modules/MDAnalysis/core/accessors.html'
+removed '../html/_modules/MDAnalysis/core/groups.html'
+removed '../html/_modules/MDAnalysis/core/selection.html'
+removed '../html/_modules/MDAnalysis/core/topology.html'
+removed '../html/_modules/MDAnalysis/core/topologyattrs.html'
+removed '../html/_modules/MDAnalysis/core/topologyobjects.html'
+removed '../html/_modules/MDAnalysis/core/universe.html'
+removed directory '../html/_modules/MDAnalysis/core'
+removed '../html/_modules/MDAnalysis/exceptions.html'
+removed '../html/_modules/MDAnalysis/fetch/fetchers.html'
+removed '../html/_modules/MDAnalysis/fetch/pdb.html'
+removed directory '../html/_modules/MDAnalysis/fetch'
+removed '../html/_modules/MDAnalysis/guesser/base.html'
+removed '../html/_modules/MDAnalysis/guesser/default_guesser.html'
+removed '../html/_modules/MDAnalysis/guesser/tables.html'
+removed directory '../html/_modules/MDAnalysis/guesser'
+removed '../html/_modules/MDAnalysis/lib/NeighborSearch.html'
+removed '../html/_modules/MDAnalysis/lib/correlations.html'
+removed '../html/_modules/MDAnalysis/lib/distances.html'
+removed '../html/_modules/MDAnalysis/lib/log.html'
+removed '../html/_modules/MDAnalysis/lib/mdamath.html'
+removed '../html/_modules/MDAnalysis/lib/picklable_file_io.html'
+removed '../html/_modules/MDAnalysis/lib/pkdtree.html'
+removed '../html/_modules/MDAnalysis/lib/transformations.html'
+removed '../html/_modules/MDAnalysis/lib/util.html'
+removed directory '../html/_modules/MDAnalysis/lib'
+removed '../html/_modules/MDAnalysis/selections.html'
+removed '../html/_modules/MDAnalysis/selections/base.html'
+removed '../html/_modules/MDAnalysis/selections/charmm.html'
+removed '../html/_modules/MDAnalysis/selections/gromacs.html'
+removed '../html/_modules/MDAnalysis/selections/jmol.html'
+removed '../html/_modules/MDAnalysis/selections/pymol.html'
+removed '../html/_modules/MDAnalysis/selections/vmd.html'
+removed directory '../html/_modules/MDAnalysis/selections'
+removed '../html/_modules/MDAnalysis/topology/CRDParser.html'
+removed '../html/_modules/MDAnalysis/topology/DLPolyParser.html'
+removed '../html/_modules/MDAnalysis/topology/DMSParser.html'
+removed '../html/_modules/MDAnalysis/topology/ExtendedPDBParser.html'
+removed '../html/_modules/MDAnalysis/topology/FHIAIMSParser.html'
+removed '../html/_modules/MDAnalysis/topology/GMSParser.html'
+removed '../html/_modules/MDAnalysis/topology/GROParser.html'
+removed '../html/_modules/MDAnalysis/topology/GSDParser.html'
+removed '../html/_modules/MDAnalysis/topology/HoomdXMLParser.html'
+removed '../html/_modules/MDAnalysis/topology/ITPParser.html'
+removed '../html/_modules/MDAnalysis/topology/LAMMPSParser.html'
+removed '../html/_modules/MDAnalysis/topology/MMTFParser.html'
+removed '../html/_modules/MDAnalysis/topology/MOL2Parser.html'
+removed '../html/_modules/MDAnalysis/topology/MinimalParser.html'
+removed '../html/_modules/MDAnalysis/topology/PDBParser.html'
+removed '../html/_modules/MDAnalysis/topology/PDBQTParser.html'
+removed '../html/_modules/MDAnalysis/topology/PQRParser.html'
+removed '../html/_modules/MDAnalysis/topology/PSFParser.html'
+removed '../html/_modules/MDAnalysis/topology/TOPParser.html'
+removed '../html/_modules/MDAnalysis/topology/TPRParser.html'
+removed '../html/_modules/MDAnalysis/topology/TXYZParser.html'
+removed '../html/_modules/MDAnalysis/topology/XYZParser.html'
+removed '../html/_modules/MDAnalysis/topology/base.html'
+removed '../html/_modules/MDAnalysis/topology/tpr/obj.html'
+removed '../html/_modules/MDAnalysis/topology/tpr/utils.html'
+removed directory '../html/_modules/MDAnalysis/topology/tpr'
+removed directory '../html/_modules/MDAnalysis/topology'
+removed '../html/_modules/MDAnalysis/transformations/base.html'
+removed '../html/_modules/MDAnalysis/transformations/boxdimensions.html'
+removed '../html/_modules/MDAnalysis/transformations/fit.html'
+removed '../html/_modules/MDAnalysis/transformations/nojump.html'
+removed '../html/_modules/MDAnalysis/transformations/positionaveraging.html'
+removed '../html/_modules/MDAnalysis/transformations/rotate.html'
+removed '../html/_modules/MDAnalysis/transformations/translate.html'
+removed '../html/_modules/MDAnalysis/transformations/wrap.html'
+removed directory '../html/_modules/MDAnalysis/transformations'
+removed '../html/_modules/MDAnalysis/units.html'
+removed '../html/_modules/MDAnalysis/visualization/streamlines.html'
+removed '../html/_modules/MDAnalysis/visualization/streamlines_3D.html'
+removed directory '../html/_modules/MDAnalysis/visualization'
+removed directory '../html/_modules/MDAnalysis'
+removed '../html/_modules/index.html'
+removed directory '../html/_modules'
+removed '../html/objects.inv'
+removed '../html/py-modindex.html'
+removed '../html/search.html'
+removed '../html/searchindex.js'
+removed '../html/sitemap.xml'
+removed '../html/_sources/documentation_pages/analysis/align.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/atomicdistances.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/backends.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/base.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/bat.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/contacts.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/data.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/density.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/dielectric.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/diffusionmap.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/dihedrals.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/distances.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/dssp.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/encore.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/encore/bootstrap.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/encore/clustering.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/encore/confdistmatrix.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/encore/covariance.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/encore/dimensionality_reduction.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/encore/similarity.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/encore/utils.rst.txt'
+removed directory '../html/_sources/documentation_pages/analysis/encore'
+removed '../html/_sources/documentation_pages/analysis/gnm.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/hbond_autocorrel.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/hbond_autocorrel_deprecated.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/helix_analysis.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/hole2.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/hydrogenbonds.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/leaflet.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/legacy/x3dna.rst.txt'
+removed directory '../html/_sources/documentation_pages/analysis/legacy'
+removed '../html/_sources/documentation_pages/analysis/legacy_modules.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/lineardensity.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/msd.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/nucleicacids.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/nuclinfo.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/parallelization.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/pca.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/polymer.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/psa.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/rdf.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/results.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/rms.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/waterdynamics.rst.txt'
+removed '../html/_sources/documentation_pages/analysis/wbridge_analysis.rst.txt'
+removed directory '../html/_sources/documentation_pages/analysis'
+removed '../html/_sources/documentation_pages/analysis_modules.rst.txt'
+removed '../html/_sources/documentation_pages/auxiliary/EDR.rst.txt'
+removed '../html/_sources/documentation_pages/auxiliary/XVG.rst.txt'
+removed '../html/_sources/documentation_pages/auxiliary/base.rst.txt'
+removed '../html/_sources/documentation_pages/auxiliary/core.rst.txt'
+removed '../html/_sources/documentation_pages/auxiliary/init.rst.txt'
+removed directory '../html/_sources/documentation_pages/auxiliary'
+removed '../html/_sources/documentation_pages/auxiliary_modules.rst.txt'
+removed '../html/_sources/documentation_pages/converters.rst.txt'
+removed '../html/_sources/documentation_pages/converters/OpenMM.rst.txt'
+removed '../html/_sources/documentation_pages/converters/ParmEd.rst.txt'
+removed '../html/_sources/documentation_pages/converters/RDKit.rst.txt'
+removed '../html/_sources/documentation_pages/converters/base.rst.txt'
+removed directory '../html/_sources/documentation_pages/converters'
+removed '../html/_sources/documentation_pages/coordinates/CRD.rst.txt'
+removed '../html/_sources/documentation_pages/coordinates/DCD.rst.txt'
+removed '../html/_sources/documentation_pages/coordinates/DLPoly.rst.txt'
+removed '../html/_sources/documentation_pages/coordinates/DMS.rst.txt'
+removed '../html/_sources/documentation_pages/coordinates/FHIAIMS.rst.txt'
+removed '../html/_sources/documentation_pages/coordinates/GMS.rst.txt'
+removed '../html/_sources/documentation_pages/coordinates/GRO.rst.txt'
+removed '../html/_sources/documentation_pages/coordinates/GSD.rst.txt'
+removed '../html/_sources/documentation_pages/coordinates/H5MD.rst.txt'
+removed '../html/_sources/documentation_pages/coordinates/IMD.rst.txt'
+removed '../html/_sources/documentation_pages/coordinates/INPCRD.rst.txt'
+removed '../html/_sources/documentation_pages/coordinates/LAMMPS.rst.txt'
+removed '../html/_sources/documentation_pages/coordinates/MMTF.rst.txt'
+removed '../html/_sources/documentation_pages/coordinates/MOL2.rst.txt'
+removed '../html/_sources/documentation_pages/coordinates/NAMDBIN.rst.txt'
+removed '../html/_sources/documentation_pages/coordinates/PDB.rst.txt'
+removed '../html/_sources/documentation_pages/coordinates/PDBQT.rst.txt'
+removed '../html/_sources/documentation_pages/coordinates/PQR.rst.txt'
+removed '../html/_sources/documentation_pages/coordinates/TNG.rst.txt'
+removed '../html/_sources/documentation_pages/coordinates/TPR.rst.txt'
+removed '../html/_sources/documentation_pages/coordinates/TRC.rst.txt'
+removed '../html/_sources/documentation_pages/coordinates/TRJ.rst.txt'
+removed '../html/_sources/documentation_pages/coordinates/TRR.rst.txt'
+removed '../html/_sources/documentation_pages/coordinates/TRZ.rst.txt'
+removed '../html/_sources/documentation_pages/coordinates/TXYZ.rst.txt'
+removed '../html/_sources/documentation_pages/coordinates/XDR.rst.txt'
+removed '../html/_sources/documentation_pages/coordinates/XTC.rst.txt'
+removed '../html/_sources/documentation_pages/coordinates/XYZ.rst.txt'
+removed '../html/_sources/documentation_pages/coordinates/base.rst.txt'
+removed '../html/_sources/documentation_pages/coordinates/chain.rst.txt'
+removed '../html/_sources/documentation_pages/coordinates/chemfiles.rst.txt'
+removed '../html/_sources/documentation_pages/coordinates/core.rst.txt'
+removed '../html/_sources/documentation_pages/coordinates/init.rst.txt'
+removed '../html/_sources/documentation_pages/coordinates/memory.rst.txt'
+removed '../html/_sources/documentation_pages/coordinates/null.rst.txt'
+removed '../html/_sources/documentation_pages/coordinates/pickle_readers.rst.txt'
+removed '../html/_sources/documentation_pages/coordinates/timestep.rst.txt'
+removed directory '../html/_sources/documentation_pages/coordinates'
+removed '../html/_sources/documentation_pages/coordinates_modules.rst.txt'
+removed '../html/_sources/documentation_pages/core/accessors.rst.txt'
+removed '../html/_sources/documentation_pages/core/groups.rst.txt'
+removed '../html/_sources/documentation_pages/core/init.rst.txt'
+removed '../html/_sources/documentation_pages/core/selection.rst.txt'
+removed '../html/_sources/documentation_pages/core/topology.rst.txt'
+removed '../html/_sources/documentation_pages/core/topologyattrs.rst.txt'
+removed '../html/_sources/documentation_pages/core/topologyobjects.rst.txt'
+removed '../html/_sources/documentation_pages/core/universe.rst.txt'
+removed directory '../html/_sources/documentation_pages/core'
+removed '../html/_sources/documentation_pages/core_modules.rst.txt'
+removed '../html/_sources/documentation_pages/exceptions.rst.txt'
+removed '../html/_sources/documentation_pages/fetchers/PDB.rst.txt'
+removed '../html/_sources/documentation_pages/fetchers/fetchers.rst.txt'
+removed '../html/_sources/documentation_pages/fetchers/init.rst.txt'
+removed directory '../html/_sources/documentation_pages/fetchers'
+removed '../html/_sources/documentation_pages/fetchers_modules.rst.txt'
+removed '../html/_sources/documentation_pages/guesser_modules.rst.txt'
+removed '../html/_sources/documentation_pages/guesser_modules/base.rst.txt'
+removed '../html/_sources/documentation_pages/guesser_modules/default_guesser.rst.txt'
+removed '../html/_sources/documentation_pages/guesser_modules/init.rst.txt'
+removed '../html/_sources/documentation_pages/guesser_modules/tables.rst.txt'
+removed directory '../html/_sources/documentation_pages/guesser_modules'
+removed '../html/_sources/documentation_pages/lib/NeighborSearch.rst.txt'
+removed '../html/_sources/documentation_pages/lib/c_distances.rst.txt'
+removed '../html/_sources/documentation_pages/lib/c_distances_openmp.rst.txt'
+removed '../html/_sources/documentation_pages/lib/correlations.rst.txt'
+removed '../html/_sources/documentation_pages/lib/distances.rst.txt'
+removed '../html/_sources/documentation_pages/lib/formats/libdcd.rst.txt'
+removed '../html/_sources/documentation_pages/lib/formats/libmdaxdr.rst.txt'
+removed directory '../html/_sources/documentation_pages/lib/formats'
+removed '../html/_sources/documentation_pages/lib/log.rst.txt'
+removed '../html/_sources/documentation_pages/lib/mdamath.rst.txt'
+removed '../html/_sources/documentation_pages/lib/nsgrid.rst.txt'
+removed '../html/_sources/documentation_pages/lib/picklable_file_io.rst.txt'
+removed '../html/_sources/documentation_pages/lib/pkdtree.rst.txt'
+removed '../html/_sources/documentation_pages/lib/qcprot.rst.txt'
+removed '../html/_sources/documentation_pages/lib/transformations.rst.txt'
+removed '../html/_sources/documentation_pages/lib/util.rst.txt'
+removed directory '../html/_sources/documentation_pages/lib'
+removed '../html/_sources/documentation_pages/lib_modules.rst.txt'
+removed '../html/_sources/documentation_pages/overview.rst.txt'
+removed '../html/_sources/documentation_pages/references.rst.txt'
+removed '../html/_sources/documentation_pages/selections.rst.txt'
+removed '../html/_sources/documentation_pages/selections/base.rst.txt'
+removed '../html/_sources/documentation_pages/selections/charmm.rst.txt'
+removed '../html/_sources/documentation_pages/selections/gromacs.rst.txt'
+removed '../html/_sources/documentation_pages/selections/jmol.rst.txt'
+removed '../html/_sources/documentation_pages/selections/pymol.rst.txt'
+removed '../html/_sources/documentation_pages/selections/vmd.rst.txt'
+removed directory '../html/_sources/documentation_pages/selections'
+removed '../html/_sources/documentation_pages/selections_modules.rst.txt'
+removed '../html/_sources/documentation_pages/topology.rst.txt'
+removed '../html/_sources/documentation_pages/topology/CRDParser.rst.txt'
+removed '../html/_sources/documentation_pages/topology/DLPolyParser.rst.txt'
+removed '../html/_sources/documentation_pages/topology/DMSParser.rst.txt'
+removed '../html/_sources/documentation_pages/topology/ExtendedPDBParser.rst.txt'
+removed '../html/_sources/documentation_pages/topology/FHIAIMSParser.rst.txt'
+removed '../html/_sources/documentation_pages/topology/GMSParser.rst.txt'
+removed '../html/_sources/documentation_pages/topology/GROParser.rst.txt'
+removed '../html/_sources/documentation_pages/topology/GSDParser.rst.txt'
+removed '../html/_sources/documentation_pages/topology/HoomdXMLParser.rst.txt'
+removed '../html/_sources/documentation_pages/topology/ITPParser.rst.txt'
+removed '../html/_sources/documentation_pages/topology/LAMMPSParser.rst.txt'
+removed '../html/_sources/documentation_pages/topology/MMTFParser.rst.txt'
+removed '../html/_sources/documentation_pages/topology/MOL2Parser.rst.txt'
+removed '../html/_sources/documentation_pages/topology/MinimalParser.rst.txt'
+removed '../html/_sources/documentation_pages/topology/PDBParser.rst.txt'
+removed '../html/_sources/documentation_pages/topology/PDBQTParser.rst.txt'
+removed '../html/_sources/documentation_pages/topology/PQRParser.rst.txt'
+removed '../html/_sources/documentation_pages/topology/PSFParser.rst.txt'
+removed '../html/_sources/documentation_pages/topology/TOPParser.rst.txt'
+removed '../html/_sources/documentation_pages/topology/TPRParser.rst.txt'
+removed '../html/_sources/documentation_pages/topology/TXYZParser.rst.txt'
+removed '../html/_sources/documentation_pages/topology/XYZParser.rst.txt'
+removed '../html/_sources/documentation_pages/topology/base.rst.txt'
+removed '../html/_sources/documentation_pages/topology/core.rst.txt'
+removed '../html/_sources/documentation_pages/topology/guessers.rst.txt'
+removed '../html/_sources/documentation_pages/topology/init.rst.txt'
+removed '../html/_sources/documentation_pages/topology/tables.rst.txt'
+removed '../html/_sources/documentation_pages/topology/tpr_util.rst.txt'
+removed directory '../html/_sources/documentation_pages/topology'
+removed '../html/_sources/documentation_pages/topology_modules.rst.txt'
+removed '../html/_sources/documentation_pages/trajectory_transformations.rst.txt'
+removed '../html/_sources/documentation_pages/transformations/base.rst.txt'
+removed '../html/_sources/documentation_pages/transformations/boxdimensions.rst.txt'
+removed '../html/_sources/documentation_pages/transformations/fit.rst.txt'
+removed '../html/_sources/documentation_pages/transformations/nojump.rst.txt'
+removed '../html/_sources/documentation_pages/transformations/positionaveraging.rst.txt'
+removed '../html/_sources/documentation_pages/transformations/rotate.rst.txt'
+removed '../html/_sources/documentation_pages/transformations/translate.rst.txt'
+removed '../html/_sources/documentation_pages/transformations/wrap.rst.txt'
+removed directory '../html/_sources/documentation_pages/transformations'
+removed '../html/_sources/documentation_pages/units.rst.txt'
+removed '../html/_sources/documentation_pages/version.rst.txt'
+removed '../html/_sources/documentation_pages/visualization/streamlines.rst.txt'
+removed '../html/_sources/documentation_pages/visualization/streamlines_3D.rst.txt'
+removed directory '../html/_sources/documentation_pages/visualization'
+removed '../html/_sources/documentation_pages/visualization_modules.rst.txt'
+removed directory '../html/_sources/documentation_pages'
+removed '../html/_sources/index.rst.txt'
+removed directory '../html/_sources'
+removed '../html/_static/jquery.js'
+removed '../html/_static/_sphinx_javascript_frameworks_compat.js'
+removed '../html/_static/pygments.css'
+removed '../html/_static/basic.css'
+removed '../html/_static/doctools.js'
+removed '../html/_static/documentation_options.js'
+removed '../html/_static/file.png'
+removed '../html/_static/language_data.js'
+removed '../html/_static/minus.png'
+removed '../html/_static/plus.png'
+removed '../html/_static/searchtools.js'
+removed '../html/_static/sphinx_highlight.js'
+removed '../html/_static/css/fonts/Roboto-Slab-Bold.woff'
+removed '../html/_static/css/fonts/Roboto-Slab-Bold.woff2'
+removed '../html/_static/css/fonts/Roboto-Slab-Regular.woff'
+removed '../html/_static/css/fonts/Roboto-Slab-Regular.woff2'
+removed '../html/_static/css/fonts/fontawesome-webfont.eot'
+removed '../html/_static/css/fonts/fontawesome-webfont.svg'
+removed '../html/_static/css/fonts/fontawesome-webfont.ttf'
+removed '../html/_static/css/fonts/fontawesome-webfont.woff'
+removed '../html/_static/css/fonts/fontawesome-webfont.woff2'
+removed '../html/_static/css/fonts/lato-bold-italic.woff'
+removed '../html/_static/css/fonts/lato-bold-italic.woff2'
+removed '../html/_static/css/fonts/lato-bold.woff'
+removed '../html/_static/css/fonts/lato-bold.woff2'
+removed '../html/_static/css/fonts/lato-normal-italic.woff'
+removed '../html/_static/css/fonts/lato-normal-italic.woff2'
+removed '../html/_static/css/fonts/lato-normal.woff'
+removed '../html/_static/css/fonts/lato-normal.woff2'
+removed directory '../html/_static/css/fonts'
+removed '../html/_static/css/badge_only.css'
+removed '../html/_static/css/theme.css'
+removed directory '../html/_static/css'
+removed '../html/_static/fonts/Lato/lato-bold.eot'
+removed '../html/_static/fonts/Lato/lato-bold.ttf'
+removed '../html/_static/fonts/Lato/lato-bold.woff'
+removed '../html/_static/fonts/Lato/lato-bold.woff2'
+removed '../html/_static/fonts/Lato/lato-bolditalic.eot'
+removed '../html/_static/fonts/Lato/lato-bolditalic.ttf'
+removed '../html/_static/fonts/Lato/lato-bolditalic.woff'
+removed '../html/_static/fonts/Lato/lato-bolditalic.woff2'
+removed '../html/_static/fonts/Lato/lato-italic.eot'
+removed '../html/_static/fonts/Lato/lato-italic.ttf'
+removed '../html/_static/fonts/Lato/lato-italic.woff'
+removed '../html/_static/fonts/Lato/lato-italic.woff2'
+removed '../html/_static/fonts/Lato/lato-regular.eot'
+removed '../html/_static/fonts/Lato/lato-regular.ttf'
+removed '../html/_static/fonts/Lato/lato-regular.woff'
+removed '../html/_static/fonts/Lato/lato-regular.woff2'
+removed directory '../html/_static/fonts/Lato'
+removed '../html/_static/fonts/RobotoSlab/roboto-slab-v7-bold.eot'
+removed '../html/_static/fonts/RobotoSlab/roboto-slab-v7-bold.ttf'
+removed '../html/_static/fonts/RobotoSlab/roboto-slab-v7-bold.woff'
+removed '../html/_static/fonts/RobotoSlab/roboto-slab-v7-bold.woff2'
+removed '../html/_static/fonts/RobotoSlab/roboto-slab-v7-regular.eot'
+removed '../html/_static/fonts/RobotoSlab/roboto-slab-v7-regular.ttf'
+removed '../html/_static/fonts/RobotoSlab/roboto-slab-v7-regular.woff'
+removed '../html/_static/fonts/RobotoSlab/roboto-slab-v7-regular.woff2'
+removed directory '../html/_static/fonts/RobotoSlab'
+removed directory '../html/_static/fonts'
+removed '../html/_static/js/badge_only.js'
+removed '../html/_static/js/theme.js'
+removed '../html/_static/js/versions.js'
+removed directory '../html/_static/js'
+removed '../html/_static/logo/mda_favicon.ico'
+removed '../html/_static/logo/mda_logo.png'
+removed '../html/_static/logo/placeholder_favicon.svg'
+removed '../html/_static/logo/placeholder_logo.png'
+removed directory '../html/_static/logo'
+removed '../html/_static/opensearch.xml'
+removed '../html/_static/site.css'
+removed directory '../html/_static'
+sphinx-build -v -W -b html   source ../html
+Running Sphinx v8.2.3
+loading translations [en]... locale_dir /nfs/homes3/jauy1/Projects/Dev/mdanalysis/package/doc/sphinx/source/locales/en/LC_MESSAGES does not exist
+locale_dir /nfs/homes3/jauy1/Projects/Dev/mdanalysis/package/doc/sphinx/source/locales/en/LC_MESSAGES does not exist
+done
+Converting `source_suffix = '.rst'` to `source_suffix = {'.rst': 'restructuredtext'}`.
+loading pickled environment... The configuration has changed (2 options: 'html_permalinks_icon', 'jquery_use_sri')
+done
+checking bibtex cache... up to date
+locale_dir /nfs/homes3/jauy1/Projects/Dev/mdanalysis/package/doc/sphinx/source/locales/en/LC_MESSAGES does not exist
+building [mo]: targets for 0 po files that are out of date
+writing output... 
+building [html]: targets for 183 source files that are out of date
+updating environment: locale_dir /nfs/homes3/jauy1/Projects/Dev/mdanalysis/package/doc/sphinx/source/locales/en/LC_MESSAGES does not exist
+0 added, 1 changed, 0 removed
+reading sources... [100%] documentation_pages/fetchers/fetchers
+
+looking for now-outdated files... none found
+pickling environment... done
+checking consistency... done
+preparing documents... done
+copying assets... 
+copying static files... 
+Writing evaluated template result to /nfs/homes3/jauy1/Projects/Dev/mdanalysis/package/doc/html/_static/basic.css
+Writing evaluated template result to /nfs/homes3/jauy1/Projects/Dev/mdanalysis/package/doc/html/_static/documentation_options.js
+Writing evaluated template result to /nfs/homes3/jauy1/Projects/Dev/mdanalysis/package/doc/html/_static/language_data.js
+Writing evaluated template result to /nfs/homes3/jauy1/Projects/Dev/mdanalysis/package/doc/html/_static/js/versions.js
+copying static files: done
+copying extra files... 
+copying extra files: done
+copying assets: done
+writing output... [  1%] documentation_pages/analysis/align
+writing output... [  1%] documentation_pages/analysis/atomicdistances
+writing output... [  2%] documentation_pages/analysis/backends
+writing output... [  2%] documentation_pages/analysis/base
+writing output... [  3%] documentation_pages/analysis/bat
+writing output... [  3%] documentation_pages/analysis/contacts
+writing output... [  4%] documentation_pages/analysis/data
+writing output... [  4%] documentation_pages/analysis/density
+writing output... [  5%] documentation_pages/analysis/dielectric
+writing output... [  5%] documentation_pages/analysis/diffusionmap
+writing output... [  6%] documentation_pages/analysis/dihedrals
+writing output... [  7%] documentation_pages/analysis/distances
+writing output... [  7%] documentation_pages/analysis/dssp
+writing output... [  8%] documentation_pages/analysis/encore
+writing output... [  8%] documentation_pages/analysis/encore/bootstrap
+writing output... [  9%] documentation_pages/analysis/encore/clustering
+writing output... [  9%] documentation_pages/analysis/encore/confdistmatrix
+writing output... [ 10%] documentation_pages/analysis/encore/covariance
+writing output... [ 10%] documentation_pages/analysis/encore/dimensionality_reduction
+writing output... [ 11%] documentation_pages/analysis/encore/similarity
+writing output... [ 11%] documentation_pages/analysis/encore/utils
+writing output... [ 12%] documentation_pages/analysis/gnm
+writing output... [ 13%] documentation_pages/analysis/hbond_autocorrel
+writing output... [ 13%] documentation_pages/analysis/hbond_autocorrel_deprecated
+writing output... [ 14%] documentation_pages/analysis/helix_analysis
+writing output... [ 14%] documentation_pages/analysis/hole2
+writing output... [ 15%] documentation_pages/analysis/hydrogenbonds
+writing output... [ 15%] documentation_pages/analysis/leaflet
+writing output... [ 16%] documentation_pages/analysis/legacy/x3dna
+writing output... [ 16%] documentation_pages/analysis/legacy_modules
+writing output... [ 17%] documentation_pages/analysis/lineardensity
+writing output... [ 17%] documentation_pages/analysis/msd
+writing output... [ 18%] documentation_pages/analysis/nucleicacids
+writing output... [ 19%] documentation_pages/analysis/nuclinfo
+writing output... [ 19%] documentation_pages/analysis/parallelization
+writing output... [ 20%] documentation_pages/analysis/pca
+writing output... [ 20%] documentation_pages/analysis/polymer
+writing output... [ 21%] documentation_pages/analysis/psa
+writing output... [ 21%] documentation_pages/analysis/rdf
+writing output... [ 22%] documentation_pages/analysis/results
+writing output... [ 22%] documentation_pages/analysis/rms
+writing output... [ 23%] documentation_pages/analysis/waterdynamics
+writing output... [ 23%] documentation_pages/analysis/wbridge_analysis
+writing output... [ 24%] documentation_pages/analysis_modules
+writing output... [ 25%] documentation_pages/auxiliary/EDR
+writing output... [ 25%] documentation_pages/auxiliary/XVG
+writing output... [ 26%] documentation_pages/auxiliary/base
+writing output... [ 26%] documentation_pages/auxiliary/core
+writing output... [ 27%] documentation_pages/auxiliary/init
+writing output... [ 27%] documentation_pages/auxiliary_modules
+writing output... [ 28%] documentation_pages/converters
+writing output... [ 28%] documentation_pages/converters/OpenMM
+writing output... [ 29%] documentation_pages/converters/ParmEd
+writing output... [ 30%] documentation_pages/converters/RDKit
+writing output... [ 30%] documentation_pages/converters/base
+writing output... [ 31%] documentation_pages/coordinates/CRD
+writing output... [ 31%] documentation_pages/coordinates/DCD
+writing output... [ 32%] documentation_pages/coordinates/DLPoly
+writing output... [ 32%] documentation_pages/coordinates/DMS
+writing output... [ 33%] documentation_pages/coordinates/FHIAIMS
+writing output... [ 33%] documentation_pages/coordinates/GMS
+writing output... [ 34%] documentation_pages/coordinates/GRO
+writing output... [ 34%] documentation_pages/coordinates/GSD
+writing output... [ 35%] documentation_pages/coordinates/H5MD
+writing output... [ 36%] documentation_pages/coordinates/IMD
+writing output... [ 36%] documentation_pages/coordinates/INPCRD
+writing output... [ 37%] documentation_pages/coordinates/LAMMPS
+writing output... [ 37%] documentation_pages/coordinates/MMTF
+writing output... [ 38%] documentation_pages/coordinates/MOL2
+writing output... [ 38%] documentation_pages/coordinates/NAMDBIN
+writing output... [ 39%] documentation_pages/coordinates/PDB
+writing output... [ 39%] documentation_pages/coordinates/PDBQT
+writing output... [ 40%] documentation_pages/coordinates/PQR
+writing output... [ 40%] documentation_pages/coordinates/TNG
+writing output... [ 41%] documentation_pages/coordinates/TPR
+writing output... [ 42%] documentation_pages/coordinates/TRC
+writing output... [ 42%] documentation_pages/coordinates/TRJ
+writing output... [ 43%] documentation_pages/coordinates/TRR
+writing output... [ 43%] documentation_pages/coordinates/TRZ
+writing output... [ 44%] documentation_pages/coordinates/TXYZ
+writing output... [ 44%] documentation_pages/coordinates/XDR
+writing output... [ 45%] documentation_pages/coordinates/XTC
+writing output... [ 45%] documentation_pages/coordinates/XYZ
+writing output... [ 46%] documentation_pages/coordinates/base
+writing output... [ 46%] documentation_pages/coordinates/chain
+writing output... [ 47%] documentation_pages/coordinates/chemfiles
+writing output... [ 48%] documentation_pages/coordinates/core
+writing output... [ 48%] documentation_pages/coordinates/init
+writing output... [ 49%] documentation_pages/coordinates/memory
+writing output... [ 49%] documentation_pages/coordinates/null
+writing output... [ 50%] documentation_pages/coordinates/pickle_readers
+writing output... [ 50%] documentation_pages/coordinates/timestep
+writing output... [ 51%] documentation_pages/coordinates_modules
+writing output... [ 51%] documentation_pages/core/accessors
+writing output... [ 52%] documentation_pages/core/groups
+writing output... [ 52%] documentation_pages/core/init
+writing output... [ 53%] documentation_pages/core/selection
+writing output... [ 54%] documentation_pages/core/topology
+writing output... [ 54%] documentation_pages/core/topologyattrs
+writing output... [ 55%] documentation_pages/core/topologyobjects
+writing output... [ 55%] documentation_pages/core/universe
+writing output... [ 56%] documentation_pages/core_modules
+writing output... [ 56%] documentation_pages/exceptions
+writing output... [ 57%] documentation_pages/fetchers/PDB
+writing output... [ 57%] documentation_pages/fetchers/fetchers
+writing output... [ 58%] documentation_pages/fetchers/init
+writing output... [ 58%] documentation_pages/fetchers_modules
+writing output... [ 59%] documentation_pages/guesser_modules
+writing output... [ 60%] documentation_pages/guesser_modules/base
+writing output... [ 60%] documentation_pages/guesser_modules/default_guesser
+writing output... [ 61%] documentation_pages/guesser_modules/init
+writing output... [ 61%] documentation_pages/guesser_modules/tables
+writing output... [ 62%] documentation_pages/lib/NeighborSearch
+writing output... [ 62%] documentation_pages/lib/c_distances
+writing output... [ 63%] documentation_pages/lib/c_distances_openmp
+writing output... [ 63%] documentation_pages/lib/correlations
+writing output... [ 64%] documentation_pages/lib/distances
+writing output... [ 64%] documentation_pages/lib/formats/libdcd
+writing output... [ 65%] documentation_pages/lib/formats/libmdaxdr
+writing output... [ 66%] documentation_pages/lib/log
+writing output... [ 66%] documentation_pages/lib/mdamath
+writing output... [ 67%] documentation_pages/lib/nsgrid
+writing output... [ 67%] documentation_pages/lib/picklable_file_io
+writing output... [ 68%] documentation_pages/lib/pkdtree
+writing output... [ 68%] documentation_pages/lib/qcprot
+writing output... [ 69%] documentation_pages/lib/transformations
+writing output... [ 69%] documentation_pages/lib/util
+writing output... [ 70%] documentation_pages/lib_modules
+writing output... [ 70%] documentation_pages/overview
+writing output... [ 71%] documentation_pages/references
+writing output... [ 72%] documentation_pages/selections
+writing output... [ 72%] documentation_pages/selections/base
+writing output... [ 73%] documentation_pages/selections/charmm
+writing output... [ 73%] documentation_pages/selections/gromacs
+writing output... [ 74%] documentation_pages/selections/jmol
+writing output... [ 74%] documentation_pages/selections/pymol
+writing output... [ 75%] documentation_pages/selections/vmd
+writing output... [ 75%] documentation_pages/selections_modules
+writing output... [ 76%] documentation_pages/topology
+writing output... [ 77%] documentation_pages/topology/CRDParser
+writing output... [ 77%] documentation_pages/topology/DLPolyParser
+writing output... [ 78%] documentation_pages/topology/DMSParser
+writing output... [ 78%] documentation_pages/topology/ExtendedPDBParser
+writing output... [ 79%] documentation_pages/topology/FHIAIMSParser
+writing output... [ 79%] documentation_pages/topology/GMSParser
+writing output... [ 80%] documentation_pages/topology/GROParser
+writing output... [ 80%] documentation_pages/topology/GSDParser
+writing output... [ 81%] documentation_pages/topology/HoomdXMLParser
+writing output... [ 81%] documentation_pages/topology/ITPParser
+writing output... [ 82%] documentation_pages/topology/LAMMPSParser
+writing output... [ 83%] documentation_pages/topology/MMTFParser
+writing output... [ 83%] documentation_pages/topology/MOL2Parser
+writing output... [ 84%] documentation_pages/topology/MinimalParser
+writing output... [ 84%] documentation_pages/topology/PDBParser
+writing output... [ 85%] documentation_pages/topology/PDBQTParser
+writing output... [ 85%] documentation_pages/topology/PQRParser
+writing output... [ 86%] documentation_pages/topology/PSFParser
+writing output... [ 86%] documentation_pages/topology/TOPParser
+writing output... [ 87%] documentation_pages/topology/TPRParser
+writing output... [ 87%] documentation_pages/topology/TXYZParser
+writing output... [ 88%] documentation_pages/topology/XYZParser
+writing output... [ 89%] documentation_pages/topology/base
+writing output... [ 89%] documentation_pages/topology/core
+writing output... [ 90%] documentation_pages/topology/guessers
+writing output... [ 90%] documentation_pages/topology/init
+writing output... [ 91%] documentation_pages/topology/tables
+writing output... [ 91%] documentation_pages/topology/tpr_util
+writing output... [ 92%] documentation_pages/topology_modules
+writing output... [ 92%] documentation_pages/trajectory_transformations
+writing output... [ 93%] documentation_pages/transformations/base
+writing output... [ 93%] documentation_pages/transformations/boxdimensions
+writing output... [ 94%] documentation_pages/transformations/fit
+writing output... [ 95%] documentation_pages/transformations/nojump
+writing output... [ 95%] documentation_pages/transformations/positionaveraging
+writing output... [ 96%] documentation_pages/transformations/rotate
+writing output... [ 96%] documentation_pages/transformations/translate
+writing output... [ 97%] documentation_pages/transformations/wrap
+writing output... [ 97%] documentation_pages/units
+writing output... [ 98%] documentation_pages/version
+writing output... [ 98%] documentation_pages/visualization/streamlines
+writing output... [ 99%] documentation_pages/visualization/streamlines_3D
+writing output... [ 99%] documentation_pages/visualization_modules
+writing output... [100%] index
+
+/nfs/homes3/jauy1/Projects/Dev/mdanalysis/package/MDAnalysis/analysis/dssp/dssp.py:docstring of MDAnalysis.analysis.dssp.dssp.DSSP:54: WARNING: undefined label: 'selection-of-acceleration-backend' [ref.ref]
+/nfs/homes3/jauy1/Projects/Dev/mdanalysis/package/MDAnalysis/converters/RDKitInferring.py:docstring of MDAnalysis.converters.RDKitInferring.RDKitInferrer:1: WARNING: undefined label: 'https://github.com/jensengroup/xyz2mol' [ref.ref]
+generating indices... genindex py-modindex done
+highlighting module code... [  1%] MDAnalysis.analysis.align
+highlighting module code... [  1%] MDAnalysis.analysis.atomicdistances
+highlighting module code... [  2%] MDAnalysis.analysis.backends
+highlighting module code... [  2%] MDAnalysis.analysis.base
+highlighting module code... [  3%] MDAnalysis.analysis.bat
+highlighting module code... [  4%] MDAnalysis.analysis.contacts
+highlighting module code... [  4%] MDAnalysis.analysis.density
+highlighting module code... [  5%] MDAnalysis.analysis.dielectric
+highlighting module code... [  6%] MDAnalysis.analysis.diffusionmap
+highlighting module code... [  6%] MDAnalysis.analysis.dihedrals
+highlighting module code... [  7%] MDAnalysis.analysis.distances
+highlighting module code... [  7%] MDAnalysis.analysis.dssp.dssp
+highlighting module code... [  8%] MDAnalysis.analysis.dssp.pydssp_numpy
+highlighting module code... [  9%] MDAnalysis.analysis.encore.bootstrap
+/nfs/homes3/jauy1/Projects/Dev/mdanalysis/package/MDAnalysis/analysis/encore/__init__.py:45: DeprecationWarning: Deprecation in version 2.8.0
+MDAnalysis.analysis.encore is deprecated in favour of the MDAKit mdaencore (https://www.mdanalysis.org/mdaencore/) and will be removed in MDAnalysis version 3.0.0.
+  warnings.warn(wmsg, category=DeprecationWarning)
+highlighting module code... [  9%] MDAnalysis.analysis.encore.clustering.ClusterCollection
+highlighting module code... [ 10%] MDAnalysis.analysis.encore.clustering.ClusteringMethod
+highlighting module code... [ 10%] MDAnalysis.analysis.encore.clustering.affinityprop
+highlighting module code... [ 11%] MDAnalysis.analysis.encore.clustering.cluster
+highlighting module code... [ 12%] MDAnalysis.analysis.encore.confdistmatrix
+highlighting module code... [ 12%] MDAnalysis.analysis.encore.covariance
+highlighting module code... [ 13%] MDAnalysis.analysis.encore.cutils
+highlighting module code... [ 14%] MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod
+highlighting module code... [ 14%] MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality
+highlighting module code... [ 15%] MDAnalysis.analysis.encore.dimensionality_reduction.stochasticproxembed
+highlighting module code... [ 15%] MDAnalysis.analysis.encore.similarity
+highlighting module code... [ 16%] MDAnalysis.analysis.encore.utils
+highlighting module code... [ 17%] MDAnalysis.analysis.gnm
+highlighting module code... [ 17%] MDAnalysis.analysis.helix_analysis
+highlighting module code... [ 18%] MDAnalysis.analysis.hydrogenbonds.hbond_analysis
+highlighting module code... [ 19%] MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel
+highlighting module code... [ 19%] MDAnalysis.analysis.hydrogenbonds.wbridge_analysis
+highlighting module code... [ 20%] MDAnalysis.analysis.leaflet
+highlighting module code... [ 20%] MDAnalysis.analysis.legacy.x3dna
+highlighting module code... [ 21%] MDAnalysis.analysis.lineardensity
+highlighting module code... [ 22%] MDAnalysis.analysis.msd
+highlighting module code... [ 22%] MDAnalysis.analysis.nucleicacids
+highlighting module code... [ 23%] MDAnalysis.analysis.nuclinfo
+highlighting module code... [ 23%] MDAnalysis.analysis.pca
+highlighting module code... [ 24%] MDAnalysis.analysis.polymer
+highlighting module code... [ 25%] MDAnalysis.analysis.rdf
+highlighting module code... [ 25%] MDAnalysis.analysis.results
+highlighting module code... [ 26%] MDAnalysis.analysis.rms
+highlighting module code... [ 27%] MDAnalysis.auxiliary.EDR
+highlighting module code... [ 27%] MDAnalysis.auxiliary.XVG
+highlighting module code... [ 28%] MDAnalysis.auxiliary.base
+highlighting module code... [ 28%] MDAnalysis.auxiliary.core
+highlighting module code... [ 29%] MDAnalysis.converters.OpenMM
+highlighting module code... [ 30%] MDAnalysis.converters.OpenMMParser
+highlighting module code... [ 30%] MDAnalysis.converters.ParmEd
+highlighting module code... [ 31%] MDAnalysis.converters.ParmEdParser
+highlighting module code... [ 31%] MDAnalysis.converters.RDKit
+highlighting module code... [ 32%] MDAnalysis.converters.RDKitInferring
+highlighting module code... [ 33%] MDAnalysis.converters.RDKitParser
+highlighting module code... [ 33%] MDAnalysis.converters.base
+highlighting module code... [ 34%] MDAnalysis.coordinates.CRD
+highlighting module code... [ 35%] MDAnalysis.coordinates.DCD
+highlighting module code... [ 35%] MDAnalysis.coordinates.DLPoly
+highlighting module code... [ 36%] MDAnalysis.coordinates.DMS
+highlighting module code... [ 36%] MDAnalysis.coordinates.FHIAIMS
+highlighting module code... [ 37%] MDAnalysis.coordinates.GMS
+highlighting module code... [ 38%] MDAnalysis.coordinates.GRO
+highlighting module code... [ 38%] MDAnalysis.coordinates.GSD
+highlighting module code... [ 39%] MDAnalysis.coordinates.H5MD
+highlighting module code... [ 40%] MDAnalysis.coordinates.IMD
+highlighting module code... [ 40%] MDAnalysis.coordinates.INPCRD
+highlighting module code... [ 41%] MDAnalysis.coordinates.LAMMPS
+highlighting module code... [ 41%] MDAnalysis.coordinates.MMTF
+highlighting module code... [ 42%] MDAnalysis.coordinates.MOL2
+highlighting module code... [ 43%] MDAnalysis.coordinates.NAMDBIN
+highlighting module code... [ 43%] MDAnalysis.coordinates.PDB
+highlighting module code... [ 44%] MDAnalysis.coordinates.PDBQT
+highlighting module code... [ 44%] MDAnalysis.coordinates.PQR
+highlighting module code... [ 45%] MDAnalysis.coordinates.TNG
+highlighting module code... [ 46%] MDAnalysis.coordinates.TPR
+highlighting module code... [ 46%] MDAnalysis.coordinates.TRC
+highlighting module code... [ 47%] MDAnalysis.coordinates.TRJ
+highlighting module code... [ 48%] MDAnalysis.coordinates.TRR
+highlighting module code... [ 48%] MDAnalysis.coordinates.TRZ
+highlighting module code... [ 49%] MDAnalysis.coordinates.TXYZ
+highlighting module code... [ 49%] MDAnalysis.coordinates.XDR
+highlighting module code... [ 50%] MDAnalysis.coordinates.XTC
+highlighting module code... [ 51%] MDAnalysis.coordinates.XYZ
+highlighting module code... [ 51%] MDAnalysis.coordinates.base
+highlighting module code... [ 52%] MDAnalysis.coordinates.chain
+highlighting module code... [ 52%] MDAnalysis.coordinates.chemfiles
+highlighting module code... [ 53%] MDAnalysis.coordinates.core
+highlighting module code... [ 54%] MDAnalysis.coordinates.memory
+highlighting module code... [ 54%] MDAnalysis.coordinates.null
+highlighting module code... [ 55%] MDAnalysis.coordinates.timestep
+highlighting module code... [ 56%] MDAnalysis.core._get_readers
+highlighting module code... [ 56%] MDAnalysis.core.accessors
+highlighting module code... [ 57%] MDAnalysis.core.groups
+highlighting module code... [ 57%] MDAnalysis.core.selection
+highlighting module code... [ 58%] MDAnalysis.core.topology
+highlighting module code... [ 59%] MDAnalysis.core.topologyattrs
+highlighting module code... [ 59%] MDAnalysis.core.topologyobjects
+highlighting module code... [ 60%] MDAnalysis.core.universe
+highlighting module code... [ 60%] MDAnalysis.exceptions
+highlighting module code... [ 61%] MDAnalysis.fetch.fetchers
+highlighting module code... [ 62%] MDAnalysis.fetch.pdb
+highlighting module code... [ 62%] MDAnalysis.guesser.base
+highlighting module code... [ 63%] MDAnalysis.guesser.default_guesser
+highlighting module code... [ 64%] MDAnalysis.guesser.tables
+highlighting module code... [ 64%] MDAnalysis.lib.NeighborSearch
+highlighting module code... [ 65%] MDAnalysis.lib._augment
+highlighting module code... [ 65%] MDAnalysis.lib._cutil
+highlighting module code... [ 66%] MDAnalysis.lib.correlations
+highlighting module code... [ 67%] MDAnalysis.lib.distances
+highlighting module code... [ 67%] MDAnalysis.lib.formats.libdcd
+highlighting module code... [ 68%] MDAnalysis.lib.formats.libmdaxdr
+highlighting module code... [ 69%] MDAnalysis.lib.log
+highlighting module code... [ 69%] MDAnalysis.lib.mdamath
+highlighting module code... [ 70%] MDAnalysis.lib.nsgrid
+highlighting module code... [ 70%] MDAnalysis.lib.picklable_file_io
+highlighting module code... [ 71%] MDAnalysis.lib.pkdtree
+highlighting module code... [ 72%] MDAnalysis.lib.qcprot
+highlighting module code... [ 72%] MDAnalysis.lib.transformations
+highlighting module code... [ 73%] MDAnalysis.lib.util
+highlighting module code... [ 73%] MDAnalysis.selections
+highlighting module code... [ 74%] MDAnalysis.selections.base
+highlighting module code... [ 75%] MDAnalysis.selections.charmm
+highlighting module code... [ 75%] MDAnalysis.selections.gromacs
+highlighting module code... [ 76%] MDAnalysis.selections.jmol
+highlighting module code... [ 77%] MDAnalysis.selections.pymol
+highlighting module code... [ 77%] MDAnalysis.selections.vmd
+highlighting module code... [ 78%] MDAnalysis.topology.CRDParser
+highlighting module code... [ 78%] MDAnalysis.topology.DLPolyParser
+highlighting module code... [ 79%] MDAnalysis.topology.DMSParser
+highlighting module code... [ 80%] MDAnalysis.topology.ExtendedPDBParser
+highlighting module code... [ 80%] MDAnalysis.topology.FHIAIMSParser
+highlighting module code... [ 81%] MDAnalysis.topology.GMSParser
+highlighting module code... [ 81%] MDAnalysis.topology.GROParser
+highlighting module code... [ 82%] MDAnalysis.topology.GSDParser
+highlighting module code... [ 83%] MDAnalysis.topology.HoomdXMLParser
+highlighting module code... [ 83%] MDAnalysis.topology.ITPParser
+highlighting module code... [ 84%] MDAnalysis.topology.LAMMPSParser
+highlighting module code... [ 85%] MDAnalysis.topology.MMTFParser
+highlighting module code... [ 85%] MDAnalysis.topology.MOL2Parser
+highlighting module code... [ 86%] MDAnalysis.topology.MinimalParser
+highlighting module code... [ 86%] MDAnalysis.topology.PDBParser
+highlighting module code... [ 87%] MDAnalysis.topology.PDBQTParser
+highlighting module code... [ 88%] MDAnalysis.topology.PQRParser
+highlighting module code... [ 88%] MDAnalysis.topology.PSFParser
+highlighting module code... [ 89%] MDAnalysis.topology.TOPParser
+highlighting module code... [ 90%] MDAnalysis.topology.TPRParser
+highlighting module code... [ 90%] MDAnalysis.topology.TXYZParser
+highlighting module code... [ 91%] MDAnalysis.topology.XYZParser
+highlighting module code... [ 91%] MDAnalysis.topology.base
+highlighting module code... [ 92%] MDAnalysis.topology.tpr.obj
+highlighting module code... [ 93%] MDAnalysis.topology.tpr.utils
+highlighting module code... [ 93%] MDAnalysis.transformations.base
+highlighting module code... [ 94%] MDAnalysis.transformations.boxdimensions
+highlighting module code... [ 94%] MDAnalysis.transformations.fit
+highlighting module code... [ 95%] MDAnalysis.transformations.nojump
+highlighting module code... [ 96%] MDAnalysis.transformations.positionaveraging
+highlighting module code... [ 96%] MDAnalysis.transformations.rotate
+highlighting module code... [ 97%] MDAnalysis.transformations.translate
+highlighting module code... [ 98%] MDAnalysis.transformations.wrap
+highlighting module code... [ 98%] MDAnalysis.units
+highlighting module code... [ 99%] MDAnalysis.visualization.streamlines
+highlighting module code... [ 99%] MDAnalysis.visualization.streamlines_3D
+highlighting module code... [100%] builtins
+
+writing additional pages... search opensearch done
+copying images... [ 10%] images/rama_ref_plot.png
+copying images... [ 20%] images/janin_ref_plot.png
+copying images... [ 30%] images/rama_demo_plot.png
+copying images... [ 40%] images/janin_demo_plot.png
+copying images... [ 50%] images/msd_demo_plot.png
+copying images... [ 60%] images/AnalysisBase_parallel.png
+copying images... [ 70%] images/parallelization_time.png
+copying images... [ 80%] images/RSMD_plot.png
+copying images... [ 90%] documentation_pages/visualization/testing_streamline.png
+copying images... [100%] documentation_pages/visualization/test_streamplot_3D.png
+
+dumping search index in English (code: en)... done
+dumping object inventory... done
+sphinx-sitemap: sitemap.xml was generated for URL https://docs.mdanalysis.org/ in /nfs/homes3/jauy1/Projects/Dev/mdanalysis/package/doc/html/sitemap.xml
+Writing compiled SASS to /nfs/homes3/jauy1/Projects/Dev/mdanalysis/package/doc/html/_static/site.css
+build finished with problems, 2 warnings (with warnings treated as errors).
+make: *** [Makefile:42: html] Error 1
