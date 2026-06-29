@@ -2162,7 +2162,7 @@ def Merge(*args):
     common_attrs = set.intersection(
         *[set(dir(ag.universe._topology)) for ag in args]
     )
-    tops = set(["bonds", "angles", "dihedrals", "impropers"])
+    tops = set(["bonds", "angles", "dihedrals", "impropers", "cmaps"])
 
     attrs = []
 
