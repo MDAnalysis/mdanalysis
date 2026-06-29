@@ -46,6 +46,28 @@ if HAS_POOCH:
 REGISTRY_NAME = "hashes.txt"
 
 
+def test_invalid_hash():
+    pass
+
+def test_invalid_downloader():
+    pass
+
+def test_different_hashes(tmp_path):
+    with temporary_http_server() as (host, port, temp_folder):
+        base_url = f"http://{host}:{port}/"
+        downloader = StaticFetcher(cache_path=tmp_path, hash="md5")
+        path = downloader.fetch(
+            base_url=base_url,
+            file_name="TEST_FILE1.txt",
+            db_name=REGISTRY_NAME,
+        )
+
+        assert (
+            downloader.db_path
+        ).read_text() == "TEST_FILE1.txt md5:b2f138521297db74b6b280feeb14f9f6\n"
+
+
+
 @pytest.fixture()
 def clean_up_default_cache():
     rmtree(pooch.os_cache(DEFAULT_CACHE_NAME_DOWNLOADER), ignore_errors=True)
@@ -139,7 +161,7 @@ class TestExpectedBehaviors:
             assert (downloader.db_path).exists()
             assert (
                 downloader.db_path
-            ).read_text() == "TEST_FILE1.txt c4bdb6ba200a917b8384ffeffa4999bf05bd4e479f6580d795aca509c9122dc4\n"
+            ).read_text() == "TEST_FILE1.txt sha256:c4bdb6ba200a917b8384ffeffa4999bf05bd4e479f6580d795aca509c9122dc4\n"
 
     def test_existing_database(self, tmp_path):
         with temporary_http_server() as (host, port, temp_folder):
@@ -208,8 +230,8 @@ class TestExpectedBehaviors:
             )
 
             assert downloader.db_path.read_text() == (
-                "TEST_FILE1.txt c4bdb6ba200a917b8384ffeffa4999bf05bd4e479f6580d795aca509c9122dc4\n"
-                "TEST_FILE2.txt 0ec192c0f90d1332f2abca4398596d3978434ecbae6abea8ffd989412b592458\n"
+                "TEST_FILE1.txt sha256:c4bdb6ba200a917b8384ffeffa4999bf05bd4e479f6580d795aca509c9122dc4\n"
+                "TEST_FILE2.txt sha256:0ec192c0f90d1332f2abca4398596d3978434ecbae6abea8ffd989412b592458\n"
             )
 
     def test_multiple_downloads_existing_database(self, tmp_path):

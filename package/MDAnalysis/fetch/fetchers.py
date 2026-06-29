@@ -98,7 +98,7 @@ class _BaseFetcher(ABC):
         # All fetchers should call _check_pooch()
         #
         # These arguments should be implemented by all child Fetchers.
-        self._check_pooch()
+        pass
 
     def _check_pooch(
         self,
@@ -149,7 +149,7 @@ class StaticFetcher(_BaseFetcher):
         to the local cache directory. If the file(s) already exist in the cache,
         they will be used instead of downloading them again.
 
-    
+
     Attributes
     ----------
     cache_path : pathlib.Path
@@ -157,7 +157,7 @@ class StaticFetcher(_BaseFetcher):
 
     db_path : pathlib.Path
         Path to the database file used for caching. Created after calling fetch()
-    
+
     hash : str
         Hash algorithm used for verifying the integrity of downloaded files.
 
@@ -257,7 +257,15 @@ class StaticFetcher(_BaseFetcher):
         ]
 
         if CREATE_DATABASE:
-            pooch.make_registry(directory=self.cache_path, output=self.db_path)
+            hashes = [
+                (fname.name, pooch.file_hash(fname, alg=self.hash))
+                for fname in self.cache_path.iterdir()
+                if fname.is_file()
+            ]
+            
+            with open(self.db_path, mode="w") as f:
+                for fname, hash in hashes:
+                    f.write(f"{fname} {self.hash}:{hash}\n")
 
         if len(paths) == 1:
             return paths[0]
