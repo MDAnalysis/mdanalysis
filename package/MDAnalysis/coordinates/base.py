@@ -1416,7 +1416,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
 
         Parameters
         ----------
-        transform_list : list
+        transformations : list
             list of all the transformations that will be applied to the coordinates
             in the order given in the list
 
@@ -1779,7 +1779,7 @@ class SingleFrameReaderBase(ProtoReader):
 
         Parameters
         ----------
-        transform_list : list
+        transformations : list
             list of all the transformations that will be applied to the coordinates
 
         See Also
