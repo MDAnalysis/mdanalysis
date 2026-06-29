@@ -145,7 +145,7 @@ from MDAnalysis.core.groups import AtomGroup, UpdatingAtomGroup
 from .rms import rmsd
 from .base import AnalysisBase, ResultsGroup
 
-logger = logging.getLogger("MDAnalysis.analysis.diffusionmap")
+logger = logging.getLogger(__name__)
 
 
 class DistanceMatrix(AnalysisBase):

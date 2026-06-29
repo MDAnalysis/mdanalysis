@@ -175,7 +175,7 @@ else:
         )
         HAS_IMDCLIENT = False
 
-logger = logging.getLogger("MDAnalysis.coordinates.IMDReader")
+logger = logging.getLogger(__name__)
 
 
 class IMDReader(StreamReaderBase):

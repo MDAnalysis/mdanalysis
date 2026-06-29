@@ -718,7 +718,7 @@ from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
 
 from ..base import AnalysisBase
 
-logger = logging.getLogger("MDAnalysis.analysis.WaterBridgeAnalysis")
+logger = logging.getLogger(__name__)
 
 
 class WaterBridgeAnalysis(AnalysisBase):

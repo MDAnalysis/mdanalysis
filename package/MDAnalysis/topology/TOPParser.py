@@ -117,7 +117,7 @@ from ..core.topologyattrs import (
 import warnings
 import logging
 
-logger = logging.getLogger("MDAnalysis.topology.TOPParser")
+logger = logging.getLogger(__name__)
 
 
 class TypeIndices(AtomAttr):

@@ -177,7 +177,7 @@ from .base import AnalysisBase, ResultsGroup
 
 import logging
 
-logger = logging.getLogger("MDAnalysis.analysis.density")
+logger = logging.getLogger(__name__)
 
 
 class DensityAnalysis(AnalysisBase):

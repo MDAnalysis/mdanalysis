@@ -172,7 +172,7 @@ from ..exceptions import SelectionError
 from ..lib.util import asiterable, iterable, get_weights
 
 
-logger = logging.getLogger("MDAnalysis.analysis.rmsd")
+logger = logging.getLogger(__name__)
 
 
 def rmsd(a, b, weights=None, center=False, superposition=False):

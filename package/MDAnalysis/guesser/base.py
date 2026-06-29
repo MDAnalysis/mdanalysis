@@ -43,7 +43,7 @@ import logging
 from typing import Dict
 import copy
 
-logger = logging.getLogger("MDAnalysis.guesser.base")
+logger = logging.getLogger(__name__)
 
 
 class _GuesserMeta(type):

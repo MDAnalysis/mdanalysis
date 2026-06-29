@@ -141,7 +141,7 @@ from .timestep import Timestep
 from . import base
 from ..lib import util
 from ..lib.util import store_init_arguments
-logger = logging.getLogger("MDAnalysis.coordinates.AMBER")
+logger = logging.getLogger(__name__)
 
 
 try:
