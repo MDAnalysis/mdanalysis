@@ -43,6 +43,8 @@ def temporary_http_server():
 
         (temp_folder / "TEST_FILE2.txt").write_text("7-1")
 
+        (temp_folder / "TEST_FILE3.txt").write_text("David Beckham in a World Cup ad")
+
         http_handler = partial(
             SimpleHTTPRequestHandler,
             directory=str(temp_folder),

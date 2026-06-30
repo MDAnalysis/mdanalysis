@@ -45,21 +45,6 @@ Functions
 from pathlib import Path
 from .fetchers import StaticFetcher
 
-try:
-    import pooch
-except ImportError:
-    HAS_POOCH = False
-else:
-    HAS_POOCH = True
-
-#: Name of the :mod:`pooch` cache directory ``pooch.os_cache(DEFAULT_CACHE_NAME_DOWNLOADER)``;
-#: see :func:`pooch.os_cache` for further details.'
-#:
-#: .. versionadded:: 2.11.0
-#: Moved to fetchers
-# This should be removed?
-DEFAULT_CACHE_NAME_DOWNLOADER = "MDAnalysis_pdbs"
-
 # These file formats are here https://www.rcsb.org/docs/programmatic-access/file-download-services#pdb-entry-files"
 SUPPORTED_FILE_FORMATS_DOWNLOADER = (
     "cif",

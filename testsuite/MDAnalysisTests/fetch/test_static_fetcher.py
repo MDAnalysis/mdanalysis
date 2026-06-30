@@ -27,6 +27,7 @@ from shutil import rmtree
 
 from servers import temporary_http_server
 
+import hashlib
 import pytest
 
 
@@ -46,26 +47,29 @@ if HAS_POOCH:
 REGISTRY_NAME = "hashes.txt"
 
 
-def test_invalid_hash():
-    pass
+def test_invalid_hash(tmp_path):
+    hash = "foo"
+
+    with temporary_http_server() as (host, port, temp_folder):
+        base_url = f"http://{host}:{port}/"
+        
+
+        with pytest.raises(
+            ValueError,
+            match=re.escape(
+                f'Invalid hash "{hash}". Valid hashes algorithms are {hashlib.algorithms_available}.'
+            ),
+        ):
+            downloader = StaticFetcher(cache_path=tmp_path, hash=hash)
+
+            path = downloader.fetch(
+                base_url=base_url,
+                file_name="TEST_FILE1.txt",
+            )
+
 
 def test_invalid_downloader():
     pass
-
-def test_different_hashes(tmp_path):
-    with temporary_http_server() as (host, port, temp_folder):
-        base_url = f"http://{host}:{port}/"
-        downloader = StaticFetcher(cache_path=tmp_path, hash="md5")
-        path = downloader.fetch(
-            base_url=base_url,
-            file_name="TEST_FILE1.txt",
-            db_name=REGISTRY_NAME,
-        )
-
-        assert (
-            downloader.db_path
-        ).read_text() == "TEST_FILE1.txt md5:b2f138521297db74b6b280feeb14f9f6\n"
-
 
 
 @pytest.fixture()
@@ -162,6 +166,20 @@ class TestExpectedBehaviors:
             assert (
                 downloader.db_path
             ).read_text() == "TEST_FILE1.txt sha256:c4bdb6ba200a917b8384ffeffa4999bf05bd4e479f6580d795aca509c9122dc4\n"
+
+    def test_different_hashes(self, tmp_path):
+        with temporary_http_server() as (host, port, temp_folder):
+            base_url = f"http://{host}:{port}/"
+            downloader = StaticFetcher(cache_path=tmp_path, hash="md5")
+            path = downloader.fetch(
+                base_url=base_url,
+                file_name="TEST_FILE1.txt",
+                db_name=REGISTRY_NAME,
+            )
+
+            assert (
+                downloader.db_path
+            ).read_text() == "TEST_FILE1.txt md5:b2f138521297db74b6b280feeb14f9f6\n"
 
     def test_existing_database(self, tmp_path):
         with temporary_http_server() as (host, port, temp_folder):
