@@ -155,8 +155,6 @@ def from_PDB(
             "Invalid file format. Supported file formats "
             f"are {SUPPORTED_FILE_FORMATS_DOWNLOADER}"
         )
-    
-
 
     pdb_ids = [pdb + "." + file_format for pdb in pdb_ids]
 

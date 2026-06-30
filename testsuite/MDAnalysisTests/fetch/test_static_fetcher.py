@@ -40,10 +40,6 @@ from MDAnalysis.fetch.fetchers import (
 if HAS_POOCH:
     import pooch
 
-
-# BASE_URL = "https://files.wwpdb.org/download/"
-# SINGLE_PDB = "1AKE.pdb"
-# MULTIPLE_PDBS = ("1AKE.pdb", "4AKE.pdb")
 REGISTRY_NAME = "hashes.txt"
 
 
@@ -52,7 +48,6 @@ def test_invalid_hash(tmp_path):
 
     with temporary_http_server() as (host, port, temp_folder):
         base_url = f"http://{host}:{port}/"
-        
 
         with pytest.raises(
             ValueError,
@@ -66,10 +61,6 @@ def test_invalid_hash(tmp_path):
                 base_url=base_url,
                 file_name="TEST_FILE1.txt",
             )
-
-
-def test_invalid_downloader():
-    pass
 
 
 @pytest.fixture()

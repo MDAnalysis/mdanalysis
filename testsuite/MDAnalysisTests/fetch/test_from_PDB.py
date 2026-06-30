@@ -49,6 +49,7 @@ def test_download_one_file(tmp_path):
     assert path.exists()
     assert path.name == "1AKE.cif.gz"
 
+
 @pytest.mark.skipif(not HAS_POOCH, reason="Pooch is not installed.")
 @pytest.mark.skipif(
     not HAS_ACCESS_TO_WWPDB,
@@ -61,6 +62,7 @@ def test_download_multiple_files(tmp_path):
     assert [path.name for path in paths] == list(
         ["1AKE.cif.gz", "4AKE.cif.gz"]
     )
+
 
 @pytest.mark.skipif(not HAS_POOCH, reason="Pooch is not installed.")
 @pytest.mark.skipif(
