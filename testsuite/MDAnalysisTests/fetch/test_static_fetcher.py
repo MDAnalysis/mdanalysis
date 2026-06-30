@@ -43,26 +43,6 @@ if HAS_POOCH:
 REGISTRY_NAME = "hashes.txt"
 
 
-def test_invalid_hash(tmp_path):
-    hash = "foo"
-
-    with temporary_http_server() as (host, port, temp_folder):
-        base_url = f"http://{host}:{port}/"
-
-        with pytest.raises(
-            ValueError,
-            match=re.escape(
-                f'Invalid hash "{hash}". Valid hashes algorithms are {hashlib.algorithms_available}.'
-            ),
-        ):
-            downloader = StaticFetcher(cache_path=tmp_path, hash=hash)
-
-            path = downloader.fetch(
-                base_url=base_url,
-                file_name="TEST_FILE1.txt",
-            )
-
-
 @pytest.fixture()
 def clean_up_default_cache():
     rmtree(pooch.os_cache(DEFAULT_CACHE_NAME_DOWNLOADER), ignore_errors=True)
@@ -111,8 +91,18 @@ class TestExpectedErrors:
                 )
 
     def test_invalid_hash(self, tmp_path):
-        with pytest.raises(ValueError, match='Invalid hash "barfoo"'):
-            StaticFetcher(cache_path=tmp_path, hash="barfoo")
+        hash = "foo"
+
+        with temporary_http_server() as (host, port, temp_folder):
+            base_url = f"http://{host}:{port}/"
+
+            with pytest.raises(
+                ValueError,
+                match=re.escape(
+                    f'Invalid hash "{hash}". Valid hashes algorithms are {hashlib.algorithms_available}.'
+                ),
+            ):
+                downloader = StaticFetcher(cache_path=tmp_path, hash=hash)
 
 
 @pytest.mark.skipif(not HAS_POOCH, reason="Pooch is not installed.")
