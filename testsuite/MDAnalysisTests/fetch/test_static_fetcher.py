@@ -21,8 +21,8 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-from pathlib import Path
 import re
+from pathlib import Path
 from shutil import rmtree
 
 from servers import temporary_http_server
@@ -254,3 +254,22 @@ class TestExpectedBehaviors:
             mtime2 = [path.stat().st_mtime for path in paths2]
 
             assert mtime1 == mtime2
+
+
+def test_environment_variable_override(tmp_path, monkeypatch):
+    monkeypatch.setenv("MDANALYSIS_FETCHER_DATA", str(tmp_path))
+
+    with temporary_http_server() as (host, port, temp_folder):
+        base_url = f"http://{host}:{port}/"
+
+        Path("/nfs/homes3/jauy1/.cache/MDAnalysis_pdbs").mkdir(
+            parents=True, exist_ok=True
+        )
+
+        downloader = StaticFetcher()
+        path = downloader.fetch(
+            base_url=base_url,
+            file_name="TEST_FILE1.txt",
+        )
+
+        assert Path(tmp_path / "TEST_FILE1.txt").exists()

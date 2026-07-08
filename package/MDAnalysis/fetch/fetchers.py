@@ -225,6 +225,7 @@ class StaticFetcher(_BaseFetcher):
             base_url=kwargs["base_url"],
             registry=registry_dictionary,
             retry_if_failed=kwargs["retries"],
+            env="MDANALYSIS_FETCHER_DATA",
         )
 
         download_kwargs = kwargs.copy()
