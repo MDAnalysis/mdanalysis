@@ -179,6 +179,7 @@ class StaticFetcher(_BaseFetcher):
         downloader="HTTP",
         **kwargs,
     ):
+        # Keywords arguments are reserved for common _BaseFetcher.fetch() arguements.
         kwargs = self._validate_fetch_args(kwargs)
 
         registry_dictionary = {}
@@ -275,9 +276,13 @@ class StaticFetcher(_BaseFetcher):
 
     def _check_cache_path_input(self, cache_path):
         if cache_path is None:
-            return Path(pooch.os_cache(DEFAULT_CACHE_NAME_DOWNLOADER))
+            path = Path(pooch.os_cache(DEFAULT_CACHE_NAME_DOWNLOADER))
         else:
-            return Path(cache_path)
+            path = Path(cache_path)
+
+        Path(path).mkdir(parents=True, exist_ok=True)
+        return path
+        
 
     def _check_hash_input(self, hash):
         if hash in hashlib.algorithms_available:

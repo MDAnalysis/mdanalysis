@@ -21,6 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
+import os
 import re
 from pathlib import Path
 from shutil import rmtree
@@ -255,20 +256,16 @@ class TestExpectedBehaviors:
 
             assert mtime1 == mtime2
 
-    def test_environment_variable_override(tmp_path, monkeypatch):
+    def test_environment_variable_override(self, tmp_path, monkeypatch):
         monkeypatch.setenv("MDANALYSIS_FETCHER_DATA", str(tmp_path))
 
         with temporary_http_server() as (host, port, temp_folder):
             base_url = f"http://{host}:{port}/"
-
-            Path("/nfs/homes3/jauy1/.cache/MDAnalysis_pdbs").mkdir(
-                parents=True, exist_ok=True
-            )
-
             downloader = StaticFetcher()
+            
             path = downloader.fetch(
                 base_url=base_url,
                 file_name="TEST_FILE1.txt",
             )
 
-            assert Path(tmp_path / "TEST_FILE1.txt").exists()
+        assert (tmp_path / "TEST_FILE1.txt").exists()
