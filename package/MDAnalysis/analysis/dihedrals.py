@@ -637,7 +637,7 @@ class Janin(Ramachandran):
            :attr:`angles` results are now stored in a
            :class:`MDAnalysis.analysis.base.Results` instance.
         """
-        super(Ramachandran, self).__init__(
+        super(Janin, self).__init__(
             atomgroup.universe.trajectory, **kwargs
         )
         self.atomgroup = atomgroup
