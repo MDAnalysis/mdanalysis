@@ -255,21 +255,20 @@ class TestExpectedBehaviors:
 
             assert mtime1 == mtime2
 
+    def test_environment_variable_override(tmp_path, monkeypatch):
+        monkeypatch.setenv("MDANALYSIS_FETCHER_DATA", str(tmp_path))
 
-def test_environment_variable_override(tmp_path, monkeypatch):
-    monkeypatch.setenv("MDANALYSIS_FETCHER_DATA", str(tmp_path))
+        with temporary_http_server() as (host, port, temp_folder):
+            base_url = f"http://{host}:{port}/"
 
-    with temporary_http_server() as (host, port, temp_folder):
-        base_url = f"http://{host}:{port}/"
+            Path("/nfs/homes3/jauy1/.cache/MDAnalysis_pdbs").mkdir(
+                parents=True, exist_ok=True
+            )
 
-        Path("/nfs/homes3/jauy1/.cache/MDAnalysis_pdbs").mkdir(
-            parents=True, exist_ok=True
-        )
+            downloader = StaticFetcher()
+            path = downloader.fetch(
+                base_url=base_url,
+                file_name="TEST_FILE1.txt",
+            )
 
-        downloader = StaticFetcher()
-        path = downloader.fetch(
-            base_url=base_url,
-            file_name="TEST_FILE1.txt",
-        )
-
-        assert Path(tmp_path / "TEST_FILE1.txt").exists()
+            assert Path(tmp_path / "TEST_FILE1.txt").exists()
