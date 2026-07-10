@@ -32,13 +32,15 @@ a dependency.
 Classes
 -------
 
-.. autofunction:: StaticFetcher
+.. autoclass:: StaticFetcher
+    :members:
+    :inherited-members:
 
 Variables
 ---------
 
 These are global submodule level variables that affect the runtime behavior across
-all Fetcher Classes.
+all Fetcher Classes. Changing these values will affect all Fetchers!
 
 
 .. autodata:: DEFAULT_CACHE_NAME_DOWNLOADER
@@ -68,12 +70,12 @@ else:
 #: .. versionadded:: 2.11.0
 DEFAULT_CACHE_NAME_DOWNLOADER = "MDAnalysis_pdbs"
 
-#: Time in seconds to wait for a response from the server before timing out.
+#: Default time in seconds to wait for a response from the server before timing out.
 #:
 #: .. versionadded:: 2.11.0
 DEFAULT_TIMEOUT = 10
 
-#: Number of attempt to retry a download if it fails.
+#: Default number of attempts to retry a download if it fails.
 #:
 #: .. versionadded:: 2.11.0
 DEFAULT_RETRIES = 2
@@ -124,42 +126,41 @@ class _BaseFetcher(ABC):
 
 class StaticFetcher(_BaseFetcher):
     """
-    Downloads files from a static URL to disk and caches them to a local directory.
-
+    Downloads files from a URL to disk and caches them to a local directory.
 
     Parameters
     ----------
     cache_path : str or pathlib.Path, optional
-        Path to the cache directory. If set to None, the default cache directory
-        will be used as specified by :data:`DEFAULT_CACHE_NAME_DOWNLOADER`.
+        Path to the cache directory. If set to ``None``, the default cache
+        directory will be used as specified by
+        :data:`DEFAULT_CACHE_NAME_DOWNLOADER`.
 
-        If the directory does not exist, it will be created.
+        If the directory does not exist, it will attempt to be created.
 
     hash : str, optional
         Hash algorithm to use for verifying the integrity of downloaded files.
-        The default is "sha256". Valid options are any hash algorithm available in
-        the :mod:`hashlib` module.
+        The default is ``sha256``. Valid options are any hash algorithm
+        available in the :mod:`hashlib` module.
 
-        If set to None, no hash verification will be performed.
-
-    Methods
-    -------
-    fetch(file_name, verbose=False, db_name="hashes.txt", downloader="HTTP", **kwargs)
-        Downloads the specified file(s) from the given base URL and caches them
-        to the local cache directory. If the file(s) already exist in the cache,
-        they will be used instead of downloading them again.
-
+        If set to ``None``, no hash verification will be performed.
 
     Attributes
     ----------
-    cache_path : pathlib.Path
+    cache_path : pathlib.Path or ``None``
         Path to the cache directory.
 
-    db_path : pathlib.Path
-        Path to the database file used for caching. Created after calling fetch()
+    db_path : pathlib.Path or ``None``
+        Path to the database file used for caching. Created after calling
+        fetch().
 
-    hash : str
+    hash : str or ``None``
         Hash algorithm used for verifying the integrity of downloaded files.
+
+    Notes
+    -----
+    The download directory can be overridden by setting the environment
+    variable ``MDANALYSIS_FETCHER_DATA`` to a valid path. This class uses
+    :mod:`pooch` as a backend for downloading and caching files.
 
     """
 
@@ -173,12 +174,78 @@ class StaticFetcher(_BaseFetcher):
 
     def fetch(
         self,
-        file_name=None,
+        file_name,
         verbose=False,
         db_name="hashes.txt",
         downloader="HTTP",
         **kwargs,
     ):
+        """
+        Download one or more files from a static base URL and cache them
+        locally.
+
+        Parameters
+        ----------
+        base_url : str
+            Base URL from which to download the file(s). This should be a valid
+            URL pointing to the directory containing the files to be downloaded.
+        file_name : str or sequence of str
+            Name of the file or files to download.
+            Note that the request is phrased as {base_url}/{file_name}.
+        verbose : bool, optional
+            If True, shows fetcher progress.
+            Default is False.
+        db_name : str, optional
+            Name of the local hash database file used to verify cached downloads.
+            Default is "hashes.txt". If None, no registry database is read or written.
+        timeout : float, optional
+            Time in seconds to wait for a response from the server before timing out.
+            Default is :data:`DEFAULT_TIMEOUT`.
+        retries : int, optional
+            Number of attempts to retry a download if it fails. Default is :data:`DEFAULT_RETRIES`.
+        downloader : str or callable, optional
+            Downloader backend to use. If a string is provided, it must identify
+            a supported downloader such as "HTTP".
+            Default is "HTTP".
+
+        Returns
+        -------
+        pathlib.Path or list of pathlib.Path
+            The downloaded file path for a single file, or a list of paths for
+            multiple files.
+
+        Example
+        -------
+
+        A script to download a protein from the RCSB Protein Data Bank.
+
+        .. code-block:: python
+
+            from MDAnalysis.fetch import StaticFetcher
+
+            fetcher = StaticFetcher(cache_path=cache_path)
+
+            # Download a single file from the RCSB Protein Data Bank
+            path = fetcher.fetch(
+                file_name="1AKE.cif",
+                base_url="https://files.wwpdb.org/download/",
+            )
+
+            # Download multiple files from the RCSB Protein Data Bank
+            path = fetcher.fetch(
+                file_name=["1AKE.cif", "4AKE.cif"],
+                base_url="https://files.wwpdb.org/download/",
+            )
+        
+        Notes
+        -----
+        The download directory can be overridden by setting the environment
+        variable ``MDANALYSIS_FETCHER_DATA`` to a valid path. This class uses
+        :mod:`pooch` as a backend for downloading and caching files.The
+        cache database is created on demand when ``db_name`` does not
+        exist.
+
+        """
         # Keywords arguments are reserved for common _BaseFetcher.fetch() arguements.
         kwargs = self._validate_fetch_args(kwargs)
 
