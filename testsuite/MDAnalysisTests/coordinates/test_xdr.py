@@ -1064,10 +1064,17 @@ class _GromacsReader_offsets(object):
         # released lock
         assert not lock.is_locked
 
-        # for filelock>=3.21.0,<3.29.5, the lockfile was deleted on POSIX, but
-        # this can lead to race conditions. Secure versions of filelock keep the
-        # lockfile:
-        assert os.path.exists(lock_file_path)
+        # validate the expected behavior of how filelock handles lock files for
+        # released locks:
+        if sys.platform.startswith("win"):
+            # on Windows, the lockfile remained (filelock ~3.21.0) but recent
+            # versions (at least 3.29.7) appear to remove the lockfile
+            assert not os.path.exists(lock_file_path)
+        else:
+            # for filelock>=3.21.0,<3.29.5, the lockfile was deleted on POSIX,
+            # but this can lead to race conditions. Secure versions of filelock
+            # keep the lockfile (see GH tox-dev/filelock#574)
+            assert os.path.exists(lock_file_path)
 
 
 class TestXTCReader_offsets(_GromacsReader_offsets):
