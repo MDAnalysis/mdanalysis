@@ -31,7 +31,8 @@ from MDAnalysisTests.datafiles import two_water_gro
 import numpy as np
 from numpy.testing import assert_allclose
 
-NFRAMES=5
+NFRAMES = 5
+
 
 @pytest.fixture()
 def u():
@@ -46,10 +47,10 @@ def sels(u):
     # (NOTE: requires in-memory coordinates to make them permanent)
     for at, (x, y) in zip(u.atoms, zip([1] * 3 + [2] * 3, [2, 1, 3] * 2)):
         at.position = x, y, 0.0
-    #Create a fake trajectory with the same frame for testing parallel backends
+    # Create a fake trajectory with the same frame for testing parallel backends
     trajectory_data = np.tile(u.atoms.positions, (NFRAMES, 1, 1))
     dimensions_data = np.tile(u.dimensions, (NFRAMES, 1))
-    u.load_new(trajectory_data, format="Memory", dimensions=dimensions_data)
+    u.load_new(trajectory_data, format="MEMORY", dimensions=dimensions_data)
     s1 = u.select_atoms("name OW")
     s2 = u.select_atoms("name HW1 HW2")
     return s1, s2
@@ -90,7 +91,7 @@ def test_count(sels, client_InterRDF):
 
 def test_double_run(sels):
     # running rdf twice should give the same result
-    # Note: this only make sense for serial backend as results aggregator can not handle 
+    # Note: this only make sense for serial backend as results aggregator can not handle
     # rdf flag if rdf.results object is not restarted when parallel backend is used
     s1, s2 = sels
     rdf = InterRDF(s1, s2).run()
