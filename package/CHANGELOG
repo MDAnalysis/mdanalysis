@@ -22,6 +22,7 @@ The rules for this file:
  * 2.11.0
 
 Fixes
+ * Fix FileLock tests for XTC and TRR: lock file is no longer removed (#5382)
  * The `principal_axes` method in :class:`Masses` now uses
    `np.linalg.eigh` instead of `np.linalg.eig`, improving numerical
    stability. This may lead to slightly different results from previous
@@ -65,7 +66,7 @@ Fixes
 
 Enhancements
  * Added ASV benchmark for PDB trajectory reading (PR #5394)
- * Read Linear Angle bonded interaction entries from GROMACS TPR files and 
+ * Read Linear Angle bonded interaction entries from GROMACS TPR files and
    add the angles to the topology (Issue #5361, PR #5372)
  * Enables parallelization for analysis.atomicdistances.AtomicDistances
    (Issue #4662, PR #4822)

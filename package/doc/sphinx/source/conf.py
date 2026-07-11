@@ -70,7 +70,10 @@ class KeyStyle(UnsrtStyle):
 register_plugin("pybtex.style.labels", "keylabel", KeyLabelStyle)
 register_plugin("pybtex.style.formatting", "MDA", KeyStyle)
 
-mathjax_path = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
+mathjax_path = (
+    "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js"
+    "?config=TeX-AMS-MML_HTMLorMML"
+)
 
 # for sitemap with https://github.com/jdillard/sphinx-sitemap
 # This sitemap is correct both for the development and release docs, which
@@ -352,4 +355,5 @@ intersphinx_mapping = {
     "imdclient": ("https://imdclient.readthedocs.io/en/stable/", None),
     "pooch": ("https://www.fatiando.org/pooch/latest/", None),
     "requests": ("https://requests.readthedocs.io/en/latest/", None),
+    "filelock": ("https://py-filelock.readthedocs.io/en/latest/", None),
 }

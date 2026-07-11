@@ -32,6 +32,35 @@ See Also
 MDAnalysis.coordinates.XTC: Read and write GROMACS XTC trajectory files.
 MDAnalysis.coordinates.TRR: Read and write GROMACS TRR trajectory files.
 MDAnalysis.lib.formats.libmdaxdr: Low level xdr format reader
+
+
+XDR reader class
+----------------
+
+The :class:`XDRBaseReader` contains common functionality for the TRR and XTC
+reader for GROMACS files, which are implemented in the
+:mod:`MDAnalysis.lib.formats.libmdaxdr` module.
+
+Both formats have in common that they do not allow
+native random frame access. Therefore, we first scan the whole trajectory to
+build an index of frames in the file ("offsets") as a look-up for seeking to
+frames. This process is initially slow so we save the offsets to a hidden file
+next to the trajectory (if possible) and then read the offset file when the
+trajectory is opened the next time, as described under :ref:`Offsets<offsets-label>`.
+
+.. autoclass:: XDRBaseReader
+   :members:
+   :inherited-members:
+   :private-members:
+
+
+Functions
+---------
+
+.. autofunction:: offsets_filename
+
+.. autofunction:: read_numpy_offsets
+
 """
 
 import errno
@@ -95,8 +124,8 @@ class XDRBaseReader(base.ReaderBase):
     """Base class for libmdaxdr file formats xtc and trr
 
     This class handles integration of XDR based formats into MDAnalysis. The
-    XTC and TRR classes only implement `_write_next_frame` and
-    `_frame_to_ts`.
+    XTC and TRR classes only implement :meth:`_write_next_frame` and
+    :meth:`_frame_to_ts`.
 
     .. _offsets-label:
 
@@ -104,17 +133,20 @@ class XDRBaseReader(base.ReaderBase):
     -----
     XDR based readers store persistent offsets on disk. The offsets are used to
     enable access to random frames efficiently. These offsets will be generated
-    automatically the  first time the  trajectory is opened.  Generally offsets
-    are stored  in hidden  `*_offsets.npz` files.  Afterwards opening  the same
+    automatically the first time the trajectory is opened.  Generally offsets
+    are stored in hidden ``*_offsets.npz`` files.  Afterwards opening the same
     file again is fast. It sometimes can happen that the stored offsets get out
     off sync with the trajectory they refer to. For this the offsets also store
     the number of atoms, size of the file and last modification time. If any of
-    them change  the offsets are recalculated.  Writing of the offset  file can
-    fail when the  directory where the trajectory file resides  is not writable
-    or if the  disk is full. In this  case a warning message will  be shown but
+    them change the offsets are recalculated.  Writing of the offset file can
+    fail when the directory where the trajectory file resides is not writable
+    or if the disk is full. In this case a warning message will be shown but
     the offsets will nevertheless be used during the lifetime of the trajectory
-    Reader. However, the  next time the trajectory is opened,  the offsets will
+    Reader. However, the next time the trajectory is opened, the offsets will
     have to be rebuilt again.
+
+    See :meth:`_load_offsets` for further details.
+
 
     .. versionchanged:: 1.0.0
        XDR offsets read from trajectory if offsets file read-in fails
@@ -124,6 +156,7 @@ class XDRBaseReader(base.ReaderBase):
        Use a direct read into ts attributes
     .. versionchanged:: 2.9.0
        Changed fasteners.InterProcessLock() to filelock.FileLock
+
     """
 
     @store_init_arguments
@@ -204,15 +237,52 @@ class XDRBaseReader(base.ReaderBase):
         self._xdr.close()
 
     def _load_offsets(self):
-        """load frame offsets from file, reread them from the trajectory if that
-        fails. To prevent the competition of generating the same offset file
-        from multiple processes, an `InterProcessLock` is used."""
+        """load frame offsets from file or recalculate if necessary
+
+        Frame offsets are cached in an offsets file, which is stored as a
+        hidden file in the same directory as the trajectory. If the file does
+        not exist we generate the offsets and store them.
+
+        If the data in the offset file are outdated (older than the trajectory
+        file or different number of frames from the trajectory or different
+        file size) then the offset file is also regenerated.
+
+        .. Note::
+
+           Generating offsets can take minutes for large trajectories because
+           the whole file must be scanned. During this time, code appears to
+           hang.
+
+        You can force regenerating offsets with the `refresh_offsets` keyword
+        argument for :class:`~MDAnalysis.core.universe.Universe`, for
+        example,::
+
+           u = mda.Universe(TOPOLOGY, XTC, refresh_offsets=True)
+
+        To prevent the competition of generating the same offset file from
+        multiple processes, a :attr:`filelock.FileLock` is used, which is
+        implemented via a lock file (in the same directory as the offset file
+        and ending in ".lock"). This lock file is *not* automatically deleted
+        because doing so could lead to race conditions.
+
+        Once this method completes, the
+        :attr:`~MDAnalysis.lib.formats.libmdaxdr.XTCFile.offsets` attribute of
+        the underlying reader contains current offsets for the trajectory.
+
+
+        .. SeeAlso::
+           - :func:`offsets_filename`
+           - :meth:`_read_offsets`
+           - :func:`read_numpy_offsets`
+
+        """
         fname = offsets_filename(self.filename)
         lock_name = offsets_filename(self.filename, ending="lock")
 
         #  check if the location of the lock is writable.
+        lock = FileLock(lock_name)
         try:
-            with FileLock(lock_name) as filelock:
+            with lock as filelock:
                 pass
         except OSError as e:
             if isinstance(e, PermissionError) or e.errno == errno.EROFS:
@@ -225,7 +295,7 @@ class XDRBaseReader(base.ReaderBase):
             else:
                 raise
 
-        with FileLock(lock_name) as filelock:
+        with lock as filelock:
             if not isfile(fname):
                 self._read_offsets(store=True)
                 return
@@ -267,7 +337,24 @@ class XDRBaseReader(base.ReaderBase):
                 self._xdr.set_offsets(data["offsets"])
 
     def _read_offsets(self, store=False):
-        """read frame offsets from trajectory"""
+        """read frame offsets from trajectory
+
+        Scan the trajectory for frames and build an index that relates frame
+        number to the position in the file, thus enabling direct seeking to
+        specific frames. The trajectory scan can take minutes for large
+        trajectories.
+
+        Parameters
+        ----------
+        store : bool
+            Save the frame index ("offsets") to a file with name generated from
+            the trajectory name (:attr:`filename`) with function
+            :func:`offsets_filename`. The offsets file also contains, ctime,
+            file size, number of frames, and number of atoms of the trajectory.
+            The file format is a compressed numpy array (:func:`numpy.savez`).
+
+            If saving the file fails for any reasons, only a warning is issued.
+        """
         fname = offsets_filename(self.filename)
         offsets = self._xdr.offsets
         if store:
