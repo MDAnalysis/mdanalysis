@@ -22,6 +22,10 @@ The rules for this file:
  * 2.11.0
 
 Fixes
+ * The `principal_axes` method in :class:`Masses` now uses
+   `np.linalg.eigh` instead of `np.linalg.eig`, improving numerical
+   stability. This may lead to slightly different results from previous
+   version of MDAnalysis (#5403, PR #5404).
  * `MDAnalysis.analysis.nucleicacids.WatsonCrickDist`, `MinorPairDist`,
    and `MajorPairDist` now match residue names against the full resname
    instead of only the first character, fixing incorrect behaviour with
@@ -60,6 +64,9 @@ Fixes
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Enhancements
+ * Added ASV benchmark for PDB trajectory reading (PR #5394)
+ * Read Linear Angle bonded interaction entries from GROMACS TPR files and 
+   add the angles to the topology (Issue #5361, PR #5372)
  * Enables parallelization for analysis.atomicdistances.AtomicDistances
    (Issue #4662, PR #4822)
  * DSSP uses ``capped_distance`` and ``calc_bonds`` for faster distance
