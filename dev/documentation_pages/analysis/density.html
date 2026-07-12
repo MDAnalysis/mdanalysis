@@ -395,7 +395,7 @@ in this case you need to ensure that the physical density is measured in
 <p class="rubric">Writing the density to a file</p>
 <p>A density can be <a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/formats.html">exported to different formats</a> with
 <a class="reference internal" href="#MDAnalysis.analysis.density.Density.export" title="MDAnalysis.analysis.density.Density.export"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Density.export()</span></code></a> (thanks to the fact that <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> is a
-subclass <a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/core.html#gridData.core.Grid" title="(in GridDataFormats v1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridData.core.Grid</span></code></a>, which provides the functionality).
+subclass <a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/core.html#gridData.core.Grid" title="(in GridDataFormats v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridData.core.Grid</span></code></a>, which provides the functionality).
 For example, to <a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/basic.html#writing-out-data">write a DX file</a>
 <code class="docutils literal notranslate"><span class="pre">water.dx</span></code> that can be read with VMD, PyMOL, or Chimera:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">D</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="s2">&quot;water.dx&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;double&quot;</span><span class="p">)</span>
@@ -617,17 +617,17 @@ support parallelizable execution.</p>
 <section id="density-object">
 <h2><span class="section-number">4.9.1.3. </span>Density object<a class="headerlink" href="#density-object" title="Link to this heading"></a></h2>
 <p>The main output of the density creation functions is a <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a>
-instance, which is derived from a <a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/core.html#gridData.core.Grid" title="(in GridDataFormats v1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridData.core.Grid</span></code></a>. A
+instance, which is derived from a <a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/core.html#gridData.core.Grid" title="(in GridDataFormats v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridData.core.Grid</span></code></a>. A
 <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> is essentially a 3D array with origin and lengths.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.density.Density">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.density.</span></span><span class="sig-name descname"><span class="pre">Density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/density.html#Density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.density.Density" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/core.html#gridData.core.Grid" title="(in GridDataFormats v1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Grid</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/core.html#gridData.core.Grid" title="(in GridDataFormats v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Grid</span></code></a></p>
 <p>Class representing a density on a regular cartesian grid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>grid</strong> (<em>array_like</em>) – histogram or density, typically a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p></li>
+<li><p><strong>grid</strong> (<em>array_like</em>) – histogram or density, typically a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p></li>
 <li><p><strong>edges</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a>) – list of arrays, the lower and upper bin edges along the axes</p></li>
 <li><p><strong>parameters</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – <p>dictionary of class parameters; saved with
 <a class="reference internal" href="#MDAnalysis.analysis.density.Density.save" title="MDAnalysis.analysis.density.Density.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Density.save()</span></code></a>. The following keys are meaningful to
@@ -672,7 +672,7 @@ stores it with <a class="reference internal" href="#MDAnalysis.analysis.density.
 <dt class="sig sig-object py" id="MDAnalysis.analysis.density.Density.edges">
 <span class="sig-name descname"><span class="pre">edges</span></span><a class="headerlink" href="#MDAnalysis.analysis.density.Density.edges" title="Link to this definition"></a></dt>
 <dd><p>The boundaries of each cell in <cite>grid</cite> along all axes (equivalent
-to what <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.histogramdd.html#numpy.histogramdd" title="(in NumPy v2.4)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.histogramdd()</span></code></a> returns).</p>
+to what <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.histogramdd.html#numpy.histogramdd" title="(in NumPy v2.5)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.histogramdd()</span></code></a> returns).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)">list</a> of 1d-arrays</p>
@@ -733,7 +733,7 @@ ensure that the DX file is written in a format suitable for <a class="reference 
 <p>If the input histogram consists of counts per cell then the
 <a class="reference internal" href="#MDAnalysis.analysis.density.Density.make_density" title="MDAnalysis.analysis.density.Density.make_density"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Density.make_density()</span></code></a> method converts the grid to a physical density. For
 a probability density, divide it by <code class="xref py py-meth docutils literal notranslate"><span class="pre">Density.grid.sum()</span></code> or use <code class="docutils literal notranslate"><span class="pre">density=True</span></code>
-right away in <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.histogramdd.html#numpy.histogramdd" title="(in NumPy v2.4)"><code class="xref py py-func docutils literal notranslate"><span class="pre">histogramdd()</span></code></a>.</p>
+right away in <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.histogramdd.html#numpy.histogramdd" title="(in NumPy v2.5)"><code class="xref py py-func docutils literal notranslate"><span class="pre">histogramdd()</span></code></a>.</p>
 <p>The user <em>should</em> set the <em>parameters</em> keyword (see docs for the
 constructor); in particular, if the data are already a density, one must
 set <code class="docutils literal notranslate"><span class="pre">isDensity=True</span></code> because there is no reliable way to detect if
@@ -742,7 +742,7 @@ read from a file and the user has not set <code class="docutils literal notransl
 that the data are in fact a density.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/core.html#gridData.core.Grid" title="(in GridDataFormats v1.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gridData.core.Grid</span></code></a></p>
+<p><a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/core.html#gridData.core.Grid" title="(in GridDataFormats v1.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gridData.core.Grid</span></code></a></p>
 </div>
 <p class="rubric">Examples</p>
 <p>Typical use:</p>
@@ -906,14 +906,14 @@ histogram and a length unit and use <a class="reference internal" href="#MDAnaly
 <dd><p>Returns an instance of the native object for a given format.</p>
 <p>Implemented formats:</p>
 <dl class="simple">
-<dt>DX</dt><dd><p><a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/formats/OpenDX.html#gridData.OpenDX.field" title="(in GridDataFormats v1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridData.OpenDX.field</span></code></a> (<strong>OpenDX</strong> format)</p>
+<dt>DX</dt><dd><p><a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/formats/OpenDX.html#gridData.OpenDX.field" title="(in GridDataFormats v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridData.OpenDX.field</span></code></a> (<strong>OpenDX</strong> format)</p>
 </dd>
 <dt>MRC</dt><dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">mrcfile.mrcinterpreter.MrcInterpreter</span></code> via
-<a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/formats/mrc.html#gridData.mrc.MRC" title="(in GridDataFormats v1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridData.mrc.MRC</span></code></a> (<strong>MRC/CCP4</strong> format)</p>
+<a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/formats/mrc.html#gridData.mrc.MRC" title="(in GridDataFormats v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridData.mrc.MRC</span></code></a> (<strong>MRC/CCP4</strong> format)</p>
 </dd>
 <dt>VDB</dt><dd><p><strong>OpenVDB</strong> format, e.g., <code class="xref py py-class docutils literal notranslate"><span class="pre">openvdb.FloatGrid</span></code> or, if available,
 <code class="xref py py-class docutils literal notranslate"><span class="pre">openvdb.DoubleGrid</span></code> via
-<a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/formats/OpenVDB.html#gridData.OpenVDB.OpenVDBField" title="(in GridDataFormats v1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridData.OpenVDB.OpenVDBField</span></code></a></p>
+<a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/formats/OpenVDB.html#gridData.OpenVDB.OpenVDBField" title="(in GridDataFormats v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridData.OpenVDB.OpenVDBField</span></code></a></p>
 </dd>
 </dl>
 <dl class="field-list simple">
@@ -951,14 +951,14 @@ although the <cite>file_format</cite> keyword takes precedence.</p>
 visualization.</p>
 <p>Implemented formats:</p>
 <dl class="simple">
-<dt>dx</dt><dd><p><a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/formats/OpenDX.html#module-gridData.OpenDX" title="(in GridDataFormats v1.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">gridData.OpenDX</span></code></a></p>
+<dt>dx</dt><dd><p><a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/formats/OpenDX.html#module-gridData.OpenDX" title="(in GridDataFormats v1.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">gridData.OpenDX</span></code></a></p>
 </dd>
-<dt>mrc</dt><dd><p><a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/formats/mrc.html#module-gridData.mrc" title="(in GridDataFormats v1.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">gridData.mrc</span></code></a> MRC/CCP4 format</p>
+<dt>mrc</dt><dd><p><a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/formats/mrc.html#module-gridData.mrc" title="(in GridDataFormats v1.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">gridData.mrc</span></code></a> MRC/CCP4 format</p>
 </dd>
 <dt>pickle</dt><dd><p>pickle (use <code class="xref py py-meth docutils literal notranslate"><span class="pre">Grid.load()</span></code> to restore); <code class="xref py py-meth docutils literal notranslate"><span class="pre">Grid.save()</span></code>
 is simpler than <code class="docutils literal notranslate"><span class="pre">export(format='python')</span></code>.</p>
 </dd>
-<dt>vdb</dt><dd><p><a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/formats/OpenVDB.html#module-gridData.OpenVDB" title="(in GridDataFormats v1.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">gridData.OpenVDB</span></code></a></p>
+<dt>vdb</dt><dd><p><a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/formats/OpenVDB.html#module-gridData.OpenVDB" title="(in GridDataFormats v1.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">gridData.OpenVDB</span></code></a></p>
 </dd>
 </dl>
 <dl class="field-list simple">
@@ -1022,7 +1022,7 @@ that the spline will generate values that would not normally
 appear in the data. For example, a density is non-negative but
 a cubic spline interpolation can generate negative values,
 especially at the boundary between 0 and high values.</p>
-<p>Internally, the function uses <code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.ndimage.map_coordinates()</span></code>
+<p>Internally, the function uses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.map_coordinates.html#scipy.ndimage.map_coordinates" title="(in SciPy v1.18.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.ndimage.map_coordinates()</span></code></a>
 with <code class="docutils literal notranslate"><span class="pre">mode=&quot;constant&quot;</span></code> whereby interpolated values outside
 the interpolated grid are determined by filling all values beyond
 the edge with the same constant value, defined by the
@@ -1042,7 +1042,7 @@ extruded volumes when interpolating beyond the grid.</p>
 <dd><p>Order of the B-spline interpolation of the data.</p>
 <p>3 = cubic; 4 &amp; 5 are also supported</p>
 <p>Only choose values that are acceptable to
-<code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.ndimage.spline_filter()</span></code>!</p>
+<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.spline_filter.html#scipy.ndimage.spline_filter" title="(in SciPy v1.18.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.ndimage.spline_filter()</span></code></a>!</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><a class="reference internal" href="#MDAnalysis.analysis.density.Density.interpolated" title="MDAnalysis.analysis.density.Density.interpolated"><code class="xref py py-obj docutils literal notranslate"><span class="pre">interpolated</span></code></a></p>
@@ -1062,7 +1062,7 @@ completely resets all values, based on the loaded data.</p>
 <li><p><strong>file_format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> or </em><em>None</em><em>, </em><em>optional</em>) – Set the file format (e.g., “DX” or “MRC”). If <code class="docutils literal notranslate"><span class="pre">None</span></code> then
 try to guess the format.</p></li>
 <li><p><strong>assume_volumetric</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – Optional keyword argument that is only taken into account by
-the <a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/formats/mrc.html#gridData.mrc.MRC" title="(in GridDataFormats v1.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridData.mrc.MRC</span></code></a> file parser.</p></li>
+the <a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/formats/mrc.html#gridData.mrc.MRC" title="(in GridDataFormats v1.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridData.mrc.MRC</span></code></a> file parser.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
