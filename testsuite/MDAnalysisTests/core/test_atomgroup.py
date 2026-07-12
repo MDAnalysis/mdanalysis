@@ -1362,7 +1362,9 @@ class TestPBCFlag(object):
             # relevant, so we get the signs to flip any anti-parallel vectors before
             # comparing the two results arrays
             signs = np.sign(np.einsum("ij,ij->i", result, ref[method_name]))
-            assert_almost_equal(result * signs[:, np.newaxis], ref[method_name], self.prec)
+            assert_almost_equal(
+                result * signs[:, np.newaxis], ref[method_name], self.prec
+            )
         else:
             assert_almost_equal(result, ref[method_name], self.prec)
 
