@@ -70,7 +70,10 @@ class KeyStyle(UnsrtStyle):
 register_plugin("pybtex.style.labels", "keylabel", KeyLabelStyle)
 register_plugin("pybtex.style.formatting", "MDA", KeyStyle)
 
-mathjax_path = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
+mathjax_path = (
+    "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js"
+    "?config=TeX-AMS-MML_HTMLorMML"
+)
 
 # for sitemap with https://github.com/jdillard/sphinx-sitemap
 # This sitemap is correct both for the development and release docs, which
@@ -176,9 +179,7 @@ html_theme_options = {
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-html_context = {
-    "versions_json_url": "https://docs.mdanalysis.org/versions.json"
-}
+html_context = {"versions_json_url": "https://docs.mdanalysis.org/versions.json"}
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".

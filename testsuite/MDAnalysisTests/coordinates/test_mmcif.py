@@ -23,9 +23,7 @@ from MDAnalysisTests.datafiles import MMCIF as MMCIF_FOLDER
 @pytest.mark.filterwarnings("ignore::UserWarning")
 def test_legacy_pdb_vs_mmcif(mmcif_filename):
     u_cif = mda.Universe(mmcif_filename)
-    u_pdb = mda.Universe(
-        Path(mmcif_filename).with_suffix("").with_suffix(".pdb.gz")
-    )
+    u_pdb = mda.Universe(Path(mmcif_filename).with_suffix("").with_suffix(".pdb.gz"))
     assert len(u_cif.residues) == len(u_pdb.residues)
     assert len(u_cif.atoms) == len(u_pdb.atoms)
 
@@ -100,16 +98,17 @@ def test_multimodel_warning_msg():
         UserWarning,
         match=r"File .+ has .+ models, but only the first one will be read",
     ):
-        mda.coordinates.MMCIF.MMCIFReader(
-            f"{MMCIF_FOLDER}/multimodel_warning.cif"
-        )
+        mda.coordinates.MMCIF.MMCIFReader(f"{MMCIF_FOLDER}/multimodel_warning.cif")
 
 
 @pytest.mark.skipif(not HAS_GEMMI, reason="gemmi not installed")
 def test_cryst1_record_placeholder():
     with pytest.warns(
         UserWarning,
-        match=r"CRYST1 record, this is usually a placeholder. Unit cell dimensions will be set to",
+        match=(
+            r"CRYST1 record, this is usually a placeholder. "
+            r"Unit cell dimensions will be set to"
+        ),
     ):
         assert (
             mda.coordinates.MMCIF.MMCIFReader(

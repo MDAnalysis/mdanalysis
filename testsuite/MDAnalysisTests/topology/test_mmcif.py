@@ -24,13 +24,9 @@ def test_legacy_pdb_vs_mmcif(basename):
     u_cif = mda.Universe(f"{basename}.cif.gz")
     u_pdb = mda.Universe(f"{basename}.pdb.gz")
     assert len(u_pdb.atoms) == len(u_cif.atoms)
-    assert len(u_pdb.select_atoms("segid *")) == len(
-        u_cif.select_atoms("segid *")
-    )
+    assert len(u_pdb.select_atoms("segid *")) == len(u_cif.select_atoms("segid *"))
 
-    assert len(u_pdb.select_atoms("protein")) == len(
-        u_cif.select_atoms("protein")
-    )
+    assert len(u_pdb.select_atoms("protein")) == len(u_cif.select_atoms("protein"))
 
     assert len(u_pdb.select_atoms("name CA and segid D")) == len(
         u_cif.select_atoms("name CA and segid D")
@@ -40,17 +36,13 @@ def test_legacy_pdb_vs_mmcif(basename):
             assert len(u_pdb.select_atoms(f"segid {segment}")) == len(
                 u_cif.select_atoms(f"segid {segment}")
             )
+            assert len(u_pdb.select_atoms(f"segid {segment} and resid {resid}")) == len(
+                u_cif.select_atoms(f"segid {segment} and resid {resid}")
+            )
             assert len(
-                u_pdb.select_atoms(f"segid {segment} and resid {resid}")
-            ) == len(u_cif.select_atoms(f"segid {segment} and resid {resid}"))
-            assert len(
-                u_pdb.select_atoms(
-                    f"segid {segment} and resid {resid} and name CA"
-                )
+                u_pdb.select_atoms(f"segid {segment} and resid {resid} and name CA")
             ) == len(
-                u_cif.select_atoms(
-                    f"segid {segment} and resid {resid} and name CA"
-                )
+                u_cif.select_atoms(f"segid {segment} and resid {resid} and name CA")
             )
 
 
@@ -88,8 +80,7 @@ def test_chains(mmcif_filename, n_chains):
 def test_sequence(mmcif_filename, sequence):
     u = mda.Universe(mmcif_filename)
     in_structure = [
-        str(res.resname)
-        for res in u.select_atoms("protein and chainid A").residues
+        str(res.resname) for res in u.select_atoms("protein and chainid A").residues
     ]
     assert in_structure == sequence, ":".join(in_structure)
 
@@ -104,7 +95,10 @@ def test_wrong_format():
 def test_multimodel_warning_msg():
     with pytest.warns(
         UserWarning,
-        match=r"MMCIF model .+ contains .+ different models, but only the first one will be used to assign the topology",
+        match=(
+            r"MMCIF model .+ contains .+ different models, but only the "
+            r"first one will be used to assign the topology"
+        ),
     ):
         mda.topology.MMCIFParser.MMCIFParser(
             f"{MMCIF_FOLDER}/multimodel_warning.cif"
@@ -124,9 +118,7 @@ def test_multimodel_warning_msg():
         (gzip.open(f"{MMCIF_FOLDER}/1BD2_short.cif.gz"), "CIF"),
         (
             util.NamedStream(
-                StringIO(
-                    util.anyopen(f"{MMCIF_FOLDER}/1BD2_short.cif.gz").read()
-                ),
+                StringIO(util.anyopen(f"{MMCIF_FOLDER}/1BD2_short.cif.gz").read()),
                 "some_name.cif",
             ),
             "CIF",
@@ -143,9 +135,7 @@ def test_multimodel_warning_msg():
         ),
         (
             util.NamedStream(
-                StringIO(
-                    util.anyopen(f"{MMCIF_FOLDER}/1BD2_short.pdb.gz").read()
-                ),
+                StringIO(util.anyopen(f"{MMCIF_FOLDER}/1BD2_short.pdb.gz").read()),
                 "some_name.pdb",
             ),
             "CIF",
