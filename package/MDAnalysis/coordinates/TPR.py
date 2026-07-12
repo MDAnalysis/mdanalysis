@@ -59,7 +59,7 @@ import MDAnalysis.topology.tpr.setting as S
 
 import logging
 
-logger = logging.getLogger("MDAnalysis.coordinates.TPR")
+logger = logging.getLogger(__name__)
 
 import numpy as np
 

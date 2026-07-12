@@ -93,7 +93,7 @@ from ..core.topologyattrs import (
 )
 
 # Set up a logger for the PDBParser
-logger = logging.getLogger("MDAnalysis.topology.PDBParser")
+logger = logging.getLogger(__name__)
 
 
 def float_or_default(val, default):

@@ -107,7 +107,7 @@ from .topologyattrs import (
 from .topologyobjects import TopologyObject
 from ..guesser.base import get_guesser
 
-logger = logging.getLogger("MDAnalysis.core.universe")
+logger = logging.getLogger(__name__)
 
 
 def _update_topology_by_ids(universe, atomwise_resids, atomwise_segids):

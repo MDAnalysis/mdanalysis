@@ -158,7 +158,7 @@ from .timestep import Timestep
 from ..exceptions import NoDataError
 
 
-logger = logging.getLogger("MDAnalysis.coordinates.PBD")
+logger = logging.getLogger(__name__)
 
 # Pairs of residue name / atom name in use to deduce PDB formatted atom names
 Pair = collections.namedtuple("Atom", "resname name")

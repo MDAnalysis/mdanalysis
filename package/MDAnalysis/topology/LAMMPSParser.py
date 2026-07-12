@@ -108,7 +108,7 @@ from ..core.topologyattrs import (
 from ..guesser.tables import SYMB2Z
 from ..guesser.tables import masses as mass_table
 
-logger = logging.getLogger("MDAnalysis.topology.LAMMPS")
+logger = logging.getLogger(__name__)
 
 
 # Sections will all start with one of these words

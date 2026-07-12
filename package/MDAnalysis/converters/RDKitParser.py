@@ -70,7 +70,7 @@ from ..core.topologyattrs import (
 )
 from ..topology.base import TopologyReaderBase, change_squash
 
-logger = logging.getLogger("MDAnalysis.converters.RDKitParser")
+logger = logging.getLogger(__name__)
 
 
 def _rdkit_atom_to_RS(atom):

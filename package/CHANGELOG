@@ -17,7 +17,7 @@ The rules for this file:
 ??/??/?? IAlibay, orbeckst, marinegor, tylerjereddy, ljwoods2, marinegor,
          spyke7, talagayev, tanii1125, BradyAJohnston, hejamu, jeremyleung521,
          harshitgajjela-droid, kunjsinha, aygarwal, jauy123, Dreamstick9,
-         ollyfutur, Amarendra22, charity-g, ParthUppal523
+         ollyfutur, Amarendra22, charity-g, ParthUppal523, Jatin-Khiyani
 
  * 2.11.0
 
@@ -64,6 +64,7 @@ Fixes
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Enhancements
+ * Standardized logging.getLogger() calls (Issue #5369, PR #5376)
  * Added ASV benchmark for PDB trajectory reading (PR #5394)
  * Read Linear Angle bonded interaction entries from GROMACS TPR files and 
    add the angles to the topology (Issue #5361, PR #5372)

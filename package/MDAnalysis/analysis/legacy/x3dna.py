@@ -135,7 +135,7 @@ import numpy as np
 from MDAnalysis import ApplicationError
 from MDAnalysis.lib.util import asiterable, deprecate, realpath, which
 
-logger = logging.getLogger("MDAnalysis.analysis.x3dna")
+logger = logging.getLogger(__name__)
 
 
 @deprecate(

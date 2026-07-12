@@ -278,7 +278,7 @@ from .base import AnalysisBase, ProgressBar
 from ..core import groups
 import collections
 
-logger = logging.getLogger("MDAnalysis.analysis.msd")
+logger = logging.getLogger(__name__)
 
 due.cite(
     Doi("10.21105/joss.00877"),
