@@ -356,6 +356,7 @@ class StaticFetcher(_BaseFetcher):
             if file_hash is None
         ]
         self.write_registry(db_path, new_files, mode="a")
+
     def check_registry(self, db_path):
         """
         Return cache files that are missing from the registry.
@@ -451,7 +452,7 @@ class StaticFetcher(_BaseFetcher):
             for file in files:
                 digest = pooch.file_hash(file, alg=self.hash)
                 f.write(f"{file.name} {self.hash}:{digest}\n")
-                
+
     ### Arugment Validation Methods
     def _check_cache_path_input(self, cache_path):
         if cache_path is None:
