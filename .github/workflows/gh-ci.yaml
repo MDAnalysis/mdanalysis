@@ -3,11 +3,9 @@ on:
   push:
     branches:
       - develop
-      - fetcher_gsoc
   pull_request:
     branches:
       - develop
-      - fetcher_gsoc
   workflow_dispatch:
 
 concurrency:
@@ -23,6 +21,7 @@ defaults:
 
 jobs:
   main_tests:
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
     strategy:
@@ -155,6 +154,7 @@ jobs:
 
 
   build_docs:
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
