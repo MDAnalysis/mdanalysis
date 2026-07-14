@@ -325,19 +325,37 @@ class StaticFetcher(_BaseFetcher):
 
         return paths[0] if len(paths) == 1 else paths
 
-    # Reads pooch registry file format
-    # https://www.fatiando.org/pooch/latest/registry-files.html#registry-file-format
-
     def fix_registry(self, db_path, file_dict):
-        """Append newly downloaded files to an existing registry."""
+        """
+        Append newly downloaded files to an existing Pooch registry.
 
+        Parameters
+        ----------
+        db_path : str or path-like
+            Path to the registry file to update.
+        file_dict : dict
+            Dictionary mapping filenames to hash values. Files with a hash value of
+            ``None`` are treated as newly downloaded files and appended to the
+            registry.
+
+        Returns
+        -------
+        None
+            This method updates the registry file in place and does not return a
+            value.
+
+        Notes
+        -----
+        For each entry in ``file_dict`` with a value of ``None``, this method builds
+        the corresponding file path relative to ``self.cache_path`` and appends its
+        hash to the registry using ``self.write_registry``.
+        """
         new_files = [
             self.cache_path / file_name
             for file_name, file_hash in file_dict.items()
             if file_hash is None
         ]
         self.write_registry(db_path, new_files, mode="a")
-
     def check_registry(self, db_path):
         """
         Return cache files that are missing from the registry.
