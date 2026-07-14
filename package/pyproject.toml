@@ -130,16 +130,11 @@ line-length = 79
 target-version = ['py311', 'py312', 'py313']
 extend-exclude = '''
 (
-__pycache__ 
-| MDAnalysis/coordinates/DCD\.py
+__pycache__
 | MDAnalysis/coordinates/TRJ\.py
 | MDAnalysis/coordinates/__init__\.py
-| MDAnalysis/analysis/hydrogenbonds/hbond_analysis\.py
-| MDAnalysis/coordinates/DLPoly\.py
-| MDAnalysis/coordinates/TRZ\.py
 | MDAnalysis/coordinates/__init__\.py
 | MDAnalysis/coordinates/base\.py
-| MDAnalysis/topology/tpr/utils\.py
 | MDAnalysis/coordinates/MMCIF\.py
 | MDAnalysis/topology/MMCIFParser\.py
 | MDAnalysis/topology/PDBParser\.py
