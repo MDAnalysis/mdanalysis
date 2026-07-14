@@ -164,3 +164,13 @@ def from_PDB(
         base_url="https://files.wwpdb.org/download/",
         progressbar=progressbar,
     )
+
+
+#https://alphafold.ebi.ac.uk/#/public-api/get_uniprot_summary_api_uniprot_summary__qualifier__json_get
+ALPHA_LINK = "https://alphafold.ebi.ac.uk/api/prediction/"
+
+#wget https://alphafold.ebi.ac.uk/api/prediction/Q9I1F6
+#[{"toolUsed":"AlphaFold Monomer v2.0 pipeline","providerId":"GDM","entityType":"protein","isUniProt":true,"modelEntityId":"AF-Q9I1F6-F1","modelCreatedDate":"2025-08-01T00:00:00Z","sequenceVersionDate":"2001-03-01T00:00:00Z","globalMetricValue":91.81,"fractionPlddtVeryLow":0.029,"fractionPlddtLow":0.041,"fractionPlddtConfident":0.111,"fractionPlddtVeryHigh":0.819,"latestVersion":6,"allVersions":[2,3,4,5,6],"sequence":"MSITKNDKNTRTTGRPTLNEVARRAGVSPITASRALRGVASVAEELAQKVRDAARELGYVANPAARALASAQSHSVAVLVPSLANLLFIETLEAIHAVLRPQGLEVLIGNFHYSRNEEEDLIRNYLAYQPRGLLLTGFERTESARRMIEASGIPCVYMMDLDSGSGLNCVGFSQLRAGEAAAEHLLARGRRRLAYIGAQLDQRTLLRGEGFRRALQKAGCYDPGLEILTPRPSSVALGGELFVQLLASQPQVDGVFFCNDDLAQGALLEALRRGVKVPEQIAVLGFNDLPGSDCTVPRLSSIRTPREAIGRRAAEQLLALIAGKEVRDSALDMGFELMAREST","sequenceStart":1,"sequenceEnd":343,"sequenceChecksum":"44128bc565504ce2d9e47edbf6104302","isUniProtReviewed":true,"gene":"gntR","uniprotAccession":"Q9I1F6","uniprotId":"GNTR_PSEAE","uniprotDescription":"HTH-type transcriptional regulator GntR","taxId":208964,"organismScientificName":"Pseudomonas aeruginosa (strain ATCC 15692 / DSM 22644 / CIP 104116 / JCM 14847 / LMG 12228 / 1C / PRS 101 / PAO1)","isUniProtReferenceProteome":true,"chainId":"A","bcifUrl":"https://alphafold.ebi.ac.uk/files/AF-Q9I1F6-F1-model_v6.bcif","cifUrl":"https://alphafold.ebi.ac.uk/files/AF-Q9I1F6-F1-model_v6.cif","pdbUrl":"https://alphafold.ebi.ac.uk/files/AF-Q9I1F6-F1-model_v6.pdb","paeImageUrl":"https://alphafold.ebi.ac.uk/files/AF-Q9I1F6-F1-predicted_aligned_error_v6.png","msaUrl":"https://alphafold.ebi.ac.uk/files/msa/AF-Q9I1F6-F1-msa_v6.a3m","plddtDocUrl":"https://alphafold.ebi.ac.uk/files/AF-Q9I1F6-F1-confidence_v6.json","paeDocUrl":"https://alphafold.ebi.ac.uk/files/AF-Q9I1F6-F1-predicted_aligned_error_v6.json","isComplex":false,"entryId":"AF-Q9I1F6-F1","uniprotSequence":"MSITKNDKNTRTTGRPTLNEVARRAGVSPITASRALRGVASVAEELAQKVRDAARELGYVANPAARALASAQSHSVAVLVPSLANLLFIETLEAIHAVLRPQGLEVLIGNFHYSRNEEEDLIRNYLAYQPRGLLLTGFERTESARRMIEASGIPCVYMMDLDSGSGLNCVGFSQLRAGEAAAEHLLARGRRRLAYIGAQLDQRTLLRGEGFRRALQKAGCYDPGLEILTPRPSSVALGGELFVQLLASQPQVDGVFFCNDDLAQGALLEALRRGVKVPEQIAVLGFNDLPGSDCTVPRLSSIRTPREAIGRRAAEQLLALIAGKEVRDSALDMGFELMAREST","uniprotStart":1,"uniprotEnd":343,"isReferenceProteome":true,"isReviewed":true}]
+#wget https://alphafold.ebi.ac.uk/files/AF-Q9I1F6-F1-model_v6.pdb
+
+
