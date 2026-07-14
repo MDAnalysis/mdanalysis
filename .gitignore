@@ -1,3 +1,8 @@
+# for rn
+package/doc/sphinx/build_docs.sh
+testsuite/MDAnalysisTests/fetch/run_tests.sh
+
+
 # Ignore python bytecoded files
 *.py[cod]
 *.[oa]
