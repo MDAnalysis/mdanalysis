@@ -273,7 +273,9 @@ class StaticFetcher(_BaseFetcher):
 
         if MISSING_FILES and not APPEND_DATABASE:
             raise ValueError(
-                f"There are unknown files in the registry! The missing files are {missing_files_list}. To fix this, please set append_db=True to append the database"
+                "There are unknown files in the registry! The missing files are"
+                + f" {missing_files_list}. To fix this, please set append_db=True"
+                + " to append the database"
             )
 
         # Code to process non-registry files
@@ -283,7 +285,7 @@ class StaticFetcher(_BaseFetcher):
             if file not in registry_dictionary:
                 registry_dictionary[file] = None
 
-        ## Pooch setup
+        # Pooch setup
         main_downloader = pooch.create(
             path=self.cache_path,
             base_url=base_url,
@@ -306,7 +308,8 @@ class StaticFetcher(_BaseFetcher):
                 fetch_downloader = pooch.DOIDownloader(**download_kwargs)
             case _:
                 raise ValueError(
-                    f"Invalid downloader '{downloader}'. Valid options are 'HTTP', 'FTP', 'SFTP', 'DOI'."
+                    f"Invalid downloader '{downloader}'. Valid options "
+                    + "are 'HTTP', 'FTP', 'SFTP', 'DOI'."
                 )
 
         paths = [
@@ -457,7 +460,7 @@ class StaticFetcher(_BaseFetcher):
                 digest = pooch.file_hash(file, alg=self.hash)
                 f.write(f"{file.name} {self.hash}:{digest}\n")
 
-    ### Arugment Validation Methods
+    # Argument validation methods
     def _check_cache_path_input(self, cache_path):
         if cache_path is None:
             path = Path(pooch.os_cache(DEFAULT_CACHE_NAME_DOWNLOADER))
@@ -472,7 +475,8 @@ class StaticFetcher(_BaseFetcher):
             return hash
         else:
             raise ValueError(
-                f'Invalid hash "{hash}". Valid hashes algorithms are {hashlib.algorithms_available}.'
+                f'Invalid hash "{hash}". Valid hashes algorithms'
+                + f" are {hashlib.algorithms_available}."
             )
 
 
