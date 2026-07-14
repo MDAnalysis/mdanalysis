@@ -320,7 +320,7 @@ class StaticFetcher(_BaseFetcher):
         if CREATE_DATABASE:
             self.write_registry(self.db_path, paths)
 
-        if APPEND_DATABASE:    
+        if APPEND_DATABASE and LOAD_FROM_CACHE:
             self.fix_registry(self.db_path, registry_dictionary)
 
         return paths[0] if len(paths) == 1 else paths
@@ -328,16 +328,15 @@ class StaticFetcher(_BaseFetcher):
     # Reads pooch registry file format
     # https://www.fatiando.org/pooch/latest/registry-files.html#registry-file-format
 
-    def fix_registry(self, db_path, file_dict, ignore_files=[]):
+    def fix_registry(self, db_path, file_dict):
+        """Append newly downloaded files to an existing registry."""
 
-        none_keys = [k for k, v in file_dict.items() if v is None]
-
-        with open(db_path, "a") as f:
-            for no_hash_file in none_keys:
-                file = self.cache_path / no_hash_file
-                digest = pooch.file_hash(file, alg=self.hash)
-
-                f.write(f"{file.name} {self.hash}:{digest}\n")
+        new_files = [
+            self.cache_path / file_name
+            for file_name, file_hash in file_dict.items()
+            if file_hash is None
+        ]
+        self.write_registry(db_path, new_files, mode="a")
 
 
 
