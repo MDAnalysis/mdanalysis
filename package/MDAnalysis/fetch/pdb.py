@@ -166,6 +166,8 @@ def from_PDB(
     )
 
 
+def from_alphafold():
+    pass
 #https://alphafold.ebi.ac.uk/#/public-api/get_uniprot_summary_api_uniprot_summary__qualifier__json_get
 ALPHA_LINK = "https://alphafold.ebi.ac.uk/api/prediction/"
 
