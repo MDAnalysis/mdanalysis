@@ -25,9 +25,8 @@
 Fetchers --- :mod:`MDAnalysis.fetch.fetchers`
 =============================================
 
-This module contains the Fetchers classes that can be used to retrieve or fetch files
-from remote servers. These classes uses the third party library :mod:`pooch` as
-a dependency.
+This module contains fetcher classes that retrieve files from remote servers.
+These classes use the third-party library :mod:`pooch` as a dependency.
 
 Classes
 -------
@@ -39,8 +38,8 @@ Classes
 Variables
 ---------
 
-These are global submodule level variables that affect the runtime behavior across
-all Fetcher Classes. Changing these values will affect all Fetchers!
+These module-level variables affect runtime behavior across all fetcher classes.
+Changing these values affects all fetchers.
 
 
 .. autodata:: DEFAULT_CACHE_NAME_DOWNLOADER
@@ -65,7 +64,7 @@ else:
 #: Name of the :mod:`pooch` cache directory
 #: ``pooch.os_cache(DEFAULT_CACHE_NAME_DOWNLOADER)``;
 #:
-#: see :func:`pooch.os_cache` for further details.'
+#: See :func:`pooch.os_cache` for further details.
 #:
 #: .. versionadded:: 2.11.0
 DEFAULT_CACHE_NAME_DOWNLOADER = "MDAnalysis_pdbs"
@@ -82,10 +81,10 @@ DEFAULT_RETRIES = 2
 
 
 class _BaseFetcher(ABC):
-    """Blueprint Class for all Fetchers
+    """Base class for all fetchers.
 
-    This shouldn't be initalized directly but should be inherited by other
-    Fetchers classes.
+    This class should not be initialized directly; fetcher implementations
+    should inherit from it.
 
     """
 
@@ -96,6 +95,7 @@ class _BaseFetcher(ABC):
 
     @abstractmethod
     def fetch(self, base_url, verbose, timeout, retries):
+        """Retrieve files from a remote server."""
         # Starts file retrieval workflow
         # All fetchers should call _check_pooch()
         #
@@ -105,13 +105,14 @@ class _BaseFetcher(ABC):
     def _check_pooch(
         self,
     ):
+        """Raise an error if :mod:`pooch` is not installed."""
         if not HAS_POOCH:
             raise ModuleNotFoundError(
                 "pooch is needed as a dependency for Fetchers"
             )
 
     def _validate_fetch_args(self, args):
-        """This initalized the fetcher library variables"""
+        """Add default timeout and retry values to fetch arguments."""
 
         args.setdefault("timeout", DEFAULT_TIMEOUT)
         args.setdefault("retries", DEFAULT_RETRIES)
@@ -129,10 +130,9 @@ class StaticFetcher(_BaseFetcher):
         Path to the cache directory. If set to ``None``, the default cache
         directory will be used as specified by
         :data:`DEFAULT_CACHE_NAME_DOWNLOADER`.
+        If the directory does not exist, it will be created.
 
-        If the directory does not exist, it will attempted to be created.
-
-    hash : str
+    hash : str, optional
         Hash algorithm to use for verifying the integrity of downloaded files.
         The default is ``sha256``. Valid options are any hash algorithm
         available in the :mod:`hashlib` module.
@@ -147,7 +147,7 @@ class StaticFetcher(_BaseFetcher):
         Path to the database file used for caching. Created after calling
         fetch().
 
-    hash : str or ``None``
+    hash : str
         Hash algorithm used for verifying the integrity of downloaded files.
 
     Notes
@@ -187,22 +187,26 @@ class StaticFetcher(_BaseFetcher):
             URL pointing to the directory containing the files to be downloaded.
         file_name : str or sequence of str
             Name of the file or files to download.
-            Note that the request is phrased as {base_url}/{file_name}.
+            The requested URL has the form ``{base_url}/{file_name}``.
         verbose : bool, optional
-            If True, shows fetcher progress.
-            Default is False.
-        db_name : str, optional
+            If ``True``, show download progress. The default is ``False``.
+        db_name : str or None, optional
             Name of the local hash database file used to verify cached downloads.
-            Default is "hashes.txt". If None, no registry database is read or written.
+            The default is ``"hashes.txt"``. If ``None``, no registry database
+            is read or written.
+        append_db : bool, optional
+            If ``True``, add downloaded files that are missing from an existing
+            registry to that registry. If ``False``, missing registry entries
+            raise a :class:`ValueError`. The default is ``False``.
         timeout : float, optional
-            Time in seconds to wait for a response from the server before timing out.
-            Default is :data:`DEFAULT_TIMEOUT`.
+            Time in seconds to wait for a response from the server before timing
+            out. The default is :data:`DEFAULT_TIMEOUT`.
         retries : int, optional
-            Number of attempts to retry a download if it fails. Default is :data:`DEFAULT_RETRIES`.
+            Number of times to retry a failed download. The default is
+            :data:`DEFAULT_RETRIES`.
         downloader : str, optional
-            Downloader backend to use. If a string is provided, it must identify
-            a supported downloader such as "HTTP".
-            Default is "HTTP".
+            Downloader backend to use. Supported values are ``"HTTP"``,
+            ``"FTP"``, ``"SFTP"``, and ``"DOI"``. The default is ``"HTTP"``.
 
         Returns
         -------
@@ -210,8 +214,8 @@ class StaticFetcher(_BaseFetcher):
             The downloaded file path for a single file, or a list of paths for
             multiple files.
 
-        Example
-        -------
+        Examples
+        --------
 
         A script to download a protein from the RCSB Protein Data Bank.
 
@@ -347,8 +351,8 @@ class StaticFetcher(_BaseFetcher):
         Notes
         -----
         For each entry in ``file_dict`` with a value of ``None``, this method builds
-        the corresponding file path relative to ``self.cache_path`` and appends its
-        hash to the registry using ``self.write_registry``.
+        the corresponding file path relative to :attr:`cache_path` and appends its
+        hash to the registry using :meth:`write_registry`.
         """
         new_files = [
             self.cache_path / file_name
@@ -375,7 +379,7 @@ class StaticFetcher(_BaseFetcher):
         Notes
         -----
         This method compares filenames from the registry against files found
-        recursively under ``self.cache_path``. A cache file is considered missing
+        recursively under :attr:`cache_path`. A cache file is considered missing
         from the registry when ``path.name`` is not a key in the registry
         dictionary.
         """
