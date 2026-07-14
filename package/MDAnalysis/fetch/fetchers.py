@@ -338,25 +338,28 @@ class StaticFetcher(_BaseFetcher):
         ]
         self.write_registry(db_path, new_files, mode="a")
 
-
-
-
     def check_registry(self, db_path):
         """
-        Return cache files that are missing from the registry database.
+        Return cache files that are missing from the registry.
 
-        Reads the registry at ``db_path`` and compares its recorded filenames
-        against the files currently present in ``self.cache_path``. The registry
-        database file itself is ignored.
+        Parameters
+        ----------
+        db_path : str or path-like
+            Path to the registry file to read.
 
-        Args:
-            db_path: Path to the registry database to read.
+        Returns
+        -------
+        missing_files : list of pathlib.Path
+            Cache file paths whose filenames are not present in the registry.
+            The registry database file itself is excluded from the result.
 
-        Returns:
-            list[pathlib.Path]: A list of cache file paths whose filenames are not
-            present in the registry.
+        Notes
+        -----
+        This method compares filenames from the registry against files found
+        recursively under ``self.cache_path``. A cache file is considered missing
+        from the registry when ``path.name`` is not a key in the registry
+        dictionary.
         """
-
         registry_dictionary = self.read_registry(db_path)
         database_files = set(registry_dictionary.keys())
 
@@ -372,19 +375,26 @@ class StaticFetcher(_BaseFetcher):
 
     def read_registry(self, db_path):
         """
-        Read a registry file into a dictionary of filenames and hashes.
+        Read a Pooch registry file into a dictionary.
 
-        Each line in the registry file is expected to contain a filename and its
-        corresponding hash value, separated by whitespace.
+        Parameters
+        ----------
+        db_path : str or path-like
+            Path to the registry file to read.
 
-        Args:
-            db_path: Path to the registry file to read.
+        Returns
+        -------
+        hash_dict : dict
+            Dictionary mapping each filename in the registry to its stored hash
+            value. Hash values are expected to include the hash algorithm prefix,
+            for example ``"sha256:<digest>"``.
 
-        Returns:
-            dict[str, str]: A dictionary where each key is a filename and each value
-            is the file's stored hash.
+        Notes
+        -----
+        Each line in the registry file is expected to have the format::
+
+            <filename> <hash_algorithm>:<digest>
         """
-
         hash_dict = {}
 
         with open(db_path, mode="r") as f:
@@ -395,13 +405,35 @@ class StaticFetcher(_BaseFetcher):
         return hash_dict
 
     def write_registry(self, db_path, files, mode="w"):
-        """Method to exclusively write pooch registry"""
+        """
+        Write a Pooch registry file with hashes for the given files.
 
+        Parameters
+        ----------
+        db_path : str or path-like
+            Path to the registry file to write.
+        files : iterable of path-like
+            Files to include in the registry. Each file must provide a ``name``
+            attribute and be readable by ``pooch.file_hash``.
+        mode : str, optional
+            File opening mode used when writing the registry. Default is ``"w"``.
+
+        Returns
+        -------
+        None
+            This method writes the registry to disk and does not return a value.
+
+        Notes
+        -----
+        Each registry line is written in the format::
+
+            <filename> <hash_algorithm>:<digest>
+        """
         with open(db_path, mode=mode) as f:
             for file in files:
                 digest = pooch.file_hash(file, alg=self.hash)
                 f.write(f"{file.name} {self.hash}:{digest}\n")
-
+                
     ### Arugment Validation Methods
     def _check_cache_path_input(self, cache_path):
         if cache_path is None:
