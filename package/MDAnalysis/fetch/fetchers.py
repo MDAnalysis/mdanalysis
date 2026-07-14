@@ -399,11 +399,8 @@ class StaticFetcher(_BaseFetcher):
 
         with open(db_path, mode=mode) as f:
             for file in files:
-                if self.hash is None:
-                    f.write(f"{file.name} None\n")
-                else:
-                    digest = pooch.file_hash(file, alg=self.hash)
-                    f.write(f"{file.name} {self.hash}:{digest}\n")
+                digest = pooch.file_hash(file, alg=self.hash)
+                f.write(f"{file.name} {self.hash}:{digest}\n")
 
     ### Arugment Validation Methods
     def _check_cache_path_input(self, cache_path):
@@ -418,8 +415,6 @@ class StaticFetcher(_BaseFetcher):
     def _check_hash_input(self, hash):
         if hash in hashlib.algorithms_available:
             return hash
-        elif hash is None:
-            return None
         else:
             raise ValueError(
                 f'Invalid hash "{hash}". Valid hashes algorithms are {hashlib.algorithms_available}.'
