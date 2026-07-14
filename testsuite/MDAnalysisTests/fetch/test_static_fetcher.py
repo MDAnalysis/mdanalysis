@@ -21,7 +21,6 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-import os
 import re
 from pathlib import Path
 from shutil import rmtree
@@ -62,16 +61,6 @@ def test_pooch_installation():
 
 @pytest.mark.skipif(not HAS_POOCH, reason="Pooch is not installed.")
 class TestExpectedErrors:
-
-    def test_missing_base_url(self, tmp_path):
-        with temporary_http_server() as (host, port, temp_folder):
-            downloader = StaticFetcher(cache_path=tmp_path)
-
-            with pytest.raises(
-                ValueError,
-                match=re.escape("base_url is not defined in fetch()"),
-            ):
-                downloader.fetch(file_name="TEST_FILE1.txt")
 
     def test_invalid_downloader(self, tmp_path):
         with temporary_http_server() as (host, port, temp_folder):
@@ -148,6 +137,33 @@ class TestExpectedBehaviors:
             assert (
                 downloader.db_path
             ).read_text() == "TEST_FILE1.txt sha256:c4bdb6ba200a917b8384ffeffa4999bf05bd4e479f6580d795aca509c9122dc4\n"
+
+    def test_append_database(self, tmp_path):
+        with temporary_http_server() as (host, port, temp_folder):
+            base_url = f"http://{host}:{port}/"
+            downloader = StaticFetcher(cache_path=tmp_path)
+            path = downloader.fetch(
+                base_url=base_url,
+                file_name="TEST_FILE1.txt",
+                db_name=REGISTRY_NAME,
+            )
+
+            path = downloader.fetch(
+                base_url=base_url,
+                file_name="TEST_FILE2.txt",
+                db_name=REGISTRY_NAME,
+                append_db=True
+            )
+
+        assert downloader.db_path.read_text() == (
+                "TEST_FILE1.txt sha256:c4bdb6ba200a917b8384ffeffa4999bf05bd4e479f6580d795aca509c9122dc4\n"
+                "TEST_FILE2.txt sha256:0ec192c0f90d1332f2abca4398596d3978434ecbae6abea8ffd989412b592458\n"
+            )
+
+
+            
+
+
 
     def test_different_hashes(self, tmp_path):
         with temporary_http_server() as (host, port, temp_folder):

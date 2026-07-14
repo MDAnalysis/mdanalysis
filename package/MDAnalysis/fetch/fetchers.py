@@ -111,13 +111,8 @@ class _BaseFetcher(ABC):
             )
 
     def _validate_fetch_args(self, args):
-        """Set default values for @abstractmethod fetch() method if
-        not provided by user"""
+        """This initalized the fetcher library variables"""
 
-        if "base_url" not in args:
-            raise ValueError("base_url is not defined in fetch()")
-
-        args.setdefault("progressbar", False)
         args.setdefault("timeout", DEFAULT_TIMEOUT)
         args.setdefault("retries", DEFAULT_RETRIES)
 
@@ -135,14 +130,13 @@ class StaticFetcher(_BaseFetcher):
         directory will be used as specified by
         :data:`DEFAULT_CACHE_NAME_DOWNLOADER`.
 
-        If the directory does not exist, it will attempt to be created.
+        If the directory does not exist, it will attempted to be created.
 
-    hash : str, optional
+    hash : str
         Hash algorithm to use for verifying the integrity of downloaded files.
         The default is ``sha256``. Valid options are any hash algorithm
         available in the :mod:`hashlib` module.
 
-        If set to ``None``, no hash verification will be performed.
 
     Attributes
     ----------
@@ -174,9 +168,11 @@ class StaticFetcher(_BaseFetcher):
 
     def fetch(
         self,
+        base_url,
         file_name,
         verbose=False,
         db_name="hashes.txt",
+        append_db=False,
         downloader="HTTP",
         **kwargs,
     ):
@@ -203,7 +199,7 @@ class StaticFetcher(_BaseFetcher):
             Default is :data:`DEFAULT_TIMEOUT`.
         retries : int, optional
             Number of attempts to retry a download if it fails. Default is :data:`DEFAULT_RETRIES`.
-        downloader : str or callable, optional
+        downloader : str, optional
             Downloader backend to use. If a string is provided, it must identify
             a supported downloader such as "HTTP".
             Default is "HTTP".
@@ -236,12 +232,12 @@ class StaticFetcher(_BaseFetcher):
                 file_name=["1AKE.cif", "4AKE.cif"],
                 base_url="https://files.wwpdb.org/download/",
             )
-        
+
         Notes
         -----
         The download directory can be overridden by setting the environment
         variable ``MDANALYSIS_FETCHER_DATA`` to a valid path. This class uses
-        :mod:`pooch` as a backend for downloading and caching files.The
+        :mod:`pooch` as a backend for downloading and caching files. The
         cache database is created on demand when ``db_name`` does not
         exist.
 
@@ -249,9 +245,12 @@ class StaticFetcher(_BaseFetcher):
         # Keywords arguments are reserved for common _BaseFetcher.fetch() arguements.
         kwargs = self._validate_fetch_args(kwargs)
 
-        registry_dictionary = {}
         LOAD_FROM_CACHE = False
         CREATE_DATABASE = False
+        MISSING_FILES = False
+        APPEND_DATABASE = append_db
+
+        registry_dictionary = {}
 
         if db_name is not None:
             self.db_path = self.cache_path / Path(db_name)
@@ -262,42 +261,34 @@ class StaticFetcher(_BaseFetcher):
                 CREATE_DATABASE = True
 
         if LOAD_FROM_CACHE:
-            # Reads pooch registry file format
-            # https://www.fatiando.org/pooch/latest/registry-files.html#registry-file-format
-            with open(self.db_path, mode="r") as f:
-                for line in f:
-                    key, value = line.strip().split()
-                    registry_dictionary[key] = value
+            registry_dictionary = self.read_registry(self.db_path)
+            missing_files_list = self.check_registry(self.db_path)
 
-            # Adds files not in cache
-            if isinstance(file_name, str):
-                _file_name = (file_name,)
-            else:
-                _file_name = file_name
+            if len(missing_files_list) != 0:
+                MISSING_FILES = True
 
-            for file in _file_name:
-                if file not in registry_dictionary:
-                    registry_dictionary[file] = None
+        if MISSING_FILES and not APPEND_DATABASE:
+            raise ValueError(
+                f"There are unknown files in the registry! The missing files are {missing_files_list}. To fix this, please set append_db=True to append the database"
+            )
 
-        else:  # No Database (just download)
-            # This block of code allows file_name to be a tuple instead of a string
-            if isinstance(file_name, str):
-                _file_name = (file_name,)
-            else:
-                _file_name = file_name
+        # Code to process non-registry files
+        # One-liner that forces strings into tuple
+        no_db_files = (file_name,) if isinstance(file_name, str) else file_name
+        for file in no_db_files:
+            if file not in registry_dictionary:
+                registry_dictionary[file] = None
 
-            registry_dictionary = {name: None for name in _file_name}
-
+        ## Pooch setup
         main_downloader = pooch.create(
             path=self.cache_path,
-            base_url=kwargs["base_url"],
+            base_url=base_url,
             registry=registry_dictionary,
             retry_if_failed=kwargs["retries"],
             env="MDANALYSIS_FETCHER_DATA",
         )
 
         download_kwargs = kwargs.copy()
-        download_kwargs.pop("base_url")
         download_kwargs.pop("retries")
 
         match downloader:
@@ -324,23 +315,98 @@ class StaticFetcher(_BaseFetcher):
             )
             for file_name in registry_dictionary.keys()
         ]
+        ##
 
         if CREATE_DATABASE:
-            hashes = (
-                (fname.name, pooch.file_hash(fname, alg=self.hash))
-                for fname in self.cache_path.iterdir()
-                if fname.is_file()
-            )
+            self.write_registry(self.db_path, paths)
 
-            with open(self.db_path, mode="x") as f:
-                for fname, hash in hashes:
-                    f.write(f"{fname} {self.hash}:{hash}\n")
+        if APPEND_DATABASE:    
+            self.fix_registry(self.db_path, registry_dictionary)
 
-        if len(paths) == 1:
-            return paths[0]
-        else:
-            return paths
+        return paths[0] if len(paths) == 1 else paths
 
+    # Reads pooch registry file format
+    # https://www.fatiando.org/pooch/latest/registry-files.html#registry-file-format
+
+    def fix_registry(self, db_path, file_dict, ignore_files=[]):
+
+        none_keys = [k for k, v in file_dict.items() if v is None]
+
+        with open(db_path, "a") as f:
+            for no_hash_file in none_keys:
+                file = self.cache_path / no_hash_file
+                digest = pooch.file_hash(file, alg=self.hash)
+
+                f.write(f"{file.name} {self.hash}:{digest}\n")
+
+
+
+
+    def check_registry(self, db_path):
+        """
+        Return cache files that are missing from the registry database.
+
+        Reads the registry at ``db_path`` and compares its recorded filenames
+        against the files currently present in ``self.cache_path``. The registry
+        database file itself is ignored.
+
+        Args:
+            db_path: Path to the registry database to read.
+
+        Returns:
+            list[pathlib.Path]: A list of cache file paths whose filenames are not
+            present in the registry.
+        """
+
+        registry_dictionary = self.read_registry(db_path)
+        database_files = set(registry_dictionary.keys())
+
+        cache_files = (
+            path
+            for path in self.cache_path.rglob("*")
+            if path != self.db_path and path.is_file()
+        )
+
+        return [
+            path for path in cache_files if path.name not in database_files
+        ]
+
+    def read_registry(self, db_path):
+        """
+        Read a registry file into a dictionary of filenames and hashes.
+
+        Each line in the registry file is expected to contain a filename and its
+        corresponding hash value, separated by whitespace.
+
+        Args:
+            db_path: Path to the registry file to read.
+
+        Returns:
+            dict[str, str]: A dictionary where each key is a filename and each value
+            is the file's stored hash.
+        """
+
+        hash_dict = {}
+
+        with open(db_path, mode="r") as f:
+            for line in f:
+                key, value = line.strip().split()
+                hash_dict[key] = value
+
+        return hash_dict
+
+    def write_registry(self, db_path, files, mode="w"):
+        """Method to exclusively write pooch registry"""
+
+        with open(db_path, mode=mode) as f:
+            for file in files:
+                if self.hash is None:
+                    f.write(f"{file.name} None\n")
+                else:
+                    digest = pooch.file_hash(file, alg=self.hash)
+                    f.write(f"{file.name} {self.hash}:{digest}\n")
+
+    ### Arugment Validation Methods
     def _check_cache_path_input(self, cache_path):
         if cache_path is None:
             path = Path(pooch.os_cache(DEFAULT_CACHE_NAME_DOWNLOADER))
@@ -349,11 +415,12 @@ class StaticFetcher(_BaseFetcher):
 
         Path(path).mkdir(parents=True, exist_ok=True)
         return path
-        
 
     def _check_hash_input(self, hash):
         if hash in hashlib.algorithms_available:
             return hash
+        elif hash is None:
+            return None
         else:
             raise ValueError(
                 f'Invalid hash "{hash}". Valid hashes algorithms are {hashlib.algorithms_available}.'
