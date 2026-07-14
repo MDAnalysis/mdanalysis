@@ -17,7 +17,7 @@ The rules for this file:
 ??/??/?? IAlibay, orbeckst, marinegor, tylerjereddy, ljwoods2, marinegor,
          spyke7, talagayev, tanii1125, BradyAJohnston, hejamu, jeremyleung521,
          harshitgajjela-droid, kunjsinha, aygarwal, jauy123, Dreamstick9,
-         ollyfutur, Amarendra22, charity-g, ParthUppal523, apoorva-01
+         ollyfutur, Amarendra22, charity-g, ParthUppal523, apoorva-01, RMeli
 
  * 2.11.0
 
@@ -68,7 +68,7 @@ Fixes
 
 Enhancements
  * Added ASV benchmark for PDB trajectory reading (PR #5394)
- * Read Linear Angle bonded interaction entries from GROMACS TPR files and 
+ * Read Linear Angle bonded interaction entries from GROMACS TPR files and
    add the angles to the topology (Issue #5361, PR #5372)
  * Enables parallelization for analysis.atomicdistances.AtomicDistances
    (Issue #4662, PR #4822)
