@@ -164,3 +164,7 @@ def from_PDB(
         base_url="https://files.wwpdb.org/download/",
         progressbar=progressbar,
     )
+
+def from_MDDB()
+    pass
+    https://mmb.mddbr.eu/api/rest/docs/
