@@ -23,6 +23,7 @@ The rules for this file:
  * 2.11.0
 
 Fixes
+ * Fix doctest output in transformations.py for newer NumPy (Issue #3925, PR #5283) 
  * InterRDF now correctly returns bins in parallel (PR #5344)
  * `Merge()` no longer raises a TypeError on Universes that have a `cmaps`
    attribute; cmaps are now combined like the other connection attributes

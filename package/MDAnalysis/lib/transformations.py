@@ -795,7 +795,7 @@ def decompose_matrix(matrix):
     >>> S = scale_matrix(0.123)
     >>> scale, shear, angles, trans, persp = decompose_matrix(S)
     >>> scale[0]
-    0.123
+    np.float64(0.123)
     >>> R0 = euler_matrix(1, 2, 3)
     >>> scale, shear, angles, trans, persp = decompose_matrix(R0)
     >>> R1 = euler_matrix(*angles)
