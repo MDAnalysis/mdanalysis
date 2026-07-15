@@ -22,8 +22,8 @@ The rules for this file:
  * 2.11.0
 
 Fixes
- * Fixes TypeError with np.int64 indexing in GSD Reader (Issue #5224) 
  * Fix doctest output in transformations.py for newer NumPy (Issue #3925, PR #5283) 
+ * Fixes TypeError with np.int64 indexing in GSD Reader (Issue #5224) 
  * `MDAnalysis.analysis.nucleicacids.WatsonCrickDist`, `MinorPairDist`,
    and `MajorPairDist` now match residue names against the full resname
    instead of only the first character, fixing incorrect behaviour with
