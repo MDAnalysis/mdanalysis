@@ -17,11 +17,13 @@ The rules for this file:
 ??/??/?? IAlibay, orbeckst, marinegor, tylerjereddy, ljwoods2, marinegor,
          spyke7, talagayev, tanii1125, BradyAJohnston, hejamu, jeremyleung521,
          harshitgajjela-droid, kunjsinha, aygarwal, jauy123, Dreamstick9,
-         ollyfutur, Amarendra22, charity-g, ParthUppal523, apoorva-01, RMeli
+         ollyfutur, Amarendra22, charity-g, ParthUppal523, apoorva-01, RMeli,
+         raulloiscuns
 
  * 2.11.0
 
 Fixes
+ * InterRDF now correctly returns bins in parallel (PR #5344)
  * `Merge()` no longer raises a TypeError on Universes that have a `cmaps`
    attribute; cmaps are now combined like the other connection attributes
    (bonds, angles, dihedrals, impropers) (Issue #3672).
