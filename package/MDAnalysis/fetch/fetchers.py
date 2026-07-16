@@ -113,7 +113,7 @@ class _BaseFetcher(ABC):
             )
 
     def _validate_fetch_args(self, args):
-        """Add default timeout and retry values to fetch arguments."""
+        """Add the default global timeout and retry variables to fetch arguments."""
 
         args.setdefault("timeout", DEFAULT_TIMEOUT)
         args.setdefault("retries", DEFAULT_RETRIES)
@@ -143,10 +143,6 @@ class StaticFetcher(_BaseFetcher):
     ----------
     cache_path : pathlib.Path or ``None``
         Path to the cache directory.
-
-    db_path : pathlib.Path or ``None``
-        Path to the database file used for caching. Created after calling
-        fetch().
 
     hash : str
         Hash algorithm used for verifying the integrity of downloaded files.
@@ -216,26 +212,16 @@ class StaticFetcher(_BaseFetcher):
 
         Examples
         --------
+        Download a single PDB file from the RCSB Protein Data Bank.
+    
+        >>> StaticFetcher.fetch(file_name="1AKE.cif",
+            base_url="https://files.wwpdb.org/download/")
+        './MDAnalysis_pdbs/1AKE.cif'
 
-        A script to download a protein from the RCSB Protein Data Bank.
-
-        .. code-block:: python
-
-            from MDAnalysis.fetch import StaticFetcher
-
-            fetcher = StaticFetcher(cache_path=cache_path)
-
-            # Download a single file from the RCSB Protein Data Bank
-            path = fetcher.fetch(
-                file_name="1AKE.cif",
-                base_url="https://files.wwpdb.org/download/",
-            )
-
-            # Download multiple files from the RCSB Protein Data Bank
-            path = fetcher.fetch(
-                file_name=["1AKE.cif", "4AKE.cif"],
-                base_url="https://files.wwpdb.org/download/",
-            )
+        Download multiple PDB files from the RCSB Protein Data Bank.
+        >>> StaticFetcher.fetch(file_name=["1AKE.cif", "4AKE.cif"],
+            base_url="https://files.wwpdb.org/download/")
+        ['./MDAnalysis_pdbs/1AKE.pdb.gz', './MDAnalysis_pdbs/4BWZ.pdb.gz']
 
         Notes
         -----
@@ -276,7 +262,9 @@ class StaticFetcher(_BaseFetcher):
             raise ValueError(
                 "There are unknown files in the registry! The missing files are"
                 + f" {missing_files_list}. To fix this, please set append_db=True"
-                + " to append the database"
+                + " to append the database." + "\n"
+
+                f"These missing files are {missing_files_list}"
             )
 
         # Ensure fetch() only get requested files
@@ -297,8 +285,6 @@ class StaticFetcher(_BaseFetcher):
 
         download_kwargs = kwargs.copy()
         download_kwargs.pop("retries")
-
-        #import ipdb; ipdb.set_trace()
         fetch_downloader = self._set_downloader(base_url, downloader, **download_kwargs)
 
         paths = [
@@ -311,7 +297,7 @@ class StaticFetcher(_BaseFetcher):
             )
             for file_name in requested_files
         ]
-        
+
         ##
 
         ## Registry write code
@@ -319,67 +305,27 @@ class StaticFetcher(_BaseFetcher):
             self.write_registry(db_path, paths)
 
         if APPEND_DATABASE and LOAD_FROM_CACHE:
-            self.fix_registry(db_path, registry_dictionary)
+            self.append_registry(db_path, requested_files)
         
         ##
 
         return paths[0] if len(paths) == 1 else paths
 
-    def _set_downloader(self, base_url, downloader, **kwargs):
-        """Sets Downloader in fetch() by matching a regex against the download link"""
-        
-
-        SUPPORTED_DOWNLOADERS = ('auto', 'http', 'https', 'ftp', 'sftp','doi')
-
-        if downloader not in SUPPORTED_DOWNLOADERS:
-            raise ValueError(
-                    f"Invalid downloader '{downloader}'. Valid options "
-                    + f"are {SUPPORTED_DOWNLOADERS}"
-                )
-
-        if downloader == 'auto':
-            # The regex below is AI generated, but the overall idea of using regular expressions
-            # was thought up by me.
-            #
-            # I thought of these four examples and prompt AI to come with a regex that capture the
-            # susbtring before "://""
-            #
-            # doi://10.6084/m9.figshare.14763051.v1/tiny-data.txt
-            # https://www.example.com/page
-            # ftp://ftp.example.com/files/document.txt
-            # sftp://username@example.com/path/to/folder
-
-            regex = r'^([^:]+)://'
-            match = re.match(regex, base_url)
-
-            if match:
-                _downloader = match.group(1)
-        else:
-            _downloader = downloader
-            
-        match _downloader:
-            case "http" | "https":
-                return pooch.HTTPDownloader(**kwargs)
-            case "ftp":
-                return pooch.FTPDownloader(**kwargs)
-            case "sftp":
-                return pooch.SFTPDownloader(**kwargs)
-            case "doi":
-                return pooch.DOIDownloader(**kwargs)
-
-
-    def fix_registry(self, db_path, file_dict):
+    def append_registry(self, db_path, files):
         """
-        Append newly downloaded files to an existing Pooch registry.
+        Append cached files to an existing Pooch registry.
+
+        Each entry in ``files`` is resolved relative to ``self.cache_path``. The
+        file hash is computed using the fetcher's configured hash algorithm ``self.hash`` and a
+        new registry line is appended to ``db_path``.
 
         Parameters
         ----------
         db_path : str or path-like
             Path to the registry file to update.
-        file_dict : dict
-            Dictionary mapping filenames to hash values. Files with a hash value of
-            ``None`` are treated as newly downloaded files and appended to the
-            registry.
+        files : iterable of str or path-like
+            File names or paths for cached files to append to the registry. Relative
+            paths are interpreted relative to ``self.cache_path``.
 
         Returns
         -------
@@ -389,16 +335,42 @@ class StaticFetcher(_BaseFetcher):
 
         Notes
         -----
-        For each entry in ``file_dict`` with a value of ``None``, this method builds
-        the corresponding file path relative to :attr:`cache_path` and appends its
-        hash to the registry using :meth:`write_registry`.
+        Existing registry entries are preserved. This method does not check for or
+        remove duplicate file entries.
+
+        Each appended registry line has the format::
+
+            <filename> <hash_algorithm>:<digest>
+
+        Example
+        -------
+        .. code-block:: python
+
+            from MDAnalysis.fetch.fetchers import StaticFetcher
+
+            fetcher = StaticFetcher()
+
+            file1 = fetcher.fetch(
+                file_name="1AKE.cif",
+                base_url="https://files.wwpdb.org/download/",
+                db_name="db_hash1.txt",
+            )
+
+            file2 = fetcher.fetch(
+                file_name="4AKE.cif",
+                base_url="https://files.wwpdb.org/download/",
+                db_name="db_hash2.txt",
+            )
+
+            registry = file1.parent / "db_hash1.txt"
+            fetcher.append_registry(registry, ["4AKE.cif"])
+
+            print(registry.read_text())
+            # 1AKE.cif sha256:01f41b1b42318a1a5df7f650dbab881677aa0e8d825f7c42dd26ae16a94c0948
+            # 4AKE.cif sha256:fcb2ff49a3e255797fee277ce28e0acace67f6e6ddf432841f8451f00cbde9e9
         """
-        new_files = [
-            self.cache_path / file_name
-            for file_name, file_hash in file_dict.items()
-            if file_hash is None
-        ]
-        self.write_registry(db_path, new_files, mode="a")
+        new_files = [self.cache_path / file_name for file_name in files]
+        self.write_registry(Path(db_path), new_files, mode="a")
 
     def check_registry(self, db_path):
         """
@@ -514,6 +486,47 @@ class StaticFetcher(_BaseFetcher):
                 f'Invalid hash "{hash}". Valid hashes algorithms'
                 + f" are {hashlib.algorithms_available}."
             )
+    def _set_downloader(self, base_url, downloader, **kwargs):
+        """Sets Downloader in fetch() by matching a regex against the download link"""
+        
+
+        SUPPORTED_DOWNLOADERS = ('auto', 'http', 'https', 'ftp', 'sftp','doi')
+
+        if downloader not in SUPPORTED_DOWNLOADERS:
+            raise ValueError(
+                    f"Invalid downloader '{downloader}'. Valid options "
+                    + f"are {SUPPORTED_DOWNLOADERS}"
+                )
+
+        if downloader == 'auto':
+            # The regex below is AI generated, but the overall idea of using regular expressions
+            # was thought up by me.
+            #
+            # I thought of these four examples and prompt AI to come with a regex that capture the
+            # susbtring before "://""
+            #
+            # doi://10.6084/m9.figshare.14763051.v1/tiny-data.txt
+            # https://www.example.com/page
+            # ftp://ftp.example.com/files/document.txt
+            # sftp://username@example.com/path/to/folder
+
+            regex = r'^([^:]+)://'
+            match = re.match(regex, base_url)
+
+            if match:
+                _downloader = match.group(1)
+        else:
+            _downloader = downloader
+            
+        match _downloader:
+            case "http" | "https":
+                return pooch.HTTPDownloader(**kwargs)
+            case "ftp":
+                return pooch.FTPDownloader(**kwargs)
+            case "sftp":
+                return pooch.SFTPDownloader(**kwargs)
+            case "doi":
+                return pooch.DOIDownloader(**kwargs)
 
 
 # class DynamicFetcher(_BaseFetcher):

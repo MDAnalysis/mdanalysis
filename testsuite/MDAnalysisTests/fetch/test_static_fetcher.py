@@ -161,10 +161,6 @@ class TestExpectedBehaviors:
             )
 
 
-            
-
-
-
     def test_different_hashes(self, tmp_path):
         with temporary_http_server() as (host, port, temp_folder):
             base_url = f"http://{host}:{port}/"
@@ -286,5 +282,30 @@ class TestExpectedBehaviors:
 
         assert Path(tmp_path / "TEST_FILE1.txt").exists()
 
-# def test_missing_files():
-#     pass
+
+def test_append_registry(tmp_path):
+
+
+    with temporary_http_server() as (host, port, temp_folder):
+        base_url = f"http://{host}:{port}/"
+        fetcher = StaticFetcher(cache_path=tmp_path)
+
+        file1 = fetcher.fetch(
+            base_url=base_url,
+            file_name="TEST_FILE1.txt",
+            db_name="db_hash1.txt",
+        )
+
+        file2 = fetcher.fetch(
+            base_url=base_url,
+            file_name="TEST_FILE2.txt",
+            db_name="db_hash2.txt",
+        )
+
+        registry = file1.parent / "db_hash1.txt"
+        fetcher.append_registry(registry, ["TEST_FILE2.txt"])
+
+        assert Path(registry).read_text() == (
+            'TEST_FILE1.txt sha256:c4bdb6ba200a917b8384ffeffa4999bf05bd4e479f6580d795aca509c9122dc4\n'
+            'TEST_FILE2.txt sha256:0ec192c0f90d1332f2abca4398596d3978434ecbae6abea8ffd989412b592458\n'
+        )
