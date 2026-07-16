@@ -133,9 +133,9 @@ class TestExpectedBehaviors:
             )
             assert path.exists()
 
-            assert (downloader.db_path).exists()
+            assert Path(downloader.cache_path / REGISTRY_NAME ).exists()
             assert (
-                downloader.db_path
+                downloader.cache_path / REGISTRY_NAME 
             ).read_text() == "TEST_FILE1.txt sha256:c4bdb6ba200a917b8384ffeffa4999bf05bd4e479f6580d795aca509c9122dc4\n"
 
     def test_append_database(self, tmp_path):
@@ -155,7 +155,7 @@ class TestExpectedBehaviors:
                 append_db=True
             )
 
-        assert downloader.db_path.read_text() == (
+        assert Path(downloader.cache_path / REGISTRY_NAME).read_text() == (
                 "TEST_FILE1.txt sha256:c4bdb6ba200a917b8384ffeffa4999bf05bd4e479f6580d795aca509c9122dc4\n"
                 "TEST_FILE2.txt sha256:0ec192c0f90d1332f2abca4398596d3978434ecbae6abea8ffd989412b592458\n"
             )
@@ -175,8 +175,8 @@ class TestExpectedBehaviors:
                 db_name=REGISTRY_NAME,
             )
 
-            assert (
-                downloader.db_path
+            assert Path(
+                downloader.cache_path / REGISTRY_NAME 
             ).read_text() == "TEST_FILE1.txt md5:b2f138521297db74b6b280feeb14f9f6\n"
 
     def test_existing_database(self, tmp_path):
@@ -211,7 +211,7 @@ class TestExpectedBehaviors:
             assert path.exists()
             assert path.name == "TEST_FILE1.txt"
 
-            assert downloader.db_path is None
+            assert not Path(downloader.cache_path / REGISTRY_NAME).exists()
             assert not (tmp_path / REGISTRY_NAME).exists()
 
     def test_multiple_downloads_no_database(self, tmp_path):
@@ -231,7 +231,7 @@ class TestExpectedBehaviors:
                 ("TEST_FILE1.txt", "TEST_FILE2.txt")
             )
 
-            assert downloader.db_path is None
+            assert not Path(downloader.cache_path / REGISTRY_NAME).exists()
             assert not (tmp_path / REGISTRY_NAME).exists()
 
     def test_multiple_downloads_create_database(self, tmp_path):
@@ -245,7 +245,7 @@ class TestExpectedBehaviors:
                 db_name=REGISTRY_NAME,
             )
 
-            assert downloader.db_path.read_text() == (
+            assert Path(downloader.cache_path / REGISTRY_NAME).read_text() == (
                 "TEST_FILE1.txt sha256:c4bdb6ba200a917b8384ffeffa4999bf05bd4e479f6580d795aca509c9122dc4\n"
                 "TEST_FILE2.txt sha256:0ec192c0f90d1332f2abca4398596d3978434ecbae6abea8ffd989412b592458\n"
             )
@@ -284,7 +284,7 @@ class TestExpectedBehaviors:
                 file_name="TEST_FILE1.txt",
             )
 
-        assert (tmp_path / "TEST_FILE1.txt").exists()
+        assert Path(tmp_path / "TEST_FILE1.txt").exists()
 
 # def test_missing_files():
 #     pass

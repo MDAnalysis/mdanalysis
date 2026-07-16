@@ -165,7 +165,6 @@ class StaticFetcher(_BaseFetcher):
 
         self.cache_path = self._check_cache_path_input(cache_path)
         self.hash = self._check_hash_input(hash)
-        self.db_path = None
 
     def fetch(
         self,
@@ -259,16 +258,16 @@ class StaticFetcher(_BaseFetcher):
         registry_dictionary = {}
 
         if db_name is not None:
-            self.db_path = self.cache_path / Path(db_name)
+            db_path = self.cache_path / Path(db_name)
 
-            if self.db_path.exists():
+            if db_path.exists():
                 LOAD_FROM_CACHE = True
             else:
                 CREATE_DATABASE = True
 
         if LOAD_FROM_CACHE:
-            registry_dictionary = self.read_registry(self.db_path)
-            missing_files_list = self.check_registry(self.db_path)
+            registry_dictionary = self.read_registry(db_path)
+            missing_files_list = self.check_registry(db_path)
 
             if len(missing_files_list) != 0:
                 MISSING_FILES = True
@@ -317,10 +316,10 @@ class StaticFetcher(_BaseFetcher):
 
         ## Registry write code
         if CREATE_DATABASE:
-            self.write_registry(self.db_path, paths)
+            self.write_registry(db_path, paths)
 
         if APPEND_DATABASE and LOAD_FROM_CACHE:
-            self.fix_registry(self.db_path, registry_dictionary)
+            self.fix_registry(db_path, registry_dictionary)
         
         ##
 
@@ -429,7 +428,7 @@ class StaticFetcher(_BaseFetcher):
         cache_files = (
             path
             for path in self.cache_path.rglob("*")
-            if path != self.db_path and path.is_file()
+            if path != db_path and path.is_file()
         )
 
         return [
