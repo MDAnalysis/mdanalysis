@@ -70,8 +70,8 @@ class TestExpectedErrors:
             with pytest.raises(
                 ValueError,
                 match=re.escape(
-                    "Invalid downloader 'barfoo'. Valid options are "
-                    "'HTTP', 'FTP', 'SFTP', 'DOI'."
+                    "Invalid downloader 'barfoo'. Valid options " +
+                    "are ('auto', 'http', 'https', 'ftp', 'sftp', 'doi')"
                 ),
             ):
                 downloader.fetch(
@@ -285,3 +285,6 @@ class TestExpectedBehaviors:
             )
 
         assert (tmp_path / "TEST_FILE1.txt").exists()
+
+# def test_missing_files():
+#     pass

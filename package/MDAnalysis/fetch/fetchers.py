@@ -49,6 +49,7 @@ Changing these values affects all fetchers.
 """
 
 import hashlib
+import re
 
 from pathlib import Path
 from abc import ABC, abstractmethod
@@ -173,7 +174,7 @@ class StaticFetcher(_BaseFetcher):
         verbose=False,
         db_name="hashes.txt",
         append_db=False,
-        downloader="HTTP",
+        downloader="auto",
         **kwargs,
     ):
         """
@@ -205,8 +206,8 @@ class StaticFetcher(_BaseFetcher):
             Number of times to retry a failed download. The default is
             :data:`DEFAULT_RETRIES`.
         downloader : str, optional
-            Downloader backend to use. Supported values are ``"HTTP"``,
-            ``"FTP"``, ``"SFTP"``, and ``"DOI"``. The default is ``"HTTP"``.
+            Downloader backend to use. Supported values are ``"auto", "http"``,
+            ``"ftp"``, ``"sftp"``, and ``"doi"``. The default is ``"auto"``.
 
         Returns
         -------
@@ -298,21 +299,9 @@ class StaticFetcher(_BaseFetcher):
         download_kwargs = kwargs.copy()
         download_kwargs.pop("retries")
 
-        match downloader:
-            case "HTTP":
-                fetch_downloader = pooch.HTTPDownloader(**download_kwargs)
-            case "FTP":
-                fetch_downloader = pooch.FTPDownloader(**download_kwargs)
-            case "SFTP":
-                fetch_downloader = pooch.SFTPDownloader(**download_kwargs)
-            case "DOI":
-                fetch_downloader = pooch.DOIDownloader(**download_kwargs)
-            case _:
-                raise ValueError(
-                    f"Invalid downloader '{downloader}'. Valid options "
-                    + "are 'HTTP', 'FTP', 'SFTP', 'DOI'."
-                )
-        
+        #import ipdb; ipdb.set_trace()
+        fetch_downloader = self._set_downloader(base_url, downloader, **download_kwargs)
+
         paths = [
             Path(
                 main_downloader.fetch(
@@ -336,6 +325,49 @@ class StaticFetcher(_BaseFetcher):
         ##
 
         return paths[0] if len(paths) == 1 else paths
+
+    def _set_downloader(self, base_url, downloader, **kwargs):
+        """Sets Downloader in fetch() by matching a regex against the download link"""
+        
+
+        SUPPORTED_DOWNLOADERS = ('auto', 'http', 'https', 'ftp', 'sftp','doi')
+
+        if downloader not in SUPPORTED_DOWNLOADERS:
+            raise ValueError(
+                    f"Invalid downloader '{downloader}'. Valid options "
+                    + f"are {SUPPORTED_DOWNLOADERS}"
+                )
+
+        if downloader == 'auto':
+            # The regex below is AI generated, but the overall idea of using regular expressions
+            # was thought up by me.
+            #
+            # I thought of these four examples and prompt AI to come with a regex that capture the
+            # susbtring before "://""
+            #
+            # doi://10.6084/m9.figshare.14763051.v1/tiny-data.txt
+            # https://www.example.com/page
+            # ftp://ftp.example.com/files/document.txt
+            # sftp://username@example.com/path/to/folder
+
+            regex = r'^([^:]+)://'
+            match = re.match(regex, base_url)
+
+            if match:
+                _downloader = match.group(1)
+        else:
+            _downloader = downloader
+            
+        match _downloader:
+            case "http" | "https":
+                return pooch.HTTPDownloader(**kwargs)
+            case "ftp":
+                return pooch.FTPDownloader(**kwargs)
+            case "sftp":
+                return pooch.SFTPDownloader(**kwargs)
+            case "doi":
+                return pooch.DOIDownloader(**kwargs)
+
 
     def fix_registry(self, db_path, file_dict):
         """
