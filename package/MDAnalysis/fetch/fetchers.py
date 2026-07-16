@@ -246,7 +246,7 @@ class StaticFetcher(_BaseFetcher):
         exist.
 
         """
-        # Keywords arguments are reserved for common _BaseFetcher.fetch() arguements.
+        # Keywords arguments that are reserved for common _BaseFetcher.fetch() arguments.
         kwargs = self._validate_fetch_args(kwargs)
 
         LOAD_FROM_CACHE = False
@@ -254,6 +254,7 @@ class StaticFetcher(_BaseFetcher):
         MISSING_FILES = False
         APPEND_DATABASE = append_db
 
+        ## Reading from Registry
         registry_dictionary = {}
 
         if db_name is not None:
@@ -278,14 +279,14 @@ class StaticFetcher(_BaseFetcher):
                 + " to append the database"
             )
 
-        # Code to process non-registry files
-        # One-liner that forces strings into tuple
-        no_db_files = (file_name,) if isinstance(file_name, str) else file_name
-        for file in no_db_files:
-            if file not in registry_dictionary:
-                registry_dictionary[file] = None
+        # Ensure fetch() only get requested files
+        requested_files = (file_name,) if isinstance(file_name, str) else tuple(file_name)
+        for name in requested_files:
+            registry_dictionary.setdefault(name, None)
+        
+        ##
 
-        # Pooch setup
+        ## Download code using pooch
         main_downloader = pooch.create(
             path=self.cache_path,
             base_url=base_url,
@@ -311,7 +312,7 @@ class StaticFetcher(_BaseFetcher):
                     f"Invalid downloader '{downloader}'. Valid options "
                     + "are 'HTTP', 'FTP', 'SFTP', 'DOI'."
                 )
-
+        
         paths = [
             Path(
                 main_downloader.fetch(
@@ -320,15 +321,19 @@ class StaticFetcher(_BaseFetcher):
                     downloader=fetch_downloader,
                 )
             )
-            for file_name in registry_dictionary.keys()
+            for file_name in requested_files
         ]
+        
         ##
 
+        ## Registry write code
         if CREATE_DATABASE:
             self.write_registry(self.db_path, paths)
 
         if APPEND_DATABASE and LOAD_FROM_CACHE:
             self.fix_registry(self.db_path, registry_dictionary)
+        
+        ##
 
         return paths[0] if len(paths) == 1 else paths
 
