@@ -50,6 +50,7 @@ Changing these values affects all fetchers.
 
 import hashlib
 import re
+import os
 
 from pathlib import Path
 from abc import ABC, abstractmethod
@@ -286,7 +287,6 @@ class StaticFetcher(_BaseFetcher):
             base_url=base_url,
             registry=registry_dictionary,
             retry_if_failed=kwargs["retries"],
-            env="MDANALYSIS_FETCHER_DATA",
         )
 
         download_kwargs = kwargs.copy()
@@ -376,11 +376,11 @@ class StaticFetcher(_BaseFetcher):
 
     def check_registry(self, db_path, files=[], ignore=[]):
         """
-        Return absolute paths to cache files that are missing from the registry.
+        Return paths relative to :attr:`cache_path` for cache files that are missing from the registry.
 
         This method compares filenames within the registry against files found
         recursively under :attr:`cache_path`. A cache file is considered missing
-        when it is recorded in the registry, but not physically present on disk.
+        when it is on disk, but it is not recorded in the registry.
 
         Parameters
         ----------
@@ -389,7 +389,7 @@ class StaticFetcher(_BaseFetcher):
         files : list of pathlib.Path
             Paths to additional files to check. Each path must be relative to
             :attr:`cache_path`.
-        ignore : list of str or path-like
+        ignore : list of pathlib.Path
             Files to be ignored.  Each path must be relative to
             :attr:`cache_path`.
 
@@ -485,7 +485,7 @@ class StaticFetcher(_BaseFetcher):
         >>> fetcher.read_registry("file_1_and_2_hash.txt")
         {'file1.txt': 'sha256:2da169c5aae36a823c202da49fb11935b76277efcb5cd42a4cf238ddda2a9b20',
         'file2.txt': 'sha256:3a0dbd9e2abc4a7bbae6adfe92e2858218135926dacd4a7d3fb4ca2dbdbe457a'}
-        
+
         Notes
         -----
         Each line in the registry file is expected to have the format::
@@ -558,10 +558,15 @@ class StaticFetcher(_BaseFetcher):
 
     # Argument validation methods
     def _check_cache_path_input(self, cache_path):
+
         if cache_path is None:
             path = Path(pooch.os_cache(DEFAULT_CACHE_NAME_DOWNLOADER))
         else:
             path = Path(cache_path)
+
+        # Environment variable override
+        if not os.environ.get("MDANALYSIS_FETCHER_DATA") is None:
+            path = Path(os.environ.get("MDANALYSIS_FETCHER_DATA"))
 
         Path(path).mkdir(parents=True, exist_ok=True)
         return path
@@ -615,4 +620,3 @@ class StaticFetcher(_BaseFetcher):
                 return pooch.SFTPDownloader(**kwargs)
             case "doi":
                 return pooch.DOIDownloader(**kwargs)
-            
