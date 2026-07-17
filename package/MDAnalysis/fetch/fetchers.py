@@ -406,6 +406,8 @@ class StaticFetcher(_BaseFetcher):
         ... )
         >>> fetcher.check_registry("file_1_2_and_3_hash.txt")
         [Path('./MDAnalysis_pdbs/file3.txt'), Path('./MDAnalysis_pdbs/file2.txt')] 
+        >>> fetcher.check_registry("file_1_2_and_3_hash.txt", ignore=["file2.txt"])
+        [Path('./MDAnalysis_pdbs/file3.txt')] 
       
 
 
@@ -427,7 +429,7 @@ class StaticFetcher(_BaseFetcher):
         )
 
         return [
-            path for path in cache_files if path.name not in database_files
+            path for path in cache_files if (path.name not in database_files) and (path not in ignore)
         ]
 
     def read_registry(self, db_path):

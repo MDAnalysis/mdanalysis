@@ -405,3 +405,28 @@ def test_check_registry(tmp_path):
         tmp_path / "file3.txt",
         tmp_path / "file2.txt",   
     ]
+
+
+def test_check_registry_ignore(tmp_path):
+
+    files = {
+        "file1.txt": "Molecular \\n",
+        "file2.txt": "Dynamics. \\n",
+        "file3.txt": "Analysis. \\n"
+    }
+
+    for filename, content in files.items():
+        with open(tmp_path / filename, "w") as f:
+            f.write(content)
+
+    fetcher = StaticFetcher(cache_path=tmp_path)
+
+    # Write only file1
+    fetcher.write_registry(
+        tmp_path / "file_1_2_and_3_hash.txt",
+        [tmp_path / "file1.txt"],
+    )
+
+    assert fetcher.check_registry(tmp_path / "file_1_2_and_3_hash.txt", ignore=[tmp_path / "file2.txt"]) == [
+        tmp_path / "file3.txt",
+    ]
