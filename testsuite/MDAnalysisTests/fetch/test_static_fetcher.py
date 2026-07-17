@@ -309,3 +309,37 @@ def test_append_registry(tmp_path):
             'TEST_FILE1.txt sha256:c4bdb6ba200a917b8384ffeffa4999bf05bd4e479f6580d795aca509c9122dc4\n'
             'TEST_FILE2.txt sha256:0ec192c0f90d1332f2abca4398596d3978434ecbae6abea8ffd989412b592458\n'
         )
+
+def test_write_registry(tmp_path):
+    files = {
+        "file1.txt": "Molecular \n",
+        "file2.txt": "Dynamics. \n",
+    }
+
+
+    for filename, content in files.items():
+        with open(tmp_path / filename, "w") as f:
+            f.write(content)
+
+
+    fetcher = StaticFetcher(cache_path=tmp_path)
+
+    fetcher.write_registry(tmp_path / "file_1_hash.txt", [tmp_path / "file1.txt"])
+    assert (tmp_path / "file_1_hash.txt").read_text() == 'file1.txt sha256:2da169c5aae36a823c202da49fb11935b76277efcb5cd42a4cf238ddda2a9b20\n'
+
+    fetcher.write_registry(tmp_path / "file_2_hash.txt", [tmp_path / "file2.txt"])
+    assert (tmp_path / "file_2_hash.txt").read_text() == 'file2.txt sha256:3a0dbd9e2abc4a7bbae6adfe92e2858218135926dacd4a7d3fb4ca2dbdbe457a\n'
+
+    
+    fetcher.write_registry(tmp_path / "file_1_and_2_hash.txt", [tmp_path / "file1.txt", tmp_path / "file2.txt"])
+    assert (tmp_path / "file_1_and_2_hash.txt").read_text() == (
+        "file1.txt sha256:2da169c5aae36a823c202da49fb11935b76277efcb5cd42a4cf238ddda2a9b20\n"
+        "file2.txt sha256:3a0dbd9e2abc4a7bbae6adfe92e2858218135926dacd4a7d3fb4ca2dbdbe457a\n"
+    )
+
+    def test_read_registry():
+        pass
+
+    def test_check_registry():
+        pass
+    

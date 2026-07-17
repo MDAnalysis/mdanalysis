@@ -333,6 +333,26 @@ class StaticFetcher(_BaseFetcher):
             This method updates the registry file in place and does not return a
             value.
 
+        Example
+        -------
+        >>> from MDAnalysis.fetch.fetchers import StaticFetcher
+        >>> fetcher = StaticFetcher()
+        >>> file1 = fetcher.fetch(
+        ...     file_name="1AKE.cif",
+        ...     base_url="https://files.wwpdb.org/download/",
+        ...     db_name="db_hash1.txt",
+        ... )
+        >>> file2 = fetcher.fetch(
+        ...     file_name="4AKE.cif",
+        ...     base_url="https://files.wwpdb.org/download/",
+        ...     db_name="db_hash2.txt",
+        ... )
+        >>> registry = file1.parent / "db_hash1.txt"
+        >>> fetcher.append_registry(registry, ["4AKE.cif"])
+        >>> print(registry.read_text())
+        1AKE.cif sha256:01f41b1b42318a1a5df7f650dbab881677aa0e8d825f7c42dd26ae16a94c0948
+        4AKE.cif sha256:fcb2ff49a3e255797fee277ce28e0acace67f6e6ddf432841f8451f00cbde9e9
+
         Notes
         -----
         Existing registry entries are preserved. This method does not check for or
@@ -342,32 +362,6 @@ class StaticFetcher(_BaseFetcher):
 
             <filename> <hash_algorithm>:<digest>
 
-        Example
-        -------
-        .. code-block:: python
-
-            from MDAnalysis.fetch.fetchers import StaticFetcher
-
-            fetcher = StaticFetcher()
-
-            file1 = fetcher.fetch(
-                file_name="1AKE.cif",
-                base_url="https://files.wwpdb.org/download/",
-                db_name="db_hash1.txt",
-            )
-
-            file2 = fetcher.fetch(
-                file_name="4AKE.cif",
-                base_url="https://files.wwpdb.org/download/",
-                db_name="db_hash2.txt",
-            )
-
-            registry = file1.parent / "db_hash1.txt"
-            fetcher.append_registry(registry, ["4AKE.cif"])
-
-            print(registry.read_text())
-            # 1AKE.cif sha256:01f41b1b42318a1a5df7f650dbab881677aa0e8d825f7c42dd26ae16a94c0948
-            # 4AKE.cif sha256:fcb2ff49a3e255797fee277ce28e0acace67f6e6ddf432841f8451f00cbde9e9
         """
         new_files = [self.cache_path / file_name for file_name in files]
         self.write_registry(Path(db_path), new_files, mode="a")
@@ -436,7 +430,6 @@ class StaticFetcher(_BaseFetcher):
             Dictionary mapping each filename in the registry to its stored hash
             value. Hash values are expected to include the hash algorithm prefix,
             for example ``"sha256:<digest>"``.
-
         Notes
         -----
         Each line in the registry file is expected to have the format::
@@ -465,11 +458,31 @@ class StaticFetcher(_BaseFetcher):
             attribute and be readable by ``pooch.file_hash``.
         mode : str, optional
             File opening mode used when writing the registry. Default is ``"w"``.
-
+        
         Returns
         -------
         None
             This method writes the registry to disk and does not return a value.
+
+        Example
+        -------
+        .. code-block:: python
+        >>> files = {
+        ...     "file1.txt": "Molecular \\n",
+        ...     "file2.txt": "Dynamics. \\n",
+        ... }
+        >>> for filename, content in files.items():
+        ...     with open(tmp_path / filename, "w") as f:
+        ...         _ = f.write(content)
+        ...
+        >>> fetcher = StaticFetcher(cache_path=tmp_path)
+        >>> fetcher.write_registry(
+        ...     "file_1_and_2_hash.txt",
+        ...     ["file1.txt", "file2.txt"],
+        ... )
+        >>> print("file_1_and_2_hash.txt").read_text())
+        file1.txt sha256:2da169c5aae36a823c202da49fb11935b76277efcb5cd42a4cf238ddda2a9b20
+        file2.txt sha256:3a0dbd9e2abc4a7bbae6adfe92e2858218135926dacd4a7d3fb4ca2dbdbe457a
 
         Notes
         -----
