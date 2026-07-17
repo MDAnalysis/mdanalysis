@@ -440,3 +440,24 @@ def test_check_registry_ignore(tmp_path):
     ) == [
         tmp_path / "file3.txt",
     ]
+
+
+def test_error(tmp_path):
+
+    with temporary_http_server() as (host, port, temp_folder):
+        base_url = f"http://{host}:{port}/"
+        fetcher = StaticFetcher(cache_path=tmp_path)
+
+        file1 = fetcher.fetch(
+            base_url=base_url,
+            file_name="TEST_FILE1.txt",
+            db_name=REGISTRY_NAME,
+        )
+        # match later
+
+        with pytest.raises(ValueError):
+            file2 = fetcher.fetch(
+                base_url=base_url,
+                file_name="TEST_FILE2.txt",
+                db_name=REGISTRY_NAME,
+            )

@@ -240,9 +240,19 @@ class StaticFetcher(_BaseFetcher):
         MISSING_FILES = False
         APPEND_DATABASE = append_db
 
-        ## Reading from Registry
+        
         registry_dictionary = {}
 
+        # Process file names
+        requested_files = (
+            (file_name,) if isinstance(file_name, str) else tuple(file_name)
+        )
+        requested_files_abs = [self.cache_path / name for name in requested_files]
+        for name in requested_files:
+            registry_dictionary.setdefault(name, None)
+
+        
+        ## Reading from Registry
         if db_name is not None:
             db_path = self.cache_path / Path(db_name)
 
@@ -253,26 +263,18 @@ class StaticFetcher(_BaseFetcher):
 
         if LOAD_FROM_CACHE:
             registry_dictionary = self.read_registry(db_path)
-            missing_files_list = self.check_registry(db_path)
+            missing_files_list = self.check_registry(db_path, files=list(requested_files_abs))
 
             if len(missing_files_list) != 0:
                 MISSING_FILES = True
 
         if MISSING_FILES and not APPEND_DATABASE:
             raise ValueError(
-                "There are unknown files in the registry! The missing files are"
-                + f" {missing_files_list}. To fix this, please set append_db=True"
-                + " to append the database."
-                + "\n"
-                f"These missing files are {missing_files_list}"
+                "fetch() is requesting files not found in the registry. " +
+                f"The missing files are {missing_files_list}. " +
+                "To fix this, please set append_db=True to append the registry."
             )
 
-        # Ensure fetch() only get requested files
-        requested_files = (
-            (file_name,) if isinstance(file_name, str) else tuple(file_name)
-        )
-        for name in requested_files:
-            registry_dictionary.setdefault(name, None)
 
         ##
 
@@ -370,7 +372,7 @@ class StaticFetcher(_BaseFetcher):
         new_files = [self.cache_path / file_name for file_name in files]
         self.write_registry(Path(db_path), new_files, mode="a")
 
-    def check_registry(self, db_path, ignore=[]):
+    def check_registry(self, db_path, files=[], ignore=[]):
         """
         Return cache files that are missing from the registry.
 
@@ -425,11 +427,11 @@ class StaticFetcher(_BaseFetcher):
         registry_dictionary = self.read_registry(db_path)
         database_files = set(registry_dictionary.keys())
 
-        cache_files = (
+        cache_files = [
             path
             for path in self.cache_path.rglob("*")
             if path != db_path and path.is_file()
-        )
+        ] + files
 
         return [
             path
