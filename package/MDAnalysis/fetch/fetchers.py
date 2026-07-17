@@ -213,7 +213,7 @@ class StaticFetcher(_BaseFetcher):
         Examples
         --------
         Download a single CIF file from the RCSB Protein Data Bank.
-    
+
         >>> StaticFetcher.fetch(file_name="1AKE.cif",
             base_url="https://files.wwpdb.org/download/")
         './MDAnalysis_pdbs/1AKE.cif'
@@ -262,16 +262,18 @@ class StaticFetcher(_BaseFetcher):
             raise ValueError(
                 "There are unknown files in the registry! The missing files are"
                 + f" {missing_files_list}. To fix this, please set append_db=True"
-                + " to append the database." + "\n"
-
+                + " to append the database."
+                + "\n"
                 f"These missing files are {missing_files_list}"
             )
 
         # Ensure fetch() only get requested files
-        requested_files = (file_name,) if isinstance(file_name, str) else tuple(file_name)
+        requested_files = (
+            (file_name,) if isinstance(file_name, str) else tuple(file_name)
+        )
         for name in requested_files:
             registry_dictionary.setdefault(name, None)
-        
+
         ##
 
         ## Download code using pooch
@@ -285,7 +287,9 @@ class StaticFetcher(_BaseFetcher):
 
         download_kwargs = kwargs.copy()
         download_kwargs.pop("retries")
-        fetch_downloader = self._set_downloader(base_url, downloader, **download_kwargs)
+        fetch_downloader = self._set_downloader(
+            base_url, downloader, **download_kwargs
+        )
 
         paths = [
             Path(
@@ -306,7 +310,7 @@ class StaticFetcher(_BaseFetcher):
 
         if APPEND_DATABASE and LOAD_FROM_CACHE:
             self.append_registry(db_path, requested_files)
-        
+
         ##
 
         return paths[0] if len(paths) == 1 else paths
@@ -379,7 +383,7 @@ class StaticFetcher(_BaseFetcher):
         db_path : str or path-like
             Path to the registry file to read.
         ignore : list of str or path-like
-            Files to be ignored 
+            Files to be ignored
 
         Returns
         -------
@@ -405,10 +409,9 @@ class StaticFetcher(_BaseFetcher):
         ...     files=["file1.txt"],
         ... )
         >>> fetcher.check_registry("file_1_2_and_3_hash.txt")
-        [Path('./MDAnalysis_pdbs/file3.txt'), Path('./MDAnalysis_pdbs/file2.txt')] 
+        [Path('./MDAnalysis_pdbs/file3.txt'), Path('./MDAnalysis_pdbs/file2.txt')]
         >>> fetcher.check_registry("file_1_2_and_3_hash.txt", ignore=["file2.txt"])
-        [Path('./MDAnalysis_pdbs/file3.txt')] 
-      
+        [Path('./MDAnalysis_pdbs/file3.txt')]
 
 
         Notes
@@ -429,7 +432,9 @@ class StaticFetcher(_BaseFetcher):
         )
 
         return [
-            path for path in cache_files if (path.name not in database_files) and (path not in ignore)
+            path
+            for path in cache_files
+            if (path.name not in database_files) and (path not in ignore)
         ]
 
     def read_registry(self, db_path):
@@ -496,7 +501,7 @@ class StaticFetcher(_BaseFetcher):
             attribute and be readable by ``pooch.file_hash``.
         mode : str, optional
             File opening mode used when writing the registry. Default is ``"w"``.
-        
+
         Returns
         -------
         None
@@ -556,15 +561,15 @@ class StaticFetcher(_BaseFetcher):
     def _set_downloader(self, base_url, downloader, **kwargs):
         """Sets Downloader in fetch() by matching a regex against the download link"""
 
-        SUPPORTED_DOWNLOADERS = ('auto', 'http', 'https', 'ftp', 'sftp','doi')
+        SUPPORTED_DOWNLOADERS = ("auto", "http", "https", "ftp", "sftp", "doi")
 
         if downloader not in SUPPORTED_DOWNLOADERS:
             raise ValueError(
-                    f"Invalid downloader '{downloader}'. Valid options "
-                    + f"are {SUPPORTED_DOWNLOADERS}"
-                )
+                f"Invalid downloader '{downloader}'. Valid options "
+                + f"are {SUPPORTED_DOWNLOADERS}"
+            )
 
-        if downloader == 'auto':
+        if downloader == "auto":
             # The regex below is AI generated, but the overall idea of using regular expressions
             # to check the first bit of the url was thought up by me.
             #
@@ -576,14 +581,14 @@ class StaticFetcher(_BaseFetcher):
             # ftp://ftp.example.com/files/document.txt
             # sftp://username@example.com/path/to/folder
 
-            regex = r'^([^:]+)://'
+            regex = r"^([^:]+)://"
             match = re.match(regex, base_url)
 
             if match:
                 _downloader = match.group(1)
         else:
             _downloader = downloader
-            
+
         match _downloader:
             case "http" | "https":
                 return pooch.HTTPDownloader(**kwargs)

@@ -70,8 +70,8 @@ class TestExpectedErrors:
             with pytest.raises(
                 ValueError,
                 match=re.escape(
-                    "Invalid downloader 'barfoo'. Valid options " +
-                    "are ('auto', 'http', 'https', 'ftp', 'sftp', 'doi')"
+                    "Invalid downloader 'barfoo'. Valid options "
+                    + "are ('auto', 'http', 'https', 'ftp', 'sftp', 'doi')"
                 ),
             ):
                 downloader.fetch(
@@ -133,9 +133,9 @@ class TestExpectedBehaviors:
             )
             assert path.exists()
 
-            assert Path(downloader.cache_path / REGISTRY_NAME ).exists()
+            assert Path(downloader.cache_path / REGISTRY_NAME).exists()
             assert (
-                downloader.cache_path / REGISTRY_NAME 
+                downloader.cache_path / REGISTRY_NAME
             ).read_text() == "TEST_FILE1.txt sha256:c4bdb6ba200a917b8384ffeffa4999bf05bd4e479f6580d795aca509c9122dc4\n"
 
     def test_append_database(self, tmp_path):
@@ -152,14 +152,13 @@ class TestExpectedBehaviors:
                 base_url=base_url,
                 file_name="TEST_FILE2.txt",
                 db_name=REGISTRY_NAME,
-                append_db=True
+                append_db=True,
             )
 
         assert Path(downloader.cache_path / REGISTRY_NAME).read_text() == (
-                "TEST_FILE1.txt sha256:c4bdb6ba200a917b8384ffeffa4999bf05bd4e479f6580d795aca509c9122dc4\n"
-                "TEST_FILE2.txt sha256:0ec192c0f90d1332f2abca4398596d3978434ecbae6abea8ffd989412b592458\n"
-            )
-
+            "TEST_FILE1.txt sha256:c4bdb6ba200a917b8384ffeffa4999bf05bd4e479f6580d795aca509c9122dc4\n"
+            "TEST_FILE2.txt sha256:0ec192c0f90d1332f2abca4398596d3978434ecbae6abea8ffd989412b592458\n"
+        )
 
     def test_different_hashes(self, tmp_path):
         with temporary_http_server() as (host, port, temp_folder):
@@ -171,9 +170,10 @@ class TestExpectedBehaviors:
                 db_name=REGISTRY_NAME,
             )
 
-            assert Path(
-                downloader.cache_path / REGISTRY_NAME 
-            ).read_text() == "TEST_FILE1.txt md5:b2f138521297db74b6b280feeb14f9f6\n"
+            assert (
+                Path(downloader.cache_path / REGISTRY_NAME).read_text()
+                == "TEST_FILE1.txt md5:b2f138521297db74b6b280feeb14f9f6\n"
+            )
 
     def test_existing_database(self, tmp_path):
         with temporary_http_server() as (host, port, temp_folder):
@@ -274,7 +274,7 @@ class TestExpectedBehaviors:
         with temporary_http_server() as (host, port, temp_folder):
             base_url = f"http://{host}:{port}/"
             downloader = StaticFetcher()
-            
+
             path = downloader.fetch(
                 base_url=base_url,
                 file_name="TEST_FILE1.txt",
@@ -284,7 +284,6 @@ class TestExpectedBehaviors:
 
 
 def test_append_registry(tmp_path):
-
 
     with temporary_http_server() as (host, port, temp_folder):
         base_url = f"http://{host}:{port}/"
@@ -306,14 +305,14 @@ def test_append_registry(tmp_path):
         fetcher.append_registry(registry, ["TEST_FILE2.txt"])
 
         assert Path(registry).read_text() == (
-            'TEST_FILE1.txt sha256:c4bdb6ba200a917b8384ffeffa4999bf05bd4e479f6580d795aca509c9122dc4\n'
-            'TEST_FILE2.txt sha256:0ec192c0f90d1332f2abca4398596d3978434ecbae6abea8ffd989412b592458\n'
+            "TEST_FILE1.txt sha256:c4bdb6ba200a917b8384ffeffa4999bf05bd4e479f6580d795aca509c9122dc4\n"
+            "TEST_FILE2.txt sha256:0ec192c0f90d1332f2abca4398596d3978434ecbae6abea8ffd989412b592458\n"
         )
 
 
 def test_write_registry(tmp_path):
     # This can't call StaticFetcher directly for an effective test
-    # Maybe refactor the file creation into a function handle or fixture    
+    # Maybe refactor the file creation into a function handle or fixture
     files = {
         "file1.txt": "Molecular \n",
         "file2.txt": "Dynamics. \n",
@@ -322,21 +321,31 @@ def test_write_registry(tmp_path):
         with open(tmp_path / filename, "w") as f:
             f.write(content)
 
-
     fetcher = StaticFetcher(cache_path=tmp_path)
 
-    fetcher.write_registry(tmp_path / "file_1_hash.txt", [tmp_path / "file1.txt"])
-    assert (tmp_path / "file_1_hash.txt").read_text() == 'file1.txt sha256:2da169c5aae36a823c202da49fb11935b76277efcb5cd42a4cf238ddda2a9b20\n'
+    fetcher.write_registry(
+        tmp_path / "file_1_hash.txt", [tmp_path / "file1.txt"]
+    )
+    assert (
+        tmp_path / "file_1_hash.txt"
+    ).read_text() == "file1.txt sha256:2da169c5aae36a823c202da49fb11935b76277efcb5cd42a4cf238ddda2a9b20\n"
 
-    fetcher.write_registry(tmp_path / "file_2_hash.txt", [tmp_path / "file2.txt"])
-    assert (tmp_path / "file_2_hash.txt").read_text() == 'file2.txt sha256:3a0dbd9e2abc4a7bbae6adfe92e2858218135926dacd4a7d3fb4ca2dbdbe457a\n'
+    fetcher.write_registry(
+        tmp_path / "file_2_hash.txt", [tmp_path / "file2.txt"]
+    )
+    assert (
+        tmp_path / "file_2_hash.txt"
+    ).read_text() == "file2.txt sha256:3a0dbd9e2abc4a7bbae6adfe92e2858218135926dacd4a7d3fb4ca2dbdbe457a\n"
 
-    
-    fetcher.write_registry(tmp_path / "file_1_and_2_hash.txt", [tmp_path / "file1.txt", tmp_path / "file2.txt"])
+    fetcher.write_registry(
+        tmp_path / "file_1_and_2_hash.txt",
+        [tmp_path / "file1.txt", tmp_path / "file2.txt"],
+    )
     assert (tmp_path / "file_1_and_2_hash.txt").read_text() == (
         "file1.txt sha256:2da169c5aae36a823c202da49fb11935b76277efcb5cd42a4cf238ddda2a9b20\n"
         "file2.txt sha256:3a0dbd9e2abc4a7bbae6adfe92e2858218135926dacd4a7d3fb4ca2dbdbe457a\n"
     )
+
 
 def test_append_db(tmp_path):
 
@@ -371,14 +380,13 @@ def test_append_db(tmp_path):
             base_url=base_url,
             file_name="TEST_FILE2.txt",
             db_name=REGISTRY_NAME,
-            append_db=True
+            append_db=True,
         )
 
         assert fetcher.read_registry(tmp_path / REGISTRY_NAME) == {
             "TEST_FILE1.txt": "sha256:c4bdb6ba200a917b8384ffeffa4999bf05bd4e479f6580d795aca509c9122dc4",
-            "TEST_FILE2.txt": "sha256:0ec192c0f90d1332f2abca4398596d3978434ecbae6abea8ffd989412b592458"
+            "TEST_FILE2.txt": "sha256:0ec192c0f90d1332f2abca4398596d3978434ecbae6abea8ffd989412b592458",
         }
-
 
 
 def test_check_registry(tmp_path):
@@ -386,7 +394,7 @@ def test_check_registry(tmp_path):
     files = {
         "file1.txt": "Molecular \\n",
         "file2.txt": "Dynamics. \\n",
-        "file3.txt": "Analysis. \\n"
+        "file3.txt": "Analysis. \\n",
     }
 
     for filename, content in files.items():
@@ -403,7 +411,7 @@ def test_check_registry(tmp_path):
 
     assert fetcher.check_registry(tmp_path / "file_1_2_and_3_hash.txt") == [
         tmp_path / "file3.txt",
-        tmp_path / "file2.txt",   
+        tmp_path / "file2.txt",
     ]
 
 
@@ -412,7 +420,7 @@ def test_check_registry_ignore(tmp_path):
     files = {
         "file1.txt": "Molecular \\n",
         "file2.txt": "Dynamics. \\n",
-        "file3.txt": "Analysis. \\n"
+        "file3.txt": "Analysis. \\n",
     }
 
     for filename, content in files.items():
@@ -427,6 +435,8 @@ def test_check_registry_ignore(tmp_path):
         [tmp_path / "file1.txt"],
     )
 
-    assert fetcher.check_registry(tmp_path / "file_1_2_and_3_hash.txt", ignore=[tmp_path / "file2.txt"]) == [
+    assert fetcher.check_registry(
+        tmp_path / "file_1_2_and_3_hash.txt", ignore=[tmp_path / "file2.txt"]
+    ) == [
         tmp_path / "file3.txt",
     ]
