@@ -310,13 +310,14 @@ def test_append_registry(tmp_path):
             'TEST_FILE2.txt sha256:0ec192c0f90d1332f2abca4398596d3978434ecbae6abea8ffd989412b592458\n'
         )
 
+
 def test_write_registry(tmp_path):
+    # This can't call StaticFetcher directly for an effective test
+    # Maybe refactor the file creation into a function handle or fixture    
     files = {
         "file1.txt": "Molecular \n",
         "file2.txt": "Dynamics. \n",
     }
-
-
     for filename, content in files.items():
         with open(tmp_path / filename, "w") as f:
             f.write(content)
@@ -337,9 +338,70 @@ def test_write_registry(tmp_path):
         "file2.txt sha256:3a0dbd9e2abc4a7bbae6adfe92e2858218135926dacd4a7d3fb4ca2dbdbe457a\n"
     )
 
-    def test_read_registry():
-        pass
+def test_append_db(tmp_path):
 
-    def test_check_registry():
-        pass
-    
+    with temporary_http_server() as (host, port, temp_folder):
+        base_url = f"http://{host}:{port}/"
+        fetcher = StaticFetcher(cache_path=tmp_path)
+
+        file1 = fetcher.fetch(
+            base_url=base_url,
+            file_name="TEST_FILE1.txt",
+            db_name=REGISTRY_NAME,
+        )
+
+        assert fetcher.read_registry(tmp_path / REGISTRY_NAME) == {
+            "TEST_FILE1.txt": "sha256:c4bdb6ba200a917b8384ffeffa4999bf05bd4e479f6580d795aca509c9122dc4",
+        }
+
+
+def test_append_db(tmp_path):
+
+    with temporary_http_server() as (host, port, temp_folder):
+        base_url = f"http://{host}:{port}/"
+        fetcher = StaticFetcher(cache_path=tmp_path)
+
+        file1 = fetcher.fetch(
+            base_url=base_url,
+            file_name="TEST_FILE1.txt",
+            db_name=REGISTRY_NAME,
+        )
+
+        file2 = fetcher.fetch(
+            base_url=base_url,
+            file_name="TEST_FILE2.txt",
+            db_name=REGISTRY_NAME,
+            append_db=True
+        )
+
+        assert fetcher.read_registry(tmp_path / REGISTRY_NAME) == {
+            "TEST_FILE1.txt": "sha256:c4bdb6ba200a917b8384ffeffa4999bf05bd4e479f6580d795aca509c9122dc4",
+            "TEST_FILE2.txt": "sha256:0ec192c0f90d1332f2abca4398596d3978434ecbae6abea8ffd989412b592458"
+        }
+
+
+
+def test_check_registry(tmp_path):
+
+    files = {
+        "file1.txt": "Molecular \\n",
+        "file2.txt": "Dynamics. \\n",
+        "file3.txt": "Analysis. \\n"
+    }
+
+    for filename, content in files.items():
+        with open(tmp_path / filename, "w") as f:
+            f.write(content)
+
+    fetcher = StaticFetcher(cache_path=tmp_path)
+
+    # Write only file1
+    fetcher.write_registry(
+        tmp_path / "file_1_2_and_3_hash.txt",
+        [tmp_path / "file1.txt"],
+    )
+
+    assert fetcher.check_registry(tmp_path / "file_1_2_and_3_hash.txt") == [
+        tmp_path / "file3.txt",
+        tmp_path / "file2.txt",   
+    ]

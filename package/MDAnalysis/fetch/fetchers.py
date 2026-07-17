@@ -201,7 +201,7 @@ class StaticFetcher(_BaseFetcher):
             Number of times to retry a failed download. The default is
             :data:`DEFAULT_RETRIES`.
         downloader : str, optional
-            Downloader backend to use. Supported values are ``"auto", "http"``,
+            Downloader backend to use. Supported values are ``"auto"``, ``"http"``,
             ``"ftp"``, ``"sftp"``, and ``"doi"``. The default is ``"auto"``.
 
         Returns
@@ -212,16 +212,16 @@ class StaticFetcher(_BaseFetcher):
 
         Examples
         --------
-        Download a single PDB file from the RCSB Protein Data Bank.
+        Download a single CIF file from the RCSB Protein Data Bank.
     
         >>> StaticFetcher.fetch(file_name="1AKE.cif",
             base_url="https://files.wwpdb.org/download/")
         './MDAnalysis_pdbs/1AKE.cif'
 
-        Download multiple PDB files from the RCSB Protein Data Bank.
+        Download multiple CIF files from the RCSB Protein Data Bank.
         >>> StaticFetcher.fetch(file_name=["1AKE.cif", "4AKE.cif"],
             base_url="https://files.wwpdb.org/download/")
-        ['./MDAnalysis_pdbs/1AKE.pdb.gz', './MDAnalysis_pdbs/4BWZ.pdb.gz']
+        ['./MDAnalysis_pdbs/1AKE.cif', './MDAnalysis_pdbs/4AKE.cif']
 
         Notes
         -----
@@ -349,7 +349,7 @@ class StaticFetcher(_BaseFetcher):
         ... )
         >>> registry = file1.parent / "db_hash1.txt"
         >>> fetcher.append_registry(registry, ["4AKE.cif"])
-        >>> print(registry.read_text())
+        >>> registry.read_text()
         1AKE.cif sha256:01f41b1b42318a1a5df7f650dbab881677aa0e8d825f7c42dd26ae16a94c0948
         4AKE.cif sha256:fcb2ff49a3e255797fee277ce28e0acace67f6e6ddf432841f8451f00cbde9e9
 
@@ -390,8 +390,23 @@ class StaticFetcher(_BaseFetcher):
         Example
         -------
         .. code-block:: python
-
-
+        >>> files = {
+        ...     "file1.txt": "Molecular \\n",
+        ...     "file2.txt": "Dynamics. \\n",
+        ...     "file3.txt": "Analysis. \\n"
+        ... }
+        >>> for filename, content in files.items():
+        ...     with open(tmp_path / filename, "w") as f:
+        ...         f.write(content)
+        ...
+        >>> fetcher = StaticFetcher(cache_path=tmp_path)
+        >>> fetcher.write_registry(
+        ...     "file_1_2_and_3_hash.txt",
+        ...     files=["file1.txt"],
+        ... )
+        >>> fetcher.check_registry("file_1_2_and_3_hash.txt")
+        [Path('./MDAnalysis_pdbs/file3.txt'), Path('./MDAnalysis_pdbs/file2.txt')] 
+      
 
 
         Notes
@@ -430,6 +445,27 @@ class StaticFetcher(_BaseFetcher):
             Dictionary mapping each filename in the registry to its stored hash
             value. Hash values are expected to include the hash algorithm prefix,
             for example ``"sha256:<digest>"``.
+
+        Example
+        -------
+        .. code-block:: python
+
+        >>> files = {
+        ...     "file1.txt": "Molecular \\n",
+        ...     "file2.txt": "Dynamics. \\n",
+        ... }
+        >>> for filename, content in files.items():
+        ...     with open(tmp_path / filename, "w") as f:
+        ...         f.write(content)
+        ...
+        >>> fetcher = StaticFetcher(cache_path=tmp_path)
+        >>> fetcher.write_registry(
+        ...     "file_1_and_2_hash.txt",
+        ...     ["file1.txt", "file2.txt"],
+        ... )
+        >>> fetcher.read_registry("file_1_and_2_hash.txt")
+        {'file1.txt': 'sha256:2da169c5aae36a823c202da49fb11935b76277efcb5cd42a4cf238ddda2a9b20',
+        'file2.txt': 'sha256:3a0dbd9e2abc4a7bbae6adfe92e2858218135926dacd4a7d3fb4ca2dbdbe457a'}
         Notes
         -----
         Each line in the registry file is expected to have the format::
@@ -473,14 +509,14 @@ class StaticFetcher(_BaseFetcher):
         ... }
         >>> for filename, content in files.items():
         ...     with open(tmp_path / filename, "w") as f:
-        ...         _ = f.write(content)
+        ...         f.write(content)
         ...
         >>> fetcher = StaticFetcher(cache_path=tmp_path)
         >>> fetcher.write_registry(
         ...     "file_1_and_2_hash.txt",
         ...     ["file1.txt", "file2.txt"],
         ... )
-        >>> print("file_1_and_2_hash.txt").read_text())
+        >>> Path("file_1_and_2_hash.txt").read_text()
         file1.txt sha256:2da169c5aae36a823c202da49fb11935b76277efcb5cd42a4cf238ddda2a9b20
         file2.txt sha256:3a0dbd9e2abc4a7bbae6adfe92e2858218135926dacd4a7d3fb4ca2dbdbe457a
 
@@ -517,7 +553,6 @@ class StaticFetcher(_BaseFetcher):
 
     def _set_downloader(self, base_url, downloader, **kwargs):
         """Sets Downloader in fetch() by matching a regex against the download link"""
-        
 
         SUPPORTED_DOWNLOADERS = ('auto', 'http', 'https', 'ftp', 'sftp','doi')
 
