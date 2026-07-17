@@ -47,6 +47,7 @@ table on :ref:`table-baseunits`.
    charge       :math:`e`      :math:`1.602176565 \times 10^{-19}` As
    force        kJ/(mol·Å)     :math:`1.66053892103219 \times 10^{-11}` J/m
    speed        Å/ps           :math:`100` m/s
+   mass         u              :math:`1.66053892103219 \times 10^{-27}` kg
    =========== ============== ===============================================
 
 Implementation notes
@@ -407,6 +408,7 @@ MDANALYSIS_BASE_UNITS = {
     "charge": "e",
     "force": "kJ/(mol*A)",
     "speed": "A/ps",
+    "mass": "u",
 }
 
 
