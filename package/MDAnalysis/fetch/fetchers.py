@@ -262,7 +262,7 @@ class StaticFetcher(_BaseFetcher):
         if LOAD_FROM_CACHE:
             registry_dictionary = self.read_registry(db_path)
             missing_files_list = self.check_registry(
-                db_path, files=list(requested_files_abs)
+                db_path, files=list(requested_files)
             )
 
             if len(missing_files_list) != 0:
@@ -376,7 +376,7 @@ class StaticFetcher(_BaseFetcher):
 
     def check_registry(self, db_path, files=[], ignore=[]):
         """
-        Return cache files that are missing from the registry.
+        Return absolute paths to cache files that are missing from the registry.
 
         This method compares filenames within the registry against files found
         recursively under :attr:`cache_path`. A cache file is considered missing
@@ -386,8 +386,12 @@ class StaticFetcher(_BaseFetcher):
         ----------
         db_path : str or path-like
             Path to the registry file to read.
+        files : list of pathlib.Path
+            Paths to additional files to check. Each path must be relative to
+            :attr:`cache_path`.
         ignore : list of str or path-like
-            Files to be ignored
+            Files to be ignored.  Each path must be relative to
+            :attr:`cache_path`.
 
         Returns
         -------
@@ -404,10 +408,10 @@ class StaticFetcher(_BaseFetcher):
         ...     "file3.txt": "Analysis. \\n"
         ... }
         >>> for filename, content in files.items():
-        ...     with open(tmp_path / filename, "w") as f:
+        ...     with open(filename, "w") as f:
         ...         f.write(content)
         ...
-        >>> fetcher = StaticFetcher(cache_path=tmp_path)
+        >>> fetcher = StaticFetcher()
         >>> fetcher.write_registry(
         ...     "file_1_2_and_3_hash.txt",
         ...     files=["file1.txt"],
@@ -433,7 +437,7 @@ class StaticFetcher(_BaseFetcher):
             path
             for path in self.cache_path.rglob("*")
             if path != db_path and path.is_file()
-        ] + files
+        ] + [self.cache_path / file_name for file_name in files]
 
         return [
             path
@@ -444,6 +448,10 @@ class StaticFetcher(_BaseFetcher):
     def read_registry(self, db_path):
         """
         Read a Pooch registry file into a dictionary.
+
+        This method returns filenames within the registry against files found
+        recursively under :attr:`cache_path`. Each key in the returned dictionary
+        corresponds to a filename in the registry relative to :attr:`cache_path`.
 
         Parameters
         ----------
@@ -466,10 +474,10 @@ class StaticFetcher(_BaseFetcher):
         ...     "file2.txt": "Dynamics. \\n",
         ... }
         >>> for filename, content in files.items():
-        ...     with open(tmp_path / filename, "w") as f:
+        ...     with open(filename, "w") as f:
         ...         f.write(content)
         ...
-        >>> fetcher = StaticFetcher(cache_path=tmp_path)
+        >>> fetcher = StaticFetcher()
         >>> fetcher.write_registry(
         ...     "file_1_and_2_hash.txt",
         ...     ["file1.txt", "file2.txt"],
@@ -477,6 +485,7 @@ class StaticFetcher(_BaseFetcher):
         >>> fetcher.read_registry("file_1_and_2_hash.txt")
         {'file1.txt': 'sha256:2da169c5aae36a823c202da49fb11935b76277efcb5cd42a4cf238ddda2a9b20',
         'file2.txt': 'sha256:3a0dbd9e2abc4a7bbae6adfe92e2858218135926dacd4a7d3fb4ca2dbdbe457a'}
+        
         Notes
         -----
         Each line in the registry file is expected to have the format::
@@ -496,13 +505,17 @@ class StaticFetcher(_BaseFetcher):
         """
         Write a Pooch registry file with hashes for the given files.
 
+        This method computes the hash for each file and writes it to the registry file.
+        The registry file maps each filename to its corresponding hash value. The hash
+        algorithm used is determined by the :attr:`hash` of the fetcher.
+
         Parameters
         ----------
         db_path : str or path-like
             Path to the registry file to write.
         files : iterable of str or path-like
-            Files to include in the registry. Each file must provide a ``name``
-            attribute and be readable by ``pooch.file_hash``.
+            Files to be include in the registry. Each file must be relative
+            to :attr:`cache_path`.
         mode : str, optional
             File opening mode used when writing the registry. Default is ``"w"``.
 
@@ -519,10 +532,10 @@ class StaticFetcher(_BaseFetcher):
         ...     "file2.txt": "Dynamics. \\n",
         ... }
         >>> for filename, content in files.items():
-        ...     with open(tmp_path / filename, "w") as f:
+        ...     with open(filename, "w") as f:
         ...         f.write(content)
         ...
-        >>> fetcher = StaticFetcher(cache_path=tmp_path)
+        >>> fetcher = StaticFetcher()
         >>> fetcher.write_registry(
         ...     "file_1_and_2_hash.txt",
         ...     ["file1.txt", "file2.txt"],
@@ -602,9 +615,4 @@ class StaticFetcher(_BaseFetcher):
                 return pooch.SFTPDownloader(**kwargs)
             case "doi":
                 return pooch.DOIDownloader(**kwargs)
-
-
-# class DynamicFetcher(_BaseFetcher):
-#     """Fetcher yields a Python Generator for dynamic downloading and analysis"""
-
-#     raise NotImplementedError
+            
