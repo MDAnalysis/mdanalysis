@@ -315,8 +315,8 @@ class StaticFetcher(_BaseFetcher):
         """
         Append cached files to an existing Pooch registry.
 
-        Each entry in ``files`` is resolved relative to ``self.cache_path``. The
-        file hash is computed using the fetcher's configured hash algorithm ``self.hash`` and a
+        Each entry in ``files`` is resolved relative to :attr:`cache_path`. The
+        file hash is computed using the fetcher's configured hash algorithm :attr:`hash` and a
         new registry line is appended to ``db_path``.
 
         Parameters
@@ -325,7 +325,7 @@ class StaticFetcher(_BaseFetcher):
             Path to the registry file to update.
         files : iterable of str or path-like
             File names or paths for cached files to append to the registry. Relative
-            paths are interpreted relative to ``self.cache_path``.
+            paths are interpreted relative to :attr:`cache_path`.
 
         Returns
         -------
@@ -372,14 +372,20 @@ class StaticFetcher(_BaseFetcher):
         new_files = [self.cache_path / file_name for file_name in files]
         self.write_registry(Path(db_path), new_files, mode="a")
 
-    def check_registry(self, db_path):
+    def check_registry(self, db_path, ignore=[]):
         """
         Return cache files that are missing from the registry.
+
+        This method compares filenames within the registry against files found
+        recursively under :attr:`cache_path`. A cache file is considered missing
+        when it is recorded in the registry, but not physically present on disk.
 
         Parameters
         ----------
         db_path : str or path-like
             Path to the registry file to read.
+        ignore : list of str or path-like
+            Files to be ignored 
 
         Returns
         -------
@@ -387,12 +393,20 @@ class StaticFetcher(_BaseFetcher):
             Cache file paths whose filenames are not present in the registry.
             The registry database file itself is excluded from the result.
 
+        Example
+        -------
+        .. code-block:: python
+
+
+
+
         Notes
         -----
-        This method compares filenames from the registry against files found
-        recursively under :attr:`cache_path`. A cache file is considered missing
-        from the registry when ``path.name`` is not a key in the registry
-        dictionary.
+        Each line in the registry file is expected to have the format::
+
+            <filename> <hash_algorithm>:<digest>
+
+
         """
         registry_dictionary = self.read_registry(db_path)
         database_files = set(registry_dictionary.keys())
@@ -446,7 +460,7 @@ class StaticFetcher(_BaseFetcher):
         ----------
         db_path : str or path-like
             Path to the registry file to write.
-        files : iterable of path-like
+        files : iterable of str or path-like
             Files to include in the registry. Each file must provide a ``name``
             attribute and be readable by ``pooch.file_hash``.
         mode : str, optional
@@ -465,6 +479,7 @@ class StaticFetcher(_BaseFetcher):
         """
         with open(db_path, mode=mode) as f:
             for file in files:
+                file = Path(file)
                 digest = pooch.file_hash(file, alg=self.hash)
                 f.write(f"{file.name} {self.hash}:{digest}\n")
 
@@ -486,6 +501,7 @@ class StaticFetcher(_BaseFetcher):
                 f'Invalid hash "{hash}". Valid hashes algorithms'
                 + f" are {hashlib.algorithms_available}."
             )
+
     def _set_downloader(self, base_url, downloader, **kwargs):
         """Sets Downloader in fetch() by matching a regex against the download link"""
         
@@ -500,7 +516,7 @@ class StaticFetcher(_BaseFetcher):
 
         if downloader == 'auto':
             # The regex below is AI generated, but the overall idea of using regular expressions
-            # was thought up by me.
+            # to check the first bit of the url was thought up by me.
             #
             # I thought of these four examples and prompt AI to come with a regex that capture the
             # susbtring before "://""
