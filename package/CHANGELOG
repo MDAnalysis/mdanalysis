@@ -69,6 +69,7 @@ Fixes
    DSSP by porting upstream PyDSSP 0.9.1 fix (Issue #4913)
 
 Enhancements
+ * Added ASV benchmark for XYZ trajectory reading (PR #5441)
  * Added ASV benchmark for PDB trajectory reading (PR #5394)
  * Read Linear Angle bonded interaction entries from GROMACS TPR files and
    add the angles to the topology (Issue #5361, PR #5372)
