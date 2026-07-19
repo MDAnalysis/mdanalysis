@@ -217,6 +217,8 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
         )
         # Send the rest of the frames- small enough to all fit in socket itself
         ref.server.send_frames(1, 5)
+        # Send EOF so the client does not rely on timeout to mark the end of the stream
+        ref.server.disconnect()
 
         reader.add_auxiliary(
             "lowf",
@@ -249,6 +251,8 @@ class TestIMDReaderBaseAPI(MultiframeReaderTest):
         )
         # Send the rest of the frames- small enough to all fit in socket itself
         ref.server.send_frames(1, 5)
+        # Send EOF so the client does not rely on timeout to mark the end of the stream
+        ref.server.disconnect()
         transformed.add_transformations(
             translate([1, 1, 1]), translate([0, 0, 0.33])
         )
@@ -436,6 +440,8 @@ class TestStreamIteration:
             buffer_size=1 * 1024 * 1024,
         )
         server.send_frames(1, 5)
+        # Send EOF so the client does not rely on timeout to mark the end of the stream
+        server.disconnect()
 
         yield reader
         server.cleanup()
