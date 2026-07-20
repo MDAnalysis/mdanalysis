@@ -161,6 +161,8 @@ import logging
 import warnings
 
 import numpy as np
+from array_api_compat import array_namespace
+import array_api_extra as xpx
 import copy
 
 import MDAnalysis as mda
@@ -285,7 +287,7 @@ class BAT(AnalysisBase):
         description="Bond-Angle-Torsions Coordinate Transformation",
         path="MDAnalysis.analysis.bat.BAT",
     )
-    def __init__(self, ag, initial_atom=None, filename=None, **kwargs):
+    def __init__(self, ag, initial_atom=None, filename=None, backend_arr=None, **kwargs):
         r"""Parameters
         ----------
         ag : AtomGroup or Universe
@@ -315,6 +317,10 @@ class BAT(AnalysisBase):
         """
         super(BAT, self).__init__(ag.universe.trajectory, **kwargs)
         self._ag = ag
+        if backend_arr is not None:
+            self._backend_arr = backend_arr
+        else:
+            self._backend_arr = np.array([1.])
 
         # Check that the ag contains bonds
         if not hasattr(self._ag, "bonds"):
@@ -394,8 +400,9 @@ class BAT(AnalysisBase):
             self.load(filename)
 
     def _prepare(self):
-        self.results.bat = np.zeros(
-            (self.n_frames, 3 * self._ag.n_atoms), dtype=np.float64
+        xp = array_namespace(self._backend_arr)
+        self.results.bat = xp.zeros(
+            (self.n_frames, 3 * self._ag.n_atoms), dtype=xp.float32
         )
 
     def _single_frame(self):
@@ -403,75 +410,77 @@ class BAT(AnalysisBase):
         # The rotation axis is a normalized vector pointing from atom 0 to 1
         # It is described in two degrees of freedom
         # by the polar angle and azimuth
+        xp = array_namespace(self._backend_arr)
         if self._root.dimensions is None:
             (p0, p1, p2) = self._root.positions
         else:
             (p0, p1, p2) = make_whole(self._root, inplace=False)
+        p0, p1, p2 = map(xp.asarray, (p0, p1, p2))
         v01 = p1 - p0
         v21 = p1 - p2
         # Internal coordinates
-        r01 = np.sqrt(np.einsum("i,i->", v01, v01))
+        r01 = xp.sqrt(xp.einsum("i,i->", v01, v01))
         # Distance between first two root atoms
-        r12 = np.sqrt(np.einsum("i,i->", v21, v21))
+        r12 = xp.sqrt(xp.einsum("i,i->", v21, v21))
         # Distance between second two root atoms
         # Angle between root atoms
-        a012 = np.arccos(
+        a012 = xp.arccos(
             max(
                 -1.0,
                 min(
                     1.0,
-                    np.einsum("i,i->", v01, v21)
-                    / np.sqrt(
-                        np.einsum("i,i->", v01, v01)
-                        * np.einsum("i,i->", v21, v21)
+                    xp.einsum("i,i->", v01, v21)
+                    / xp.sqrt(
+                        xp.einsum("i,i->", v01, v01)
+                        * xp.einsum("i,i->", v21, v21)
                     ),
                 ),
             )
         )
         # External coordinates
         e = v01 / r01
-        phi = np.arctan2(e[1], e[0])  # Polar angle
-        theta = np.arccos(e[2])  # Azimuthal angle
+        phi = xp.arctan2(e[1], e[0])  # Polar angle
+        theta = xp.arccos(e[2])  # Azimuthal angle
         # Rotation to the z axis
-        cp = np.cos(phi)
-        sp = np.sin(phi)
-        ct = np.cos(theta)
-        st = np.sin(theta)
-        Rz = np.array(
+        cp = xp.cos(phi)
+        sp = xp.sin(phi)
+        ct = xp.cos(theta)
+        st = xp.sin(theta)
+        Rz = xp.asarray(
             [[cp * ct, ct * sp, -st], [-sp, cp, 0], [cp * st, sp * st, ct]]
         )
-        pos2 = Rz.dot(p2 - p1)
+        pos2 = xp.matmul(Rz, (p2 - p1))
         # Angle about the rotation axis
-        omega = np.arctan2(pos2[1], pos2[0])
-        root_based = np.concatenate((p0, [phi, theta, omega, r01, r12, a012]))
+        omega = xp.arctan2(pos2[1], pos2[0])
+        root_based = xp.concat((p0, xp.asarray([phi, theta, omega, r01, r12, a012])))
 
         # Calculate internal coordinates from the torsion list
-        bonds = calc_bonds(
-            self._ag1.positions, self._ag2.positions, box=self._ag1.dimensions
-        )
-        angles = calc_angles(
+        bonds = xp.asarray(calc_bonds(
+            self._ag1.positions, self._ag2.positions, box=self._ag1.dimensions),
+            dtype=xp.float32)
+        angles = xp.asarray(calc_angles(
             self._ag1.positions,
             self._ag2.positions,
             self._ag3.positions,
             box=self._ag1.dimensions,
-        )
-        torsions = calc_dihedrals(
+        ), dtype=xp.float32)
+        torsions = xp.asarray(calc_dihedrals(
             self._ag1.positions,
             self._ag2.positions,
             self._ag3.positions,
             self._ag4.positions,
             box=self._ag1.dimensions,
-        )
+        ), dtype=xp.float32)
         # When appropriate, calculate improper torsions
-        shift = torsions[self._primary_torsion_indices]
-        shift[self._unique_primary_torsion_indices] = 0.0
+        shift = torsions[xp.asarray(self._primary_torsion_indices)]
+        shift = xpx.at(shift)[xp.asarray(self._unique_primary_torsion_indices)].set(0.0)
         torsions -= shift
-        # Wrap torsions to between -np.pi and np.pi
-        torsions = ((torsions + np.pi) % (2 * np.pi)) - np.pi
+        # Wrap torsions to between -xp.pi and xp.pi
+        torsions = ((torsions + xp.pi) % (2 * xp.pi)) - xp.pi
 
-        self.results.bat[self._frame_index, :] = np.concatenate(
+        self.results.bat = xpx.at(self.results.bat)[self._frame_index, :].set(xp.concat(
             (root_based, bonds, angles, torsions)
-        )
+        ))
 
     def load(self, filename, start=None, stop=None, step=None):
         """Loads the bat trajectory from a file in numpy binary format
