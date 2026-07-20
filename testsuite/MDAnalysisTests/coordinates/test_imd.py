@@ -544,12 +544,12 @@ def test_imd_stream_empty(universe, imdsinfo):
             n_atoms=universe.trajectory.n_atoms,
             # we have no opportunity to send an EOF here
             # since IMDReader creation both establishes a connection
-            # and attempts to read the first frame, and the EOF 
+            # and attempts to read the first frame, and the EOF
             # would have to arrive between these two.
             # rather than creating a special IMDServer method that
             # immediately sends EOF after handshake,
             # just use a 1s timeout passed to IMDClient
-            timeout=1
+            timeout=1,
         )
     server.cleanup()
 
