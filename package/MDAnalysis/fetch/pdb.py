@@ -30,12 +30,6 @@ Structural Bioinformatics (RCSB) `Protein Data Batabank`_ (PDB).
 
 .. _Protein Data Batabank: https://www.rcsb.org/
 
-Variables
----------
-
-.. autodata:: DEFAULT_CACHE_NAME_DOWNLOADER
-
-
 Functions
 ---------
 
@@ -46,7 +40,7 @@ from pathlib import Path
 from .fetchers import StaticFetcher
 
 # These file formats are here https://www.rcsb.org/docs/programmatic-access/file-download-services#pdb-entry-files"
-SUPPORTED_FILE_FORMATS_DOWNLOADER = (
+_SUPPORTED_FILE_FORMATS_PDB = (
     "cif",
     "cif.gz",
     "bcif",
@@ -150,10 +144,10 @@ def from_PDB(
     .. versionadded:: 2.11.0
     """
 
-    if file_format not in SUPPORTED_FILE_FORMATS_DOWNLOADER:
+    if file_format not in _SUPPORTED_FILE_FORMATS_PDB:
         raise ValueError(
             "Invalid file format. Supported file formats "
-            f"are {SUPPORTED_FILE_FORMATS_DOWNLOADER}"
+            f"are {_SUPPORTED_FILE_FORMATS_PDB}"
         )
 
     pdb_ids = [pdb + "." + file_format for pdb in pdb_ids]

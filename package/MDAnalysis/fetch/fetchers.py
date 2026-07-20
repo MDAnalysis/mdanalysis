@@ -25,7 +25,7 @@
 Fetchers --- :mod:`MDAnalysis.fetch.fetchers`
 =============================================
 
-This module contains fetcher classes that retrieve files from remote servers.
+This module contains Fetcher classes which are able to retrieve files from remote servers.
 These classes use the third-party library :mod:`pooch` as a dependency.
 
 Classes
@@ -38,8 +38,8 @@ Classes
 Variables
 ---------
 
-These module-level variables affect runtime behavior across all fetcher classes.
-Changing these values affects all fetchers.
+These module-level variables affect the runtime behavior across all Fetcher classes.
+Changing these values affects all initalized Fetchers.
 
 
 .. autodata:: DEFAULT_CACHE_NAME_DOWNLOADER
@@ -130,13 +130,13 @@ class StaticFetcher(_BaseFetcher):
 
     Parameters
     ----------
-    cache_path : str or pathlib.Path, optional
+    cache_path : str or pathlib.Path
         Path to the cache directory. If set to ``None``, the default cache
         directory will be used as specified by
         :data:`DEFAULT_CACHE_NAME_DOWNLOADER`.
-        If the directory does not exist, it will be created.
+        If the directory does not exist, it will attempt to be created.
 
-    hash : str, optional
+    hash : str
         Hash algorithm to use for verifying the integrity of downloaded files.
         The default is ``sha256``. Valid options are any hash algorithm
         available in the :mod:`hashlib` module.
@@ -180,6 +180,14 @@ class StaticFetcher(_BaseFetcher):
         """
         Download one or more files from a static base URL and cache them
         locally.
+
+        Primarily designed to be working with `FAIR`_
+        databases, this method works by sending a request to a web server and caching them to a registry.
+        The registry is in the format of a `pooch registry file`_, and it will be created or read relative to 
+        :attr:`cache_path`.
+
+        .. _FAIR: https://www.nature.com/articles/s41592-025-02635-0
+        .. _`pooch registry file`: https://www.fatiando.org/pooch/latest/registry-files.html#registry-file-format
 
         Parameters
         ----------
@@ -234,7 +242,7 @@ class StaticFetcher(_BaseFetcher):
         variable ``MDANALYSIS_FETCHER_DATA`` to a valid path. This class uses
         :mod:`pooch` as a backend for downloading and caching files. The
         cache database is created on demand when ``db_name`` does not
-        exist.
+        exist relative to :attr:`cache_path`.
 
         .. versionadded:: 2.11.0
 
@@ -253,9 +261,6 @@ class StaticFetcher(_BaseFetcher):
         requested_files = (
             (file_name,) if isinstance(file_name, str) else tuple(file_name)
         )
-        requested_files_abs = [
-            self.cache_path / name for name in requested_files
-        ]
 
         ## Reading from Registry
         if db_name is not None:
@@ -562,7 +567,7 @@ class StaticFetcher(_BaseFetcher):
             <filename> <hash_algorithm>:<digest>
 
         .. versionadded:: 2.11.0
-        
+
         """
         with open(db_path, mode=mode) as f:
             for file in files:
@@ -578,7 +583,7 @@ class StaticFetcher(_BaseFetcher):
         else:
             path = Path(cache_path)
 
-        # Environment variable override
+        # Environment variable master override
         if not os.environ.get("MDANALYSIS_FETCHER_DATA") is None:
             path = Path(os.environ.get("MDANALYSIS_FETCHER_DATA"))
 

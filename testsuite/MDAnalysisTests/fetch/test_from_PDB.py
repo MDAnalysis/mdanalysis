@@ -27,7 +27,7 @@ import MDAnalysis as mda
 import re
 
 from MDAnalysis.fetch.fetchers import HAS_POOCH
-from MDAnalysis.fetch.pdb import SUPPORTED_FILE_FORMATS_DOWNLOADER
+from MDAnalysis.fetch.pdb import _SUPPORTED_FILE_FORMATS_PDB
 from urllib import request
 from pathlib import Path
 
@@ -86,7 +86,7 @@ def test_invalid_file_format(tmp_path):
         ValueError,
         match=re.escape(
             "Invalid file format. Supported file formats "
-            f"are {SUPPORTED_FILE_FORMATS_DOWNLOADER}"
+            f"are {_SUPPORTED_FILE_FORMATS_PDB}"
         ),
     ):
         mda.fetch.from_PDB(
