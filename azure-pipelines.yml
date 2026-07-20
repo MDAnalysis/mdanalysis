@@ -82,6 +82,8 @@ jobs:
       h5py>=2.10
       matplotlib
       numpy
+      array-api-compat
+      array-api-extra
       packaging
       pytest
       pytest-cov

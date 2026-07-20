@@ -30,6 +30,8 @@ maintainers = [
 requires-python = ">=3.11"
 dependencies = [
     'numpy>=1.26.0',
+    'array-api-compat',
+    'array-api-extra',
     'GridDataFormats>=0.4.0',
     'mmtf-python>=1.0.0',
     'joblib>=0.12',
@@ -130,7 +132,7 @@ line-length = 79
 target-version = ['py311', 'py312', 'py313']
 extend-exclude = '''
 (
-__pycache__ 
+__pycache__
 | MDAnalysis/coordinates/DCD\.py
 | MDAnalysis/coordinates/TRJ\.py
 | MDAnalysis/coordinates/__init__\.py

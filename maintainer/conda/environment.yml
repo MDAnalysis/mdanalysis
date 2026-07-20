@@ -2,6 +2,8 @@ name: mda-dev
 channels:
   - conda-forge
 dependencies:
+  - array-api-compat
+  - array-api-extra
   - chemfiles>=0.10
   - codecov
   - cython

@@ -51,10 +51,10 @@ the correlation between the torsion angles.
 Each molecule also has six external coordinates that define its translation and
 rotation in space. The three Cartesian coordinates of the first atom are the
 molecule's translational degrees of freedom. Rotational degrees of freedom are
-specified by the axis-angle convention. The rotation axis is a normalized vector
-pointing from the first to second atom. It is described by the polar angle,
-:math:`\phi`, and azimuthal angle, :math:`\theta`. :math:`\omega` is a third angle
-that describes the rotation of the third atom about the axis.
+specified by the axis-angle convention. The rotation axis is a normalized
+vector pointing from the first to second atom. It is described by the polar
+angle, :math:`\phi`, and azimuthal angle, :math:`\theta`. :math:`\omega` is a
+third angle that describes the rotation of the third atom about the axis.
 
 This module was adapted from AlGDock :footcite:p:`Minh2020`.
 
@@ -74,8 +74,8 @@ The :class:`~MDAnalysis.analysis.bat.BAT` class defines bond-angle-torsion
 coordinates based on the topology of an atom group and interconverts between
 Cartesian and BAT coordinate systems.
 
-For example, we can determine internal coordinates for residues 5-10
-of adenylate kinase (AdK). The trajectory is included within the test data files::
+For example, we can determine internal coordinates for residues 5-10 of
+adenylate kinase (AdK). The trajectory is included within the test data files::
 
    import MDAnalysis as mda
    from MDAnalysisTests.datafiles import PSF, DCD
@@ -135,20 +135,20 @@ Analysis classes
 
     .. attribute:: results.bat
 
-        Contains the time series of the Bond-Angle-Torsion coordinates as a
-        (nframes, 3N) :class:`numpy.ndarray` array. Each row corresponds to
-        a frame in the trajectory. In each column, the first six elements
-        describe external degrees of freedom. The first three are the center
-        of mass of the initial atom. The next three specify the  external angles
-        according to the axis-angle convention: :math:`\phi`, the polar angle,
-        :math:`\theta`, the azimuthal angle, and :math:`\omega`, a third angle
-        that describes the rotation of the third atom about the axis. The next
-        three degrees of freedom are internal degrees of freedom for the root
-        atoms: :math:`r_{01}`, the distance between atoms 0 and 1,
-        :math:`r_{12}`, the distance between atoms 1 and 2,
-        and :math:`a_{012}`, the angle between the three atoms.
-        The rest of the array consists of all the other bond distances,
-        all the other bond angles, and then all the other torsion angles.
+       Contains the time series of the Bond-Angle-Torsion coordinates as a
+       (nframes, 3N) :class:`numpy.ndarray` array. Each row corresponds to a
+       frame in the trajectory. In each column, the first six elements describe
+       external degrees of freedom. The first three are the center of mass of
+       the initial atom. The next three specify the external angles according
+       to the axis-angle convention: :math:`\phi`, the polar angle,
+       :math:`\theta`, the azimuthal angle, and :math:`\omega`, a third angle
+       that describes the rotation of the third atom about the axis. The next
+       three degrees of freedom are internal degrees of freedom for the root
+       atoms: :math:`r_{01}`, the distance between atoms 0 and 1,
+       :math:`r_{12}`, the distance between atoms 1 and 2, and :math:`a_{012}`,
+       the angle between the three atoms.  The rest of the array consists of
+       all the other bond distances, all the other bond angles, and then all
+       the other torsion angles.
 
 
 References
@@ -161,6 +161,8 @@ import logging
 import warnings
 
 import numpy as np
+from array_api_compat import array_namespace
+import array_api_extra as xpx
 import copy
 
 import MDAnalysis as mda
@@ -177,7 +179,8 @@ logger = logging.getLogger(__name__)
 def _sort_atoms_by_mass(atoms, reverse=False):
     r"""Sorts a list of atoms by mass and then by index
 
-    The atom index is used as a tiebreaker so that the ordering is reproducible.
+    The atom index is used as a tiebreaker so that the ordering is
+    reproducible.
 
     Parameters
     ----------
@@ -190,6 +193,7 @@ def _sort_atoms_by_mass(atoms, reverse=False):
     -------
     ag_n : list of Atoms
         Sorted list
+
     """
     return sorted(atoms, key=lambda a: (a.mass, a.index), reverse=reverse)
 
@@ -285,17 +289,18 @@ class BAT(AnalysisBase):
         description="Bond-Angle-Torsions Coordinate Transformation",
         path="MDAnalysis.analysis.bat.BAT",
     )
-    def __init__(self, ag, initial_atom=None, filename=None, **kwargs):
+    def __init__(
+        self, ag, initial_atom=None, filename=None, backend_arr=None, **kwargs
+    ):
         r"""Parameters
         ----------
         ag : AtomGroup or Universe
-            Group of atoms for which the BAT coordinates are calculated.
-            `ag` must have a bonds attribute.
-            If unavailable, bonds may be guessed using
-            :meth:`AtomGroup.guess_bonds <MDAnalysis.core.groups.AtomGroup.guess_bonds>`.
-            `ag` must only include one molecule.
-            If a trajectory is associated with the atoms, then the computation
-            iterates over the trajectory.
+            Group of atoms for which the BAT coordinates are calculated.  `ag`
+            must have a bonds attribute.  If unavailable, bonds may be guessed
+            using :meth:`AtomGroup.guess_bonds
+            <MDAnalysis.core.groups.AtomGroup.guess_bonds>`.  `ag` must only
+            include one molecule.  If a trajectory is associated with the
+            atoms, then the computation iterates over the trajectory.
         initial_atom : :class:`Atom <MDAnalysis.core.groups.Atom>`
             The atom whose Cartesian coordinates define the translation
             of the molecule. If not specified, the heaviest terminal atom
@@ -315,6 +320,10 @@ class BAT(AnalysisBase):
         """
         super(BAT, self).__init__(ag.universe.trajectory, **kwargs)
         self._ag = ag
+        if backend_arr is not None:
+            self._backend_arr = backend_arr
+        else:
+            self._backend_arr = np.array([1.0])
 
         # Check that the ag contains bonds
         if not hasattr(self._ag, "bonds"):
@@ -394,8 +403,9 @@ class BAT(AnalysisBase):
             self.load(filename)
 
     def _prepare(self):
-        self.results.bat = np.zeros(
-            (self.n_frames, 3 * self._ag.n_atoms), dtype=np.float64
+        xp = array_namespace(self._backend_arr)
+        self.results.bat = xp.zeros(
+            (self.n_frames, 3 * self._ag.n_atoms), dtype=xp.float32
         )
 
     def _single_frame(self):
@@ -403,74 +413,91 @@ class BAT(AnalysisBase):
         # The rotation axis is a normalized vector pointing from atom 0 to 1
         # It is described in two degrees of freedom
         # by the polar angle and azimuth
+        xp = array_namespace(self._backend_arr)
         if self._root.dimensions is None:
             (p0, p1, p2) = self._root.positions
         else:
             (p0, p1, p2) = make_whole(self._root, inplace=False)
+        p0, p1, p2 = map(xp.asarray, (p0, p1, p2))
         v01 = p1 - p0
         v21 = p1 - p2
         # Internal coordinates
-        r01 = np.sqrt(np.einsum("i,i->", v01, v01))
+        r01 = xp.sqrt(xp.einsum("i,i->", v01, v01))
         # Distance between first two root atoms
-        r12 = np.sqrt(np.einsum("i,i->", v21, v21))
+        r12 = xp.sqrt(xp.einsum("i,i->", v21, v21))
         # Distance between second two root atoms
         # Angle between root atoms
-        a012 = np.arccos(
+        a012 = xp.arccos(
             max(
                 -1.0,
                 min(
                     1.0,
-                    np.einsum("i,i->", v01, v21)
-                    / np.sqrt(
-                        np.einsum("i,i->", v01, v01)
-                        * np.einsum("i,i->", v21, v21)
+                    xp.einsum("i,i->", v01, v21)
+                    / xp.sqrt(
+                        xp.einsum("i,i->", v01, v01)
+                        * xp.einsum("i,i->", v21, v21)
                     ),
                 ),
             )
         )
         # External coordinates
         e = v01 / r01
-        phi = np.arctan2(e[1], e[0])  # Polar angle
-        theta = np.arccos(e[2])  # Azimuthal angle
+        phi = xp.arctan2(e[1], e[0])  # Polar angle
+        theta = xp.arccos(e[2])  # Azimuthal angle
         # Rotation to the z axis
-        cp = np.cos(phi)
-        sp = np.sin(phi)
-        ct = np.cos(theta)
-        st = np.sin(theta)
-        Rz = np.array(
+        cp = xp.cos(phi)
+        sp = xp.sin(phi)
+        ct = xp.cos(theta)
+        st = xp.sin(theta)
+        Rz = xp.asarray(
             [[cp * ct, ct * sp, -st], [-sp, cp, 0], [cp * st, sp * st, ct]]
         )
-        pos2 = Rz.dot(p2 - p1)
+        pos2 = xp.matmul(Rz, (p2 - p1))
         # Angle about the rotation axis
-        omega = np.arctan2(pos2[1], pos2[0])
-        root_based = np.concatenate((p0, [phi, theta, omega, r01, r12, a012]))
+        omega = xp.arctan2(pos2[1], pos2[0])
+        root_based = xp.concat(
+            (p0, xp.asarray([phi, theta, omega, r01, r12, a012]))
+        )
 
         # Calculate internal coordinates from the torsion list
-        bonds = calc_bonds(
-            self._ag1.positions, self._ag2.positions, box=self._ag1.dimensions
+        bonds = xp.asarray(
+            calc_bonds(
+                self._ag1.positions,
+                self._ag2.positions,
+                box=self._ag1.dimensions,
+            ),
+            dtype=xp.float32,
         )
-        angles = calc_angles(
-            self._ag1.positions,
-            self._ag2.positions,
-            self._ag3.positions,
-            box=self._ag1.dimensions,
+        angles = xp.asarray(
+            calc_angles(
+                self._ag1.positions,
+                self._ag2.positions,
+                self._ag3.positions,
+                box=self._ag1.dimensions,
+            ),
+            dtype=xp.float32,
         )
-        torsions = calc_dihedrals(
-            self._ag1.positions,
-            self._ag2.positions,
-            self._ag3.positions,
-            self._ag4.positions,
-            box=self._ag1.dimensions,
+        torsions = xp.asarray(
+            calc_dihedrals(
+                self._ag1.positions,
+                self._ag2.positions,
+                self._ag3.positions,
+                self._ag4.positions,
+                box=self._ag1.dimensions,
+            ),
+            dtype=xp.float32,
         )
         # When appropriate, calculate improper torsions
-        shift = torsions[self._primary_torsion_indices]
-        shift[self._unique_primary_torsion_indices] = 0.0
+        shift = torsions[xp.asarray(self._primary_torsion_indices)]
+        shift = xpx.at(shift)[
+            xp.asarray(self._unique_primary_torsion_indices)
+        ].set(0.0)
         torsions -= shift
-        # Wrap torsions to between -np.pi and np.pi
-        torsions = ((torsions + np.pi) % (2 * np.pi)) - np.pi
+        # Wrap torsions to between -xp.pi and xp.pi
+        torsions = ((torsions + xp.pi) % (2 * xp.pi)) - xp.pi
 
-        self.results.bat[self._frame_index, :] = np.concatenate(
-            (root_based, bonds, angles, torsions)
+        self.results.bat = xpx.at(self.results.bat)[self._frame_index, :].set(
+            xp.concat((root_based, bonds, angles, torsions))
         )
 
     def load(self, filename, start=None, stop=None, step=None):
@@ -539,10 +566,10 @@ class BAT(AnalysisBase):
         Returns
         -------
         XYZ : numpy.ndarray
-            an array with dimensions (N,3) with Cartesian coordinates. The first
-            dimension has the same ordering as the AtomGroup used to initialize
-            the class. The molecule will be whole opposed to wrapped around a
-            periodic boundary.
+            an array with dimensions (N,3) with Cartesian coordinates. The
+            first dimension has the same ordering as the AtomGroup used to
+            initialize the class. The molecule will be whole opposed to wrapped
+            around a periodic boundary.
         """
         # Split the bat vector into more convenient variables
         origin = bat_frame[:3]

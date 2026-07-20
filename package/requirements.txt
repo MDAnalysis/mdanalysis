@@ -1,3 +1,5 @@
+array-api-compat
+array-api-extra
 biopython>=1.80
 codecov
 cython

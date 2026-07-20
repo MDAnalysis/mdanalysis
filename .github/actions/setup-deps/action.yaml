@@ -17,6 +17,10 @@ inputs:
     description: 'use micromamba instead of conda'
     default: false
   # conda-installed min dependencies
+  array-api-compat:
+    default: 'array-api-compat'
+  array-api-extra:
+    default: 'array-api-extra'
   codecov:
     default: 'codecov'
   cython:
@@ -118,6 +122,8 @@ runs:
       shell: bash -l {0}
       env:
         CONDA_MIN_DEPS: |
+          ${{ inputs.array-api-compat }}
+          ${{ inputs.array-api-extra }}
           ${{ inputs.codecov }}
           ${{ inputs.cython }}
           ${{ inputs.filelock }}
