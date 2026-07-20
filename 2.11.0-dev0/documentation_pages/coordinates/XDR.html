@@ -140,7 +140,11 @@
 <li class="toctree-l2"><a class="reference internal" href="core.html">7.34. Common functions for coordinate reading — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="pickle_readers.html">7.35. Serialization of Coordinate Readers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chain.html">7.36. ChainReader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">7.37. XDR based trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">7.37. XDR based trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#xdr-reader-class">7.37.1. XDR reader class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#functions">7.37.2. Functions</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../converters.html">8. Converter modules</a></li>
@@ -198,28 +202,39 @@ formats.</p>
 </dd>
 </dl>
 </div>
-</section>
+<section id="xdr-reader-class">
+<h2><span class="section-number">7.37.1. </span>XDR reader class<a class="headerlink" href="#xdr-reader-class" title="Link to this heading"></a></h2>
+<p>The <a class="reference internal" href="#MDAnalysis.coordinates.XDR.XDRBaseReader" title="MDAnalysis.coordinates.XDR.XDRBaseReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">XDRBaseReader</span></code></a> contains common functionality for the TRR and XTC
+reader for GROMACS files, which are implemented in the
+<a class="reference internal" href="../lib/formats/libmdaxdr.html#module-MDAnalysis.lib.formats.libmdaxdr" title="MDAnalysis.lib.formats.libmdaxdr"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.formats.libmdaxdr</span></code></a> module.</p>
+<p>Both formats have in common that they do not allow
+native random frame access. Therefore, we first scan the whole trajectory to
+build an index of frames in the file (“offsets”) as a look-up for seeking to
+frames. This process is initially slow so we save the offsets to a hidden file
+next to the trajectory (if possible) and then read the offset file when the
+trajectory is opened the next time, as described under <a class="reference internal" href="#offsets-label"><span class="std std-ref">Offsets</span></a>.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.XDR.XDRBaseReader">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.XDR.</span></span><span class="sig-name descname"><span class="pre">XDRBaseReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sub</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refresh_offsets</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XDR.html#XDRBaseReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader" title="Link to this definition"></a></dt>
 <dd><p>Base class for libmdaxdr file formats xtc and trr</p>
 <p>This class handles integration of XDR based formats into MDAnalysis. The
-XTC and TRR classes only implement <cite>_write_next_frame</cite> and
-<cite>_frame_to_ts</cite>.</p>
+XTC and TRR classes only implement <code class="xref py py-meth docutils literal notranslate"><span class="pre">_write_next_frame()</span></code> and
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">_frame_to_ts()</span></code>.</p>
 <p class="rubric" id="offsets-label">Notes</p>
 <p>XDR based readers store persistent offsets on disk. The offsets are used to
 enable access to random frames efficiently. These offsets will be generated
-automatically the  first time the  trajectory is opened.  Generally offsets
-are stored  in hidden  <cite>*_offsets.npz</cite> files.  Afterwards opening  the same
+automatically the first time the trajectory is opened.  Generally offsets
+are stored in hidden <code class="docutils literal notranslate"><span class="pre">*_offsets.npz</span></code> files.  Afterwards opening the same
 file again is fast. It sometimes can happen that the stored offsets get out
 off sync with the trajectory they refer to. For this the offsets also store
 the number of atoms, size of the file and last modification time. If any of
-them change  the offsets are recalculated.  Writing of the offset  file can
-fail when the  directory where the trajectory file resides  is not writable
-or if the  disk is full. In this  case a warning message will  be shown but
+them change the offsets are recalculated.  Writing of the offset file can
+fail when the directory where the trajectory file resides is not writable
+or if the disk is full. In this case a warning message will be shown but
 the offsets will nevertheless be used during the lifetime of the trajectory
-Reader. However, the  next time the trajectory is opened,  the offsets will
+Reader. However, the next time the trajectory is opened, the offsets will
 have to be rebuilt again.</p>
+<p>See <a class="reference internal" href="#MDAnalysis.coordinates.XDR.XDRBaseReader._load_offsets" title="MDAnalysis.coordinates.XDR.XDRBaseReader._load_offsets"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_load_offsets()</span></code></a> for further details.</p>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 1.0.0: </span>XDR offsets read from trajectory if offsets file read-in fails</p>
 </div>
@@ -264,6 +279,114 @@ available). <em>n_atoms</em> is always set from <code class="xref py py-attr doc
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.XDR.XDRBaseReader.Writer">
 <span class="sig-name descname"><span class="pre">Writer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XDR.html#XDRBaseReader.Writer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader.Writer" title="Link to this definition"></a></dt>
 <dd><p>Return writer for trajectory format</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.XDR.XDRBaseReader._Timestep">
+<span class="sig-name descname"><span class="pre">_Timestep</span></span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader._Timestep" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="timestep.html#MDAnalysis.coordinates.timestep.Timestep" title="MDAnalysis.coordinates.timestep.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.XDR.XDRBaseReader._apply_transformations">
+<span class="sig-name descname"><span class="pre">_apply_transformations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader._apply_transformations" title="Link to this definition"></a></dt>
+<dd><p>Applies all the transformations given by the user</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.XDR.XDRBaseReader._check_for_aux">
+<span class="sig-name descname"><span class="pre">_check_for_aux</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">auxname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader._check_for_aux" title="Link to this definition"></a></dt>
+<dd><p>Check for the existance of an auxiliary <em>auxname</em>. If present,
+return the AuxReader; if not, raise ValueError</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.XDR.XDRBaseReader._load_offsets">
+<span class="sig-name descname"><span class="pre">_load_offsets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XDR.html#XDRBaseReader._load_offsets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader._load_offsets" title="Link to this definition"></a></dt>
+<dd><p>load frame offsets from file or recalculate if necessary</p>
+<p>Frame offsets are cached in an offsets file, which is stored as a
+hidden file in the same directory as the trajectory. If the file does
+not exist we generate the offsets and store them.</p>
+<p>If the data in the offset file are outdated (older than the trajectory
+file or different number of frames from the trajectory or different
+file size) then the offset file is also regenerated.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Generating offsets can take minutes for large trajectories because
+the whole file must be scanned. During this time, code appears to
+hang.</p>
+</div>
+<p>You can force regenerating offsets with the <cite>refresh_offsets</cite> keyword
+argument for <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>, for
+example,:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">TOPOLOGY</span><span class="p">,</span> <span class="n">XTC</span><span class="p">,</span> <span class="n">refresh_offsets</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To prevent the competition of generating the same offset file from
+multiple processes, a <a class="reference external" href="https://py-filelock.readthedocs.io/en/latest/api.html#filelock.FileLock" title="(in Project name not set v3.31)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">filelock.FileLock</span></code></a> is used, which is
+implemented via a lock file (in the same directory as the offset file
+and ending in “.lock”). This lock file is <em>not</em> automatically deleted
+because doing so could lead to race conditions.</p>
+<p>Once this method completes, the
+<a class="reference internal" href="../lib/formats/libmdaxdr.html#MDAnalysis.lib.formats.libmdaxdr.XTCFile.offsets" title="MDAnalysis.lib.formats.libmdaxdr.XTCFile.offsets"><code class="xref py py-attr docutils literal notranslate"><span class="pre">offsets</span></code></a> attribute of
+the underlying reader contains current offsets for the trajectory.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#MDAnalysis.coordinates.XDR.offsets_filename" title="MDAnalysis.coordinates.XDR.offsets_filename"><code class="xref py py-func docutils literal notranslate"><span class="pre">offsets_filename()</span></code></a></p></li>
+<li><p><a class="reference internal" href="#MDAnalysis.coordinates.XDR.XDRBaseReader._read_offsets" title="MDAnalysis.coordinates.XDR.XDRBaseReader._read_offsets"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_read_offsets()</span></code></a></p></li>
+<li><p><a class="reference internal" href="#MDAnalysis.coordinates.XDR.read_numpy_offsets" title="MDAnalysis.coordinates.XDR.read_numpy_offsets"><code class="xref py py-func docutils literal notranslate"><span class="pre">read_numpy_offsets()</span></code></a></p></li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.XDR.XDRBaseReader._read_frame">
+<span class="sig-name descname"><span class="pre">_read_frame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XDR.html#XDRBaseReader._read_frame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader._read_frame" title="Link to this definition"></a></dt>
+<dd><p>read frame i</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.XDR.XDRBaseReader._read_frame_with_aux">
+<span class="sig-name descname"><span class="pre">_read_frame_with_aux</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader._read_frame_with_aux" title="Link to this definition"></a></dt>
+<dd><p>Move to <em>frame</em>, updating ts with trajectory, transformations and auxiliary data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.XDR.XDRBaseReader._read_offsets">
+<span class="sig-name descname"><span class="pre">_read_offsets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">store</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XDR.html#XDRBaseReader._read_offsets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader._read_offsets" title="Link to this definition"></a></dt>
+<dd><p>read frame offsets from trajectory</p>
+<p>Scan the trajectory for frames and build an index that relates frame
+number to the position in the file, thus enabling direct seeking to
+specific frames. The trajectory scan can take minutes for large
+trajectories.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>store</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – <p>Save the frame index (“offsets”) to a file with name generated from
+the trajectory name (<code class="xref py py-attr docutils literal notranslate"><span class="pre">filename</span></code>) with function
+<a class="reference internal" href="#MDAnalysis.coordinates.XDR.offsets_filename" title="MDAnalysis.coordinates.XDR.offsets_filename"><code class="xref py py-func docutils literal notranslate"><span class="pre">offsets_filename()</span></code></a>. The offsets file also contains, ctime,
+file size, number of frames, and number of atoms of the trajectory.
+The file format is a compressed numpy array (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.savez.html#numpy.savez" title="(in NumPy v2.5)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.savez()</span></code></a>).</p>
+<p>If saving the file fails for any reasons, only a warning is issued.</p>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.XDR.XDRBaseReader._reopen">
+<span class="sig-name descname"><span class="pre">_reopen</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XDR.html#XDRBaseReader._reopen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader._reopen" title="Link to this definition"></a></dt>
+<dd><p>reopen trajectory</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.XDR.XDRBaseReader._sliced_iter">
+<span class="sig-name descname"><span class="pre">_sliced_iter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader._sliced_iter" title="Link to this definition"></a></dt>
+<dd><p>Generator for slicing a trajectory.</p>
+<p><em>start</em> <em>stop</em> and <em>step</em> are 3 integers describing the slice.
+Error checking is not done past this point.</p>
+<p>A <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.14)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NotImplementedError</span></code></a> is raised if random access to
+frames is not implemented.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -921,286 +1044,9 @@ be considered to have a length of a single time step <cite>dt</cite> and a
 
 </dd></dl>
 
-<dl class="py class">
-<dt class="sig sig-object py" id="MDAnalysis.coordinates.XDR.XDRBaseWriter">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.XDR.</span></span><span class="sig-name descname"><span class="pre">XDRBaseWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XDR.html#XDRBaseWriter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseWriter" title="Link to this definition"></a></dt>
-<dd><p>Base class for libmdaxdr file formats xtc and trr</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – filename of trajectory</p></li>
-<li><p><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – number of atoms to be written</p></li>
-<li><p><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – convert from MDAnalysis units to format specific units</p></li>
-<li><p><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – timestep in MDAnalysis units to write trajectory with;
-if <cite>dt</cite> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, time for a frame is set from the timestep;
-else, the time for a frame is <cite>dt</cite> * frame</p></li>
-<li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – General writer arguments</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="MDAnalysis.coordinates.XDR.XDRBaseWriter.close">
-<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XDR.html#XDRBaseWriter.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseWriter.close" title="Link to this definition"></a></dt>
-<dd><p>close trajectory</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="MDAnalysis.coordinates.XDR.XDRBaseWriter.convert_dimensions_to_unitcell">
-<span class="sig-name descname"><span class="pre">convert_dimensions_to_unitcell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseWriter.convert_dimensions_to_unitcell" title="Link to this definition"></a></dt>
-<dd><p>Read dimensions from timestep <em>ts</em> and return appropriate unitcell.</p>
-<p>The default is to return <code class="docutils literal notranslate"><span class="pre">[A,B,C,alpha,beta,gamma]</span></code>; if this
-is not appropriate then this method has to be overriden.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="MDAnalysis.coordinates.XDR.XDRBaseWriter.convert_forces_from_native">
-<span class="sig-name descname"><span class="pre">convert_forces_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseWriter.convert_forces_from_native" title="Link to this definition"></a></dt>
-<dd><p>Conversion of forces array <em>force</em> from native to base units</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>force</strong> (<em>array_like</em>) – Forces to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
-</ul>
-</dd>
-</dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>By default, the input <em>force</em> is modified in place and also returned.
-In-place operations improve performance because allocating new arrays
-is avoided.</p>
-<div class="versionadded">
-<p><span class="versionmodified added">Added in version 0.7.7.</span></p>
-</div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="MDAnalysis.coordinates.XDR.XDRBaseWriter.convert_forces_to_native">
-<span class="sig-name descname"><span class="pre">convert_forces_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseWriter.convert_forces_to_native" title="Link to this definition"></a></dt>
-<dd><p>Conversion of force array <em>force</em> from base to native units.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>force</strong> (<em>array_like</em>) – Forces to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
-</ul>
-</dd>
-</dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>By default, the input <cite>force</cite> is modified in place and also returned.
-In-place operations improve performance because allocating new arrays
-is avoided.</p>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified added">Added in version 0.7.7.</span></p>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="MDAnalysis.coordinates.XDR.XDRBaseWriter.convert_pos_from_native">
-<span class="sig-name descname"><span class="pre">convert_pos_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseWriter.convert_pos_from_native" title="Link to this definition"></a></dt>
-<dd><p>Conversion of coordinate array x from native units to base units.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array_like</em>) – Positions to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
-</ul>
-</dd>
-</dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>By default, the input <cite>x</cite> is modified in place and also returned.
-In-place operations improve performance because allocating new arrays
-is avoided.</p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.7.5: </span>Keyword <cite>inplace</cite> can be set to <code class="docutils literal notranslate"><span class="pre">False</span></code> so that a
-modified copy is returned <em>unless</em> no conversion takes
-place, in which case the reference to the unmodified <cite>x</cite> is
-returned.</p>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="MDAnalysis.coordinates.XDR.XDRBaseWriter.convert_pos_to_native">
-<span class="sig-name descname"><span class="pre">convert_pos_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseWriter.convert_pos_to_native" title="Link to this definition"></a></dt>
-<dd><p>Conversion of coordinate array <cite>x</cite> from base units to native units.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array_like</em>) – Positions to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
-</ul>
-</dd>
-</dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>By default, the input <cite>x</cite> is modified in place and also returned.
-In-place operations improve performance because allocating new arrays
-is avoided.</p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.7.5: </span>Keyword <cite>inplace</cite> can be set to <code class="docutils literal notranslate"><span class="pre">False</span></code> so that a
-modified copy is returned <em>unless</em> no conversion takes
-place, in which case the reference to the unmodified <cite>x</cite> is
-returned.</p>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="MDAnalysis.coordinates.XDR.XDRBaseWriter.convert_time_from_native">
-<span class="sig-name descname"><span class="pre">convert_time_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseWriter.convert_time_from_native" title="Link to this definition"></a></dt>
-<dd><p>Convert time <em>t</em> from native units to base units.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>t</strong> (<em>array_like</em>) – Time values to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
-</ul>
-</dd>
-</dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>By default, the input <cite>t</cite> is modified in place and also returned
-(although note that scalar values <cite>t</cite> are passed by value in Python and
-hence an in-place modification has no effect on the caller.)  In-place
-operations improve performance because allocating new arrays is
-avoided.</p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.7.5: </span>Keyword <cite>inplace</cite> can be set to <code class="docutils literal notranslate"><span class="pre">False</span></code> so that a
-modified copy is returned <em>unless</em> no conversion takes
-place, in which case the reference to the unmodified <cite>x</cite> is
-returned.</p>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="MDAnalysis.coordinates.XDR.XDRBaseWriter.convert_time_to_native">
-<span class="sig-name descname"><span class="pre">convert_time_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseWriter.convert_time_to_native" title="Link to this definition"></a></dt>
-<dd><p>Convert time <em>t</em> from base units to native units.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>t</strong> (<em>array_like</em>) – Time values to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
-</ul>
-</dd>
-</dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>By default, the input <em>t</em> is modified in place and also
-returned. (Also note that scalar values <em>t</em> are passed by
-value in Python and hence an in-place modification has no
-effect on the caller.)</p>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <code class="docutils literal notranslate"><span class="pre">False</span></code> so that a
-modified copy is returned <em>unless</em> no conversion takes
-place, in which case the reference to the unmodified <em>x</em> is
-returned.</p>
-</div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="MDAnalysis.coordinates.XDR.XDRBaseWriter.convert_velocities_from_native">
-<span class="sig-name descname"><span class="pre">convert_velocities_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseWriter.convert_velocities_from_native" title="Link to this definition"></a></dt>
-<dd><p>Conversion of velocities array <em>v</em> from native to base units</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>v</strong> (<em>array_like</em>) – Velocities to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
-</ul>
-</dd>
-</dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>By default, the input <em>v</em> is modified in place and also returned.
-In-place operations improve performance because allocating new arrays
-is avoided.</p>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified added">Added in version 0.7.5.</span></p>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="MDAnalysis.coordinates.XDR.XDRBaseWriter.convert_velocities_to_native">
-<span class="sig-name descname"><span class="pre">convert_velocities_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseWriter.convert_velocities_to_native" title="Link to this definition"></a></dt>
-<dd><p>Conversion of coordinate array <cite>v</cite> from base to native units</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>v</strong> (<em>array_like</em>) – Velocities to transform</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
-</ul>
-</dd>
-</dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>By default, the input <cite>v</cite> is modified in place and also returned.
-In-place operations improve performance because allocating new arrays
-is avoided.</p>
-</div>
-<div class="versionadded">
-<p><span class="versionmodified added">Added in version 0.7.5.</span></p>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="MDAnalysis.coordinates.XDR.XDRBaseWriter.has_valid_coordinates">
-<span class="sig-name descname"><span class="pre">has_valid_coordinates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">criteria</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseWriter.has_valid_coordinates" title="Link to this definition"></a></dt>
-<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if all values are within limit values of their formats.</p>
-<p>Due to rounding, the test is asymmetric (and <em>min</em> is supposed to be negative):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">min</span> <span class="o">&lt;</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="nb">max</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>criteria</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – dictionary containing the <em>max</em> and <em>min</em> values in native units</p></li>
-<li><p><strong>x</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><em>numpy.ndarray</em></a>) – <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">z)</span></code> coordinates of atoms selected to be written out</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="MDAnalysis.coordinates.XDR.XDRBaseWriter.units">
-<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">None,</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseWriter.units" title="Link to this definition"></a></dt>
-<dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
-… for formats that support it)</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="MDAnalysis.coordinates.XDR.XDRBaseWriter.write">
-<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseWriter.write" title="Link to this definition"></a></dt>
-<dd><p>Write current timestep, using the supplied <cite>obj</cite>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>obj</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> or <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>) – write coordinate information associate with <cite>obj</cite></p>
-</dd>
-</dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The size of the <cite>obj</cite> must be the same as the number of atoms provided
-when setting up the trajectory.</p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 2.0.0: </span>Deprecated support for Timestep argument to write has now been
-removed. Use AtomGroup or Universe as an input instead.</p>
-</div>
-</dd></dl>
-
-</dd></dl>
-
+</section>
+<section id="functions">
+<h2><span class="section-number">7.37.2. </span>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.XDR.offsets_filename">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.XDR.</span></span><span class="sig-name descname"><span class="pre">offsets_filename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ending</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'npz'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XDR.html#offsets_filename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.XDR.offsets_filename" title="Link to this definition"></a></dt>
@@ -1241,6 +1087,8 @@ with <cite>_offsets.{ending}</cite>.</p>
 </dl>
 </dd></dl>
 
+</section>
+</section>
 
 
            </div>
