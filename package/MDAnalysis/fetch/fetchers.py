@@ -88,6 +88,8 @@ class _BaseFetcher(ABC):
     This class should not be initialized directly; fetcher implementations
     should inherit from it.
 
+    .. versionadded:: 2.11.0
+
     """
 
     def __init__(
@@ -153,6 +155,8 @@ class StaticFetcher(_BaseFetcher):
     The download directory can be overridden by setting the environment
     variable ``MDANALYSIS_FETCHER_DATA`` to a valid path. This class uses
     :mod:`pooch` as a backend for downloading and caching files.
+
+    .. versionadded:: 2.11.0
 
     """
 
@@ -231,6 +235,8 @@ class StaticFetcher(_BaseFetcher):
         :mod:`pooch` as a backend for downloading and caching files. The
         cache database is created on demand when ``db_name`` does not
         exist.
+
+        .. versionadded:: 2.11.0
 
         """
         # Keywords arguments that are reserved for common _BaseFetcher.fetch() arguments.
@@ -370,6 +376,8 @@ class StaticFetcher(_BaseFetcher):
 
             <filename> <hash_algorithm>:<digest>
 
+        .. versionadded:: 2.11.0
+
         """
         new_files = [self.cache_path / file_name for file_name in files]
         self.write_registry(Path(db_path), new_files, mode="a")
@@ -491,6 +499,9 @@ class StaticFetcher(_BaseFetcher):
         Each line in the registry file is expected to have the format::
 
             <filename> <hash_algorithm>:<digest>
+
+        .. versionadded:: 2.11.0
+
         """
         hash_dict = {}
 
@@ -549,6 +560,9 @@ class StaticFetcher(_BaseFetcher):
         Each registry line is written in the format::
 
             <filename> <hash_algorithm>:<digest>
+
+        .. versionadded:: 2.11.0
+        
         """
         with open(db_path, mode=mode) as f:
             for file in files:
