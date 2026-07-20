@@ -519,6 +519,8 @@ def test_n_atoms_not_specified(universe, imdsinfo):
     server = InThreadIMDServer(universe.trajectory)
     server.set_imdsessioninfo(imdsinfo)
     server.handshake_sequence("localhost", first_frame=True)
+    # send EOF after handshake and first frame
+    server.disconnect()
     with pytest.raises(
         ValueError,
         match="IMDReader: n_atoms must be specified",
@@ -534,6 +536,8 @@ def test_imd_stream_empty(universe, imdsinfo):
     server = InThreadIMDServer(universe.trajectory)
     server.set_imdsessioninfo(imdsinfo)
     server.handshake_sequence("localhost", first_frame=False)
+    # send EOF after handshake
+    server.disconnect()
     with pytest.raises(
         RuntimeError,
         match="IMDReader: Read error",
@@ -550,6 +554,8 @@ def test_create_imd_universe(universe, imdsinfo):
     server = InThreadIMDServer(universe.trajectory)
     server.set_imdsessioninfo(imdsinfo)
     server.handshake_sequence("localhost", first_frame=True)
+    # send EOF after handshake and first frame
+    server.disconnect()
     u_imd = mda.Universe(
         COORDINATES_TOPOLOGY,
         f"imd://localhost:{server.port}",
@@ -582,7 +588,8 @@ def test_wrong_imd_protocol_version(universe, imdsinfo):
     server = InThreadIMDServer(universe.trajectory)
     server.set_imdsessioninfo(imdsinfo)
     server.handshake_sequence("localhost", first_frame=True)
-
+    # send EOF after handshake
+    server.disconnect()
     with pytest.raises(
         ValueError,
         match=rf"IMDReader: Detected IMD version v{imdsinfo.version}, "
