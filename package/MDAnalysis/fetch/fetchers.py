@@ -183,7 +183,7 @@ class StaticFetcher(_BaseFetcher):
 
         Primarily designed to be working with `FAIR`_
         databases, this method works by sending a request to a web server and caching them to a registry.
-        The registry is in the format of a `pooch registry file`_, and it will be created or read relative to 
+        The registry is in the format of a `pooch registry file`_, and it will be created or read relative to
         :attr:`cache_path`.
 
         .. _FAIR: https://www.nature.com/articles/s41592-025-02635-0
@@ -610,23 +610,14 @@ class StaticFetcher(_BaseFetcher):
                 + f"are {SUPPORTED_DOWNLOADERS}"
             )
 
+        # Regex matching if downloader is set to auto
         if downloader == "auto":
-            # The regex below is AI generated, but the overall idea of using regular expressions
-            # to check the first bit of the url was thought up by me.
-            #
-            # I thought of these four examples and prompt AI to come with a regex that capture the
-            # susbtring before "://""
-            #
-            # doi://10.6084/m9.figshare.14763051.v1/tiny-data.txt
-            # https://www.example.com/page
-            # ftp://ftp.example.com/files/document.txt
-            # sftp://username@example.com/path/to/folder
-
-            regex = r"^([^:]+)://"
+            regex = r"^([^:]+):"
             match = re.match(regex, base_url)
 
             if match:
                 _downloader = match.group(1)
+
         else:
             _downloader = downloader
 
