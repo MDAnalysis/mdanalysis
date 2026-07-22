@@ -369,7 +369,7 @@ class InterRDF(AnalysisBase):
             lookup={
                 "count": ResultsGroup.ndarray_sum,
                 "volume_cum": ResultsGroup.ndarray_sum,
-                "bins": ResultsGroup.ndarray_sum,
+                "bins": ResultsGroup.ndarray_mean,
                 "edges": ResultsGroup.ndarray_mean,
             }
         )

@@ -17,7 +17,8 @@ The rules for this file:
 ??/??/?? IAlibay, orbeckst, marinegor, tylerjereddy, ljwoods2, marinegor,
          spyke7, talagayev, tanii1125, BradyAJohnston, hejamu, jeremyleung521,
          harshitgajjela-droid, kunjsinha, aygarwal, jauy123, Dreamstick9,
-         ollyfutur, Amarendra22, charity-g, ParthUppal523
+         ollyfutur, Amarendra22, charity-g, ParthUppal523, apoorva-01, RMeli,
+         raulloiscuns, Aryaman-Chaudhri
 
  * 2.11.0
 
@@ -27,6 +28,11 @@ Enhancements
  * Add reading single-frame files from mmCIF, also known as PDBx format, using
    crystallographic library `gemmi` as a backend (Issue #2367 and extension of
    #4303, also solves #5089, PR #4712).
+ * Fix FileLock tests for XTC and TRR: lock file is no longer removed (#5382)
+ * InterRDF now correctly returns bins in parallel (PR #5344)
+ * `Merge()` no longer raises a TypeError on Universes that have a `cmaps`
+   attribute; cmaps are now combined like the other connection attributes
+   (bonds, angles, dihedrals, impropers) (Issue #3672).
  * The `principal_axes` method in :class:`Masses` now uses
    `np.linalg.eigh` instead of `np.linalg.eig`, improving numerical
    stability. This may lead to slightly different results from previous
@@ -70,7 +76,7 @@ Enhancements
 
 Enhancements
  * Added ASV benchmark for PDB trajectory reading (PR #5394)
- * Read Linear Angle bonded interaction entries from GROMACS TPR files and 
+ * Read Linear Angle bonded interaction entries from GROMACS TPR files and
    add the angles to the topology (Issue #5361, PR #5372)
  * Enables parallelization for analysis.atomicdistances.AtomicDistances
    (Issue #4662, PR #4822)
@@ -107,7 +113,8 @@ Deprecations
 10/18/25 IAlibay, orbeckst, BHM-Bob, TRY-ER, Abdulrahman-PROG, pbuslaev,
          yuxuanzhuang, yuyuan871111, tanishy7777, tulga-rdn, Gareth-elliott,
          hmacdope, tylerjereddy, cbouy, talagayev, DrDomenicoMarson, amruthesht,
-         p-j-smith, gitzhangch, raulloiscuns
+         p-j-smith, gitzhangch, raulloiscuns, lexi-x, namiroues, jpkrowe, schuhmc,
+         gitsirsha, Pradyumn-cloud
 
  * 2.10.0
 
@@ -246,6 +253,8 @@ Changes
  * 2.8.0
 
 Fixes
+ * Fix `test_imd.py` test failures after imdclient 0.2.4
+   increased default timeout by ensuring EOF sent (Issue #5442, PR #5443)
  * Allows bond/angle/dihedral connectivity to be guessed additively with
    `to_guess`, and as a replacement of existing values with `force_guess`.
    Also updates cached bond attributes when updating bonds. (Issue #4759, PR #4761)
