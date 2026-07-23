@@ -133,7 +133,6 @@ extend-exclude = '''
 __pycache__
 | MDAnalysis/coordinates/TRJ\.py
 | MDAnalysis/coordinates/__init__\.py
-| MDAnalysis/coordinates/__init__\.py
 | MDAnalysis/coordinates/base\.py
 | MDAnalysis/coordinates/MMCIF\.py
 | MDAnalysis/topology/MMCIFParser\.py
