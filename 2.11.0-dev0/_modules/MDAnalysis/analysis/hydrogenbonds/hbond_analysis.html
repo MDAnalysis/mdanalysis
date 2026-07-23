@@ -390,7 +390,9 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.lib.correlations</span><span class="w"> </span><span class="kn">import</span> <span class="n">autocorrelation</span><span class="p">,</span> <span class="n">correct_intermittency</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">NoDataError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.core.groups</span><span class="w"> </span><span class="kn">import</span> <span class="n">AtomGroup</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_hydrogen_donors</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">find_hydrogen_donors</span><span class="p">,</span>
+<span class="p">)</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">...due</span><span class="w"> </span><span class="kn">import</span> <span class="n">due</span><span class="p">,</span> <span class="n">Doi</span>
 
@@ -398,10 +400,12 @@
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="n">due</span><span class="o">.</span><span class="n">cite</span><span class="p">(</span><span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1039/C9CP01532A&quot;</span><span class="p">),</span>
-         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Hydrogen bond analysis implementation&quot;</span><span class="p">,</span>
-         <span class="n">path</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.analysis.hydrogenbonds.hbond_analysis&quot;</span><span class="p">,</span>
-         <span class="n">cite_module</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">due</span><span class="o">.</span><span class="n">cite</span><span class="p">(</span>
+    <span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1039/C9CP01532A&quot;</span><span class="p">),</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Hydrogen bond analysis implementation&quot;</span><span class="p">,</span>
+    <span class="n">path</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.analysis.hydrogenbonds.hbond_analysis&quot;</span><span class="p">,</span>
+    <span class="n">cite_module</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
 
 <span class="k">del</span> <span class="n">Doi</span>
 
@@ -419,19 +423,30 @@
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/hydrogenbonds.html#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.get_supported_backends">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_supported_backends</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;serial&#39;</span><span class="p">,</span> <span class="s1">&#39;multiprocessing&#39;</span><span class="p">,</span> <span class="s1">&#39;dask&#39;</span><span class="p">,)</span></div>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="s2">&quot;serial&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;multiprocessing&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;dask&quot;</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span>
-                 <span class="n">donors_sel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hydrogens_sel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">acceptors_sel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">between</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">d_h_cutoff</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span>
-                 <span class="n">d_a_cutoff</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">d_h_a_angle_cutoff</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span>
-                 <span class="n">update_selections</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">universe</span><span class="p">,</span>
+        <span class="n">donors_sel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">hydrogens_sel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">acceptors_sel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">between</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">d_h_cutoff</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span>
+        <span class="n">d_a_cutoff</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
+        <span class="n">d_h_a_angle_cutoff</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span>
+        <span class="n">update_selections</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up atom selections and geometric criteria for finding hydrogen</span>
 <span class="sd">        bonds in a Universe.</span>
 
 <span class="sd">        Hydrogen bond selections with `donors_sel` , `hydrogens_sel`, and</span>
-<span class="sd">        `acceptors_sel` may be achieved with either a *resname*, atom *name* </span>
+<span class="sd">        `acceptors_sel` may be achieved with either a *resname*, atom *name*</span>
 <span class="sd">        combination, or when those are absent, with atom *type* selections.</span>
 
 <span class="sd">        Parameters</span>
@@ -488,7 +503,7 @@
 <span class="sd">        .. versionadded:: 2.0.0</span>
 <span class="sd">            Added `between` keyword</span>
 <span class="sd">        .. versionchanged:: 2.4.0</span>
-<span class="sd">            Added use of atom types in selection strings for hydrogen atoms, </span>
+<span class="sd">            Added use of atom types in selection strings for hydrogen atoms,</span>
 <span class="sd">            bond donors, or bond acceptors</span>
 <span class="sd">        .. versionchanged:: 2.8.0</span>
 <span class="sd">            Introduced :meth:`get_supported_backends` allowing for parallel execution on</span>
@@ -502,15 +517,26 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="n">universe</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_donors_sel</span> <span class="o">=</span> <span class="n">donors_sel</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="n">donors_sel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">donors_sel</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_hydrogens_sel</span> <span class="o">=</span> <span class="n">hydrogens_sel</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="n">hydrogens_sel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">hydrogens_sel</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_acceptors_sel</span> <span class="o">=</span> <span class="n">acceptors_sel</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="n">acceptors_sel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">acceptors_sel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_donors_sel</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">donors_sel</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="n">donors_sel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">donors_sel</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hydrogens_sel</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">hydrogens_sel</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">hydrogens_sel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="n">hydrogens_sel</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_acceptors_sel</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">acceptors_sel</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">acceptors_sel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="n">acceptors_sel</span>
+        <span class="p">)</span>
 
-        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> is an empty selection string - no hydrogen bonds will &quot;</span>
-               <span class="s2">&quot;be found. This may be intended, but please check your &quot;</span>
-               <span class="s2">&quot;selection.&quot;</span>
-               <span class="p">)</span>
-        <span class="k">for</span> <span class="n">sel</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;donors_sel&#39;</span><span class="p">,</span> <span class="s1">&#39;hydrogens_sel&#39;</span><span class="p">,</span> <span class="s1">&#39;acceptors_sel&#39;</span><span class="p">]:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> is an empty selection string - no hydrogen bonds will &quot;</span>
+            <span class="s2">&quot;be found. This may be intended, but please check your &quot;</span>
+            <span class="s2">&quot;selection.&quot;</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">sel</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;donors_sel&quot;</span><span class="p">,</span> <span class="s2">&quot;hydrogens_sel&quot;</span><span class="p">,</span> <span class="s2">&quot;acceptors_sel&quot;</span><span class="p">]:</span>
             <span class="n">val</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sel</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">val</span><span class="p">:</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sel</span><span class="p">))</span>
@@ -528,14 +554,13 @@
                 <span class="n">between_ags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                     <span class="p">[</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">group1</span><span class="p">,</span> <span class="n">updating</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">group2</span><span class="p">,</span> <span class="n">updating</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">group2</span><span class="p">,</span> <span class="n">updating</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
                     <span class="p">]</span>
                 <span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">between_ags</span> <span class="o">=</span> <span class="n">between_ags</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">between_ags</span> <span class="o">=</span> <span class="kc">None</span>
-
 
         <span class="bp">self</span><span class="o">.</span><span class="n">d_h_cutoff</span> <span class="o">=</span> <span class="n">d_h_cutoff</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">d_a_cutoff</span> <span class="o">=</span> <span class="n">d_a_cutoff</span>
@@ -551,25 +576,23 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_hydrogens_sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_hydrogens</span><span class="p">()</span>
 
         <span class="c1"># Select atom groups</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_acceptors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">acceptors_sel</span><span class="p">,</span>
-                                              <span class="n">updating</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">update_selections</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_acceptors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">acceptors_sel</span><span class="p">,</span> <span class="n">updating</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">update_selections</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_donors</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hydrogens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_dh_pairs</span><span class="p">()</span>
 
 <div class="viewcode-block" id="HydrogenBondAnalysis.guess_hydrogens">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/hydrogenbonds.html#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.guess_hydrogens">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">guess_hydrogens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                        <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span>
-                        <span class="n">max_mass</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span>
-                        <span class="n">min_charge</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
-                        <span class="n">min_mass</span><span class="o">=</span><span class="mf">0.9</span>
-                        <span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">guess_hydrogens</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">max_mass</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span> <span class="n">min_charge</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">min_mass</span><span class="o">=</span><span class="mf">0.9</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Guesses which hydrogen atoms should be used in the analysis.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        select: str (optional)</span>
-<span class="sd">            :ref:`Selection string &lt;selection-commands-label&gt;` for atom group </span>
-<span class="sd">            from which hydrogens will be identified. (e.g., ``(resname X and </span>
+<span class="sd">            :ref:`Selection string &lt;selection-commands-label&gt;` for atom group</span>
+<span class="sd">            from which hydrogens will be identified. (e.g., ``(resname X and</span>
 <span class="sd">            name H1)`` or ``type 2``)</span>
 <span class="sd">        max_mass: float (optional)</span>
 <span class="sd">            The mass of a hydrogen atom must be less than this value.</span>
@@ -581,24 +604,24 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        potential_hydrogens: str</span>
-<span class="sd">            String containing the :attr:`resname` and :attr:`name` of all </span>
+<span class="sd">            String containing the :attr:`resname` and :attr:`name` of all</span>
 <span class="sd">            hydrogen atoms potentially capable of forming hydrogen bonds.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
-<span class="sd">        Hydrogen selections may be achieved with either a resname, atom </span>
+<span class="sd">        Hydrogen selections may be achieved with either a resname, atom</span>
 <span class="sd">        name combination, or when those are absent, atom types.</span>
 
 <span class="sd">        This function makes use of atomic masses and atomic charges to identify</span>
-<span class="sd">        which atoms are hydrogen atoms that are capable of participating in </span>
-<span class="sd">        hydrogen bonding. If an atom has a mass less than :attr:`max_mass` and </span>
-<span class="sd">        an atomic charge greater than :attr:`min_charge` then it is considered </span>
+<span class="sd">        which atoms are hydrogen atoms that are capable of participating in</span>
+<span class="sd">        hydrogen bonding. If an atom has a mass less than :attr:`max_mass` and</span>
+<span class="sd">        an atomic charge greater than :attr:`min_charge` then it is considered</span>
 <span class="sd">        capable of participating in hydrogen bonds.</span>
 
-<span class="sd">        If :attr:`hydrogens_sel` is `None`, this function is called to guess </span>
+<span class="sd">        If :attr:`hydrogens_sel` is `None`, this function is called to guess</span>
 <span class="sd">        the selection.</span>
 
-<span class="sd">        Alternatively, this function may be used to quickly generate a </span>
+<span class="sd">        Alternatively, this function may be used to quickly generate a</span>
 <span class="sd">        :class:`str` of potential hydrogen atoms involved in hydrogen bonding.</span>
 <span class="sd">        This str may then be modified before being used to set the attribute</span>
 <span class="sd">        :attr:`hydrogens_sel`.</span>
@@ -614,11 +637,13 @@
 
         <span class="n">ag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
         <span class="n">hydrogens_ag</span> <span class="o">=</span> <span class="n">ag</span><span class="p">[</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="o">.</span><span class="n">reduce</span><span class="p">((</span>
-                <span class="n">ag</span><span class="o">.</span><span class="n">masses</span> <span class="o">&lt;</span> <span class="n">max_mass</span><span class="p">,</span>
-                <span class="n">ag</span><span class="o">.</span><span class="n">charges</span> <span class="o">&gt;</span> <span class="n">min_charge</span><span class="p">,</span>
-                <span class="n">ag</span><span class="o">.</span><span class="n">masses</span> <span class="o">&gt;</span> <span class="n">min_mass</span><span class="p">,</span>
-            <span class="p">))</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span>
+                <span class="p">(</span>
+                    <span class="n">ag</span><span class="o">.</span><span class="n">masses</span> <span class="o">&lt;</span> <span class="n">max_mass</span><span class="p">,</span>
+                    <span class="n">ag</span><span class="o">.</span><span class="n">charges</span> <span class="o">&gt;</span> <span class="n">min_charge</span><span class="p">,</span>
+                    <span class="n">ag</span><span class="o">.</span><span class="n">masses</span> <span class="o">&gt;</span> <span class="n">min_mass</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
         <span class="p">]</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_categories</span><span class="p">(</span><span class="n">hydrogens_ag</span><span class="p">)</span></div>
@@ -626,16 +651,16 @@
 
 <div class="viewcode-block" id="HydrogenBondAnalysis.guess_donors">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/hydrogenbonds.html#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.guess_donors">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">guess_donors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">max_charge</span><span class="o">=-</span><span class="mf">0.5</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">guess_donors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">max_charge</span><span class="o">=-</span><span class="mf">0.5</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Guesses which atoms could be considered donors in the analysis. Only</span>
-<span class="sd">        use if the universe topology does not contain bonding information, </span>
+<span class="sd">        use if the universe topology does not contain bonding information,</span>
 <span class="sd">        otherwise donor-hydrogen pairs may be incorrectly assigned.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        select: str (optional)</span>
-<span class="sd">            :ref:`Selection string &lt;selection-commands-label&gt;` for atom group </span>
-<span class="sd">            from which donors will be identified. (e.g., ``(resname X and name </span>
+<span class="sd">            :ref:`Selection string &lt;selection-commands-label&gt;` for atom group</span>
+<span class="sd">            from which donors will be identified. (e.g., ``(resname X and name</span>
 <span class="sd">            O1)`` or ``type 2``)</span>
 <span class="sd">        max_charge: float (optional)</span>
 <span class="sd">            The charge of a donor atom must be less than this value.</span>
@@ -643,27 +668,27 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        potential_donors: str</span>
-<span class="sd">            String containing the :attr:`resname` and :attr:`name` of all atoms </span>
+<span class="sd">            String containing the :attr:`resname` and :attr:`name` of all atoms</span>
 <span class="sd">            that are potentially capable of forming hydrogen bonds.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
-<span class="sd">        Donor selections may be achieved with either a resname, atom </span>
+<span class="sd">        Donor selections may be achieved with either a resname, atom</span>
 <span class="sd">        name combination, or when those are absent, atom types.</span>
 
-<span class="sd">        This function makes use of and atomic charges to identify which atoms </span>
-<span class="sd">        could be considered donor atoms in the hydrogen bond analysis. If an </span>
-<span class="sd">        atom has an atomic charge less than :attr:`max_charge`, and it is </span>
-<span class="sd">        within :attr:`d_h_cutoff` of a hydrogen atom, then it is considered </span>
+<span class="sd">        This function makes use of and atomic charges to identify which atoms</span>
+<span class="sd">        could be considered donor atoms in the hydrogen bond analysis. If an</span>
+<span class="sd">        atom has an atomic charge less than :attr:`max_charge`, and it is</span>
+<span class="sd">        within :attr:`d_h_cutoff` of a hydrogen atom, then it is considered</span>
 <span class="sd">        capable of participating in hydrogen bonds.</span>
 
-<span class="sd">        If :attr:`donors_sel` is `None`, and the universe topology does not </span>
-<span class="sd">        have bonding information, this function is called to guess the </span>
+<span class="sd">        If :attr:`donors_sel` is `None`, and the universe topology does not</span>
+<span class="sd">        have bonding information, this function is called to guess the</span>
 <span class="sd">        selection.</span>
 
-<span class="sd">        Alternatively, this function may be used to quickly generate a </span>
-<span class="sd">        :class:`str` of potential donor atoms involved in hydrogen bonding. </span>
-<span class="sd">        This :class:`str` may then be modified before being used to set the </span>
+<span class="sd">        Alternatively, this function may be used to quickly generate a</span>
+<span class="sd">        :class:`str` of potential donor atoms involved in hydrogen bonding.</span>
+<span class="sd">        This :class:`str` may then be modified before being used to set the</span>
 <span class="sd">        attribute :attr:`donors_sel`.</span>
 
 
@@ -673,7 +698,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># We need to know `hydrogens_sel` before we can find donors</span>
-        <span class="c1"># Use a new variable `hydrogens_sel` so that we do not set </span>
+        <span class="c1"># Use a new variable `hydrogens_sel` so that we do not set</span>
         <span class="c1"># `self.hydrogens_sel` if it is currently `None`</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hydrogens_sel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">hydrogens_sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_hydrogens</span><span class="p">()</span>
@@ -685,8 +710,10 @@
         <span class="c1"># times faster to access. This is because u.bonds also calculates</span>
         <span class="c1"># properties of each bond (e.g bond length). See:</span>
         <span class="c1"># https://github.com/MDAnalysis/mdanalysis/issues/2396#issuecomment-596251787</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">_topology</span><span class="p">,</span> <span class="s1">&#39;bonds&#39;</span><span class="p">)</span> 
-           <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">bonds</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">_topology</span><span class="p">,</span> <span class="s2">&quot;bonds&quot;</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">bonds</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span>
+        <span class="p">):</span>
             <span class="n">donors_ag</span> <span class="o">=</span> <span class="n">find_hydrogen_donors</span><span class="p">(</span><span class="n">hydrogens_ag</span><span class="p">)</span>
             <span class="n">donors_ag</span> <span class="o">=</span> <span class="n">donors_ag</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
@@ -694,7 +721,7 @@
                 <span class="s2">&quot;(</span><span class="si">{donors_sel}</span><span class="s2">) and around </span><span class="si">{d_h_cutoff}</span><span class="s2"> </span><span class="si">{hydrogens_sel}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">donors_sel</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
                     <span class="n">d_h_cutoff</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">d_h_cutoff</span><span class="p">,</span>
-                    <span class="n">hydrogens_sel</span><span class="o">=</span><span class="n">hydrogens_sel</span>
+                    <span class="n">hydrogens_sel</span><span class="o">=</span><span class="n">hydrogens_sel</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="p">)</span>
 
@@ -705,17 +732,17 @@
 
 <div class="viewcode-block" id="HydrogenBondAnalysis.guess_acceptors">
 <a class="viewcode-back" href="../../../../documentation_pages/analysis/hydrogenbonds.html#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.guess_acceptors">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">guess_acceptors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">max_charge</span><span class="o">=-</span><span class="mf">0.5</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">guess_acceptors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">max_charge</span><span class="o">=-</span><span class="mf">0.5</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Guesses which atoms could be considered acceptors in the analysis.</span>
 
-<span class="sd">        Acceptor selections may be achieved with either a resname, atom </span>
+<span class="sd">        Acceptor selections may be achieved with either a resname, atom</span>
 <span class="sd">        name combination, or when those are absent, atom types.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        select: str (optional)</span>
 <span class="sd">            :ref:`Selection string &lt;selection-commands-label&gt;` for atom group</span>
-<span class="sd">            from which acceptors will be identified. (e.g., ``(resname X and </span>
+<span class="sd">            from which acceptors will be identified. (e.g., ``(resname X and</span>
 <span class="sd">            name O1)`` or ``type 2``)</span>
 <span class="sd">        max_charge: float (optional)</span>
 <span class="sd">            The charge of an acceptor atom must be less than this value.</span>
@@ -723,25 +750,25 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        potential_acceptors: str</span>
-<span class="sd">            String containing the :attr:`resname` and :attr:`name` of all atoms </span>
+<span class="sd">            String containing the :attr:`resname` and :attr:`name` of all atoms</span>
 <span class="sd">            that potentially capable of forming hydrogen bonds.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
-<span class="sd">        Acceptor selections may be achieved with either a resname, atom </span>
+<span class="sd">        Acceptor selections may be achieved with either a resname, atom</span>
 <span class="sd">        name combination, or when those are absent, atom types.</span>
 
-<span class="sd">        This function makes use of and atomic charges to identify which atoms </span>
-<span class="sd">        could be considered acceptor atoms in the hydrogen bond analysis. If </span>
-<span class="sd">        an atom has an atomic charge less than :attr:`max_charge` then it is </span>
+<span class="sd">        This function makes use of and atomic charges to identify which atoms</span>
+<span class="sd">        could be considered acceptor atoms in the hydrogen bond analysis. If</span>
+<span class="sd">        an atom has an atomic charge less than :attr:`max_charge` then it is</span>
 <span class="sd">        considered capable of participating in hydrogen bonds.</span>
 
-<span class="sd">        If :attr:`acceptors_sel` is `None`, this function is called to guess </span>
+<span class="sd">        If :attr:`acceptors_sel` is `None`, this function is called to guess</span>
 <span class="sd">        the selection.</span>
 
-<span class="sd">        Alternatively, this function may be used to quickly generate a </span>
-<span class="sd">        :class:`str` of potential acceptor atoms involved in hydrogen bonding. </span>
-<span class="sd">        This :class:`str` may then be modified before being used to set the </span>
+<span class="sd">        Alternatively, this function may be used to quickly generate a</span>
+<span class="sd">        :class:`str` of potential acceptor atoms involved in hydrogen bonding.</span>
+<span class="sd">        This :class:`str` may then be modified before being used to set the</span>
 <span class="sd">        attribute :attr:`acceptors_sel`.</span>
 
 
@@ -758,14 +785,14 @@
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_group_categories</span><span class="p">(</span><span class="n">group</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Find categories according to universe constraints</span>
-<span class="sd">        </span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find categories according to universe constraints</span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        group : AtomGroup</span>
-<span class="sd">            AtomGroups corresponding to either hydrogen bond acceptors, </span>
+<span class="sd">            AtomGroups corresponding to either hydrogen bond acceptors,</span>
 <span class="sd">            donors, or hydrogen atoms that meet their respective charge</span>
-<span class="sd">            and mass constraints. </span>
+<span class="sd">            and mass constraints.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -778,15 +805,15 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="s2">&quot;resnames&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="s2">&quot;names&quot;</span><span class="p">):</span>
-            <span class="n">group_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">([</span>
-                <span class="s1">&#39;(resname </span><span class="si">{}</span><span class="s1"> and name </span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> 
-                    <span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">resnames</span><span class="p">,</span> <span class="n">group</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
-            <span class="p">])</span>
-        <span class="k">else</span><span class="p">:</span>
             <span class="n">group_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span>
                 <span class="p">[</span>
-                    <span class="s1">&#39;type </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tp</span><span class="p">)</span> <span class="k">for</span> <span class="n">tp</span> <span class="ow">in</span> <span class="n">group</span><span class="o">.</span><span class="n">types</span>
+                    <span class="s2">&quot;(resname </span><span class="si">{}</span><span class="s2"> and name </span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">r</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">resnames</span><span class="p">,</span> <span class="n">group</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
                 <span class="p">]</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">group_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span>
+                <span class="p">[</span><span class="s2">&quot;type </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tp</span><span class="p">)</span> <span class="k">for</span> <span class="n">tp</span> <span class="ow">in</span> <span class="n">group</span><span class="o">.</span><span class="n">types</span><span class="p">]</span>
             <span class="p">)</span>
 
         <span class="k">return</span> <span class="s2">&quot; or &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">group_list</span><span class="p">)</span>
@@ -797,7 +824,7 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        donors, hydrogens: AtomGroup, AtomGroup</span>
-<span class="sd">            AtomGroups corresponding to all donors and all hydrogens. </span>
+<span class="sd">            AtomGroups corresponding to all donors and all hydrogens.</span>
 <span class="sd">            AtomGroups are ordered such that, if zipped, will</span>
 <span class="sd">            produce a list of donor-hydrogen pairs.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -808,15 +835,23 @@
             <span class="c1"># We&#39;re using u._topology.bonds rather than u.bonds as it is a million times faster to access.</span>
             <span class="c1"># This is because u.bonds also calculates properties of each bond (e.g bond length).</span>
             <span class="c1"># See https://github.com/MDAnalysis/mdanalysis/issues/2396#issuecomment-596251787</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">_topology</span><span class="p">,</span> <span class="s1">&#39;bonds&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">bonds</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s1">&#39;Cannot assign donor-hydrogen pairs via topology as no bond information is present. &#39;</span>
-                                  <span class="s1">&#39;Please either: load a topology file with bond information; use the guess_bonds() &#39;</span>
-                                  <span class="s1">&#39;topology guesser; or set HydrogenBondAnalysis.donors_sel so that a distance cutoff &#39;</span>
-                                  <span class="s1">&#39;can be used.&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
+                <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">_topology</span><span class="p">,</span> <span class="s2">&quot;bonds&quot;</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">bonds</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span>
+            <span class="p">):</span>
+                <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span>
+                    <span class="s2">&quot;Cannot assign donor-hydrogen pairs via topology as no bond information is present. &quot;</span>
+                    <span class="s2">&quot;Please either: load a topology file with bond information; use the guess_bonds() &quot;</span>
+                    <span class="s2">&quot;topology guesser; or set HydrogenBondAnalysis.donors_sel so that a distance cutoff &quot;</span>
+                    <span class="s2">&quot;can be used.&quot;</span>
+                <span class="p">)</span>
 
             <span class="n">hydrogens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hydrogens_sel</span><span class="p">)</span>
-            <span class="n">donors</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">hydrogens</span><span class="p">)</span> <span class="k">if</span> <span class="n">hydrogens</span> \
+            <span class="n">donors</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="nb">sum</span><span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">hydrogens</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">hydrogens</span>
                 <span class="k">else</span> <span class="n">AtomGroup</span><span class="p">([],</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">)</span>
+            <span class="p">)</span>
 
         <span class="c1"># Otherwise, use d_h_cutoff as a cutoff distance</span>
         <span class="k">else</span><span class="p">:</span>
@@ -828,7 +863,7 @@
                 <span class="n">hydrogens</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
                 <span class="n">max_cutoff</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">d_h_cutoff</span><span class="p">,</span>
                 <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">dimensions</span><span class="p">,</span>
-                <span class="n">return_distances</span><span class="o">=</span><span class="kc">False</span>
+                <span class="n">return_distances</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="p">)</span><span class="o">.</span><span class="n">T</span>
 
             <span class="n">donors</span> <span class="o">=</span> <span class="n">donors</span><span class="p">[</span><span class="n">donors_indices</span><span class="p">]</span>
@@ -845,14 +880,12 @@
 <span class="sd">        Groups are specified with the `between` keyword when creating the</span>
 <span class="sd">        HydrogenBondAnalysis object.</span>
 
-<span class="sd">           Returns</span>
-<span class="sd">           -------</span>
-<span class="sd">           mask: np.ndarray</span>
-
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        mask: np.ndarray</span>
 
 <span class="sd">        .. versionchanged:: 2.5.0</span>
 <span class="sd">           Change return value to a mask instead of separate AtomGroups.</span>
-<span class="sd">``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">donors</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -860,26 +893,24 @@
 
             <span class="c1"># Find donors in G1 and acceptors in G2</span>
             <span class="n">mask</span><span class="p">[</span>
-                    <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
-                        <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">donors</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="n">group1</span><span class="o">.</span><span class="n">indices</span><span class="p">),</span>
-                        <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">acceptors</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="n">group2</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
-                    <span class="p">)</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">donors</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="n">group1</span><span class="o">.</span><span class="n">indices</span><span class="p">),</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">acceptors</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="n">group2</span><span class="o">.</span><span class="n">indices</span><span class="p">),</span>
+                <span class="p">)</span>
             <span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 
             <span class="c1"># Find acceptors in G1 and donors in G2</span>
             <span class="n">mask</span><span class="p">[</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
                     <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">acceptors</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="n">group1</span><span class="o">.</span><span class="n">indices</span><span class="p">),</span>
-                    <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">donors</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="n">group2</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">donors</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="n">group2</span><span class="o">.</span><span class="n">indices</span><span class="p">),</span>
                 <span class="p">)</span>
             <span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="k">return</span> <span class="n">mask</span>
 
-
     <span class="k">def</span><span class="w"> </span><span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span> <span class="o">=</span> <span class="p">[[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]]</span>
-
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
@@ -927,7 +958,7 @@
                 <span class="n">tmp_donors</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
                 <span class="n">tmp_hydrogens</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
                 <span class="n">tmp_acceptors</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
-                <span class="n">box</span><span class="o">=</span><span class="n">box</span>
+                <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="p">)</span>
         <span class="n">hbond_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">d_h_a_angles</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">d_h_a_angle</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
@@ -947,8 +978,9 @@
         <span class="n">hbond_angles</span> <span class="o">=</span> <span class="n">d_h_a_angles</span><span class="p">[</span><span class="n">hbond_indices</span><span class="p">]</span>
 
         <span class="c1"># Store data on hydrogen bonds found at this frame</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="n">hbond_donors</span><span class="p">,</span>
-                                      <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">frame</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="n">hbond_donors</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">hbond_donors</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">hbond_hydrogens</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">hbond_acceptors</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
@@ -960,13 +992,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_aggregator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span><span class="n">lookup</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;hbonds&#39;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_hstack</span><span class="p">})</span>
+        <span class="k">return</span> <span class="n">ResultsGroup</span><span class="p">(</span><span class="n">lookup</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;hbonds&quot;</span><span class="p">:</span> <span class="n">ResultsGroup</span><span class="o">.</span><span class="n">ndarray_hstack</span><span class="p">})</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">hbonds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `hbonds` attribute was deprecated in MDAnalysis 2.0.0 &quot;</span>
-                <span class="s2">&quot;and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
-                <span class="s2">&quot;`results.hbonds` instead.&quot;</span><span class="p">)</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;The `hbonds` attribute was deprecated in MDAnalysis 2.0.0 &quot;</span>
+            <span class="s2">&quot;and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
+            <span class="s2">&quot;`results.hbonds` instead.&quot;</span>
+        <span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span>
 
@@ -1045,17 +1079,16 @@
         <span class="c1"># [set(superset(x1,x2), superset(x3,x4)), ..]</span>
         <span class="n">found_hydrogen_bonds</span> <span class="o">=</span> <span class="p">[</span><span class="nb">set</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">frame_index</span><span class="p">,</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">hbond</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">frame</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">hbond</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">frame</span>
+            <span class="p">]:</span>
                 <span class="n">found_hydrogen_bonds</span><span class="p">[</span><span class="n">frame_index</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">hbond</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">]))</span>
 
         <span class="n">intermittent_hbonds</span> <span class="o">=</span> <span class="n">correct_intermittency</span><span class="p">(</span>
-            <span class="n">found_hydrogen_bonds</span><span class="p">,</span>
-            <span class="n">intermittency</span><span class="o">=</span><span class="n">intermittency</span>
+            <span class="n">found_hydrogen_bonds</span><span class="p">,</span> <span class="n">intermittency</span><span class="o">=</span><span class="n">intermittency</span>
         <span class="p">)</span>
         <span class="n">tau_timeseries</span><span class="p">,</span> <span class="n">timeseries</span><span class="p">,</span> <span class="n">timeseries_data</span> <span class="o">=</span> <span class="n">autocorrelation</span><span class="p">(</span>
-            <span class="n">intermittent_hbonds</span><span class="p">,</span>
-            <span class="n">tau_max</span><span class="p">,</span>
-            <span class="n">window_step</span><span class="o">=</span><span class="n">window_step</span>
+            <span class="n">intermittent_hbonds</span><span class="p">,</span> <span class="n">tau_max</span><span class="p">,</span> <span class="n">window_step</span><span class="o">=</span><span class="n">window_step</span>
         <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">tau_timeseries</span><span class="p">,</span> <span class="n">timeseries</span><span class="p">])</span></div>
@@ -1074,7 +1107,9 @@
 <span class="sd">             the number of hydrogen bonds over time.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">hbond_frames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-        <span class="n">frame_unique</span><span class="p">,</span> <span class="n">frame_counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">hbond_frames</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">frame_unique</span><span class="p">,</span> <span class="n">frame_counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span>
+            <span class="n">hbond_frames</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
         <span class="n">frame_min</span><span class="p">,</span> <span class="n">frame_max</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
 
         <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">frame_max</span> <span class="o">-</span> <span class="n">frame_min</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
@@ -1090,13 +1125,13 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        counts : numpy.ndarray</span>
-<span class="sd">             Each row of the array contains the donor resname, donor atom type, </span>
-<span class="sd">             acceptor resname, acceptor atom type and the total number of times </span>
+<span class="sd">             Each row of the array contains the donor resname, donor atom type,</span>
+<span class="sd">             acceptor resname, acceptor atom type and the total number of times</span>
 <span class="sd">             the hydrogen bond was found.</span>
 
 <span class="sd">        Note</span>
 <span class="sd">        ----</span>
-<span class="sd">        Unique hydrogen bonds are determined through a consideration of the </span>
+<span class="sd">        Unique hydrogen bonds are determined through a consideration of the</span>
 <span class="sd">        resname and atom type of the donor and acceptor atoms in a hydrogen bond.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -1112,11 +1147,13 @@
 
         <span class="n">tmp_hbonds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">d_res</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">types</span><span class="p">,</span> <span class="n">a_res</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">types</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
         <span class="n">hbond_type</span><span class="p">,</span> <span class="n">type_counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span>
-            <span class="n">tmp_hbonds</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">tmp_hbonds</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
         <span class="n">hbond_type_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">hb_type</span><span class="p">,</span> <span class="n">hb_count</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">hbond_type</span><span class="p">,</span> <span class="n">type_counts</span><span class="p">):</span>
-            <span class="n">hbond_type_list</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s2">&quot;:&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">hb_type</span><span class="p">[:</span><span class="mi">2</span><span class="p">]),</span>
-                                    <span class="s2">&quot;:&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">hb_type</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">]),</span> <span class="n">hb_count</span><span class="p">])</span>
+            <span class="n">hbond_type_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">[</span><span class="s2">&quot;:&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">hb_type</span><span class="p">[:</span><span class="mi">2</span><span class="p">]),</span> <span class="s2">&quot;:&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">hb_type</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">]),</span> <span class="n">hb_count</span><span class="p">]</span>
+            <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">hbond_type_list</span><span class="p">)</span></div>
 
@@ -1143,12 +1180,14 @@
         <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">)]</span>
 
         <span class="n">tmp_hbonds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">d</span><span class="o">.</span><span class="n">ids</span><span class="p">,</span> <span class="n">h</span><span class="o">.</span><span class="n">ids</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">ids</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
-        <span class="n">hbond_ids</span><span class="p">,</span> <span class="n">ids_counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">tmp_hbonds</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                                          <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">hbond_ids</span><span class="p">,</span> <span class="n">ids_counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span>
+            <span class="n">tmp_hbonds</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
 
         <span class="c1"># Find unique hbonds and sort rows so that most frequent observed bonds are at the top of the array</span>
-        <span class="n">unique_hbonds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">hbond_ids</span><span class="p">,</span> <span class="n">ids_counts</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]),</span>
-                                       <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">unique_hbonds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">hbond_ids</span><span class="p">,</span> <span class="n">ids_counts</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span>
+        <span class="p">)</span>
         <span class="n">unique_hbonds</span> <span class="o">=</span> <span class="n">unique_hbonds</span><span class="p">[</span><span class="n">unique_hbonds</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">argsort</span><span class="p">()[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
 
         <span class="k">return</span> <span class="n">unique_hbonds</span></div>
@@ -1157,7 +1196,7 @@
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">donors_sel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Selection string for the hydrogen bond donor atoms.</span>
-<span class="sd">        </span>
+
 <span class="sd">        .. versionadded:: 2.10.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_donors_sel</span>
@@ -1170,7 +1209,7 @@
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">hydrogens_sel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Selection string for the hydrogen bond hydrogen atoms.</span>
-<span class="sd">        </span>
+
 <span class="sd">        .. versionadded:: 2.10.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hydrogens_sel</span>
@@ -1185,7 +1224,7 @@
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">acceptors_sel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Selection string for the hydrogen bond acceptor atoms.</span>
-<span class="sd">        </span>
+
 <span class="sd">        .. versionadded:: 2.10.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_acceptors_sel</span>
@@ -1195,8 +1234,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_acceptors_sel</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_acceptors_sel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_acceptors_sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_acceptors</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_acceptors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_acceptors_sel</span><span class="p">,</span>
-                                              <span class="n">updating</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">update_selections</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_acceptors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_acceptors_sel</span><span class="p">,</span> <span class="n">updating</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">update_selections</span>
+        <span class="p">)</span></div>
 
 </pre></div>
 
