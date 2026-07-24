@@ -387,6 +387,7 @@ class TestRegistry:
             [tmp_path / "file1.txt"],
         )
 
+        # Show that file2 and file3 are missing
         assert fetcher.check_registry(
             tmp_path / "file_1_2_and_3_hash.txt"
         ) == [

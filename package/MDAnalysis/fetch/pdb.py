@@ -150,11 +150,14 @@ def from_PDB(
             f"are {_SUPPORTED_FILE_FORMATS_PDB}"
         )
 
-    pdb_ids = [pdb + "." + file_format for pdb in pdb_ids]
+    if isinstance(pdb_ids, str):
+        _pdb_ids = (pdb_ids + "." + file_format,)
+    else:  
+        _pdb_ids = [pdb + "." + file_format for pdb in pdb_ids]
 
     fetcher = StaticFetcher(cache_path=cache_path)
     return fetcher.fetch(
-        file_name=pdb_ids,
+        file_name=_pdb_ids,
         base_url="https://files.wwpdb.org/download/",
         progressbar=progressbar,
     )
