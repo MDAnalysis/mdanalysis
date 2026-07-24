@@ -86,22 +86,41 @@ Other functions and classes for logging purposes
 """
 import sys
 import logging
-import re
+import os
 
 from tqdm.auto import tqdm
 
+# from MDAnalysis.lib.util import deprecate
+
 from .. import version
 
+# Things to deprecated:
+# logfile -> stream (bc it could be any stream like object)
+#
+# version? Why would any user want to modify version in the first place?
+# Just have the message logged it directly
 
-def start_logging(logfile="MDAnalysis.log", version=version.__version__):
+
+def start_logging(stream="MDAnalysis.log", version=version.__version__):
     """Start logging of messages to file and console.
 
     The default logfile is named `MDAnalysis.log` and messages are
     logged with the tag *MDAnalysis*.
     """
-    create("MDAnalysis", logfile=logfile)
+    create(
+        "MDAnalysis",
+        stream=stream,
+        level="DEBUG",
+        fmt="%(asctime)s %(name)-12s %(levelname)-8s %(message)s",
+    )
+    create(
+        "MDAnalysis",
+        stream=sys.stdout,
+        level="INFO",
+        fmt="%(name)-12s: %(levelname)-8s %(message)s",
+    )
     logging.getLogger("MDAnalysis").info(
-        "MDAnalysis %s STARTED logging to %r", version, logfile
+        f"MDAnalysis {version} STARTED logging to {stream}"
     )
 
 
@@ -112,7 +131,30 @@ def stop_logging():
     clear_handlers(logger)  # this _should_ do the job...
 
 
-def create(logger_name="MDAnalysis", logfile="MDAnalysis.log"):
+# Things to deprecated overall:
+# log.NullHandler -> replace with logging.NullHandler() warning
+# create() -> add_handler() (potentially confusing bc standard library
+#                            has the same method but in camelcase weirdly?)
+#                            or create_handler()?
+#
+# For create():
+# logfile -> stream (bc it could be any stream like object, not just logfiles)
+# logger_name should be deprecated.
+#
+# Standard library recommends constructing through
+# logging.getLogger(__name__) because all loggers share the same namespace
+# and this is a systemmatic way of defining loggers
+#
+# __name__ is MDAnalysis
+# See 2nd paragraph: https://docs.python.org/3/library/logging.html#logger-objects
+#
+def create(
+    logger_name="MDAnalysis",
+    stream="MDAnalysis.log",
+    level="DEBUG",
+    fmt=None,
+    mode="a",
+):
     """Create a top level logger.
 
     - The file logger logs everything (including DEBUG).
@@ -130,25 +172,24 @@ def create(logger_name="MDAnalysis", logfile="MDAnalysis.log"):
        http://docs.python.org/library/logging.html?#logging-to-multiple-destinations
     """
 
+    # replaced with logging.getLogger(__name__)
     logger = logging.getLogger(logger_name)
-
     logger.setLevel(logging.DEBUG)
 
-    # handler that writes to logfile
-    logfile_handler = logging.FileHandler(logfile)
-    logfile_formatter = logging.Formatter(
-        "%(asctime)s %(name)-12s %(levelname)-8s %(message)s"
-    )
-    logfile_handler.setFormatter(logfile_formatter)
-    logger.addHandler(logfile_handler)
+    # This checks for file-like object per duck typing
+    # https://docs.python.org/3/library/logging.handlers.html#streamhandler
+    if hasattr(stream, "write") and hasattr(stream, "flush"):
+        handler = logging.StreamHandler(stream)
+    elif isinstance(stream, (str, os.PathLike)):
+        handler = logging.FileHandler(stream, mode=mode)
+    else:
+        raise TypeError(
+            "Input Stream is neither a string, PathLike object or a stream"
+        )
 
-    # define a Handler which writes INFO messages or higher to the sys.stderr
-    console_handler = logging.StreamHandler()
-    console_handler.setLevel(logging.INFO)
-    # set a format which is simpler for console use
-    formatter = logging.Formatter("%(name)-12s: %(levelname)-8s %(message)s")
-    console_handler.setFormatter(formatter)
-    logger.addHandler(console_handler)
+    handler.setLevel(level.upper())
+    handler.setFormatter(logging.Formatter(fmt))
+    logger.addHandler(handler)
 
     return logger
 
@@ -159,25 +200,8 @@ def clear_handlers(logger):
     (only important for reload/debug cycles...)
 
     """
-    for h in logger.handlers:
+    for h in list(logger.handlers):
         logger.removeHandler(h)
-
-
-class NullHandler(logging.Handler):
-    """Silent Handler.
-
-    Useful as a default::
-
-      h = NullHandler()
-      logging.getLogger("MDAnalysis").addHandler(h)
-      del h
-
-    see the advice on logging and libraries in
-    http://docs.python.org/library/logging.html?#configuring-logging-for-a-library
-    """
-
-    def emit(self, record):
-        pass
 
 
 class ProgressBar(tqdm):
