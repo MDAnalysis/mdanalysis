@@ -617,6 +617,10 @@ class StaticFetcher(_BaseFetcher):
 
             if match:
                 _downloader = match.group(1)
+            else:
+                raise ValueError(
+                    f"Unable to determine downloader for URL '{base_url}'."
+                )
 
         else:
             _downloader = downloader
@@ -630,3 +634,9 @@ class StaticFetcher(_BaseFetcher):
                 return pooch.SFTPDownloader(**kwargs)
             case "doi":
                 return pooch.DOIDownloader(**kwargs)
+            case _:
+                raise ValueError(
+                    f"Invalid downloader '{_downloader}'. Valid options "
+                    + f"are {SUPPORTED_DOWNLOADERS}"
+                )
+            
