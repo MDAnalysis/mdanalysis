@@ -27,7 +27,6 @@ from MDAnalysisTests.coordinates.base import (
     BaseWriterTest,
     BaseReaderTest,
 )
-import os
 import pytest
 
 from numpy.testing import (
