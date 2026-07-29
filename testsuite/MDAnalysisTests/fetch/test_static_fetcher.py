@@ -151,10 +151,7 @@ class TestExpectedBehaviors:
 
             assert isinstance(path, Path)
             assert path.name == "TEST_FILE1.txt"
-            assert (
-                path.read_text()
-                == "Sally sells seashells by the seashore"
-            )
+            assert path.read_text() == "Sally sells seashells by the seashore"
             assert path.exists()
 
     def test_create_database(self, tmp_path):
@@ -169,10 +166,7 @@ class TestExpectedBehaviors:
 
             assert isinstance(path, Path)
             assert path.name == "TEST_FILE1.txt"
-            assert (
-                path.read_text()
-                == "Sally sells seashells by the seashore"
-            )
+            assert path.read_text() == "Sally sells seashells by the seashore"
             assert path.exists()
 
             assert Path(downloader.cache_path / REGISTRY_NAME).exists()
