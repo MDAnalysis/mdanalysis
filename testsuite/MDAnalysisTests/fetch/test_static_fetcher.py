@@ -114,6 +114,28 @@ class TestExpectedErrors:
                     db_name=REGISTRY_NAME,
                 )
 
+    def test_invalid_auto_downloader(self, tmp_path):
+
+        base_url = "foo"
+        with pytest.raises(ValueError):
+
+            fetcher = StaticFetcher(
+                cache_path=tmp_path,
+            )
+            fetcher.fetch(
+                base_url=base_url, file_name="bar", downloader="auto"
+            )
+
+    def test_invalid_manual_downloader(self, tmp_path):
+
+        base_url = "foo"
+        with pytest.raises(ValueError):
+
+            fetcher = StaticFetcher(
+                cache_path=tmp_path,
+            )
+            fetcher.fetch(base_url=base_url, file_name="bar", downloader="FOO")
+
 
 @pytest.mark.skipif(not HAS_POOCH, reason="Pooch is not installed.")
 class TestExpectedBehaviors:
@@ -422,28 +444,3 @@ class TestRegistry:
         ) == [
             tmp_path / "file3.txt",
         ]
-
-def test_invalid_auto_downloader(tmp_path):
-
-    base_url = "foo"
-    with pytest.raises(ValueError):
-
-        fetcher = StaticFetcher(cache_path=tmp_path,)
-        fetcher.fetch(
-            base_url=base_url,
-            file_name="bar",
-            downloader="auto"
-        )
-
-def test_invalid_manual_downloader(tmp_path):
-
-    base_url = "foo"
-    with pytest.raises(ValueError):
-
-        fetcher = StaticFetcher(cache_path=tmp_path,)
-        fetcher.fetch(
-            base_url=base_url,
-            file_name="bar",
-            downloader='FOO'
-        
-        )
