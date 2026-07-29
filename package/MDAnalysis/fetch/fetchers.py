@@ -39,7 +39,7 @@ Variables
 ---------
 
 These module-level variables affect the runtime behavior across all Fetcher classes.
-Changing these values affects all initalized Fetchers.
+Changing these values affects all initialized Fetchers.
 
 
 .. autodata:: DEFAULT_CACHE_NAME_DOWNLOADER
