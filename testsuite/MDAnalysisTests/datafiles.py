@@ -308,6 +308,7 @@ __all__ = [
     "COORDINATES_XYZ",
     "COORDINATES_XYZ_BZ2",
     "COORDINATES_GRO",
+    "COORDINATES_PQR",
     "COORDINATES_GRO_INCOMPLETE_VELOCITY",
     "Martini_membrane_gro",  # for testing the leaflet finder
     "COORDINATES_XTC",
