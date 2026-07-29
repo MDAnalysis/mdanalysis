@@ -431,6 +431,7 @@ GRO_empty_atom = (_data_ref / "empty_atom.gro").as_posix()
 GRO_huge_box = (_data_ref / "huge_box.gro").as_posix()
 
 COORDINATES_GRO = (_data_ref / "coordinates/test.gro").as_posix()
+COORDINATES_PQR = (_data_ref / "coordinates/test.pqr").as_posix()
 COORDINATES_GRO_INCOMPLETE_VELOCITY = (
     _data_ref / "coordinates/test_incomplete_vel.gro"
 ).as_posix()
