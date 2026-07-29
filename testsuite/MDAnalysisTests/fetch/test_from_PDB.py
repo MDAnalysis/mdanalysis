@@ -54,7 +54,7 @@ def test_download_one_file_str(tmp_path):
     not HAS_ACCESS_TO_WWPDB,
     reason="Can not connect to https://files.wwpdb.org/",
 )
-def test_download_one_file(tmp_path):
+def test_download_one_file_list(tmp_path):
 
     path = mda.fetch.from_PDB(["1AKE"], cache_path=tmp_path)
     assert path.exists()
