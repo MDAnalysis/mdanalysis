@@ -202,6 +202,25 @@ class PQRReference(BaseReference):
         self.totaltime = 0
         self.container_format = False
         self.dimensions = None
+        self.volume = 0
+
+class TestPQRReader(BaseReaderTest):
+    @staticmethod
+    @pytest.fixture(scope="class")
+    def ref():
+        return PQRReference()
+    
+    def test_get_writer_1(self, ref, reader, tmpdir):
+        with tmpdir.as_cwd():
+            outfile = "test_writer." + ref.ext
+            with reader.Writer(outfile) as W:
+                assert_equal(isinstance(W, ref.writer), True)
+
+    def test_get_writer_2(self, ref, reader, tmpdir):
+            with tmpdir.as_cwd():
+                outfile = "test_writer." + ref.ext
+                with reader.Writer(outfile, n_atoms=100) as W:
+                    assert_equal(isinstance(W, ref.writer), True)
 
 class TestPQRWriterMissingAttrs(object):
     # pqr requires names, resids, resnames, segids, radii, charges
