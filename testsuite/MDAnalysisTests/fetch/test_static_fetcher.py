@@ -405,12 +405,14 @@ class TestRegistry:
         )
 
         # Show that file2 and file3 are missing
-        assert sorted(fetcher.check_registry(
-            tmp_path / "file_1_2_and_3_hash.txt"
-        )) == sorted([
-            tmp_path / "file3.txt",
-            tmp_path / "file2.txt",
-        ])
+        assert sorted(
+            fetcher.check_registry(tmp_path / "file_1_2_and_3_hash.txt")
+        ) == sorted(
+            [
+                tmp_path / "file3.txt",
+                tmp_path / "file2.txt",
+            ]
+        )
 
     def test_check_registry_ignore(self, tmp_path):
 
