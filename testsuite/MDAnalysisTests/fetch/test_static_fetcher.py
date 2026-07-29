@@ -153,7 +153,7 @@ class TestExpectedBehaviors:
             assert path.name == "TEST_FILE1.txt"
             assert (
                 path.read_text()
-                == "The USA is going to win the 2026 World Cup!\nU-S-A! U-S-A! U-S-A!"
+                == "Sally sells seashells by the seashore"
             )
             assert path.exists()
 
@@ -171,14 +171,14 @@ class TestExpectedBehaviors:
             assert path.name == "TEST_FILE1.txt"
             assert (
                 path.read_text()
-                == "The USA is going to win the 2026 World Cup!\nU-S-A! U-S-A! U-S-A!"
+                == "Sally sells seashells by the seashore"
             )
             assert path.exists()
 
             assert Path(downloader.cache_path / REGISTRY_NAME).exists()
             assert (
                 downloader.cache_path / REGISTRY_NAME
-            ).read_text() == "TEST_FILE1.txt sha256:c4bdb6ba200a917b8384ffeffa4999bf05bd4e479f6580d795aca509c9122dc4\n"
+            ).read_text() == "TEST_FILE1.txt sha256:a625aaf4ca5e2d358b216165cee3247a93a40e699bb864193499d230ab7aad7e\n"
 
     def test_append_database(self, tmp_path):
         with temporary_http_server() as (host, port, temp_folder):
@@ -198,7 +198,7 @@ class TestExpectedBehaviors:
             )
 
         assert Path(downloader.cache_path / REGISTRY_NAME).read_text() == (
-            "TEST_FILE1.txt sha256:c4bdb6ba200a917b8384ffeffa4999bf05bd4e479f6580d795aca509c9122dc4\n"
+            "TEST_FILE1.txt sha256:a625aaf4ca5e2d358b216165cee3247a93a40e699bb864193499d230ab7aad7e\n"
             "TEST_FILE2.txt sha256:0ec192c0f90d1332f2abca4398596d3978434ecbae6abea8ffd989412b592458\n"
         )
 
@@ -214,7 +214,7 @@ class TestExpectedBehaviors:
 
             assert (
                 Path(downloader.cache_path / REGISTRY_NAME).read_text()
-                == "TEST_FILE1.txt md5:b2f138521297db74b6b280feeb14f9f6\n"
+                == "TEST_FILE1.txt md5:adf1020ce2ffe073600990e1c9c72ce8\n"
             )
 
     def test_existing_database(self, tmp_path):
@@ -284,7 +284,7 @@ class TestExpectedBehaviors:
             )
 
             assert Path(downloader.cache_path / REGISTRY_NAME).read_text() == (
-                "TEST_FILE1.txt sha256:c4bdb6ba200a917b8384ffeffa4999bf05bd4e479f6580d795aca509c9122dc4\n"
+                "TEST_FILE1.txt sha256:a625aaf4ca5e2d358b216165cee3247a93a40e699bb864193499d230ab7aad7e\n"
                 "TEST_FILE2.txt sha256:0ec192c0f90d1332f2abca4398596d3978434ecbae6abea8ffd989412b592458\n"
             )
 
@@ -349,7 +349,7 @@ class TestRegistry:
             fetcher.append_registry(registry, ["TEST_FILE2.txt"])
 
             assert Path(registry).read_text() == (
-                "TEST_FILE1.txt sha256:c4bdb6ba200a917b8384ffeffa4999bf05bd4e479f6580d795aca509c9122dc4\n"
+                "TEST_FILE1.txt sha256:a625aaf4ca5e2d358b216165cee3247a93a40e699bb864193499d230ab7aad7e\n"
                 "TEST_FILE2.txt sha256:0ec192c0f90d1332f2abca4398596d3978434ecbae6abea8ffd989412b592458\n"
             )
 

@@ -37,8 +37,7 @@ def temporary_http_server():
         temp_folder = Path(temp_dir)
 
         (temp_folder / "TEST_FILE1.txt").write_text(
-            "The USA is going to win the 2026 World Cup!\n"
-            "U-S-A! U-S-A! U-S-A!"
+            "Sally sells seashells by the seashore"
         )
 
         (temp_folder / "TEST_FILE2.txt").write_text("7-1")
