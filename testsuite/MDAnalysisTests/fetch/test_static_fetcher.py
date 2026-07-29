@@ -199,7 +199,7 @@ class TestExpectedBehaviors:
 
         assert Path(downloader.cache_path / REGISTRY_NAME).read_text() == (
             "TEST_FILE1.txt sha256:a625aaf4ca5e2d358b216165cee3247a93a40e699bb864193499d230ab7aad7e\n"
-            "TEST_FILE2.txt sha256:0ec192c0f90d1332f2abca4398596d3978434ecbae6abea8ffd989412b592458\n"
+            "TEST_FILE2.txt sha256:eff7c015c379263afdf464bd1baf266909d0e4d4af7cccb722dd4994ff4e998c\n"
         )
 
     def test_different_hashes(self, tmp_path):
@@ -285,7 +285,7 @@ class TestExpectedBehaviors:
 
             assert Path(downloader.cache_path / REGISTRY_NAME).read_text() == (
                 "TEST_FILE1.txt sha256:a625aaf4ca5e2d358b216165cee3247a93a40e699bb864193499d230ab7aad7e\n"
-                "TEST_FILE2.txt sha256:0ec192c0f90d1332f2abca4398596d3978434ecbae6abea8ffd989412b592458\n"
+                "TEST_FILE2.txt sha256:eff7c015c379263afdf464bd1baf266909d0e4d4af7cccb722dd4994ff4e998c\n"
             )
 
     def test_multiple_downloads_existing_database(self, tmp_path):
@@ -350,7 +350,7 @@ class TestRegistry:
 
             assert Path(registry).read_text() == (
                 "TEST_FILE1.txt sha256:a625aaf4ca5e2d358b216165cee3247a93a40e699bb864193499d230ab7aad7e\n"
-                "TEST_FILE2.txt sha256:0ec192c0f90d1332f2abca4398596d3978434ecbae6abea8ffd989412b592458\n"
+                "TEST_FILE2.txt sha256:eff7c015c379263afdf464bd1baf266909d0e4d4af7cccb722dd4994ff4e998c\n"
             )
 
     def test_write_registry(self, tmp_path):
