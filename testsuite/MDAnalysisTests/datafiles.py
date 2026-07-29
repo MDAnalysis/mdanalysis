@@ -137,6 +137,7 @@ __all__ = [
     "TPR2024_4",
     "TPR2025_0",
     "TPR2026_0",
+    "TPR_linear_angle",
     "TPR510_bonded",
     "TPR2016_bonded",
     "TPR2018_bonded",
@@ -245,6 +246,7 @@ __all__ = [
     "mol2_comments_header",
     "mol2_ligand",
     "mol2_sodium_ion",
+    "mol2_crysin",
     "capping_input",
     "capping_output",
     "capping_ace",
@@ -573,6 +575,7 @@ TPR2024 = (_data_ref / "tprs/2lyz_gmx_2024.tpr").as_posix()
 TPR2024_4 = (_data_ref / "tprs/2lyz_gmx_2024_4.tpr").as_posix()
 TPR2025_0 = (_data_ref / "tprs/2lyz_gmx_2025_0.tpr").as_posix()
 TPR2026_0 = (_data_ref / "tprs/2lyz_gmx_2026_0.tpr").as_posix()
+TPR_linear_angle = (_data_ref / "tprs/Linear_Angle.tpr").as_posix()
 # double precision
 TPR455Double = (_data_ref / "tprs/drew_gmx_4.5.5.double.tpr").as_posix()
 TPR460 = (_data_ref / "tprs/ab42_gmx_4.6.tpr").as_posix()
@@ -745,6 +748,7 @@ mol2_comments_header = (
 mol2_zinc = (_data_ref / "mol2/zinc_856218.mol2").as_posix()
 # MOL2 file without bonds
 mol2_sodium_ion = (_data_ref / "mol2/sodium_ion.mol2").as_posix()
+mol2_crysin = (_data_ref / "mol2/test_crysin.mol2").as_posix()
 
 capping_input = (_data_ref / "capping/aaqaa.gro").as_posix()
 capping_output = (_data_ref / "capping/maestro_aaqaa_capped.pdb").as_posix()
