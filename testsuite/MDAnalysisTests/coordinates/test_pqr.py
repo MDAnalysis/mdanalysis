@@ -37,7 +37,7 @@ from MDAnalysisTests.datafiles import PQR, COORDINATES_PQR
 from MDAnalysisTests import make_Universe
 
 
-class TestPQRReader(_SingleFrameReader):
+class TestPQRReaderOld(_SingleFrameReader):
     __test__ = True
 
     def setUp(self):
@@ -87,7 +87,7 @@ class TestPQRReader(_SingleFrameReader):
         assert self.universe.dimensions is None
 
 
-class TestPQRWriter(RefAdKSmall):
+class TestPQRWriterOld(RefAdKSmall):
     @staticmethod
     @pytest.fixture
     def universe():
