@@ -21,6 +21,8 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import MDAnalysis as mda
+from MDAnalysis.coordinates.PQR import PQRReader, PQRWriter
+from MDAnalysisTests.coordinates.base import BaseReference, BaseWriterTest, BaseReaderTest
 import os
 import pytest
 
@@ -31,7 +33,7 @@ from numpy.testing import (
 
 from MDAnalysisTests.coordinates.reference import RefAdKSmall
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
-from MDAnalysisTests.datafiles import PQR
+from MDAnalysisTests.datafiles import PQR, COORDINATES_PQR
 from MDAnalysisTests import make_Universe
 
 
@@ -187,6 +189,19 @@ class TestPQRWriter(RefAdKSmall):
             "Total charge (in CHARMM) does not match expected value.",
         )
 
+class PQRReference(BaseReference):
+    def __init__(self):
+        super(PQRReference, self).__init__()
+        self.trajectory = COORDINATES_PQR
+        self.topology = COORDINATES_PQR
+        self.reader = PQRReader
+        self.writer = PQRWriter
+        self.ext = "pqr"
+        self.n_frames = 1
+        self.prec = 3
+        self.totaltime = 0
+        self.container_format = False
+        self.dimensions = None
 
 class TestPQRWriterMissingAttrs(object):
     # pqr requires names, resids, resnames, segids, radii, charges
