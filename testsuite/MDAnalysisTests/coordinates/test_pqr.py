@@ -222,6 +222,17 @@ class TestPQRReader(BaseReaderTest):
                 with reader.Writer(outfile, n_atoms=100) as W:
                     assert_equal(isinstance(W, ref.writer), True)
 
+class TestPQRWriter(BaseWriterTest):
+    @staticmethod
+    @pytest.fixture(scope="class")
+    def ref():
+        return PQRReference()
+
+    def test_no_container(self, ref, tmpdir):
+        with tmpdir.as_cwd():
+            # PQRWriter doesnt require n_atoms at construction time
+            ref.writer("foo")
+
 class TestPQRWriterMissingAttrs(object):
     # pqr requires names, resids, resnames, segids, radii, charges
     @staticmethod
