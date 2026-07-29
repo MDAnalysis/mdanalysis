@@ -22,7 +22,11 @@
 #
 import MDAnalysis as mda
 from MDAnalysis.coordinates.PQR import PQRReader, PQRWriter
-from MDAnalysisTests.coordinates.base import BaseReference, BaseWriterTest, BaseReaderTest
+from MDAnalysisTests.coordinates.base import (
+    BaseReference,
+    BaseWriterTest,
+    BaseReaderTest,
+)
 import os
 import pytest
 
@@ -189,6 +193,7 @@ class TestPQRWriterOld(RefAdKSmall):
             "Total charge (in CHARMM) does not match expected value.",
         )
 
+
 class PQRReference(BaseReference):
     def __init__(self):
         super(PQRReference, self).__init__()
@@ -204,12 +209,13 @@ class PQRReference(BaseReference):
         self.dimensions = None
         self.volume = 0
 
+
 class TestPQRReader(BaseReaderTest):
     @staticmethod
     @pytest.fixture(scope="class")
     def ref():
         return PQRReference()
-    
+
     def test_get_writer_1(self, ref, reader, tmpdir):
         with tmpdir.as_cwd():
             outfile = "test_writer." + ref.ext
@@ -217,10 +223,11 @@ class TestPQRReader(BaseReaderTest):
                 assert_equal(isinstance(W, ref.writer), True)
 
     def test_get_writer_2(self, ref, reader, tmpdir):
-            with tmpdir.as_cwd():
-                outfile = "test_writer." + ref.ext
-                with reader.Writer(outfile, n_atoms=100) as W:
-                    assert_equal(isinstance(W, ref.writer), True)
+        with tmpdir.as_cwd():
+            outfile = "test_writer." + ref.ext
+            with reader.Writer(outfile, n_atoms=100) as W:
+                assert_equal(isinstance(W, ref.writer), True)
+
 
 class TestPQRWriter(BaseWriterTest):
     @staticmethod
@@ -232,6 +239,7 @@ class TestPQRWriter(BaseWriterTest):
         with tmpdir.as_cwd():
             # PQRWriter doesnt require n_atoms at construction time
             ref.writer("foo")
+
 
 class TestPQRWriterMissingAttrs(object):
     # pqr requires names, resids, resnames, segids, radii, charges
