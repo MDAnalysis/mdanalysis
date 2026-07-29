@@ -387,7 +387,7 @@ class StaticFetcher(_BaseFetcher):
         new_files = [self.cache_path / file_name for file_name in files]
         self.write_registry(Path(db_path), new_files, mode="a")
 
-    def check_registry(self, db_path, files=[], ignore=[]):
+    def check_registry(self, db_path, files=None, ignore=None):
         """
         Return paths relative to :attr:`cache_path` for cache files that are missing from the registry.
 
@@ -443,6 +443,9 @@ class StaticFetcher(_BaseFetcher):
 
 
         """
+        files = [] if files is None else files
+        ignore = [] if ignore is None else ignore
+
         registry_dictionary = self.read_registry(db_path)
         database_files = set(registry_dictionary.keys())
 
@@ -639,4 +642,3 @@ class StaticFetcher(_BaseFetcher):
                     f"Invalid downloader '{_downloader}'. Valid options "
                     + f"are {SUPPORTED_DOWNLOADERS}"
                 )
-            
