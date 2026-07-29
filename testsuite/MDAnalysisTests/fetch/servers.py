@@ -55,7 +55,7 @@ def temporary_http_server():
             directory=str(temp_folder),
         )
 
-        server = ThreadingHTTPServer(("127.0.0.1", 7123), http_handler)
+        server = ThreadingHTTPServer(("127.0.0.1", 0), http_handler)
         host, port = server.server_address
 
         thread = threading.Thread(
