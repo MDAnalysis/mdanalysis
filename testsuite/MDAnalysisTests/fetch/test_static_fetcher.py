@@ -198,6 +198,7 @@ class TestExpectedBehaviors:
             "TEST_FILE2.txt sha256:eff7c015c379263afdf464bd1baf266909d0e4d4af7cccb722dd4994ff4e998c\n"
         )
 
+    # Add paramertization
     def test_different_hashes(self, tmp_path):
         with temporary_http_server() as (host, port, temp_folder):
             base_url = f"http://{host}:{port}/"
@@ -444,50 +445,72 @@ class TestRegistry:
         ]
 
 
-@pytest.mark.parametrize(
-    ("downloader", "constructor_name"),
-    [
-        ("ftp", "FTPDownloader"),
-        ("sftp", "SFTPDownloader"),
-        ("doi", "DOIDownloader"),
-    ],
-)
-def test_fetch_with_other_downloaders(
-    monkeypatch,
-    tmp_path,
-    downloader,
-    constructor_name,
-):
-    downloaded_path = tmp_path / "example.dat"
+@pytest.mark.skipif(not HAS_POOCH, reason="Pooch is not installed.")
+class TestDownloaders:
 
-    # Monkeypatches the pooch.create to return a fake path
-    pooch_fetch = Mock(return_value=str(downloaded_path))
-    pooch_instance = Mock(fetch=pooch_fetch)
-
-    monkeypatch.setattr(
-        pooch,
-        "create",
-        Mock(return_value=pooch_instance),
+    @pytest.mark.parametrize(
+        ("downloader", "constructor_name"),
+        [
+            ("ftp", "FTPDownloader"),
+            ("sftp", "SFTPDownloader"),
+            ("doi", "DOIDownloader"),
+        ],
     )
-
-    # Monkekpatch a generic pooch Downloader
-    # This will be used to mock the behavior of a generic pooch Downloader
-    downloader_instance = object()
-    downloader_constructor = Mock(return_value=downloader_instance)
-
-    monkeypatch.setattr(
-        pooch,
+    def test_monkeypatch_other_downloaders(
+        self,
+        monkeypatch,
+        tmp_path,
+        downloader,
         constructor_name,
-        downloader_constructor,
-    )
+    ):
+        downloaded_path = tmp_path / "example.dat"
 
-    # Since pooch.create() is monkeypatched to return a fake path. This won't raise an exception
-    # And the fake downloader will be passed into the fetch method to mock its behavior.
-    result = StaticFetcher(cache_path=tmp_path).fetch(
-        base_url="https://example.com/",
-        file_name="example.dat",
-        db_name=None,
-        downloader=downloader,
-    )
+        # Monkeypatches the pooch.create to return a fake path
+        pooch_fetch = Mock(return_value=str(downloaded_path))
+        pooch_instance = Mock(fetch=pooch_fetch)
 
-    assert result == downloaded_path
+        monkeypatch.setattr(
+            pooch,
+            "create",
+            Mock(return_value=pooch_instance),
+        )
+
+        # Monkekpatch a generic pooch Downloader
+        # This will be used to mock the behavior of a generic pooch Downloader
+        downloader_instance = object()
+        downloader_constructor = Mock(return_value=downloader_instance)
+
+        monkeypatch.setattr(
+            pooch,
+            constructor_name,
+            downloader_constructor,
+        )
+
+        # Since pooch.create() is monkeypatched to return a fake path. This won't raise an exception
+        # And the fake downloader will be passed into the fetch method to mock its behavior.
+        result = StaticFetcher(cache_path=tmp_path).fetch(
+            base_url="https://example.com/",
+            file_name="example.dat",
+            db_name=None,
+            downloader=downloader,
+        )
+
+        assert result == downloaded_path
+
+    def test_downloader_error(self, tmp_path):
+        with pytest.raises(
+            ValueError,
+        ):
+
+            with temporary_http_server() as (host, port, temp_folder):
+                base_url = f"http://{host}:{port}/"
+                downloader = StaticFetcher()
+
+                downloader = StaticFetcher(
+                    cache_path=tmp_path,
+                )
+                path = downloader.fetch(
+                    base_url=base_url,
+                    file_name="TEST_FILE1.txt",
+                    downloader="FOO",
+                )
