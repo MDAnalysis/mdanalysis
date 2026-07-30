@@ -37,6 +37,7 @@ try:
 except request.URLError:
     HAS_ACCESS_TO_WWPDB = False
 
+
 @pytest.mark.skipif(not HAS_POOCH, reason="Pooch is not installed.")
 @pytest.mark.skipif(
     not HAS_ACCESS_TO_WWPDB,

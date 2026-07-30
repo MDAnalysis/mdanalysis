@@ -39,7 +39,6 @@ Functions
 ---------
 
 .. autofunction:: from_PDB
-..
 
 """
 from pathlib import Path
@@ -47,7 +46,7 @@ from .fetchers import StaticFetcher
 
 
 #: Alias to fetchers/DEFAULT_CACHE_NAME_DOWNLOADER
-#: 
+#:
 #: Maintained for backwards compatiblity
 #:
 from .fetchers import DEFAULT_CACHE_NAME_DOWNLOADER
@@ -165,7 +164,7 @@ def from_PDB(
 
     if isinstance(pdb_ids, str):
         _pdb_ids = (pdb_ids + "." + file_format,)
-    else:  
+    else:
         _pdb_ids = [pdb + "." + file_format for pdb in pdb_ids]
 
     fetcher = StaticFetcher(cache_path=cache_path)
