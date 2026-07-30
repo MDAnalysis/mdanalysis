@@ -31,12 +31,10 @@ from servers import temporary_http_server
 import hashlib
 import pytest
 
-
 from MDAnalysis.fetch.fetchers import (
     DEFAULT_CACHE_NAME_DOWNLOADER,
     HAS_POOCH,
     StaticFetcher,
-    pooch,
 )
 
 if HAS_POOCH:
