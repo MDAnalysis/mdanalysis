@@ -30,14 +30,27 @@ Structural Bioinformatics (RCSB) `Protein Data Batabank`_ (PDB).
 
 .. _Protein Data Batabank: https://www.rcsb.org/
 
+Variables
+---------
+
+.. autodata:: DEFAULT_CACHE_NAME_DOWNLOADER
+
 Functions
 ---------
 
 .. autofunction:: from_PDB
+..
 
 """
 from pathlib import Path
 from .fetchers import StaticFetcher
+
+
+#: Alias to fetchers/DEFAULT_CACHE_NAME_DOWNLOADER
+#: 
+#: Maintained for backwards compatiblity
+#:
+from .fetchers import DEFAULT_CACHE_NAME_DOWNLOADER
 
 # These file formats are here https://www.rcsb.org/docs/programmatic-access/file-download-services#pdb-entry-files"
 _SUPPORTED_FILE_FORMATS_PDB = (
