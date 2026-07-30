@@ -25,7 +25,7 @@ import re
 from pathlib import Path
 from shutil import rmtree
 
-from .servers import temporary_http_server
+from servers import temporary_http_server
 
 import hashlib
 import pytest
