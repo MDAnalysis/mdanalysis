@@ -104,3 +104,17 @@ def test_invalid_file_format(tmp_path):
         mda.fetch.from_PDB(
             pdb_ids="1AKE", cache_path=tmp_path, file_format="barfoo"
         )
+
+
+@pytest.mark.skipif(not HAS_POOCH, reason="Pooch is not installed.")
+@pytest.mark.skipif(
+    not HAS_ACCESS_TO_WWPDB,
+    reason="Can not connect to https://files.wwpdb.org/",
+)
+def test_download_multiple_calls(tmp_path):
+
+    p1 = mda.fetch.from_PDB(["9BUY"], cache_path=tmp_path)
+    p2 = mda.fetch.from_PDB(["3SN6"], cache_path=tmp_path)
+
+    assert (tmp_path / "9BUY.cif.gz").exists()
+    assert (tmp_path / "3SN6.cif.gz").exists()

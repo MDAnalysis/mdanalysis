@@ -41,9 +41,8 @@ Functions
 .. autofunction:: from_PDB
 
 """
-from pathlib import Path
-from .fetchers import StaticFetcher
 
+from .fetchers import StaticFetcher
 
 #: Alias to fetchers/DEFAULT_CACHE_NAME_DOWNLOADER
 #:
@@ -172,4 +171,5 @@ def from_PDB(
         file_name=_pdb_ids,
         base_url="https://files.wwpdb.org/download/",
         progressbar=progressbar,
+        append_db=True,
     )
