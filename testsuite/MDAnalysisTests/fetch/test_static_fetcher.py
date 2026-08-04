@@ -348,6 +348,49 @@ class TestRegistry:
                 "TEST_FILE2.txt sha256:eff7c015c379263afdf464bd1baf266909d0e4d4af7cccb722dd4994ff4e998c\n"
             )
 
+    def test_append_registry_duplicate(self, tmp_path):
+
+        with temporary_http_server() as (host, port, temp_folder):
+            base_url = f"http://{host}:{port}/"
+            fetcher = StaticFetcher(cache_path=tmp_path)
+
+            file1 = fetcher.fetch(
+                base_url=base_url,
+                file_name="TEST_FILE1.txt",
+                db_name="db_hash1.txt",
+            )
+
+            registry = file1.parent / "db_hash1.txt"
+            fetcher.append_registry(
+                registry, ["TEST_FILE1.txt"], write_duplicate=True
+            )
+
+            assert Path(registry).read_text() == (
+                "TEST_FILE1.txt sha256:a625aaf4ca5e2d358b216165cee3247a93a40e699bb864193499d230ab7aad7e\n"
+                "TEST_FILE1.txt sha256:a625aaf4ca5e2d358b216165cee3247a93a40e699bb864193499d230ab7aad7e\n"
+            )
+
+    def test_append_registry_no_duplicate(self, tmp_path):
+
+        with temporary_http_server() as (host, port, temp_folder):
+            base_url = f"http://{host}:{port}/"
+            fetcher = StaticFetcher(cache_path=tmp_path)
+
+            file1 = fetcher.fetch(
+                base_url=base_url,
+                file_name="TEST_FILE1.txt",
+                db_name="db_hash1.txt",
+            )
+
+            registry = file1.parent / "db_hash1.txt"
+            fetcher.append_registry(
+                registry, ["TEST_FILE1.txt"], write_duplicate=False
+            )
+
+            assert Path(registry).read_text() == (
+                "TEST_FILE1.txt sha256:a625aaf4ca5e2d358b216165cee3247a93a40e699bb864193499d230ab7aad7e\n"
+            )
+
     def test_write_registry(self, tmp_path):
         # This can't call StaticFetcher directly for an effective test
         # Maybe refactor the file creation into a function handle or fixture

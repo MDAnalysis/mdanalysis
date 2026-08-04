@@ -330,7 +330,7 @@ class StaticFetcher(_BaseFetcher):
 
         return paths[0] if len(paths) == 1 else paths
 
-    def append_registry(self, db_path, files):
+    def append_registry(self, db_path, files, write_duplicate=False):
         """
         Append cached files to an existing Pooch registry.
 
@@ -385,7 +385,18 @@ class StaticFetcher(_BaseFetcher):
 
         """
         new_files = [self.cache_path / file_name for file_name in files]
-        self.write_registry(Path(db_path), new_files, mode="a")
+
+        if not write_duplicate:
+            files_dict = self.read_registry(db_path)
+
+            _new_files = [
+                file for file in new_files if file.name not in files_dict
+            ]
+
+        else:
+            _new_files = new_files
+
+        self.write_registry(Path(db_path), _new_files, mode="a")
 
     def check_registry(self, db_path, files=None, ignore=None):
         """
