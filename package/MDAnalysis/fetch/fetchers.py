@@ -144,7 +144,7 @@ class StaticFetcher(_BaseFetcher):
 
     Attributes
     ----------
-    cache_path : pathlib.Path or ``None``
+    cache_path : pathlib.Path
         Path to the cache directory.
 
     hash : str
@@ -225,16 +225,20 @@ class StaticFetcher(_BaseFetcher):
 
         Examples
         --------
-        Download a single CIF file from the RCSB Protein Data Bank.
 
-        >>> StaticFetcher().fetch(file_name="1AKE.cif",
-            base_url="https://files.wwpdb.org/download/")
-        './MDAnalysis_pdbs/1AKE.cif'
+        .. code-block:: pycon
 
-        Download multiple CIF files from the RCSB Protein Data Bank.
-        >>> StaticFetcher().fetch(file_name=["1AKE.cif", "4AKE.cif"],
-            base_url="https://files.wwpdb.org/download/")
-        ['./MDAnalysis_pdbs/1AKE.cif', './MDAnalysis_pdbs/4AKE.cif']
+            Download a single CIF file from the RCSB Protein Data Bank.
+
+            >>> StaticFetcher().fetch(file_name="1AKE.cif",
+                base_url="https://files.wwpdb.org/download/")
+            './MDAnalysis_pdbs/1AKE.cif'
+
+            Download multiple CIF files from the RCSB Protein Data Bank.
+
+            >>> StaticFetcher().fetch(file_name=["1AKE.cif", "4AKE.cif"],
+                base_url="https://files.wwpdb.org/download/")
+            ['./MDAnalysis_pdbs/1AKE.cif', './MDAnalysis_pdbs/4AKE.cif']
 
         Notes
         -----
@@ -345,6 +349,10 @@ class StaticFetcher(_BaseFetcher):
         files : iterable of str or path-like
             File names or paths for cached files to append to the registry. Relative
             paths are interpreted relative to :attr:`cache_path`.
+        write_duplicate : bool
+            If set to True, append_registry will write the file and its hash to the registry
+            regardless of the existing presence of a entry in the registry. Default behavior is
+            False.
 
         Returns
         -------
@@ -426,24 +434,25 @@ class StaticFetcher(_BaseFetcher):
         Example
         -------
         .. code-block:: python
-        >>> files = {
-        ...     "file1.txt": "Molecular \\n",
-        ...     "file2.txt": "Dynamics. \\n",
-        ...     "file3.txt": "Analysis. \\n"
-        ... }
-        >>> for filename, content in files.items():
-        ...     with open(filename, "w") as f:
-        ...         f.write(content)
-        ...
-        >>> fetcher = StaticFetcher()
-        >>> fetcher.write_registry(
-        ...     "file_1_2_and_3_hash.txt",
-        ...     files=["file1.txt"],
-        ... )
-        >>> fetcher.check_registry("file_1_2_and_3_hash.txt")
-        [Path('./MDAnalysis_pdbs/file3.txt'), Path('./MDAnalysis_pdbs/file2.txt')]
-        >>> fetcher.check_registry("file_1_2_and_3_hash.txt", ignore=["file2.txt"])
-        [Path('./MDAnalysis_pdbs/file3.txt')]
+
+            >>> files = {
+            ...     "file1.txt": "Molecular \\n",
+            ...     "file2.txt": "Dynamics. \\n",
+            ...     "file3.txt": "Analysis. \\n"
+            ... }
+            >>> for filename, content in files.items():
+            ...     with open(filename, "w") as f:
+            ...         f.write(content)
+            ...
+            >>> fetcher = StaticFetcher()
+            >>> fetcher.write_registry(
+            ...     "file_1_2_and_3_hash.txt",
+            ...     files=["file1.txt"],
+            ... )
+            >>> fetcher.check_registry("file_1_2_and_3_hash.txt")
+            [Path('./MDAnalysis_pdbs/file3.txt'), Path('./MDAnalysis_pdbs/file2.txt')]
+            >>> fetcher.check_registry("file_1_2_and_3_hash.txt", ignore=["file2.txt"])
+            [Path('./MDAnalysis_pdbs/file3.txt')]
 
 
         Notes
@@ -496,22 +505,22 @@ class StaticFetcher(_BaseFetcher):
         -------
         .. code-block:: python
 
-        >>> files = {
-        ...     "file1.txt": "Molecular \\n",
-        ...     "file2.txt": "Dynamics. \\n",
-        ... }
-        >>> for filename, content in files.items():
-        ...     with open(filename, "w") as f:
-        ...         f.write(content)
-        ...
-        >>> fetcher = StaticFetcher()
-        >>> fetcher.write_registry(
-        ...     "file_1_and_2_hash.txt",
-        ...     ["file1.txt", "file2.txt"],
-        ... )
-        >>> fetcher.read_registry("file_1_and_2_hash.txt")
-        {'file1.txt': 'sha256:2da169c5aae36a823c202da49fb11935b76277efcb5cd42a4cf238ddda2a9b20',
-        'file2.txt': 'sha256:3a0dbd9e2abc4a7bbae6adfe92e2858218135926dacd4a7d3fb4ca2dbdbe457a'}
+            >>> files = {
+            ...     "file1.txt": "Molecular \\n",
+            ...     "file2.txt": "Dynamics. \\n",
+            ... }
+            >>> for filename, content in files.items():
+            ...     with open(filename, "w") as f:
+            ...         f.write(content)
+            ...
+            >>> fetcher = StaticFetcher()
+            >>> fetcher.write_registry(
+            ...     "file_1_and_2_hash.txt",
+            ...     ["file1.txt", "file2.txt"],
+            ... )
+            >>> fetcher.read_registry("file_1_and_2_hash.txt")
+            {'file1.txt': 'sha256:2da169c5aae36a823c202da49fb11935b76277efcb5cd42a4cf238ddda2a9b20',
+            'file2.txt': 'sha256:3a0dbd9e2abc4a7bbae6adfe92e2858218135926dacd4a7d3fb4ca2dbdbe457a'}
 
         Notes
         -----
@@ -557,22 +566,23 @@ class StaticFetcher(_BaseFetcher):
         Example
         -------
         .. code-block:: python
-        >>> files = {
-        ...     "file1.txt": "Molecular \\n",
-        ...     "file2.txt": "Dynamics. \\n",
-        ... }
-        >>> for filename, content in files.items():
-        ...     with open(filename, "w") as f:
-        ...         f.write(content)
-        ...
-        >>> fetcher = StaticFetcher()
-        >>> fetcher.write_registry(
-        ...     "file_1_and_2_hash.txt",
-        ...     ["file1.txt", "file2.txt"],
-        ... )
-        >>> Path("file_1_and_2_hash.txt").read_text()
-        file1.txt sha256:2da169c5aae36a823c202da49fb11935b76277efcb5cd42a4cf238ddda2a9b20
-        file2.txt sha256:3a0dbd9e2abc4a7bbae6adfe92e2858218135926dacd4a7d3fb4ca2dbdbe457a
+
+            >>> files = {
+            ...     "file1.txt": "Molecular \\n",
+            ...     "file2.txt": "Dynamics. \\n",
+            ... }
+            >>> for filename, content in files.items():
+            ...     with open(filename, "w") as f:
+            ...         f.write(content)
+            ...
+            >>> fetcher = StaticFetcher()
+            >>> fetcher.write_registry(
+            ...     "file_1_and_2_hash.txt",
+            ...     ["file1.txt", "file2.txt"],
+            ... )
+            >>> Path("file_1_and_2_hash.txt").read_text()
+            file1.txt sha256:2da169c5aae36a823c202da49fb11935b76277efcb5cd42a4cf238ddda2a9b20
+            file2.txt sha256:3a0dbd9e2abc4a7bbae6adfe92e2858218135926dacd4a7d3fb4ca2dbdbe457a
 
         Notes
         -----
