@@ -46,8 +46,9 @@ def temporary_http_server():
 
         # This is a beautiful quote from the GROMACS source code
         (temp_folder / "TEST_FILE3.txt").write_text(
-            "Unlike teachers or doctors, our efforts improve the lives of " +
-            "people we'll never meet. \n" + "- Katie Busch-Sorensen"
+            "Unlike teachers or doctors, our efforts improve the lives of "
+            + "people we'll never meet. \n"
+            + "- Katie Busch-Sorensen"
         )
 
         http_handler = partial(

@@ -88,8 +88,8 @@ class TestExpectedErrors:
             with pytest.raises(
                 ValueError,
                 match=re.escape(
-                    f'Invalid hash "{hash}". Valid hashes algorithms ' + 
-                    f'are {hashlib.algorithms_available}.'
+                    f'Invalid hash "{hash}". Valid hashes algorithms '
+                    + f"are {hashlib.algorithms_available}."
                 ),
             ):
                 StaticFetcher(cache_path=tmp_path, hash=hash)
