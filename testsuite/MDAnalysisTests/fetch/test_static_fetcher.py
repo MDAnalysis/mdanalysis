@@ -84,15 +84,15 @@ class TestExpectedErrors:
         hash = "foo"
 
         with temporary_http_server() as (host, port, temp_folder):
-            base_url = f"http://{host}:{port}/"
 
             with pytest.raises(
                 ValueError,
                 match=re.escape(
-                    f'Invalid hash "{hash}". Valid hashes algorithms are {hashlib.algorithms_available}.'
+                    f'Invalid hash "{hash}". Valid hashes algorithms ' + 
+                    f'are {hashlib.algorithms_available}.'
                 ),
             ):
-                downloader = StaticFetcher(cache_path=tmp_path, hash=hash)
+                StaticFetcher(cache_path=tmp_path, hash=hash)
 
     def test_append_error(self, tmp_path):
 
