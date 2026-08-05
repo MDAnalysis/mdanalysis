@@ -25,8 +25,9 @@
 PDB Fetchers --- :mod:`MDAnalysis.fetch.pdb`
 ============================================
 
-This suite of functions download structure files from the Research Collaboratory for
-Structural Bioinformatics (RCSB) `Protein Data Batabank`_ (PDB).
+This suite of functions download structure files from the Research
+Collaboratory for Structural Bioinformatics (RCSB)
+`Protein Data Batabank`_ (PDB).
 
 .. _Protein Data Batabank: https://www.rcsb.org/
 
@@ -93,7 +94,8 @@ def from_PDB(
         The file extension/format to download (e.g., "cif", "pdb").
         See the Notes section below for a list of all supported file formats.
     progressbar : bool
-        If True, display a progress bar during file downloads. Default is False.
+        If True, display a progress bar during file downloads. Default
+        is False.
 
     Returns
     -------
@@ -112,8 +114,8 @@ def from_PDB(
 
     Notes
     -----
-    This function uses the `RCSB File Download Services`_ for directly downloading
-    structure files via https.
+    This function uses the `RCSB File Download Services`_ for directly
+    downloading structure files via https.
 
     .. _`RCSB File Download Services`:
        https://www.rcsb.org/docs/programmatic-access/file-download-services
@@ -125,9 +127,9 @@ def from_PDB(
 
     Caching, controlled by the `cache_path` parameter, is handled internally by
     :mod:`pooch`. The default cache name is taken from
-    :data:`DEFAULT_CACHE_NAME_DOWNLOADER`. To clear cache (and subsequently force
-    re-fetching), it is required to delete the cache folder as specified by
-    `cache_path`.
+    :data:`DEFAULT_CACHE_NAME_DOWNLOADER`. To clear cache (and subsequently
+    force re-fetching), it is required to delete the cache folder
+    as specified by `cache_path`.
 
     Examples
     --------

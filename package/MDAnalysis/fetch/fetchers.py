@@ -25,8 +25,9 @@
 Fetchers --- :mod:`MDAnalysis.fetch.fetchers`
 =============================================
 
-This module contains Fetcher classes which are able to retrieve files from remote servers.
-These classes use the third-party library :mod:`pooch` as a dependency.
+This module contains Fetcher classes which are able to retrieve files from
+remote servers.These classes use the third-party library :mod:`pooch` as
+a dependency.
 
 Classes
 -------
@@ -38,8 +39,8 @@ Classes
 Variables
 ---------
 
-These module-level variables affect the runtime behavior across all Fetcher classes.
-Changing these values affects all initialized Fetchers.
+These module-level variables affect the runtime behavior across all Fetcher
+classes. Changing these values affects all initialized Fetchers.
 
 
 .. autodata:: DEFAULT_CACHE_NAME_DOWNLOADER
@@ -71,7 +72,8 @@ else:
 #: .. versionadded:: 2.11.0
 DEFAULT_CACHE_NAME_DOWNLOADER = "MDAnalysis_pdbs"
 
-#: Default time in seconds to wait for a response from the server before timing out.
+#: Default time in seconds to wait for a response from the server before
+#: timing out.
 #:
 #: .. versionadded:: 2.11.0
 DEFAULT_TIMEOUT = 10
@@ -116,7 +118,8 @@ class _BaseFetcher(ABC):
             )
 
     def _validate_fetch_args(self, args):
-        """Add the default global timeout and retry variables to fetch arguments."""
+        """Add the default global timeout and retry variables to fetch
+        arguments."""
 
         args.setdefault("timeout", DEFAULT_TIMEOUT)
         args.setdefault("retries", DEFAULT_RETRIES)
@@ -182,8 +185,9 @@ class StaticFetcher(_BaseFetcher):
         locally.
 
         Primarily designed to be working with `FAIR`_
-        databases, this method works by sending a request to a web server and caching them to a registry.
-        The registry is in the format of a `pooch registry file`_, and it will be created or read relative to
+        databases, this method works by sending a request to a web server and
+        caching them to a registry.The registry is in the format of a
+        `pooch registry file`_, and it will be created or read relative to
         :attr:`cache_path`.
 
         .. _FAIR: https://www.nature.com/articles/s41592-025-02635-0
@@ -193,29 +197,31 @@ class StaticFetcher(_BaseFetcher):
         ----------
         base_url : str
             Base URL from which to download the file(s). This should be a valid
-            URL pointing to the directory containing the files to be downloaded.
+            URL pointing to the directory containing the files to be
+            downloaded.
         file_name : str or sequence of str
             Name of the file or files to download.
             The requested URL has the form ``{base_url}/{file_name}``.
         verbose : bool, optional
             If ``True``, show download progress. The default is ``False``.
         db_name : str or None, optional
-            Name of the local hash database file used to verify cached downloads.
-            The default is ``"hashes.txt"``. If ``None``, no registry database
-            is read or written.
+            Name of the local hash database file used to verify cached
+            downloads. The default is ``"hashes.txt"``. If ``None``,
+            no registry database is read or written.
         append_db : bool, optional
             If ``True``, add downloaded files that are missing from an existing
             registry to that registry. If ``False``, missing registry entries
             raise a :class:`ValueError`. The default is ``False``.
         timeout : float, optional
-            Time in seconds to wait for a response from the server before timing
-            out. The default is :data:`DEFAULT_TIMEOUT`.
+            Time in seconds to wait for a response from the server before
+            timing out. The default is :data:`DEFAULT_TIMEOUT`.
         retries : int, optional
             Number of times to retry a failed download. The default is
             :data:`DEFAULT_RETRIES`.
         downloader : str, optional
-            Downloader backend to use. Supported values are ``"auto"``, ``"http"``,
-            ``"ftp"``, ``"sftp"``, and ``"doi"``. The default is ``"auto"``.
+            Downloader backend to use. Supported values are ``"auto"``,
+            ``"http"``, ``"ftp"``, ``"sftp"``, and ``"doi"``.
+            The default is ``"auto"``.
 
         Returns
         -------
@@ -251,7 +257,8 @@ class StaticFetcher(_BaseFetcher):
         .. versionadded:: 2.11.0
 
         """
-        # Keywords arguments that are reserved for common _BaseFetcher.fetch() arguments.
+        # Keywords arguments that are reserved for common
+        # _BaseFetcher.fetch() arguments.
         kwargs = self._validate_fetch_args(kwargs)
 
         LOAD_FROM_CACHE = False
@@ -266,7 +273,7 @@ class StaticFetcher(_BaseFetcher):
             (file_name,) if isinstance(file_name, str) else tuple(file_name)
         )
 
-        ## Reading from Registry
+        # Reading from Registry
         if db_name is not None:
             db_path = self.cache_path / Path(db_name)
 
@@ -288,7 +295,8 @@ class StaticFetcher(_BaseFetcher):
             raise ValueError(
                 "fetch() is requesting files not found in the registry. "
                 + f"The missing files are {missing_files_list}. "
-                + "To fix this, please set append_db=True to append the registry."
+                + "To fix this, please set append_db=True to append the "
+                + "registry."
             )
 
         for name in requested_files:
@@ -296,7 +304,7 @@ class StaticFetcher(_BaseFetcher):
 
         ##
 
-        ## Download code using pooch
+        # Download code using pooch
         main_downloader = pooch.create(
             path=self.cache_path,
             base_url=base_url,
@@ -323,7 +331,7 @@ class StaticFetcher(_BaseFetcher):
 
         ##
 
-        ## Registry write code
+        # Registry write code
         if CREATE_DATABASE:
             self.write_registry(db_path, paths)
 
@@ -339,26 +347,26 @@ class StaticFetcher(_BaseFetcher):
         Append cached files to an existing Pooch registry.
 
         Each entry in ``files`` is resolved relative to :attr:`cache_path`. The
-        file hash is computed using the fetcher's configured hash algorithm :attr:`hash` and a
-        new registry line is appended to ``db_path``.
+        file hash is computed using the fetcher's configured hash algorithm
+        :attr:`hash` and a new registry line is appended to ``db_path``.
 
         Parameters
         ----------
         db_path : str or path-like
             Path to the registry file to update.
         files : iterable of str or path-like
-            File names or paths for cached files to append to the registry. Relative
-            paths are interpreted relative to :attr:`cache_path`.
+            File names or paths for cached files to append to the registry.
+            Relative paths are interpreted relative to :attr:`cache_path`.
         write_duplicate : bool
-            If set to True, append_registry will write the file and its hash to the registry
-            regardless of the existing presence of a entry in the registry. Default behavior is
-            False.
+            If set to True, append_registry will write the file and its hash
+            to the registry regardless of the existing presence of a entry
+            in the registry. Default behavior is False.
 
         Returns
         -------
         None
-            This method updates the registry file in place and does not return a
-            value.
+            This method updates the registry file in place and does not
+            return a value.
 
         Example
         -------
@@ -382,8 +390,8 @@ class StaticFetcher(_BaseFetcher):
 
         Notes
         -----
-        Existing registry entries are preserved. This method does not check for or
-        remove duplicate file entries.
+        Existing registry entries are preserved. This method does not check
+        for or remove duplicate file entries.
 
         Each appended registry line has the format::
 
@@ -408,11 +416,12 @@ class StaticFetcher(_BaseFetcher):
 
     def check_registry(self, db_path, files=None, ignore=None):
         """
-        Return paths relative to :attr:`cache_path` for cache files that are missing from the registry.
+        Return paths relative to :attr:`cache_path` for cache files that are
+        missing from the registry.
 
         This method compares filenames within the registry against files found
-        recursively under :attr:`cache_path`. A cache file is considered missing
-        when it is on disk, but it is not recorded in the registry.
+        recursively under :attr:`cache_path`. A cache file is considered
+        missing when it is on disk, but it is not recorded in the registry.
 
         Parameters
         ----------
@@ -486,8 +495,9 @@ class StaticFetcher(_BaseFetcher):
         Read a Pooch registry file into a dictionary.
 
         This method returns filenames within the registry against files found
-        recursively under :attr:`cache_path`. Each key in the returned dictionary
-        corresponds to a filename in the registry relative to :attr:`cache_path`.
+        recursively under :attr:`cache_path`. Each key in the returned
+        dictionary corresponds to a filename in the registry relative to
+        :attr:`cache_path`.
 
         Parameters
         ----------
@@ -498,8 +508,8 @@ class StaticFetcher(_BaseFetcher):
         -------
         hash_dict : dict
             Dictionary mapping each filename in the registry to its stored hash
-            value. Hash values are expected to include the hash algorithm prefix,
-            for example ``"sha256:<digest>"``.
+            value. Hash values are expected to include the hash
+            algorithm prefix.
 
         Example
         -------
@@ -544,9 +554,10 @@ class StaticFetcher(_BaseFetcher):
         """
         Write a Pooch registry file with hashes for the given files.
 
-        This method computes the hash for each file and writes it to the registry file.
-        The registry file maps each filename to its corresponding hash value. The hash
-        algorithm used is determined by the :attr:`hash` of the fetcher.
+        This method computes the hash for each file and writes it to the
+        registry file.The registry file maps each filename to its
+        corresponding hash value. The hash algorithm used is determined
+        by the :attr:`hash` of the fetcher.
 
         Parameters
         ----------
@@ -556,12 +567,14 @@ class StaticFetcher(_BaseFetcher):
             Files to be include in the registry. Each file must be relative
             to :attr:`cache_path`.
         mode : str, optional
-            File opening mode used when writing the registry. Default is ``"w"``.
+            File opening mode used when writing the registry.
+            Default is ``"w"``.
 
         Returns
         -------
         None
-            This method writes the registry to disk and does not return a value.
+            This method writes the registry to disk and does not return
+            a value.
 
         Example
         -------
@@ -624,7 +637,8 @@ class StaticFetcher(_BaseFetcher):
             )
 
     def _set_downloader(self, base_url, downloader, **kwargs):
-        """Sets Downloader in fetch() by matching a regex against the download link"""
+        """Sets Downloader in fetch() by matching a regex against the
+        download link"""
 
         SUPPORTED_DOWNLOADERS = ("auto", "http", "https", "ftp", "sftp", "doi")
 
