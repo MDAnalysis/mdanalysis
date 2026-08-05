@@ -106,7 +106,6 @@ class _BaseFetcher(ABC):
         # All fetchers should call _check_pooch()
         #
         # These arguments should be implemented by all child Fetchers.
-        pass
 
     def _check_pooch(
         self,
