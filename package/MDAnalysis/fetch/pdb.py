@@ -176,6 +176,6 @@ def from_PDB(
         append_db=True,
     )
 
-def from_MDDB()
+
+def from_DOI():
     pass
-    https://mmb.mddbr.eu/api/rest/docs/
