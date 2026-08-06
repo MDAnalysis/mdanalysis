@@ -23,6 +23,13 @@ The rules for this file:
  * 2.11.0
 
 Fixes
+ * Fixes
+ * `AtomGroup.rotate()` and the `rotateby` trajectory transformation now
+   also rotate velocities and forces besides positions. This also affects
+   `MDAnalysis.analysis.align.alignto()` and `AlignTraj`, since they
+   apply their fit via `AtomGroup.rotate()`. Note: this changes existing
+   behavior, as velocities/forces were previously left untouched by
+   rotation. (Issue #5421, PR #)
  * Fix FileLock tests for XTC and TRR: lock file is no longer removed (#5382)
  * InterRDF now correctly returns bins in parallel (PR #5344)
  * `Merge()` no longer raises a TypeError on Universes that have a `cmaps`

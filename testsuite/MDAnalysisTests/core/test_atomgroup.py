@@ -417,6 +417,32 @@ class TestAtomGroupTransformations(object):
                 [-2 * np.cos(angle) + 1, -2 * np.sin(angle), 0],
             )
 
+    def test_rotate_velocities_forces(self):
+        u = mda.Universe.empty(
+            2, trajectory=True, velocities=True, forces=True
+        )
+        u.atoms.positions = np.array([[1, 0, 0], [-1, 0, 0]])
+        u.atoms.velocities = np.array([[1, 0, 0], [0, 1, 0]])
+        u.atoms.forces = np.array([[0, 0, 1], [1, 1, 0]])
+
+        orig_v = u.atoms.velocities.copy()
+        orig_f = u.atoms.forces.copy()
+
+        axis = np.array([0, 0, 1])
+        for angle in np.linspace(0, np.pi):
+            R = transformations.rotation_matrix(angle, axis)[:3, :3]
+            u.atoms.velocities = orig_v.copy()
+            u.atoms.forces = orig_f.copy()
+            u.atoms.rotate(R)
+            assert_almost_equal(u.atoms.velocities, np.dot(orig_v, R.T))
+            assert_almost_equal(u.atoms.forces, np.dot(orig_f, R.T))
+
+    def test_rotate_no_velocities_forces_does_not_raise(self):
+        u = mda.Universe.empty(2, trajectory=True)
+        u.atoms.positions = np.array([[1, 0, 0], [-1, 0, 0]])
+        R = transformations.rotation_matrix(1, [0, 0, 1])[:3, :3]
+        u.atoms.rotate(R)
+
     def test_transform_rotation_only(self, u, coords):
         R = np.eye(3)
         u.atoms.rotate(R)

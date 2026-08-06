@@ -1610,11 +1610,18 @@ class GroupBase(_MutableBase):
         require_translation = bool(np.count_nonzero(point))
         if require_translation:
             atomgroup.translate(-point)
-        x = atomgroup.universe.trajectory.ts.positions
+        ts = atomgroup.universe.trajectory.ts
+        x = ts.positions
         idx = atomgroup.indices
         x[idx] = np.dot(x[idx], R.T)
         if require_translation:
             atomgroup.translate(point)
+        if ts.has_velocities:
+            v = ts.velocities
+            v[idx] = np.dot(v[idx], R.T)
+        if ts.has_forces:
+            f = ts.forces
+            f[idx] = np.dot(f[idx], R.T)
 
         return self
 

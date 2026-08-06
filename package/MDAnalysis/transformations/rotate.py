@@ -200,4 +200,8 @@ class rotateby(TransformationBase):
         translation = matrix[:3, 3]
         ts.positions = np.dot(ts.positions, rotation)
         ts.positions += translation
+        if ts.has_velocities:
+            ts.velocities = np.dot(ts.velocities, rotation)
+        if ts.has_forces:
+            ts.forces = np.dot(ts.forces, rotation)
         return ts
