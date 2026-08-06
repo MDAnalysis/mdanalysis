@@ -37,14 +37,18 @@ def temporary_http_server():
         temp_folder = Path(temp_dir)
 
         (temp_folder / "TEST_FILE1.txt").write_text(
-            "The USA is going to win the 2026 World Cup!\n"
-            "U-S-A! U-S-A! U-S-A!"
+            "Sally sells seashells by the seashore"
         )
 
-        (temp_folder / "TEST_FILE2.txt").write_text("7-1")
+        (temp_folder / "TEST_FILE2.txt").write_text(
+            "Life, Liberty and the pursuit of Happiness"
+        )
 
+        # This is a beautiful quote from the GROMACS source code
         (temp_folder / "TEST_FILE3.txt").write_text(
-            "David Beckham in a World Cup ad"
+            "Unlike teachers or doctors, our efforts improve the lives of "
+            + "people we'll never meet. \n"
+            + "- Katie Busch-Sorensen"
         )
 
         http_handler = partial(
@@ -52,7 +56,7 @@ def temporary_http_server():
             directory=str(temp_folder),
         )
 
-        server = ThreadingHTTPServer(("127.0.0.1", 7123), http_handler)
+        server = ThreadingHTTPServer(("127.0.0.1", 0), http_handler)
         host, port = server.server_address
 
         thread = threading.Thread(
