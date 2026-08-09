@@ -25,8 +25,8 @@
 Fetchers --- :mod:`MDAnalysis.fetch.fetchers`
 =============================================
 
-This module contains the Fetchers classes that can be used to retrieve or fetch files
-from remote servers. These classes uses the third party library :mod:`pooch` as
+This module contains Fetcher classes which are able to retrieve files from
+remote servers.These classes use the third-party library :mod:`pooch` as
 a dependency.
 
 Classes
@@ -39,8 +39,8 @@ Classes
 Variables
 ---------
 
-These are global submodule level variables that affect the runtime behavior across
-all Fetcher Classes. Changing these values will affect all Fetchers!
+These module-level variables affect the runtime behavior across all Fetcher
+classes. Changing these values affects all initialized Fetchers.
 
 
 .. autodata:: DEFAULT_CACHE_NAME_DOWNLOADER
@@ -50,6 +50,8 @@ all Fetcher Classes. Changing these values will affect all Fetchers!
 """
 
 import hashlib
+import re
+import os
 
 from pathlib import Path
 from abc import ABC, abstractmethod
@@ -65,12 +67,13 @@ else:
 #: Name of the :mod:`pooch` cache directory
 #: ``pooch.os_cache(DEFAULT_CACHE_NAME_DOWNLOADER)``;
 #:
-#: see :func:`pooch.os_cache` for further details.'
+#: See :func:`pooch.os_cache` for further details.
 #:
 #: .. versionadded:: 2.11.0
 DEFAULT_CACHE_NAME_DOWNLOADER = "MDAnalysis_pdbs"
 
-#: Default time in seconds to wait for a response from the server before timing out.
+#: Default time in seconds to wait for a response from the server before
+#: timing out.
 #:
 #: .. versionadded:: 2.11.0
 DEFAULT_TIMEOUT = 10
@@ -82,10 +85,12 @@ DEFAULT_RETRIES = 2
 
 
 class _BaseFetcher(ABC):
-    """Blueprint Class for all Fetchers
+    """Base class for all fetchers.
 
-    This shouldn't be initalized directly but should be inherited by other
-    Fetchers classes.
+    This class should not be initialized directly; fetcher implementations
+    should inherit from it.
+
+    .. versionadded:: 2.11.0
 
     """
 
@@ -96,22 +101,24 @@ class _BaseFetcher(ABC):
 
     @abstractmethod
     def fetch(self, base_url, verbose, timeout, retries):
+        """Retrieve files from a remote server."""
         # Starts file retrieval workflow
         # All fetchers should call _check_pooch()
         #
         # These arguments should be implemented by all child Fetchers.
-        pass
 
     def _check_pooch(
         self,
     ):
+        """Raise an error if :mod:`pooch` is not installed."""
         if not HAS_POOCH:
             raise ModuleNotFoundError(
                 "pooch is needed as a dependency for Fetchers"
             )
 
     def _validate_fetch_args(self, args):
-        """This initalized the fetcher library variables"""
+        """Add the default global timeout and retry variables to fetch
+        arguments."""
 
         args.setdefault("timeout", DEFAULT_TIMEOUT)
         args.setdefault("retries", DEFAULT_RETRIES)
@@ -125,12 +132,11 @@ class StaticFetcher(_BaseFetcher):
 
     Parameters
     ----------
-    cache_path : str or pathlib.Path, optional
+    cache_path : str or pathlib.Path
         Path to the cache directory. If set to ``None``, the default cache
         directory will be used as specified by
         :data:`DEFAULT_CACHE_NAME_DOWNLOADER`.
-
-        If the directory does not exist, it will attempted to be created.
+        If the directory does not exist, it will attempt to be created.
 
     hash : str
         Hash algorithm to use for verifying the integrity of downloaded files.
@@ -140,14 +146,10 @@ class StaticFetcher(_BaseFetcher):
 
     Attributes
     ----------
-    cache_path : pathlib.Path or ``None``
+    cache_path : pathlib.Path
         Path to the cache directory.
 
-    db_path : pathlib.Path or ``None``
-        Path to the database file used for caching. Created after calling
-        fetch().
-
-    hash : str or ``None``
+    hash : str
         Hash algorithm used for verifying the integrity of downloaded files.
 
     Notes
@@ -155,6 +157,8 @@ class StaticFetcher(_BaseFetcher):
     The download directory can be overridden by setting the environment
     variable ``MDANALYSIS_FETCHER_DATA`` to a valid path. This class uses
     :mod:`pooch` as a backend for downloading and caching files.
+
+    .. versionadded:: 2.11.0
 
     """
 
@@ -164,7 +168,6 @@ class StaticFetcher(_BaseFetcher):
 
         self.cache_path = self._check_cache_path_input(cache_path)
         self.hash = self._check_hash_input(hash)
-        self.db_path = None
 
     def fetch(
         self,
@@ -173,36 +176,51 @@ class StaticFetcher(_BaseFetcher):
         verbose=False,
         db_name="hashes.txt",
         append_db=False,
-        downloader="HTTP",
+        downloader="auto",
         **kwargs,
     ):
         """
         Download one or more files from a static base URL and cache them
         locally.
 
+        Primarily designed to be working with `FAIR`_
+        databases, this method works by sending a request to a web server and
+        caching them to a registry.The registry is in the format of a
+        `pooch registry file`_, and it will be created or read relative to
+        :attr:`cache_path`.
+
+        .. _FAIR: https://www.nature.com/articles/s41592-025-02635-0
+        .. _`pooch registry file`: https://www.fatiando.org/pooch/latest/registry-files.html#registry-file-format
+
         Parameters
         ----------
         base_url : str
             Base URL from which to download the file(s). This should be a valid
-            URL pointing to the directory containing the files to be downloaded.
+            URL pointing to the directory containing the files to be
+            downloaded.
         file_name : str or sequence of str
             Name of the file or files to download.
-            Note that the request is phrased as {base_url}/{file_name}.
+            The requested URL has the form ``{base_url}/{file_name}``.
         verbose : bool, optional
-            If True, shows fetcher progress.
-            Default is False.
-        db_name : str, optional
-            Name of the local hash database file used to verify cached downloads.
-            Default is "hashes.txt". If None, no registry database is read or written.
+            If ``True``, show download progress. The default is ``False``.
+        db_name : str or None, optional
+            Name of the local hash database file used to verify cached
+            downloads. The default is ``"hashes.txt"``. If ``None``,
+            no registry database is read or written.
+        append_db : bool, optional
+            If ``True``, add downloaded files that are missing from an existing
+            registry to that registry. If ``False``, missing registry entries
+            raise a :class:`ValueError`. The default is ``False``.
         timeout : float, optional
-            Time in seconds to wait for a response from the server before timing out.
-            Default is :data:`DEFAULT_TIMEOUT`.
+            Time in seconds to wait for a response from the server before
+            timing out. The default is :data:`DEFAULT_TIMEOUT`.
         retries : int, optional
-            Number of attempts to retry a download if it fails. Default is :data:`DEFAULT_RETRIES`.
+            Number of times to retry a failed download. The default is
+            :data:`DEFAULT_RETRIES`.
         downloader : str, optional
-            Downloader backend to use. If a string is provided, it must identify
-            a supported downloader such as "HTTP".
-            Default is "HTTP".
+            Downloader backend to use. Supported values are ``"auto"``,
+            ``"http"``, ``"ftp"``, ``"sftp"``, and ``"doi"``.
+            The default is ``"auto"``.
 
         Returns
         -------
@@ -210,28 +228,22 @@ class StaticFetcher(_BaseFetcher):
             The downloaded file path for a single file, or a list of paths for
             multiple files.
 
-        Example
-        -------
+        Examples
+        --------
 
-        A script to download a protein from the RCSB Protein Data Bank.
+        .. code-block:: pycon
 
-        .. code-block:: python
+            Download a single CIF file from the RCSB Protein Data Bank.
 
-            from MDAnalysis.fetch import StaticFetcher
+            >>> StaticFetcher().fetch(file_name="1AKE.cif",
+                base_url="https://files.wwpdb.org/download/")
+            './MDAnalysis_pdbs/1AKE.cif'
 
-            fetcher = StaticFetcher(cache_path=cache_path)
+            Download multiple CIF files from the RCSB Protein Data Bank.
 
-            # Download a single file from the RCSB Protein Data Bank
-            path = fetcher.fetch(
-                file_name="1AKE.cif",
-                base_url="https://files.wwpdb.org/download/",
-            )
-
-            # Download multiple files from the RCSB Protein Data Bank
-            path = fetcher.fetch(
-                file_name=["1AKE.cif", "4AKE.cif"],
-                base_url="https://files.wwpdb.org/download/",
-            )
+            >>> StaticFetcher().fetch(file_name=["1AKE.cif", "4AKE.cif"],
+                base_url="https://files.wwpdb.org/download/")
+            ['./MDAnalysis_pdbs/1AKE.cif', './MDAnalysis_pdbs/4AKE.cif']
 
         Notes
         -----
@@ -239,10 +251,13 @@ class StaticFetcher(_BaseFetcher):
         variable ``MDANALYSIS_FETCHER_DATA`` to a valid path. This class uses
         :mod:`pooch` as a backend for downloading and caching files. The
         cache database is created on demand when ``db_name`` does not
-        exist.
+        exist relative to :attr:`cache_path`.
+
+        .. versionadded:: 2.11.0
 
         """
-        # Keywords arguments are reserved for common _BaseFetcher.fetch() arguements.
+        # Keywords arguments that are reserved for common
+        # _BaseFetcher.fetch() arguments.
         kwargs = self._validate_fetch_args(kwargs)
 
         LOAD_FROM_CACHE = False
@@ -252,58 +267,55 @@ class StaticFetcher(_BaseFetcher):
 
         registry_dictionary = {}
 
-        if db_name is not None:
-            self.db_path = self.cache_path / Path(db_name)
+        # Process file names
+        requested_files = (
+            (file_name,) if isinstance(file_name, str) else tuple(file_name)
+        )
 
-            if self.db_path.exists():
+        # Reading from Registry
+        if db_name is not None:
+            db_path = self.cache_path / Path(db_name)
+
+            if db_path.exists():
                 LOAD_FROM_CACHE = True
             else:
                 CREATE_DATABASE = True
 
         if LOAD_FROM_CACHE:
-            registry_dictionary = self.read_registry(self.db_path)
-            missing_files_list = self.check_registry(self.db_path)
+            registry_dictionary = self.read_registry(db_path)
+            missing_files_list = self.check_registry(
+                db_path, files=list(requested_files)
+            )
 
             if len(missing_files_list) != 0:
                 MISSING_FILES = True
 
         if MISSING_FILES and not APPEND_DATABASE:
             raise ValueError(
-                f"There are unknown files in the registry! The missing files are {missing_files_list}. To fix this, please set append_db=True to append the database"
+                "fetch() is requesting files not found in the registry. "
+                + f"The missing files are {missing_files_list}. "
+                + "To fix this, please set append_db=True to append the "
+                + "registry."
             )
 
-        # Code to process non-registry files
-        # One-liner that forces strings into tuple
-        no_db_files = (file_name,) if isinstance(file_name, str) else file_name
-        for file in no_db_files:
-            if file not in registry_dictionary:
-                registry_dictionary[file] = None
+        for name in requested_files:
+            registry_dictionary.setdefault(name, None)
 
-        ## Pooch setup
+        ##
+
+        # Download code using pooch
         main_downloader = pooch.create(
             path=self.cache_path,
             base_url=base_url,
             registry=registry_dictionary,
             retry_if_failed=kwargs["retries"],
-            env="MDANALYSIS_FETCHER_DATA",
         )
 
         download_kwargs = kwargs.copy()
         download_kwargs.pop("retries")
-
-        match downloader:
-            case "HTTP":
-                fetch_downloader = pooch.HTTPDownloader(**download_kwargs)
-            case "FTP":
-                fetch_downloader = pooch.FTPDownloader(**download_kwargs)
-            case "SFTP":
-                fetch_downloader = pooch.SFTPDownloader(**download_kwargs)
-            case "DOI":
-                fetch_downloader = pooch.DOIDownloader(**download_kwargs)
-            case _:
-                raise ValueError(
-                    f"Invalid downloader '{downloader}'. Valid options are 'HTTP', 'FTP', 'SFTP', 'DOI'."
-                )
+        fetch_downloader = self._set_downloader(
+            base_url, downloader, **download_kwargs
+        )
 
         paths = [
             Path(
@@ -313,57 +325,113 @@ class StaticFetcher(_BaseFetcher):
                     downloader=fetch_downloader,
                 )
             )
-            for file_name in registry_dictionary.keys()
+            for file_name in requested_files
         ]
+
         ##
 
+        # Registry write code
         if CREATE_DATABASE:
-            self.write_registry(self.db_path, paths)
+            self.write_registry(db_path, paths)
 
         if APPEND_DATABASE and LOAD_FROM_CACHE:
-            self.fix_registry(self.db_path, registry_dictionary)
+            self.append_registry(db_path, requested_files)
+
+        ##
 
         return paths[0] if len(paths) == 1 else paths
 
-    def fix_registry(self, db_path, file_dict):
+    def append_registry(self, db_path, files, write_duplicate=False):
         """
-        Append newly downloaded files to an existing Pooch registry.
+        Append cached files to an existing Pooch registry.
+
+        Each entry in ``files`` is resolved relative to :attr:`cache_path`. The
+        file hash is computed using the fetcher's configured hash algorithm
+        :attr:`hash` and a new registry line is appended to ``db_path``.
 
         Parameters
         ----------
         db_path : str or path-like
             Path to the registry file to update.
-        file_dict : dict
-            Dictionary mapping filenames to hash values. Files with a hash value of
-            ``None`` are treated as newly downloaded files and appended to the
-            registry.
+        files : iterable of str or path-like
+            File names or paths for cached files to append to the registry.
+            Relative paths are interpreted relative to :attr:`cache_path`.
+        write_duplicate : bool
+            If set to True, append_registry will write the file and its hash
+            to the registry regardless of the existing presence of a entry
+            in the registry. Default behavior is False.
 
         Returns
         -------
         None
-            This method updates the registry file in place and does not return a
-            value.
+            This method updates the registry file in place and does not
+            return a value.
+
+        Example
+        -------
+        >>> from MDAnalysis.fetch.fetchers import StaticFetcher
+        >>> fetcher = StaticFetcher()
+        >>> file1 = fetcher.fetch(
+        ...     file_name="1AKE.cif",
+        ...     base_url="https://files.wwpdb.org/download/",
+        ...     db_name="db_hash1.txt",
+        ... )
+        >>> file2 = fetcher.fetch(
+        ...     file_name="4AKE.cif",
+        ...     base_url="https://files.wwpdb.org/download/",
+        ...     db_name="db_hash2.txt",
+        ... )
+        >>> registry = file1.parent / "db_hash1.txt"
+        >>> fetcher.append_registry(registry, ["4AKE.cif"])
+        >>> registry.read_text()
+        1AKE.cif sha256:01f41b1b42318a1a5df7f650dbab881677aa0e8d825f7c42dd26ae16a94c0948
+        4AKE.cif sha256:fcb2ff49a3e255797fee277ce28e0acace67f6e6ddf432841f8451f00cbde9e9
 
         Notes
         -----
-        For each entry in ``file_dict`` with a value of ``None``, this method builds
-        the corresponding file path relative to ``self.cache_path`` and appends its
-        hash to the registry using ``self.write_registry``.
+        Existing registry entries are preserved. This method does not check
+        for or remove duplicate file entries.
+
+        Each appended registry line has the format::
+
+            <filename> <hash_algorithm>:<digest>
+
+        .. versionadded:: 2.11.0
+
         """
-        new_files = [
-            self.cache_path / file_name
-            for file_name, file_hash in file_dict.items()
-            if file_hash is None
-        ]
-        self.write_registry(db_path, new_files, mode="a")
-    def check_registry(self, db_path):
+        new_files = [self.cache_path / file_name for file_name in files]
+
+        if not write_duplicate:
+            files_dict = self.read_registry(db_path)
+
+            _new_files = [
+                file for file in new_files if file.name not in files_dict
+            ]
+
+        else:
+            _new_files = new_files
+
+        self.write_registry(Path(db_path), _new_files, mode="a")
+
+    def check_registry(self, db_path, files=None, ignore=None):
         """
-        Return cache files that are missing from the registry.
+        Return paths relative to :attr:`cache_path` for cache files that are
+        missing from the registry.
+
+        This method compares filenames within the registry against files found
+        recursively under :attr:`cache_path`. A cache file is considered
+        missing when it is on disk, but it is not recorded in the registry.
 
         Parameters
         ----------
         db_path : str or path-like
             Path to the registry file to read.
+        files : list of pathlib.Path
+            Paths to additional files to check. Each path must be relative to
+            :attr:`cache_path`.
+        ignore : list of pathlib.Path
+            Files to be ignored.  Each path must be relative to
+            :attr:`cache_path`.
 
         Returns
         -------
@@ -371,29 +439,64 @@ class StaticFetcher(_BaseFetcher):
             Cache file paths whose filenames are not present in the registry.
             The registry database file itself is excluded from the result.
 
+        Example
+        -------
+        .. code-block:: python
+
+            >>> files = {
+            ...     "file1.txt": "Molecular \\n",
+            ...     "file2.txt": "Dynamics. \\n",
+            ...     "file3.txt": "Analysis. \\n"
+            ... }
+            >>> for filename, content in files.items():
+            ...     with open(filename, "w") as f:
+            ...         f.write(content)
+            ...
+            >>> fetcher = StaticFetcher()
+            >>> fetcher.write_registry(
+            ...     "file_1_2_and_3_hash.txt",
+            ...     files=["file1.txt"],
+            ... )
+            >>> fetcher.check_registry("file_1_2_and_3_hash.txt")
+            [Path('./MDAnalysis_pdbs/file3.txt'), Path('./MDAnalysis_pdbs/file2.txt')]
+            >>> fetcher.check_registry("file_1_2_and_3_hash.txt", ignore=["file2.txt"])
+            [Path('./MDAnalysis_pdbs/file3.txt')]
+
+
         Notes
         -----
-        This method compares filenames from the registry against files found
-        recursively under ``self.cache_path``. A cache file is considered missing
-        from the registry when ``path.name`` is not a key in the registry
-        dictionary.
+        Each line in the registry file is expected to have the format::
+
+            <filename> <hash_algorithm>:<digest>
+
+
         """
+        files = [] if files is None else files
+        ignore = [] if ignore is None else ignore
+
         registry_dictionary = self.read_registry(db_path)
         database_files = set(registry_dictionary.keys())
 
-        cache_files = (
+        cache_files = [
             path
             for path in self.cache_path.rglob("*")
-            if path != self.db_path and path.is_file()
-        )
+            if path != db_path and path.is_file()
+        ] + [self.cache_path / file_name for file_name in files]
 
         return [
-            path for path in cache_files if path.name not in database_files
+            path
+            for path in cache_files
+            if (path.name not in database_files) and (path not in ignore)
         ]
 
     def read_registry(self, db_path):
         """
         Read a Pooch registry file into a dictionary.
+
+        This method returns filenames within the registry against files found
+        recursively under :attr:`cache_path`. Each key in the returned
+        dictionary corresponds to a filename in the registry relative to
+        :attr:`cache_path`.
 
         Parameters
         ----------
@@ -404,14 +507,38 @@ class StaticFetcher(_BaseFetcher):
         -------
         hash_dict : dict
             Dictionary mapping each filename in the registry to its stored hash
-            value. Hash values are expected to include the hash algorithm prefix,
-            for example ``"sha256:<digest>"``.
+            value. Hash values are expected to include the hash
+            algorithm prefix.
+
+        Example
+        -------
+        .. code-block:: python
+
+            >>> files = {
+            ...     "file1.txt": "Molecular \\n",
+            ...     "file2.txt": "Dynamics. \\n",
+            ... }
+            >>> for filename, content in files.items():
+            ...     with open(filename, "w") as f:
+            ...         f.write(content)
+            ...
+            >>> fetcher = StaticFetcher()
+            >>> fetcher.write_registry(
+            ...     "file_1_and_2_hash.txt",
+            ...     ["file1.txt", "file2.txt"],
+            ... )
+            >>> fetcher.read_registry("file_1_and_2_hash.txt")
+            {'file1.txt': 'sha256:2da169c5aae36a823c202da49fb11935b76277efcb5cd42a4cf238ddda2a9b20',
+            'file2.txt': 'sha256:3a0dbd9e2abc4a7bbae6adfe92e2858218135926dacd4a7d3fb4ca2dbdbe457a'}
 
         Notes
         -----
         Each line in the registry file is expected to have the format::
 
             <filename> <hash_algorithm>:<digest>
+
+        .. versionadded:: 2.11.0
+
         """
         hash_dict = {}
 
@@ -426,38 +553,75 @@ class StaticFetcher(_BaseFetcher):
         """
         Write a Pooch registry file with hashes for the given files.
 
+        This method computes the hash for each file and writes it to the
+        registry file.The registry file maps each filename to its
+        corresponding hash value. The hash algorithm used is determined
+        by the :attr:`hash` of the fetcher.
+
         Parameters
         ----------
         db_path : str or path-like
             Path to the registry file to write.
-        files : iterable of path-like
-            Files to include in the registry. Each file must provide a ``name``
-            attribute and be readable by ``pooch.file_hash``.
+        files : iterable of str or path-like
+            Files to be include in the registry. Each file must be relative
+            to :attr:`cache_path`.
         mode : str, optional
-            File opening mode used when writing the registry. Default is ``"w"``.
+            File opening mode used when writing the registry.
+            Default is ``"w"``.
 
         Returns
         -------
         None
-            This method writes the registry to disk and does not return a value.
+            This method writes the registry to disk and does not return
+            a value.
+
+        Example
+        -------
+        .. code-block:: python
+
+            >>> files = {
+            ...     "file1.txt": "Molecular \\n",
+            ...     "file2.txt": "Dynamics. \\n",
+            ... }
+            >>> for filename, content in files.items():
+            ...     with open(filename, "w") as f:
+            ...         f.write(content)
+            ...
+            >>> fetcher = StaticFetcher()
+            >>> fetcher.write_registry(
+            ...     "file_1_and_2_hash.txt",
+            ...     ["file1.txt", "file2.txt"],
+            ... )
+            >>> Path("file_1_and_2_hash.txt").read_text()
+            file1.txt sha256:2da169c5aae36a823c202da49fb11935b76277efcb5cd42a4cf238ddda2a9b20
+            file2.txt sha256:3a0dbd9e2abc4a7bbae6adfe92e2858218135926dacd4a7d3fb4ca2dbdbe457a
 
         Notes
         -----
         Each registry line is written in the format::
 
             <filename> <hash_algorithm>:<digest>
+
+        .. versionadded:: 2.11.0
+
         """
         with open(db_path, mode=mode) as f:
             for file in files:
+                file = Path(file)
                 digest = pooch.file_hash(file, alg=self.hash)
                 f.write(f"{file.name} {self.hash}:{digest}\n")
-                
-    ### Arugment Validation Methods
+
+    # Argument validation methods
     def _check_cache_path_input(self, cache_path):
+
         if cache_path is None:
             path = Path(pooch.os_cache(DEFAULT_CACHE_NAME_DOWNLOADER))
         else:
             path = Path(cache_path)
+
+        # Environment variable master override
+        if not os.environ.get("MDANALYSIS_FETCHER_DATA") is None:
+            path = Path(os.environ.get("MDANALYSIS_FETCHER_DATA"))
 
         Path(path).mkdir(parents=True, exist_ok=True)
         return path
@@ -467,11 +631,48 @@ class StaticFetcher(_BaseFetcher):
             return hash
         else:
             raise ValueError(
-                f'Invalid hash "{hash}". Valid hashes algorithms are {hashlib.algorithms_available}.'
+                f'Invalid hash "{hash}". Valid hashes algorithms'
+                + f" are {hashlib.algorithms_available}."
             )
 
+    def _set_downloader(self, base_url, downloader, **kwargs):
+        """Sets Downloader in fetch() by matching a regex against the
+        download link"""
 
-# class DynamicFetcher(_BaseFetcher):
-#     """Fetcher yields a Python Generator for dynamic downloading and analysis"""
+        SUPPORTED_DOWNLOADERS = ("auto", "http", "https", "ftp", "sftp", "doi")
 
-#     raise NotImplementedError
+        if downloader not in SUPPORTED_DOWNLOADERS:
+            raise ValueError(
+                f"Invalid downloader '{downloader}'. Valid options "
+                + f"are {SUPPORTED_DOWNLOADERS}"
+            )
+
+        # Regex matching if downloader is set to auto
+        if downloader == "auto":
+            regex = r"^([^:]+):"
+            match = re.match(regex, base_url)
+
+            if match:
+                _downloader = match.group(1)
+            else:
+                raise ValueError(
+                    f"Unable to determine downloader for URL '{base_url}'."
+                )
+
+        else:
+            _downloader = downloader
+
+        match _downloader:
+            case "http" | "https":
+                return pooch.HTTPDownloader(**kwargs)
+            case "ftp":
+                return pooch.FTPDownloader(**kwargs)
+            case "sftp":
+                return pooch.SFTPDownloader(**kwargs)
+            case "doi":
+                return pooch.DOIDownloader(**kwargs)
+            case _:
+                raise ValueError(
+                    f"Invalid downloader '{_downloader}'. Valid options "
+                    + f"are {SUPPORTED_DOWNLOADERS}"
+                )

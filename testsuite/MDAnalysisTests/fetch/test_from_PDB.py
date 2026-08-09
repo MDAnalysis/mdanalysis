@@ -27,7 +27,7 @@ import MDAnalysis as mda
 import re
 
 from MDAnalysis.fetch.fetchers import HAS_POOCH
-from MDAnalysis.fetch.pdb import SUPPORTED_FILE_FORMATS_DOWNLOADER
+from MDAnalysis.fetch.pdb import _SUPPORTED_FILE_FORMATS_PDB
 from urllib import request
 from pathlib import Path
 
@@ -43,7 +43,19 @@ except request.URLError:
     not HAS_ACCESS_TO_WWPDB,
     reason="Can not connect to https://files.wwpdb.org/",
 )
-def test_download_one_file(tmp_path):
+def test_download_one_file_str(tmp_path):
+
+    path = mda.fetch.from_PDB("1AKE", cache_path=tmp_path)
+    assert path.exists()
+    assert path.name == "1AKE.cif.gz"
+
+
+@pytest.mark.skipif(not HAS_POOCH, reason="Pooch is not installed.")
+@pytest.mark.skipif(
+    not HAS_ACCESS_TO_WWPDB,
+    reason="Can not connect to https://files.wwpdb.org/",
+)
+def test_download_one_file_list(tmp_path):
 
     path = mda.fetch.from_PDB(["1AKE"], cache_path=tmp_path)
     assert path.exists()
@@ -86,9 +98,23 @@ def test_invalid_file_format(tmp_path):
         ValueError,
         match=re.escape(
             "Invalid file format. Supported file formats "
-            f"are {SUPPORTED_FILE_FORMATS_DOWNLOADER}"
+            f"are {_SUPPORTED_FILE_FORMATS_PDB}"
         ),
     ):
         mda.fetch.from_PDB(
             pdb_ids="1AKE", cache_path=tmp_path, file_format="barfoo"
         )
+
+
+@pytest.mark.skipif(not HAS_POOCH, reason="Pooch is not installed.")
+@pytest.mark.skipif(
+    not HAS_ACCESS_TO_WWPDB,
+    reason="Can not connect to https://files.wwpdb.org/",
+)
+def test_download_multiple_calls(tmp_path):
+
+    p1 = mda.fetch.from_PDB(["9BUY"], cache_path=tmp_path)
+    p2 = mda.fetch.from_PDB(["3SN6"], cache_path=tmp_path)
+
+    assert p1.exists()
+    assert p2.exists()

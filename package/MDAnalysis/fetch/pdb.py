@@ -25,8 +25,9 @@
 PDB Fetchers --- :mod:`MDAnalysis.fetch.pdb`
 ============================================
 
-This suite of functions download structure files from the Research Collaboratory for
-Structural Bioinformatics (RCSB) `Protein Data Batabank`_ (PDB).
+This suite of functions download structure files from the Research
+Collaboratory for Structural Bioinformatics (RCSB)
+`Protein Data Batabank`_ (PDB).
 
 .. _Protein Data Batabank: https://www.rcsb.org/
 
@@ -35,18 +36,23 @@ Variables
 
 .. autodata:: DEFAULT_CACHE_NAME_DOWNLOADER
 
-
 Functions
 ---------
 
 .. autofunction:: from_PDB
 
 """
-from pathlib import Path
+
 from .fetchers import StaticFetcher
 
+#: Alias to fetchers/DEFAULT_CACHE_NAME_DOWNLOADER
+#:
+#: Maintained for backwards compatiblity
+#:
+from .fetchers import DEFAULT_CACHE_NAME_DOWNLOADER
+
 # These file formats are here https://www.rcsb.org/docs/programmatic-access/file-download-services#pdb-entry-files"
-SUPPORTED_FILE_FORMATS_DOWNLOADER = (
+_SUPPORTED_FILE_FORMATS_PDB = (
     "cif",
     "cif.gz",
     "bcif",
@@ -88,7 +94,8 @@ def from_PDB(
         The file extension/format to download (e.g., "cif", "pdb").
         See the Notes section below for a list of all supported file formats.
     progressbar : bool
-        If True, display a progress bar during file downloads. Default is False.
+        If True, display a progress bar during file downloads. Default
+        is False.
 
     Returns
     -------
@@ -107,8 +114,8 @@ def from_PDB(
 
     Notes
     -----
-    This function uses the `RCSB File Download Services`_ for directly downloading
-    structure files via https.
+    This function uses the `RCSB File Download Services`_ for directly
+    downloading structure files via https.
 
     .. _`RCSB File Download Services`:
        https://www.rcsb.org/docs/programmatic-access/file-download-services
@@ -120,9 +127,9 @@ def from_PDB(
 
     Caching, controlled by the `cache_path` parameter, is handled internally by
     :mod:`pooch`. The default cache name is taken from
-    :data:`DEFAULT_CACHE_NAME_DOWNLOADER`. To clear cache (and subsequently force
-    re-fetching), it is required to delete the cache folder as specified by
-    `cache_path`.
+    :data:`DEFAULT_CACHE_NAME_DOWNLOADER`. To clear cache (and subsequently
+    force re-fetching), it is required to delete the cache folder
+    as specified by `cache_path`.
 
     Examples
     --------
@@ -150,19 +157,23 @@ def from_PDB(
     .. versionadded:: 2.11.0
     """
 
-    if file_format not in SUPPORTED_FILE_FORMATS_DOWNLOADER:
+    if file_format not in _SUPPORTED_FILE_FORMATS_PDB:
         raise ValueError(
             "Invalid file format. Supported file formats "
-            f"are {SUPPORTED_FILE_FORMATS_DOWNLOADER}"
+            f"are {_SUPPORTED_FILE_FORMATS_PDB}"
         )
 
-    pdb_ids = [pdb + "." + file_format for pdb in pdb_ids]
+    if isinstance(pdb_ids, str):
+        _pdb_ids = (pdb_ids + "." + file_format,)
+    else:
+        _pdb_ids = [pdb + "." + file_format for pdb in pdb_ids]
 
     fetcher = StaticFetcher(cache_path=cache_path)
     return fetcher.fetch(
-        file_name=pdb_ids,
+        file_name=_pdb_ids,
         base_url="https://files.wwpdb.org/download/",
         progressbar=progressbar,
+        append_db=True,
     )
 
 
