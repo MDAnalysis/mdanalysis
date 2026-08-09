@@ -838,8 +838,10 @@ def test_alignto_rotates_velocities_and_forces():
     )
     reference.atoms.positions = ref_pos
 
-    angle = np.pi / 3
-    known_R = transformations.rotation_matrix(angle, [0, 0, 1])[:3, :3]
+    angle = 23
+    known_R = transformations.rotation_matrix(np.deg2rad(angle), [-1, 2, -3])[
+        :3, :3
+    ]
     mobile.atoms.positions = np.dot(ref_pos, known_R.T)
 
     rng = np.random.RandomState(0)

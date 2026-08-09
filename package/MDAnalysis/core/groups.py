@@ -1601,6 +1601,8 @@ class GroupBase(_MutableBase):
         rotateby : rotate around given axis and angle
         MDAnalysis.lib.transformations : module of all coordinate transforms
 
+        .. versionchanged: 2.11.0
+        Also rotate velocities and forces if present in Timestep.
         """
         R = np.asarray(R)
         point = np.asarray(point)
@@ -1611,17 +1613,18 @@ class GroupBase(_MutableBase):
         if require_translation:
             atomgroup.translate(-point)
         ts = atomgroup.universe.trajectory.ts
+        R_T = R.T
         x = ts.positions
         idx = atomgroup.indices
-        x[idx] = np.dot(x[idx], R.T)
+        x[idx] = np.dot(x[idx], R_T)
         if require_translation:
             atomgroup.translate(point)
         if ts.has_velocities:
             v = ts.velocities
-            v[idx] = np.dot(v[idx], R.T)
+            v[idx] = np.dot(v[idx], R_T)
         if ts.has_forces:
             f = ts.forces
-            f[idx] = np.dot(f[idx], R.T)
+            f[idx] = np.dot(f[idx], R_T)
 
         return self
 

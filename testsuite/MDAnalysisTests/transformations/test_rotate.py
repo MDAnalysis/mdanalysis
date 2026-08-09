@@ -192,9 +192,9 @@ def test_rotateby_velocities_forces():
     orig_v = ts.velocities.copy()
     orig_f = ts.forces.copy()
 
-    axis = [0, 0, 1]
+    axis = [-1, 2, -3]
     point = [0, 0, 0]
-    angle = 90
+    angle = 23
     matrix = rotation_matrix(np.deg2rad(angle), axis, point)
     rotation = matrix[:3, :3].T
 
@@ -210,9 +210,18 @@ def test_rotateby_velocities_forces():
 
 def test_rotateby_no_velocities_forces_does_not_raise():
     u = mda.Universe.empty(2, trajectory=True)
-    u.atoms.positions = np.array([[1, 0, 0], [-1, 0, 0]])
+    orig_pos = np.array([[1, 0, 0], [-1, 0, 0]])
+    u.atoms.positions = orig_pos.copy()
     ts = u.trajectory.ts
-    rotateby(90, [0, 0, 1], point=[0, 0, 0])(ts)
+    angle = 5
+    matrix = rotation_matrix(
+        np.deg2rad(angle), [-1, 2, -3], [0, 0, 0]
+    )
+    rotation = matrix[:3, :3].T
+    transformed_ts = rotateby(angle, [-1, 2, -3], point=[0, 0, 0])(ts)
+    assert_array_almost_equal(
+        transformed_ts.positions, np.dot(orig_pos, rotation), decimal=6
+    )
 
 
 @pytest.mark.parametrize(
