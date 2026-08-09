@@ -43,6 +43,9 @@ Functions
 
 """
 
+import re
+import warnings
+
 from .fetchers import StaticFetcher
 
 #: Alias to fetchers/DEFAULT_CACHE_NAME_DOWNLOADER
@@ -177,5 +180,113 @@ def from_PDB(
     )
 
 
-def from_DOI():
-    pass
+def from_DOI(doi, file_name, cache_path=None, remove_prefix=True):
+    """
+    Download one or more files given the Digital Object Identifier (DOI).
+    them locally.
+
+    Given one DOI, this function downloads one or multiple file names from
+    the repository and stores them in a local cache directory. If files
+    are cached on disk, *from_DOI* will skip the download and use the
+    cached version instead.
+
+    Returns the path(s) as a :class:`~pathlib.Path` to the downloaded file(s).
+
+    Parameters
+    ----------
+    doi: str
+        the name of a links o
+    file_name, : str
+        The file extension/format to download (e.g., "cif", "pdb").
+        See the Notes section below for a list of all supported file formats.
+    cache_path : str or pathlib.Path
+        Directory where downloaded file(s) will be cached.
+        The default ``None`` argument uses the :mod:`pooch` default cache with
+        project name :data:`DEFAULT_CACHE_NAME_DOWNLOADER`.
+    remove_prefix : bool
+        If True, display a progress bar during file downloads. Default
+        is False.
+
+    Returns
+    -------
+    :class:`~pathlib.Path` or list of :class:`~pathlib.Path`
+        The path(s) to the downloaded file(s). Returns a single
+        :class:`~pathlib.Path` if a single pdb id is given, or a list of
+        :class:`~pathlib.Path` if multiple pdb ids are provided.
+
+    Raises
+    ------
+    ValueError
+        For an invalid file format. Supported file formats are under Notes.
+
+    :class:`requests.exceptions.HTTPError`
+        If an invalid PDB code is specified.
+
+    Notes
+    -----
+    This function uses the `RCSB File Download Services`_ for directly
+    downloading structure files via https.
+
+    .. _`RCSB File Download Services`:
+       https://www.rcsb.org/docs/programmatic-access/file-download-services
+
+    The RCSB currently provides data in ``'cif'`` , ``'cif.gz'`` , ``'bcif'`` ,
+    ``'bcif.gz'`` , ``'xml'`` , ``'xml.gz'`` , ``'pdb'`` , ``'pdb.gz'``,
+    ``'pdb1'``, ``'pdb1.gz'`` file formats and can therefore be downloaded.
+    Not all of these formats can be currently read with MDAnalysis.
+
+    Caching, controlled by the `cache_path` parameter, is handled internally by
+    :mod:`pooch`. The default cache name is taken from
+    :data:`DEFAULT_CACHE_NAME_DOWNLOADER`. To clear cache (and subsequently
+    force re-fetching), it is required to delete the cache folder
+    as specified by `cache_path`.
+
+    Examples
+    --------
+    Download a single PDB file:
+
+    >>> mda.fetch.from_PDB("1AKE", file_format="cif")
+    './MDAnalysis_pdbs/1AKE.cif'
+
+    Download multiple PDB files with a progress bar:
+
+    >>> mda.fetch.from_PDB(["1AKE", "4BWZ"], progressbar=True)
+    ['./MDAnalysis_pdbs/1AKE.pdb.gz', './MDAnalysis_pdbs/4BWZ.pdb.gz']
+
+    Download a single PDB file and convert it to a universe:
+
+    >>> mda.Universe(mda.fetch.from_PDB("1AKE"), file_format="pdb.gz")
+    <Universe with 3816 atoms>
+
+    Download multiple PDB files and convert each of them into a universe:
+
+    >>> [mda.Universe(pdb) for pdb in mda.fetch.from_PDB(["1AKE", "4BWZ"], progressbar=True)]
+    [<Universe with 3816 atoms>, <Universe with 2824 atoms>]
+
+
+    .. versionadded:: 2.11.0
+    """
+
+    # Suppress Figshare warning of getting most current
+    # repository if none is provided
+    warnings.filterwarnings("ignore", category=UserWarning)
+
+    if remove_prefix:
+        # Captures https:// and ftp://
+        match = re.match(r"^(.*?:\/\/)", doi)
+
+        if match is not None:
+            start, end = match.span()
+            doi = doi[end:]
+
+    # In format of doi.org/stuff/stuff
+    # Need to massage into pooch-compataible syntax
+    doi = doi.replace("doi.org/", "doi:")
+
+    fetcher = StaticFetcher(cache_path=cache_path)
+    return fetcher.fetch(
+        base_url=doi, file_name=file_name, append_db=True, downloader="doi"
+    )
+
+
+##
