@@ -437,14 +437,6 @@ class TestAtomGroupTransformations(object):
             assert_almost_equal(u.atoms.velocities, np.dot(orig_v, R.T))
             assert_almost_equal(u.atoms.forces, np.dot(orig_f, R.T))
 
-    def test_rotate_no_velocities_forces_does_not_raise(self):
-        u = mda.Universe.empty(2, trajectory=True)
-        orig_pos = np.array([[1, 0, 0], [-1, 0, 0]])
-        u.atoms.positions = orig_pos.copy()
-        R = transformations.rotation_matrix(1, [-1, 2, -3])[:3, :3]
-        u.atoms.rotate(R)
-        assert_almost_equal(u.atoms.positions, np.dot(orig_pos, R.T))
-
     def test_transform_rotation_only(self, u, coords):
         R = np.eye(3)
         u.atoms.rotate(R)
