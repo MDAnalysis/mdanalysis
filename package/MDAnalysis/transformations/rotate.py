@@ -121,6 +121,8 @@ class rotateby(TransformationBase):
     .. versionchanged:: 2.0.0
        The transformation was changed to inherit from the base class for
        limiting threads and checking if it can be used in parallel analysis.
+    .. versionchanged:: 2.11.0
+       Also rotate velocities and forces if present in Timestep.
     """
 
     def __init__(
