@@ -1601,7 +1601,7 @@ class GroupBase(_MutableBase):
         rotateby : rotate around given axis and angle
         MDAnalysis.lib.transformations : module of all coordinate transforms
 
-        
+
         .. versionchanged:: 2.11.0
            Also rotate velocities and forces if present in Timestep.
         """
@@ -1663,7 +1663,7 @@ class GroupBase(_MutableBase):
         MDAnalysis.lib.transformations.rotation_matrix :
             calculate :math:`\mathsf{R}`
 
-            
+
         .. versionchanged:: 2.11.0
            Also rotate velocities and forces if present in Timestep.
         """
