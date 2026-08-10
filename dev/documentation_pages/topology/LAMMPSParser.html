@@ -30,8 +30,8 @@
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../../_static/documentation_options.js?v=4fe0e2e2"></script>
-      <script src="../../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -215,7 +215,7 @@ and any other specified field will be ignored.</p>
 <h2><span class="section-number">5.11.2. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.topology.LAMMPSParser.DATAParser">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.LAMMPSParser.</span></span><span class="sig-name descname"><span class="pre">DATAParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/LAMMPSParser.html#DATAParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.LAMMPSParser.</span></span><span class="sig-name descname"><span class="pre">DATAParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/LAMMPSParser.html#DATAParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser" title="Link to this definition"></a></dt>
 <dd><p>Parse a LAMMPS DATA file for topology and coordinates.</p>
 <p>Note that LAMMPS DATA files can be used standalone.</p>
 <p>Both topology and coordinate parsing functionality is kept in this
@@ -482,7 +482,7 @@ is avoided.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="MDAnalysis.topology.LAMMPSParser.DATAParser.units">
-<span class="sig-name descname"><span class="pre">units</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">None,</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">None}</span></em><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser.units" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">units</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'length':</span> <span class="pre">None,</span> <span class="pre">'time':</span> <span class="pre">None,</span> <span class="pre">'velocity':</span> <span class="pre">None}</span></span><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.DATAParser.units" title="Link to this definition"></a></dt>
 <dd><p>dict with units of of <em>time</em> and <em>length</em> (and <em>velocity</em>, <em>force</em>,
 … for formats that support it)</p>
 </dd></dl>
@@ -491,7 +491,7 @@ is avoided.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.topology.LAMMPSParser.LammpsDumpParser">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.LAMMPSParser.</span></span><span class="sig-name descname"><span class="pre">LammpsDumpParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/LAMMPSParser.html#LammpsDumpParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.LammpsDumpParser" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.LAMMPSParser.</span></span><span class="sig-name descname"><span class="pre">LammpsDumpParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/LAMMPSParser.html#LammpsDumpParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.LammpsDumpParser" title="Link to this definition"></a></dt>
 <dd><p>Parses Lammps ascii dump files.</p>
 <p>id, mol, type, mass, element and q columns are read
 and used to set the corresponding topology attributes.</p>

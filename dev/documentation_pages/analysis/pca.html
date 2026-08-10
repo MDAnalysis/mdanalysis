@@ -30,9 +30,9 @@
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../../_static/documentation_options.js?v=4fe0e2e2"></script>
-      <script src="../../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
-      <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script defer="defer" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
       <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -245,7 +245,7 @@ data are left to the user.</p>
 <h2><span class="section-number">4.10.2.2. </span>Classes and Functions<a class="headerlink" href="#classes-and-functions" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.pca.PCA">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.pca.</span></span><span class="sig-name descname"><span class="pre">PCA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">align</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/pca.html#PCA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.pca.</span></span><span class="sig-name descname"><span class="pre">PCA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">align</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_components</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/pca.html#PCA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA" title="Link to this definition"></a></dt>
 <dd><p>Principal component analysis on an MD trajectory.</p>
 <p>After initializing and calling method with a universe or an atom group,
 principal components ordering the atom coordinate data by decreasing
@@ -434,7 +434,7 @@ orthogonal, whereas 1 indicates that they are identical.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.pca.PCA.get_supported_backends">
-<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_supported_backends</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.get_supported_backends" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get_supported_backends</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.get_supported_backends" title="Link to this definition"></a></dt>
 <dd><p>Tuple with backends supported by the core library for a given class.
 User can pass either one of these values as <code class="docutils literal notranslate"><span class="pre">backend=...</span></code> to
 <a class="reference internal" href="#MDAnalysis.analysis.pca.PCA.run" title="MDAnalysis.analysis.pca.PCA.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code></a> method, or a custom object that has <code class="docutils literal notranslate"><span class="pre">apply</span></code> method
@@ -465,7 +465,7 @@ how to implement it properly), and specify <code class="docutils literal notrans
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.pca.PCA.parallelizable">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parallelizable</span></span><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.parallelizable" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">parallelizable</span></span><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.parallelizable" title="Link to this definition"></a></dt>
 <dd><p>Boolean mark showing that a given class can be parallelizable with
 split-apply-combine procedure. Namely, if we can safely distribute
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">_single_frame()</span></code> to multiple workers and then combine them with a
@@ -534,7 +534,7 @@ currently not checked.</p>
 </p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>function</p>
+<dd class="field-odd"><p><a class="reference internal" href="encore/utils.html#MDAnalysis.analysis.encore.utils.ParallelCalculation.function" title="MDAnalysis.analysis.encore.utils.ParallelCalculation.function">function</a></p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
@@ -742,7 +742,7 @@ calculations are finished.</p></li>
 <dd class="field-even"><p><strong>pca_space</strong></p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>array, shape (n_frames, n_components)</p>
+<dd class="field-odd"><p>array, shape (<a class="reference internal" href="atomicdistances.html#MDAnalysis.analysis.atomicdistances.AtomicDistances.n_frames" title="MDAnalysis.analysis.atomicdistances.AtomicDistances.n_frames">n_frames</a>, n_components)</p>
 </dd>
 </dl>
 <div class="versionchanged">
@@ -768,7 +768,7 @@ If you use this function please cite <a class="footnote-reference brackets" href
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>pca_space</strong> (<em>array</em><em>, </em><em>shape</em><em> (</em><em>number</em><em> of </em><em>frames</em><em>, </em><em>number</em><em> of </em><em>components</em><em>)</em>) – The PCA space to be analyzed.</p></li>
+<li><p><strong>pca_space</strong> (<em>array</em><em>, </em><em>shape</em><em> (</em><em>number</em><em> of </em><a class="reference internal" href="base.html#MDAnalysis.analysis.base.AnalysisBase.frames" title="MDAnalysis.analysis.base.AnalysisBase.frames"><em>frames</em></a><em>, </em><em>number</em><em> of </em><em>components</em><em>)</em>) – The PCA space to be analyzed.</p></li>
 <li><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – The index of the pca_component projection to be analyzed.</p></li>
 </ul>
 </dd>

@@ -30,8 +30,8 @@
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../../_static/documentation_options.js?v=4fe0e2e2"></script>
-      <script src="../../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -160,9 +160,9 @@ Structural Bioinformatics (RCSB) <a class="reference external" href="https://www
 <h2><span class="section-number">9.2.1. </span>Variables<a class="headerlink" href="#variables" title="Link to this heading"></a></h2>
 <dl class="py data">
 <dt class="sig sig-object py" id="MDAnalysis.fetch.pdb.DEFAULT_CACHE_NAME_DOWNLOADER">
-<span class="sig-prename descclassname"><span class="pre">MDAnalysis.fetch.pdb.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_CACHE_NAME_DOWNLOADER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'MDAnalysis_pdbs'</span></em><a class="headerlink" href="#MDAnalysis.fetch.pdb.DEFAULT_CACHE_NAME_DOWNLOADER" title="Link to this definition"></a></dt>
-<dd><p>Name of the <a class="reference external" href="https://www.fatiando.org/pooch/latest/api/index.html#module-pooch" title="(in Pooch vv1.9.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pooch</span></code></a> cache directory <code class="docutils literal notranslate"><span class="pre">pooch.os_cache(DEFAULT_CACHE_NAME_DOWNLOADER)</span></code>;
-see <a class="reference external" href="https://www.fatiando.org/pooch/latest/api/generated/pooch.os_cache.html#pooch.os_cache" title="(in Pooch vv1.9.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">pooch.os_cache()</span></code></a> for further details.</p>
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.fetch.pdb.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_CACHE_NAME_DOWNLOADER</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'MDAnalysis_pdbs'</span></span><a class="headerlink" href="#MDAnalysis.fetch.pdb.DEFAULT_CACHE_NAME_DOWNLOADER" title="Link to this definition"></a></dt>
+<dd><p>Name of the <a class="reference external" href="https://www.fatiando.org/pooch/latest/api/index.html#module-pooch" title="(in Pooch v1.9.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pooch</span></code></a> cache directory <code class="docutils literal notranslate"><span class="pre">pooch.os_cache(DEFAULT_CACHE_NAME_DOWNLOADER)</span></code>;
+see <a class="reference external" href="https://www.fatiando.org/pooch/latest/api/generated/pooch.os_cache.html#pooch.os_cache" title="(in Pooch v1.9.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">pooch.os_cache()</span></code></a> for further details.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 2.11.0.</span></p>
 </div>
@@ -185,7 +185,7 @@ disk, <em>from_PDB</em> will skip the download and use the cached version instea
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>pdb_ids</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> or </em><em>sequence</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – A single PDB ID as a string, or a sequence of PDB IDs to fetch.</p></li>
 <li><p><strong>cache_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><em>pathlib.Path</em></a>) – Directory where downloaded file(s) will be cached.
-The default <code class="docutils literal notranslate"><span class="pre">None</span></code> argument uses the <a class="reference external" href="https://www.fatiando.org/pooch/latest/api/index.html#module-pooch" title="(in Pooch vv1.9.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pooch</span></code></a> default cache with
+The default <code class="docutils literal notranslate"><span class="pre">None</span></code> argument uses the <a class="reference external" href="https://www.fatiando.org/pooch/latest/api/index.html#module-pooch" title="(in Pooch v1.9.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pooch</span></code></a> default cache with
 project name <a class="reference internal" href="#MDAnalysis.fetch.pdb.DEFAULT_CACHE_NAME_DOWNLOADER" title="MDAnalysis.fetch.pdb.DEFAULT_CACHE_NAME_DOWNLOADER"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_CACHE_NAME_DOWNLOADER</span></code></a>.</p></li>
 <li><p><strong>file_format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – The file extension/format to download (e.g., “cif”, “pdb”).
 See the Notes section below for a list of all supported file formats.</p></li>
@@ -215,7 +215,7 @@ structure files via https.</p>
 <code class="docutils literal notranslate"><span class="pre">'pdb1'</span></code>, <code class="docutils literal notranslate"><span class="pre">'pdb1.gz'</span></code> file formats and can therefore be downloaded.
 Not all of these formats can be currently read with MDAnalysis.</p>
 <p>Caching, controlled by the <cite>cache_path</cite> parameter, is handled internally by
-<a class="reference external" href="https://www.fatiando.org/pooch/latest/api/index.html#module-pooch" title="(in Pooch vv1.9.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pooch</span></code></a>. The default cache name is taken from
+<a class="reference external" href="https://www.fatiando.org/pooch/latest/api/index.html#module-pooch" title="(in Pooch v1.9.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pooch</span></code></a>. The default cache name is taken from
 <a class="reference internal" href="#MDAnalysis.fetch.pdb.DEFAULT_CACHE_NAME_DOWNLOADER" title="MDAnalysis.fetch.pdb.DEFAULT_CACHE_NAME_DOWNLOADER"><code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_CACHE_NAME_DOWNLOADER</span></code></a>. To clear cache (and subsequently force
 re-fetching), it is required to delete the cache folder as specified by
 <cite>cache_path</cite>.</p>

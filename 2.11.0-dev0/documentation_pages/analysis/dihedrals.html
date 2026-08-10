@@ -30,9 +30,9 @@
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../../_static/documentation_options.js?v=4fe0e2e2"></script>
-      <script src="../../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
-      <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script defer="defer" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
       <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -243,7 +243,7 @@ residues. The previous example can repeated with:</p>
 </div>
 <p>as shown in the example <a class="reference internal" href="#figure-ramachandran"><span class="std std-ref">Ramachandran plot figure</span></a>.</p>
 <figure class="align-default" id="id7">
-<span id="figure-ramachandran"></span><a class="reference internal image-reference" href="../../_images/rama_demo_plot.png"><img alt="Ramachandran plot" src="../../_images/rama_demo_plot.png" style="width: 240.0px; height: 240.0px;" />
+<span id="figure-ramachandran"></span><a class="reference internal image-reference" href="../../_images/rama_demo_plot.png"><img alt="Ramachandran plot" height="240" src="../../_images/rama_demo_plot.png" width="240" />
 </a>
 <figcaption>
 <p><span class="caption-text">Ramachandran plot for residues 5 to 10 of AdK, sampled from the AdK test
@@ -271,7 +271,7 @@ only needing a list of residues; see the <a class="reference internal" href="#fi
 <p>The data for the angles can be accessed in the attribute
 <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Janin.results.angles" title="MDAnalysis.analysis.dihedrals.Janin.results.angles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Janin.results.angles</span></code></a>.</p>
 <figure class="align-default" id="id8">
-<span id="figure-janin"></span><a class="reference internal image-reference" href="../../_images/janin_demo_plot.png"><img alt="Janin plot" src="../../_images/janin_demo_plot.png" style="width: 240.0px; height: 240.0px;" />
+<span id="figure-janin"></span><a class="reference internal image-reference" href="../../_images/janin_demo_plot.png"><img alt="Janin plot" height="240" src="../../_images/janin_demo_plot.png" width="240" />
 </a>
 <figcaption>
 <p><span class="caption-text">Janin plot for all residues of AdK, sampled from the AdK test trajectory
@@ -311,7 +311,7 @@ points. The list of PDB files used for the reference plots was taken from
 <h2><span class="section-number">4.8.1.3.2. </span>Analysis Classes<a class="headerlink" href="#analysis-classes" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.dihedrals.Dihedral">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.dihedrals.</span></span><span class="sig-name descname"><span class="pre">Dihedral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomgroups</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/dihedrals.html#Dihedral"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Dihedral" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.dihedrals.</span></span><span class="sig-name descname"><span class="pre">Dihedral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomgroups</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/dihedrals.html#Dihedral"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Dihedral" title="Link to this definition"></a></dt>
 <dd><p>Calculate dihedral angles for specified atomgroups.</p>
 <p>Dihedral angles will be calculated for each atomgroup that is given for
 each step in the trajectory. Each <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>
@@ -362,7 +362,7 @@ an <code class="docutils literal notranslate"><span class="pre">n_frames×len(at
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.dihedrals.Dihedral.get_supported_backends">
-<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_supported_backends</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/dihedrals.html#Dihedral.get_supported_backends"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Dihedral.get_supported_backends" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get_supported_backends</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/dihedrals.html#Dihedral.get_supported_backends"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Dihedral.get_supported_backends" title="Link to this definition"></a></dt>
 <dd><p>Tuple with backends supported by the core library for a given class.
 User can pass either one of these values as <code class="docutils literal notranslate"><span class="pre">backend=...</span></code> to
 <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Dihedral.run" title="MDAnalysis.analysis.dihedrals.Dihedral.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code></a> method, or a custom object that has <code class="docutils literal notranslate"><span class="pre">apply</span></code> method
@@ -393,7 +393,7 @@ how to implement it properly), and specify <code class="docutils literal notrans
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.dihedrals.Dihedral.parallelizable">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parallelizable</span></span><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Dihedral.parallelizable" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">parallelizable</span></span><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Dihedral.parallelizable" title="Link to this definition"></a></dt>
 <dd><p>Boolean mark showing that a given class can be parallelizable with
 split-apply-combine procedure. Namely, if we can safely distribute
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">_single_frame()</span></code> to multiple workers and then combine them with a
@@ -492,7 +492,7 @@ support parallelizable execution.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.dihedrals.Ramachandran">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.dihedrals.</span></span><span class="sig-name descname"><span class="pre">Ramachandran</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomgroup</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'C'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'N'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ca_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'CA'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_protein</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/dihedrals.html#Ramachandran"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Ramachandran" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.dihedrals.</span></span><span class="sig-name descname"><span class="pre">Ramachandran</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomgroup</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'C'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'N'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ca_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'CA'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_protein</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/dihedrals.html#Ramachandran"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Ramachandran" title="Link to this definition"></a></dt>
 <dd><p>Calculate <span class="math notranslate nohighlight">\(\phi\)</span> and <span class="math notranslate nohighlight">\(\psi\)</span> dihedral angles of selected
 residues.</p>
 <p><span class="math notranslate nohighlight">\(\phi\)</span> and <span class="math notranslate nohighlight">\(\psi\)</span> angles will be calculated for each residue
@@ -577,7 +577,7 @@ content <code class="docutils literal notranslate"><span class="pre">[[[phi,</sp
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.dihedrals.Ramachandran.get_supported_backends">
-<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_supported_backends</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/dihedrals.html#Ramachandran.get_supported_backends"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Ramachandran.get_supported_backends" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get_supported_backends</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/dihedrals.html#Ramachandran.get_supported_backends"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Ramachandran.get_supported_backends" title="Link to this definition"></a></dt>
 <dd><p>Tuple with backends supported by the core library for a given class.
 User can pass either one of these values as <code class="docutils literal notranslate"><span class="pre">backend=...</span></code> to
 <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Ramachandran.run" title="MDAnalysis.analysis.dihedrals.Ramachandran.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code></a> method, or a custom object that has <code class="docutils literal notranslate"><span class="pre">apply</span></code> method
@@ -608,7 +608,7 @@ how to implement it properly), and specify <code class="docutils literal notrans
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.dihedrals.Ramachandran.parallelizable">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parallelizable</span></span><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Ramachandran.parallelizable" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">parallelizable</span></span><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Ramachandran.parallelizable" title="Link to this definition"></a></dt>
 <dd><p>Boolean mark showing that a given class can be parallelizable with
 split-apply-combine procedure. Namely, if we can safely distribute
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">_single_frame()</span></code> to multiple workers and then combine them with a
@@ -732,7 +732,7 @@ support parallelizable execution.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.dihedrals.Janin">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.dihedrals.</span></span><span class="sig-name descname"><span class="pre">Janin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomgroup</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select_remove</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'resname</span> <span class="pre">ALA</span> <span class="pre">CYS*</span> <span class="pre">GLY</span> <span class="pre">PRO</span> <span class="pre">SER</span> <span class="pre">THR</span> <span class="pre">VAL'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select_protein</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'protein'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/dihedrals.html#Janin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Janin" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.dihedrals.</span></span><span class="sig-name descname"><span class="pre">Janin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomgroup</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select_remove</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'resname</span> <span class="pre">ALA</span> <span class="pre">CYS*</span> <span class="pre">GLY</span> <span class="pre">PRO</span> <span class="pre">SER</span> <span class="pre">THR</span> <span class="pre">VAL'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select_protein</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'protein'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/dihedrals.html#Janin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Janin" title="Link to this definition"></a></dt>
 <dd><p>Calculate <span class="math notranslate nohighlight">\(\chi_1\)</span> and <span class="math notranslate nohighlight">\(\chi_2\)</span> dihedral angles of selected
 residues.</p>
 <p><span class="math notranslate nohighlight">\(\chi_1\)</span> and <span class="math notranslate nohighlight">\(\chi_2\)</span> angles will be calculated for each residue
@@ -801,7 +801,7 @@ with content <code class="docutils literal notranslate"><span class="pre">[[[chi
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.dihedrals.Janin.get_supported_backends">
-<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_supported_backends</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Janin.get_supported_backends" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get_supported_backends</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Janin.get_supported_backends" title="Link to this definition"></a></dt>
 <dd><p>Tuple with backends supported by the core library for a given class.
 User can pass either one of these values as <code class="docutils literal notranslate"><span class="pre">backend=...</span></code> to
 <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Janin.run" title="MDAnalysis.analysis.dihedrals.Janin.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code></a> method, or a custom object that has <code class="docutils literal notranslate"><span class="pre">apply</span></code> method
@@ -832,7 +832,7 @@ how to implement it properly), and specify <code class="docutils literal notrans
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.dihedrals.Janin.parallelizable">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parallelizable</span></span><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Janin.parallelizable" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">parallelizable</span></span><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Janin.parallelizable" title="Link to this definition"></a></dt>
 <dd><p>Boolean mark showing that a given class can be parallelizable with
 split-apply-combine procedure. Namely, if we can safely distribute
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">_single_frame()</span></code> to multiple workers and then combine them with a

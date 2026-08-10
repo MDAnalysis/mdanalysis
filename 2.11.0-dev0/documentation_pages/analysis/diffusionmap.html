@@ -30,9 +30,9 @@
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="../../_static/documentation_options.js?v=4fe0e2e2"></script>
-      <script src="../../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
-      <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script defer="defer" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
       <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -253,7 +253,7 @@ self.diffusion_space.</p>
 <h2><span class="section-number">4.10.1.2. </span>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.diffusionmap.DiffusionMap">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.diffusionmap.</span></span><span class="sig-name descname"><span class="pre">DiffusionMap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/diffusionmap.html#DiffusionMap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.diffusionmap.DiffusionMap" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.diffusionmap.</span></span><span class="sig-name descname"><span class="pre">DiffusionMap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/diffusionmap.html#DiffusionMap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.diffusionmap.DiffusionMap" title="Link to this definition"></a></dt>
 <dd><p>Non-linear dimension reduction method</p>
 <p>Dimension reduction with diffusion mapping of selected structures in a
 trajectory.</p>
@@ -263,7 +263,7 @@ trajectory.</p>
 <dd><p>Eigenvalues of the diffusion map</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>array (n_frames,)</p>
+<dd class="field-odd"><p>array (<a class="reference internal" href="atomicdistances.html#MDAnalysis.analysis.atomicdistances.AtomicDistances.n_frames" title="MDAnalysis.analysis.atomicdistances.AtomicDistances.n_frames">n_frames</a>,)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -304,7 +304,7 @@ diffusion map. More information in
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.diffusionmap.DistanceMatrix">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.diffusionmap.</span></span><span class="sig-name descname"><span class="pre">DistanceMatrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select='all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric=&lt;function</span> <span class="pre">rmsd&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff=-4.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/diffusionmap.html#DistanceMatrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.diffusionmap.DistanceMatrix" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.diffusionmap.</span></span><span class="sig-name descname"><span class="pre">DistanceMatrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;function</span> <span class="pre">rmsd&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-4.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/diffusionmap.html#DistanceMatrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.diffusionmap.DistanceMatrix" title="Link to this definition"></a></dt>
 <dd><p>Calculate the pairwise distance between each frame in a trajectory
 using a given metric</p>
 <p>A distance matrix can be initialized on its own and used as an
@@ -321,7 +321,7 @@ start and stop value when calling <code class="xref py py-meth docutils literal 
 <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup.select_atoms" title="MDAnalysis.core.groups.AtomGroup.select_atoms"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select_atoms()</span></code></a>
 This selection of atoms is used to calculate the RMSD between
 different frames. Water should be excluded.</p></li>
-<li><p><strong>metric</strong> (<em>function</em><em>, </em><em>optional</em>) – Maps two numpy arrays to a float, is positive definite and
+<li><p><strong>metric</strong> (<a class="reference internal" href="encore/utils.html#MDAnalysis.analysis.encore.utils.ParallelCalculation.function" title="MDAnalysis.analysis.encore.utils.ParallelCalculation.function"><em>function</em></a><em>, </em><em>optional</em>) – Maps two numpy arrays to a float, is positive definite and
 symmetric. The API for a metric requires that the arrays must have
 equal length, and that the function should have weights as an
 optional argument. Weights give each index value its own weight for
@@ -356,7 +356,7 @@ This matrix is symmetric with zeros on the diagonal.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)">numpy.ndarray</a>, (n_frames, n_frames)</p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)">numpy.ndarray</a>, (<a class="reference internal" href="atomicdistances.html#MDAnalysis.analysis.atomicdistances.AtomicDistances.n_frames" title="MDAnalysis.analysis.atomicdistances.AtomicDistances.n_frames">n_frames</a>, <a class="reference internal" href="atomicdistances.html#MDAnalysis.analysis.atomicdistances.AtomicDistances.n_frames" title="MDAnalysis.analysis.atomicdistances.AtomicDistances.n_frames">n_frames</a>)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -370,7 +370,7 @@ This matrix is symmetric with zeros on the diagonal.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)">numpy.ndarray</a>, (n_frames, n_frames)</p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)">numpy.ndarray</a>, (<a class="reference internal" href="atomicdistances.html#MDAnalysis.analysis.atomicdistances.AtomicDistances.n_frames" title="MDAnalysis.analysis.atomicdistances.AtomicDistances.n_frames">n_frames</a>, <a class="reference internal" href="atomicdistances.html#MDAnalysis.analysis.atomicdistances.AtomicDistances.n_frames" title="MDAnalysis.analysis.atomicdistances.AtomicDistances.n_frames">n_frames</a>)</p>
 </dd>
 </dl>
 </dd></dl>
