@@ -185,7 +185,7 @@ class StaticFetcher(_BaseFetcher):
 
         Primarily designed to be working with `FAIR`_
         databases, this method works by sending a request to a web server and
-        caching them to a registry.The registry is in the format of a
+        caching them to a registry. The registry is in the format of a
         `pooch registry file`_, and it will be created or read relative to
         :attr:`cache_path`.
 
