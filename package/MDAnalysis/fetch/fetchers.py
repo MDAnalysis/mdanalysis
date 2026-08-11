@@ -242,7 +242,7 @@ class StaticFetcher(_BaseFetcher):
             Download multiple CIF files from the RCSB Protein Data Bank.
 
             >>> StaticFetcher().fetch(file_name=["1AKE.cif", "4AKE.cif"],
-                base_url="https://files.wwpdb.org/download/")
+    ...     base_url="https://files.wwpdb.org/download/",
             ['./MDAnalysis_pdbs/1AKE.cif', './MDAnalysis_pdbs/4AKE.cif']
 
         Notes
