@@ -26,7 +26,7 @@ Fetchers --- :mod:`MDAnalysis.fetch.fetchers`
 =============================================
 
 This module contains Fetcher classes which are able to retrieve files from
-remote servers.These classes use the third-party library :mod:`pooch` as
+remote servers. These classes use the third-party library :mod:`pooch` as
 a dependency.
 
 Classes
