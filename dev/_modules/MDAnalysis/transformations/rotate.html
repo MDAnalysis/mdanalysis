@@ -266,6 +266,8 @@
 <span class="sd">    .. versionchanged:: 2.0.0</span>
 <span class="sd">       The transformation was changed to inherit from the base class for</span>
 <span class="sd">       limiting threads and checking if it can be used in parallel analysis.</span>
+<span class="sd">    .. versionchanged:: 2.11.0</span>
+<span class="sd">       Also rotate velocities and forces if present in Timestep.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -345,6 +347,10 @@
         <span class="n">translation</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
         <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">rotation</span><span class="p">)</span>
         <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">+=</span> <span class="n">translation</span>
+        <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">has_velocities</span><span class="p">:</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">velocities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">velocities</span><span class="p">,</span> <span class="n">rotation</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">has_forces</span><span class="p">:</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">forces</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">forces</span><span class="p">,</span> <span class="n">rotation</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ts</span></div>
 
 </pre></div>

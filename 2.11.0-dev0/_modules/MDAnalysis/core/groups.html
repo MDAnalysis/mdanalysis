@@ -1744,6 +1744,9 @@
 <span class="sd">        rotateby : rotate around given axis and angle</span>
 <span class="sd">        MDAnalysis.lib.transformations : module of all coordinate transforms</span>
 
+
+<span class="sd">        .. versionchanged:: 2.11.0</span>
+<span class="sd">           Also rotate velocities and forces if present in Timestep.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
         <span class="n">point</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
@@ -1753,11 +1756,19 @@
         <span class="n">require_translation</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">point</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">require_translation</span><span class="p">:</span>
             <span class="n">atomgroup</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="o">-</span><span class="n">point</span><span class="p">)</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span>
+        <span class="n">ts</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
+        <span class="n">R_T</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">positions</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">indices</span>
-        <span class="n">x</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">R</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+        <span class="n">x</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">R_T</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">require_translation</span><span class="p">:</span>
             <span class="n">atomgroup</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">has_velocities</span><span class="p">:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">velocities</span>
+            <span class="n">v</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">R_T</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">has_forces</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">forces</span>
+            <span class="n">f</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">R_T</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span>
 
@@ -1795,6 +1806,9 @@
 <span class="sd">        MDAnalysis.lib.transformations.rotation_matrix :</span>
 <span class="sd">            calculate :math:`\mathsf{R}`</span>
 
+
+<span class="sd">        .. versionchanged:: 2.11.0</span>
+<span class="sd">           Also rotate velocities and forces if present in Timestep.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
         <span class="n">axis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
