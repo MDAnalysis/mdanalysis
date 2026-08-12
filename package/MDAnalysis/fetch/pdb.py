@@ -252,8 +252,8 @@ def from_ALPHAFOLD(id, cache_path=None, progressbar=False, file_format="cif"):
     a given ID. For more detailed control, it is recommended to browse
     `AlphaFold <https://alphafold.ebi.ac.uk/>`_ manually.
 
-    Caching, controlled by the ``cache_path`` parameter, is handled internally by
-    :mod:`pooch`. The default cache name is taken from
+    Caching, controlled by the ``cache_path`` parameter, is handled
+    internally by :mod:`pooch`. The default cache name is taken from
     :data:`DEFAULT_CACHE_NAME_DOWNLOADER`. To clear cache (and subsequently
     force re-fetching), it is required to delete the cache folder
     as specified by ``cache_path``.
@@ -267,7 +267,7 @@ def from_ALPHAFOLD(id, cache_path=None, progressbar=False, file_format="cif"):
 
     Download a single AlphaFold file and convert it to a universe:
 
-    >>> mda.Universe(from_ALPHAFOLD("Q9I1F6"), file_format="pdb")
+    >>> mda.Universe(from_ALPHAFOLD("Q9I1F6"), files_format="pdb")
     <Universe with 2608 atoms>
 
 
