@@ -196,7 +196,6 @@ class TestExpectedBehaviors:
             "TEST_FILE2.txt sha256:eff7c015c379263afdf464bd1baf266909d0e4d4af7cccb722dd4994ff4e998c\n"
         )
 
-    # Add paramertization
     def test_different_hashes(self, tmp_path):
         with temporary_http_server() as (host, port, temp_folder):
             base_url = f"http://{host}:{port}/"
@@ -319,6 +318,27 @@ class TestExpectedBehaviors:
 
         assert Path(tmp_path / "TEST_FILE1.txt").exists()
 
+    def test_registry_file_with_comments(self, tmp_path):
+        with temporary_http_server() as (host, port, temp_folder):
+            base_url = f"http://{host}:{port}/"
+            fetcher = StaticFetcher(cache_path=tmp_path)
+
+            file1 = fetcher.fetch(
+                base_url=base_url,
+                file_name="TEST_FILE1.txt",
+                db_name=REGISTRY_NAME,
+            )
+
+            registry = Path(file1.parent / REGISTRY_NAME)
+
+            with registry.open("a") as f:
+                f.write("# This is a comment\n")
+
+            # Check that the comment is ignored when reading the registry
+            hash_dict = fetcher.read_registry(registry)
+            assert "TEST_FILE1.txt" in hash_dict
+            assert len(hash_dict) == 1
+
 
 @pytest.mark.skipif(not HAS_POOCH, reason="Pooch is not installed.")
 class TestRegistry:
@@ -427,7 +447,6 @@ class TestRegistry:
             "file2.txt sha256:3a0dbd9e2abc4a7bbae6adfe92e2858218135926dacd4a7d3fb4ca2dbdbe457a\n"
         )
 
-    ## Test works, but doesn't work on github action. Idk why and need to find out at some point.
     def test_check_registry(self, tmp_path):
 
         files = {

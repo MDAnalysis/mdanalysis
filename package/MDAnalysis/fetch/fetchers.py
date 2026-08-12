@@ -67,6 +67,7 @@ except ImportError:
 else:
     HAS_POOCH = True
 
+# Module-level variables
 
 #: Name of the :mod:`pooch` cache directory
 #: ``pooch.os_cache(DEFAULT_CACHE_NAME_DOWNLOADER)``;
@@ -271,7 +272,8 @@ class StaticFetcher(_BaseFetcher):
 
         registry_dictionary = {}
 
-        # Process file names
+        # Cast single string to tuple for uniform processing
+        # of single and multiple files
         requested_files = (
             (file_name,) if isinstance(file_name, str) else tuple(file_name)
         )
@@ -294,6 +296,11 @@ class StaticFetcher(_BaseFetcher):
             if len(missing_files_list) != 0:
                 MISSING_FILES = True
 
+        # Ensures that StaticFetcher doesn't attempt to append
+        # files outside of the registry.
+        #
+        # Unattended additions to registry is a security issue!
+        # See 3.6 "File Integrity Checking" in NIST SP 800-115!
         if MISSING_FILES and not APPEND_DATABASE:
             raise ValueError(
                 "fetch() is requesting files not found in the registry. "
@@ -302,10 +309,10 @@ class StaticFetcher(_BaseFetcher):
                 + "registry."
             )
 
+        # This allows files not in the registry to
+        # be downloadable.
         for name in requested_files:
             registry_dictionary.setdefault(name, None)
-
-        ##
 
         # Download code using pooch
         main_downloader = pooch.create(
@@ -332,16 +339,12 @@ class StaticFetcher(_BaseFetcher):
             for file_name in requested_files
         ]
 
-        ##
-
         # Registry write code
         if CREATE_DATABASE:
             self.write_registry(db_path, paths)
 
         if APPEND_DATABASE and LOAD_FROM_CACHE:
             self.append_registry(db_path, requested_files)
-
-        ##
 
         return paths[0] if len(paths) == 1 else paths
 
@@ -403,16 +406,17 @@ class StaticFetcher(_BaseFetcher):
         .. versionadded:: 2.11.0
 
         """
-        new_files = [self.cache_path / file_name for file_name in files]
+        new_files = (self.cache_path / file_name for file_name in files)
 
+        # Prevent duplicate entries in the registry (Default behavior)
         if not write_duplicate:
             files_dict = self.read_registry(db_path)
 
-            _new_files = [
+            _new_files = (
                 file for file in new_files if file.name not in files_dict
-            ]
+            )
 
-        else:
+        else:  #
             _new_files = new_files
 
         self.write_registry(Path(db_path), _new_files, mode="a")
@@ -478,9 +482,12 @@ class StaticFetcher(_BaseFetcher):
         files = [] if files is None else files
         ignore = [] if ignore is None else ignore
 
+        # Grabs all files in the registry
         registry_dictionary = self.read_registry(db_path)
         database_files = set(registry_dictionary.keys())
 
+        # Grabs all files in the cache directory,
+        # excluding the registry file itself
         cache_files = [
             path
             for path in self.cache_path.rglob("*")
@@ -548,6 +555,11 @@ class StaticFetcher(_BaseFetcher):
 
         with open(db_path, mode="r") as f:
             for line in f:
+
+                # Pooch registry files can contain comments
+                if line.lstrip()[0] == "#":
+                    continue
+
                 key, value = line.strip().split()
                 hash_dict[key] = value
 
@@ -615,7 +627,7 @@ class StaticFetcher(_BaseFetcher):
                 digest = pooch.file_hash(file, alg=self.hash)
                 f.write(f"{file.name} {self.hash}:{digest}\n")
 
-    # Argument validation methods
+    # Argument private validation methods
     def _check_cache_path_input(self, cache_path):
 
         if cache_path is None:
