@@ -40,6 +40,7 @@ Functions
 ---------
 
 .. autofunction:: from_PDB
+.. autofunction:: from_ALPHAFOLD
 
 """
 import json
@@ -191,19 +192,18 @@ def from_PDB(
 
 def from_ALPHAFOLD(id, cache_path=None, progressbar=False, file_format="cif"):
     """
-    Download one or more PDB files from the RCSB Protein Data Bank and cache
-    them locally.
+    Download one or more AlphaFold structure files and cache them locally.
 
-    Given one or multiple PDB IDs, downloads the corresponding structure files
-    format and stores them in a local cache directory. If files are cached on
-    disk, *from_PDB* will skip the download and use the cached version instead.
+    Given one or multiple AlphaFold IDs, downloads the corresponding structure files
+    in the specified format and stores them in a local cache directory. If files are cached on
+    disk, *from_ALPHAFOLD* will skip the download and use the cached version instead.
 
     Returns the path(s) as a :class:`~pathlib.Path` to the downloaded file(s).
 
     Parameters
     ----------
-    pdb_ids : str or sequence of str
-        A single PDB ID as a string, or a sequence of PDB IDs to fetch.
+    id : str
+        A single ID as a string, or a sequence of IDs to fetch.
     cache_path : str or pathlib.Path
         Directory where downloaded file(s) will be cached.
         The default ``None`` argument uses the :mod:`pooch` default cache with
@@ -219,8 +219,8 @@ def from_ALPHAFOLD(id, cache_path=None, progressbar=False, file_format="cif"):
     -------
     :class:`~pathlib.Path` or list of :class:`~pathlib.Path`
         The path(s) to the downloaded file(s). Returns a single
-        :class:`~pathlib.Path` if a single pdb id is given, or a list of
-        :class:`~pathlib.Path` if multiple pdb ids are provided.
+        :class:`~pathlib.Path` if a single AlphaFold id is given, or a list of
+        :class:`~pathlib.Path` if multiple  ids are provided.
 
     Raises
     ------
@@ -228,20 +228,30 @@ def from_ALPHAFOLD(id, cache_path=None, progressbar=False, file_format="cif"):
         For an invalid file format. Supported file formats are under Notes.
 
     :class:`requests.exceptions.HTTPError`
-        If an invalid PDB code is specified.
+        If an invalid AlphaFold ID is specified.
 
     Notes
     -----
-    This function uses the `RCSB File Download Services`_ for directly
-    downloading structure files via https.
+    This function uses the `AlphaFold API`_ for directly
+    downloading structure files via HTTP GET.
 
-    .. _`RCSB File Download Services`:
-        https://www.rcsb.org/docs/programmatic-access/file-download-services
+    .. _`AlphaFold API`:
+        https://alphafold.ebi.ac.uk/api-docs
 
-    The RCSB currently provides data in ``'cif'`` , ``'cif.gz'`` , ``'bcif'`` ,
-    ``'bcif.gz'`` , ``'xml'`` , ``'xml.gz'`` , ``'pdb'`` , ``'pdb.gz'``,
-    ``'pdb1'``, ``'pdb1.gz'`` file formats and can therefore be downloaded.
-    Not all of these formats can be currently read with MDAnalysis.
+    Alphafold currently provides data in ``'cif'`` , ``'pdb'``, ``'bcif'`` ,
+    file formats and can therefore be downloaded. Not all of these
+    formats can be currently read with MDAnalysis.
+
+    At the current moment, this function only supports
+    downloading a single AlphaFold ID at a time unlike in :func:`from_PDB`
+    which can download multiple PDB IDs at once.
+
+    Additionally, there is currently no support for downloading prior
+    versions of AlphaFold predictions. The `AlphaFold API`_ 
+    only provides the latest version of the prediction for 
+    a given ID. For more detailed control, it is recommended to browse
+    [Alphafold](https://alphafold.ebi.ac.uk/) manually.
+
 
     Caching, controlled by the `cache_path` parameter, is handled internally by
     :mod:`pooch`. The default cache name is taken from
@@ -253,23 +263,13 @@ def from_ALPHAFOLD(id, cache_path=None, progressbar=False, file_format="cif"):
     --------
     Download a single PDB file:
 
-    >>> mda.fetch.from_PDB("1AKE", file_format="cif")
-    './MDAnalysis_pdbs/1AKE.cif'
-
-    Download multiple PDB files with a progress bar:
-
-    >>> mda.fetch.from_PDB(["1AKE", "4BWZ"], progressbar=True)
-    ['./MDAnalysis_pdbs/1AKE.pdb.gz', './MDAnalysis_pdbs/4BWZ.pdb.gz']
+    >>> from_ALPHAFOLD("Q9I1F6", file_format="cif")
+    './MDAnalysis_pdbs/AF-Q9I1F6-F1-model_v6.cif'
 
     Download a single PDB file and convert it to a universe:
 
-    >>> mda.Universe(mda.fetch.from_PDB("1AKE"), file_format="pdb.gz")
-    <Universe with 3816 atoms>
-
-    Download multiple PDB files and convert each of them into a universe:
-
-    >>> [mda.Universe(pdb) for pdb in mda.fetch.from_PDB(["1AKE", "4BWZ"], progressbar=True)]
-    [<Universe with 3816 atoms>, <Universe with 2824 atoms>]
+    >>> mda.Universe(from_ALPHAFOLD("Q9I1F6"), file_format="pdb")
+    <Universe with 2608 atoms>
 
 
     .. versionadded:: 2.11.0
