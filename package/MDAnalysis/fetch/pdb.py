@@ -195,7 +195,7 @@ def from_DOI(doi, file_name, remove_prefix=True, cache_path=None):
 
     Parameters
     ----------
-    doi: str
+    doi : str
         The Digital Object Identifier (DOI) of the file(s) to download.
     file_name : str or list of str
         The name(s) of the file(s) to download from the repository.
@@ -221,14 +221,14 @@ def from_DOI(doi, file_name, remove_prefix=True, cache_path=None):
         For an invalid DOI link. See Notes for more information.
 
     :class:`requests.exceptions.HTTPError`
-        If an invalid file_name is specified.
+        If an invalid ``file_name`` is specified.
 
     Notes
     -----
-    The DOI link, as specified by `doi`, should be in the format of
-    "https://doi.org/..." or "doi.org/...".
+    The DOI link, as specified by ``doi``, should be in the format of
+    ``"https://doi.org/..."`` or ``"doi.org/..."``.
     The function will automatically handle the prefix removal
-    if `remove_prefix` is set to True.
+    if ``remove_prefix`` is set to ``True``.
 
     The current backend for downloading files is :class:`pooch.DOIDownloader`
     which only handles downloading from Zenodo and Figshare repositories.
@@ -239,17 +239,18 @@ def from_DOI(doi, file_name, remove_prefix=True, cache_path=None):
     Download a single DOI file:
 
     >>> from_DOI("https://doi.org/10.6084/m9.figshare.5108170",
-    ...                    file_name="adk4AKE.psf")
+    ...          file_name="adk4AKE.psf")
     './MDAnalysis_pdbs/adk4AKE.psf'
 
     >>> from_DOI("doi.org/10.6084/m9.figshare.5108170",
-    ...                    file_name="adk4AKE.psf")
+    ...          file_name="adk4AKE.psf")
     './MDAnalysis_pdbs/adk4AKE.psf'
 
-    
+
     Support pooch specified DOI format:
+
     >>> from_DOI("doi:10.6084/m9.figshare.5108170",
-    ...                    file_name="adk4AKE.psf")
+    ...          file_name="adk4AKE.psf")
     './MDAnalysis_pdbs/adk4AKE.psf'
 
     .. versionadded:: 2.11.0
