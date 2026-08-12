@@ -51,7 +51,7 @@ from .fetchers import StaticFetcher
 #:
 from .fetchers import DEFAULT_CACHE_NAME_DOWNLOADER
 
-# These file formats are here https://www.rcsb.org/docs/programmatic-access/file-download-services#pdb-entry-files"
+# These file formats are here https://www.rcsb.org/docs/programmatic-access/file-download-services#pdb-entry-files
 _SUPPORTED_FILE_FORMATS_PDB = (
     "cif",
     "cif.gz",
