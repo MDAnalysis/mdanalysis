@@ -194,16 +194,17 @@ def from_ALPHAFOLD(id, cache_path=None, progressbar=False, file_format="cif"):
     """
     Download one or more AlphaFold structure files and cache them locally.
 
-    Given one or multiple AlphaFold IDs, downloads the corresponding structure files
-    in the specified format and stores them in a local cache directory. If files are cached on
-    disk, *from_ALPHAFOLD* will skip the download and use the cached version instead.
+    Given one AlphaFold ID, downloads the corresponding structure file in the
+    specified format and stores it in a local cache directory. If files are
+    cached on disk, *from_ALPHAFOLD* will skip the download and use the cached
+    version instead.
 
     Returns the path(s) as a :class:`~pathlib.Path` to the downloaded file(s).
 
     Parameters
     ----------
     id : str
-        A single ID as a string, or a sequence of IDs to fetch.
+        A single AlphaFold ID as a string.
     cache_path : str or pathlib.Path
         Directory where downloaded file(s) will be cached.
         The default ``None`` argument uses the :mod:`pooch` default cache with
@@ -219,8 +220,7 @@ def from_ALPHAFOLD(id, cache_path=None, progressbar=False, file_format="cif"):
     -------
     :class:`~pathlib.Path` or list of :class:`~pathlib.Path`
         The path(s) to the downloaded file(s). Returns a single
-        :class:`~pathlib.Path` if a single AlphaFold id is given, or a list of
-        :class:`~pathlib.Path` if multiple  ids are provided.
+        :class:`~pathlib.Path` for the downloaded AlphaFold file.
 
     Raises
     ------
@@ -238,7 +238,7 @@ def from_ALPHAFOLD(id, cache_path=None, progressbar=False, file_format="cif"):
     .. _`AlphaFold API`:
         https://alphafold.ebi.ac.uk/api-docs
 
-    Alphafold currently provides data in ``'cif'`` , ``'pdb'``, ``'bcif'`` ,
+    AlphaFold currently provides data in ``'cif'``, ``'pdb'``, and ``'bcif'``
     file formats and can therefore be downloaded. Not all of these
     formats can be currently read with MDAnalysis.
 
@@ -247,26 +247,25 @@ def from_ALPHAFOLD(id, cache_path=None, progressbar=False, file_format="cif"):
     which can download multiple PDB IDs at once.
 
     Additionally, there is currently no support for downloading prior
-    versions of AlphaFold predictions. The `AlphaFold API`_ 
-    only provides the latest version of the prediction for 
+    versions of AlphaFold predictions. The `AlphaFold API`_
+    only provides the latest version of the prediction for
     a given ID. For more detailed control, it is recommended to browse
-    [Alphafold](https://alphafold.ebi.ac.uk/) manually.
+    `AlphaFold <https://alphafold.ebi.ac.uk/>`_ manually.
 
-
-    Caching, controlled by the `cache_path` parameter, is handled internally by
+    Caching, controlled by the ``cache_path`` parameter, is handled internally by
     :mod:`pooch`. The default cache name is taken from
     :data:`DEFAULT_CACHE_NAME_DOWNLOADER`. To clear cache (and subsequently
     force re-fetching), it is required to delete the cache folder
-    as specified by `cache_path`.
+    as specified by ``cache_path``.
 
     Examples
     --------
-    Download a single PDB file:
+    Download a single AlphaFold file:
 
     >>> from_ALPHAFOLD("Q9I1F6", file_format="cif")
     './MDAnalysis_pdbs/AF-Q9I1F6-F1-model_v6.cif'
 
-    Download a single PDB file and convert it to a universe:
+    Download a single AlphaFold file and convert it to a universe:
 
     >>> mda.Universe(from_ALPHAFOLD("Q9I1F6"), file_format="pdb")
     <Universe with 2608 atoms>
