@@ -236,26 +236,21 @@ def from_DOI(doi, file_name, remove_prefix=True, cache_path=None):
 
     Examples
     --------
-    Download a single PDB file:
+    Download a single DOI file:
 
-    >>> mda.fetch.from_PDB("1AKE", file_format="cif")
-    './MDAnalysis_pdbs/1AKE.cif'
+    >>> from_DOI("https://doi.org/10.6084/m9.figshare.5108170",
+    ...                    file_name="adk4AKE.psf")
+    './MDAnalysis_pdbs/adk4AKE.psf'
 
-    Download multiple PDB files with a progress bar:
+    >>> from_DOI("doi.org/10.6084/m9.figshare.5108170",
+    ...                    file_name="adk4AKE.psf")
+    './MDAnalysis_pdbs/adk4AKE.psf'
 
-    >>> mda.fetch.from_PDB(["1AKE", "4BWZ"], progressbar=True)
-    ['./MDAnalysis_pdbs/1AKE.pdb.gz', './MDAnalysis_pdbs/4BWZ.pdb.gz']
-
-    Download a single PDB file and convert it to a universe:
-
-    >>> mda.Universe(mda.fetch.from_PDB("1AKE"), file_format="pdb.gz")
-    <Universe with 3816 atoms>
-
-    Download multiple PDB files and convert each of them into a universe:
-
-    >>> [mda.Universe(pdb) for pdb in mda.fetch.from_PDB(["1AKE", "4BWZ"], progressbar=True)]
-    [<Universe with 3816 atoms>, <Universe with 2824 atoms>]
-
+    
+    Support pooch specified DOI format:
+    >>> from_DOI("doi:10.6084/m9.figshare.5108170",
+    ...                    file_name="adk4AKE.psf")
+    './MDAnalysis_pdbs/adk4AKE.psf'
 
     .. versionadded:: 2.11.0
     """
