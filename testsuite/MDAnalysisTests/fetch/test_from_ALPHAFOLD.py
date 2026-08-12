@@ -1,4 +1,3 @@
-# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- https://www.mdanalysis.org
@@ -22,15 +21,17 @@
 #
 
 
-import pytest
 import hashlib
 import re
-
-from MDAnalysis.fetch.pdb import from_ALPHAFOLD
-from MDAnalysis.fetch.fetchers import HAS_POOCH
-from MDAnalysis.fetch.pdb import _SUPPORTED_FILE_FORMATS_ALPHAFOLD
-from urllib import request
 from pathlib import Path
+from urllib import request
+
+import pytest
+from MDAnalysis.fetch.fetchers import HAS_POOCH
+from MDAnalysis.fetch.pdb import (
+    _SUPPORTED_FILE_FORMATS_ALPHAFOLD,
+    from_ALPHAFOLD,
+)
 
 try:
     request.urlopen("https://alphafold.ebi.ac.uk/", timeout=2)
@@ -93,8 +94,9 @@ def test_invalid_format(tmp_path):
     with pytest.raises(
         ValueError,
         match=re.escape(
-            f"Invalid file format: boo. "
-            + f"Supported formats are: {list(_SUPPORTED_FILE_FORMATS_ALPHAFOLD.keys())}"
+            "Invalid file format: boo. "
+            + "Supported formats are: "
+            + f"{list(_SUPPORTED_FILE_FORMATS_ALPHAFOLD.keys())}"
         ),
     ):
         from_ALPHAFOLD(id="Q9I1F6", cache_path=tmp_path, file_format="boo")
