@@ -40,6 +40,7 @@ Functions
 ---------
 
 .. autofunction:: from_PDB
+.. autofunction:: from_DOI
 
 """
 
@@ -180,10 +181,10 @@ def from_PDB(
     )
 
 
-def from_DOI(doi, file_name, cache_path=None, remove_prefix=True):
+def from_DOI(doi, file_name, remove_prefix=True, cache_path=None):
     """
-    Download one or more files given the Digital Object Identifier (DOI).
-    them locally.
+    Download one or more files given the Digital Object Identifier (DOI)
+    and store them locally.
 
     Given one DOI, this function downloads one or multiple file names from
     the repository and stores them in a local cache directory. If files
@@ -195,51 +196,43 @@ def from_DOI(doi, file_name, cache_path=None, remove_prefix=True):
     Parameters
     ----------
     doi: str
-        the name of a links o
-    file_name, : str
-        The file extension/format to download (e.g., "cif", "pdb").
-        See the Notes section below for a list of all supported file formats.
+        The Digital Object Identifier (DOI) of the file(s) to download.
+    file_name : str or list of str
+        The name(s) of the file(s) to download from the repository.
+    remove_prefix : bool
+        If True, remove the prefix (e.g., "https://doi.org/") from the DOI string.
+        Default is True.
     cache_path : str or pathlib.Path
         Directory where downloaded file(s) will be cached.
         The default ``None`` argument uses the :mod:`pooch` default cache with
         project name :data:`DEFAULT_CACHE_NAME_DOWNLOADER`.
-    remove_prefix : bool
-        If True, display a progress bar during file downloads. Default
-        is False.
+ 
 
     Returns
     -------
     :class:`~pathlib.Path` or list of :class:`~pathlib.Path`
         The path(s) to the downloaded file(s). Returns a single
-        :class:`~pathlib.Path` if a single pdb id is given, or a list of
-        :class:`~pathlib.Path` if multiple pdb ids are provided.
+        :class:`~pathlib.Path` if a single DOI is given, or a list of
+        :class:`~pathlib.Path` if multiple DOIs are provided.
 
     Raises
     ------
     ValueError
-        For an invalid file format. Supported file formats are under Notes.
+        For an invalid DOI link. See Notes for more information.
 
     :class:`requests.exceptions.HTTPError`
-        If an invalid PDB code is specified.
-
+        If an invalid file_name is specified.
+    
     Notes
     -----
-    This function uses the `RCSB File Download Services`_ for directly
-    downloading structure files via https.
+    The DOI link, as specified by `doi`, should be in the format of
+    "https://doi.org/..." or "doi.org/...".
+    The function will automatically handle the prefix removal
+    if `remove_prefix` is set to True.
 
-    .. _`RCSB File Download Services`:
-       https://www.rcsb.org/docs/programmatic-access/file-download-services
-
-    The RCSB currently provides data in ``'cif'`` , ``'cif.gz'`` , ``'bcif'`` ,
-    ``'bcif.gz'`` , ``'xml'`` , ``'xml.gz'`` , ``'pdb'`` , ``'pdb.gz'``,
-    ``'pdb1'``, ``'pdb1.gz'`` file formats and can therefore be downloaded.
-    Not all of these formats can be currently read with MDAnalysis.
-
-    Caching, controlled by the `cache_path` parameter, is handled internally by
-    :mod:`pooch`. The default cache name is taken from
-    :data:`DEFAULT_CACHE_NAME_DOWNLOADER`. To clear cache (and subsequently
-    force re-fetching), it is required to delete the cache folder
-    as specified by `cache_path`.
+    The current backend for downloading files is :class:`pooch.DOIDownloader`
+    which only handles downloading from Zenodo and Figshare repositories.
+    
 
     Examples
     --------
@@ -267,8 +260,8 @@ def from_DOI(doi, file_name, cache_path=None, remove_prefix=True):
     .. versionadded:: 2.11.0
     """
 
-    # Suppress Figshare warning of getting most current
-    # repository if none is provided
+    # Supress warnings from pooch about not specifying
+    # which version of the repostory to download. 
     warnings.filterwarnings("ignore", category=UserWarning)
 
     if remove_prefix:
@@ -284,9 +277,12 @@ def from_DOI(doi, file_name, cache_path=None, remove_prefix=True):
     doi = doi.replace("doi.org/", "doi:")
 
     fetcher = StaticFetcher(cache_path=cache_path)
-    return fetcher.fetch(
-        base_url=doi, file_name=file_name, append_db=True, downloader="doi"
-    )
 
-
-##
+    try:
+        return fetcher.fetch(
+            base_url=doi, file_name=file_name, append_db=True, downloader="doi"
+        )
+    except IndexError as e:
+        raise ValueError(
+            f"DOI link {doi} is invalid. Please check the DOI link."
+        )
