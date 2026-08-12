@@ -75,7 +75,8 @@ _SUPPORTED_FILE_FORMATS_ALPHAFOLD = {
     "bcif": "bcifUrl",
     "cif": "cifUrl",
     "pdb": "pdbUrl",
-    }
+}
+
 
 def from_PDB(
     pdb_ids,
@@ -188,7 +189,6 @@ def from_PDB(
     )
 
 
-
 def from_ALPHAFOLD(id, cache_path=None, progressbar=False, file_format="cif"):
     """
     Download one or more PDB files from the RCSB Protein Data Bank and cache
@@ -273,30 +273,36 @@ def from_ALPHAFOLD(id, cache_path=None, progressbar=False, file_format="cif"):
 
 
     .. versionadded:: 2.11.0
-        """
-    
-
+    """
 
     if file_format not in _SUPPORTED_FILE_FORMATS_ALPHAFOLD.keys():
-        raise ValueError(f"Invalid file format: {file_format}. " + 
-                         f"Supported formats are: {list(_SUPPORTED_FILE_FORMATS_ALPHAFOLD.keys())}")
+        raise ValueError(
+            f"Invalid file format: {file_format}. "
+            + "Supported formats are: "
+            + f"{list(_SUPPORTED_FILE_FORMATS_ALPHAFOLD.keys())}"
+        )
 
-    # Save JSON file to temporary directory. 
+    # Save JSON file to temporary directory.
     # This also prevents StaticFetcher logging from occuring in the console
     with TemporaryDirectory() as tmp_dir_path:
-        json_file, _ = urlretrieve(f"https://alphafold.ebi.ac.uk/api/prediction/{id}",
-                                    f"{tmp_dir_path}/{id}.json")
+        json_file, _ = urlretrieve(
+            f"https://alphafold.ebi.ac.uk/api/prediction/{id}",
+            f"{tmp_dir_path}/{id}.json",
+        )
         with open(json_file) as _json:
             data = json.load(_json)[0]
-  
+
     url = data[_SUPPORTED_FILE_FORMATS_ALPHAFOLD[file_format]]
 
-    # This splits urls such as 
+    # This splits urls such as
     # https://alphafold.ebi.ac.uk/files/AF-Q9I1F6-F1-model_v6.cif into
     # https://alphafold.ebi.ac.uk/files and AF-Q9I1F6-F1-model_v6.cif
     base_url, file = url.rsplit("/", 1)
-    
+
     fetcher = StaticFetcher(cache_path=cache_path)
-    return fetcher.fetch(base_url=base_url, file_name=file, progressbar=progressbar, append_db=True)
-
-
+    return fetcher.fetch(
+        base_url=base_url,
+        file_name=file,
+        progressbar=progressbar,
+        append_db=True,
+    )
