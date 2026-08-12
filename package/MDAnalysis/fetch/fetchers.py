@@ -32,6 +32,10 @@ a dependency.
 Classes
 -------
 
+.. autoclass:: _BaseFetcher
+    :members:
+    :inherited-members:
+
 .. autoclass:: StaticFetcher
     :members:
     :inherited-members:
@@ -236,13 +240,13 @@ class StaticFetcher(_BaseFetcher):
             Download a single CIF file from the RCSB Protein Data Bank.
 
             >>> StaticFetcher().fetch(file_name="1AKE.cif",
-       ...     base_url="https://files.wwpdb.org/download/",
+            ...     base_url="https://files.wwpdb.org/download/")
             './MDAnalysis_pdbs/1AKE.cif'
 
             Download multiple CIF files from the RCSB Protein Data Bank.
 
             >>> StaticFetcher().fetch(file_name=["1AKE.cif", "4AKE.cif"],
-    ...     base_url="https://files.wwpdb.org/download/",
+            ...     base_url="https://files.wwpdb.org/download/")
             ['./MDAnalysis_pdbs/1AKE.cif', './MDAnalysis_pdbs/4AKE.cif']
 
         Notes
