@@ -108,20 +108,24 @@ def test_different_sources(tmp_path, doi, file_name, expected_md5):
     assert isinstance(p1, Path)
     assert hashlib.md5(p1.read_bytes()).hexdigest() == expected_md5
 
+
 @pytest.mark.skipif(not HAS_POOCH, reason="Pooch is not installed.")
 def test_invalid_doi_link(tmp_path):
+    with pytest.raises(
+        ValueError,
+        match=re.escape(
+            "DOI link invalid is invalid. Please check the DOI link."
+        ),
+    ):
 
+        from_DOI("invalid", file_name="missing.dat", cache_path=tmp_path)
+
+
+@pytest.mark.skipif(not HAS_POOCH, reason="Pooch is not installed.")
+def test_invalid_file_name(tmp_path):
     with pytest.raises(
         HTTPError,
     ):
-        from_DOI("invalid", file_name="missing.dat", cache_path=tmp_path)
-
- 
-def test_invalid_file_name(tmp_path):
-    with pytest.raises(
-            ValueError,
-            match=re.escape(
-                "DOI link doi:invalid is invalid. Please check the DOI link."
-            ),
-        ):
-            from_DOI("doi.org/invalid", file_name="missing.dat", cache_path=tmp_path)
+        from_DOI(
+            "doi.org/invalid", file_name="missing.dat", cache_path=tmp_path
+        )

@@ -206,7 +206,7 @@ def from_DOI(doi, file_name, remove_prefix=True, cache_path=None):
         Directory where downloaded file(s) will be cached.
         The default ``None`` argument uses the :mod:`pooch` default cache with
         project name :data:`DEFAULT_CACHE_NAME_DOWNLOADER`.
- 
+
 
     Returns
     -------
@@ -222,7 +222,7 @@ def from_DOI(doi, file_name, remove_prefix=True, cache_path=None):
 
     :class:`requests.exceptions.HTTPError`
         If an invalid file_name is specified.
-    
+
     Notes
     -----
     The DOI link, as specified by `doi`, should be in the format of
@@ -232,7 +232,7 @@ def from_DOI(doi, file_name, remove_prefix=True, cache_path=None):
 
     The current backend for downloading files is :class:`pooch.DOIDownloader`
     which only handles downloading from Zenodo and Figshare repositories.
-    
+
 
     Examples
     --------
@@ -261,7 +261,7 @@ def from_DOI(doi, file_name, remove_prefix=True, cache_path=None):
     """
 
     # Supress warnings from pooch about not specifying
-    # which version of the repostory to download. 
+    # which version of the repostory to download.
     warnings.filterwarnings("ignore", category=UserWarning)
 
     if remove_prefix:
