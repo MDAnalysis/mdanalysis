@@ -42,6 +42,10 @@ Functions
 .. autofunction:: from_PDB
 
 """
+import json
+
+from urllib.request import urlretrieve
+from tempfile import TemporaryDirectory
 
 from .fetchers import StaticFetcher
 
@@ -65,6 +69,13 @@ _SUPPORTED_FILE_FORMATS_PDB = (
     "pdb1.gz",
 )
 
+# These file formats are fields in the alphafold API
+# https://alphafold.ebi.ac.uk/api-docs
+_SUPPORTED_FILE_FORMATS_ALPHAFOLD = {
+    "bcif": "bcifUrl",
+    "cif": "cifUrl",
+    "pdb": "pdbUrl",
+    }
 
 def from_PDB(
     pdb_ids,
@@ -177,13 +188,115 @@ def from_PDB(
     )
 
 
-def from_alphafold():
-    pass
-#https://alphafold.ebi.ac.uk/#/public-api/get_uniprot_summary_api_uniprot_summary__qualifier__json_get
-ALPHA_LINK = "https://alphafold.ebi.ac.uk/api/prediction/"
 
-#wget https://alphafold.ebi.ac.uk/api/prediction/Q9I1F6
-#[{"toolUsed":"AlphaFold Monomer v2.0 pipeline","providerId":"GDM","entityType":"protein","isUniProt":true,"modelEntityId":"AF-Q9I1F6-F1","modelCreatedDate":"2025-08-01T00:00:00Z","sequenceVersionDate":"2001-03-01T00:00:00Z","globalMetricValue":91.81,"fractionPlddtVeryLow":0.029,"fractionPlddtLow":0.041,"fractionPlddtConfident":0.111,"fractionPlddtVeryHigh":0.819,"latestVersion":6,"allVersions":[2,3,4,5,6],"sequence":"MSITKNDKNTRTTGRPTLNEVARRAGVSPITASRALRGVASVAEELAQKVRDAARELGYVANPAARALASAQSHSVAVLVPSLANLLFIETLEAIHAVLRPQGLEVLIGNFHYSRNEEEDLIRNYLAYQPRGLLLTGFERTESARRMIEASGIPCVYMMDLDSGSGLNCVGFSQLRAGEAAAEHLLARGRRRLAYIGAQLDQRTLLRGEGFRRALQKAGCYDPGLEILTPRPSSVALGGELFVQLLASQPQVDGVFFCNDDLAQGALLEALRRGVKVPEQIAVLGFNDLPGSDCTVPRLSSIRTPREAIGRRAAEQLLALIAGKEVRDSALDMGFELMAREST","sequenceStart":1,"sequenceEnd":343,"sequenceChecksum":"44128bc565504ce2d9e47edbf6104302","isUniProtReviewed":true,"gene":"gntR","uniprotAccession":"Q9I1F6","uniprotId":"GNTR_PSEAE","uniprotDescription":"HTH-type transcriptional regulator GntR","taxId":208964,"organismScientificName":"Pseudomonas aeruginosa (strain ATCC 15692 / DSM 22644 / CIP 104116 / JCM 14847 / LMG 12228 / 1C / PRS 101 / PAO1)","isUniProtReferenceProteome":true,"chainId":"A","bcifUrl":"https://alphafold.ebi.ac.uk/files/AF-Q9I1F6-F1-model_v6.bcif","cifUrl":"https://alphafold.ebi.ac.uk/files/AF-Q9I1F6-F1-model_v6.cif","pdbUrl":"https://alphafold.ebi.ac.uk/files/AF-Q9I1F6-F1-model_v6.pdb","paeImageUrl":"https://alphafold.ebi.ac.uk/files/AF-Q9I1F6-F1-predicted_aligned_error_v6.png","msaUrl":"https://alphafold.ebi.ac.uk/files/msa/AF-Q9I1F6-F1-msa_v6.a3m","plddtDocUrl":"https://alphafold.ebi.ac.uk/files/AF-Q9I1F6-F1-confidence_v6.json","paeDocUrl":"https://alphafold.ebi.ac.uk/files/AF-Q9I1F6-F1-predicted_aligned_error_v6.json","isComplex":false,"entryId":"AF-Q9I1F6-F1","uniprotSequence":"MSITKNDKNTRTTGRPTLNEVARRAGVSPITASRALRGVASVAEELAQKVRDAARELGYVANPAARALASAQSHSVAVLVPSLANLLFIETLEAIHAVLRPQGLEVLIGNFHYSRNEEEDLIRNYLAYQPRGLLLTGFERTESARRMIEASGIPCVYMMDLDSGSGLNCVGFSQLRAGEAAAEHLLARGRRRLAYIGAQLDQRTLLRGEGFRRALQKAGCYDPGLEILTPRPSSVALGGELFVQLLASQPQVDGVFFCNDDLAQGALLEALRRGVKVPEQIAVLGFNDLPGSDCTVPRLSSIRTPREAIGRRAAEQLLALIAGKEVRDSALDMGFELMAREST","uniprotStart":1,"uniprotEnd":343,"isReferenceProteome":true,"isReviewed":true}]
-#wget https://alphafold.ebi.ac.uk/files/AF-Q9I1F6-F1-model_v6.pdb
+def from_ALPHAFOLD(id, cache_path=None, progressbar=False, file_format="cif"):
+    """
+    Download one or more PDB files from the RCSB Protein Data Bank and cache
+    them locally.
+
+    Given one or multiple PDB IDs, downloads the corresponding structure files
+    format and stores them in a local cache directory. If files are cached on
+    disk, *from_PDB* will skip the download and use the cached version instead.
+
+    Returns the path(s) as a :class:`~pathlib.Path` to the downloaded file(s).
+
+    Parameters
+    ----------
+    pdb_ids : str or sequence of str
+        A single PDB ID as a string, or a sequence of PDB IDs to fetch.
+    cache_path : str or pathlib.Path
+        Directory where downloaded file(s) will be cached.
+        The default ``None`` argument uses the :mod:`pooch` default cache with
+        project name :data:`DEFAULT_CACHE_NAME_DOWNLOADER`.
+    file_format : str
+        The file extension/format to download (e.g., "cif", "pdb").
+        See the Notes section below for a list of all supported file formats.
+    progressbar : bool
+        If True, display a progress bar during file downloads. Default
+        is False.
+
+    Returns
+    -------
+    :class:`~pathlib.Path` or list of :class:`~pathlib.Path`
+        The path(s) to the downloaded file(s). Returns a single
+        :class:`~pathlib.Path` if a single pdb id is given, or a list of
+        :class:`~pathlib.Path` if multiple pdb ids are provided.
+
+    Raises
+    ------
+    ValueError
+        For an invalid file format. Supported file formats are under Notes.
+
+    :class:`requests.exceptions.HTTPError`
+        If an invalid PDB code is specified.
+
+    Notes
+    -----
+    This function uses the `RCSB File Download Services`_ for directly
+    downloading structure files via https.
+
+    .. _`RCSB File Download Services`:
+        https://www.rcsb.org/docs/programmatic-access/file-download-services
+
+    The RCSB currently provides data in ``'cif'`` , ``'cif.gz'`` , ``'bcif'`` ,
+    ``'bcif.gz'`` , ``'xml'`` , ``'xml.gz'`` , ``'pdb'`` , ``'pdb.gz'``,
+    ``'pdb1'``, ``'pdb1.gz'`` file formats and can therefore be downloaded.
+    Not all of these formats can be currently read with MDAnalysis.
+
+    Caching, controlled by the `cache_path` parameter, is handled internally by
+    :mod:`pooch`. The default cache name is taken from
+    :data:`DEFAULT_CACHE_NAME_DOWNLOADER`. To clear cache (and subsequently
+    force re-fetching), it is required to delete the cache folder
+    as specified by `cache_path`.
+
+    Examples
+    --------
+    Download a single PDB file:
+
+    >>> mda.fetch.from_PDB("1AKE", file_format="cif")
+    './MDAnalysis_pdbs/1AKE.cif'
+
+    Download multiple PDB files with a progress bar:
+
+    >>> mda.fetch.from_PDB(["1AKE", "4BWZ"], progressbar=True)
+    ['./MDAnalysis_pdbs/1AKE.pdb.gz', './MDAnalysis_pdbs/4BWZ.pdb.gz']
+
+    Download a single PDB file and convert it to a universe:
+
+    >>> mda.Universe(mda.fetch.from_PDB("1AKE"), file_format="pdb.gz")
+    <Universe with 3816 atoms>
+
+    Download multiple PDB files and convert each of them into a universe:
+
+    >>> [mda.Universe(pdb) for pdb in mda.fetch.from_PDB(["1AKE", "4BWZ"], progressbar=True)]
+    [<Universe with 3816 atoms>, <Universe with 2824 atoms>]
+
+
+    .. versionadded:: 2.11.0
+        """
+    
+
+
+    if file_format not in _SUPPORTED_FILE_FORMATS_ALPHAFOLD.keys():
+        raise ValueError(f"Invalid file format: {file_format}. " + 
+                         f"Supported formats are: {list(_SUPPORTED_FILE_FORMATS_ALPHAFOLD.keys())}")
+
+    # Save JSON file to temporary directory. 
+    # This also prevents StaticFetcher logging from occuring in the console
+    with TemporaryDirectory() as tmp_dir_path:
+        json_file, _ = urlretrieve(f"https://alphafold.ebi.ac.uk/api/prediction/{id}",
+                                    f"{tmp_dir_path}/{id}.json")
+        with open(json_file) as _json:
+            data = json.load(_json)[0]
+  
+    url = data[_SUPPORTED_FILE_FORMATS_ALPHAFOLD[file_format]]
+
+    # This splits urls such as 
+    # https://alphafold.ebi.ac.uk/files/AF-Q9I1F6-F1-model_v6.cif into
+    # https://alphafold.ebi.ac.uk/files and AF-Q9I1F6-F1-model_v6.cif
+    base_url, file = url.rsplit("/", 1)
+    
+    fetcher = StaticFetcher(cache_path=cache_path)
+    return fetcher.fetch(base_url=base_url, file_name=file, progressbar=progressbar, append_db=True)
 
 
