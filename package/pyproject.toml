@@ -142,3 +142,12 @@ __pycache__
 )
 '''
 required-version = '24'
+
+[tool.spin]
+package = 'MDAnalysis'
+
+[tool.spin.commands]
+"Build" = [
+  "spin.cmds.meson.build",
+  ".spin/cmds.py:test"
+]
