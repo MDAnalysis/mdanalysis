@@ -72,6 +72,10 @@ class TestPersistenceLength(object):
     def test_run(self, p_run):
         assert len(p_run.results.bond_autocorrelation) == 280
 
+    def test_run_partial(self, p):
+        p.run(start=0, stop=2)
+        assert_almost_equal(p.results.bond_autocorrelation[0], 1.0, 3)
+
     def test_lb(self, p_run):
         assert_almost_equal(p_run.results.lb, 1.485, 3)
 
