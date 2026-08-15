@@ -177,3 +177,51 @@ class TestSortBackbone(object):
         u.add_TopologyAttr(Bonds(bondlist))
         with pytest.raises(ValueError, match="Cyclical"):
             polymer.sort_backbone(u.atoms)
+
+
+class TestPersistenceLengthSlicedNormalization(object):
+    # Regression test for Issue #5453.
+    @staticmethod
+    @pytest.fixture(scope="class")
+    def u():
+        return mda.Universe(TRZ_psf, TRZ)
+
+    @staticmethod
+    @pytest.fixture(scope="class")
+    def chains(u):
+        backbones = [
+            chain.select_atoms("not name O* H*") for chain in u.atoms.fragments
+        ]
+        return [polymer.sort_backbone(bb) for bb in backbones]
+
+    def test_full_trajectory_unchanged(self, chains):
+        p = polymer.PersistenceLength(chains).run()
+
+        chainlength = len(chains[0])
+        norm = np.linspace(chainlength - 1, 1, chainlength - 1)
+        norm *= len(chains) * p.n_frames
+
+        assert p.n_frames == p._trajectory.n_frames
+        expected = p.results.raw_bond_autocorr / norm
+        assert_almost_equal(p.results.bond_autocorrelation, expected, decimal=6)
+
+    def test_sliced_run_normalized_by_frames_analyzed(self, chains, u):
+        n_sliced_frames = 3
+        assert n_sliced_frames < u.trajectory.n_frames
+
+        p = polymer.PersistenceLength(chains).run(stop=n_sliced_frames)
+
+        assert p.n_frames == n_sliced_frames
+        assert p.n_frames != p._trajectory.n_frames
+
+        chainlength = len(chains[0])
+        norm = np.linspace(chainlength - 1, 1, chainlength - 1)
+        norm *= len(chains) * n_sliced_frames
+        expected = p.results.raw_bond_autocorr / norm
+
+        assert_almost_equal(p.results.bond_autocorrelation, expected, decimal=6)
+
+        wrong_norm = np.linspace(chainlength - 1, 1, chainlength - 1)
+        wrong_norm *= len(chains) * u.trajectory.n_frames
+        wrong = p.results.raw_bond_autocorr / wrong_norm
+        assert not np.allclose(p.results.bond_autocorrelation, wrong)
