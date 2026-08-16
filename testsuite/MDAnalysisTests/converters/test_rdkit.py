@@ -484,6 +484,13 @@ class TestRDKitConverter(object):
         mol = mol2.atoms.convert_to.rdkit(inferrer=potatoe)
         assert mol.GetProp("_Name") == "🥔"
 
+    def test_extra_water_bonds(self):
+        """Test that extra bonds in water molecules do not cause issues during conversion."""
+        u = mda.Universe.from_smiles("O")
+        mol = u.atoms.convert_to.rdkit(inferrer=None)
+        assert mol.GetNumAtoms() == 3
+        assert mol.GetNumBonds() == 2
+
 
 @requires_rdkit
 class TestRDKitInferringFunctions:
