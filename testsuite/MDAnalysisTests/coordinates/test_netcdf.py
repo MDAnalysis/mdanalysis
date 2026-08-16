@@ -22,9 +22,11 @@
 #
 import MDAnalysis as mda
 import numpy as np
+import mmap
 import sys
 
 from scipy.io import netcdf_file
+from types import SimpleNamespace
 
 import pytest
 from numpy.testing import assert_equal, assert_almost_equal
@@ -146,6 +148,22 @@ class TestNCDFReader_mmap_False(_NCDFReaderTest_mmap_False, RefVGV):
 
 class TestNCDFReaderTZ2(_NCDFReaderTest, RefTZ2):
     pass
+
+
+@pytest.mark.skipif(
+    not hasattr(mmap, "MADV_DONTNEED"), reason="no MADV_DONTNEED"
+)
+def test_mmap_pages_dropped(monkeypatch):
+    """Reading a frame releases its pages of the memory map."""
+    universe = mda.Universe(PRM_NCBOX, TRJ_NCBOX, mmap=True)
+    advice = []
+    monkeypatch.setattr(
+        universe.trajectory.trjfile,
+        "_mm",
+        SimpleNamespace(madvise=advice.append),
+    )
+    universe.trajectory[1]
+    assert advice == [mmap.MADV_DONTNEED]
 
 
 class TestNCDFReader2(object):
