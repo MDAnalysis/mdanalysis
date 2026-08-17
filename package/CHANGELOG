@@ -121,7 +121,6 @@ Deprecations
  * 2.10.0
 
 Fixes
- * `PersistenceLength._conclude()` now normalizes `results.bond_autocorrelation` using the number of frames actually analyzed instead of the total trajectory frame count, fixing incorrect results when `run()` is called with `start`/`stop`/`step` (Issue #5453).
  * Fix incorrect conversion factors for speed units A/fs, A/us, A/ms
    in MDAnalysis.units (Issue #5051, PR #5053)
  * `analysis.polymer.sort_backbone` is now working for discontinuous polymers
@@ -214,7 +213,6 @@ Deprecations
  * 2.9.0
 
 Fixes
- * `PersistenceLength._conclude()` now normalizes `results.bond_autocorrelation` using the number of frames actually analyzed instead of the total trajectory frame count, fixing incorrect results when `run()` is called with `start`/`stop`/`step` (Issue #5453).
  * Add support for TPR files produced by GROMACS 2024.4 and GROMACS 2025.0
  * Fixes invalid default unit from Angstrom to Angstrom^{-3} for
    convert_density() function. (Issue #4829)
@@ -257,7 +255,6 @@ Changes
  * 2.8.0
 
 Fixes
- * `PersistenceLength._conclude()` now normalizes `results.bond_autocorrelation` using the number of frames actually analyzed instead of the total trajectory frame count, fixing incorrect results when `run()` is called with `start`/`stop`/`step` (Issue #5453).
  * Fix `test_imd.py` test failures after imdclient 0.2.4
    increased default timeout by ensuring EOF sent (Issue #5442, PR #5443)
  * Allows bond/angle/dihedral connectivity to be guessed additively with
@@ -393,7 +390,6 @@ Deprecations
  * 2.7.0
 
 Fixes
- * `PersistenceLength._conclude()` now normalizes `results.bond_autocorrelation` using the number of frames actually analyzed instead of the total trajectory frame count, fixing incorrect results when `run()` is called with `start`/`stop`/`step` (Issue #5453).
   * Fix doctest errors of lib/transformations.py (Issue #3925, PR #4370)
   * Fix documentation building errors due to `html_static_path` and unindented
     block of code (Issue #4362, PR #4365)
@@ -463,7 +459,6 @@ Deprecations
  * 2.6.1
 
 Fixes
- * `PersistenceLength._conclude()` now normalizes `results.bond_autocorrelation` using the number of frames actually analyzed instead of the total trajectory frame count, fixing incorrect results when `run()` is called with `start`/`stop`/`step` (Issue #5453).
   * Fix Atom type guessing error (PR #4168, Issue #4167)
 
 Enhancements
@@ -488,7 +483,6 @@ Deprecations
  * 2.6.0
 
 Fixes
- * `PersistenceLength._conclude()` now normalizes `results.bond_autocorrelation` using the number of frames actually analyzed instead of the total trajectory frame count, fixing incorrect results when `run()` is called with `start`/`stop`/`step` (Issue #5453).
   * Fix AtomGroup.center_of_charge(..., unwrap=True) giving
     inconsistent (but scientifically correct) results on Intel macOS
     (Issue #4211)
@@ -548,7 +542,6 @@ Deprecations
  * 2.5.0
 
 Fixes
- * `PersistenceLength._conclude()` now normalizes `results.bond_autocorrelation` using the number of frames actually analyzed instead of the total trajectory frame count, fixing incorrect results when `run()` is called with `start`/`stop`/`step` (Issue #5453).
   * Fixed using 'rb' mode inside GSDReader to avoid FutureWarning from GSDFile (Issue #4152)
   * Fixed ChainReader performing transformations correctly across boundaries in the individual trajectories
     (Issue #3657 #4008 PR #3906)
@@ -639,7 +632,6 @@ Changes
  * 2.4.3
 
 Fixes
- * `PersistenceLength._conclude()` now normalizes `results.bond_autocorrelation` using the number of frames actually analyzed instead of the total trajectory frame count, fixing incorrect results when `run()` is called with `start`/`stop`/`step` (Issue #5453).
   * Fixed DCD reading for large (>2Gb) files (Issue #4039).  This was broken
     for versions 2.4.0, 2.4.1 and 2.4.2
   * Fix element parsing from PSF files tests read via Parmed (Issue #4015)
@@ -650,7 +642,6 @@ Fixes
  * 2.4.2
 
 Fixes
- * `PersistenceLength._conclude()` now normalizes `results.bond_autocorrelation` using the number of frames actually analyzed instead of the total trajectory frame count, fixing incorrect results when `run()` is called with `start`/`stop`/`step` (Issue #5453).
   * np.histogramdd calls in :class:`DensityAnalysis` now pass the `density`
     argument rather than the NumPy 1.24 removed `normed` (PR #3976)
   * visualization.streamlines_3D and visualization.streamlines no longer
@@ -663,7 +654,6 @@ Fixes
  * 2.4.1
 
 Fixes
- * `PersistenceLength._conclude()` now normalizes `results.bond_autocorrelation` using the number of frames actually analyzed instead of the total trajectory frame count, fixing incorrect results when `run()` is called with `start`/`stop`/`step` (Issue #5453).
 * Fixes pyproject.toml minimum pin for biopython
 
 
@@ -673,7 +663,6 @@ Fixes
  * 2.4.0
 
 Fixes
- * `PersistenceLength._conclude()` now normalizes `results.bond_autocorrelation` using the number of frames actually analyzed instead of the total trajectory frame count, fixing incorrect results when `run()` is called with `start`/`stop`/`step` (Issue #5453).
   * Update hbond analysis doc string to use exclusive bound language
     (Issue #3847)
   * XTC and TRR readers now fail with IOError when a status except EOK (=0) is
@@ -767,7 +756,6 @@ Deprecations
  * 2.3.0
 
 Fixes
- * `PersistenceLength._conclude()` now normalizes `results.bond_autocorrelation` using the number of frames actually analyzed instead of the total trajectory frame count, fixing incorrect results when `run()` is called with `start`/`stop`/`step` (Issue #5453).
   * Fixes awk call in deploy.yaml tests for macos runners (Issue #3693)
   * add a 0.5 for correct midpoints in hole analysis (Issue #3715)
   * Fix reading error when PDB CONECT records are corrupt. (Issue #988)
@@ -811,7 +799,6 @@ Deprecations
  * 2.2.0
 
 Fixes
- * `PersistenceLength._conclude()` now normalizes `results.bond_autocorrelation` using the number of frames actually analyzed instead of the total trajectory frame count, fixing incorrect results when `run()` is called with `start`/`stop`/`step` (Issue #5453).
   * Fixed issue where Reader.copy() did not preserve optional arguments
     and kwargs passed to the original class (Issue #3664, PR #3685)
   * Iterating a SingleFrameReaderBase trajectory now rewinds the
@@ -909,7 +896,6 @@ Deprecations
  * 2.1.0
 
 Fixes
- * `PersistenceLength._conclude()` now normalizes `results.bond_autocorrelation` using the number of frames actually analyzed instead of the total trajectory frame count, fixing incorrect results when `run()` is called with `start`/`stop`/`step` (Issue #5453).
   * Use uint64_t loop counters in C level distance functions to avoid overflow
     for large arrays (Issue #3512, PR #3513).
   * Prevents attempts to close an already closed NamedStream (Issue #3386)
@@ -961,7 +947,6 @@ Deprecations
   * 2.0.0
 
 Fixes
- * `PersistenceLength._conclude()` now normalizes `results.bond_autocorrelation` using the number of frames actually analyzed instead of the total trajectory frame count, fixing incorrect results when `run()` is called with `start`/`stop`/`step` (Issue #5453).
   * Added an `rdkit_kwargs` parameter to pass arguments to the RDKitConverter
     from the `select_atoms` method (Issue #3319, PR #3324)
   * Fixes AtomGroup.unique, ResidueGroup.unique, SegmentGroup.unique not
@@ -1325,7 +1310,6 @@ Deprecations
   * 1.1.1
 
 Fixes
- * `PersistenceLength._conclude()` now normalizes `results.bond_autocorrelation` using the number of frames actually analyzed instead of the total trajectory frame count, fixing incorrect results when `run()` is called with `start`/`stop`/`step` (Issue #5453).
   * Remove absolute paths from package upload to pypi.
 
 
@@ -1335,7 +1319,6 @@ Fixes
   * 1.1.0
 
 Fixes
- * `PersistenceLength._conclude()` now normalizes `results.bond_autocorrelation` using the number of frames actually analyzed instead of the total trajectory frame count, fixing incorrect results when `run()` is called with `start`/`stop`/`step` (Issue #5453).
   * Removes use of absolute paths in setup.py to avoid Windows installation
     failures (Issue #3129)
   * Adds test for crashes caused by small box NSGrid searches (Issue #2670)
@@ -1379,7 +1362,6 @@ Enhancements
   * 1.0.1
 
 Fixes
- * `PersistenceLength._conclude()` now normalizes `results.bond_autocorrelation` using the number of frames actually analyzed instead of the total trajectory frame count, fixing incorrect results when `run()` is called with `start`/`stop`/`step` (Issue #5453).
   * Due to issues with the reliability/accuracy of `nsgrid`, this method is
     currently not recommended for use. It has also been removed as an option
     from lib.capped_distance and lib.self_capped_distance. Please use PKDTree
@@ -1442,7 +1424,6 @@ Deprecations
   * 1.0.0
 
 Fixes
- * `PersistenceLength._conclude()` now normalizes `results.bond_autocorrelation` using the number of frames actually analyzed instead of the total trajectory frame count, fixing incorrect results when `run()` is called with `start`/`stop`/`step` (Issue #5453).
   * MOL2Writer now accepts both Universes and AtomgGroups (Issue #2717)
   * Use user-provided `remark` in `XYZWriter` (Issue #2692)
   * Added more informative error messages about topology attributes
@@ -1645,7 +1626,6 @@ Deprecations
   * 0.20.1
 
 Fixes
- * `PersistenceLength._conclude()` now normalizes `results.bond_autocorrelation` using the number of frames actually analyzed instead of the total trajectory frame count, fixing incorrect results when `run()` is called with `start`/`stop`/`step` (Issue #5453).
   * The NetCDF writer now writes `cell_angle` units as `degree` instead of
     `degrees` in accordance with the AMBER NetCDF convention (Issue #2327).
   * Fixed installation without Cython (Issue #2337)
@@ -1719,7 +1699,6 @@ Changes
   * changed the water bridge analysis output format (PR #2087)
 
 Fixes
- * `PersistenceLength._conclude()` now normalizes `results.bond_autocorrelation` using the number of frames actually analyzed instead of the total trajectory frame count, fixing incorrect results when `run()` is called with `start`/`stop`/`step` (Issue #5453).
   * fixed ChainReader setting format with format keyword (Issue #2334)
   * fixed lack of check for scaling of NCDFReader velocities (Issue #2323)
   * fixed PDBReader and PDBWriter newlines for PDB header (Issue #2324)
@@ -1791,7 +1770,6 @@ Changes
   * 0.19.1
 
 Fixes
- * `PersistenceLength._conclude()` now normalizes `results.bond_autocorrelation` using the number of frames actually analyzed instead of the total trajectory frame count, fixing incorrect results when `run()` is called with `start`/`stop`/`step` (Issue #5453).
    * limit output of Chainreader __repr__ (#2109)
    * added missing docs for lib.pkdtree (#2104)
    * Added sphinx markup for FrameIterator (#2106)
@@ -1880,7 +1858,6 @@ Enhancements
     (where possible) (Issue #1041 PR #2080)
 
 Fixes
- * `PersistenceLength._conclude()` now normalizes `results.bond_autocorrelation` using the number of frames actually analyzed instead of the total trajectory frame count, fixing incorrect results when `run()` is called with `start`/`stop`/`step` (Issue #5453).
   * Rewind in the SingleFrameReader now reads the frame from the file (Issue #1929)
   * Fixed order of indices in Angle/Dihedral/Improper repr
   * coordinates.memory.MemoryReader now takes np.ndarray only (Issue #1685)
@@ -1980,7 +1957,6 @@ Enhancements
   * Added AtomGroup, ResidueGroup and SegmentGroup to the top module namespace
 
 Fixes
- * `PersistenceLength._conclude()` now normalizes `results.bond_autocorrelation` using the number of frames actually analyzed instead of the total trajectory frame count, fixing incorrect results when `run()` is called with `start`/`stop`/`step` (Issue #5453).
   * Fixed MPI fork() warning when importing MDAnalysis in an Infiniband-enabled
     MPI environment (PR #1794)
   * Fixed waterdynamics SurvivalProbability ignoring the t0 start time
@@ -2059,7 +2035,6 @@ Deprecations
   * timeseries keyword format is replaced by order. The format keyword is marked for deprecation in 1.0
 
 Fixes
- * `PersistenceLength._conclude()` now normalizes `results.bond_autocorrelation` using the number of frames actually analyzed instead of the total trajectory frame count, fixing incorrect results when `run()` is called with `start`/`stop`/`step` (Issue #5453).
   * Fixed analysis.psa.dist_mat_to_vec not returning int values (Issue #1507)
   * Fixed triclinic PBC transform for a- and b- axes (Issue #1697)
   * Fixed nuclinfo.tors() not converting delta (Issue #1572)
@@ -2124,7 +2099,6 @@ Deprecations
   * deprecated the core.flag registry for 1.0 (Issue #782)
 
 Fixes
- * `PersistenceLength._conclude()` now normalizes `results.bond_autocorrelation` using the number of frames actually analyzed instead of the total trajectory frame count, fixing incorrect results when `run()` is called with `start`/`stop`/`step` (Issue #5453).
   * fixed GROWriter truncating long resids from the wrong end (Issue #1395)
   * Fixed dtype of numpy arrays to accomodate 32 bit architectures (Issue #1362)
   * Groups are hashable on python 3 (Issue #1397)
@@ -2156,7 +2130,6 @@ Enhancements
   * made online docs responsive with the Alabaster Sphinx theme (#378)
 
 Fixes
- * `PersistenceLength._conclude()` now normalizes `results.bond_autocorrelation` using the number of frames actually analyzed instead of the total trajectory frame count, fixing incorrect results when `run()` is called with `start`/`stop`/`step` (Issue #5453).
   * In Universe.transfer_to_memory(): dt is now adjusted with step (Issue #1310)
   * Various documentation sphinx errors (PR #1312)
   * Bugfix in confdistmatrix.get_distance_matrix; now works on all trajectory types.
@@ -2250,7 +2223,6 @@ Enhancements
     weights="size") by about 5x (partially Issue #1191)
 
 Fixes
- * `PersistenceLength._conclude()` now normalizes `results.bond_autocorrelation` using the number of frames actually analyzed instead of the total trajectory frame count, fixing incorrect results when `run()` is called with `start`/`stop`/`step` (Issue #5453).
   * Trajectory slicing made completely Pythonic (Issue #918 PR #1195)
   * Argument validation of dist_mat_to_vec is fixed (#597 PR #1183)
   * Give correct error when the topology file format is not recognized (Issue #982)
@@ -2386,7 +2358,6 @@ Enhancements
   * Iteration and seeking in PDB files made faster (Issue #848)
 
 Fixes
- * `PersistenceLength._conclude()` now normalizes `results.bond_autocorrelation` using the number of frames actually analyzed instead of the total trajectory frame count, fixing incorrect results when `run()` is called with `start`/`stop`/`step` (Issue #5453).
   * Fixed TypeError in PSAnalysis heatmap-dendrogram plotting (Issue #1018)
   * ENT file format added to PDB Readers/Writers/Parsers (Issue #834)
   * rmsd now returns proper value when given array of weights (Issue #814)
@@ -2481,7 +2452,6 @@ Changes
     before trying to deduce the format from file extension. (Issue #712)
 
 Fixes
- * `PersistenceLength._conclude()` now normalizes `results.bond_autocorrelation` using the number of frames actually analyzed instead of the total trajectory frame count, fixing incorrect results when `run()` is called with `start`/`stop`/`step` (Issue #5453).
 
   * Syntax error corrected in psa.py (Issue #738)
   * XDR file seeking and telling working again for large files (Issue #677).
@@ -2561,7 +2531,6 @@ Changes
   * MOL2Writer.write now only writes a single frame (Issue #521)
 
 Fixes
- * `PersistenceLength._conclude()` now normalizes `results.bond_autocorrelation` using the number of frames actually analyzed instead of the total trajectory frame count, fixing incorrect results when `run()` is called with `start`/`stop`/`step` (Issue #5453).
 
   * Fixed select_atoms requiring a trajectory be loaded (Issue #270)
   * AtomGroup timesteps no longer cached (Issue #606)
@@ -2609,7 +2578,6 @@ Enhancements
 Changes
 
 Fixes
- * `PersistenceLength._conclude()` now normalizes `results.bond_autocorrelation` using the number of frames actually analyzed instead of the total trajectory frame count, fixing incorrect results when `run()` is called with `start`/`stop`/`step` (Issue #5453).
   * Fixed OpenMP detection on Linux/OSX #459
   * Fixed reading of LAMMPS trajectory times: default unit ought
     to be fs and not ps
@@ -2664,7 +2632,6 @@ Changes
   * To build with debug-symbols use 'MDA_DEBUG_CFLAGS' instead of 'MDA_DEBUG_CFLAGS'
 
 Fixes
- * `PersistenceLength._conclude()` now normalizes `results.bond_autocorrelation` using the number of frames actually analyzed instead of the total trajectory frame count, fixing incorrect results when `run()` is called with `start`/`stop`/`step` (Issue #5453).
   * Fixed minor issue in lib.mdamath.make_whole where if all bonds
     were correctly sized, it wouldn't notice that multiple fragments
     had been given. (Issue #445)
@@ -3261,7 +3228,6 @@ Testsuite
   * 0.7.5.1
 
 Fixes
- * `PersistenceLength._conclude()` now normalizes `results.bond_autocorrelation` using the number of frames actually analyzed instead of the total trajectory frame count, fixing incorrect results when `run()` is called with `start`/`stop`/`step` (Issue #5453).
   * added: missing files (Issue 95)
   * removed: unused delaunay-related files
 
